@@ -1,5 +1,5 @@
 /*
- * Created on Mon Feb 15 2021
+ * Created on Wed Feb 10 2021
  *
  * The Unlicense
  * This is free and unencumbered software released into the public domain.
@@ -25,36 +25,30 @@
  * For more information, please refer to <https://unlicense.org>
  */
 
-package org.seng302.example;
+package com.pigeon.wasteless;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 /**
- * This class set headers properly for CORS compliance. Global filtering is
- * restrained in {@link Main#corsConfigurer())
+ * This spring component runs at application startup to do some initialisation work.
  */
 @Component
-public class MainCORSFilter implements Filter {
+public class MainApplicationRunner implements ApplicationRunner {
 
+  private static final Logger logger = LogManager.getLogger(MainApplicationRunner.class.getName());
+
+  /**
+   * By overriding the run method, we tell Spring to run this code at startup. See
+   * https://dzone.com/articles/spring-boot-applicationrunner-and-commandlinerunne
+   */
   @Override
-  public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-      throws IOException, ServletException {
+  public void run(ApplicationArguments args) {
+    logger.info("Startup application with {}", args);
 
-    HttpServletResponse response = (HttpServletResponse) res;
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE, PATCH, HEAD");
-    response.setHeader("Access-Control-Max-Age", "6000");
-    response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    chain.doFilter(req, res);
   }
 
 }

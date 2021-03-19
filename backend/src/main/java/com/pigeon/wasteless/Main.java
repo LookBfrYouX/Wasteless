@@ -25,13 +25,12 @@
  * For more information, please refer to <https://unlicense.org>
  */
 
-package org.seng302.example;
+package com.pigeon.wasteless;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.SpringApplication;
-
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -39,9 +38,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * This is the main entry point for Spring Boot application. This class's main
- * method will boot up the web application and can contain other sort of
- * configuration.
+ * This is the main entry point for Spring Boot application. This class's main method will boot up
+ * the web application and can contain other sort of configuration.
  */
 @SpringBootApplication
 public class Main {
@@ -50,7 +48,7 @@ public class Main {
 
   /**
    * Main method. Startup the Spring application with given args
-   * 
+   *
    * @param args arguments to be passed to spring (none expected)
    */
   public static void main(String[] args) {
@@ -59,12 +57,11 @@ public class Main {
   }
 
   /**
-   * This method specifies the allowed origins (localhost and your VM), HTTP
-   * methods and url mappings (all, denoted by "/**")
-   * 
-   * @see https://spring.io/guides/gs/rest-service-cors/
-   * 
+   * This method specifies the allowed origins (localhost and your VM), HTTP methods and url
+   * mappings (all, denoted by "/**")
+   *
    * @return the configurer that check incoming origins for CORS purposes
+   * @see https://spring.io/guides/gs/rest-service-cors/
    */
   @Bean
   @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -72,7 +69,8 @@ public class Main {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
+        registry.addMapping("/**")
+            .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
             .allowedOrigins("http://localhost:9500", "https://csse-s302g12.canterbury.ac.nz");
       }
     };

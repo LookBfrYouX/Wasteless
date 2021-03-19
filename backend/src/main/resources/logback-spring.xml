@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!-- TRACE < DEBUG < INFO < WARN < ERROR -->
+
+  <property name="LOGS" value="./logs" />
+
+  <appender class="ch.qos.logback.core.ConsoleAppender"
+    name="Console">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>
+        %green(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
+      </Pattern>
+    </layout>
+  </appender>
+
+  <!-- One appender for each output stream -->
+  <appender class="ch.qos.logback.core.FileAppender"
+    name="ErrorAppender">
+    <encoder
+      class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+    </encoder>
+    <file>${LOGS}/error-logger.log</file>
+    <!-- Only show ERROR level logs, deny everything else -->
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+
+  <appender class="ch.qos.logback.core.FileAppender"
+    name="EventAppender">
+    <encoder
+      class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+    </encoder>
+    <file>${LOGS}/event-logger.log</file>
+    <!-- Only show INFO level logs, deny everything else -->
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>INFO</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+
+  <logger additivity="false" level="info" name="com.pigeon.wasteless">
+    <appender-ref ref="EventAppender"/>
+    <appender-ref ref="ErrorAppender"/>
+  </logger>
+
+  <!-- LOG everything at INFO level with the console appender -->
+  <property name="LOGS" value="./logs"/>
+
+  <!-- LOG "com.pigeon.wasteless*" at INFO level with event/error appender -->
+  <root level="info">
+    <appender-ref ref="Console"/>
+  </root>
+
+</configuration>
