@@ -86,10 +86,10 @@ public class HibernateCriteriaQueryBuilder {
 
     private static Predicate buildNameFullMatchPredicate(String token, CriteriaBuilder criteriaBuilder, Root root) {
         return criteriaBuilder.or(
-                criteriaBuilder.like(root.get("firstName"), token),
-                criteriaBuilder.like(root.get("nickname"), token),
-                criteriaBuilder.like(root.get("middleName"), token),
-                criteriaBuilder.like(root.get("lastName"), token)
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")), token.toLowerCase()),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("nickname")), token.toLowerCase()),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("middleName")), token.toLowerCase()),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")), token.toLowerCase())
         );
     }
 
