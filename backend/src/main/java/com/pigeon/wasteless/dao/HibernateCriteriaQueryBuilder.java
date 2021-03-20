@@ -39,16 +39,16 @@ public class HibernateCriteriaQueryBuilder {
         for (int i = 0; i < tokens.size(); i++) {
             String currentToken = tokens.get(i);
             System.out.println(currentToken);
-            if (currentToken.toUpperCase().matches("OR")) {
+            if (currentToken.toUpperCase().matches("AND")) {
                 System.out.println("AND found so just add the next search token: " + currentToken);
-            } else if (currentToken.toUpperCase().matches("AND")) {
+            } else if (currentToken.toUpperCase().matches("OR")) {
                 // Check it is in a legit place
                 if (i > 0 && (i + 1) < tokens.size() && predicates.size() > 0) {
                     System.out.println("legit AND found so check the next token exists and or it to a pop");
                     System.out.println("LENGTH: " + predicates.size());
                     Predicate lastPredicate = predicates.remove(predicates.size() - 1);
                     System.out.println("POP LENGTH: " + predicates.size());
-                    Predicate newPredicate = criteriaBuilder.and(lastPredicate, makePredicate(tokens.get(i + 1), criteriaBuilder, root));
+                    Predicate newPredicate = criteriaBuilder.or(lastPredicate, makePredicate(tokens.get(i + 1), criteriaBuilder, root));
                     System.out.println(newPredicate.getExpressions());
                     predicates.add(newPredicate);
                     System.out.println("FINAL LENGTH: " + predicates.size());
@@ -68,7 +68,7 @@ public class HibernateCriteriaQueryBuilder {
         }
 
         // Selecting query
-        criteriaQuery.select(root).where(criteriaBuilder.or(predicates.toArray(new Predicate[0])));
+        criteriaQuery.select(root).where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
         // Returning the query
         return criteriaQuery;
