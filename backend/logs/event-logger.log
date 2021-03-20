@@ -3,3 +3,217 @@
 2021-03-19 20:59:47,363 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.208 seconds (JVM running for 4.733)
 2021-03-19 20:59:47,367 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@c8531b9
 2021-03-19 20:59:48,620 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 22:51:48,142 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 12231 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 22:51:48,165 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 22:51:54,179 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 6.792 seconds (JVM running for 7.428)
+2021-03-19 22:51:54,184 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@3c108c05
+2021-03-19 22:51:55,483 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 22:52:38,127 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:03:19,271 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 12754 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:03:19,283 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:03:23,548 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.897 seconds (JVM running for 5.572)
+2021-03-19 23:03:23,558 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@185b7cc6
+2021-03-19 23:04:05,943 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 12840 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:04:05,944 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:04:10,051 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.641 seconds (JVM running for 5.181)
+2021-03-19 23:04:10,055 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@193d7ac7
+2021-03-19 23:04:11,353 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:04:21,075 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:20:01,812 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 14700 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:20:01,830 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:20:07,774 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 6.835 seconds (JVM running for 7.832)
+2021-03-19 23:20:07,779 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@2831c178
+2021-03-19 23:20:09,120 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:20:14,297 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:21:40,108 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 14798 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:21:40,109 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:21:44,039 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.366 seconds (JVM running for 4.756)
+2021-03-19 23:21:44,044 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-19 23:21:45,298 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:21:51,007 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:24:54,166 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 14984 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:24:54,168 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:24:57,839 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.119 seconds (JVM running for 4.501)
+2021-03-19 23:24:57,843 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-19 23:24:59,075 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:25:05,537 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:33:24,119 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 15223 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:33:24,121 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:33:27,895 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.2 seconds (JVM running for 4.568)
+2021-03-19 23:33:27,899 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@c8531b9
+2021-03-19 23:33:29,146 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:33:35,060 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:34:13,752 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 15321 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:34:13,753 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:34:17,700 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.411 seconds (JVM running for 4.833)
+2021-03-19 23:34:17,704 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@6b2efcae
+2021-03-19 23:34:18,960 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:34:29,874 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:42:05,345 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 15522 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:42:05,346 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:42:09,030 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.104 seconds (JVM running for 4.461)
+2021-03-19 23:42:09,034 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-19 23:42:10,271 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:42:17,111 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:43:01,351 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 15619 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:43:01,353 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:43:05,022 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.075 seconds (JVM running for 4.433)
+2021-03-19 23:43:05,026 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-19 23:43:06,268 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:43:11,033 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:44:10,344 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 15712 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:44:10,345 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:44:13,969 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.063 seconds (JVM running for 4.429)
+2021-03-19 23:44:13,972 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@193d7ac7
+2021-03-19 23:44:15,209 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:44:20,562 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:44:46,103 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 15800 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:44:46,104 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:44:49,761 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.067 seconds (JVM running for 4.448)
+2021-03-19 23:44:49,765 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@346690d6
+2021-03-19 23:44:51,004 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:44:59,392 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:48:28,432 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 16057 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:48:28,434 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:48:32,282 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.283 seconds (JVM running for 4.661)
+2021-03-19 23:48:32,286 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-19 23:48:33,530 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:48:40,275 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-19 23:57:43,694 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 16291 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-19 23:57:43,695 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-19 23:57:47,371 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.119 seconds (JVM running for 4.624)
+2021-03-19 23:57:47,375 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@3adbd038
+2021-03-19 23:57:48,622 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 23:57:57,185 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:14:13,120 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 7432 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:14:13,139 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:14:19,780 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 7.699 seconds (JVM running for 8.616)
+2021-03-21 10:14:19,784 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@3adbd038
+2021-03-21 10:14:21,340 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:14:25,679 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:29:38,348 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 7647 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:29:38,350 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:29:42,136 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.22 seconds (JVM running for 4.823)
+2021-03-21 10:29:42,140 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@48788853
+2021-03-21 10:29:43,381 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:29:47,793 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:30:25,250 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 7744 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:30:25,251 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:30:29,006 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.186 seconds (JVM running for 4.543)
+2021-03-21 10:30:29,010 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@2093bb6c
+2021-03-21 10:30:30,247 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:30:34,019 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:31:56,406 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 7849 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:31:56,408 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:32:00,149 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.177 seconds (JVM running for 4.525)
+2021-03-21 10:32:00,153 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@35fac3ba
+2021-03-21 10:32:01,391 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:32:05,476 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:34:04,247 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 7950 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:34:04,253 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:34:07,992 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.175 seconds (JVM running for 4.528)
+2021-03-21 10:34:07,996 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@35fac3ba
+2021-03-21 10:34:09,234 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:34:14,316 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:35:58,266 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 8059 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:35:58,267 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:36:02,035 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.187 seconds (JVM running for 4.537)
+2021-03-21 10:36:02,039 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-21 10:36:03,281 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:36:07,440 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:37:04,974 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 8150 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:37:04,976 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:37:08,752 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.2 seconds (JVM running for 4.61)
+2021-03-21 10:37:08,755 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-21 10:37:09,993 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:37:16,096 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:38:22,207 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 8236 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:38:22,209 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:38:25,966 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.18 seconds (JVM running for 4.53)
+2021-03-21 10:38:25,970 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@7d0333c8
+2021-03-21 10:38:27,203 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:38:31,481 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:47:37,329 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 8405 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:47:37,330 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:47:41,009 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.117 seconds (JVM running for 4.478)
+2021-03-21 10:47:41,014 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@2831c178
+2021-03-21 10:47:42,254 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:47:46,368 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:50:00,714 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 8517 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:50:00,716 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:50:04,463 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.164 seconds (JVM running for 4.527)
+2021-03-21 10:50:04,467 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-21 10:50:05,702 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:50:13,364 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 10:52:16,983 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 8764 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 10:52:16,985 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 10:52:20,541 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.0 seconds (JVM running for 4.411)
+2021-03-21 10:52:20,545 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@193d7ac7
+2021-03-21 10:52:21,786 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 10:52:31,081 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:10:42,276 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 9087 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:10:42,277 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:10:45,957 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.151 seconds (JVM running for 4.591)
+2021-03-21 11:10:45,960 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@5c70c771
+2021-03-21 11:10:47,209 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:10:51,877 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:13:35,883 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 9199 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:13:35,886 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:13:39,543 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.09 seconds (JVM running for 4.463)
+2021-03-21 11:13:39,547 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-21 11:13:40,777 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:13:45,753 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:15:43,777 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 9319 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:15:43,778 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:15:47,466 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.125 seconds (JVM running for 4.516)
+2021-03-21 11:15:47,470 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-21 11:15:48,714 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:15:53,955 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:21:32,860 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 9491 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:21:32,861 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:21:36,370 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 3.942 seconds (JVM running for 4.416)
+2021-03-21 11:21:36,374 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@c8531b9
+2021-03-21 11:21:37,608 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:21:46,350 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:31:26,340 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 9766 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:31:26,341 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:31:30,059 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.153 seconds (JVM running for 4.542)
+2021-03-21 11:31:30,063 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@2093bb6c
+2021-03-21 11:31:31,301 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:31:35,452 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:32:42,897 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 9870 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:32:42,898 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:32:46,432 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 3.992 seconds (JVM running for 4.381)
+2021-03-21 11:32:46,436 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@3adbd038
+2021-03-21 11:32:47,677 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:32:51,323 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:33:46,834 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 9957 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:33:46,835 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:33:50,419 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.0 seconds (JVM running for 4.436)
+2021-03-21 11:33:50,423 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-21 11:33:51,657 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:33:56,226 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:40:45,810 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 10142 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:40:45,812 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:40:49,461 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.074 seconds (JVM running for 4.429)
+2021-03-21 11:40:49,465 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@2093bb6c
+2021-03-21 11:40:50,695 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:40:55,122 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:50:05,320 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 10424 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:50:05,321 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:50:10,718 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 5.862 seconds (JVM running for 6.349)
+2021-03-21 11:50:10,723 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@c8531b9
+2021-03-21 11:50:12,025 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:50:17,990 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:51:11,330 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 10519 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:51:11,331 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:51:15,041 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.144 seconds (JVM running for 4.501)
+2021-03-21 11:51:15,044 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758d0555
+2021-03-21 11:51:16,281 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:51:22,057 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-1] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz
+2021-03-21 11:52:26,027 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 10609 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-03-21 11:52:26,029 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-03-21 11:52:29,725 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.128 seconds (JVM running for 4.49)
+2021-03-21 11:52:29,729 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@5c70c771
+2021-03-21 11:52:30,969 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-21 11:52:35,253 INFO com.pigeon.wasteless.controller.UserController [http-nio-9499-exec-2] SUCCESSFUL LOGIN: mbi47@uclive.ac.nz

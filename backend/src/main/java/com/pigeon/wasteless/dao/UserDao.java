@@ -2,6 +2,8 @@ package com.pigeon.wasteless.dao;
 
 import com.pigeon.wasteless.entity.User;
 import com.pigeon.wasteless.exception.UserNotFoundException;
+
+import javax.management.InvalidAttributeValueException;
 import java.util.List;
 
 public interface UserDao {
@@ -16,8 +18,6 @@ public interface UserDao {
 
   boolean userExists(String email);
 
-  List<User> exactSearchUsers(String searchQuery);
-
-  List<User> partialSearchUsers(String searchQuery);
+  List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException;
 
 }
