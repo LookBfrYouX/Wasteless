@@ -1,5 +1,5 @@
 2021-03-19 20:59:43,618 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 7238 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
 2021-03-19 20:59:43,619 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
 2021-03-19 20:59:47,363 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.208 seconds (JVM running for 4.733)
-2021-03-19 20:59:47,367 INFO com.pigeon.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@c8531b9
-2021-03-19 20:59:48,620 INFO com.pigeon.wasteless.configuration.SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-03-19 20:59:47,367 INFO MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@c8531b9
+2021-03-19 20:59:48,620 INFO SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
