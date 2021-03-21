@@ -1,0 +1,184 @@
+<template>
+  <div class="container main gradient-background">
+    <h1 class="row col-12">Profile Information</h1>
+    <ul class="profile-info list-unstyled">
+      <li class="row">
+        <dt class="col-md-4 label">Full Name:</dt>
+        <dd class="col-md-8 value"> {{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }} </dd>
+      </li>
+      <li class="row">
+        <dt class="col-md-4 label">Nickname:</dt>
+        <dd class="col-md-8 value"> {{ userInfo.nickname }} </dd>
+      </li>
+      <li class="row">
+        <dt class="col-md-4 label">Member since:</dt>
+        <dd class="col-md-8 value"> {{ memberSinceText }}</dd>
+      </li>
+      <li class="row">
+        <dt class="col-md-4 label">Bio:</dt>
+        <dd class="col-md-8 value"> {{ userInfo.bio }} </dd>
+      </li>
+      <li class="row">
+        <dt class="col-md-4 label">Date of Birth:</dt>
+        <dd class="col-md-8 value">{{ dateOfBirthText }}</dd>
+      </li>
+      <li class="row">
+        <dt class="col-md-4 label">Email Address:</dt>
+        <dd class="col-md-8 value"> {{ userInfo.email }} </dd>
+      </li>
+      <li class="row">
+        <dt class="col-md-4 label">Phone Number:</dt>
+        <dd class="col-md-8 value"> {{ userInfo.phoneNumber }} </dd>
+      </li>
+      <li class="row">
+        <dt class="col-md-4 label">Home Address:</dt>
+        <dd class="col-md-8 value"> {{ userInfo.homeAddress}} </dd>
+      </li>
+    </ul>
+  </div>
+</template>
+
+
+<script>
+const Api = require("./../Api").default;
+
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+Object.freeze(MONTH_NAMES);
+
+export default {
+  name: 'profilePage',
+  components: {},
+
+  data() {
+    return {
+      userInfo: {
+        firstName: "",
+        lastName: "",
+        nickname: "",
+        created: "",
+        bio: "",
+        dateOfBirth: "",
+        emailAddress: "",
+        phoneNumber: "",
+        homeAddress: "",
+      },
+    }
+  },
+
+  props: {
+    userId: {
+      type: Number, // may be NaN
+      required: true
+      // default: 10
+    }
+  },
+
+  beforeMount: function() {
+    // gets user information from api
+    this.parseApiResponse(this.callApi(this.userId));
+  },
+
+  methods: {
+    /**
+     * Calls the API to get profile information with the given user ID
+     * Returns the promise, not the response
+     */
+    callApi: function(userId) {
+      if (typeof userId != "number" || isNaN(userId)) {
+        const err = new Error("Cannot load profile page (no profile given). You may need to log in");
+        err.userFacingErrorMessage = err.message;
+        return Promise.reject(err);
+      }
+      return Api.profile(userId);
+    },
+
+    /**
+     * Parses the API response given a promise to the request
+     */
+    parseApiResponse: async function(apiCall) {
+      try {
+        const response = await apiCall;
+        this.userInfo = response.data;
+      } catch(err) {
+        alert(err.userFacingErrorMessage == undefined? err.toString(): err.userFacingErrorMessage);
+      }
+    },
+
+    /**
+     * Formats the date as a D MMMM YYYY string
+     * @param date date object, or something that can be passed to the constructor
+     */
+    formatDate: function(date) {
+      if (!(date instanceof Date)) date = new Date(date);
+      return `${date.getDate()} ${MONTH_NAMES[date.getMonth()]}, ${date.getFullYear()}`;
+    },
+
+    /**
+     * Calculates the time since registration and returns it as a string
+     * @return string in format 'y years, m months'
+     */
+    generateTimeSinceRegistrationText: function(registrationDate, currentDate) {
+      const yearDiff = currentDate.getFullYear() - registrationDate.getFullYear();
+      const monthDiff = currentDate.getMonth() - registrationDate.getMonth();
+
+      const timeDiffInMonth = yearDiff * 12 + monthDiff;
+
+      const years = Math.floor(timeDiffInMonth / 12);
+      let months = timeDiffInMonth % 12;
+
+      const yearsText  = `${years} year${years == 1? "": "s"}`;
+
+      if (timeDiffInMonth == 0) months = 1;
+      // If it was created this month, don't want to show '0 months' but '1' month instead
+      const monthsText = `${months} month${months == 1? "": "s"}`;
+
+      if (years == 0) {
+        return monthsText;
+      }
+      
+      return`${yearsText}, ${monthsText}`;
+    },
+  },
+
+  computed: {
+    dateOfBirthText: function() {
+      if (isNaN(Date.parse(this.userInfo.dateOfBirth))) return "Unknown";
+      return this.formatDate(this.userInfo.dateOfBirth);
+    },
+
+
+    memberSinceText: function() {
+      if (isNaN(Date.parse(this.userInfo.created))) return "Unknown";
+      const created = new Date(this.userInfo.created);
+      const dateOfRegistration = this.formatDate(created);
+      const monthsSinceRegistration = this.generateTimeSinceRegistrationText(
+        created,
+        new Date()
+      );
+
+      return `${dateOfRegistration} (${monthsSinceRegistration})`;
+    }
+  },
+
+  watch: {
+    // if userid changes updates text fields
+    userId: function() {
+      this.parseApiResponse(this.callApi(this.userId))
+    }
+  },
+}
+</script>
+
+<style scoped>
+.main {
+  line-height: 1.1;
+}
+
+.profile-info li {
+  margin-bottom: 0.5em;
+}
+
+.profile-info {
+  font-size: 1.1em;
+}
+</style>
