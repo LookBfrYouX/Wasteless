@@ -324,7 +324,7 @@ export default {
         ) + this.phoneNumber.trim();
 
       try {
-        await this.callApi({
+          var response = await this.callApi({
           firstName: this.firstName,
           middleName: this.middleName,
           lastName: this.lastName,
@@ -348,7 +348,8 @@ export default {
 
       this.errorMessage = "";
       this.emailUsed = false;
-      this.$router.push({name:'login'});
+      window.localStorage.setItem("userId", response.data.id);
+      this.$router.push({ name: "profile" });
     }
   }
 }

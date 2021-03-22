@@ -30,7 +30,7 @@
                          out of {{results.length}}
           <ul class="list-unstyled list-group">
             <!--viewUser method uses router.push to display profile page-->
-            <li class="list-group-item card text-wrap slightly-transparent-background user-card" v-on:click="viewUser(user.id)" v-for="(user, index) in displayedResults" v-bind:key="index">
+            <li class="list-group-item card text-wrap" v-on:click="viewUser(user.id)" v-for="(user, index) in displayedResults" v-bind:key="index">
               <h4 class="card-title">{{user.firstName}} {{user.middleName}} {{user.lastName}} {{user.nickname? `(${user.nickname})`: ""}}</h4>
               <div>{{user.region}}, {{user.city}}, {{user.country}}</div>
               <div class="text-muted">{{user.email}}</div>
@@ -218,17 +218,5 @@ button.page-link {
 }
 .sort-results .table-reversed li.current-sort::after {
   content: '\2193';
-}
-
-.user-card {
-  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-
-.user-card:hover {
-  transform: scale(1.01);
-  z-index: 10;
-  /* Without this, it appears below the card below it when the card gets larger and intersects with its neighbouring cards*/
-  background-color: white;
-  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.05);
 }
 </style>
