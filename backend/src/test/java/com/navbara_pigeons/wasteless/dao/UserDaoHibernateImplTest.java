@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.InvalidAttributeValueException;
+
 @SuppressWarnings({"ALL", "SpellCheckingInspection"})
 @SpringBootTest
 class userDaoTest {
@@ -135,7 +137,9 @@ class userDaoTest {
     userDao.saveUser(testUser2);
     userDao.saveUser(testUser3);
 
-    List<User> results1 = userDao.searchUsers("Fred");
+    List<User> results1 = null;
+    try {
+      results1 = userDao.searchUsers("Fred");
     assertEquals(results1.size(), 2);
 
     List<User> results2 = userDao.searchUsers("smiths");
@@ -152,6 +156,9 @@ class userDaoTest {
     assertEquals(results4.size(), 1);
     assertEquals(results4.get(0).getId(), testUser2.getId());
     assertEquals(results4.get(0).getEmail(), testUser2.getEmail());
+    } catch (InvalidAttributeValueException e) {
+      e.printStackTrace();
+    }
   }
 
   @Test
@@ -177,12 +184,15 @@ class userDaoTest {
     actuallySaveUser(userToSearch);
 
     // ACT
-    List<User> validFnameQuery = userDao.searchUsers(firstName);
+    List<User> validFnameQuery = null;
+    try {
+      validFnameQuery = userDao.searchUsers(firstName);
     List<User> validMnameQuery = userDao.searchUsers(middleName);
     List<User> validLnameQuery = userDao.searchUsers(lastName);
     List<User> validNnameQuery = userDao.searchUsers(nickname);
     List<User> validFullNameQuery = userDao
         .searchUsers(firstName + ' ' + middleName + ' ' + lastName);
+
 
     // ASSERT
     assertEquals(userToSearch.getId(), validFnameQuery.get(0).getId());
@@ -190,6 +200,9 @@ class userDaoTest {
     assertEquals(userToSearch.getId(), validLnameQuery.get(0).getId());
     assertEquals(userToSearch.getId(), validNnameQuery.get(0).getId());
     assertEquals(userToSearch.getId(), validFullNameQuery.get(0).getId());
+    } catch (InvalidAttributeValueException e) {
+      e.printStackTrace();
+    }
   }
 
   @Transactional
@@ -221,7 +234,9 @@ class userDaoTest {
     List<User> expectedResult = new ArrayList<>();
 
     // ACT
-    List<User> invalidFnameQuery = userDao.searchUsers("Philliam");
+    List<User> invalidFnameQuery = null;
+    try {
+      invalidFnameQuery = userDao.searchUsers("Philliam");
     List<User> invalidMnameQuery = userDao.searchUsers("Gladley");
     List<User> invalidLnameQuery = userDao.searchUsers("PittBull");
     List<User> invalidNnameQuery = userDao.searchUsers("Lado");
@@ -234,5 +249,8 @@ class userDaoTest {
     assertEquals(expectedResult, invalidLnameQuery);
     assertEquals(expectedResult, invalidNnameQuery);
     assertEquals(expectedResult, invalidFullNameQuery);
+    } catch (InvalidAttributeValueException e) {
+      e.printStackTrace();
+    }
   }
 }
