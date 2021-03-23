@@ -1,7 +1,8 @@
-package com.pigeon.wasteless.dao;
+package com.navbara_pigeons.wasteless.dao;
 
-import com.pigeon.wasteless.entity.User;
-import com.pigeon.wasteless.exception.UserNotFoundException;
+
+import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 
 import javax.management.InvalidAttributeValueException;
 import java.util.List;

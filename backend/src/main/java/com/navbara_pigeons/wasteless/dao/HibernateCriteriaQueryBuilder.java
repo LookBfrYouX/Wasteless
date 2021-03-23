@@ -1,6 +1,7 @@
-package com.pigeon.wasteless.dao;
+package com.navbara_pigeons.wasteless.dao;
 
-import com.pigeon.wasteless.entity.User;
+
+import com.navbara_pigeons.wasteless.entity.User;
 import org.hibernate.Session;
 
 import javax.management.InvalidAttributeValueException;
