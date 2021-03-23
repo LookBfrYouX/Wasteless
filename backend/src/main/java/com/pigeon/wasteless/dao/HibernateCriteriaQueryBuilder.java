@@ -40,31 +40,25 @@ public class HibernateCriteriaQueryBuilder {
             String currentToken = tokens.get(i);
             System.out.println(currentToken);
             if (currentToken.toUpperCase().matches("AND")) {
-                System.out.println("AND found so just add the next search token: " + currentToken);
+                // AND is default join for predicates so this is empty
             } else if (currentToken.toUpperCase().matches("OR")) {
                 // Check it is in a legit place
                 if (i > 0 && (i + 1) < tokens.size() && predicates.size() > 0) {
-                    System.out.println("legit AND found so check the next token exists and or it to a pop");
-                    System.out.println("LENGTH: " + predicates.size());
                     Predicate lastPredicate = predicates.remove(predicates.size() - 1);
-                    System.out.println("POP LENGTH: " + predicates.size());
                     Predicate newPredicate = criteriaBuilder.or(lastPredicate, makePredicate(tokens.get(i + 1), criteriaBuilder, root));
-                    System.out.println(newPredicate.getExpressions());
                     predicates.add(newPredicate);
-                    System.out.println("FINAL LENGTH: " + predicates.size());
                     i++; // Extra increment so the attribute isn't added again!
                 } else {
                     throw new InvalidAttributeValueException("Check the AND syntax");
                 }
             } else {
-                System.out.println("Other token found: " + currentToken);
                 predicates.add(makePredicate(currentToken, criteriaBuilder, root));
             }
         }
 
         // Checking for null predicates
         if (predicates.size() <= 0) {
-            throw new InvalidAttributeValueException("Ya gots ta add'a co-rekt searchQuery bae");
+            throw new InvalidAttributeValueException("No search query tokens found");
         }
 
         // Selecting query
@@ -75,7 +69,6 @@ public class HibernateCriteriaQueryBuilder {
     }
 
     private static Predicate makePredicate(String token, CriteriaBuilder criteriaBuilder, Root root) {
-        System.out.println("Adding predicate for: " + token);
         if (token.matches("\"\\S*.+?\"")) {
             String newToken = token.replace("\"", "");
             return buildNameFullMatchPredicate(newToken, criteriaBuilder, root);
