@@ -10,6 +10,8 @@ import net.minidev.json.JSONObject;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 
+import javax.management.InvalidAttributeValueException;
+
 public interface UserService {
 
   JSONObject saveUser(User user)
@@ -26,7 +28,7 @@ public interface UserService {
 
   List<User> getAllUsers();
 
-  List<User> searchUsers(String searchQuery);
+  List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException;
 
   void makeUserAdmin(long id) throws UserNotFoundException, BadCredentialsException;
 }

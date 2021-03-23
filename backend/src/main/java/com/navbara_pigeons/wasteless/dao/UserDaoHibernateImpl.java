@@ -4,7 +4,12 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.management.InvalidAttributeValueException;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,57 +115,16 @@ public class UserDaoHibernateImpl implements UserDao {
     }
   }
 
-  /**
-   * Method to retrieve a User(s) by the corresponding exact user names.
-   *
-   * @param searchQuery Exact query to match users
-   * @return A list of Users that exactly match the passed username
-   */
-  public List<User> exactSearchUsers(String searchQuery) {
+  @Override
+  public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
     Session currentSession = getSession();
-    searchQuery = searchQuery.replaceAll("\\s", "");
-    String queryString = "FROM User u WHERE LOWER(:searchQuery) IN ("
-        + "LOWER(u.firstName), "
-        + "LOWER(u.middleName), "
-        + "LOWER(u.lastName), "
-        + "LOWER(u.nickname), "
-        + "CONCAT(LOWER(u.firstName), LOWER(u.middleName), LOWER(u.lastName)), "
-        + "CONCAT(LOWER(u.firstName), LOWER(u.lastName))"
-        + ")";
-    Query<User> query = currentSession
-        .createQuery(queryString, User.class);
-    query.setParameter("searchQuery", searchQuery);
-    List<User> users = new ArrayList<>();
-    try {
-      users = query.getResultList();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return users;
-  }
+    CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+    CriteriaQuery<User> criteriaQuery = HibernateCriteriaQueryBuilder.parseUserSearchQuery(currentSession, searchQuery);
 
-  /**
-   * Method to retrieve a User(s) by the a partial search (LIKE).
-   *
-   * @param searchQuery Query to match users
-   * @return A list of Users that partially match the passed username
-   */
-  public List<User> partialSearchUsers(String searchQuery) {
-    Session currentSession = getSession();
-    String queryString = "FROM User u WHERE LOWER(u.nickname) LIKE LOWER(:searchQuery) "
-        + "OR LOWER(u.firstName) LIKE LOWER(:searchQuery) "
-        + "OR LOWER(u.middleName) LIKE LOWER(:searchQuery) "
-        + "OR LOWER(u.lastName) LIKE LOWER(:searchQuery)";
-    Query<User> query = currentSession
-        .createQuery(queryString, User.class);
-    query.setParameter("searchQuery", "%" + searchQuery + "%");
-    List<User> users = new ArrayList<>();
-    try {
-      users = query.getResultList();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return users;
+    Query<User> query = currentSession.createQuery(criteriaQuery);
+    List<User> results = query.getResultList();
+
+    return results;
   }
 
   /**

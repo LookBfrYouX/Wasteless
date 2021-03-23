@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.management.InvalidAttributeValueException;
+
 /**
  * @author Maximilian Birzer, Dawson Berry, Alec Fox
  */
@@ -129,11 +131,14 @@ public class UserController {
    */
   @GetMapping("/users/search")
   public ResponseEntity<List<User>> searchUsers(@RequestParam String searchQuery) {
+    List<User> results = null;
     try {
-      return new ResponseEntity<>(userService.searchUsers(searchQuery), HttpStatus.valueOf(200));
-    } catch (Exception exc) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
+      results = userService.searchUsers(searchQuery);
+    } catch (InvalidAttributeValueException e) {
+      log.error("INVALID SEARCH QUERY: " + searchQuery);
+      throw new ResponseStatusException(HttpStatus.valueOf(500), "Invalid Search Query");
     }
+    return new ResponseEntity<>(results, HttpStatus.valueOf(200));
   }
 
   /**

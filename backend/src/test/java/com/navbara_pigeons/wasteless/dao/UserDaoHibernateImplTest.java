@@ -19,10 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings({"ALL", "SpellCheckingInspection"})
 @SpringBootTest
-class UserDaoHibernateImplTest {
+class userDaoTest {
 
   @Autowired
-  UserDaoHibernateImpl userDaoHibernateImpl;
+  UserDao userDao;
 
   @Test
   void saveValidUserAndGetByEmail() {
@@ -42,10 +42,10 @@ class UserDaoHibernateImplTest {
         .setPassword("myPassword");
 
     // Save user using DAO and retrieve by Email
-    userDaoHibernateImpl.saveUser(testUser);
+    userDao.saveUser(testUser);
     User returnedUser = null;
     try {
-      returnedUser = userDaoHibernateImpl.getUserByEmail(testEmail);
+      returnedUser = userDao.getUserByEmail(testEmail);
     } catch (UserNotFoundException e) {
       e.printStackTrace();
     }
@@ -75,10 +75,10 @@ class UserDaoHibernateImplTest {
         .setPassword("$2y$12$dhGJXGeytGMritdpvgPYCusLaldDTUUvsZXDV2g6zT4wHvtnlLsva");
 
     // Save user using DAO and retrieve by Id
-    userDaoHibernateImpl.saveUser(testUser);
+    userDao.saveUser(testUser);
     User returnedUser = null;
     try {
-      returnedUser = userDaoHibernateImpl.getUserById(testUser.getId());
+      returnedUser = userDao.getUserById(testUser.getId());
     } catch (UserNotFoundException e) {
       e.printStackTrace();
     }
@@ -131,24 +131,24 @@ class UserDaoHibernateImplTest {
         .setRole("user")
         .setPassword("test3");
 
-    userDaoHibernateImpl.saveUser(testUser1);
-    userDaoHibernateImpl.saveUser(testUser2);
-    userDaoHibernateImpl.saveUser(testUser3);
+    userDao.saveUser(testUser1);
+    userDao.saveUser(testUser2);
+    userDao.saveUser(testUser3);
 
-    List<User> results1 = userDaoHibernateImpl.partialSearchUsers("Fred");
+    List<User> results1 = userDao.searchUsers("Fred");
     assertEquals(results1.size(), 2);
 
-    List<User> results2 = userDaoHibernateImpl.partialSearchUsers("smiths");
+    List<User> results2 = userDao.searchUsers("smiths");
     assertEquals(results2.size(), 1);
     assertEquals(results2.get(0).getId(), testUser2.getId());
     assertEquals(results2.get(0).getEmail(), testUser2.getEmail());
 
-    List<User> results3 = userDaoHibernateImpl.partialSearchUsers("UsEr");
+    List<User> results3 = userDao.searchUsers("UsEr");
     assertEquals(results3.size(), 1);
     assertEquals(results3.get(0).getId(), testUser3.getId());
     assertEquals(results3.get(0).getEmail(), testUser3.getEmail());
 
-    List<User> results4 = userDaoHibernateImpl.partialSearchUsers("Frod");
+    List<User> results4 = userDao.searchUsers("Frod");
     assertEquals(results4.size(), 1);
     assertEquals(results4.get(0).getId(), testUser2.getId());
     assertEquals(results4.get(0).getEmail(), testUser2.getEmail());
@@ -177,12 +177,12 @@ class UserDaoHibernateImplTest {
     actuallySaveUser(userToSearch);
 
     // ACT
-    List<User> validFnameQuery = userDaoHibernateImpl.exactSearchUsers(firstName);
-    List<User> validMnameQuery = userDaoHibernateImpl.exactSearchUsers(middleName);
-    List<User> validLnameQuery = userDaoHibernateImpl.exactSearchUsers(lastName);
-    List<User> validNnameQuery = userDaoHibernateImpl.exactSearchUsers(nickname);
-    List<User> validFullNameQuery = userDaoHibernateImpl
-        .exactSearchUsers(firstName + ' ' + middleName + ' ' + lastName);
+    List<User> validFnameQuery = userDao.searchUsers(firstName);
+    List<User> validMnameQuery = userDao.searchUsers(middleName);
+    List<User> validLnameQuery = userDao.searchUsers(lastName);
+    List<User> validNnameQuery = userDao.searchUsers(nickname);
+    List<User> validFullNameQuery = userDao
+        .searchUsers(firstName + ' ' + middleName + ' ' + lastName);
 
     // ASSERT
     assertEquals(userToSearch.getId(), validFnameQuery.get(0).getId());
@@ -194,7 +194,7 @@ class UserDaoHibernateImplTest {
 
   @Transactional
   void actuallySaveUser(User user) {
-    this.userDaoHibernateImpl.saveUser(user);
+    this.userDao.saveUser(user);
   }
 
   @Test
@@ -216,17 +216,17 @@ class UserDaoHibernateImplTest {
         .setCreated("2021-03-16 23:13:59.223794")
         .setRole("ROLE_USER")
         .setPassword("this_is_my_pass");
-    userDaoHibernateImpl.saveUser(userToSearch);
+    userDao.saveUser(userToSearch);
     // Create the expected result, empty list
     List<User> expectedResult = new ArrayList<>();
 
     // ACT
-    List<User> invalidFnameQuery = userDaoHibernateImpl.exactSearchUsers("Philliam");
-    List<User> invalidMnameQuery = userDaoHibernateImpl.exactSearchUsers("Gladley");
-    List<User> invalidLnameQuery = userDaoHibernateImpl.exactSearchUsers("PittBull");
-    List<User> invalidNnameQuery = userDaoHibernateImpl.exactSearchUsers("Lado");
-    List<User> invalidFullNameQuery = userDaoHibernateImpl
-        .exactSearchUsers("Philliam Gladley PittBull");
+    List<User> invalidFnameQuery = userDao.searchUsers("Philliam");
+    List<User> invalidMnameQuery = userDao.searchUsers("Gladley");
+    List<User> invalidLnameQuery = userDao.searchUsers("PittBull");
+    List<User> invalidNnameQuery = userDao.searchUsers("Lado");
+    List<User> invalidFullNameQuery = userDao
+        .searchUsers("Philliam Gladley PittBull");
 
     // ASSERT
     assertEquals(expectedResult, invalidFnameQuery);

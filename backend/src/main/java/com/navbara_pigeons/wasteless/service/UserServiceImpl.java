@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.management.InvalidAttributeValueException;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,75 +200,8 @@ public class UserServiceImpl implements UserService {
    * @return A list containing all the users whose names/nickname match the username
    */
   @Override
-  public List<User> searchUsers(String searchQuery) {
-    //doesn't handle multiple types of special queries at in one query (e.g. quotes, AND, OR)
-    Set<User> searchResults = new HashSet<>();  // Create set to hold unique positive search results
-
-    // We want the user to be able to search "" and we return all of the users
-    if (!searchQuery.equals("")) {
-      // Exact search any terms between quotation marks, once found add to a list and then delete
-      String quoteMarkRegEx = "(\")(?:(?=(\\\\?))\\2.)*?\\1";
-      Matcher matcher = Pattern.compile(quoteMarkRegEx)
-          .matcher(searchQuery);
-      while (matcher.find()) {
-        String match = matcher.group();
-        match = match.substring(1, match.length() - 1);  // Remove the quotation marks
-        searchResults.addAll(this.userDao.exactSearchUsers(match));
-      }
-      searchQuery = searchQuery.replaceAll(quoteMarkRegEx, "");
-      // If we have removed the whole query stop, this stops the special case of returning all users
-      // on an empty request.
-      if (searchQuery.equals("")) {
-        return new ArrayList<>(searchResults);
-      }
-    }
-
-    // Handle the OR operator
-    if (searchQuery.toLowerCase().contains(" or ")) {
-      String[] strArr = searchQuery.toLowerCase().split(" or ");
-      for (String name : strArr) {
-        searchResults.addAll(this.userDao.partialSearchUsers(name));
-      }
-      return new ArrayList<>(searchResults);
-    }
-
-    // Handle the AND operator, doesnt work nicely with everything else
-    if (searchQuery.toLowerCase().contains(" and ") || searchQuery.contains(" ")) {
-      String[] strArr = searchQuery.toLowerCase().split(" and | ");
-      Set<User> matched = new HashSet<>();
-      Set<User> temp = new HashSet<>();
-      boolean result = false;
-      for (String name : strArr) {
-        result = false;
-        if (matched.isEmpty()) {
-          //initialise matched to first query's matches
-          matched.addAll(this.userDao.partialSearchUsers(name));
-        } else {
-          //add each user matching the query's to temp if they are already in matched
-          for (User u : this.userDao.partialSearchUsers(name)) {
-            if (matched.contains(u)) {
-              temp.add(u);
-              result = true;
-            }
-            //if there are any matching users between the queries replace matched with the matching users and clear temp
-            if (!temp.isEmpty()) {
-              matched.clear();
-              matched.addAll(temp);
-              temp.clear();
-            }
-          }
-        }
-      }
-      //if there were any matching users add them to return list
-      if (result) {
-        searchResults.addAll(matched);
-      }
-      return new ArrayList<>(searchResults);
-    }
-
-    // Normal search
-    searchResults.addAll(this.userDao.partialSearchUsers(searchQuery));
-    return new ArrayList<>(searchResults);
+  public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
+    return userDao.searchUsers(searchQuery);
   }
 
   /**
