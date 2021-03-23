@@ -135,6 +135,7 @@ public class UserController {
     try {
       results = userService.searchUsers(searchQuery);
     } catch (InvalidAttributeValueException e) {
+      log.error("INVALID SEARCH QUERY: " + searchQuery);
       throw new ResponseStatusException(HttpStatus.valueOf(500), "Invalid Search Query");
     }
     return new ResponseEntity<>(results, HttpStatus.valueOf(200));
