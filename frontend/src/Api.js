@@ -35,8 +35,8 @@ const SERVER_URL = "http://localhost:9499";
 const TIMEOUT = 1000;
 
 const instance = axios.create({
-  baseURL: SERVER_URL,
-  timeout: TIMEOUT
+    baseURL: SERVER_URL,
+    timeout: TIMEOUT
 });
 
 const NO_SERVER_RESPONSE_ERROR_MESSAGE = "Could not connect to server. Try again in a few minutes";
@@ -44,91 +44,93 @@ const NO_SERVER_RESPONSE_ERROR_MESSAGE = "Could not connect to server. Try again
 let unknownErrorMessage = err => `An unknown error (${err.response.status}) occurred: ${err}`;
 
 export default {
-  /**
-   * Sends login request
-   * @param props object with 'email' and 'password'
-   * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
-   */
-  login: (props) => {
-    return instance.post("/login", props).then((response) => {
-      return response;
-    }, (error) => {
-      let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
+    /**
+     * Sends login request
+     * @param props object with 'email' and 'password'
+     * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+     */
+    login: (props) => {
+        return instance.post("/login", props).then((response) => {
+            return response;
+        }, (error) => {
+            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
+            if (error.response !== undefined) {
+                if (error.response.status === 400) {
+                    userFacingErrorMessage = "Your email or password is incorrect";
+                } else {
+                    userFacingErrorMessage = unknownErrorMessage(error);
+                }
+            }
 
-      if (error.response !== undefined) {
-        if (error.response.status === 400) {
-          userFacingErrorMessage = "Your email or password is incorrect";
-        } else {
-          userFacingErrorMessage = unknownErrorMessage(error);
-        }
-      }
-
-      error.userFacingErrorMessage = userFacingErrorMessage;
-      throw error;
-    })
-  },
+            error.userFacingErrorMessage = userFacingErrorMessage;
+            throw error;
+        })
+    },
 
 
-  /**
-   * 
-   * @param {object} props with properties:
-   *   firstName`, `middleName`, `lastName`, `nickname`,
-   *  `email`, `password`, `dateOfBirth`, `homeAddress`, `phoneNumber`, `bio`
-   * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
-   */
-  signUp: (props) => {
-    return instance.post("users", props).catch(err => {
-      let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
+    /**
+     *
+     * @param {object} props with properties:
+     *   firstName`, `middleName`, `lastName`, `nickname`,
+     *  `email`, `password`, `dateOfBirth`, `homeAddress`, `phoneNumber`, `bio`
+     * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+     */
+    signUp: (props) => {
+        return instance.post("/users", props).catch(err => {
+            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
 
-      if (err.response != undefined) {
-        if (err.response.status == 409) {
-          userFacingErrorMessage = "Your email address has already been registered";
-        } else {
-          userFacingErrorMessage = unknownErrorMessage(err);
-        }
-      }
+            if (err.response != undefined) {
+                if (err.response.status == 409) {
+                    userFacingErrorMessage = "Your email address has already been registered";
+                } else {
+                    userFacingErrorMessage = unknownErrorMessage(err);
+                }
+            }
 
-      err.userFacingErrorMessage = userFacingErrorMessage;
-      throw err;
-    });
-  },
+            err.userFacingErrorMessage = userFacingErrorMessage;
+            throw err;
+        });
+    },
 
-  /**
-   * 
-   * @param {*} id ID of user to fetch
-   * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
-   */
-  profile: (id) => {
-    return instance.get(`/users/${id}`).catch(err => {
-      let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
+    /**
+     *
+     * @param {*} id ID of user to fetch
+     * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+     */
+    profile: (id) => {
+        return instance.get(`/users/${id}`, {withCredentials: true}).then((response) => {
+            console.log(response);
+                return response;
+            }, (error) => {
+            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
 
-      if (err.response != undefined) {
-        if (err.response.status == 401) {
-          userFacingErrorMessage = "You don't have permission to access this page";
-        } else if (err.response.status == 405) {
-          userFacingErrorMessage = "Information for the user was not found";
-        } else {
-          userFacingErrorMessage = unknownErrorMessage(err);
-        }
-      }
+            if (error.response != undefined) {
+                if (error.response.status == 401) {
+                    userFacingErrorMessage = "You don't have permission to access this page";
+                } else if (error.response.status == 405) {
+                    userFacingErrorMessage = "Information for the user was not found";
+                } else {
+                    userFacingErrorMessage = unknownErrorMessage(error);
+                }
+            }
 
-      err.userFacingErrorMessage = userFacingErrorMessage;
-      throw err;
-    });
-  },
-  search: (searchQuery) => {
-    return instance.get(`/users/search?searchQuery=${encodeURIComponent(searchQuery)}`).catch(err => {
-      let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
+            error.userFacingErrorMessage = userFacingErrorMessage;
+            throw error;
+        });
+    },
+    search: (searchQuery) => {
+        return instance.get(`/users/search?searchQuery=${encodeURIComponent(searchQuery)}`).catch(err => {
+            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
 
-      if (err.response != undefined) {
-        if (err.response.status == 401) {
-          userFacingErrorMessage = "You don't have permission to access this page";
-        } else {
-          userFacingErrorMessage = unknownErrorMessage(err);
-        }
-      }
-      err.userFacingErrorMessage = userFacingErrorMessage;
-      throw err;
-    });
-  }
+            if (err.response != undefined) {
+                if (err.response.status == 401) {
+                    userFacingErrorMessage = "You don't have permission to access this page";
+                } else {
+                    userFacingErrorMessage = unknownErrorMessage(err);
+                }
+            }
+            err.userFacingErrorMessage = userFacingErrorMessage;
+            throw err;
+        });
+    }
 }
