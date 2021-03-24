@@ -1,0 +1,101 @@
+@import "./../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "./variables.scss";
+
+// START BOOTSTRAP COLOUR DEFINITION UPDATES
+
+// $test: rgb(0, 255, 179);
+// $test: rgb(0, 133, 93);
+// $test: rgb(0, 189, 215);
+// $test: rgb(255, 126, 126);
+// $test: rgb(201, 31, 3);
+// $test: rgb(201, 51, 255);
+// $test: rgb(255, 58, 255);
+
+// $blue:    #1b80ec;
+$blue:    rgb(109, 144, 250);
+
+// $indigo:  #6610f2;
+$purple:  #6f42c1;
+
+$pink:    #e83e8c;
+$pink:    rgb(227, 68, 196);
+
+// $red:     #dc3545;
+$red:     rgb(230, 18, 18);
+
+// $orange:  #fd7e14;
+$orange:  rgb(255, 133, 40);
+
+
+// $yellow:  #ffc107;
+$yellow:  rgb(255, 233, 31);
+
+// $green:   #20df4d;
+$green:   rgb(30, 201, 150);
+
+$teal:    #20c997;
+
+// $cyan:    #17a2b8;
+$cyan:    rgb(0, 155, 255);
+
+$theme-colors: (
+  primary: $green,
+  secondary: $gray-600,
+  success: $blue,
+  info: $cyan,
+  warning: $yellow,
+  danger: $red,
+  light: $gray-100,
+  dark: $gray-800
+);
+// END BOOTSTRAP COLOUR DEFINITION UPDATES
+
+
+
+
+
+/*
+START btn-white-bg.
+This is a modification of btn-outline since it is hard to read with the gradient background
+*/
+@mixin button-white-bg-variant($color, $color-hover: #fff) {
+  color: $color;
+  background-color: $slightly-transparent-background;
+  background-image: none;
+  border-color: $color;
+
+  @include hover {
+    color: $color-hover;
+    background-color: $color;
+    border-color: $color;
+  }
+
+  &:focus,
+  &.focus {
+    box-shadow: 0 0 0 3px rgba($color, .5);
+  }
+
+  &.disabled,
+  &:disabled {
+    color: $color;
+    background-color: transparent;
+  }
+
+  &:active,
+  &.active,
+  .show > &.dropdown-toggle {
+    color: $color-hover;
+    background-color: $color;
+    border-color: $color;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .btn-white-bg-#{$color} {
+    @include button-white-bg-variant($value, #fff);
+  }
+}
+/* END btn-white-bg*/
+
+
+@import "./../../node_modules/bootstrap/scss/bootstrap.scss";

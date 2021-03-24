@@ -30,6 +30,7 @@
  */
 import Vue from 'vue'
 import App from './App'
+import { router } from './router' 
 
 Vue.config.productionTip = false
 
@@ -45,11 +46,12 @@ const options = {
   showConsoleColors: true
 };
 
+
 Vue.use(VueLogger, options);
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  components: { App },
-  template: '<App/>'
+  router,
+  render: h => h(App)
 });
