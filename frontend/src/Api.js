@@ -31,7 +31,7 @@
 
 import axios from 'axios'
 
-const SERVER_URL = "http://localhost:3000/api/"
+const SERVER_URL = "http://localhost:9499";
 const TIMEOUT = 1000;
 
 const instance = axios.create({
@@ -50,20 +50,22 @@ export default {
    * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
   login: (props) => {
-    return instance.post("login", props).catch(err => {
+    return instance.post("/login", props).then((response) => {
+      return response;
+    }, (error) => {
       let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
 
-      if (err.response != undefined) {
-        if (err.response.status == 400) {
+      if (error.response !== undefined) {
+        if (error.response.status === 400) {
           userFacingErrorMessage = "Your email or password is incorrect";
         } else {
-          userFacingErrorMessage = unknownErrorMessage(err);
+          userFacingErrorMessage = unknownErrorMessage(error);
         }
       }
 
-      err.userFacingErrorMessage = userFacingErrorMessage;
-      throw err;
-    });
+      error.userFacingErrorMessage = userFacingErrorMessage;
+      throw error;
+    })
   },
 
 

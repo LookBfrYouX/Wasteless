@@ -109,7 +109,7 @@ export default {
       }
 
       this.errorMessage = "";
-      window.localStorage.setItem("userId", response.data.id);
+      window.localStorage.setItem("userId", response.data.userId);
       this.$router.push({ name: "profile" });
     },
   },
