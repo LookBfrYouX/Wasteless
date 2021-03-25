@@ -1,0 +1,138 @@
+<template>
+  <div id="navbar">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" v-on:click="home">Navbar</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" v-on:click="home"
+              >Home <span class="sr-only">(current)</span></a
+            >
+          </li>
+        </ul>
+        <!--if logged in shows this section-->
+        <div v-if="checkLogin() == true" class="d-flex">
+          <form class="form-inline my-2 my-lg-0" v-on:submit.prevent="search">
+            <input
+              class="form-control mr-sm-2"
+              type="text"
+              v-model="query"
+              placeholder="Search"
+            />
+            <button
+              class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
+              type="submit"
+            >
+              Go
+            </button>
+          </form>
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Menu
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <button class="dropdown-item" v-on:click="profile">
+                Profile Page
+              </button>
+              <button class="dropdown-item" v-on:click="logOut">Log out</button>
+            </div>
+          </div>
+        </div>
+        <!-- otherwise shows login button-->
+        <span v-else>
+          <button
+            class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
+            v-on:click="login"
+            type="button"
+            v-if="this.$route.path != '/login'"
+          >
+            Login
+          </button>
+          <button
+            class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
+            v-on:click="signUp"
+            type="button"
+            v-if="this.$route.path != '/signUp'"
+          >
+            Sign Up
+          </button>
+        </span>
+      </div>
+    </nav>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "navbar",
+  data() {
+    return {
+      query: "",
+    };
+  },
+
+  props: ["userId"],
+
+  methods: {
+    checkLogin() {
+      // returns true if value (user id) is assigned to login in localStorage
+      return Boolean(localStorage.getItem("userId"));
+    },
+    home() {
+      if (this.$route.path != "/") this.$router.push("/");
+    },
+    profile() {
+      if (this.$route.name != "profile") this.$router.push({ name: "profile" });
+    },
+    login() {
+      if (this.$route.name != "login") this.$router.push({ name: "login" });
+    },
+    logOut() {
+      this.$emit("logOut");
+    },
+    search() {
+      const searchName = "search";
+      let newQuery = this.$route.params.query;
+
+      if (this.$route.name == searchName && newQuery == this.query) {
+        this.key = (this.key + 1) % 2;
+        // Reloads the search component by updating the key, but doesn't add it to history
+        return;
+      }
+      this.$router.push({
+        name: searchName,
+        params: {
+          query: this.query,
+        },
+      });
+    },
+    signUp() {
+      if (this.$route.path != "/signUp") this.$router.push("/signUp");
+    },
+    updateInput: function (query) {
+      // When page is loaded and if router-view is search results page,
+      // it will send an event with the current value of the text box
+      this.query = query;
+    },
+  },
+};
+</script>

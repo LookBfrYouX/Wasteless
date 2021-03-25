@@ -99,7 +99,6 @@ export default {
      */
     profile: (id) => {
         return instance.get(`/users/${id}`, {withCredentials: true}).then((response) => {
-            console.log(response);
                 return response;
             }, (error) => {
             let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
