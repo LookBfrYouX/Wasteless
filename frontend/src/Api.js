@@ -114,6 +114,11 @@ export default {
             throw error;
         });
     },
+    /**
+     * Sends a search query
+     * @param searchQuery
+     * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
+     */
     search: (searchQuery) => {
         return instance.get(`/users/search?searchQuery=${encodeURIComponent(searchQuery)}`)
         .catch(error => {
@@ -125,6 +130,21 @@ export default {
                 } else {
                     userFacingErrorMessage = unknownErrorMessage(error);
                 }
+            }
+            error.userFacingErrorMessage = userFacingErrorMessage;
+            throw error;
+        });
+    },
+    /**
+     * Invalidates user cookie on back end, hence logging user out
+     * @returns {Promise<AxiosResponse<any> | void>} If it fails, the error will have the `userFacingErrorMessage` property
+     */
+    logOut: () => {
+        return instance.get("/logout").catch(error => {
+            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
+
+            if (error != undefined && error.response != undefined) {
+                userFacingErrorMessage = unknownErrorMessage(error);
             }
             error.userFacingErrorMessage = userFacingErrorMessage;
             throw error;

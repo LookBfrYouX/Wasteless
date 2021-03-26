@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.security;
 
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -74,6 +75,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .cors()
         .and()
+        .logout(logout -> logout // This prevents redirects on logout
+            .permitAll()
+            .logoutSuccessHandler((request, response, authentication) -> {
+              response.setStatus(HttpServletResponse.SC_OK);
+            }))
         .csrf().disable();
   }
 }

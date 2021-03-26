@@ -26,6 +26,7 @@
 
 <script>
 import Navbar from './components/Navbar.vue';
+const Api = require("./Api.js").default;
 
 export default {
   name: 'app',
@@ -48,10 +49,17 @@ export default {
   props: ["userId"],
   
   methods: {
-    logOut() {
+    logOut: function() {
+      // Invalidate the user JSESSIONID through the backend
+      try {
+        Api.logOut();
+      } catch (error) {
+        alert(error.userFacingErrorMessage);
+        return;
+      }
       window.localStorage.removeItem("userId");
       this.$router.push("/");
-      // Reload window on logout
+      // Reload navbar component on logout
       this.navKey += 1;
     },
 
