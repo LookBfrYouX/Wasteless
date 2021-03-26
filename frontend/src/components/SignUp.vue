@@ -348,7 +348,7 @@ export default {
 
       this.errorMessage = "";
       this.emailUsed = false;
-      window.localStorage.setItem("userId", response.data.id);
+      window.localStorage.setItem("userId", response.data.userId);
       this.$router.push({ name: "profile" });
     }
   }

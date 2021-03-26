@@ -4,7 +4,14 @@
 
 <template>
   <div id="app">
-    <navbar v-bind:userId="userId" v-on:logOut="logOut()" :key="key"/>
+    <navbar
+        v-bind:userId="userId"
+        v-bind:force-search-update="() => key++"
+        v-bind:query="query"
+        v-on:input="event => this.query = event.target.value"
+        v-bind:on-log-out="logOut"
+        :key="navKey"
+    />
     <div class="w-100 d-flex justify-content-center login-container gradient-background pb-4">
       <router-view
         v-bind:key="key"
@@ -25,7 +32,12 @@ export default {
   data: function() {
     return {
       query: '',
-      key: 0
+      key: 0,
+      // used to update the router view component in cases where refresh is needed but the router URL
+      // is the same (e.g. user clicks search when they haven't updated the input field)
+      navKey: 0
+      // used to update the navbar component on logout as we couldn't figure out how to make
+      // v-if re-trigger when local storage changes
     };
   },
 
@@ -36,54 +48,17 @@ export default {
   props: ["userId"],
   
   methods: {
-    search() {
-      const searchName = "search";
-      let newQuery = this.$route.params.query;
-
-      if (this.$route.name == searchName && newQuery == this.query) {
-        this.key = (this.key + 1) % 2;
-        // Reloads the search component by updating the key, but doesn't add it to history
-        return;
-      }
-      this.$router.push({
-        name: searchName,
-        params: {
-          query: this.query
-        }
-      });
-    },
-
-    checkLogin() {
-      // returns true if value (user id) is assigned to login in localStorage
-      return Boolean(localStorage.getItem("userId"));
-    },
-
-    login() {
-      if (this.$route.name != "login") this.$router.push({ name: "login" });
-    },
-
     logOut() {
       window.localStorage.removeItem("userId");
       this.$router.push("/");
       // Reload window on logout
-      this.key += 1;
-    },
-
-    profile() {
-      if (this.$route.name != "profile") this.$router.push({ name: "profile" });
-    },
-
-    home() {
-      if (this.$route.path != "/") this.$router.push("/");
-    },
-
-    signUp() {
-      if (this.$route.path != "/signUp") this.$router.push("/signUp");
+      this.navKey += 1;
     },
 
     updateInput: function(query) {
       // When page is loaded and if router-view is search results page,
-      // it will send an event with the current value of the text box
+      // the search results page will send an event with the current value of the text box
+      // to App, which will then input Navbar props
       this.query = query;
     }
   },

@@ -28,7 +28,8 @@
             <input
               class="form-control mr-sm-2"
               type="text"
-              v-model="query"
+              v-bind:value="query"
+              v-on:input="event => $emit('input', event)"
               placeholder="Search"
             />
             <button
@@ -86,11 +87,13 @@ export default {
   name: "navbar",
   data() {
     return {
-      query: "",
     };
   },
 
-  props: ["userId"],
+  props: ["query", "onLogOut", "forceSearchUpdate"],
+  // onLogOut: callback that should be passed when the user clicks log out button on NavBar
+  // forceSearchUpdate: callback that is called if user clicks search when the value of the search field
+  // is the same as what is currently in the URL (Vue router will block this if we try to push)
 
   methods: {
     checkLogin() {
@@ -107,14 +110,15 @@ export default {
       if (this.$route.name != "login") this.$router.push({ name: "login" });
     },
     logOut() {
-      this.$emit("logOut");
+      this.onLogOut();
     },
     search() {
       const searchName = "search";
       let newQuery = this.$route.params.query;
 
       if (this.$route.name == searchName && newQuery == this.query) {
-        this.key = (this.key + 1) % 2;
+        this.forceSearchUpdate();
+
         // Reloads the search component by updating the key, but doesn't add it to history
         return;
       }
@@ -127,11 +131,6 @@ export default {
     },
     signUp() {
       if (this.$route.path != "/signUp") this.$router.push("/signUp");
-    },
-    updateInput: function (query) {
-      // When page is loaded and if router-view is search results page,
-      // it will send an event with the current value of the text box
-      this.query = query;
     },
   },
 };
