@@ -1,7 +1,7 @@
 <template>
-  <div class="w-100 gradient-background" v-if="results.length != 0">
+  <div class="w-100" v-if="results.length != 0">
     <div class="button-expand-sidebar-wrapper" v-if="!isVisible" >
-      <button v-on:click="toggleSidebar()" type="button" class="btn btn-info">
+      <button v-on:click="toggleSidebar()" type="button" class="btn btn-info mt-2">
         <span>Sort results</span>
       </button>
     </div>
@@ -23,6 +23,7 @@
           </ul>
         </div>
       </div>
+      <div class="overlay w-100 d-md-none" v-if="isVisible" v-on:click="toggleSidebar()"></div>
       <div class="results-content container d-flex justify-content-end justify-content-md-center">
         <div class="results-wrapper col-12 col-md-8 mt-5">
         Displaying results {{10 * this.pageNum + 1}} -
@@ -55,7 +56,7 @@
 
     </div>
   </div>
-  <div v-else class="gradient-background">
+  <div v-else>
     No results found
   </div>
 </template>
@@ -154,7 +155,11 @@
       if (this.sortBy == null) {
         return this.results;
       }
-      let formatter = user => user[this.sortBy].toLowerCase();
+
+      let formatter = user => {
+        if (user[this.sortBy] == null) return "";
+        return user[this.sortBy].toLowerCase();
+      }
 
       return this.results.sort((a, b) => { // sort using this.orderBy
         return (this.reversed? -1: 1) * (formatter(a) > formatter(b)? 1:-1);
@@ -218,5 +223,10 @@ button.page-link {
 }
 .sort-results .table-reversed li.current-sort::after {
   content: '\2193';
+}
+.overlay {
+  position: fixed;
+  height: 100vh;
+  z-index: 900;
 }
 </style>
