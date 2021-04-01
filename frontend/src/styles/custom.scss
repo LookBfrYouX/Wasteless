@@ -42,3 +42,18 @@
   width: 30px;
   height: auto;
 }
+
+.profile-card {
+  margin: 30px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  width: 50%;
+}
+
+.title {
+  text-align: center;
+  padding-bottom: 10px;
+}

@@ -1,44 +1,47 @@
 <template>
-  <div class="container main gradient-background">
-    <h1 class="row col-12">Profile Information</h1>
-    <ul class="profile-info list-unstyled">
-      <li class="row">
-        <dt class="col-md-4 label">Full Name:</dt>
-        <dd class="col-md-8 value"> {{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }} </dd>
-      </li>
-      <li class="row">
-        <dt class="col-md-4 label">Nickname:</dt>
-        <dd class="col-md-8 value"> {{ userInfo.nickname }} </dd>
-      </li>
-      <li class="row">
-        <dt class="col-md-4 label">Role:</dt>
-        <dd class="col-md-8 value"> {{ userInfo.role && userInfo.role == 'ROLE_ADMIN' ? 'Admin' : 'User' }}</dd>
-      </li>
-      <li class="row">
-        <dt class="col-md-4 label">Member since:</dt>
-        <dd class="col-md-8 value"> {{ memberSinceText }}</dd>
-      </li>
-      <li class="row">
-        <dt class="col-md-4 label">Bio:</dt>
-        <dd class="col-md-8 value"> {{ userInfo.bio }} </dd>
-      </li>
-      <li class="row">
-        <dt class="col-md-4 label">Date of Birth:</dt>
-        <dd class="col-md-8 value">{{ dateOfBirthText }}</dd>
-      </li>
-      <li class="row">
-        <dt class="col-md-4 label">Email Address:</dt>
-        <dd class="col-md-8 value"> {{ userInfo.email }} </dd>
-      </li>
-      <li class="row">
-        <dt class="col-md-4 label">Phone Number:</dt>
-        <dd class="col-md-8 value"> {{ userInfo.phoneNumber }} </dd>
-      </li>
-      <li class="row">
-        <dt class="col-md-4 label">Home Address:</dt>
-        <dd class="col-md-8 value"> {{ userInfo.homeAddress}} </dd>
-      </li>
-    </ul>
+  <div class="profile-card card container">
+    <div>
+      <h1 class="title">Profile Information</h1>
+      <img v-if="userInfo.role && userInfo.role == 'ROLE_ADMIN'" class="admin-icon" src="id-card.svg" alt="Admin role icon">
+      <ul class="profile-info list-unstyled">
+        <li class="row">
+          <dt class="col-md label">Full Name:</dt>
+          <dd class="col-md value"> {{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }} </dd>
+        </li>
+        <li class="row">
+          <dt class="col-md label">Nickname:</dt>
+          <dd class="col-md value"> {{ userInfo.nickname }} </dd>
+        </li>
+        <li class="row">
+          <dt class="col-md label">Role:</dt>
+          <dd class="col-md value"> {{ userInfo.role && userInfo.role == 'ROLE_ADMIN' ? 'Admin' : 'User' }}</dd>
+        </li>
+        <li class="row">
+          <dt class="col-md label">Member since:</dt>
+          <dd class="col-md value"> {{ memberSinceText }}</dd>
+        </li>
+        <li class="row">
+          <dt class="col-md label">Bio:</dt>
+          <dd class="col-md value"> {{ userInfo.bio }} </dd>
+        </li>
+        <li class="row">
+          <dt class="col-md label">Date of Birth:</dt>
+          <dd class="col-md value">{{ dateOfBirthText }}</dd>
+        </li>
+        <li class="row">
+          <dt class="col-md label">Email Address:</dt>
+          <dd class="col-md value"> {{ userInfo.email }} </dd>
+        </li>
+        <li class="row">
+          <dt class="col-md label">Phone Number:</dt>
+          <dd class="col-md value"> {{ userInfo.phoneNumber }} </dd>
+        </li>
+        <li class="row">
+          <dt class="col-md label">Home Address:</dt>
+          <dd class="col-md value"> {{ userInfo.homeAddress}} </dd>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
