@@ -102,14 +102,25 @@ export default {
       let response;
 
       try {
+        // Attempt to login and get the userId
         response = await Api.login({ email: this.email, password: this.password });
+        const userId = response.data.userId;
+        window.localStorage.setItem("userId", userId);
+        // Get the user information
+        response = await Api.profile(userId);
+        window.localStorage.setItem("authUser", JSON.stringify(response.data));
+        // Send login user change event
+        window.dispatchEvent(new CustomEvent('auth-user-change', {
+          detail: {
+            authUser: response.data,
+          }
+        }));
       } catch(err) {
         this.errorMessage = err.userFacingErrorMessage;
         return;
       }
 
       this.errorMessage = "";
-      window.localStorage.setItem("userId", response.data.userId);
       this.$router.push({ name: "profile" });
     },
   },

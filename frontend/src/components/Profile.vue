@@ -106,12 +106,6 @@ export default {
       try {
         const response = await apiCall;
         this.userInfo = response.data;
-        localStorage.setItem("userRole", this.userInfo.role);
-        window.dispatchEvent(new CustomEvent('user-role-changed', {
-          detail: {
-            storage: localStorage.getItem("userRole")
-          }
-        }));
       } catch(err) {
         alert(err.userFacingErrorMessage == undefined? err.toString(): err.userFacingErrorMessage);
       }

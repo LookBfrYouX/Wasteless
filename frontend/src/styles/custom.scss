@@ -43,6 +43,15 @@
   height: auto;
 }
 
+.navbar-admin-icon {
+  position: inherit;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: auto;
+  z-index: 5;
+}
+
 .profile-card {
   margin: 30px;
   border: none;

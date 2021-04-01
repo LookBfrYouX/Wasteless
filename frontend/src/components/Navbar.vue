@@ -26,7 +26,7 @@
         <div v-if="checkLogin() == true" class="d-flex">
           <div>
             <!-- User role status icon (shows icon if user is admin) -->
-            <p>{{ userRole }}</p>
+            <img v-if="userRole && userRole === 'ROLE_ADMIN'" class="navbar-admin-icon" src="id-card.svg" alt="Admin role icon">
           </div>
           <form class="form-inline my-2 my-lg-0" v-on:submit.prevent="search">
             <input
@@ -101,8 +101,8 @@ export default {
   // is the same as what is currently in the URL (Vue router will block this if we try to push)
 
   mounted() {
-    window.addEventListener('user-role-changed', (event) => {
-      this.userRole = event.detail.storage;
+    window.addEventListener('auth-user-change', (event) => {
+      this.userRole = event.detail.authUser.role;
     });
   },
   methods: {
