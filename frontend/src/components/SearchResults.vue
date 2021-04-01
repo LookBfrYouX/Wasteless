@@ -33,6 +33,7 @@
             <!--viewUser method uses router.push to display profile page-->
             <li class="list-group-item card text-wrap" v-on:click="viewUser(user.id)" v-for="(user, index) in displayedResults" v-bind:key="index">
               <h4 class="card-title">{{user.firstName}} {{user.middleName}} {{user.lastName}} {{user.nickname? `(${user.nickname})`: ""}}</h4>
+              <img v-if="user.role && user.role == 'ROLE_ADMIN'" class="admin-icon" src="id-card.svg" alt="Admin role icon">
               <div>{{user.region}}, {{user.city}}, {{user.country}}</div>
               <div class="text-muted">{{user.email}}</div>
             </li>
