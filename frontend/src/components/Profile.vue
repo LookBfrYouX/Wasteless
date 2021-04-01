@@ -11,6 +11,10 @@
         <dd class="col-md-8 value"> {{ userInfo.nickname }} </dd>
       </li>
       <li class="row">
+        <dt class="col-md-4 label">Role:</dt>
+        <dd class="col-md-8 value"> {{ userInfo.role && userInfo.role == 'ROLE_ADMIN' ? 'Admin' : 'User' }}</dd>
+      </li>
+      <li class="row">
         <dt class="col-md-4 label">Member since:</dt>
         <dd class="col-md-8 value"> {{ memberSinceText }}</dd>
       </li>
