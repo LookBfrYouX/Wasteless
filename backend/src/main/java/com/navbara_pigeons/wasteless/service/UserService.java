@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
@@ -24,7 +25,7 @@ public interface UserService {
 
   User getUserByEmail(String email) throws UserNotFoundException;
 
-  void revokeAdmin(long id) throws UserNotFoundException;
+  void revokeAdmin(long id) throws UserNotFoundException, NotAcceptableException;
 
   List<User> getAllUsers();
 

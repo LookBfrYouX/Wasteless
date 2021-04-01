@@ -2,10 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import com.navbara_pigeons.wasteless.service.UserService;
@@ -184,6 +181,9 @@ public class UserController {
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), "The user does not exist.");
+    } catch (NotAcceptableException exc) {
+      log.error("DGGA ATTEMPTED TO REVOKE THEIR OWN ADMIN PERMISSIONS");
+      throw new ResponseStatusException(HttpStatus.valueOf(409), "DGGA cannot revoke their own admin permissions");
     } catch (BadCredentialsException exc) {
       log.error("INSUFFICIENT PRIVILEGES: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient privileges");

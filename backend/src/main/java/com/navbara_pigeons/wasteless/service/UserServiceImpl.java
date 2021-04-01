@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
@@ -19,8 +20,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.management.InvalidAttributeValueException;
 import javax.transaction.Transactional;
+
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -42,6 +45,9 @@ public class UserServiceImpl implements UserService {
   private final UserDao userDao;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final BCryptPasswordEncoder encoder;
+
+  @Value("${dgaa.user.email}")
+  private String dgaaEmail;
 
   /**
    * UserServiceImplementation constructor that takes autowired parameters and sets up the service
@@ -234,13 +240,18 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
-  public void revokeAdmin(long id) throws UserNotFoundException {
+  public void revokeAdmin(long id) throws UserNotFoundException, NotAcceptableException {
     // Test if current user is admin
     if (!isAdmin()) {
       throw new BadCredentialsException("Insufficient privileges");
     }
     // Get the user
     User user = userDao.getUserById(id);
+
+    if (user.getEmail().equals(this.dgaaEmail)) {
+      throw new NotAcceptableException("DGAA cannot revoke their own admin credentials");
+    }
+
     // Remove the admin role if it is present
     user.revokeAdmin();
     // Update the database with the updated user
