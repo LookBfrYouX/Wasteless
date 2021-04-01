@@ -24,6 +24,10 @@
         </ul>
         <!--if logged in shows this section-->
         <div v-if="checkLogin() == true" class="d-flex">
+          <div>
+            <!-- User role status icon (shows icon if user is admin) -->
+            <p>{{ userRole }}</p>
+          </div>
           <form class="form-inline my-2 my-lg-0" v-on:submit.prevent="search">
             <input
               class="form-control mr-sm-2"
@@ -87,6 +91,7 @@ export default {
   name: "navbar",
   data() {
     return {
+      userRole: null,
     };
   },
 
@@ -95,6 +100,11 @@ export default {
   // forceSearchUpdate: callback that is called if user clicks search when the value of the search field
   // is the same as what is currently in the URL (Vue router will block this if we try to push)
 
+  mounted() {
+    window.addEventListener('user-role-changed', (event) => {
+      this.userRole = event.detail.storage;
+    });
+  },
   methods: {
     checkLogin() {
       // returns true if value (user id) is assigned to login in localStorage
