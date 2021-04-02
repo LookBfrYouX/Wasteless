@@ -64,7 +64,7 @@ junit:
 #     - cd ../backend
 #     - ./gradlew sonarqube
 #   only:
-#     - dev
+#     - S2-dev
 
 # builds all branches, except dev and master
 branch-build:
@@ -76,6 +76,7 @@ branch-build:
     policy: pull
   script:
     - cd frontend
+    - echo "${DB_PASSWORD}"
     - npm run build
     - cd ../backend
     - ./gradlew bootJar
@@ -106,7 +107,7 @@ deploy-staging-backend:
     paths:
       - backend/build/libs
   only:
-    - dev
+    - S2-dev
 
 deploy-staging-frontend:
   stage: deploy
@@ -131,7 +132,7 @@ deploy-staging-frontend:
     paths:
       - frontend/dist
   only:
-    - dev
+    - S2-dev
 
 deploy-production-backend:
   stage: deploy
