@@ -1,3 +1,6 @@
+const process = require("process");
+
+console.log(process.env);
 /*
  * Created on Wed Feb 10 2021
  *
@@ -31,5 +34,5 @@ module.exports = {
   // see https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only
   runtimeCompiler: true,
   // because of nginx inner routing and http-server, must set public path to empty
-  publicPath:''
+  publicPath: process.env.NODE_ENV === "dev"? "/test/": "/"
 };

@@ -117,9 +117,7 @@ deploy-staging-frontend:
       - frontend/node_modules
     policy: pull
   script:
-    - echo "export DB_URL=${DB_URL}" > ./env.txt
-    - echo "export DB_USERNAME=${DB_USERNAME}" >> ./env.txt
-    - echo "export DB_PASSWORD=${DB_PASSWORD}" >> ./env.txt
+    - echo "export NODE_ENV=dev" >> ./env.txt
     - cd frontend
     - npm run build
     - rm -rf /home/gitlab-runner/staging-frontend/ || true
@@ -163,9 +161,7 @@ deploy-production-frontend:
       - frontend/node_modules
     policy: pull
   script:
-    - echo "export DB_URL=${DB_URL}" > ./env.txt
-    - echo "export DB_USERNAME=${DB_USERNAME}" >> ./env.txt
-    - echo "export DB_PASSWORD=${DB_PASSWORD}" >> ./env.txt
+    - echo "export NODE_ENV=prod" >> ./env.txt
     - cd frontend
     - npm run build-prod
     - rm -rf /home/gitlab-runner/production-frontend/ || true
