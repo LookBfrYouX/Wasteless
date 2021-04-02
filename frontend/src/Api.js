@@ -29,9 +29,9 @@
  * Declare all available services here
  */
 
-import axios from 'axios'
+import axios from 'axios';
 
-const SERVER_URL = "http://localhost:9499";
+const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
 const TIMEOUT = 1000;
 
 const instance = axios.create({
