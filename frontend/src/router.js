@@ -12,6 +12,7 @@ Vue.use(VueRouter)
 export const router = new VueRouter({
     hashbang: false,
     mode: "history",
+    base: "/test/",
     routes: [
         {
             name: "login",
