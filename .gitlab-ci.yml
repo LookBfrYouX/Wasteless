@@ -76,7 +76,6 @@ branch-build:
     policy: pull
   script:
     - cd frontend
-    - echo "${DB_PASSWORD}"
     - npm run build
     - cd ../backend
     - ./gradlew bootJar
