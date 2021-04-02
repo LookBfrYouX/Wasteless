@@ -54,7 +54,7 @@
             >
               Menu
             </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
               <button class="dropdown-item" v-on:click="profile">
                 Profile Page
               </button>
