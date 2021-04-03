@@ -188,4 +188,14 @@ export default {
 .profile-info {
   font-size: 1.1em;
 }
+
+.profile-card {
+  margin: 30px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
 </style>

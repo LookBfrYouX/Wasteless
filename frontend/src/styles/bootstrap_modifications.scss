@@ -91,7 +91,7 @@ This is a modification of btn-outline since it is hard to read with the gradient
 }
 
 @each $color, $value in $theme-colors {
-  .btn-white-bg-#{$color} {
+  .btn.btn-white-bg-#{$color} {
     @include button-white-bg-variant($value, #fff);
   }
 }

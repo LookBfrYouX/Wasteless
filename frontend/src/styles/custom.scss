@@ -1,4 +1,4 @@
-@import "./../../node_modules/bootstrap/scss/bootstrap.scss";
+// @import "./../../node_modules/bootstrap/scss/bootstrap.scss";
 @import "./bootstrap_modifications.scss";
 @import "./variables.scss";
 
@@ -50,16 +50,6 @@
   width: 30px;
   height: auto;
   z-index: 5;
-}
-
-.profile-card {
-  margin: 30px;
-  border: none;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  padding: 30px;
-  width: 50%;
 }
 
 .title {

@@ -32,7 +32,7 @@ import Vue from 'vue';
 import App from './App';
 import { router } from './router';
 import "bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+import "./styles/custom.scss";
 
 Vue.config.productionTip = false
 

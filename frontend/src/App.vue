@@ -1,7 +1,3 @@
-<style lang="scss">
-  @import "./styles/custom.scss";
-</style>
-
 <template>
   <div id="app">
     <navbar
