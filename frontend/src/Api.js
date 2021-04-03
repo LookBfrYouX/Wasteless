@@ -65,6 +65,30 @@ export default {
             throw error;
         })
     },
+   
+    /**
+     * 
+     * @param {object} props with properties:
+     * `userId`
+     * @returns promise. If it fails the error will be shown using the `userFacingErrorMessage` property
+     */
+    makeAdmin: (userId) => {
+        console.log(userId);
+        return instance.put(`/users/${userId}/makeAdmin`).catch(error => {
+            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE
+            if (error != undefined && error.response !== undefined) {
+                if (error.response.status == 401) {
+                    userFacingErrorMessage = "Unauthorized"
+                } else if (error.response.status === 406) {
+                    userFacingErrorMessage  = "Invalid ID format";
+                } else {
+                    userFacingErrorMessage = unknownErrorMessage(error);
+                }
+            }
+            error.userFacingErrorMessage = userFacingErrorMessage;
+            throw error;
+        })
+    },
 
 
     /**

@@ -40,6 +40,22 @@
           <dt class="col-md label">Home Address:</dt>
           <dd class="col-md value"> {{ userInfo.homeAddress}} </dd>
         </li>
+        <li>
+        <button
+          v-if="checkAdmin()"
+          class="btn btn-white-bg-primary"
+          id="makeAdmin"
+          type="button"
+          v-on:click="makeAdmin(userId)"
+        >
+        Make Admin
+        </button>
+        </li>
+        <div class="row mt-2" v-if="errorMessage.length > 0">
+          <div class="col">
+            <p class="alert alert-warning">{{ errorMessage }}</p>
+          </div>
+        </div>
       </ul>
     </div>
   </div>
@@ -69,6 +85,8 @@ export default {
         phoneNumber: "",
         homeAddress: "",
       },
+      errorMessage: "",
+      isAdmin: false
     }
   },
 
@@ -86,6 +104,28 @@ export default {
   },
 
   methods: {
+    checkAdmin: function() {
+      let user = JSON.parse(localStorage.authUser)
+      if (user.role == "ROLE_ADMIN") {
+        return true;
+      } else {
+        return false;
+      }
+
+    },
+
+    makeAdmin: async function(userId) {
+      try {
+        await Api.makeAdmin(userId);
+        console.log("happy days");
+        this.errorMessage = "Success";
+      } catch (err) {
+        this.errorMessage = err.userFacingErrorMessage;
+        return;
+      }
+      this.errorMessage = "";
+    },
+
     /**
      * Calls the API to get profile information with the given user ID
      * Returns the promise, not the response
@@ -142,7 +182,7 @@ export default {
       if (years == 0) {
         return monthsText;
       }
-      
+
       return`${yearsText}, ${monthsText}`;
     },
   },
