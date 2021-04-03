@@ -42,7 +42,7 @@
         </li>
         <li>
         <button
-          v-if="checkAdmin()"
+          v-if="checkAdmin() && !targetCheckAdmin()"
           class="btn btn-white-bg-primary"
           id="makeAdmin"
           type="button"
@@ -51,7 +51,7 @@
         Make Admin
         </button>
         <button
-          v-if="checkAdmin()"
+          v-if="checkAdmin() && targetCheckAdmin()"
           class="btn btn-white-bg-primary"
           id="revokeAdmin"
           type="button"
@@ -95,7 +95,6 @@ export default {
         homeAddress: "",
       },
       errorMessage: "",
-      isAdmin: false
     }
   },
 
@@ -114,16 +113,26 @@ export default {
 
   methods: {
     /**
-     * Checks to see if user is an admin using cookie storing session.
+     * Checks to see if logged in user is an admin using cookie storing session.
      */
     checkAdmin: function() {
-      let user = JSON.parse(localStorage.authUser)
+      let user = JSON.parse(localStorage.authUser);
       if (user.role == "ROLE_ADMIN") {
         return true;
       } else {
         return false;
       }
-
+    },
+    
+    /**
+     * Checks if focussed user is an admin
+     */
+    targetCheckAdmin: function() {
+      console.log(this.userInfo);
+      if (this.userInfo.role == "ROLE_ADMIN") {
+        return true;
+      }  
+      return false
     },
 
     /**
