@@ -50,6 +50,15 @@
         >
         Make Admin
         </button>
+        <button
+          v-if="checkAdmin()"
+          class="btn btn-white-bg-primary"
+          id="revokeAdmin"
+          type="button"
+          v-on:click="revokeAdmin(userId)"
+        >
+        Revoke Admin
+        </button>
         </li>
         <div class="row mt-2" v-if="errorMessage.length > 0">
           <div class="col">
@@ -104,6 +113,9 @@ export default {
   },
 
   methods: {
+    /**
+     * Checks to see if user is an admin using cookie storing session.
+     */
     checkAdmin: function() {
       let user = JSON.parse(localStorage.authUser)
       if (user.role == "ROLE_ADMIN") {
@@ -114,11 +126,29 @@ export default {
 
     },
 
+    /**
+     * Calls to the API to from the profile view with a given user ID to make requested user an Administrator
+     * Returns a message to user to indicate whether or not the user has been updated to the Administrator role.
+     */
     makeAdmin: async function(userId) {
       try {
         await Api.makeAdmin(userId);
-        console.log("happy days");
-        this.errorMessage = "Success";
+        this.errorMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
+      } catch (err) {
+        this.errorMessage = err.userFacingErrorMessage;
+        return;
+      }
+      this.errorMessage = "";
+    },
+
+    /**
+     * Calls to the API to from the profile view with a given user ID to revoke requested user from an Administrator
+     * Returns a message to user to indicate whether selected user has been premoted to Admin or request failed.
+     */
+    revokeAdmin: async function(userId) {
+      try {
+        await Api.revokeAdmin(userId);
+        this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privilages`;
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
         return;
