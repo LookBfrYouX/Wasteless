@@ -112,6 +112,8 @@ export default {
   },
 
   methods: {
+    // TODO: make admin buttons auto update without refresh
+
     /**
      * Checks to see if logged in user is an admin using cookie storing session.
      */
@@ -128,7 +130,6 @@ export default {
      * Checks if focussed user is an admin
      */
     targetCheckAdmin: function() {
-      console.log(this.userInfo);
       if (this.userInfo.role == "ROLE_ADMIN") {
         return true;
       }  
@@ -143,11 +144,11 @@ export default {
       try {
         await Api.makeAdmin(userId);
         this.errorMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
+        return;
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
         return;
       }
-      this.errorMessage = "";
     },
 
     /**
@@ -158,11 +159,11 @@ export default {
       try {
         await Api.revokeAdmin(userId);
         this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privilages`;
+        return;
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
         return;
       }
-      this.errorMessage = "";
     },
 
     /**
