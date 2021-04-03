@@ -2,11 +2,16 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
+import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import com.navbara_pigeons.wasteless.service.UserService;
 import java.util.List;
+import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.management.InvalidAttributeValueException;
 
 /**
  * @author Maximilian Birzer, Dawson Berry, Alec Fox
@@ -183,7 +186,8 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.valueOf(406), "The user does not exist.");
     } catch (NotAcceptableException exc) {
       log.error("DGGA ATTEMPTED TO REVOKE THEIR OWN ADMIN PERMISSIONS");
-      throw new ResponseStatusException(HttpStatus.valueOf(409), "DGGA cannot revoke their own admin permissions");
+      throw new ResponseStatusException(HttpStatus.valueOf(409),
+          "DGGA cannot revoke their own admin permissions");
     } catch (BadCredentialsException exc) {
       log.error("INSUFFICIENT PRIVILEGES: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient privileges");

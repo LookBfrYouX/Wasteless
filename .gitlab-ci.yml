@@ -64,7 +64,7 @@ junit:
 #     - cd ../backend
 #     - ./gradlew sonarqube
 #   only:
-#     - dev
+#     - S2-dev
 
 # builds all branches, except dev and master
 branch-build:
@@ -106,7 +106,7 @@ deploy-staging-backend:
     paths:
       - backend/build/libs
   only:
-    - dev
+    - S2-dev
 
 deploy-staging-frontend:
   stage: deploy
@@ -116,9 +116,6 @@ deploy-staging-frontend:
       - frontend/node_modules
     policy: pull
   script:
-    - echo "export DB_URL=${DB_URL}" > ./env.txt
-    - echo "export DB_USERNAME=${DB_USERNAME}" >> ./env.txt
-    - echo "export DB_PASSWORD=${DB_PASSWORD}" >> ./env.txt
     - cd frontend
     - npm run build
     - rm -rf /home/gitlab-runner/staging-frontend/ || true
@@ -131,7 +128,7 @@ deploy-staging-frontend:
     paths:
       - frontend/dist
   only:
-    - dev
+    - S2-dev
 
 deploy-production-backend:
   stage: deploy
@@ -162,9 +159,6 @@ deploy-production-frontend:
       - frontend/node_modules
     policy: pull
   script:
-    - echo "export DB_URL=${DB_URL}" > ./env.txt
-    - echo "export DB_USERNAME=${DB_USERNAME}" >> ./env.txt
-    - echo "export DB_PASSWORD=${DB_PASSWORD}" >> ./env.txt
     - cd frontend
     - npm run build-prod
     - rm -rf /home/gitlab-runner/production-frontend/ || true

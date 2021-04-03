@@ -12,6 +12,7 @@ Vue.use(VueRouter)
 export const router = new VueRouter({
     hashbang: false,
     mode: "history",
+    base: process.env.VUE_APP_BASE_URL,
     routes: [
         {
             name: "login",
