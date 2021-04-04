@@ -1,7 +1,6 @@
 #!/usr/bin/bash
 
 # Run the staging backend server
-pwd
 
 source ./env.txt
 
