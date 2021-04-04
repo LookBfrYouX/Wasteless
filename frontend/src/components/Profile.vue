@@ -41,31 +41,33 @@
           <dd class="col-md value"> {{ userInfo.homeAddress}} </dd>
         </li>
         <li>
-        <button
-          v-if="checkAdmin() && !targetCheckAdmin()"
-          class="btn btn-white-bg-primary"
-          id="makeAdmin"
-          type="button"
-          v-on:click="makeAdmin(userId)"
-        >
-        Make Admin
-        </button>
-        <button
-          v-if="checkAdmin() && targetCheckAdmin()"
-          class="btn btn-white-bg-primary"
-          id="revokeAdmin"
-          type="button"
-          v-on:click="revokeAdmin(userId)"
-        >
-        Revoke Admin
-        </button>
+          <div>
+            <button
+              v-if="checkAdmin() && !targetCheckAdmin()"
+              class="btn btn-white-bg-primary"
+              id="makeAdmin"
+              type="button"
+              v-on:click="makeAdmin(userId)"
+            >
+            Make Admin
+            </button>
+            <button
+              v-if="checkAdmin() && targetCheckAdmin()" 
+              class="btn btn-white-bg-primary"
+              id="revokeAdmin"
+              type="button"
+              v-on:click="revokeAdmin(userId)"
+            >
+            Revoke Admin
+            </button>
+          </div>
         </li>
-        <div class="row mt-2" v-if="errorMessage.length > 0">
+      </ul>
+      <div class="row mt-2" v-if="errorMessage.length > 0">
           <div class="col">
             <p class="alert alert-warning">{{ errorMessage }}</p>
           </div>
-        </div>
-      </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -127,7 +129,7 @@ export default {
     },
     
     /**
-     * Checks if focussed user is an admin
+     * Checks if focused user is an admin
      */
     targetCheckAdmin: function() {
       if (this.userInfo.role == "ROLE_ADMIN") {

@@ -104,7 +104,7 @@ export default {
                 } else if (error.response.status === 406) {
                     userFacingErrorMessage  = "Invalid ID format";
                 } else if (error.response.status === 409) {
-                    userFacingErrorMessage  = "DGAA Cannot Revoke There Own Administrator Privilages";
+                    userFacingErrorMessage  = "Cannot Revoke the DGAA's Administrator Privilages";
                 } else {
                     userFacingErrorMessage = unknownErrorMessage(error);
                 }
