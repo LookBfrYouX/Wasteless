@@ -103,7 +103,6 @@ export default {
       this.userRole = event.detail.authUser.role;
       this.firstName = event.detail.authUser.firstName;
       this.lastName = event.detail.authUser.lastName;
-      console.log(event.detail.authUser);
     });
   },
   methods: {
