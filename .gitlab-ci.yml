@@ -94,7 +94,9 @@ deploy-staging-backend:
     - echo "export DB_URL=${DB_URL}" > ./env.txt
     - echo "export DB_USERNAME=${DB_USERNAME}" >> ./env.txt
     - echo "export DB_PASSWORD=${DB_PASSWORD}" >> ./env.txt
-    - printenv
+    - echo "export DGGA_EMAIL="${DGAA_EMAIL}" >> ./env.txt
+    - echo "export DGGA_PASSWORD="${DGAA_PASSWORD}" >> ./env.txt
+    - echo "export DGGA_SCHEDULER_INTERVAL_MS="${DGAA_SCHEDULER_INTERVAL_MS}" >> ./env.txt
     - cd backend
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/staging-backend/ || true
@@ -137,6 +139,9 @@ deploy-production-backend:
     - echo "export DB_URL=${DB_URL}" > ./env.txt
     - echo "export DB_USERNAME=${DB_USERNAME}" >> ./env.txt
     - echo "export DB_PASSWORD=${DB_PASSWORD}" >> ./env.txt
+    - echo "export DGGA_EMAIL="${DGAA_EMAIL}" >> ./env.txt
+    - echo "export DGGA_PASSWORD="${DGAA_PASSWORD}" >> ./env.txt
+    - echo "export DGGA_SCHEDULER_INTERVAL_MS="${DGAA_SCHEDULER_INTERVAL_MS}" >> ./env.txt
     - cd backend
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/production-backend/ || true
