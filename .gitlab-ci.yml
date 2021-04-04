@@ -92,6 +92,7 @@ deploy-staging-backend:
   stage: deploy
   script:
     - printenv | grep "DGAA_" | sed "s/^/export /" > env.txt
+    - cat env.txt
     - cd backend
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/staging-backend/ || true
