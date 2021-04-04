@@ -105,10 +105,10 @@ export default {
         // Attempt to login and get the userId
         response = await Api.login({ email: this.email, password: this.password });
         const userId = response.data.userId;
-        window.localStorage.setItem("userId", userId);
+        localStorage.setItem("userId", userId);
         // Get and set the current logged in user information
         response = await Api.profile(userId);
-        window.localStorage.setItem("authUser", JSON.stringify(response.data));
+        localStorage.setItem("authUser", JSON.stringify(response.data));
         // Send login user change event
         window.dispatchEvent(new CustomEvent('auth-user-change', {
           detail: {

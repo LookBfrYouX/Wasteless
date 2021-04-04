@@ -59,9 +59,9 @@
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <img class="nav-picture rounded-circle" src="placeholder-profile.png" width="40" height="40">
-                  {{this.firstName}} {{this.lastName}}
+                  {{getAuthUser().firstName}} {{getAuthUser().lastName}}
                   <!-- User role status icon (shows icon if user is admin) -->
-                  <img v-if="userRole && userRole === 'ROLE_ADMIN'" class="navbar-admin-icon" src="id-card.svg" alt="Admin role icon">
+                  <img v-if="isAdmin()" class="navbar-admin-icon" src="id-card.svg" alt="Admin role icon">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                   <button class="dropdown-item" v-on:click="logOut">Log out</button>
@@ -110,17 +110,21 @@ export default {
   // forceSearchUpdate: callback that is called if user clicks search when the value of the search field
   // is the same as what is currently in the URL (Vue router will block this if we try to push)
 
-  mounted() {
-    window.addEventListener('auth-user-change', (event) => {
-      this.userRole = event.detail.authUser.role;
-      this.firstName = event.detail.authUser.firstName;
-      this.lastName = event.detail.authUser.lastName;
-    });
-  },
   methods: {
     checkLogin() {
       // returns true if value (user id) is assigned to login in localStorage
       return Boolean(localStorage.getItem("userId"));
+    },
+    getAuthUser() {
+      return JSON.parse(localStorage.getItem("authUser"));
+    },
+    isAdmin() {
+      this.authUser = JSON.parse(localStorage.getItem("authUser"));
+      if (this.authUser.role === "ROLE_ADMIN"){
+        return true;
+      } else {
+        return false;
+      }
     },
     login() {
       if (this.$route.name != "login") this.$router.push({ name: "login" });
