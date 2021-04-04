@@ -94,6 +94,7 @@ deploy-staging-backend:
     - echo "export DB_URL=${DB_URL}" > ./env.txt
     - echo "export DB_USERNAME=${DB_USERNAME}" >> ./env.txt
     - echo "export DB_PASSWORD=${DB_PASSWORD}" >> ./env.txt
+    - printenv
     - cd backend
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/staging-backend/ || true
