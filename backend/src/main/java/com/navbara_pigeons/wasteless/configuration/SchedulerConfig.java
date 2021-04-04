@@ -35,9 +35,6 @@ public class SchedulerConfig {
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
   }
 
-  // TODO: have delay using an environment variable
-  // TODO: add testing
-
   /**
    * Scheduler method, runs every timeDelay ms
    */
