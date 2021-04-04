@@ -1,7 +1,10 @@
 <template>
   <div id="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" v-on:click="home">Navbar</a>
+      <router-link to="/" exact>
+        <a class="navbar-brand">App Logo</a>
+      </router-link>
+
       <button
         class="navbar-toggler"
         type="button"
@@ -15,15 +18,27 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" v-on:click="home"
-              >Home <span class="sr-only">(current)</span></a
-            >
-          </li>
+          <router-link v-if="checkLogin()" active-class="active" to="/home" exact>
+            <li class="nav-item">
+              <a class="nav-link">
+                Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+          </router-link>
+          <router-link v-if="checkLogin()" active-class="active" to="/profile" exact>
+            <li class="nav-item">
+              <a class="nav-link">
+                Profile
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+          </router-link>
         </ul>
         <!--if logged in shows this section-->
-        <div v-if="checkLogin() == true" class="d-flex">
+        <div v-if="checkLogin()" class="d-flex">
           <form class="form-inline my-2 my-lg-0" v-on:submit.prevent="search">
             <input
               class="form-control mr-sm-2"
@@ -43,15 +58,12 @@
             <ul class="navbar-nav">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <img src="placeholder-profile.png" width="40" height="40" class="rounded-circle">
+                  <img class="nav-picture rounded-circle" src="placeholder-profile.png" width="40" height="40">
                   {{this.firstName}} {{this.lastName}}
                   <!-- User role status icon (shows icon if user is admin) -->
-                  <img v-if="userRole && userRole === 'ROLE_ADMIN'" class="navbar-admin-icon" src="id-card.svg" alt="Admin role icon">
+                  <img v-if="true" class="navbar-admin-icon" src="id-card.svg" alt="Admin role icon">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                  <button class="dropdown-item" v-on:click="profile">
-                    Profile Page
-                  </button>
                   <button class="dropdown-item" v-on:click="logOut">Log out</button>
                 </div>
               </li>
@@ -109,12 +121,6 @@ export default {
     checkLogin() {
       // returns true if value (user id) is assigned to login in localStorage
       return Boolean(localStorage.getItem("userId"));
-    },
-    home() {
-      if (this.$route.path != "/") this.$router.push("/");
-    },
-    profile() {
-      if (this.$route.name != "profile") this.$router.push({ name: "profile" });
     },
     login() {
       if (this.$route.name != "login") this.$router.push({ name: "login" });
