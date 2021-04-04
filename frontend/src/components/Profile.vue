@@ -43,7 +43,7 @@
         <li>
           <div>
             <button
-              v-if="checkAdmin() && !targetCheckAdmin()"
+              v-if="checkAdmin() &&  userInfo.role != 'ROLE_ADMIN'"
               class="btn btn-white-bg-primary"
               id="makeAdmin"
               type="button"
@@ -52,7 +52,7 @@
             Make Admin
             </button>
             <button
-              v-if="checkAdmin() && targetCheckAdmin()" 
+              v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
               class="btn btn-white-bg-primary"
               id="revokeAdmin"
               type="button"
@@ -95,6 +95,7 @@ export default {
         emailAddress: "",
         phoneNumber: "",
         homeAddress: "",
+        role: "ROLE_USER"
       },
       errorMessage: "",
     }
@@ -131,12 +132,15 @@ export default {
     /**
      * Checks if focused user is an admin
      */
+    /*
     targetCheckAdmin: function() {
       if (this.userInfo.role == "ROLE_ADMIN") {
         return true;
-      }  
-      return false
+      } else {
+        return false
+      }
     },
+    */
 
     /**
      * Calls to the API to from the profile view with a given user ID to make requested user an Administrator
@@ -145,6 +149,7 @@ export default {
     makeAdmin: async function(userId) {
       try {
         await Api.makeAdmin(userId);
+        this.userInfo.role = "ROLE_ADMIN";
         this.errorMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
         return;
       } catch (err) {
@@ -160,6 +165,7 @@ export default {
     revokeAdmin: async function(userId) {
       try {
         await Api.revokeAdmin(userId);
+        this.userInfo.role = "ROLE_USER";
         this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privilages`;
         return;
       } catch (err) {
