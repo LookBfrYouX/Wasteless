@@ -24,10 +24,6 @@
         </ul>
         <!--if logged in shows this section-->
         <div v-if="checkLogin() == true" class="d-flex">
-          <div>
-            <!-- User role status icon (shows icon if user is admin) -->
-            <img v-if="userRole && userRole === 'ROLE_ADMIN'" class="navbar-admin-icon" src="id-card.svg" alt="Admin role icon">
-          </div>
           <form class="form-inline my-2 my-lg-0" v-on:submit.prevent="search">
             <input
               class="form-control mr-sm-2"
@@ -43,23 +39,23 @@
               Go
             </button>
           </form>
-          <div class="dropdown">
-            <button
-              class="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Menu
-            </button>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-              <button class="dropdown-item" v-on:click="profile">
-                Profile Page
-              </button>
-              <button class="dropdown-item" v-on:click="logOut">Log out</button>
-            </div>
+          <div class="collapse navbar-collapse" id="navbar-list-4">
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <img src="placeholder-profile.png" width="40" height="40" class="rounded-circle">
+                  {{this.firstName}} {{this.lastName}}
+                  <!-- User role status icon (shows icon if user is admin) -->
+                  <img v-if="userRole && userRole === 'ROLE_ADMIN'" class="navbar-admin-icon" src="id-card.svg" alt="Admin role icon">
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                  <button class="dropdown-item" v-on:click="profile">
+                    Profile Page
+                  </button>
+                  <button class="dropdown-item" v-on:click="logOut">Log out</button>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
         <!-- otherwise shows login button-->
@@ -92,6 +88,8 @@ export default {
   data() {
     return {
       userRole: null,
+      firstName: null,
+      lastName: null
     };
   },
 
@@ -103,6 +101,8 @@ export default {
   mounted() {
     window.addEventListener('auth-user-change', (event) => {
       this.userRole = event.detail.authUser.role;
+      this.firstName = event.detail.authUser.firstName;
+      this.lastName = event.detail.authUser.lastName;
     });
   },
   methods: {
