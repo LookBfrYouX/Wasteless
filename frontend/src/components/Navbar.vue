@@ -61,7 +61,7 @@
                   <img class="nav-picture rounded-circle" src="placeholder-profile.png" width="40" height="40">
                   {{this.firstName}} {{this.lastName}}
                   <!-- User role status icon (shows icon if user is admin) -->
-                  <img v-if="true" class="navbar-admin-icon" src="id-card.svg" alt="Admin role icon">
+                  <img v-if="userRole && userRole === 'ROLE_ADMIN'" class="navbar-admin-icon" src="id-card.svg" alt="Admin role icon">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                   <button class="dropdown-item" v-on:click="logOut">Log out</button>
