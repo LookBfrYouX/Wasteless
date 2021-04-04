@@ -91,7 +91,7 @@ branch-build:
 deploy-staging-backend:
   stage: deploy
   script:
-    - printenv | grep "DGAA_" | sed "s/^/export /" > .env
+    - printenv | grep "DGAA_" | sed "s/^/export /" > env.txt
     - cd backend
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/staging-backend/ || true
@@ -131,7 +131,7 @@ deploy-staging-frontend:
 deploy-production-backend:
   stage: deploy
   script:
-    - printenv | grep "DGAA_" | sed "s/^/export /" > .env
+    - printenv | grep "DGAA_" | sed "s/^/export /" > env.txt
     - cd backend
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/production-backend/ || true
