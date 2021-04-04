@@ -128,19 +128,6 @@ export default {
         return false;
       }
     },
-    
-    /**
-     * Checks if focused user is an admin
-     */
-    /*
-    targetCheckAdmin: function() {
-      if (this.userInfo.role == "ROLE_ADMIN") {
-        return true;
-      } else {
-        return false
-      }
-    },
-    */
 
     /**
      * Calls to the API to from the profile view with a given user ID to make requested user an Administrator
@@ -165,9 +152,17 @@ export default {
     revokeAdmin: async function(userId) {
       try {
         await Api.revokeAdmin(userId);
-        this.userInfo.role = "ROLE_USER";
-        this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privilages`;
-        return;
+        let user = JSON.parse(localStorage.authUser);
+        if (userId == user.id) {
+          user.role = "ROLE_USER";
+          localStorage.setItem('authUser', JSON.stringify(user));
+          this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privilages`;
+          return;
+        } else {
+          this.userInfo.role = "ROLE_USER";
+          this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privilages`;
+          return;
+        }
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
         return;
