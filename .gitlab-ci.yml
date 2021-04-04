@@ -92,12 +92,12 @@ deploy-staging-backend:
   stage: deploy
   script:
     - cd backend
-    - printenv | grep "DGAA_" | sed "s/^/export /" > env.txt
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/staging-backend/ || true
     - mkdir /home/gitlab-runner/staging-backend/
     - cp -r ./build/libs /home/gitlab-runner/staging-backend
     - cp ../runner/staging-backend.sh /home/gitlab-runner/staging-backend.sh
+    - printenv | grep "DGAA_" | sed "s/^/export /" > /home/gitlab-runner/env.txt
     - chmod u+x /home/gitlab-runner/staging-backend.sh
     - sudo systemctl restart seng302-staging-backend
   artifacts:
@@ -138,6 +138,7 @@ deploy-production-backend:
     - mkdir /home/gitlab-runner/production-backend/
     - cp -r ./build/libs /home/gitlab-runner/production-backend
     - cp ../runner/production-backend.sh /home/gitlab-runner/production-backend.sh
+    - printenv | grep "DGAA_" | sed "s/^/export /" > /home/gitlab-runner/env.txt
     - chmod u+x /home/gitlab-runner/production-backend.sh
     - sudo systemctl restart seng302-production-backend
   artifacts:
