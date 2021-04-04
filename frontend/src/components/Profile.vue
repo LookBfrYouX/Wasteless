@@ -40,7 +40,34 @@
           <dt class="col-md label">Home Address:</dt>
           <dd class="col-md value"> {{ userInfo.homeAddress}} </dd>
         </li>
+        <li>
+          <div>
+            <button
+              v-if="checkAdmin() && !targetCheckAdmin()"
+              class="btn btn-white-bg-primary"
+              id="makeAdmin"
+              type="button"
+              v-on:click="makeAdmin(userId)"
+            >
+            Make Admin
+            </button>
+            <button
+              v-if="checkAdmin() && targetCheckAdmin()" 
+              class="btn btn-white-bg-primary"
+              id="revokeAdmin"
+              type="button"
+              v-on:click="revokeAdmin(userId)"
+            >
+            Revoke Admin
+            </button>
+          </div>
+        </li>
       </ul>
+      <div class="row mt-2" v-if="errorMessage.length > 0">
+          <div class="col">
+            <p class="alert alert-warning">{{ errorMessage }}</p>
+          </div>
+      </div>
     </div>
   </div>
 </template>
@@ -69,6 +96,7 @@ export default {
         phoneNumber: "",
         homeAddress: "",
       },
+      errorMessage: "",
     }
   },
 
@@ -86,6 +114,60 @@ export default {
   },
 
   methods: {
+    // TODO: make admin buttons auto update without refresh
+
+    /**
+     * Checks to see if logged in user is an admin using cookie storing session.
+     */
+    checkAdmin: function() {
+      let user = JSON.parse(localStorage.authUser);
+      if (user.role == "ROLE_ADMIN") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    
+    /**
+     * Checks if focused user is an admin
+     */
+    targetCheckAdmin: function() {
+      if (this.userInfo.role == "ROLE_ADMIN") {
+        return true;
+      }  
+      return false
+    },
+
+    /**
+     * Calls to the API to from the profile view with a given user ID to make requested user an Administrator
+     * Returns a message to user to indicate whether or not the user has been updated to the Administrator role.
+     */
+    makeAdmin: async function(userId) {
+      try {
+        await Api.makeAdmin(userId);
+        this.errorMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
+        return;
+      } catch (err) {
+        this.errorMessage = err.userFacingErrorMessage;
+        return;
+      }
+    },
+
+    /**
+     * Calls to the API to from the profile view with a given user ID to revoke requested user from an Administrator
+     * Returns a message to user to indicate whether selected user has been premoted to Admin or request failed.
+     */
+    revokeAdmin: async function(userId) {
+      try {
+        await Api.revokeAdmin(userId);
+        this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privilages`;
+        return;
+      } catch (err) {
+        this.errorMessage = err.userFacingErrorMessage;
+        return;
+      }
+    },
+
     /**
      * Calls the API to get profile information with the given user ID
      * Returns the promise, not the response
@@ -142,7 +224,7 @@ export default {
       if (years == 0) {
         return monthsText;
       }
-      
+
       return`${yearsText}, ${monthsText}`;
     },
   },

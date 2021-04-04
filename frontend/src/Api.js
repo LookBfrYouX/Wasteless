@@ -65,7 +65,54 @@ export default {
             throw error;
         })
     },
+   
+    /**
+     * 
+     * @param {object} props with properties:
+     * `userId`
+     * @returns promise. If it fails the error will be shown using the `userFacingErrorMessage` property
+     */
+    makeAdmin: async (userId) => {
+        return instance.put(`/users/${userId}/makeAdmin`).catch(error => {
+            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE
+            if (error != undefined && error.response !== undefined) {
+                if (error.response.status == 401) {
+                    userFacingErrorMessage = "Unauthorized"
+                } else if (error.response.status === 406) {
+                    userFacingErrorMessage  = "Invalid ID format";
+                } else {
+                    userFacingErrorMessage = unknownErrorMessage(error);
+                }
+            }
+            error.userFacingErrorMessage = userFacingErrorMessage;
+            throw error;
+        })
+    },
 
+    /**
+     * 
+     * @param {object} props with properties:
+     * `userId`
+     * @returns promise. If it fails the error will be shown to user using the `userFacingErrorMessage` property
+     */
+    revokeAdmin: async (userId) => {
+        return instance.put(`/users/${userId}/revokeAdmin`).catch(error => {
+            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE
+            if (error != undefined && error.response !== undefined) {
+                if (error.response.status == 401) {
+                    userFacingErrorMessage = "Unauthorized"
+                } else if (error.response.status === 406) {
+                    userFacingErrorMessage  = "Invalid ID format";
+                } else if (error.response.status === 409) {
+                    userFacingErrorMessage  = "Cannot Revoke the DGAA's Administrator Privilages";
+                } else {
+                    userFacingErrorMessage = unknownErrorMessage(error);
+                }
+            }
+            error.userFacingErrorMessage = userFacingErrorMessage;
+            throw error;
+        })
+    },
 
     /**
      *
