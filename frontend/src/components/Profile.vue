@@ -52,13 +52,21 @@
             Make Admin
             </button>
             <button
-              v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
-              class="btn btn-white-bg-primary"
-              id="revokeAdmin"
-              type="button"
-              v-on:click="revokeAdmin(userId)"
+                v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
+                class="btn btn-white-bg-primary"
+                id="revokeAdmin"
+                type="button"
+                v-on:click="revokeAdmin(userId)"
             >
-            Revoke Admin
+              Revoke Admin
+            </button>
+            <button
+                class="btn btn-white-bg-primary"
+                id="registerBusiness"
+                type="button"
+                v-on:click="registerBusiness()"
+            >
+              Register Business
             </button>
           </div>
         </li>
@@ -167,6 +175,13 @@ export default {
         this.errorMessage = err.userFacingErrorMessage;
         return;
       }
+    },
+
+    /**
+     *
+     */
+    registerBusiness: function() {
+      this.$router.push({ name: "registerbusiness" });
     },
 
     /**
@@ -279,6 +294,10 @@ export default {
   display: flex;
   justify-content: center;
   padding: 30px;
+}
+
+#registerBusiness {
+  float: right;
 }
 
 </style>
