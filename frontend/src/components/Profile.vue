@@ -13,10 +13,7 @@
         </li>
         <li class="row">
           <dt class="col-md label">Role:</dt>
-          <dd class="col-md value">
-            {{ userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : 'User' }}
-            <img v-if="userInfo.role && userInfo.role === 'ROLE_ADMIN'" class="admin-icon" src="id-card.svg" alt="Admin role icon">
-          </dd>
+          <dd class="col-md value">{{ userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : 'User' }}</dd>
         </li>
         <li class="row">
           <dt class="col-md label">Member since:</dt>
