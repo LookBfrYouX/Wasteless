@@ -131,7 +131,7 @@ public class UserController {
    */
   @GetMapping("/users/search")
   public ResponseEntity<List<User>> searchUsers(@RequestParam String searchQuery) {
-    List<User> results = null;
+    List<User> results;
     try {
       results = userService.searchUsers(searchQuery);
     } catch (InvalidAttributeValueException e) {
