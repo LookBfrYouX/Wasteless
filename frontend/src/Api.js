@@ -65,9 +65,9 @@ export default {
             throw error;
         })
     },
-   
+
     /**
-     * 
+     *
      * @param {object} props with properties:
      * `userId`
      * @returns promise. If it fails the error will be shown using the `userFacingErrorMessage` property
@@ -90,7 +90,7 @@ export default {
     },
 
     /**
-     * 
+     *
      * @param {object} props with properties:
      * `userId`
      * @returns promise. If it fails the error will be shown to user using the `userFacingErrorMessage` property
@@ -161,6 +161,32 @@ export default {
             throw error;
         });
     },
+
+    /**
+     *
+     * @param {*} id ID of business to fetch
+     * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+     */
+    businessProfile: (id) => {
+        return instance.get(`/businesses/${id}`).catch(error => {
+            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
+
+            if (error != undefined && error.response != undefined) {
+                if (error.response.status == 401) {
+                    userFacingErrorMessage = "You don't have permission to access this page";
+                } else if (error.response.status == 405) {
+                    userFacingErrorMessage = "Information for the user was not found";
+                } else {
+                    userFacingErrorMessage = unknownErrorMessage(error);
+                }
+            }
+
+            error.userFacingErrorMessage = userFacingErrorMessage;
+            throw error;
+        });
+    },
+
+
     /**
      * Sends a search query
      * @param searchQuery
