@@ -39,14 +39,20 @@
         </ul>
         <!--if logged in shows this section-->
         <div v-if="checkLogin()" class="d-flex">
-          <form class="navbar-center form-inline my-2 my-lg-0" v-on:submit.prevent="search">
-            <input
-              class="navbar-search form-control mr-sm-2"
-              type="text"
-              v-bind:value="query"
-              v-on:input="event => $emit('input', event)"
-              placeholder="Search"
-            />
+          <form class="input-group mt-2 navbar-center form-inline" v-on:submit.prevent="search">
+            <div class="input-group mb-3 navbar-search">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1"><font-awesome-icon icon="search" /></span>
+              </div>
+              <input
+                  class=" form-control mr-sm-2"
+                  type="text"
+                  v-bind:value="query"
+                  v-on:input="event => $emit('input', event)"
+                  placeholder="Search"
+              />
+            </div>
+
           </form>
           <div class="collapse navbar-collapse" id="navbar-list-4">
             <ul class="navbar-nav">
@@ -97,6 +103,7 @@
 </style>
 
 <script>
+
 export default {
   name: "navbar",
   data() {
