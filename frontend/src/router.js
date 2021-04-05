@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from './components/Login.vue'
 import SignUp from './components/SignUp.vue'
 import Profile from './components/Profile.vue'
+import RegsiterBusiness from './components/RegisterBusiness'
 
 export default [
 ]
@@ -45,6 +46,11 @@ export const router = new VueRouter({
             path: "/searchresults/:query(.*)",
             component: () => import('./components/SearchResults.vue'),
             props: route => ({ search: route.params.query })
+        },
+        {
+            name: "registerbusiness",
+            path: "/registerBusiness",
+            component: RegsiterBusiness
         },
     ],
 })
