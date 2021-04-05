@@ -59,9 +59,10 @@
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <img class="nav-picture rounded-circle" src="placeholder-profile.png" width="40" height="40">
-                  {{getAuthUser().firstName}} {{getAuthUser().lastName}}
-                  <!-- User role status icon (shows icon if user is admin) -->
-                  <img v-if="isAdmin()" class="navbar-admin-icon" src="id-card.svg" alt="Admin role icon">
+                  <div class="d-flex flex-column mx-1">
+                    <span class="m-0 p-0 text-dark">{{getAuthUser().firstName}} {{getAuthUser().lastName}}</span>
+                    <span v-if="isAdmin()" class="admin-text p-0 text-faded">ADMIN</span>
+                  </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                   <button class="dropdown-item" v-on:click="logOut">Log out</button>
@@ -93,6 +94,13 @@
     </nav>
   </div>
 </template>
+<style scoped>
+.admin-text {
+  margin: 0;
+  margin-top: -0.5em;
+  font-size: 0.8em;
+}
+</style>
 
 <script>
 export default {
