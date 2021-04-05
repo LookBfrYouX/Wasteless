@@ -156,13 +156,12 @@ export default {
         if (userId == user.id) {
           user.role = "ROLE_USER";
           localStorage.setItem('authUser', JSON.stringify(user));
-          this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privilages`;
-          return;
+          this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
         } else {
           this.userInfo.role = "ROLE_USER";
-          this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privilages`;
-          return;
+          this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
         }
+        return;
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
         return;
