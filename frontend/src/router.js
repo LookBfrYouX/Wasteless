@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from './components/Login.vue'
 import SignUp from './components/SignUp.vue'
 import Profile from './components/Profile.vue'
+import businessProfile from './components/BusinessProfile.vue'
 import RegsiterBusiness from './components/RegisterBusiness'
 
 export default [
@@ -51,6 +52,22 @@ export const router = new VueRouter({
             name: "registerbusiness",
             path: "/registerBusiness",
             component: RegsiterBusiness
+        },
+        {
+            name: "businessProfile",
+            path: "/businessProfile/:businessId(\\d+)?",
+            component: businessProfile,
+            props: route => {
+                let businessId = route.params.businessId;
+                if (businessId == null) {
+                    const loggedInId = parseInt(window.localStorage.getItem("businessId"));
+                    businessId = loggedInId; // may be NaN
+                } else {
+                    businessId = parseInt(businessId, 10); // Using \d so parseInt should always work
+                }
+
+                return { businessId };
+            }
         },
     ],
 })
