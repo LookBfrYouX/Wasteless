@@ -58,7 +58,7 @@
             <ul class="navbar-nav">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <img class="nav-picture rounded-circle" src="placeholder-profile.png" width="40" height="40">
+                  <img class="nav-picture rounded-circle" src="placeholder-profile.png">
                   <div class="d-flex flex-column mx-1">
                     <span class="m-0 p-0 text-dark">{{getAuthUser().firstName}} {{getAuthUser().lastName}}</span>
                     <span v-if="isAdmin()" class="admin-text p-0 text-faded">ADMIN</span>
