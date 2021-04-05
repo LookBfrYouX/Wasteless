@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.validation;
 
+import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -46,17 +47,30 @@ public class UserServiceValidation {
   }
 
   /**
+   * Checks if the given string is null, empty, or contains whitespace only
+   * @param str
+   * @return true if the given string is null, empty, or contains whitespace only
+   */
+  public static boolean isNullOrTrimmedEmpty(String str) {
+    return str == null || str.trim().isEmpty();
+  }
+
+  /**
    * Returns false if required sql fields are null/empty
    *
    * @param user User
    */
   public static boolean isUserValid(User user) {
     // Checks user fields are not null/empty
-    if (user.getFirstName() == null || user.getFirstName().isEmpty() ||
-        user.getLastName() == null || user.getLastName().isEmpty() ||
-        user.getHomeAddress() == null || user.getHomeAddress().isEmpty()) {
-      return false;
+    Address address = user.getAddress();
+    for(String val: new String[]{
+            user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getNickname(),
+            address.getStreetNumber(), address.getStreetName(), address.getPostcode(),
+            address.getCity(), address.getRegion(), address.getCountry()
+    }) {
+      if (UserServiceValidation.isNullOrTrimmedEmpty(val)) return false;
     }
+
     return true;
   }
 }

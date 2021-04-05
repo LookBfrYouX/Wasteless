@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.configuration;
 
 import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.time.LocalDate;
@@ -62,7 +63,15 @@ public class SchedulerConfig {
         .setLastName("Admin")
         .setEmail(this.dgaaEmail)
         .setDateOfBirth(LocalDate.parse("2000-01-01").format(DateTimeFormatter.ISO_LOCAL_DATE))
-        .setHomeAddress("20 Kirkwood Avenue, Upper Riccarton, Christchurch 8041")
+        .setAddress(
+                new Address()
+                .setStreetNumber("20")
+                .setStreetName("Kirkwood Avenue")
+                .setPostcode("8041")
+                .setCity("Christchurch")
+                .setRegion("Canterbury")
+                .setCountry("New Zealand")
+        )
         .setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
         .setRole("ROLE_ADMIN")
         .setPassword(bCryptPasswordEncoder.encode(this.dgaaPassword));

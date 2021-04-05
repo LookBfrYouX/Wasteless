@@ -72,6 +72,7 @@ public class UserServiceImpl implements UserService {
    * @param user User object to be saved.
    * @throws UserAlreadyExistsException Thrown when a user already exists in the database
    * @throws UserRegistrationException  Thrown when an invalid dob is received
+   * @return login response
    */
   @Override
   @Transactional
@@ -107,7 +108,6 @@ public class UserServiceImpl implements UserService {
     UserCredentials userCredentials = new UserCredentials();
     userCredentials.setEmail(user.getEmail());
     userCredentials.setPassword(user.getPassword());
-    System.out.println("Here");
     // Set created date, hash password
     user.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
     user.setPassword(encoder.encode(user.getPassword()));
@@ -127,7 +127,6 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public JSONObject getUserById(long id) throws UserNotFoundException {
-    // TODO change this implementation to just hide the users password instead of creating a new JSONObject
     User user = this.userDao.getUserById(id);
     JSONObject response = new JSONObject();
     response.put("id", Long.toString(id));
@@ -136,12 +135,26 @@ public class UserServiceImpl implements UserService {
     response.put("middleName", user.getMiddleName());
     response.put("nickname", user.getNickname());
     response.put("bio", user.getBio());
-    response.put("email", user.getEmail());
-    response.put("dateOfBirth", user.getDateOfBirth());
-    response.put("phoneNumber", user.getPhoneNumber());
-    response.put("homeAddress", user.getHomeAddress());
     response.put("created", user.getCreated());
     response.put("role", user.getRole());
+
+    JSONObject address = new JSONObject();
+    response.put("address", address);
+
+    // sensitive details (e.g. email, postcode) are not returned
+    if (true) {
+      response.put("email", user.getEmail());
+      response.put("dateOfBirth", user.getDateOfBirth());
+      response.put("phoneNumber", user.getPhoneNumber());
+
+      address.put("streetNumber", user.getAddress().getStreetNumber());
+      address.put("streetName", user.getAddress().getStreetName());
+      address.put("postcode", user.getAddress().getPostcode());
+    }
+
+    address.put("city", user.getAddress().getCity());
+    address.put("region", user.getAddress().getRegion());
+    address.put("country", user.getAddress().getCountry());
     return response;
   }
 
@@ -152,6 +165,7 @@ public class UserServiceImpl implements UserService {
    * @param userCredentials The UserCredentials object storing the email and password.
    * @throws AuthenticationException An authentication exception that is assigned HTTP error codes
    *                                 at the controller.
+   * @return JSON response with user ID
    */
   @Override
   public JSONObject login(UserCredentials userCredentials)
