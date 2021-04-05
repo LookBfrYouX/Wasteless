@@ -39,20 +39,14 @@
         </ul>
         <!--if logged in shows this section-->
         <div v-if="checkLogin()" class="d-flex">
-          <form class="form-inline my-2 my-lg-0" v-on:submit.prevent="search">
+          <form class="navbar-center form-inline my-2 my-lg-0" v-on:submit.prevent="search">
             <input
-              class="form-control mr-sm-2"
+              class="navbar-search form-control mr-sm-2"
               type="text"
               v-bind:value="query"
               v-on:input="event => $emit('input', event)"
               placeholder="Search"
             />
-            <button
-              class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
-              type="submit"
-            >
-              Go
-            </button>
           </form>
           <div class="collapse navbar-collapse" id="navbar-list-4">
             <ul class="navbar-nav">

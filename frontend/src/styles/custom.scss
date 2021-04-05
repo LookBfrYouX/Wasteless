@@ -14,6 +14,18 @@ nav {
   }
 }
 
+.navbar-search {
+  width: 100% !important;
+}
+
+.navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translatex(-50%);
+  height: 100%;
+  width: 30%;
+}
+
 .gradient-background::after {
   content: "";
   display: block;
