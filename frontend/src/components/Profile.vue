@@ -38,7 +38,10 @@
         </li>
         <li class="row">
           <dt class="col-md label">Home Address:</dt>
-          <dd class="col-md value"> {{ userInfo.homeAddress}} </dd>
+          <dd class="col-md value"> {{ userInfo.homeAddress.streetNumber + " " +
+          userInfo.homeAddress.streetName + ", " + userInfo.homeAddress.city + ", " +
+          userInfo.homeAddress.region + ", " + userInfo.homeAddress.country + " " +
+          userInfo.homeAddress.postcode }} </dd>
         </li>
         <li>
           <div>
