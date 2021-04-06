@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Map;
+
 @SuppressWarnings("ALL")
 @SpringBootTest
 class UserServiceImplTest {
@@ -75,6 +77,73 @@ class UserServiceImplTest {
       testUserPassword.setPassword(passwordTest);
       assertThrows(Exception.class, () -> userService.saveUser(testUserPassword));
     }
+  }
+
+
+  @Test
+  public void getUserSelf() throws UserNotFoundException {
+    String password = "password";
+    User user = makeUser("test@example.com", false, password);
+    userController.register(user);
+    assertUserWithJson(user, getUserAsUser(user, password, user.getId()), false);
+  }
+
+  /**
+   * Gets a user using credentials
+   * @param authorizer user who is authorizing the action
+   * @param password password of authorizer
+   * @param id id of user to get
+   * @return user with id `id` as JSONObject
+   * @throws UserNotFoundException
+   */
+  private JSONObject getUserAsUser(User authorizer, String password, long id) throws UserNotFoundException {
+    UserCredentials userCredentials = new UserCredentials();
+    userCredentials.setEmail(authorizer.getEmail());
+    userCredentials.setPassword(password);
+    userController.login(userCredentials);
+
+    return userService.getUserById(id);
+  }
+
+  void assertUserWithJson(User user, JSONObject response, boolean publicOnly) {
+    assertEquals(user.getFirstName(), response.getAsString("firstName"));
+    assertEquals(user.getLastName(), response.getAsString("lastName"));
+    assertEquals(user.getNickname(), response.getAsString("nickname"));
+
+
+    // TODO created dates
+//    Assertions.assertEquals(expect.getCreated(), response.getAsString("created"));
+    assertEquals(user.getMiddleName(),  response.getAsString("middleName"));
+    assertEquals(user.getRole(), response.getAsString("role"));
+
+    if (!publicOnly) {
+      assertEquals(user.getEmail(), response.getAsString("email"));
+      assertEquals(user.getDateOfBirth(), response.getAsString("dateOfBirth"));
+      assertEquals(user.getPhoneNumber(), response.getAsString("phoneNumber"));
+    } else {
+      System.out.println("!");
+      System.out.println(response.getAsString("email"));
+      Assertions.assertNull(response.get("email"));
+      Assertions.assertNull(response.get("dateOfBirth"));
+      Assertions.assertNull(response.get("phoneNumber"));
+    }
+
+    Address expectAddress = user.getHomeAddress();
+    JSONObject responseAddress = (JSONObject) response.get("homeAddress");
+
+    if (!publicOnly) {
+      assertEquals(expectAddress.getStreetNumber(), response.getAsString("streetNumber"));
+      assertEquals(expectAddress.getStreetName(), response.getAsString("streetName"));
+      assertEquals(expectAddress.getPostcode(), response.getAsString("postcode"));
+    } else {
+      Assertions.assertNull(response.get("streetNumber"));
+      Assertions.assertNull(response.get("streetName"));
+      Assertions.assertNull(response.get("postcode"));
+    }
+
+    assertEquals(expectAddress.getCity(), response.getAsString("city"));
+    assertEquals(expectAddress.getRegion(), response.getAsString("region"));
+    assertEquals(expectAddress.getCountry(), response.getAsString("country"));
   }
 
   @Test
@@ -209,7 +278,22 @@ class UserServiceImplTest {
     return bCryptPasswordEncoder.encode(password);
   }
 
+  /**
+   * Makes a non-admin user
+   * @return
+   */
   User makeUser() {
+    return makeUser("test@example.com", false, "password");
+  }
+
+  /**
+   * Creates test user with given details
+   * @param email
+   * @param isAdmin
+   * @param password
+   * @return
+   */
+  User makeUser(String email, boolean isAdmin, String password) {
     User testUser = new User();
     Address address = new Address()
             .setStreetNumber("3/24")
@@ -227,12 +311,13 @@ class UserServiceImplTest {
             .setLastName("Last")
             .setMiddleName("Middle")
             .setNickname("Nick")
-            .setEmail("test@example.com")
+            .setEmail(email)
+            .setPhoneNumber("+6412345678")
             .setDateOfBirth("2000-03-10")
             .setHomeAddress(address)
             .setCreated("2020-07-14T14:32:00Z")
-            .setRole("ROLE_USER")
-            .setPassword(encodePass("pass"));
+            .setRole(isAdmin? "ROLE_ADMIN": "ROLE_USER")
+            .setPassword(encodePass(password));
 
     // Save user using DAO and retrieve by Email
     return testUser;

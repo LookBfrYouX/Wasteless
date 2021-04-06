@@ -9,6 +9,7 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
 import net.minidev.json.parser.JSONParser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -43,25 +44,35 @@ class UserControllerTest {
   @Autowired
   private final UserDao userDao;
 
-  User user;
   private String password = "pass";
+
+  private User user;
 
   @Autowired
   UserControllerTest(AddressDao addressDao, UserDao userDao) {
     this.addressDao = addressDao;
     this.userDao = userDao;
-    user = makeUser();
-    userDao.saveUser(user);
   }
 
 
   @Before
   public void setup() {
+    System.out.println("BEFORE1");
     DefaultMockMvcBuilder builder = MockMvcBuilders
         .webAppContextSetup(this.wac)
         .apply(SecurityMockMvcConfigurers.springSecurity())
         .dispatchOptions(true);
     this.mockMvc = builder.build();
+
+    User user = makeUser();
+    userDao.saveUser(user);
+    System.out.println("BEFORE");
+  }
+
+  @After
+  public void teardown() {
+    userDao.deleteUser(user);
+    System.out.println("AFTER");
   }
 
   public MockHttpServletRequestBuilder setCorsHeaders(MockHttpServletRequestBuilder request) {
@@ -70,7 +81,7 @@ class UserControllerTest {
       .header("Origin", "http://localhost:9500");
   }
 
-  public MockHttpSession login() throws Exception {
+  public MockHttpSession login(User user) throws Exception {
     MvcResult mvcResult = this.mockMvc.perform(
         setCorsHeaders(post("/login"))
         .header("Content-Type", "application/json")
@@ -86,22 +97,34 @@ class UserControllerTest {
     return session;
   }
 
-  @Test
-  public void testGetOwnDetails() throws Exception {
-    MockHttpSession session = login();
+  /**
+   * Logs in as this.user and fetches information for user with the given id
+   * @param user user to authenticate as
+   * @param userId id of user to fetch
+   * @return parsed JSON. Each value is a string or nested object
+   * @throws Exception
+   */
+  public Map<String, Object> fetchUserDetails(User user, long userId) throws Exception {
+    MockHttpSession session = login(user);
     MvcResult mvcResult = this.mockMvc.perform(
-            setCorsHeaders(get("/users/" + user.getId()))
-            .session(session)
+            setCorsHeaders(get("/users/" + userId))
+                    .session(session)
     )
             .andExpect(status().isOk())
             .andReturn();
 
     String response = mvcResult.getResponse().getContentAsString();
     BasicJsonParser parser = new BasicJsonParser();
-    Map<String, Object> parsed = parser.parseMap(response);
-    userDetailsPresent(user, parsed, false);
+    return parser.parseMap(response);
   }
 
+  /**
+   * Asserts that the user returns a String-Object map
+   * @param expect expected user
+   * @param receive received user. Key-value pairs, where the key is a string and the value is a string or nested map
+   * @param publicOnly if true, only non-sensitive details should be present
+   * @throws AssertionError
+   */
   public void userDetailsPresent(User expect, Map<String, Object> receive, boolean publicOnly) throws AssertionError {
     Assertions.assertEquals(expect.getFirstName(), (String) receive.get("firstName"));
     Assertions.assertEquals(expect.getLastName(), (String) receive.get("lastName"));
@@ -116,6 +139,11 @@ class UserControllerTest {
     if (!publicOnly) {
       Assertions.assertEquals(expect.getEmail(), (String) receive.get("email"));
       Assertions.assertEquals((String) expect.getDateOfBirth(), receive.get("dateOfBirth"));
+      Assertions.assertEquals((String) expect.getPhoneNumber(), receive.get("phoneNumber"));
+    } else {
+      Assertions.assertNull(receive.get("email"));
+      Assertions.assertNull(receive.get("dateOfBirth"));
+      Assertions.assertNull(receive.get("phoneNumber"));
     }
 
     Address expectAddress = expect.getHomeAddress();
@@ -125,6 +153,10 @@ class UserControllerTest {
       Assertions.assertEquals(expectAddress.getStreetNumber(), (String) receivedAddress.get("streetNumber"));
       Assertions.assertEquals(expectAddress.getStreetName(), (String) receivedAddress.get("streetName"));
       Assertions.assertEquals(expectAddress.getPostcode(), (String) receivedAddress.get("postcode"));
+    } else {
+      Assertions.assertNull(receive.get("streetNumber"));
+      Assertions.assertNull(receive.get("streetName"));
+      Assertions.assertNull(receive.get("postcode"));
     }
 
     Assertions.assertEquals(expectAddress.getCity(), (String) receivedAddress.get("city"));
@@ -152,6 +184,7 @@ class UserControllerTest {
             .setNickname("Nick")
             .setEmail("test@example.com")
             .setDateOfBirth("2000-03-10")
+            .setPhoneNumber("+64123456789")
             .setHomeAddress(address)
             .setCreated("2020-07-14T14:32:00Z")
             .setRole("ROLE_USER")
