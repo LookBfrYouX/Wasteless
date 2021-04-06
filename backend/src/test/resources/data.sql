@@ -110,7 +110,7 @@ INSERT INTO USER(FIRST_NAME,
                  EMAIL,
                  DATE_OF_BIRTH,
                  PHONE_NUMBER,
-                 ADDRESS_ID,
+                 HOME_ADDRESS_ID,
                  CREATED,
                  ROLE,
                  PASSWORD)

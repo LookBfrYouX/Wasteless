@@ -22,7 +22,7 @@ import javax.management.InvalidAttributeValueException;
 
 @SuppressWarnings({"ALL", "SpellCheckingInspection"})
 @SpringBootTest
-class userDaoTest {
+class UserDaoHibernateImplTest {
 
   @Autowired
   UserDao userDao;
