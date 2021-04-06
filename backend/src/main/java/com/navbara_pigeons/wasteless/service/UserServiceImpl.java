@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
@@ -12,12 +13,7 @@ import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.management.InvalidAttributeValueException;
 import javax.transaction.Transactional;
 
@@ -42,6 +38,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
+  private final AddressDao addressDao;
   private final UserDao userDao;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final BCryptPasswordEncoder encoder;
@@ -71,7 +68,7 @@ public class UserServiceImpl implements UserService {
    *
    * @param user User object to be saved.
    * @throws UserAlreadyExistsException Thrown when a user already exists in the database
-   * @throws UserRegistrationException  Thrown when an invalid dob is received
+   * @throws UserRegistrationException  Thrown when invalid fields received
    * @return login response
    */
   @Override
@@ -103,6 +100,10 @@ public class UserServiceImpl implements UserService {
     if (!UserServiceValidation.isUserValid(user)) {
       throw new UserRegistrationException("Required user fields cannot be null");
     }
+    // Address validation
+    if (!UserServiceValidation.isAddressValid(user)) {
+      throw new UserRegistrationException("Required address fields cannot be null");
+    }
 
     // Set user credentials for logging in after registering
     UserCredentials userCredentials = new UserCredentials();
@@ -112,6 +113,7 @@ public class UserServiceImpl implements UserService {
     user.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
     user.setPassword(encoder.encode(user.getPassword()));
     user.setRole("ROLE_USER");
+    this.addressDao.saveAddress(user.getHomeAddress());
     this.userDao.saveUser(user);
 
     // Logging in the user and returning the id
@@ -147,14 +149,14 @@ public class UserServiceImpl implements UserService {
       response.put("dateOfBirth", user.getDateOfBirth());
       response.put("phoneNumber", user.getPhoneNumber());
 
-      address.put("streetNumber", user.getAddress().getStreetNumber());
-      address.put("streetName", user.getAddress().getStreetName());
-      address.put("postcode", user.getAddress().getPostcode());
+      address.put("streetNumber", user.getHomeAddress().getStreetNumber());
+      address.put("streetName", user.getHomeAddress().getStreetName());
+      address.put("postcode", user.getHomeAddress().getPostcode());
     }
 
-    address.put("city", user.getAddress().getCity());
-    address.put("region", user.getAddress().getRegion());
-    address.put("country", user.getAddress().getCountry());
+    address.put("city", user.getHomeAddress().getCity());
+    address.put("region", user.getHomeAddress().getRegion());
+    address.put("country", user.getHomeAddress().getCountry());
     return response;
   }
 

@@ -63,15 +63,7 @@ public class SchedulerConfig {
         .setLastName("Admin")
         .setEmail(this.dgaaEmail)
         .setDateOfBirth(LocalDate.parse("2000-01-01").format(DateTimeFormatter.ISO_LOCAL_DATE))
-        .setAddress(
-                new Address()
-                .setStreetNumber("20")
-                .setStreetName("Kirkwood Avenue")
-                .setPostcode("8041")
-                .setCity("Christchurch")
-                .setRegion("Canterbury")
-                .setCountry("New Zealand")
-        )
+        .setHomeAddress(address)
         .setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
         .setRole("ROLE_ADMIN")
         .setPassword(bCryptPasswordEncoder.encode(this.dgaaPassword));

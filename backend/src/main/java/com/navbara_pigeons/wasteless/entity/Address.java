@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "Address")
+@Table(name = "ADDRESS")
 public class Address {
 
     @Id
@@ -30,11 +30,4 @@ public class Address {
 
     @Column(name = "COUNTRY")
     private String country;
-//
-//    @OneToOne
-//    private User user;
-
-//    @OneToOne(mappedBy = "BUSINESS")
-//    private Business business;
-
 }

@@ -48,7 +48,7 @@ public class UserServiceValidation {
 
   /**
    * Checks if the given string is null, empty, or contains whitespace only
-   * @param str
+   * @param str value string to check
    * @return true if the given string is null, empty, or contains whitespace only
    */
   public static boolean isNullOrTrimmedEmpty(String str) {
@@ -62,11 +62,26 @@ public class UserServiceValidation {
    */
   public static boolean isUserValid(User user) {
     // Checks user fields are not null/empty
-    Address address = user.getAddress();
-    for(String val: new String[]{
-            user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getNickname(),
-            address.getStreetNumber(), address.getStreetName(), address.getPostcode(),
-            address.getCity(), address.getRegion(), address.getCountry()
+    for(String val: new String[] {
+            user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getNickname()
+    }) {
+      if (UserServiceValidation.isNullOrTrimmedEmpty(val)) return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Returns false if required sql fields are null/empty
+   *
+   * @param user User
+   */
+  public static boolean isAddressValid(User user) {
+    // Checks user fields are not null/empty
+    Address address = user.getHomeAddress();
+    for(String val: new String[] {
+        address.getStreetNumber(), address.getStreetName(), address.getPostcode(),
+        address.getCity(), address.getRegion(), address.getCountry()
     }) {
       if (UserServiceValidation.isNullOrTrimmedEmpty(val)) return false;
     }

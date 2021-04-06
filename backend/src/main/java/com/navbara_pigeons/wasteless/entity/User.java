@@ -7,7 +7,6 @@ import javax.persistence.*;
 
 import lombok.Data;
 import lombok.ToString;
-import org.springframework.data.repository.cdi.Eager;
 
 @Data
 @ToString
@@ -56,7 +55,7 @@ public class User {
 
   @OneToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
-  private Address address;
+  private Address homeAddress;
 
   @JsonIgnore
   @ToString.Exclude
