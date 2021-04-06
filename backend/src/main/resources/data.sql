@@ -68,36 +68,36 @@ INSERT INTO ADDRESS(
     COUNTRY
 ) VALUES (
     0,
-    "0",
-    "Void Street",
-    "-1",
-    "Nil City",
-    "Undefined Plains",
-    "Null Island"
+    '0',
+    'Void Street',
+    '-1',
+    'Nil City',
+    'Undefined Plains',
+    'Null Island'
 ), (
-    1
-    "10",
-    "Downing Street",
-    "SW1A 2AA",
-    "Westminster",
-    "London",
-    "United Kingdom"
+    1,
+    '10',
+    'Downing Street',
+    'SW1A 2AA',
+    'Westminster',
+    'London',
+    'United Kingdom'
 ), (
     2,
-    "99",
-    "Waimari Road",
-    "8041",
-    "Christchurch",
-    "Canterbury",
-    "New Zealand"
+    '99',
+    'Waimari Road',
+    '8041',
+    'Christchurch',
+    'Canterbury',
+    'New Zealand'
 ), (
     3,
-    "53",
-    "Ilam Road",
-    "8041",
-    "Christchurch",
-    "Canterbury",
-    "New Zealand"
+    '53',
+    'Ilam Road',
+    '8041',
+    'Christchurch',
+    'Canterbury',
+    'New Zealand'
 );
 
 -- Inserting test user

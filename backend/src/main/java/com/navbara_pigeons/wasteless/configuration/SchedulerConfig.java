@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.configuration;
 
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Address;
+import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.time.LocalDate;
@@ -24,6 +25,8 @@ public class SchedulerConfig {
   // ATTENTION: This class talks directly to the DAO or DATABASE. EDIT WITH CAUTION!!!
 
   private final UserDao userDao;
+  private final AddressDao addressDao;
+
   @Value("${dgaa.user.email}")
   private String dgaaEmail;
   @Value("${dgaa.user.password}")
@@ -31,8 +34,9 @@ public class SchedulerConfig {
   private BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Autowired
-  public SchedulerConfig(UserDao userDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
+  public SchedulerConfig(UserDao userDao, AddressDao addressDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
     this.userDao = userDao;
+    this.addressDao = addressDao;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
   }
 
@@ -59,6 +63,15 @@ public class SchedulerConfig {
    */
   public void insertDgaa() {
     User dgaa = new User();
+    Address address = new Address()
+            .setStreetNumber("20")
+            .setStreetName("Kirkwood Avenue")
+            .setPostcode("8041")
+            .setCity("Christchurch")
+            .setRegion("Canterbury")
+            .setCountry("New Zealand");
+
+    addressDao.saveAddress(address);
     dgaa.setFirstName("Admin")
         .setLastName("Admin")
         .setEmail(this.dgaaEmail)

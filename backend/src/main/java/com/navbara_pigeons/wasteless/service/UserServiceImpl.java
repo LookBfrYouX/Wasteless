@@ -55,9 +55,10 @@ public class UserServiceImpl implements UserService {
    * @param encoder                      Password encoder.
    */
   @Autowired
-  public UserServiceImpl(UserDao userDao,
+  public UserServiceImpl(UserDao userDao, AddressDao addressDao,
       AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder encoder) {
     this.userDao = userDao;
+    this.addressDao = addressDao;
     this.authenticationManagerBuilder = authenticationManagerBuilder;
     this.encoder = encoder;
   }
@@ -123,7 +124,8 @@ public class UserServiceImpl implements UserService {
 
   /**
    * Calls the userDao to get the specified user
-   *
+   * If not an admin or retrieving details for another user, the user email address, date of birth, phone number
+   * and home address street number/name/post code are not returned
    * @param id the id of the user
    * @return the User instance of the user
    */
@@ -141,10 +143,15 @@ public class UserServiceImpl implements UserService {
     response.put("role", user.getRole());
 
     JSONObject address = new JSONObject();
-    response.put("address", address);
+    response.put("homeAddress", address);
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    // Email of user that made the request
+    String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
 
     // sensitive details (e.g. email, postcode) are not returned
-    if (true) {
+    if ( username.equals(user.getEmail()) || isAdmin() ) {
       response.put("email", user.getEmail());
       response.put("dateOfBirth", user.getDateOfBirth());
       response.put("phoneNumber", user.getPhoneNumber());
@@ -286,10 +293,12 @@ public class UserServiceImpl implements UserService {
   /**
    * This helper method tests whether the current user has the ADMIN role
    *
-   * @return true if user is admin.
+   * @return true if user is admin, false if not admin or not authenticated
    */
   public boolean isAdmin() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication == null) return false;
     for (GrantedAuthority simpleGrantedAuthority : authentication.getAuthorities()) {
       if (simpleGrantedAuthority.getAuthority().contains("ADMIN")) {
         return true;
