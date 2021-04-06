@@ -2,66 +2,66 @@
   <div class="profile-card card container">
     <div>
       <h1 class="title">Profile Information</h1>
-      <ul class="profile-info list-unstyled">
-        <li class="row">
-          <dt class="col-md label"><h3>Full Name:</h3></dt>
-          <dd class="col-md value"><p>{{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }}</p></dd>
-        </li>
-        <li class="row">
-          <dt class="col-md label"><h3>Nickname:</h3></dt>
-          <dd class="col-md value"><p>{{ userInfo.nickname }}</p></dd>
-        </li>
-        <li class="row">
-          <dt class="col-md label"><h3>Role:</h3></dt>
-          <dd class="col-md value"><p>{{ userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : 'User' }}</p></dd>
-        </li>
-        <li class="row">
-          <dt class="col-md label"><h3>Member since:</h3></dt>
-          <dd class="col-md value"><p>{{ memberSinceText }}</p></dd>
-        </li>
-        <li class="row">
-          <dt class="col-md label"><h3>Bio:</h3></dt>
-          <dd class="col-md value"><p>{{ userInfo.bio }}</p></dd>
-        </li>
-        <li class="row">
-          <dt class="col-md label"><h3>Date of Birth:</h3></dt>
-          <dd class="col-md value"><p>{{ dateOfBirthText }}</p></dd>
-        </li>
-        <li class="row">
-          <dt class="col-md label"><h3>Email Address:</h3></dt>
-          <dd class="col-md value"><p>{{ userInfo.email }}</p></dd>
-        </li>
-        <li class="row">
-          <dt class="col-md label"><h3>Phone Number:</h3></dt>
-          <dd class="col-md value"><p>{{ userInfo.phoneNumber }}</p></dd>
-        </li>
-        <li class="row">
-          <dt class="col-md label"><h3>Home Address:</h3></dt>
-          <dd class="col-md value"><p>{{ userInfo.homeAddress}}</p></dd>
-        </li>
-        <li>
-          <div>
-            <button
-              v-if="checkAdmin() &&  userInfo.role != 'ROLE_ADMIN'"
-              class="btn btn-white-bg-primary"
-              id="makeAdmin"
-              type="button"
-              v-on:click="makeAdmin(userId)"
-            >
-              Make Admin
-            </button>
-            <button
-              v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
-              class="btn btn-white-bg-primary"
-              id="revokeAdmin"
-              type="button"
-              v-on:click="revokeAdmin(userId)"
-            >
-              Revoke Admin
-            </button>
-          </div>
-        </li>
-      </ul>
+        <div class="profile-content p-3">
+        <ul class="profile-info list-unstyled">
+          <li class="row">
+            <dt class="col-md label"><h3>Full Name:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Nickname:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.nickname }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Role:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : 'User' }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Member since:</h3></dt>
+            <dd class="col-md value"><p>{{ memberSinceText }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Bio:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.bio }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Date of Birth:</h3></dt>
+            <dd class="col-md value"><p>{{ dateOfBirthText }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Email Address:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.email }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Phone Number:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.phoneNumber }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Home Address:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.homeAddress}}</p></dd>
+          </li>
+        </ul>
+        </div>
+        <div class="profile-buttons p-3">
+          <button
+            v-if="checkAdmin() &&  userInfo.role != 'ROLE_ADMIN'"
+            class="btn btn-white-bg-primary"
+            id="makeAdmin"
+            type="button"
+            v-on:click="makeAdmin(userId)"
+          >
+            Make Admin
+          </button>
+          <button
+            v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
+            class="btn btn-white-bg-primary"
+            id="revokeAdmin"
+            type="button"
+            v-on:click="revokeAdmin(userId)"
+          >
+            Revoke Admin
+          </button>
+        </div>
       <div class="row mt-2" v-if="errorMessage.length > 0">
           <div class="col">
             <p class="alert alert-warning">{{ errorMessage }}</p>
@@ -258,17 +258,6 @@ export default {
 </script>
 
 <style scoped>
-.main {
-  line-height: 1.1;
-}
-
-.profile-info li {
-  margin-bottom: 0.5em;
-}
-
-.profile-info {
-  font-size: 1.1em;
-}
 
 dt {
   text-align: right;
@@ -276,11 +265,15 @@ dt {
 
 .profile-card {
   margin: 30px;
-  border: none;
-  border-radius: 10px;
+  border-radius: 15px;
   display: flex;
   justify-content: center;
   padding: 30px;
+}
+
+.profile-content {
+  border-top: 1px solid #eaeee7;
+  border-bottom: 1px solid #eaeee7;
 }
 
 </style>
