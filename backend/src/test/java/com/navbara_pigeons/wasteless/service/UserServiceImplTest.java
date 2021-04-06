@@ -7,10 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.navbara_pigeons.wasteless.controller.UserController;
+import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
+import lombok.val;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,6 +30,9 @@ class UserServiceImplTest {
 
   @Autowired
   UserDao userDao;
+
+  @Autowired
+  AddressDao addressDao;
 
   @Autowired
   UserService userService;
@@ -52,7 +58,7 @@ class UserServiceImplTest {
 
     // Test invalid email address
     String[] emailTests = {"alec", "alec@", "alec@.", "alec@gmail", "alec@gmail.", "@", "@gmail",
-        "@gmail.com", "fdi19@uclive.ac.nz"};
+            "@gmail.com", "fdi19@uclive.ac.nz"};
     User testUserEmail = makeUser();
     for (String emailTest : emailTests) {
       testUserEmail.setEmail(emailTest);
@@ -62,8 +68,8 @@ class UserServiceImplTest {
     // Test invalid passwords
     //noinspection SpellCheckingInspection
     @SuppressWarnings("SpellCheckingInspection") String[] passwordTests = {"pwrd", "", "password",
-        "passw rd", "pasWrd", "passwoRd", "passwo8d",
-        "PASSW8RD"};
+            "passw rd", "pasWrd", "passwoRd", "passwo8d",
+            "PASSW8RD"};
     User testUserPassword = makeUser();
     for (String passwordTest : passwordTests) {
       testUserPassword.setPassword(passwordTest);
@@ -191,7 +197,7 @@ class UserServiceImplTest {
       // Test for permission denied (as revokee is no longer admin)
       long revokerId = revokerUser.getId();
       assertThrows(Exception.class,
-          () -> userController.revokeAdminPermissions(Long.toString(revokerId)));
+              () -> userController.revokeAdminPermissions(Long.toString(revokerId)));
 
     } catch (UserNotFoundException e) {
       System.out.println("EXPECTED ERROR");
@@ -205,19 +211,28 @@ class UserServiceImplTest {
 
   User makeUser() {
     User testUser = new User();
+    Address address = new Address()
+            .setStreetNumber("3/24")
+            .setStreetName("Ilam Road")
+            .setPostcode("90210")
+            .setCity("Christchurch")
+            .setRegion("Canterbury")
+            .setCountry("New Zealand");
+
+    addressDao.saveAddress(address);
 
     // Create test user
     testUser.setId(0)
-        .setFirstName("Tony")
-        .setLastName("Last")
-        .setMiddleName("Middle")
-        .setNickname("Nick")
-        .setEmail("test@example.com")
-        .setDateOfBirth("2000-03-10")
-        .setHomeAddress("22 Someplace Ave, Somecity, Someland")
-        .setCreated("2020-07-14T14:32:00Z")
-        .setRole("ROLE_USER")
-        .setPassword(encodePass("pass"));
+            .setFirstName("Tony")
+            .setLastName("Last")
+            .setMiddleName("Middle")
+            .setNickname("Nick")
+            .setEmail("test@example.com")
+            .setDateOfBirth("2000-03-10")
+            .setHomeAddress(address)
+            .setCreated("2020-07-14T14:32:00Z")
+            .setRole("ROLE_USER")
+            .setPassword(encodePass("pass"));
 
     // Save user using DAO and retrieve by Email
     return testUser;

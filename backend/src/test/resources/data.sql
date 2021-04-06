@@ -1,7 +1,20 @@
--- ###############################  Users Setup  ###############################
+-- noinspection SqlNoDataSourceInspectionForFile
+
 DROP TABLE IF EXISTS USER_BUSINESS;
 DROP TABLE IF EXISTS BUSINESS;
 DROP TABLE IF EXISTS USER;
+DROP TABLE IF EXISTS ADDRESS;
+
+CREATE TABLE ADDRESS
+(
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    STREET_NUMBER VARCHAR(100) NOT NULL,
+    STREET_NAME VARCHAR(200) NOT NULL,
+    POSTCODE VARCHAR(30) NOT NULL,
+    CITY VARCHAR(200) NOT NULL,
+    REGION VARCHAR(200) NOT NULL,
+    COUNTRY VARCHAR(100) NOT NULL
+);
 
 CREATE TABLE USER
 (
@@ -14,10 +27,13 @@ CREATE TABLE USER
     EMAIL         VARCHAR(50)  NOT NULL UNIQUE,
     DATE_OF_BIRTH DATE         NOT NULL,
     PHONE_NUMBER  VARCHAR(18),
-    HOME_ADDRESS  VARCHAR(250) NOT NULL,
+
     CREATED       DATETIME     NOT NULL,
     ROLE          VARCHAR(30)  NOT NULL,
-    PASSWORD      CHAR(60)     NOT NULL
+    PASSWORD      CHAR(60)     NOT NULL,
+
+    HOME_ADDRESS_ID    INT          NOT NULL,
+    CONSTRAINT    ADDRESS_FK   FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES ADDRESS (ID)
 );
 
 CREATE TABLE BUSINESS
@@ -30,7 +46,7 @@ CREATE TABLE BUSINESS
     CREATED       DATETIME     NOT NULL
 );
 
-create table USER_BUSINESS
+CREATE TABLE USER_BUSINESS
 (
     USER_ID     INT NOT NULL,
     BUSINESS_ID INT NOT NULL,
@@ -42,6 +58,47 @@ create table USER_BUSINESS
         FOREIGN KEY (BUSINESS_ID) references BUSINESS (ID)
 );
 
+INSERT INTO ADDRESS(
+    ID,
+    STREET_NUMBER,
+    STREET_NAME,
+    POSTCODE,
+    CITY,
+    REGION,
+    COUNTRY
+) VALUES (
+             0,
+             '0',
+             'Void Street',
+             '-1',
+             'Nil City',
+             'Undefined Plains',
+             'Null Island'
+         ), (
+             1,
+             '10',
+             'Downing Street',
+             'SW1A 2AA',
+             'Westminster',
+             'London',
+             'United Kingdom'
+         ), (
+             2,
+             '99',
+             'Waimari Road',
+             '8041',
+             'Christchurch',
+             'Canterbury',
+             'New Zealand'
+         ), (
+             3,
+             '53',
+             'Ilam Road',
+             '8041',
+             'Christchurch',
+             'Canterbury',
+             'New Zealand'
+         );
 
 -- Inserting test user
 
@@ -53,7 +110,7 @@ INSERT INTO USER(FIRST_NAME,
                  EMAIL,
                  DATE_OF_BIRTH,
                  PHONE_NUMBER,
-                 HOME_ADDRESS,
+                 ADDRESS_ID,
                  CREATED,
                  ROLE,
                  PASSWORD)
@@ -65,7 +122,7 @@ VALUES ('Fletcher',
         'fdi19@uclive.ac.nz',
         '2000-03-10',
         '+64 22 104 1375',
-        '123 Street St, Ilam',
+        0,
         '2020-07-14T14:32:00Z',
         'ROLE_USER',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi'),
@@ -77,7 +134,7 @@ VALUES ('Fletcher',
         'mbi47@uclive.ac.nz',
         '1986-12-22',
         '+64 21 0266 7255',
-        '99 Waimairi Rd, Ilam',
+        1,
         '2020-07-14T14:32:00Z',
         'ROLE_ADMIN',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi'),
@@ -89,7 +146,7 @@ VALUES ('Fletcher',
         'amf133@uclive.ac.nz',
         '2000-10-31',
         '',
-        '123 Yoza Terrace',
+        2,
         '2020-07-14T14:32:00Z',
         'ROLE_ADMIN',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi'),
@@ -101,7 +158,7 @@ VALUES ('Fletcher',
         'dnb36@uclive.ac.nz',
         '2001-11-23',
         '',
-        '102 The Moon Rd, Somewhere',
+        3,
         '2020-07-14T14:32:00Z',
         'ROLE_USER',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi');

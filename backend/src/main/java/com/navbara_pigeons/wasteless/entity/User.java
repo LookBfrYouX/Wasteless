@@ -54,7 +54,7 @@ public class User {
   private String password;
 
   @OneToOne(fetch = FetchType.EAGER, optional = false)
-  @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
+  @JoinColumn(name = "HOME_ADDRESS_ID", referencedColumnName = "ID")
   private Address homeAddress;
 
   @JsonIgnore
