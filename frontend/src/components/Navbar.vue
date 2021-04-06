@@ -94,13 +94,6 @@
     </nav>
   </div>
 </template>
-<style scoped>
-.admin-text {
-  margin: 0;
-  margin-top: -0.5em;
-  font-size: 0.8em;
-}
-</style>
 
 <script>
 
@@ -164,3 +157,28 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+.admin-text {
+  margin: -0.5em 0 0;
+  font-size: 0.8em;
+}
+
+.navbar-search {
+  width: 100% !important;
+}
+
+.navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translatex(-50%);
+  height: 100%;
+  width: 30%;
+}
+
+.navbar {
+  height: 50px;
+}
+
+</style>

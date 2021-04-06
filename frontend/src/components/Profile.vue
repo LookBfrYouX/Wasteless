@@ -4,40 +4,40 @@
       <h1 class="title">Profile Information</h1>
       <ul class="profile-info list-unstyled">
         <li class="row">
-          <dt class="col-md label">Full Name:</dt>
-          <dd class="col-md value"> {{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }} </dd>
+          <dt class="col-md label"><h3>Full Name:</h3></dt>
+          <dd class="col-md value"><p>{{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }}</p></dd>
         </li>
         <li class="row">
-          <dt class="col-md label">Nickname:</dt>
-          <dd class="col-md value"> {{ userInfo.nickname }} </dd>
+          <dt class="col-md label"><h3>Nickname:</h3></dt>
+          <dd class="col-md value"><p>{{ userInfo.nickname }}</p></dd>
         </li>
         <li class="row">
-          <dt class="col-md label">Role:</dt>
-          <dd class="col-md value">{{ userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : 'User' }}</dd>
+          <dt class="col-md label"><h3>Role:</h3></dt>
+          <dd class="col-md value"><p>{{ userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : 'User' }}</p></dd>
         </li>
         <li class="row">
-          <dt class="col-md label">Member since:</dt>
-          <dd class="col-md value"> {{ memberSinceText }}</dd>
+          <dt class="col-md label"><h3>Member since:</h3></dt>
+          <dd class="col-md value"><p>{{ memberSinceText }}</p></dd>
         </li>
         <li class="row">
-          <dt class="col-md label">Bio:</dt>
-          <dd class="col-md value"> {{ userInfo.bio }} </dd>
+          <dt class="col-md label"><h3>Bio:</h3></dt>
+          <dd class="col-md value"><p>{{ userInfo.bio }}</p></dd>
         </li>
         <li class="row">
-          <dt class="col-md label">Date of Birth:</dt>
-          <dd class="col-md value">{{ dateOfBirthText }}</dd>
+          <dt class="col-md label"><h3>Date of Birth:</h3></dt>
+          <dd class="col-md value"><p>{{ dateOfBirthText }}</p></dd>
         </li>
         <li class="row">
-          <dt class="col-md label">Email Address:</dt>
-          <dd class="col-md value"> {{ userInfo.email }} </dd>
+          <dt class="col-md label"><h3>Email Address:</h3></dt>
+          <dd class="col-md value"><p>{{ userInfo.email }}</p></dd>
         </li>
         <li class="row">
-          <dt class="col-md label">Phone Number:</dt>
-          <dd class="col-md value"> {{ userInfo.phoneNumber }} </dd>
+          <dt class="col-md label"><h3>Phone Number:</h3></dt>
+          <dd class="col-md value"><p>{{ userInfo.phoneNumber }}</p></dd>
         </li>
         <li class="row">
-          <dt class="col-md label">Home Address:</dt>
-          <dd class="col-md value"> {{ userInfo.homeAddress}} </dd>
+          <dt class="col-md label"><h3>Home Address:</h3></dt>
+          <dd class="col-md value"><p>{{ userInfo.homeAddress}}</p></dd>
         </li>
         <li>
           <div>
@@ -48,7 +48,7 @@
               type="button"
               v-on:click="makeAdmin(userId)"
             >
-            Make Admin
+              Make Admin
             </button>
             <button
               v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
@@ -57,7 +57,7 @@
               type="button"
               v-on:click="revokeAdmin(userId)"
             >
-            Revoke Admin
+              Revoke Admin
             </button>
           </div>
         </li>
@@ -268,6 +268,10 @@ export default {
 
 .profile-info {
   font-size: 1.1em;
+}
+
+dt {
+  text-align: right;
 }
 
 .profile-card {
