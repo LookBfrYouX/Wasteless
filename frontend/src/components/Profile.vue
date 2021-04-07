@@ -120,7 +120,7 @@ export default {
      * Checks to see if logged in user is an admin using cookie storing session.
      */
     checkAdmin: function() {
-      let user = JSON.parse(localStorage.authUser);
+      const user = this.$store.state.authUser;
       if (user.role == "ROLE_ADMIN") {
         return true;
       } else {
@@ -151,19 +151,12 @@ export default {
     revokeAdmin: async function(userId) {
       try {
         await Api.revokeAdmin(userId);
-        let user = JSON.parse(localStorage.authUser);
-        if (userId == user.id) {
-          user.role = "ROLE_USER";
-          localStorage.setItem('authUser', JSON.stringify(user));
-          this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
-        } else {
+        if (userId.toString() === this.$store.state.authUser.id) {
+          this.$store.state.authUser.role = "ROLE_USER";
           this.userInfo.role = "ROLE_USER";
-          this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
         }
-        return;
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
-        return;
       }
     },
 
