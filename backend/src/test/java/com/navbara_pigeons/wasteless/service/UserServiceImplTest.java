@@ -15,7 +15,7 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import lombok.val;
+
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Map;
 import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("ALL")
@@ -44,60 +43,97 @@ class UserServiceImplTest {
   private final String password = "pass";
   private final String email = "test@example.com";
 
-  @Transactional
+
   void actuallySaveUser(User user) {
     this.addressDao.saveAddress(user.getHomeAddress());
     this.userDao.saveUser(user);
   }
 
-  @Transactional
-  void actuallyDeleteUser(User user) {
-    this.addressDao.deleteAddress(user.getHomeAddress());
-    this.userDao.deleteUser(user);
+  void actuallySaveAddress(Address address) {
+    this.addressDao.saveAddress(address);
   }
 
+  void actuallyDeleteUser(User user) {
+    this.userDao.deleteUser(user);
+    this.addressDao.deleteAddress(user.getHomeAddress());
+  }
+
+  void actuallyDeleteAddress(Address address) {
+    this.addressDao.deleteAddress(address);
+  }
+
+
+  void trySaveUserExpectError(User user) throws Throwable {
+    try {
+      assertThrows(Exception.class, () -> userService.saveUser(user));
+    } catch (Throwable throwable) {
+      actuallyDeleteUser(user);
+      throw throwable;
+    }
+  }
   @Test
+  @Transactional
   void saveValidUser() {
     // Create test user, ensure no errors are thrown
     User testUser = makeUser();
+    actuallySaveAddress(testUser.getHomeAddress());
     testUser.setEmail("test@gmail.com");
-    Assertions.assertDoesNotThrow(() -> userService.saveUser(testUser));
+
+    try {
+      Assertions.assertDoesNotThrow(() -> actuallySaveUser(testUser));
+    } finally {
+      actuallyDeleteAddress(testUser.getHomeAddress());
+    }
   }
 
   @SuppressWarnings("SpellCheckingInspection")
   @Test
-  void saveInvalidUser() {
+  void saveInvalidUserDoB() throws Throwable {
     // Test invalid dob fields
-    String[] dobTests = {"31-Dec-2000", "dfs", "2020/10/05", "20/1/1", "2020-10-31"};
-    User testUserDob = makeUser();
-    for (String dobTest : dobTests) {
-      testUserDob.setDateOfBirth(dobTest);
-      assertThrows(Exception.class, () -> userService.saveUser(testUserDob));
-    }
+    String[] testValues = {"31-Dec-2000", "dfs", "2020/10/05", "20/1/1"};
 
+    User user = makeUser();
+
+    for (String testValue : testValues) {
+      user.setDateOfBirth(testValue);
+      trySaveUserExpectError(user);
+    }
+  }
+
+  @SuppressWarnings("SpellCheckingInspection")
+  @Test
+  void saveInvalidUserEmail() throws Throwable {
     // Test invalid email address
-    String[] emailTests = {"alec", "alec@", "alec@.", "alec@gmail", "alec@gmail.", "@", "@gmail",
-        "@gmail.com", "fdi19@uclive.ac.nz"};
-    User testUserEmail = makeUser();
-    for (String emailTest : emailTests) {
-      testUserEmail.setEmail(emailTest);
-      assertThrows(Exception.class, () -> userService.saveUser(testUserEmail));
-    }
+    String[] testValues = {"alec", "alec@", "alec@.", "alec@gmail", "alec@gmail.", "@", "@gmail",
+            "@gmail.com"};
+    User user = makeUser();
 
+    for (String testValue : testValues) {
+      user.setEmail(testValue);
+      trySaveUserExpectError(user);
+    }
+  }
+
+  @SuppressWarnings("SpellCheckingInspection")
+  @Test
+  void saveInvalidUserPassword() throws Throwable {
     // Test invalid passwords
-    //noinspection SpellCheckingInspection
-    @SuppressWarnings("SpellCheckingInspection") String[] passwordTests = {"pwrd", "", "password",
+    String[] testValues = {"pwrd", "", "password",
         "passw rd", "pasWrd", "passwoRd", "passwo8d",
         "PASSW8RD"};
-    User testUserPassword = makeUser();
-    for (String passwordTest : passwordTests) {
-      testUserPassword.setPassword(passwordTest);
-      assertThrows(Exception.class, () -> userService.saveUser(testUserPassword));
+
+    User user = makeUser();
+
+    for (String testValue : testValues) {
+      user.setPassword(testValue);
+      System.out.println(testValue);
+      trySaveUserExpectError(user);
     }
   }
 
 
   @Test
+  @Transactional
   public void getUserSelf() throws UserNotFoundException {
     User user = makeUser(email, false, password);
     actuallySaveUser(user);
@@ -106,6 +142,7 @@ class UserServiceImplTest {
   }
 
   @Test
+  @Transactional
   public void getUserOther() throws UserNotFoundException {
     User user = makeUser(email, false, password);
     actuallySaveUser(user);
@@ -176,20 +213,22 @@ class UserServiceImplTest {
   }
 
   @Test
+  @Transactional
   void login() {
     // Check that no credentials or incorrect credentials throw an error.
     assertThrows(Exception.class, () -> userController.login(new UserCredentials()));
 
     // Set up a valid user and credentials
+    // Make a user and save with encoded password
+    User testUser = makeUser("test@test.com", false, password);
+
     // -- Set up credentials
     UserCredentials testCredentials = new UserCredentials();
-    testCredentials.setEmail("test@test.com");
+    testCredentials.setEmail(testUser.getEmail());
     testCredentials.setPassword(password);
-    // Make a user and save with encoded password
-    User testUser = makeUser();
-    testUser.setEmail("test@test.com");
-    testUser.setPassword(encodePass(password));
-    userDao.saveUser(testUser);
+
+    actuallySaveUser(testUser);
+
     // Check that login gives a response.
     assertNotNull(userController.login(testCredentials));
     // Check that no error is thrown.
@@ -207,26 +246,24 @@ class UserServiceImplTest {
   }
 
   @Test
+  @Transactional
   void makeAdminTest() {
     // Make two users (admin/non-admin)
-    User adminUser = makeUser();
-    User toBeAdminUser = makeUser();
-    adminUser.setRole("ROLE_ADMIN");
-    adminUser.setEmail("admin@test.com");
-    toBeAdminUser.setEmail("toBeAdmin@test.com");
+    User adminUser = makeUser("admin@test.com", true, password);
+    User toBeAdminUser = makeUser("toBeAdmin@test.com", false, password);
 
     // Persist users
-    userDao.saveUser(adminUser);
-    userDao.saveUser(toBeAdminUser);
+    actuallySaveUser(adminUser);
+    actuallySaveUser(toBeAdminUser);
 
     // Get users from db
     UserCredentials userCredentials = new UserCredentials();
     try {
-      adminUser = userService.getUserByEmail("admin@test.com");
-      toBeAdminUser = userService.getUserByEmail("toBeAdmin@test.com");
+      adminUser = userService.getUserByEmail(adminUser.getEmail());
+      toBeAdminUser = userService.getUserByEmail(toBeAdminUser.getEmail());
 
       // Log admin user in
-      userCredentials.setEmail("admin@test.com");
+      userCredentials.setEmail(adminUser.getEmail());
       userCredentials.setPassword(password);
       userController.login(userCredentials);
 
@@ -235,7 +272,7 @@ class UserServiceImplTest {
       assertDoesNotThrow(() -> userService.makeUserAdmin(toBeAdminId));
 
       // Refresh the user and test for admin permission
-      toBeAdminUser = userService.getUserByEmail("toBeAdmin@test.com");
+      toBeAdminUser = userService.getUserByEmail(toBeAdminUser.getEmail());
       assertEquals("ROLE_ADMIN", toBeAdminUser.getRole());
 
       // Log in as revokee and test exceptions
@@ -245,13 +282,16 @@ class UserServiceImplTest {
 
       // Test for green flow
       assertDoesNotThrow(() -> userController.revokeAdminPermissions(Long.toString(toBeAdminId)));
-
     } catch (UserNotFoundException e) {
       System.out.println("EXPECTED ERROR");
+    } finally {
+      actuallyDeleteUser(adminUser);
+      actuallyDeleteUser(toBeAdminUser);
     }
   }
 
   @Test
+  @Transactional
   void revokeAdminTest() {
     // Make two users (revoker/revokee)
     User revokerUser = makeUser();
@@ -264,8 +304,8 @@ class UserServiceImplTest {
     revokeeUser.setEmail("revokee@test");
     revokeeUser.setPassword(encodePass(password));
     // Persist users
-    userDao.saveUser(revokerUser);
-    userDao.saveUser(revokeeUser);
+    actuallySaveUser(revokerUser);
+    actuallySaveUser(revokeeUser);
     // Get users from db
     UserCredentials userCredentials = new UserCredentials();
     try {
@@ -298,7 +338,10 @@ class UserServiceImplTest {
           () -> userController.revokeAdminPermissions(Long.toString(revokerId)));
 
     } catch (UserNotFoundException e) {
-      System.out.println("EXPECTED ERROR");
+      Assertions.fail();
+    } finally {
+      actuallyDeleteUser(revokerUser);
+      actuallyDeleteUser(revokeeUser);
     }
   }
 
@@ -332,8 +375,6 @@ class UserServiceImplTest {
         .setRegion("Canterbury")
         .setCountry("New Zealand");
 
-    addressDao.saveAddress(address);
-
     // Create test user
     testUser.setId(0)
         .setFirstName("Tony")
@@ -351,5 +392,4 @@ class UserServiceImplTest {
     // Save user using DAO and retrieve by Email
     return testUser;
   }
-
 }
