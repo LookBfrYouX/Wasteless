@@ -5,7 +5,7 @@
         <div class="profile-content p-3">
         <ul class="profile-info list-unstyled">
           <li class="row">
-            <dt class="col-md label">Full Name:</h3></dt>
+            <dt class="col-md label">Full Name:</dt>
             <dd class="col-md value"><p>{{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }}</p></dd>
           </li>
           <li class="row">

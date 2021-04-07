@@ -67,15 +67,15 @@
     </div>
     <div class="row">
       <div class="col-md-4 order-2 order-md-1 m-2 card">
-        <h5 class="text-muted mt-3">Interested in</h5>
+        <h5 class="text-muted mt-3">Businesses</h5>
         <div class="card my-2">
           <div class="card-body">
             <h5 class="card-title">Card title</h5>
             <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
             <p class="card-text">Some quick example text to build on the card title and make up the
               bulk of the card's content.</p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
+            <a href="/profile" class="card-link">Card link</a>
+            <a href="/profile" class="card-link">Another link</a>
           </div>
         </div>
         <div class="card my-2">
@@ -84,8 +84,8 @@
             <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
             <p class="card-text">Some quick example text to build on the card title and make up the
               bulk of the card's content.</p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
+            <a href="/profile" class="card-link">Card link</a>
+            <a href="/profile" class="card-link">Another link</a>
           </div>
         </div>
 
@@ -93,35 +93,43 @@
       <div class="col-md-7 order-1 order-md-2 m-2 card">
         <ul class="nav nav-tabs mt-2">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Details</a>
+            <a class="nav-link active" aria-current="page">Details</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Previously Bought</a>
+            <a class="nav-link disabled">Future Tab</a>
           </li>
         </ul>
         <div class="m-4">
-          <h5 class="text-muted">User Details</h5>
-          <li class="row">
-            <dt class="label">Nickname:</dt>
-            <dd class="col-md value"><p>{{ userInfo.nickname }}</p></dd>
-          </li>
-          <li class="row">
-            <dt class="label">Member since:</dt>
-            <dd class="col-md value"><p>{{ memberSinceText }}</p></dd>
-          </li>
-          <li class="row">
-            <dt class="label">Date of Birth:</dt>
-            <dd class="col-md value"><p>{{ dateOfBirthText }}</p></dd>
-          </li>
-          <h5 class="text-muted">Contact Information</h5>
-          <li class="row">
-            <dt class="label">Email Address:</dt>
-            <dd class="col-md value"><p>{{ userInfo.email }}</p></dd>
-          </li>
-          <li class="row">
-            <dt class="label">Phone Number:</dt>
-            <dd class="col-md value"><p>{{ userInfo.phoneNumber }}</p></dd>
-          </li>
+          <table class="table table-hover">
+            <tbody>
+            <tr>
+              <td colspan="2"><h5 class="text-muted">User Details</h5></td>
+            </tr>
+            <tr v-if="userInfo.nickname" scope="row">
+              <th style="white-space: nowrap;">Nickname:</th>
+              <td class="col-md value"><p>{{ userInfo.nickname }}</p></td>
+            </tr>
+            <tr v-if="memberSinceText" scope="row">
+              <th style="white-space: nowrap;">Member since:</th>
+              <td class="col-md value"><p>{{ memberSinceText }}</p></td>
+            </tr>
+            <tr v-if="dateOfBirthText" scope="row">
+              <th style="white-space: nowrap;">Date of Birth:</th>
+              <td class="col-md value"><p>{{ dateOfBirthText }}</p></td>
+            </tr>
+            <tr>
+              <td colspan="2"><h5 class="text-muted">Contact Information</h5></td>
+            </tr>
+            <tr v-if="userInfo.email" scope="row">
+              <th style="white-space: nowrap;">Email Address:</th>
+              <td class="col-md value"><p>{{ userInfo.email }}</p></td>
+            </tr>
+            <tr v-if="userInfo.phoneNumber" scope="row">
+              <th style="white-space: nowrap;">Phone Number:</th>
+              <td class="col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
