@@ -4,10 +4,11 @@
       <!--User profile image card-->
       <div class="col-md-4 m-2 card">
         <!--Upload image button overlay-->
-        <div
+        <button type="button" class="btn btn-lg btn-primary" disabled
             style="position: absolute; bottom: 10px; right: 20px; border-radius: 50%; background: lightgray; width: 70px; height: 70px; padding: 10px">
-          <font-awesome-icon style="height: 100%; width: 100%;" icon="images"/>
-        </div>
+<!--          <font-awesome-icon style="height: 100%; width: 100%;" icon="images"/>-->
+          <span class="material-icons md-48">file_upload</span>
+        </button>
         <!--User profile image-->
         <img class="my-3 rounded-circle" src="placeholder-profile.png" alt="Users profile image">
 
@@ -19,10 +20,13 @@
             <h2 style="float: left" class="mb-0">{{ userInfo.firstName }} {{ userInfo.middleName }}
               {{ userInfo.lastName }}</h2>
             <!--Location data-->
-            <div v-if="userInfo.homeAddress.city || userInfo.homeAddress.country"
-                 class="d-flex align-items-center">
-              <font-awesome-icon class="m-2" icon="map-marker-alt"/>
-              <span class="text-muted">{{
+            <div
+                v-if="userInfo.homeAddress.city || userInfo.homeAddress.country || userInfo.homeAddress"
+                class="d-flex align-items-center">
+              <span class="material-icons">location_on</span>
+              <span class="text-muted">
+                {{ userInfo.homeAddress }}
+                {{
                   [userInfo.homeAddress.city, userInfo.homeAddress.country].filter(Boolean).join(
                       ', ')
                 }}</span>
