@@ -41,11 +41,11 @@
         <div v-if="checkLogin()" class="d-flex">
           <form class="input-group mt-2 navbar-center form-inline" v-on:submit.prevent="search">
             <div class="input-group mb-3 navbar-search">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1"><span class="material-icons">search</span></span>
+              <div class="input-group-prepend h-100">
+                <span class="input-group-text"><span class="material-icons">search</span></span>
               </div>
               <input
-                  class=" form-control mr-sm-2"
+                  class=" form-control mr-sm-2 h-100"
                   type="text"
                   v-bind:value="query"
                   v-on:input="event => $emit('input', event)"
