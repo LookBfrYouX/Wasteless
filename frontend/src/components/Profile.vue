@@ -114,18 +114,12 @@ export default {
   },
 
   methods: {
-    // TODO: make admin buttons auto update without refresh
 
     /**
      * Checks to see if logged in user is an admin using cookie storing session.
      */
     checkAdmin: function() {
-      const user = this.$store.state.authUser;
-      if (user.role == "ROLE_ADMIN") {
-        return true;
-      } else {
-        return false;
-      }
+      return (this.$store.state.authUser.role === "ROLE_ADMIN");
     },
 
     /**
