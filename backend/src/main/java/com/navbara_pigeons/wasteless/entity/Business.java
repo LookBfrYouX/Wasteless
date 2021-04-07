@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.ToString;
@@ -26,14 +27,18 @@ public class Business {
   @Column(name = "ID")
   private long id;
 
+  @Column(name = "PRIMARY_ADMINISTRATOR_ID")
+  private long primaryAdministratorId;
+
   @Column(name = "NAME")
   private String name;
 
   @Column(name = "DESCRIPTION")
   private String description;
 
-  @Column(name = "ADDRESS")
-  private String address;
+  @OneToOne(fetch = FetchType.EAGER, optional = false)
+  @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
+  private Address address;
 
   @Column(name = "BUSINESS_TYPE")
   private String businessType;

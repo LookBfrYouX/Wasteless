@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -7,13 +8,17 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
+import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,6 +31,8 @@ public class BusinessServiceImpl implements BusinessService {
 
   private final BusinessDao businessDao;
 
+  private final AddressDao addressDao;
+
   private final UserDao userDao;
 
   /**
@@ -35,8 +42,9 @@ public class BusinessServiceImpl implements BusinessService {
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, UserDao userDao) {
+  public BusinessServiceImpl(BusinessDao businessDao, AddressDao addressDao, UserDao userDao) {
     this.businessDao = businessDao;
+    this.addressDao = addressDao;
     this.userDao = userDao;
   }
 
@@ -59,6 +67,7 @@ public class BusinessServiceImpl implements BusinessService {
     User currentUser = this.userDao.getUserByEmail(authentication.getName());
     business.addAdministrator(currentUser);
     business.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+    this.addressDao.saveAddress(business.getAddress());
     this.businessDao.saveBusiness(business);
     JSONObject response = new JSONObject();
     response.put("businessId", business.getId());
@@ -72,8 +81,48 @@ public class BusinessServiceImpl implements BusinessService {
    * @return the Business instance of the business
    */
   @Override
-  public Business getBusinessById(long id) throws BusinessNotFoundException {
-    return this.businessDao.getBusinessById(id);
+  public JSONObject getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException {
+    Business business = this.businessDao.getBusinessById(id);
+
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    Authentication authentication = securityContext.getAuthentication();
+    User user = this.userDao.getUserByEmail(authentication.getName());
+    JSONObject response = new JSONObject();
+    response.put("id", Long.toString(id));
+    response.put("name", business.getName());
+    response.put("description", business.getDescription());
+    response.put("businessType", business.getBusinessType());
+    response.put("created", business.getCreated());
+
+    JSONObject address = new JSONObject();
+    response.put("homeAddress", address);
+    response.put("primaryAdministratorId", business.getPrimaryAdministratorId());
+
+    // Email of user that made the request
+    String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
+    boolean isAdmin = false;
+    for (GrantedAuthority simpleGrantedAuthority : authentication.getAuthorities()) {
+      if (simpleGrantedAuthority.getAuthority().contains("ADMIN")) {
+        isAdmin = true;
+      }
+    }
+    boolean isAdministrator = false;
+    for (User administrator : business.getAdministrators()) {
+      if (administrator.getEmail() == username) {
+        isAdministrator = true;
+      }
+    }
+    // sensitive details (e.g. email, postcode) are not returned
+    if ( business.getPrimaryAdministratorId() == user.getId() || isAdministrator || isAdmin ) {
+      address.put("streetNumber", user.getHomeAddress().getStreetNumber());
+      address.put("streetName", user.getHomeAddress().getStreetName());
+      address.put("postcode", user.getHomeAddress().getPostcode());
+    }
+
+    address.put("city", user.getHomeAddress().getCity());
+    address.put("region", user.getHomeAddress().getRegion());
+    address.put("country", user.getHomeAddress().getCountry());
+    return response;
   }
 
 }

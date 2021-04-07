@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
@@ -13,6 +14,7 @@ import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import javax.transaction.Transactional;

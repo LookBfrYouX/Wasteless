@@ -220,13 +220,16 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/businesses/{id}")
-  public ResponseEntity<Business> getBusinessById(@PathVariable String id) {
+  public ResponseEntity<JSONObject> getBusinessById(@PathVariable String id) {
     try {
+      log.info("GETTING BUSINESS BY ID: " + id);
       return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)),
           HttpStatus.valueOf(200));
     } catch (BusinessNotFoundException exc) {
+      log.error("BUSINESS NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
     } catch (NumberFormatException exc) {
+      log.error("INVALID ID FORMAT ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), "ID format not valid");
     } catch (Exception exc) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");

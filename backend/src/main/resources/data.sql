@@ -33,17 +33,19 @@ CREATE TABLE USER
     PASSWORD      CHAR(60)     NOT NULL,
 
     HOME_ADDRESS_ID    INT          NOT NULL,
-    CONSTRAINT    ADDRESS_FK   FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES ADDRESS (ID)
+    CONSTRAINT    USER_ADDRESS_FK   FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES ADDRESS (ID)
 );
 
 CREATE TABLE BUSINESS
 (
     ID            INT AUTO_INCREMENT PRIMARY KEY,
+    PRIMARY_ADMINISTRATOR_ID INT NOT NULL,
     NAME          VARCHAR(50)  NOT NULL,
     DESCRIPTION   VARCHAR(250),
-    ADDRESS       VARCHAR(250) NOT NULL,
+    ADDRESS_ID    INT          NOT NULL,
     BUSINESS_TYPE VARCHAR(50)  NOT NULL,
-    CREATED       DATETIME     NOT NULL
+    CREATED       DATETIME     NOT NULL,
+    CONSTRAINT    BUSINESS_ADDRESS_FK   FOREIGN KEY (ADDRESS_ID) REFERENCES ADDRESS (ID)
 );
 
 CREATE TABLE USER_BUSINESS
@@ -94,6 +96,22 @@ INSERT INTO ADDRESS(
     3,
     '53',
     'Ilam Road',
+    '8041',
+    'Christchurch',
+    'Canterbury',
+    'New Zealand'
+), (
+    4,
+    '123',
+    'Fake Street',
+    '8041',
+    'Christchurch',
+    'Canterbury',
+    'New Zealand'
+), (
+    5,
+    '79',
+    'Place Road',
     '8041',
     'Christchurch',
     'Canterbury',
@@ -164,21 +182,24 @@ VALUES ('Fletcher',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi');
 
 INSERT INTO BUSINESS(NAME,
+                 PRIMARY_ADMINISTRATOR_ID,
                  DESCRIPTION,
-                 ADDRESS,
+                 ADDRESS_ID,
                  BUSINESS_TYPE,
                  CREATED)
 VALUES (
     'TestName',
+    4,
     'A Good business',
-    '79 Place Street, Christchurch',
+    5,
     'Retail Trade',
     '2020-07-14T14:32:00Z'
 ),
 (
     'Fake Business',
+    4,
     'Shh very secret',
-    '123 Fake Street, Christchurch',
+    4,
     'Retail Trade',
     '2020-07-14T14:32:00Z'
 );
