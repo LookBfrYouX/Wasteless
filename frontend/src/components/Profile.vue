@@ -153,8 +153,9 @@ export default {
         await Api.revokeAdmin(userId);
         if (userId.toString() === this.$store.state.authUser.id) {
           this.$store.state.authUser.role = "ROLE_USER";
-          this.userInfo.role = "ROLE_USER";
         }
+        this.userInfo.role = "ROLE_USER";
+        this.errorMessage = `Successfully revoked admin privileges of ${this.userInfo.firstName} ${this.userInfo.lastName} `;
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
       }
