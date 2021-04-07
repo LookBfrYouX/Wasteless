@@ -62,9 +62,9 @@
             Revoke Admin
           </button>
         </div>
-      <div class="row mt-2" v-if="errorMessage.length > 0">
+      <div class="row mt-2" v-if="statusMessage.length > 0">
           <div class="col">
-            <p class="alert alert-warning">{{ errorMessage }}</p>
+            <p class="alert alert-warning">{{ statusMessage }}</p>
           </div>
       </div>
     </div>
@@ -85,7 +85,7 @@ export default {
   data() {
     return {
       userInfo: {},
-      errorMessage: "",
+      statusMessage: "",
     }
   },
 
@@ -119,10 +119,10 @@ export default {
       try {
         await Api.makeAdmin(userId);
         this.userInfo.role = "ROLE_ADMIN";
-        this.errorMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
+        this.statusMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
         return;
       } catch (err) {
-        this.errorMessage = err.userFacingErrorMessage;
+        this.statusMessage = err.userFacingErrorMessage;
         return;
       }
     },
@@ -138,9 +138,9 @@ export default {
           this.$store.state.authUser.role = "ROLE_USER";
         }
         this.userInfo.role = "ROLE_USER";
-        this.errorMessage = `Successfully revoked admin privileges of ${this.userInfo.firstName} ${this.userInfo.lastName} `;
+        this.statusMessage = `Successfully revoked admin privileges of ${this.userInfo.firstName} ${this.userInfo.lastName} `;
       } catch (err) {
-        this.errorMessage = err.userFacingErrorMessage;
+        this.statusMessage = err.userFacingErrorMessage;
       }
     },
 
@@ -164,7 +164,7 @@ export default {
       try {
         const response = await apiCall;
         this.userInfo = response.data;
-        this.errorMessage = "";
+        this.statusMessage = "";
       } catch(err) {
         alert(err.userFacingErrorMessage == undefined? err.toString(): err.userFacingErrorMessage);
       }
