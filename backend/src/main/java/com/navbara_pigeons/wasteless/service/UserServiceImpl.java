@@ -144,6 +144,7 @@ public class UserServiceImpl implements UserService {
 
     JSONObject address = new JSONObject();
     response.put("homeAddress", address);
+    response.put("businesses", user.getBusinesses());
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

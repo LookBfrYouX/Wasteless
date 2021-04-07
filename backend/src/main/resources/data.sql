@@ -162,3 +162,34 @@ VALUES ('Fletcher',
         '2020-07-14T14:32:00Z',
         'ROLE_USER',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi');
+
+INSERT INTO BUSINESS(NAME,
+                 DESCRIPTION,
+                 ADDRESS,
+                 BUSINESS_TYPE,
+                 CREATED)
+VALUES (
+    'TestName',
+    'A Good business',
+    '79 Place Street, Christchurch',
+    'Retail Trade',
+    '2020-07-14T14:32:00Z'
+),
+(
+    'Fake Business',
+    'Shh very secret',
+    '123 Fake Street, Christchurch',
+    'Retail Trade',
+    '2020-07-14T14:32:00Z'
+);
+
+INSERT INTO USER_BUSINESS(USER_ID,
+                 BUSINESS_ID)
+VALUES (
+    4,
+    1
+),
+(
+    4,
+    2
+);

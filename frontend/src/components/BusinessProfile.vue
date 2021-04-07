@@ -37,7 +37,7 @@ const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "Ju
 Object.freeze(MONTH_NAMES);
 
 export default {
-  name: 'profilePage',
+  name: 'businessProfile',
   components: {},
 
   data() {

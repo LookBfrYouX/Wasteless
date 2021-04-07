@@ -80,6 +80,15 @@
           </div>
       </div>
     </div>
+    <div>
+      <h1 class="title">Businesses</h1>
+      <ul class="profile-business-info list-unstyled">
+        <li class="list-group-item card text-wrap" v-for="(business, index) in userInfo.businesses" v-bind:key="index">
+          <dt class="col-md label">Business Name:</dt>
+          <dd class="col-md value" v-on:click="viewBusiness(business.id)"> {{ business.name }} </dd>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -106,7 +115,8 @@ export default {
         emailAddress: "",
         phoneNumber: "",
         homeAddress: "",
-        role: "ROLE_USER"
+        role: "ROLE_USER",
+        businesses: []
       },
       errorMessage: "",
     }
@@ -246,6 +256,15 @@ export default {
 
       return`${yearsText}, ${monthsText}`;
     },
+
+    viewBusiness(businessId) {
+      this.$router.push({
+        name: "businessProfile",
+        params: {
+          businessId
+        }
+      });
+    }
   },
 
   computed: {
