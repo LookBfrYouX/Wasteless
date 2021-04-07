@@ -16,7 +16,7 @@
 
         <div class="row">
           <div class="form-group required col-12 col-md-6">
-            <label for="name">Name</label>
+            <label>Name</label>
             <input
               class="form-control"
               type="text"
@@ -29,15 +29,13 @@
           </div>
 
           <div class="form-group required col-12 col-md-6">
-            <label for="type">Type</label>
-            <!-- TODO: this needs to be a dropdown! -->
+            <label>Type</label>
             <select
               name="type"
               class="form-control"
               v-bind:class="{ 'is-invalid': typeRequired }"
               v-model="type"
             >
-              <!---Add blank element to country code list so that user can choose not to enter phone-->
               <option
               v-for="code in types"
               :key="code.message"
@@ -55,7 +53,7 @@
 
         <div class="row>">
           <div class="form-group col px-0">
-            <label for="description">Description</label>
+            <label>Description</label>
             <textarea
               class="form-control"
               type="text"
@@ -123,8 +121,8 @@ export default {
       typeRequired: false, // If phone entered but not country code
 
       address: {
-        addressLine1: "",
-        addressLine2: "",
+        streetNumber: "",
+        streetName: "",
         postcode: "",
         city: "",
         region: "",
