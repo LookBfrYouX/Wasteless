@@ -44,7 +44,7 @@
           userInfo.homeAddress.postcode].join(", ")}} </dd>
         </li>
         <li>
-          <div>
+          <div class="d-flex justify-content-between flex-row">
             <button
               v-if="checkAdmin() &&  userInfo.role != 'ROLE_ADMIN'"
               class="btn btn-white-bg-primary"
@@ -297,10 +297,6 @@ export default {
   display: flex;
   justify-content: center;
   padding: 30px;
-}
-
-#registerBusiness {
-  float: right;
 }
 
 </style>
