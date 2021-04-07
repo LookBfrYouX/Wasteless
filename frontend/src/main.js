@@ -33,12 +33,7 @@ import App from './App';
 import { router } from './router';
 import "bootstrap";
 import "./styles/custom.scss";
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSearch, faMapMarkerAlt, faImages } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faSearch, faMapMarkerAlt, faImages);
-Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.config.productionTip = false
 
