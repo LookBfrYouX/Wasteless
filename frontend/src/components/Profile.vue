@@ -38,28 +38,30 @@
           <p>{{ userInfo.bio }}</p>
 
           <br>
-          <div class="profile-buttons pt-3 d-flex">
-            <button class="btn btn-white-bg-primary mx-1" disabled>Send Message</button>
+          <div class="profile-buttons d-flex" style="position: absolute;bottom: 30px">
+            <button class="btn btn-white-bg-primary mx-1 d-flex" disabled><span class="material-icons mr-1">send</span>Send Message</button>
             <button
                 v-if="checkAdmin() &&  userInfo.role != 'ROLE_ADMIN'"
-                class="btn btn-white-bg-primary mx-1"
+                class="btn btn-white-bg-primary mx-1 d-flex"
                 id="makeAdmin"
                 type="button"
                 v-on:click="makeAdmin(userId)"
             >
+              <span class="material-icons mr-1">person</span>
               Make Admin
             </button>
             <button
                 v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
-                class="btn btn-white-bg-primary mx-1"
+                class="btn btn-white-bg-primary mx-1 d-flex"
                 id="revokeAdmin"
                 type="button"
                 v-on:click="revokeAdmin(userId)"
             >
+              <span class="material-icons mr-1">person</span>
               Revoke Admin
             </button>
           </div>
-
+          <span class="material-icons">badge</span>
         </div>
       </div>
     </div>
