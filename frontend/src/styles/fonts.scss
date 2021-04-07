@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'Catamaran';
+  font-style: normal;
+  src: url(../assets/fonts/Catamaran/Catamaran-VariableFont_wght.ttf); /* For IE6-8 */
+  src: local('Catamaran'),
+  local('Catamaran'),
+  url(../assets/fonts/Catamaran/Catamaran-VariableFont_wght.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  src: url(../assets/fonts/Montserrat/Montserrat-Light.ttf); /* For IE6-8 */
+  src: local('Montserrat-Light'),
+  local('Montserrat-Light'),
+  url(../assets/fonts/Montserrat/Montserrat-Light.ttf) format('truetype');
+}
