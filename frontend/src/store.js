@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state () {
         return {
-            authUser: null,
+            authUser: JSON.parse(localStorage.getItem("authUser")),
             welcomeMessage: "HERE WE GOOO",
         };
     }
