@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
@@ -45,7 +46,7 @@ public class User {
   private String phoneNumber;
 
   @Column(name = "CREATED")
-  private String created;
+  private ZonedDateTime created;
 
   @Column(name = "ROLE")
   private String role;
