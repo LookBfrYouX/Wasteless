@@ -16,7 +16,7 @@ public class AddressDaoImpl implements AddressDao {
   }
 
   /**
-   * Method to save a Address entity to the database.
+   * Method to save an Address entity to the database.
    *
    * @param address Passed in Address model
    */
@@ -24,6 +24,17 @@ public class AddressDaoImpl implements AddressDao {
   public void saveAddress(Address address) {
     Session currentSession = getSession();
     currentSession.saveOrUpdate(address);
+  }
+
+  /**
+   * Method to delete an Address entity from the database.
+   *
+   * @param address Passed in Address model
+   */
+  @Override
+  public void deleteAddress(Address address) {
+    Session currentSession = getSession();
+    currentSession.delete(address);
   }
 
   /**

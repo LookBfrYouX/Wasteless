@@ -10,6 +10,8 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,15 +39,15 @@ class UserDaoHibernateImplTest {
 
     // Create test user
     testUser.setFirstName("Fletcher")
-            .setLastName("Dick")
-            .setMiddleName("")
-            .setNickname("")
-            .setEmail(testEmail)
-            .setDateOfBirth("2000-03-10")
-            .setHomeAddress(mockAddress())
-            .setCreated("2020-07-14T14:32:00Z")
-            .setRole("user")
-            .setPassword("myPassword");
+        .setLastName("Dick")
+        .setMiddleName("")
+        .setNickname("")
+        .setEmail(testEmail)
+        .setDateOfBirth("2000-03-10")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
+        .setRole("user")
+        .setPassword("myPassword");
 
     // Save user using DAO and retrieve by Email
     userDao.saveUser(testUser);
@@ -70,15 +72,15 @@ class UserDaoHibernateImplTest {
     // Create test user
     //noinspection SpellCheckingInspection
     testUser.setFirstName("Dawson")
-            .setLastName("Berry")
-            .setMiddleName("Neil")
-            .setNickname("dnb36")
-            .setEmail("fake@uclive.ac.nz")
-            .setDateOfBirth("2001-11-23")
-            .setHomeAddress(mockAddress())
-            .setCreated("2020-07-14T14:32:00Z")
-            .setRole("user")
-            .setPassword("$2y$12$dhGJXGeytGMritdpvgPYCusLaldDTUUvsZXDV2g6zT4wHvtnlLsva");
+        .setLastName("Berry")
+        .setMiddleName("Neil")
+        .setNickname("dnb36")
+        .setEmail("fake@uclive.ac.nz")
+        .setDateOfBirth("2001-11-23")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
+        .setRole("user")
+        .setPassword("$2y$12$dhGJXGeytGMritdpvgPYCusLaldDTUUvsZXDV2g6zT4wHvtnlLsva");
 
     // Save user using DAO and retrieve by Id
     userDao.saveUser(testUser);
@@ -101,41 +103,41 @@ class UserDaoHibernateImplTest {
     User testUser1 = new User();
     // Create test user
     testUser1.setFirstName("Fred")
-            .setLastName("Smith")
-            .setMiddleName("")
-            .setNickname("Fman")
-            .setEmail("fake1@uclive.ac.nz")
-            .setDateOfBirth("2001-11-23")
-            .setHomeAddress(mockAddress())
-            .setCreated("2020-07-14T14:32:00Z")
-            .setRole("user")
-            .setPassword("test1");
+        .setLastName("Smith")
+        .setMiddleName("")
+        .setNickname("Fman")
+        .setEmail("fake1@uclive.ac.nz")
+        .setDateOfBirth("2001-11-23")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
+        .setRole("user")
+        .setPassword("test1");
 
     User testUser2 = new User();
     // Create test user
     testUser2.setFirstName("Freddy")
-            .setLastName("Smithson")
-            .setMiddleName("John")
-            .setNickname("Frodo")
-            .setEmail("fake2@uclive.ac.nz")
-            .setDateOfBirth("2001-11-23")
-            .setHomeAddress(mockAddress())
-            .setCreated("2020-07-14T14:32:00Z")
-            .setRole("user")
-            .setPassword("test2");
+        .setLastName("Smithson")
+        .setMiddleName("John")
+        .setNickname("Frodo")
+        .setEmail("fake2@uclive.ac.nz")
+        .setDateOfBirth("2001-11-23")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
+        .setRole("user")
+        .setPassword("test2");
 
     User testUser3 = new User();
     // Create test user
     testUser3.setFirstName("test")
-            .setLastName("name")
-            .setMiddleName("user")
-            .setNickname("tt")
-            .setEmail("fake3@uclive.ac.nz")
-            .setDateOfBirth("2001-11-23")
-            .setHomeAddress(mockAddress())
-            .setCreated("2020-07-14T14:32:00Z")
-            .setRole("user")
-            .setPassword("test3");
+        .setLastName("name")
+        .setMiddleName("user")
+        .setNickname("tt")
+        .setEmail("fake3@uclive.ac.nz")
+        .setDateOfBirth("2001-11-23")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
+        .setRole("user")
+        .setPassword("test3");
 
     userDao.saveUser(testUser1);
     userDao.saveUser(testUser2);
@@ -174,17 +176,17 @@ class UserDaoHibernateImplTest {
     String nickname = "Garfeild";
     // Create test user then save it to the db
     User userToSearch = new User()
-            .setFirstName(firstName)
-            .setMiddleName(middleName)
-            .setLastName(lastName)
-            .setNickname(nickname)
-            .setEmail("John.Jono@uclive.ac.nz")
-            .setDateOfBirth("2001-11-23")
-            .setHomeAddress(mockAddress())
-            .setCreated("2021-03-16 23:13:59.223794")
-            .setRole("ROLE_USER")
-            .setPassword("this_is_my_pass")
-            .setBusinesses(new ArrayList<Business>());
+        .setFirstName(firstName)
+        .setMiddleName(middleName)
+        .setLastName(lastName)
+        .setNickname(nickname)
+        .setEmail("John.Jono@uclive.ac.nz")
+        .setDateOfBirth("2001-11-23")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
+        .setRole("ROLE_USER")
+        .setPassword("this_is_my_pass")
+        .setBusinesses(new ArrayList<Business>());
     actuallySaveUser(userToSearch);
 
     // ACT
@@ -195,7 +197,7 @@ class UserDaoHibernateImplTest {
       List<User> validLnameQuery = userDao.searchUsers(lastName);
       List<User> validNnameQuery = userDao.searchUsers(nickname);
       List<User> validFullNameQuery = userDao
-              .searchUsers(firstName + ' ' + middleName + ' ' + lastName);
+          .searchUsers(firstName + ' ' + middleName + ' ' + lastName);
 
 
       // ASSERT
@@ -223,16 +225,16 @@ class UserDaoHibernateImplTest {
     String nickname = "Brado";
     // Create test user then save it to the db
     User userToSearch = new User()
-            .setFirstName(firstName)
-            .setMiddleName(middleName)
-            .setLastName(lastName)
-            .setNickname(nickname)
-            .setEmail("William.Pitt@uclive.ac.nz")
-            .setDateOfBirth("2001-11-23")
-            .setHomeAddress(mockAddress())
-            .setCreated("2021-03-16 23:13:59.223794")
-            .setRole("ROLE_USER")
-            .setPassword("this_is_my_pass");
+        .setFirstName(firstName)
+        .setMiddleName(middleName)
+        .setLastName(lastName)
+        .setNickname(nickname)
+        .setEmail("William.Pitt@uclive.ac.nz")
+        .setDateOfBirth("2001-11-23")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
+        .setRole("ROLE_USER")
+        .setPassword("this_is_my_pass");
     userDao.saveUser(userToSearch);
     // Create the expected result, empty list
     List<User> expectedResult = new ArrayList<>();
@@ -245,7 +247,7 @@ class UserDaoHibernateImplTest {
       List<User> invalidLnameQuery = userDao.searchUsers("PittBull");
       List<User> invalidNnameQuery = userDao.searchUsers("Lado");
       List<User> invalidFullNameQuery = userDao
-              .searchUsers("Philliam Gladley PittBull");
+          .searchUsers("Philliam Gladley PittBull");
 
       // ASSERT
       assertEquals(expectedResult, invalidFnameQuery);
@@ -260,12 +262,12 @@ class UserDaoHibernateImplTest {
 
   private Address mockAddress() {
     Address address = new Address()
-            .setStreetNumber("3/24")
-            .setStreetName("Ilam Road")
-            .setPostcode("90210")
-            .setCity("Christchurch")
-            .setRegion("Canterbury")
-            .setCountry("New Zealand");
+        .setStreetNumber("3/24")
+        .setStreetName("Ilam Road")
+        .setPostcode("90210")
+        .setCity("Christchurch")
+        .setRegion("Canterbury")
+        .setCountry("New Zealand");
 
     addressDao.saveAddress(address);
     return address;
