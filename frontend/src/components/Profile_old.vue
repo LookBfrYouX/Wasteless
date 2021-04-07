@@ -1,108 +1,71 @@
 <template>
-  <div class="container">
-    <div class="row mt-2">
-      <div class="col-md-4 m-2 card">
-        <div class=" btn-white" style="position: absolute; bottom: 10px; right: 20px; border-radius: 50%; background: lightgray; width: 70px; height: 70px; padding: 10px">
-          <font-awesome-icon style="height: 100%; width: 100%;" icon="images" />
-        </div>
-
-        <img class="my-3 rounded-circle" src="placeholder-profile.png">
-
-      </div>
-      <div class="col-md-7 m-2 card">
-        <div class="m-3">
-          <div class="d-flex">
-            <h2 style="float: left">{{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }}</h2>
-            <font-awesome-icon class="m-3" icon="map-marker-alt" />
-            <span class="text-muted">{{userInfo.homeAddress}}</span>
-          </div>
-
-          <span class="text-muted">{{ userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : '' }}</span>
-          <p>{{ userInfo.bio }}</p>
-
-          <button class="btn btn-white-bg-primary mt-3">Send Message</button>
-          <br>
-          <div class="profile-buttons pt-3">
-
-            <button
-                v-if="checkAdmin() &&  userInfo.role != 'ROLE_ADMIN'"
-                class="btn btn-white-bg-primary"
-                id="makeAdmin"
-                type="button"
-                v-on:click="makeAdmin(userId)"
-            >
-              Make Admin
-            </button>
-            <button
-                v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
-                class="btn btn-white-bg-primary"
-                id="revokeAdmin"
-                type="button"
-                v-on:click="revokeAdmin(userId)"
-            >
-              Revoke Admin
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4 order-2 order-md-1 m-2 card">
-        <h5 class="text-muted mt-3">Interested in</h5>
-        <div class="card my-2">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-          </div>
-        </div>
-        <div class="card my-2">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-          </div>
-        </div>
-
-      </div>
-      <div class="col-md-7 order-1 order-md-2 m-2 card">
-        <ul class="nav nav-tabs mt-2">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Details</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Previously Bought</a>
-          </li>
-        </ul>
-        <div class="m-4">
-          <h5 class="text-muted">User Details</h5>
+  <div class="profile-card card container">
+    <div>
+      <h1 class="title">Profile Information</h1>
+        <div class="profile-content p-3">
+        <ul class="profile-info list-unstyled">
           <li class="row">
-            <dt class="label">Nickname:</dt>
+            <dt class="col-md label">Full Name:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Nickname:</h3></dt>
             <dd class="col-md value"><p>{{ userInfo.nickname }}</p></dd>
           </li>
           <li class="row">
-            <dt class="label">Member since:</dt>
+            <dt class="col-md label"><h3>Role:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : 'User' }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Member since:</h3></dt>
             <dd class="col-md value"><p>{{ memberSinceText }}</p></dd>
           </li>
           <li class="row">
-            <dt class="label">Date of Birth:</dt>
+            <dt class="col-md label"><h3>Bio:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.bio }}</p></dd>
+          </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Date of Birth:</h3></dt>
             <dd class="col-md value"><p>{{ dateOfBirthText }}</p></dd>
           </li>
-          <h5 class="text-muted">Contact Information</h5>
           <li class="row">
-            <dt class="label">Email Address:</dt>
+            <dt class="col-md label"><h3>Email Address:</h3></dt>
             <dd class="col-md value"><p>{{ userInfo.email }}</p></dd>
           </li>
           <li class="row">
-            <dt class="label">Phone Number:</dt>
+            <dt class="col-md label"><h3>Phone Number:</h3></dt>
             <dd class="col-md value"><p>{{ userInfo.phoneNumber }}</p></dd>
           </li>
+          <li class="row">
+            <dt class="col-md label"><h3>Home Address:</h3></dt>
+            <dd class="col-md value"><p>{{ userInfo.homeAddress}}</p></dd>
+          </li>
+        </ul>
         </div>
+        <div class="profile-buttons p-3">
+          <button
+            v-if="checkAdmin() &&  userInfo.role != 'ROLE_ADMIN'"
+            class="btn btn-white-bg-primary"
+            id="makeAdmin"
+            type="button"
+            v-on:click="makeAdmin(userId)"
+          >
+            Make Admin
+          </button>
+          <button
+            v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
+            class="btn btn-white-bg-primary"
+            id="revokeAdmin"
+            type="button"
+            v-on:click="revokeAdmin(userId)"
+          >
+            Revoke Admin
+          </button>
+        </div>
+      <div class="row mt-2" v-if="errorMessage.length > 0">
+          <div class="col">
+            <p class="alert alert-warning">{{ errorMessage }}</p>
+          </div>
       </div>
     </div>
   </div>
