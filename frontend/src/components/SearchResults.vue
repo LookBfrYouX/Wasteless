@@ -212,7 +212,6 @@ button.page-link {
   padding-left: 15px;
   z-index: 1000;
 }
-
 .sort-results {
   width: 200px;
   position: fixed;
