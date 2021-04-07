@@ -175,6 +175,7 @@ export default {
       try {
         const response = await apiCall;
         this.userInfo = response.data;
+        this.errorMessage = "";
       } catch(err) {
         alert(err.userFacingErrorMessage == undefined? err.toString(): err.userFacingErrorMessage);
       }
