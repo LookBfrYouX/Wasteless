@@ -84,18 +84,7 @@ export default {
 
   data() {
     return {
-      userInfo: {
-        firstName: "",
-        lastName: "",
-        nickname: "",
-        created: "",
-        bio: "",
-        dateOfBirth: "",
-        emailAddress: "",
-        phoneNumber: "",
-        homeAddress: "",
-        role: "ROLE_USER"
-      },
+      userInfo: {},
       errorMessage: "",
     }
   },
