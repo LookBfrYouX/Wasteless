@@ -4,7 +4,7 @@
 @import "./material-icons.scss";
 @import url('https://fonts.googleapis.com/css2?family=Catamaran:wght@600&family=Montserrat:ital,wght@0,300;0,500;0,700;1,300;1,500;1,700&display=swap');
 
-
+// Fonts
 h1 {
   font-family: $headings-font-family;
   font-size: $headings-font-size-large;
@@ -25,17 +25,22 @@ p {
   font-weight: 300;
 }
 
+// Navbar
 nav {
   .nav-picture {
     width: 35px;
     height: 35px;
     margin-right: 10px;
   }
+  .active {
+    text-decoration: underline;
+    color: black;
+  }
 }
 
-.icon {
-  margin-top: auto;
-  margin-bottom: auto;
+// Profile page
+.image-upload-button {
+  position: absolute; bottom: 10px; right: 20px; border-radius: 50%; width: 70px; height: 70px; padding: 10px
 }
 
 .gradient-background::after {
@@ -70,17 +75,3 @@ nav {
   background-color: $slightly-transparent-background;
 }
 
-.admin-icon {
-  width: 30px;
-  height: auto;
-}
-
-.title {
-  text-align: center;
-  padding-bottom: 10px;
-}
-
-.active {
-  text-decoration: underline;
-  color: black;
-}

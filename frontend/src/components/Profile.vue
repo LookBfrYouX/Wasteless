@@ -4,9 +4,7 @@
       <!--User profile image card-->
       <div class="col-md-4 m-2 card">
         <!--Upload image button overlay-->
-        <button type="button" class="btn btn-lg btn-primary" disabled
-            style="position: absolute; bottom: 10px; right: 20px; border-radius: 50%; background: lightgray; width: 70px; height: 70px; padding: 10px">
-<!--          <font-awesome-icon style="height: 100%; width: 100%;" icon="images"/>-->
+        <button type="button" class="image-upload-button btn btn-lg btn-primary" disabled>
           <span class="material-icons md-48">file_upload</span>
         </button>
         <!--User profile image-->
@@ -17,13 +15,13 @@
         <div class="m-3">
           <div class="d-flex align-items-center">
             <!--Users name-->
-            <h2 style="float: left" class="mb-0">{{ userInfo.firstName }} {{ userInfo.middleName }}
+            <h2 class="mb-0 float-left">{{ userInfo.firstName }} {{ userInfo.middleName }}
               {{ userInfo.lastName }}</h2>
             <!--Location data-->
             <div
                 v-if="userInfo.homeAddress.city || userInfo.homeAddress.country || userInfo.homeAddress"
                 class="d-flex align-items-center">
-              <span class="material-icons">location_on</span>
+              <span class="material-icons md-dark md-inactive ml-2">location_on</span>
               <span class="text-muted">
                 {{ userInfo.homeAddress }}
                 {{
@@ -39,13 +37,12 @@
             }}</span>
           <p>{{ userInfo.bio }}</p>
 
-          <button class="btn btn-white-bg-primary mt-3">Send Message</button>
           <br>
-          <div class="profile-buttons pt-3">
-
+          <div class="profile-buttons pt-3 d-flex">
+            <button class="btn btn-white-bg-primary mx-1" disabled>Send Message</button>
             <button
                 v-if="checkAdmin() &&  userInfo.role != 'ROLE_ADMIN'"
-                class="btn btn-white-bg-primary"
+                class="btn btn-white-bg-primary mx-1"
                 id="makeAdmin"
                 type="button"
                 v-on:click="makeAdmin(userId)"
@@ -54,7 +51,7 @@
             </button>
             <button
                 v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
-                class="btn btn-white-bg-primary"
+                class="btn btn-white-bg-primary mx-1"
                 id="revokeAdmin"
                 type="button"
                 v-on:click="revokeAdmin(userId)"
@@ -324,24 +321,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-
-dt {
-  text-align: right;
-}
-
-.profile-card {
-  margin: 30px;
-  border-radius: 15px;
-  display: flex;
-  justify-content: center;
-  padding: 30px;
-}
-
-.profile-content {
-  border-top: 1px solid #eaeee7;
-  border-bottom: 1px solid #eaeee7;
-}
-
-</style>
