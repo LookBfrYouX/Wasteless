@@ -79,7 +79,7 @@ public class UserController {
    * @throws ResponseStatusException HTTP 400, 409 exceptions.
    */
   @PostMapping("/users")
-  public ResponseEntity<JSONObject> register(@RequestBody User user) {
+  public ResponseEntity<JSONObject> registerUser(@RequestBody User user) {
     try {
       JSONObject createdUserId = userService.saveUser(user);
       log.info("ACCOUNT CREATED SUCCESSFULLY: " + user.getEmail());
@@ -203,7 +203,7 @@ public class UserController {
    * @throws ResponseStatusException Unknown Error.
    */
   @PostMapping("/businesses")
-  public ResponseEntity<String> register(@RequestBody Business business) {
+  public ResponseEntity<String> registerBusiness(@RequestBody Business business) {
     try {
       businessService.saveBusiness(business);
       return new ResponseEntity<>("Business account successfully created", HttpStatus.valueOf(201));

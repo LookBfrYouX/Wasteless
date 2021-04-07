@@ -42,7 +42,7 @@
           <form class="input-group mt-2 navbar-center form-inline" v-on:submit.prevent="search">
             <div class="input-group mb-3 navbar-search">
               <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1"><font-awesome-icon icon="search" /></span>
+                <span class="input-group-text" id="basic-addon1"><span class="material-icons">search</span></span>
               </div>
               <input
                   class=" form-control mr-sm-2"
