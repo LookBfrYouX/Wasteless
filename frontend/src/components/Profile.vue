@@ -1,23 +1,38 @@
 <template>
   <div class="container">
     <div class="row mt-2">
+      <!--User profile image card-->
       <div class="col-md-4 m-2 card">
-        <div class=" btn-white" style="position: absolute; bottom: 10px; right: 20px; border-radius: 50%; background: lightgray; width: 70px; height: 70px; padding: 10px">
-          <font-awesome-icon style="height: 100%; width: 100%;" icon="images" />
+        <!--Upload image button overlay-->
+        <div
+            style="position: absolute; bottom: 10px; right: 20px; border-radius: 50%; background: lightgray; width: 70px; height: 70px; padding: 10px">
+          <font-awesome-icon style="height: 100%; width: 100%;" icon="images"/>
         </div>
-
-        <img class="my-3 rounded-circle" src="placeholder-profile.png">
+        <!--User profile image-->
+        <img class="my-3 rounded-circle" src="placeholder-profile.png" alt="Users profile image">
 
       </div>
       <div class="col-md-7 m-2 card">
         <div class="m-3">
-          <div class="d-flex">
-            <h2 style="float: left">{{ userInfo.firstName }} {{userInfo.middleName}} {{ userInfo.lastName }}</h2>
-            <font-awesome-icon class="m-3" icon="map-marker-alt" />
-            <span class="text-muted">{{userInfo.homeAddress}}</span>
+          <div class="d-flex align-items-center">
+            <!--Users name-->
+            <h2 style="float: left" class="mb-0">{{ userInfo.firstName }} {{ userInfo.middleName }}
+              {{ userInfo.lastName }}</h2>
+            <!--Location data-->
+            <div v-if="userInfo.homeAddress.city || userInfo.homeAddress.country"
+                 class="d-flex align-items-center">
+              <font-awesome-icon class="m-2" icon="map-marker-alt"/>
+              <span class="text-muted">{{
+                  [userInfo.homeAddress.city, userInfo.homeAddress.country].filter(Boolean).join(
+                      ', ')
+                }}</span>
+            </div>
+
           </div>
 
-          <span class="text-muted">{{ userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : '' }}</span>
+          <span class="text-muted">{{
+              userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : ''
+            }}</span>
           <p>{{ userInfo.bio }}</p>
 
           <button class="btn btn-white-bg-primary mt-3">Send Message</button>
@@ -54,7 +69,8 @@
           <div class="card-body">
             <h5 class="card-title">Card title</h5>
             <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">Some quick example text to build on the card title and make up the
+              bulk of the card's content.</p>
             <a href="#" class="card-link">Card link</a>
             <a href="#" class="card-link">Another link</a>
           </div>
@@ -63,7 +79,8 @@
           <div class="card-body">
             <h5 class="card-title">Card title</h5>
             <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">Some quick example text to build on the card title and make up the
+              bulk of the card's content.</p>
             <a href="#" class="card-link">Card link</a>
             <a href="#" class="card-link">Another link</a>
           </div>
@@ -112,7 +129,8 @@
 <script>
 const Api = require("./../Api").default;
 
-const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August",
+  "September", "October", "November", "December"];
 Object.freeze(MONTH_NAMES);
 
 export default {
@@ -145,7 +163,7 @@ export default {
     }
   },
 
-  beforeMount: function() {
+  beforeMount: function () {
     // gets user information from api
     this.parseApiResponse(this.callApi(this.userId));
   },
@@ -156,7 +174,7 @@ export default {
     /**
      * Checks to see if logged in user is an admin using cookie storing session.
      */
-    checkAdmin: function() {
+    checkAdmin: function () {
       let user = JSON.parse(localStorage.authUser);
       if (user.role == "ROLE_ADMIN") {
         return true;
@@ -169,7 +187,7 @@ export default {
      * Calls to the API to from the profile view with a given user ID to make requested user an Administrator
      * Returns a message to user to indicate whether or not the user has been updated to the Administrator role.
      */
-    makeAdmin: async function(userId) {
+    makeAdmin: async function (userId) {
       try {
         await Api.makeAdmin(userId);
         this.userInfo.role = "ROLE_ADMIN";
@@ -185,7 +203,7 @@ export default {
      * Calls to the API to from the profile view with a given user ID to revoke requested user from an Administrator
      * Returns a message to user to indicate whether selected user has been premoted to Admin or request failed.
      */
-    revokeAdmin: async function(userId) {
+    revokeAdmin: async function (userId) {
       try {
         await Api.revokeAdmin(userId);
         let user = JSON.parse(localStorage.authUser);
@@ -208,9 +226,10 @@ export default {
      * Calls the API to get profile information with the given user ID
      * Returns the promise, not the response
      */
-    callApi: function(userId) {
+    callApi: function (userId) {
       if (typeof userId != "number" || isNaN(userId)) {
-        const err = new Error("Cannot load profile page (no profile given). You may need to log in");
+        const err = new Error(
+            "Cannot load profile page (no profile given). You may need to log in");
         err.userFacingErrorMessage = err.message;
         return Promise.reject(err);
       }
@@ -220,12 +239,13 @@ export default {
     /**
      * Parses the API response given a promise to the request
      */
-    parseApiResponse: async function(apiCall) {
+    parseApiResponse: async function (apiCall) {
       try {
         const response = await apiCall;
         this.userInfo = response.data;
-      } catch(err) {
-        alert(err.userFacingErrorMessage == undefined? err.toString(): err.userFacingErrorMessage);
+      } catch (err) {
+        alert(
+            err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
       }
     },
 
@@ -233,8 +253,10 @@ export default {
      * Formats the date as a D MMMM YYYY string
      * @param date date object, or something that can be passed to the constructor
      */
-    formatDate: function(date) {
-      if (!(date instanceof Date)) date = new Date(date);
+    formatDate: function (date) {
+      if (!(date instanceof Date)) {
+        date = new Date(date);
+      }
       return `${date.getDate()} ${MONTH_NAMES[date.getMonth()]}, ${date.getFullYear()}`;
     },
 
@@ -242,7 +264,7 @@ export default {
      * Calculates the time since registration and returns it as a string
      * @return string in format 'y years, m months'
      */
-    generateTimeSinceRegistrationText: function(registrationDate, currentDate) {
+    generateTimeSinceRegistrationText: function (registrationDate, currentDate) {
       const yearDiff = currentDate.getFullYear() - registrationDate.getFullYear();
       const monthDiff = currentDate.getMonth() - registrationDate.getMonth();
 
@@ -251,34 +273,39 @@ export default {
       const years = Math.floor(timeDiffInMonth / 12);
       let months = timeDiffInMonth % 12;
 
-      const yearsText  = `${years} year${years == 1? "": "s"}`;
+      const yearsText = `${years} year${years == 1 ? "" : "s"}`;
 
-      if (timeDiffInMonth == 0) months = 1;
+      if (timeDiffInMonth == 0) {
+        months = 1;
+      }
       // If it was created this month, don't want to show '0 months' but '1' month instead
-      const monthsText = `${months} month${months == 1? "": "s"}`;
+      const monthsText = `${months} month${months == 1 ? "" : "s"}`;
 
       if (years == 0) {
         return monthsText;
       }
 
-      return`${yearsText}, ${monthsText}`;
+      return `${yearsText}, ${monthsText}`;
     },
   },
 
   computed: {
-    dateOfBirthText: function() {
-      if (isNaN(Date.parse(this.userInfo.dateOfBirth))) return "Unknown";
+    dateOfBirthText: function () {
+      if (isNaN(Date.parse(this.userInfo.dateOfBirth))) {
+        return "Unknown";
+      }
       return this.formatDate(this.userInfo.dateOfBirth);
     },
 
-
-    memberSinceText: function() {
-      if (isNaN(Date.parse(this.userInfo.created))) return "Unknown";
+    memberSinceText: function () {
+      if (isNaN(Date.parse(this.userInfo.created))) {
+        return "Unknown";
+      }
       const created = new Date(this.userInfo.created);
       const dateOfRegistration = this.formatDate(created);
       const monthsSinceRegistration = this.generateTimeSinceRegistrationText(
-        created,
-        new Date()
+          created,
+          new Date()
       );
 
       return `${dateOfRegistration} (${monthsSinceRegistration})`;
@@ -287,7 +314,7 @@ export default {
 
   watch: {
     // if userid changes updates text fields
-    userId: function() {
+    userId: function () {
       this.parseApiResponse(this.callApi(this.userId))
     }
   },
