@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
   public JSONObject getUserById(long id) throws UserNotFoundException {
     User user = this.userDao.getUserById(id);
     JSONObject response = new JSONObject();
-    response.put("id", Long.toString(id));
+    response.put("id", id);
     response.put("firstName", user.getFirstName());
     response.put("lastName", user.getLastName());
     response.put("middleName", user.getMiddleName());

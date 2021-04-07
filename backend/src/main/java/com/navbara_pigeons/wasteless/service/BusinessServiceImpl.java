@@ -88,7 +88,7 @@ public class BusinessServiceImpl implements BusinessService {
     Authentication authentication = securityContext.getAuthentication();
     User user = this.userDao.getUserByEmail(authentication.getName());
     JSONObject response = new JSONObject();
-    response.put("id", Long.toString(id));
+    response.put("id", id);
     response.put("name", business.getName());
     response.put("description", business.getDescription());
     response.put("businessType", business.getBusinessType());
