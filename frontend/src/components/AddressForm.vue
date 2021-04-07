@@ -23,7 +23,7 @@ The parent component must provide `address` prop. When the address is updated in
 <template>
   <div class="row">
     <div class="form-group required col-3">
-      <label for="streetNumber">Street Number</label>
+      <label>Street Number</label>
       <suggestions
         type="text"
         name="streetNumber"
@@ -42,7 +42,7 @@ The parent component must provide `address` prop. When the address is updated in
       />
     </div>
     <div class="form-group col-9">
-      <label for="streetName">Street Name</label>
+      <label>Street Name</label>
       <suggestions
         type="text"
         name="streetName"
@@ -62,7 +62,7 @@ The parent component must provide `address` prop. When the address is updated in
     </div>
 
     <div class="form-group required col-12 col-md-6">
-      <label for="postcode">Post code</label>
+      <label>Post code</label>
       <suggestions
         type="text"
         name="postcode"
@@ -70,7 +70,6 @@ The parent component must provide `address` prop. When the address is updated in
         maxlength="10"
         autocomplete="postal-code"
         required
-
         inputClasses="form-control"
         
         v-on:focus="activeAddressInputName = 'postcode'"
@@ -82,7 +81,7 @@ The parent component must provide `address` prop. When the address is updated in
       />
     </div>
     <div class="form-group required col-12 col-md-6">
-      <label for="city">City</label>
+      <label>City</label>
       <suggestions
         type="text"
         name="city"
@@ -90,7 +89,6 @@ The parent component must provide `address` prop. When the address is updated in
         maxlength="100"
         autocomplete="address-level2"
         required
-
         inputClasses="form-control"
         
         v-on:focus="activeAddressInputName = 'city'"
@@ -102,27 +100,26 @@ The parent component must provide `address` prop. When the address is updated in
       />
     </div>
     <div class="form-group col-12 col-md-6">
-      <label for="state">Region/state</label>
+      <label>Region</label>
       <suggestions
         type="text"
-        name="state"
-        placeholder="Region/state (optional)"
+        name="region"
+        placeholder="Region"
         maxlength="100"
         autocomplete="address-level1"
         required
-
         inputClasses="form-control"
 
-        v-on:focus="activeAddressInputName = 'state'"
+        v-on:focus="activeAddressInputName = 'region'"
         v-on:input="onAddressInput"
         v-on:suggestion="suggestionSelected"
 
-        v-bind:value="address.state"
+        v-bind:value="address.region"
         v-bind:suggestions="addressSuggestions"
       />
     </div>
     <div class="form-group required col-12 col-md-6">
-      <label for="country">Country</label>
+      <label>Country</label>
       <suggestions
         type="text"
         name="country"
@@ -150,7 +147,7 @@ const Suggestions = require("./Suggestions").default;
 
 // Fields in order of specifity
 // When updating this, ensure all address related functions and input properties are updated as well
-export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "postcode", "city", "state",  "country"];
+export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "postcode", "city", "region",  "country"];
 Object.freeze(ADDRESS_SECTION_NAMES);
 
 const API_CALL_DEBOUNCE_TIME = 100;
@@ -170,7 +167,7 @@ export default {
         streetName: "",
         postcode: "",
         city: "",
-        state: "",
+        region: "",
         country: "",
       }
     }
@@ -196,7 +193,7 @@ export default {
         district, // streetName
         postcode,
         county, // city
-        state, // state
+        region, // region
         country,
         // osm_id,
       } = properties;
@@ -206,7 +203,7 @@ export default {
         streetName: district,
         postcode: postcode,
         city: county,
-        state: state,
+        region: region,
         country: country
       };
 
@@ -227,13 +224,13 @@ export default {
       // Was getting strange errors where sometimes a component would be undefined
       // Think its to do with accessing properties via this['someString'] so this 
       // is a workaround
-      let { streetNumber, streetName, city, state, postcode, country } = this.address;
+      let { streetNumber, streetName, city, region, postcode, country } = this.address;
       let components = {
         streetNumber,
         streetName,
         postcode,
         city,
-        state,
+        region,
         country
       };
       return this.generateAddressStringFromAddressComponents(components);
@@ -266,7 +263,7 @@ export default {
 
     /**
      * Returns an ordered list of sections that are less specific than the given component
-     * e.g. if city is given, city, state, postcode, country are returned
+     * e.g. if city is given, city, region, postcode, country are returned
      * If componentName is not valid, it will return all section names
      */
     getAddressComponentNamesLessSpecificThan(componentName) {

@@ -151,7 +151,7 @@ export default {
         var response = await this.callApi({
           name: this.name,
           type: this.type,
-          homeAddress: this.addressAsString, // API stores address as homeAddress, not address
+          homeAddress: this.address, // API stores address as homeAddress, not address
           description: this.description,
         });
       } catch (err) {

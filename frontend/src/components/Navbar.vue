@@ -116,10 +116,10 @@ export default {
       return Boolean(localStorage.getItem("userId"));
     },
     getAuthUser() {
-      return JSON.parse(localStorage.getItem("authUser"));
+      return localStorage.getItem("authUser");
     },
     isAdmin() {
-      this.authUser = JSON.parse(localStorage.getItem("authUser"));
+      this.authUser = localStorage.getItem("authUser");
       if (this.authUser.role === "ROLE_ADMIN"){
         return true;
       } else {

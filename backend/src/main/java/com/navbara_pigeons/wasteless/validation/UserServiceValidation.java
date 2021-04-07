@@ -63,7 +63,7 @@ public class UserServiceValidation {
   public static boolean isUserValid(User user) {
     // Checks user fields are not null/empty
     for(String val: new String[] {
-            user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getNickname()
+            user.getFirstName(), user.getLastName()
     }) {
       if (UserServiceValidation.isNullOrTrimmedEmpty(val)) return false;
     }

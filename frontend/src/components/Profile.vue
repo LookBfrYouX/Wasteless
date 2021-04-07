@@ -109,12 +109,13 @@ export default {
         firstName: "",
         lastName: "",
         nickname: "",
+        middleName: "",
         created: "",
         bio: "",
         dateOfBirth: "",
         emailAddress: "",
         phoneNumber: "",
-        homeAddress: "",
+        homeAddress: {},
         role: "ROLE_USER",
         businesses: []
       },
@@ -142,8 +143,7 @@ export default {
      * Checks to see if logged in user is an admin using cookie storing session.
      */
     checkAdmin: function() {
-      let user = JSON.parse(localStorage.authUser);
-      if (user.role == "ROLE_ADMIN") {
+      if (this.userInfo.role == "ROLE_ADMIN") {
         return true;
       } else {
         return false;

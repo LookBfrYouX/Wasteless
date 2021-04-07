@@ -257,8 +257,8 @@ export default {
       confirmPassword: "",
 
       address: {
-        addressLine1: "",
-        addressLine2: "",
+        streetNumber: "",
+        streetName: "",
         postcode: "",
         city: "",
         region: "",
@@ -332,12 +332,12 @@ export default {
           email: this.email,
           password: this.password,
           dateOfBirth: this.dateOfBirth,
-          homeAddress: this.addressAsString, // API stores address as homeAddress, not address
+          homeAddress: this.address, // API stores address as homeAddress, not address
           phoneNumber: phoneNumber,
           bio: this.bio,
         });
       } catch(err) {
-        if (err == undefined || err.response.status == 409) {
+        if (err == undefined || err.response == undefined || err.response.status == 409) {
           this.emailUsed = true;
           this.errorMessage = "Your email has already been registered";
           this.$refs.emailLabel.scrollIntoView();
@@ -348,6 +348,7 @@ export default {
 
       this.errorMessage = "";
       this.emailUsed = false;
+      window.localStorage.setItem("authUser", response.data);
       window.localStorage.setItem("userId", response.data.userId);
       this.$router.push({ name: "profile" });
     }
