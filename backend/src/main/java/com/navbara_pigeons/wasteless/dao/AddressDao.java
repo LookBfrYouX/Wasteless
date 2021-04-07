@@ -5,4 +5,6 @@ import com.navbara_pigeons.wasteless.entity.Address;
 public interface AddressDao {
 
   void saveAddress(Address address);
+
+  void deleteAddress(Address address);
 }

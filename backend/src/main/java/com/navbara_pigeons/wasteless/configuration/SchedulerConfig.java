@@ -7,6 +7,8 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +79,7 @@ public class SchedulerConfig {
         .setEmail(this.dgaaEmail)
         .setDateOfBirth(LocalDate.parse("2000-01-01").format(DateTimeFormatter.ISO_LOCAL_DATE))
         .setHomeAddress(address)
-        .setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("ROLE_ADMIN")
         .setPassword(bCryptPasswordEncoder.encode(this.dgaaPassword));
     userDao.saveUser(dgaa);

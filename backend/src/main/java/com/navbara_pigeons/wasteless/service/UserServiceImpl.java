@@ -13,6 +13,8 @@ import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +115,7 @@ public class UserServiceImpl implements UserService {
     userCredentials.setEmail(user.getEmail());
     userCredentials.setPassword(user.getPassword());
     // Set created date, hash password
-    user.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+    user.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     user.setPassword(encoder.encode(user.getPassword()));
     user.setRole("ROLE_USER");
     this.addressDao.saveAddress(user.getHomeAddress());

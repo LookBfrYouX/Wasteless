@@ -22,42 +22,41 @@ The parent component must provide `address` prop. When the address is updated in
 -->
 <template>
   <div class="row">
-    <div class="form-group required col-12">
-      <label for="addressLine1">Address Line 1</label>
+    <div class="form-group required col-3">
+      <label for="streetNumber">Street Number</label>
       <suggestions
         type="text"
-        name="addressLine1"
-        placeholder="Address line 1"
+        name="streetNumber"
+        placeholder="Street number"
         maxlength="200"
-        autocomplete="address-line1"
+        autocomplete="street-number"
         required
-
         inputClasses="form-control"
         
-        v-on:focus="activeAddressInputName = 'addressLine1'"
+        v-on:focus="activeAddressInputName = 'streetNumber'"
         v-on:input="onAddressInput"
         v-on:suggestion="suggestionSelected"
 
-        v-bind:value="address.addressLine1"
+        v-bind:value="address.streetNumber"
         v-bind:suggestions="addressSuggestions"
       />
     </div>
-    <div class="form-group col-12">
-      <label for="addressLine2">Address Line 2</label>
+    <div class="form-group col-9">
+      <label for="streetName">Street Name</label>
       <suggestions
         type="text"
-        name="addressLine2"
-        placeholder="Address line 2 (optional)"
+        name="streetName"
+        placeholder="Street name"
         maxlength="200"
-        autocomplete="address-line2"
-
+        autocomplete="street-name"
+        required
         inputClasses="form-control"
         
-        v-on:focus="activeAddressInputName = 'addressLine2'"
+        v-on:focus="activeAddressInputName = 'streetName'"
         v-on:input="onAddressInput"
         v-on:suggestion="suggestionSelected"
 
-        v-bind:value="address.addressLine2"
+        v-bind:value="address.streetName"
         v-bind:suggestions="addressSuggestions"
       />
     </div>
@@ -151,7 +150,7 @@ const Suggestions = require("./Suggestions").default;
 
 // Fields in order of specifity
 // When updating this, ensure all address related functions and input properties are updated as well
-export const ADDRESS_SECTION_NAMES = ["addressLine1", "addressLine2", "postcode", "city", "state",  "country"];
+export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "postcode", "city", "state",  "country"];
 Object.freeze(ADDRESS_SECTION_NAMES);
 
 const API_CALL_DEBOUNCE_TIME = 100;
@@ -167,8 +166,8 @@ export default {
     address: {
       required: true,
       default: {
-        addressLine1: "",
-        addressLine2: "",
+        streetNumber: "",
+        streetName: "",
         postcode: "",
         city: "",
         state: "",
@@ -193,8 +192,8 @@ export default {
      */
     mapOSMPropertiesToAddressComponents: function(properties) {
       const {
-        housenumber, street, //addressLine1
-        district, // addressLine2
+        housenumber, street, //streetNumber
+        district, // streetName
         postcode,
         county, // city
         state, // state
@@ -203,8 +202,8 @@ export default {
       } = properties;
   
       const components = {
-        addressLine1: street,
-        addressLine2: district,
+        streetNumber: street,
+        streetName: district,
         postcode: postcode,
         city: county,
         state: state,
@@ -212,9 +211,9 @@ export default {
       };
 
        if (street != undefined && housenumber != undefined) {
-        components.addressLine1 = `${housenumber} ${street}`;
+        components.streetNumber = `${housenumber} ${street}`;
        }
-       // If street is undefined but housenumber isn't, leave addressline1 undefined
+       // If street is undefined but housenumber isn't, leave streetNumber undefined
 
        return components;
     },
@@ -228,10 +227,10 @@ export default {
       // Was getting strange errors where sometimes a component would be undefined
       // Think its to do with accessing properties via this['someString'] so this 
       // is a workaround
-      let { addressLine1, addressLine2, city, state, postcode, country } = this.address;
+      let { streetNumber, streetName, city, state, postcode, country } = this.address;
       let components = {
-        addressLine1,
-        addressLine2,
+        streetNumber,
+        streetName,
         postcode,
         city,
         state,
