@@ -43,6 +43,10 @@ export default new Vuex.Store({
     },
     // Actions are functions that can be async and trigger the mutation of state data.
     // State data should never be changed directly, instead use actions and mutations.
+    // Actions are triggered in a component using:
+    // 1. this.$store.commit('name-of-action', payload);
+    // or
+    // 2. this.$store.commit({ type: 'name-of-action', payload1: something, payload2: something... });
     actions: {
         setWelcomeMessage(context, message) {
             context.commit('setWelcomeMessage', message);
@@ -59,6 +63,7 @@ export default new Vuex.Store({
     },
     // Getters are used to retrieve the data in the store. It can be manipulated to provide correct formatting etc
     // and is the recommended way to retrieve data.
+    // Getters are accessed in components using: this.$store.getters.<name-of-getter>
     getters: {
         getWelcomeMessage(state) {
             return state.welcomeMessage;
