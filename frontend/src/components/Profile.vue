@@ -80,7 +80,7 @@
           </div>
       </div>
     </div>
-    <div>
+    <div v-if="userInfo.businesses.length != 0">
       <h1 class="title">Businesses</h1>
       <ul class="profile-business-info list-unstyled">
         <li class="list-group-item card text-wrap" v-for="(business, index) in userInfo.businesses" v-bind:key="index">
