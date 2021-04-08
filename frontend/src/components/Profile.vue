@@ -73,6 +73,7 @@
 
 
 <script>
+import { ApiRequestError } from '../ApiRequestError';
 const Api = require("./../Api").default;
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -150,15 +151,14 @@ export default {
      */
     callApi: function(userId) {
       if (typeof userId != "number" || isNaN(userId)) {
-        const err = new Error("Cannot load profile page (no profile given). You may need to log in");
-        err.userFacingErrorMessage = err.message;
-        return Promise.reject(err);
+        return Promise.reject(new ApiRequestError("Cannot load profile page (no profile given). You may need to log in"));
       }
       return Api.profile(userId);
     },
 
     /**
      * Parses the API response given a promise to the request
+     * @param {Promise<User, ApiRequestError>} apiCall
      */
     parseApiResponse: async function(apiCall) {
       try {
