@@ -25,10 +25,12 @@ export default new Vuex.Store({
         setAuthUser(state, authUser) {
             state.authUser = authUser;
             localStorage.setItem("authUser", JSON.stringify(authUser));
+            localStorage.setItem("userId", state.authUser.id);
         },
         deleteAuthUser(state) {
             state.authUser = null;
             localStorage.removeItem("authUser");
+            localStorage.removeItem("userId");
         },
         makeAdmin(state) {
             state.authUser.role = "ROLE_ADMIN";
