@@ -109,14 +109,7 @@ export default {
         // Get and set the current logged in user information
         response = await Api.profile(userId);
         const authUser = response.data;
-        localStorage.setItem("authUser", JSON.stringify(authUser));
-        this.$store.state.authUser = authUser;
-        // Send login user change event
-        window.dispatchEvent(new CustomEvent('auth-user-change', {
-          detail: {
-            authUser: response.data,
-          }
-        }));
+        await this.$store.dispatch('authUserLogin', authUser);
       } catch(err) {
         this.errorMessage = err.userFacingErrorMessage;
         return;

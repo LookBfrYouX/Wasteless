@@ -119,6 +119,7 @@ export default {
     makeAdmin: async function(userId) {
       try {
         await Api.makeAdmin(userId);
+        await this.$store.dispatch('makeAdmin');
         this.userInfo.role = "ROLE_ADMIN";
         this.statusMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
         return;
@@ -135,8 +136,9 @@ export default {
     revokeAdmin: async function(userId) {
       try {
         await Api.revokeAdmin(userId);
-        if (userId.toString() === this.$store.state.authUser.id) {
-          this.$store.state.authUser.role = "ROLE_USER";
+        // Check if user to revoke is the logged in user
+        if (userId.toString() === this.$store.getters.getAuthUser.id) {
+          await this.$store.dispatch('revokeAdmin');
         }
         this.userInfo.role = "ROLE_USER";
         this.statusMessage = `Successfully revoked admin privileges of ${this.userInfo.firstName} ${this.userInfo.lastName} `;
