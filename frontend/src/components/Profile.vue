@@ -41,7 +41,7 @@
           </div>
 
           <span class="text-muted">{{
-              authUser.role && authUser.role === 'ROLE_ADMIN' ? 'Admin' : ''
+              userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : ''
             }}</span>
           <p>{{ userInfo.bio }}</p>
 
