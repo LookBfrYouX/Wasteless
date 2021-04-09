@@ -98,3 +98,27 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.main {
+  line-height: 1.1;
+}
+
+.bprofile-info li {
+  margin-bottom: 0.5em;
+}
+
+.bprofile-info {
+  font-size: 1.1em;
+}
+
+.bprofile-card {
+  margin: 30px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+</style>
