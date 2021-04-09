@@ -32,6 +32,7 @@ export class ApiRequestError extends Error {
       if (error !== undefined && error.response !== undefined && typeof error.response.status == "number") {
           this.status = error.response.status;
       }
+      this.message = `API Request Error ${status? `(${status})`: ""} - ${this.userFacingErrorMessage}`;
   }
 
   /**
