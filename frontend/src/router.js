@@ -50,12 +50,12 @@ export const router = new VueRouter({
         },
         {
             name: "registerBusiness",
-            path: "/registerBusiness",
+            path: "/registerbusiness",
             component: RegisterBusiness
         },
         {
             name: "businessProfile",
-            path: "/businessProfile/:businessId(\\d+)",
+            path: "/businessprofile/:businessId(\\d+)",
             component: businessProfile,
             props: route => {
                 let businessId = parseInt(route.params.businessId)

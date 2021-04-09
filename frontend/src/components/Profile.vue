@@ -194,7 +194,7 @@ export default {
      *
      */
     registerBusiness: function() {
-      this.$router.push({ name: "registerbusiness" });
+      this.$router.push({ name: "registerBusiness" });
     },
 
     /**
