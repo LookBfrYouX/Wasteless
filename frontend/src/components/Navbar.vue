@@ -60,7 +60,7 @@
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <img class="nav-picture rounded-circle" src="placeholder-profile.png">
                   <div class="d-flex flex-column mx-1">
-                    <span class="m-0 p-0 text-dark">{{ $store.getters.getAuthUser.firstName }} {{ $store.getters.getAuthUser.lastName }}</span>
+                    <span class="m-0 p-0 text-dark">{{ authUser.firstName }} {{ authUser.lastName }}</span>
                     <span v-if="isAdmin()" class="admin-text p-0 text-faded">ADMIN</span>
                   </div>
                 </a>
@@ -96,13 +96,16 @@
 </template>
 
 <script>
-
+import { store } from '../store';
 export default {
   name: "navbar",
   data() {
     return {
 
     };
+  },
+  computed: {
+    authUser() { return store.getters.getAuthUser() }
   },
   props: ["query", "onLogOut", "forceSearchUpdate"],
   // onLogOut: callback that should be passed when the user clicks log out button on NavBar
@@ -115,14 +118,14 @@ export default {
       return Boolean(localStorage.getItem("userId"));
     },
     isAdmin() {
-      return (this.$store.getters.getAuthUser.role === "ROLE_ADMIN");
+      return (store.getters.getAuthUser().role === "ROLE_ADMIN");
     },
     login() {
       if (this.$route.name != "login") this.$router.push({ name: "login" });
     },
     logOut() {
       // Set authUser state to null
-      this.$store.dispatch('authUserLogout');
+      store.actions.deleteAuthUser();
       this.onLogOut();
     },
     search() {

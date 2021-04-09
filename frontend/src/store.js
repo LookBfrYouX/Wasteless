@@ -1,75 +1,40 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
 
-Vue.use(Vuex);
+const state = new Vue.observable({
+    authUser: JSON.parse(localStorage.getItem("authUser")),
+    welcomeMessage: "HERE WE GOOO",
+});
 
-/** This module implements the vuex state store to manage global state.
- * Persistence is still done through local storage so remember to save things there that need to persisted through
- * closing the page or refreshing the page.
- */
-export default new Vuex.Store({
-    // The state of the application has it's data stored here. Please do not get/edit it directly as
-    // this makes debugging and predictability much harder.
-    state () {
-        return {
-            authUser: JSON.parse(localStorage.getItem("authUser")),
-            welcomeMessage: "HERE WE GOOO",
-        };
-    },
-    // Mutations are for manipulating state data. This ensures predictable state changes.
-    // Mutations are not async and should be triggered by actions which can be async.
-    mutations: {
-        setWelcomeMessage(state, newMessage) {
-            state.welcomeMessage = newMessage;
+export const store = {
+    getters: {
+        getAuthUser: () => {
+            return state.authUser;
         },
-        setAuthUser(state, authUser) {
+        getWelcomeMessage: () => {
+            return state.welcomeMessage;
+        },
+    },
+    actions: {
+        setWelcomeMessage: (message) => {
+            state.welcomeMessage = message;
+        },
+        setAuthUser: (authUser) => {
             state.authUser = authUser;
             localStorage.setItem("authUser", JSON.stringify(authUser));
             localStorage.setItem("userId", state.authUser.id);
         },
-        deleteAuthUser(state) {
+        deleteAuthUser: () => {
             state.authUser = null;
             localStorage.removeItem("authUser");
             localStorage.removeItem("userId");
         },
-        makeAdmin(state) {
+        makeAdmin: () => {
             state.authUser.role = "ROLE_ADMIN";
             localStorage.setItem("authUser", JSON.stringify(state.authUser));
         },
-        revokeAdmin(state) {
+        revokeAdmin: ()=> {
             state.authUser.role = "ROLE_USER";
             localStorage.setItem("authUser", JSON.stringify(state.authUser));
         }
     },
-    // Actions are functions that can be async and trigger the mutation of state data.
-    // State data should never be changed directly, instead use actions and mutations.
-    // Actions are triggered in a component using:
-    // 1. this.$store.commit('name-of-action', payload);
-    // or
-    // 2. this.$store.commit({ type: 'name-of-action', payload1: something, payload2: something... });
-    actions: {
-        setWelcomeMessage(context, message) {
-            context.commit('setWelcomeMessage', message);
-        },
-        authUserLogin(context, authUser) {
-            context.commit('setAuthUser', authUser);
-        },
-        authUserLogout(context) {
-            context.commit('deleteAuthUser');
-        },
-        revokeAdmin(context) {
-            context.commit('revokeAdmin');
-        }
-    },
-    // Getters are used to retrieve the data in the store. It can be manipulated to provide correct formatting etc
-    // and is the recommended way to retrieve data.
-    // Getters are accessed in components using: this.$store.getters.<name-of-getter>
-    getters: {
-        getWelcomeMessage(state) {
-            return state.welcomeMessage;
-        },
-        getAuthUser(state) {
-            return state.authUser;
-        }
-    }
-});
+};

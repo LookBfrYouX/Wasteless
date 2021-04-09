@@ -163,6 +163,7 @@
 
 
 <script>
+import { store } from '../store';
 const Api = require("./../Api").default;
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August",
@@ -175,19 +176,8 @@ export default {
 
   data() {
     return {
-      userInfo: {
-        firstName: "",
-        lastName: "",
-        nickname: "",
-        created: "",
-        bio: "",
-        dateOfBirth: "",
-        emailAddress: "",
-        phoneNumber: "",
-        homeAddress: "",
-        role: "ROLE_USER"
-      },
-      errorMessage: "",
+      userInfo: {},
+      statusMessage: "",
     }
   },
 
@@ -211,12 +201,7 @@ export default {
      * Checks to see if logged in user is an admin using cookie storing session.
      */
     checkAdmin: function () {
-      let user = JSON.parse(localStorage.authUser);
-      if (user.role == "ROLE_ADMIN") {
-        return true;
-      } else {
-        return false;
-      }
+      return (store.getters.getAuthUser().role === "ROLE_ADMIN");
     },
 
     /**
@@ -226,11 +211,14 @@ export default {
     makeAdmin: async function (userId) {
       try {
         await Api.makeAdmin(userId);
+        if (userId === store.getters.getAuthUser().id) {
+          store.actions.makeAdmin();
+        }
         this.userInfo.role = "ROLE_ADMIN";
-        this.errorMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
+        this.statusMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
         return;
       } catch (err) {
-        this.errorMessage = err.userFacingErrorMessage;
+        this.statusMessage = err.userFacingErrorMessage;
         return;
       }
     },
@@ -242,18 +230,16 @@ export default {
     revokeAdmin: async function (userId) {
       try {
         await Api.revokeAdmin(userId);
-        let user = JSON.parse(localStorage.authUser);
-        if (userId == user.id) {
-          user.role = "ROLE_USER";
-          localStorage.setItem('authUser', JSON.stringify(user));
-          this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
+        this.userInfo.role = "ROLE_USER";
+        if (userId === store.getters.getAuthUser().id) {
+          store.actions.revokeAdmin();
+          this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
         } else {
-          this.userInfo.role = "ROLE_USER";
-          this.errorMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
+          this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
         }
         return;
       } catch (err) {
-        this.errorMessage = err.userFacingErrorMessage;
+        this.statusMessage = err.userFacingErrorMessage;
         return;
       }
     },

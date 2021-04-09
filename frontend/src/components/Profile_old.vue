@@ -73,6 +73,7 @@
 
 
 <script>
+import { store } from '../store';
 const Api = require("./../Api").default;
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -120,8 +121,8 @@ export default {
      * Checks to see if logged in user is an admin using cookie storing session.
      */
     checkAdmin: function() {
-      let user = JSON.parse(localStorage.authUser);
-      if (user.role == "ROLE_ADMIN") {
+      let user = store.getters.getAuthUser();
+      if (user.role === "ROLE_ADMIN") {
         return true;
       } else {
         return false;
