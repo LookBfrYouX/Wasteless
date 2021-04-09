@@ -75,7 +75,8 @@
           <div class="col form-group required">
             <label for="email" ref="emailLabel">Email</label>
             <input
-              v-bind:class="{'form-control': true, 'is-invalid': emailUsed }"
+              class="form-control"
+              v-bind:class="{'is-invalid': emailErrorMessage !== null }"
               type="email"
               name="email"
               v-model="email"
@@ -84,12 +85,12 @@
               autocomplete="email"
               required
             />
-            <div class="invalid-feedback">Your email address has already been registered</div>
+            <div class="invalid-feedback">{{ emailErrorMessage }}</div>
           </div>
         </div>
 
         <div class="row">
-          <div class="form-group required col-12 col-md-6">
+          <div class="form-group required col-12 col-md-6 mb-0">
               <label for="password" ref="passwordLabel">Password</label>
               <input
                 class="form-control"
@@ -100,14 +101,21 @@
                 minlength="8"
                 maxlength="50"
                 autocomplete="new-password"
+                pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,}$"
+                title="The password must be at least 8 characters long and contain lowercase, uppercase and number characters"
                 required
               />
-            </div>
-
-          <div class="form-group required col-12 col-md-6">
+          </div>
+          <div class="form-group col-12 order-md-3">
+            <small class="form-text">
+              Your password must be at least 8 characters long and contain lowercase, uppercase and number characters. It may not contain spaces
+            </small>
+          </div>
+          <div class="form-group required col-12 col-md-6 mb-0">
             <label for="confirmPassword">Confirm Password</label>
             <input
-              v-bind:class="{'form-control': true, 'is-invalid': confirmPasswordWrong }"
+              class="form-control"
+              v-bind:class="{'is-invalid': confirmPasswordErrorMessage !== null }"
               type="password"
               name="confirmPassword"
               v-model="confirmPassword"
@@ -117,16 +125,17 @@
               autocomplete="new-password"
               required
             />
-            <div class="invalid-feedback">The passwords do not match</div>
+            <div class="invalid-feedback">{{confirmPasswordErrorMessage}}</div>
           </div>
         </div>
 
 
         <div class="row">
           <div class="form-group required col-12">
-            <label for="dateOfBirth">Date of Birth</label>
+            <label for="dateOfBirth" ref="dateOfBirthLabel">Date of Birth</label>
             <input
               class="form-control"
+              v-bind:class="{ 'is-invalid': dateOfBirthErrorMessage !== null }"
               type="date"
               name="dateOfBirth"
               v-model="dateOfBirth"
@@ -134,6 +143,7 @@
               autocomplete="bday"
               required
             />
+            <div class="invalid-feedback">{{ dateOfBirthErrorMessage }}</div>
           </div>
         </div>
 
@@ -145,7 +155,7 @@
             <!-- Data list taken from https://github.com/etjossem/country-codes-html/blob/master/_country_codes.html (formatted to json) -->
             <select
               class="form-control"
-              v-bind:class="{'is-invalid': countryCodeRequired }"
+              v-bind:class="{ 'is-invalid': countryCodeErrorMessage !== null }"
               name="countryCode"
               autocomplete="tel-country-code"
               v-model="countryCode"
@@ -159,24 +169,20 @@
                 {{ code.name }}
               </option>
             </select>
-            <div class="invalid-feedback">
-              Country code and phone number must both be blank or filled in
-            </div>
+            <div class="invalid-feedback">{{ countryCodeErrorMessage }}</div>
           </div>
           <div class="col-12 col-md-9 mb-3">
             <label for="phoneNumber">Phone Number</label>
             <input
               class="form-control"
-              v-bind:class="{'is-invalid': phoneRequired }"
+              v-bind:class="{'is-invalid': phoneErrorMessage !== null }"
               v-model="phoneNumber"
               type="tel"
               pattern='^\d{5,13}$'
               placeholder="Phone number"
               autocomplete="tel-national"
             />
-            <div class="invalid-feedback">
-              Country code and phone number must both be blank or filled in
-            </div>
+            <div class="invalid-feedback">{{ phoneErrorMessage }}</div>
           </div>
         </div>
 
@@ -223,7 +229,7 @@
 const Api = require("./../Api").default;
 const AddressForm = require("./AddressForm").default;
 
-import countryCodesJson from "./../assets/countryCodes.json"
+import countryCodesJson from "./../assets/countryCodes.json";
 
 
 export default {
@@ -236,11 +242,13 @@ export default {
   data() {
     return {
       countryCodes: countryCodesJson,
-      emailUsed: false, // If email address has already been registered
-      confirmPasswordWrong: false, // If password and confirm password fields different
+      emailErrorMessage: null, // If email address has already been registered
+      confirmPasswordErrorMessage: null, // If password and confirm password fields different
+      dateOfBirthErrorMessage: null, // too young etc.
+      // Safari desktop doesn't support type date, so need manual checking
 
-      phoneRequired: false, // If country code entered but not phone
-      countryCodeRequired: false, // If phone entered but not country code
+      phoneErrorMessage: null, // If country code entered but not phone
+      countryCodeErrorMessage: null, // If phone entered but not country code
 
       errorMessage: "",
 
@@ -274,6 +282,9 @@ export default {
     };
   },
   methods: {
+    /**
+     * Method which is called when update address event occurs on address form component
+     */
     addressUpdate: function(newAddress) {
       const { toString, ...addressObject } = newAddress;
       // Don't want the toString method to be part of the address, so remove it
@@ -288,14 +299,57 @@ export default {
       return Api.signUp(data);
     },
 
+    /**
+     * Validates date of birth, returning error message if invalid
+     * @param{string} dateOfBirth
+     * @param{Date} currentDate. Uses Date.now if not given
+     * @return {string|null} returns null if there is no error
+     */
+    validateDateOfBirth: function(dateOfBirth, currentDate = undefined) {
+      if (currentDate == undefined) currentDate = new Date(Date.now());
+      const MIN_AGE = 13;
+      const regexp = /(\d{4})-(\d{2})-(\d{2})/;
+      const result = regexp.exec(dateOfBirth);
+      if (result === null) return "Date of birth must be in 'YYYY-MM-DD' format";
+      
+      const year = parseInt(result[1], 10);
+      const monthIndex = parseInt(result[2], 10) - 1; // month: JS uses zero indexing
+      const day = parseInt(result[3], 10);
+
+      const date = new Date(year, monthIndex, day);
+
+      // Check if date exists e.g. 2020-15-54
+      if (date.getFullYear() != year || date.getMonth() != monthIndex || date.getDate() != day) {
+        return "Date of birth given bad date";
+      }
+
+      
+      const yearDelta = currentDate.getFullYear() - year;
+      if (yearDelta > MIN_AGE) return null; // More than 13 years old
+      if (yearDelta == MIN_AGE) {
+        const monthDelta = currentDate.getMonth() - monthIndex;
+        if (monthDelta > 0) return null;
+        if (monthDelta == 0) {
+          const dayDelta = currentDate.getDate() - day;
+          if (dayDelta >= 0) return null;
+        }
+      }
+
+      return "You must be 13 years or older to sign up";
+    },
+
+    /**
+     * Function responsible for registration pipeline, from when register button is 
+     * clicked to redirect
+     */
     register: async function () {
-      this.phoneRequired = false;
-      this.confirmPasswordWrong = false;
-      this.countryCodeRequired = false;
+      this.phoneErrorMessage = null;
+      this.countryCodeErrorMessage = null;
+      this.confirmPasswordErrorMessage = null;
+      this.dateOfBirthErrorMessage = null;
 
       if (this.password != this.confirmPassword) {
-        this.confirmPasswordWrong = true;
-        this.errorMessage = "The passwords do not match";
+        this.errorMessage = this.confirmPasswordErrorMessage = "The passwords do not match";
         this.$refs.passwordLabel.scrollIntoView();
         // scroll into view puts the element at the top of the screen
         // Hence more user friendly to scroll to password instead of confirm password
@@ -305,16 +359,13 @@ export default {
       const phoneNumberEntered = this.phoneNumber.trim().length > 0;
       const countryCodeEntered = typeof this.countryCode == "number";
       if (phoneNumberEntered && !countryCodeEntered) {
-        this.countryCodeRequired = true;
-        this.errorMessage = "Country code and phone number must both be blank or filled in";
+        this.errorMessage = this.countryCodeErrorMessage = "Country code and phone number must both be blank or filled in";
         this.$refs.countryCodeLabel.scrollIntoView();
         return;
       }
 
-
       if(!phoneNumberEntered && countryCodeEntered) {
-        this.phoneRequired = true;
-        this.errorMessage = "Country code and phone number must both be blank or filled in";
+        this.errorMessage = this.phoneErrorMessage = "Country code and phone number must both be blank or filled in";
         this.$refs.countryCodeLabel.scrollIntoView();
         return;
       }
@@ -322,6 +373,13 @@ export default {
       const phoneNumber = (typeof this.countryCode == "number"?
         `+${this.countryCode} `: ""
         ) + this.phoneNumber.trim();
+
+      const dateOfBirth = this.dateOfBirth === null? null: this.dateOfBirth.trim();
+      if (this.validateDateOfBirth(dateOfBirth) !== null) {
+        this.dateOfBirthErrorMessage = this.errorMessage = this.validateDateOfBirth(dateOfBirth);
+        this.$refs.dateOfBirthLabel.scrollIntoView();
+        return;
+      }
 
       try {
           var response = await this.callApi({
@@ -331,15 +389,14 @@ export default {
           nickname: this.nickname,
           email: this.email,
           password: this.password,
-          dateOfBirth: this.dateOfBirth,
+          dateOfBirth: dateOfBirth,
           homeAddress: this.addressAsString, // API stores address as homeAddress, not address
           phoneNumber: phoneNumber,
           bio: this.bio,
         });
       } catch(err) {
         if (err.status === 409) {
-          this.emailUsed = true;
-          this.errorMessage = "Your email has already been registered";
+          this.emailErrorMessage = this.errorMessage = "Your email has already been registered";
           this.$refs.emailLabel.scrollIntoView();
         }
         this.errorMessage = err.userFacingErrorMessage;
@@ -347,7 +404,9 @@ export default {
       }
 
       this.errorMessage = "";
-      this.emailUsed = false;
+      this.emailErrorMessage = null;
+      this.confirmPasswordErrorMessage = null;
+      this.dateOfBirthErrorMessage = null;
       window.localStorage.setItem("userId", response.data.userId);
       this.$router.push({ name: "profile" });
     }
