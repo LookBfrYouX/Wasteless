@@ -69,9 +69,9 @@
               Revoke Admin
             </button>
           </div>
-          <div class="row mt-2" v-if="errorMessage.length > 0">
+          <div class="row mt-2" v-if="statusMessage.length > 0">
             <div class="col">
-              <p class="alert alert-warning">{{ errorMessage }}</p>
+              <p class="alert alert-warning">{{ statusMessage }}</p>
             </div>
           </div>
         </div>
