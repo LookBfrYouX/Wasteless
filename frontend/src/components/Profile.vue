@@ -19,16 +19,24 @@
               {{ userInfo.lastName }}</h2>
             <!--Location data-->
             <div
-                v-if="userInfo.homeAddress.city || userInfo.homeAddress.country"
+                v-if="userInfo.homeAddress"
                 class="d-flex align-items-center">
               <span class="material-icons md-dark md-inactive ml-2">location_on</span>
               <span class="text-muted">
-                {{
-                  [userInfo.homeAddress.city, userInfo.homeAddress.country].filter(Boolean).join(
-                      ', ')
-                }}
+                {{ userInfo.homeAddress }}
               </span>
             </div>
+<!--            <div-->
+<!--                v-if="userInfo.homeAddress.city || userInfo.homeAddress.country"-->
+<!--                class="d-flex align-items-center">-->
+<!--              <span class="material-icons md-dark md-inactive ml-2">location_on</span>-->
+<!--              <span class="text-muted">-->
+<!--                {{-->
+<!--                  [userInfo.homeAddress.city, userInfo.homeAddress.country].filter(Boolean).join(-->
+<!--                      ', ')-->
+<!--                }}-->
+<!--              </span>-->
+<!--            </div>-->
 
           </div>
 
@@ -131,15 +139,18 @@
             <tr v-if="true" scope="row">
               <th style="white-space: nowrap;">Address:</th>
               <td class="col-md value">
-                <p>{{
-                    [userInfo.homeAddress.streetNumber + ' ' + userInfo.homeAddress.streetName ,
-                      userInfo.homeAddress.city,
-                      userInfo.homeAddress.region,
-                      userInfo.homeAddress.postcode,
-                      userInfo.homeAddress.country
-                    ].filter(Boolean).join(', ')
-                  }}
+                <p>
+                  {{userInfo.homeAddress}}
                 </p>
+<!--                <p>{{-->
+<!--                    [userInfo.homeAddress.streetNumber + ' ' + userInfo.homeAddress.streetName ,-->
+<!--                      userInfo.homeAddress.city,-->
+<!--                      userInfo.homeAddress.region,-->
+<!--                      userInfo.homeAddress.postcode,-->
+<!--                      userInfo.homeAddress.country-->
+<!--                    ].filter(Boolean).join(', ')-->
+<!--                  }}-->
+<!--                </p>-->
               </td>
             </tr>
             </tbody>
