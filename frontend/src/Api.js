@@ -187,8 +187,6 @@ export default {
      * @returns {Promise<AxiosResponse<any> | void>} If it fails, the error will have the `userFacingErrorMessage` property
      */
     logOut: () => {
-        // Remove current user from localstorage
-        window.localStorage.removeItem("authUser");
         return instance.get("/logout").catch(error => {
             let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
 

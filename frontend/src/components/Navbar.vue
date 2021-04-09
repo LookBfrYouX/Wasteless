@@ -60,7 +60,7 @@
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <img class="nav-picture rounded-circle" src="placeholder-profile.png">
                   <div class="d-flex flex-column mx-1">
-                    <span class="m-0 p-0 text-dark">{{getAuthUser().firstName}} {{getAuthUser().lastName}}</span>
+                    <span class="m-0 p-0 text-dark">{{ $store.state.authUser.firstName }} {{ $store.state.authUser.lastName }}</span>
                     <span v-if="isAdmin()" class="admin-text p-0 text-faded">ADMIN</span>
                   </div>
                 </a>
@@ -101,9 +101,6 @@ export default {
   name: "navbar",
   data() {
     return {
-      userRole: null,
-      firstName: null,
-      lastName: null
     };
   },
 
@@ -118,20 +115,19 @@ export default {
       return Boolean(localStorage.getItem("userId"));
     },
     getAuthUser() {
-      return JSON.parse(localStorage.getItem("authUser"));
+      return this.$store.state.authUser;
     },
     isAdmin() {
-      this.authUser = JSON.parse(localStorage.getItem("authUser"));
-      if (this.authUser.role === "ROLE_ADMIN"){
-        return true;
-      } else {
-        return false;
-      }
+      return (this.$store.state.authUser.role === "ROLE_ADMIN");
     },
     login() {
       if (this.$route.name != "login") this.$router.push({ name: "login" });
     },
     logOut() {
+      // Remove current user from localstorage
+      localStorage.removeItem("authUser");
+      // Set authUser state to null
+      this.$store.state.authUser = null;
       this.onLogOut();
     },
     search() {
