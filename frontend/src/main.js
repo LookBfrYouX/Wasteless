@@ -52,7 +52,7 @@ const options = {
 
 Vue.use(VueLogger, options);
 
-// Set the state storage as a global variable
+// Set the state storage as a global variable - accessed through this.$stateStorage in components
 Vue.prototype.$stateStore = store;
 
 /* eslint-disable no-new */

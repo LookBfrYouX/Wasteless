@@ -176,7 +176,6 @@
 
 
 <script>
-import { ApiRequestError } from '../ApiRequestError';
 import ErrorModal from './ErrorModal.vue';
 const Api = require("./../Api").default;
 
