@@ -43,7 +43,7 @@ export default {
   },
 
   props: ["userId"],
-  
+
   methods: {
     logOut: function() {
       // Invalidate the user JSESSIONID through the backend

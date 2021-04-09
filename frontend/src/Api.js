@@ -170,7 +170,6 @@ export default {
     businessProfile: (id) => {
         return instance.get(`/businesses/${id}`).catch(error => {
             let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
-
             if (error != undefined && error.response != undefined) {
                 if (error.response.status == 401) {
                     userFacingErrorMessage = "You don't have permission to access this page";
@@ -180,7 +179,6 @@ export default {
                     userFacingErrorMessage = unknownErrorMessage(error);
                 }
             }
-
             error.userFacingErrorMessage = userFacingErrorMessage;
             throw error;
         });

@@ -1,9 +1,8 @@
 <template>
-  <div class="business-profile-card card container">
+  <div class="bprofile-card card container">
     <div>
       <h1 class="title">Business Information</h1>
-      <img v-if="businessInfo.role && businessInfo.role == 'ROLE_ADMIN'" class="admin-icon" src="id-card.svg" alt="Admin role icon">
-      <ul class="profile-info list-unstyled">
+      <ul class="bprofile-info list-unstyled">
         <li class="row">
           <dt class="col-md label">Business Title:</dt>
           <dd class="col-md value"> {{ businessInfo.name }} </dd>
@@ -14,11 +13,14 @@
         </li>
         <li class="row">
           <dt class="col-md label">Address:</dt>
-          <dd class="col-md value"> {{ businessInfo.address }} </dd>
+          <dd class="col-md value"> {{[businessInfo.homeAddress.streetNumber + " " +
+          businessInfo.homeAddress.streetName, businessInfo.homeAddress.city,
+          businessInfo.homeAddress.region, businessInfo.homeAddress.country,
+          businessInfo.homeAddress.postcode].join(", ")}} </dd>
         </li>
         <li class="row">
           <dt class="col-md label">Business Type:</dt>
-          <dd class="col-md value"> {{ businessInfo.type}} </dd>
+          <dd class="col-md value"> {{ businessInfo.businessType}} </dd>
         </li>
       </ul>
       <div class="row mt-2" v-if="errorMessage.length > 0">
@@ -33,9 +35,6 @@
 <script>
 const Api = require("./../Api").default;
 
-const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-Object.freeze(MONTH_NAMES);
-
 export default {
   name: 'businessProfile',
   components: {},
@@ -45,31 +44,32 @@ export default {
       businessInfo: {
         name: "",
         description: "",
-        address: "",
-        type: "",
+        homeAddress: "",
+        businessType: "",
       },
       errorMessage: "",
     }
   },
 
   props: {
-    userId: {
-      type: Number, // may be NaN
+    businessId: {
+      type: Number,
       required: true
-      // default: 10
     }
   },
+
+  beforeMount: function() {
+    // gets user information from api
+    this.parseApiResponse(this.callApi(this.businessId));
+  },
+
+
   methods: {
     /**
      * Calls the API to get profile information with the given business ID
      * Returns the promise, not the response
      */
     callApi: function(businessId) {
-      if (typeof businessId != "number" || isNaN(businessId)) {
-        const err = new Error("Cannot load profile page (no profile given). You may need to log in");
-        err.userFacingErrorMessage = err.message;
-        return Promise.reject(err);
-      }
       return Api.businessProfile(businessId);
     },
 
@@ -79,6 +79,7 @@ export default {
     parseApiResponse: async function(apiCall) {
       try {
         const response = await apiCall;
+        console.log(response.data);
         this.businessInfo = response.data;
       } catch(err) {
         alert(err.userFacingErrorMessage == undefined? err.toString(): err.userFacingErrorMessage);
