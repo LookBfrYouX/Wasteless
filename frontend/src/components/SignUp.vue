@@ -337,7 +337,7 @@ export default {
           bio: this.bio,
         });
       } catch(err) {
-        if (err == undefined || err.response.status == 409) {
+        if (err.status === 409) {
           this.emailUsed = true;
           this.errorMessage = "Your email has already been registered";
           this.$refs.emailLabel.scrollIntoView();
