@@ -73,7 +73,6 @@
 </style>
 
 <script>
-import { store } from '../store';
 // grabs mock api
 const Api = require("./../Api").default;
 
@@ -109,14 +108,14 @@ export default {
         // Get and set the current logged in user information
         response = await Api.profile(userId);
         const authUser = response.data;
-        store.actions.setAuthUser(authUser);
+        this.$stateStore.actions.setAuthUser(authUser);
       } catch(err) {
         this.errorMessage = err.userFacingErrorMessage;
         return;
       }
 
       this.errorMessage = "";
-      this.$router.push({ name: "profile" });
+      await this.$router.push({ name: "profile" });
     },
   },
 };

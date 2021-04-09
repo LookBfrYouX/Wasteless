@@ -167,7 +167,6 @@
 
 
 <script>
-import { store } from '../store';
 const Api = require("./../Api").default;
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August",
@@ -204,7 +203,7 @@ export default {
      * Checks to see if logged in user is an admin using cookie storing session.
      */
     checkAdmin: function () {
-      return (store.getters.getAuthUser().role === "ROLE_ADMIN");
+      return (this.$stateStore.getters.getAuthUser().role === "ROLE_ADMIN");
     },
 
     /**
@@ -214,8 +213,8 @@ export default {
     makeAdmin: async function (userId) {
       try {
         await Api.makeAdmin(userId);
-        if (userId === store.getters.getAuthUser().id) {
-          store.actions.makeAdmin();
+        if (userId === this.$stateStore.getters.getAuthUser().id) {
+          this.$stateStore.actions.makeAdmin();
         }
         this.userInfo.role = "ROLE_ADMIN";
         this.statusMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
@@ -234,8 +233,8 @@ export default {
       try {
         await Api.revokeAdmin(userId);
         this.userInfo.role = "ROLE_USER";
-        if (userId.toString() === store.getters.getAuthUser().id) {
-          store.actions.revokeAdmin();
+        if (userId.toString() === this.$stateStore.getters.getAuthUser().id) {
+          this.$stateStore.actions.revokeAdmin();
           this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
         } else {
           this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
@@ -316,7 +315,7 @@ export default {
 
   computed: {
     authUser() {
-      return store.getters.getAuthUser();
+      return this.$stateStore.getters.getAuthUser();
     },
     dateOfBirthText: function () {
       if (isNaN(Date.parse(this.userInfo.dateOfBirth))) {

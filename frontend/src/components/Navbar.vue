@@ -96,7 +96,6 @@
 </template>
 
 <script>
-import { store } from '../store';
 export default {
   name: "navbar",
   data() {
@@ -105,7 +104,7 @@ export default {
     };
   },
   computed: {
-    authUser() { return store.getters.getAuthUser() }
+    authUser() { return this.$stateStore.getters.getAuthUser() }
   },
   props: ["query", "onLogOut", "forceSearchUpdate"],
   // onLogOut: callback that should be passed when the user clicks log out button on NavBar
@@ -118,14 +117,14 @@ export default {
       return Boolean(localStorage.getItem("userId"));
     },
     isAdmin() {
-      return (store.getters.getAuthUser().role === "ROLE_ADMIN");
+      return (this.$stateStore.getters.getAuthUser().role === "ROLE_ADMIN");
     },
     login() {
       if (this.$route.name != "login") this.$router.push({ name: "login" });
     },
     logOut() {
       // Set authUser state to null
-      store.actions.deleteAuthUser();
+      this.$stateStore.actions.deleteAuthUser();
       this.onLogOut();
     },
     search() {
