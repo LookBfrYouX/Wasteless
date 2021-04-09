@@ -41,7 +41,7 @@
           </div>
 
           <span class="text-muted">{{
-              userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : ''
+              authUser.role && authUser.role === 'ROLE_ADMIN' ? 'Admin' : ''
             }}</span>
           <p>{{ userInfo.bio }}</p>
 
@@ -184,7 +184,6 @@ export default {
       statusMessage: "",
     }
   },
-
   props: {
     userId: {
       type: Number, // may be NaN
@@ -235,7 +234,7 @@ export default {
       try {
         await Api.revokeAdmin(userId);
         this.userInfo.role = "ROLE_USER";
-        if (userId === store.getters.getAuthUser().id) {
+        if (userId.toString() === store.getters.getAuthUser().id) {
           store.actions.revokeAdmin();
           this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
         } else {
@@ -316,6 +315,9 @@ export default {
   },
 
   computed: {
+    authUser() {
+      return store.getters.getAuthUser();
+    },
     dateOfBirthText: function () {
       if (isNaN(Date.parse(this.userInfo.dateOfBirth))) {
         return "Unknown";
