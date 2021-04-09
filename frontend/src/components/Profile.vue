@@ -46,7 +46,7 @@
           <p>{{ userInfo.bio }}</p>
 
           <br>
-          <div class="profile-buttons d-flex" style="position: absolute;bottom: 30px">
+          <div class="profile-buttons d-flex">
             <button class="btn btn-white-bg-primary mx-1 d-flex" disabled><span class="material-icons mr-1">send</span>Send Message</button>
             <button
                 v-if="checkAdmin() &&  userInfo.role != 'ROLE_ADMIN'"
@@ -69,7 +69,11 @@
               Revoke Admin
             </button>
           </div>
-          <span class="material-icons">badge</span>
+          <div class="row mt-2" v-if="errorMessage.length > 0">
+            <div class="col">
+              <p class="alert alert-warning">{{ errorMessage }}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
