@@ -162,11 +162,22 @@
         </div>
       </div>
     </div>
+    <error-modal
+      title="Error fetching user details"
+      v-bind:show="apiErrorMessage !== null"
+      v-bind:hideCallback="() => apiErrorMessage = null"
+      v-bind:refresh="true"
+      v-bind:retry="this.apiPipeline"
+    >
+      <p>{{apiErrorMessage}}</p>
+    </error-modal>
   </div>
 </template>
 
 
 <script>
+import { ApiRequestError } from '../ApiRequestError';
+import ErrorModal from './ErrorModal.vue';
 const Api = require("./../Api").default;
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August",
@@ -175,12 +186,13 @@ Object.freeze(MONTH_NAMES);
 
 export default {
   name: 'profilePage',
-  components: {},
+  components: { ErrorModal },
 
   data() {
     return {
       userInfo: {},
       statusMessage: "",
+      apiErrorMessage: null
     }
   },
   props: {
@@ -193,7 +205,7 @@ export default {
 
   beforeMount: function () {
     // gets user information from api
-    this.parseApiResponse(this.callApi(this.userId));
+    this.apiPipeline();
   },
 
   methods: {
@@ -247,6 +259,13 @@ export default {
     },
 
     /**
+     * Calls the API and updates the component's data with the result
+     */
+    apiPipeline: function() {
+      this.parseApiResponse(this.callApi(this.userId));
+    },
+
+    /**
      * Calls the API to get profile information with the given user ID
      * Returns the promise, not the response
      */
@@ -268,8 +287,7 @@ export default {
         const response = await apiCall;
         this.userInfo = response.data;
       } catch (err) {
-        alert(
-            err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
+        this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
 
@@ -342,7 +360,7 @@ export default {
   watch: {
     // if userid changes updates text fields
     userId: function () {
-      this.parseApiResponse(this.callApi(this.userId))
+      this.apiPipeline();
     }
   },
 }

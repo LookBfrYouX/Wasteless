@@ -65,7 +65,7 @@ export default {
     makeAdmin: async (userId) => {
         return instance.put(`/users/${userId}/makeAdmin`).catch(error => {
             throw ApiRequestError.createFromMessageMap(error, {
-                401: "You must be an administrator to give others admin permissions",
+                403: "You must be an administrator to give others admin permissions",
                 406: "Invalid user ID given"
             });
         })
@@ -80,9 +80,9 @@ export default {
     revokeAdmin: async (userId) => {
         return instance.put(`/users/${userId}/revokeAdmin`).catch(error => {
             throw ApiRequestError.createFromMessageMap(error, {
-                401: "You must be an administrator to revoke admin permissions",
+                403: "You must be an administrator to revoke admin permissions",
                 406: "Invalid user ID given",
-                409: "Cannot Revoke the DGAA's Administrator Privileges"
+                409: "Cannot revoke the DGAA's administrator privileges"
             });
         })
     },
