@@ -110,7 +110,7 @@ export default {
     profile: (id) => {
         return instance.get(`/users/${id}`).catch(error => {
             throw ApiRequestError.createFromMessageMap(error, {
-                405: "Information for this user could not be found"
+                406: "Information for this user could not be found"
             });
         });
     },

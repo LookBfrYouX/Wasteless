@@ -46,5 +46,28 @@ export const router = new VueRouter({
             component: () => import('./components/SearchResults.vue'),
             props: route => ({ search: route.params.query })
         },
+        {
+            name: "error",
+            path: "/error",
+            component: () => import("./components/Error.vue"),
+            props: route => route.params
+        },
+        {
+            name: "Not Found",
+            path: "/*",
+            component: () => import("./components/Error.vue"),
+            props: route => {
+                const defaults = {
+                    title: "404 not found",
+                    subheading: `We couldn't find ${route.fullPath}`,
+                    text: "Try checking if the URL was typed correctly"
+                }
+                
+                return {
+                    ...defaults,
+                    ...route.params
+                }
+            }
+        }
     ],
 })
