@@ -31,7 +31,6 @@
 import Vue from 'vue';
 import App from './App';
 import { router } from './router';
-import store from './store.js';
 import "bootstrap";
 import "./styles/custom.scss";
 
@@ -56,6 +55,5 @@ Vue.use(VueLogger, options);
 new Vue({
   el: '#app',
   router,
-  store,
   render: h => h(App)
 });

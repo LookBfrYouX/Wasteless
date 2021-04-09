@@ -73,6 +73,7 @@
 </style>
 
 <script>
+import { store } from '../store';
 // grabs mock api
 const Api = require("./../Api").default;
 
@@ -108,7 +109,7 @@ export default {
         // Get and set the current logged in user information
         response = await Api.profile(userId);
         const authUser = response.data;
-        await this.$store.dispatch('authUserLogin', authUser);
+        store.actions.setAuthUser(authUser);
       } catch(err) {
         this.errorMessage = err.userFacingErrorMessage;
         return;
