@@ -57,7 +57,7 @@ test("unsuccessful login", async () => {
     const data = successfulResponse();
     data.password = "notlogin";
     wrapper.setData(data)
-    expect(wrapper.vm.responseSuccess).toBeFalsey();
+    expect(wrapper.vm.responseSuccess).toBeFalsy();
     });
   });
 });
