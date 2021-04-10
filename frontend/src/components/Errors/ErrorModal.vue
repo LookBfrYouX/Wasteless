@@ -84,9 +84,7 @@ export default {
     this.updateModalVisibility();
     this.$refs.modal.addEventListener("hidden.bs.modal", event => {
       if (this.hideCallback) this.hideCallback(event);
-      console.log("!!!!!!!!!!")
     });
-
   }
 }
 </script>

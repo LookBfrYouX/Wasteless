@@ -110,7 +110,7 @@ export default {
     profile: (id) => {
         return instance.get(`/users/${id}`).catch(error => {
             throw ApiRequestError.createFromMessageMap(error, {
-                406: "Information for this user could not be found"
+                406: "The user does not exist"
             });
         });
     },
@@ -133,5 +133,25 @@ export default {
         return instance.get("/logout").catch(error => {
             throw ApiRequestError.createFromMessageMap(error);
         });
+    },
+
+    /**
+     * Logs the user out client-side and redirects to a logout page
+     * Call using `Api.handle401.call(this, err) from the vue component
+     * @param {ApiRequestError} error handle logout when a 401 is returned by the api
+     * @param {this} callee
+     * @return {Boolean} true if it was a 401 error
+     */
+    handle401: async function(err) {
+        if (this.$stateStore === undefined || this.$router === undefined) {
+            console.error("Call this method using `.call(this, err)` - need access to Vue's state and router variables, which this does not have access to");
+        }
+        if (err && err.status === 401) {
+            await this.$stateStore.actions.deleteAuthUser();
+            await this.$router.push({ name: "error401" });
+            return true;
+        }
+
+        return false;
     }
 }

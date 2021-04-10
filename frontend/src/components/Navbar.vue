@@ -20,25 +20,23 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
         <ul class="navbar-nav mr-auto">
-          <router-link v-if="checkLogin()" active-class="active" to="/home" exact>
+          <router-link v-if="isLoggedIn" active-class="active" to="/home" exact>
             <li class="nav-item">
               <a class="nav-link">
                 Home
-                <span class="sr-only">(current)</span>
               </a>
             </li>
           </router-link>
-          <router-link v-if="checkLogin()" active-class="active" to="/profile" exact>
+          <router-link v-if="isLoggedIn" active-class="active" to="/profile" exact>
             <li class="nav-item">
               <a class="nav-link">
                 Profile
-                <span class="sr-only">(current)</span>
               </a>
             </li>
           </router-link>
         </ul>
         <!--if logged in shows this section-->
-        <div v-if="checkLogin()" class="d-flex">
+        <div v-if="isLoggedIn" class="d-flex">
           <form class="input-group mt-2 navbar-center form-inline" v-on:submit.prevent="search">
             <div class="input-group mb-3 navbar-search">
               <div class="input-group-prepend h-100">
@@ -61,7 +59,7 @@
                   <img class="nav-picture rounded-circle" src="placeholder-profile.png">
                   <div class="d-flex flex-column mx-1">
                     <span class="m-0 p-0 text-dark">{{ authUser.firstName }} {{ authUser.lastName }}</span>
-                    <span v-if="isAdmin()" class="admin-text p-0 text-faded">ADMIN</span>
+                    <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
                   </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
@@ -73,79 +71,137 @@
         </div>
         <!-- otherwise shows login button-->
         <span v-else>
-          <button
+          <a
             class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
             v-on:click="login"
             type="button"
             v-if="this.$route.path != '/login'"
           >
             Login
-          </button>
-          <button
+          </a>
+          <a
             class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
             v-on:click="signUp"
             type="button"
             v-if="this.$route.path != '/signUp'"
           >
             Sign Up
-          </button>
+          </a>
         </span>
       </div>
     </nav>
+    <error-modal
+      title="Couldn't log you out"
+      v-bind:show="logOutErrorMessage !== null"
+      v-bind:hideCallback="() => logOutErrorMessage = null"
+      v-bind:refresh="false"
+      v-bind:retry="this.logOut"
+    >
+      <p>{{logOutErrorMessage}}</p>
+    </error-modal>
   </div>
 </template>
 
 <script>
+const Api = require("./../Api").default;
+import ErrorModal from "./Errors/ErrorModal";
+
 export default {
   name: "navbar",
+  props: ["query"],
+  components: { ErrorModal },
   data() {
     return {
-
-    };
+      logOutErrorMessage: null
+    }
   },
   computed: {
-    authUser() { return this.$stateStore.getters.getAuthUser() }
-  },
-  props: ["query", "onLogOut", "forceSearchUpdate"],
-  // onLogOut: callback that should be passed when the user clicks log out button on NavBar
-  // forceSearchUpdate: callback that is called if user clicks search when the value of the search field
-  // is the same as what is currently in the URL (Vue router will block this if we try to push)
+    /**
+     * Wrapper around state store auth user
+     */
+    authUser: {
+      get: function() {
+        return this.$stateStore.getters.getAuthUser();
+      },
+      set: function(val) {
+        this.$stateStore.actions.setAuthUser(val);
+      }
+    },
 
-  methods: {
-    checkLogin() {
-      // returns true if value (user id) is assigned to login in localStorage
-      return Boolean(localStorage.getItem("userId"));
+    /**
+     * Checks if a user is logged in or not
+     */
+    isLoggedIn() {
+      return this.$stateStore.getters.isLoggedIn();
     },
+
+    /**
+     * True if admin, false if not OR IF NOT LOGGED IN
+     */
     isAdmin() {
-      return (this.$stateStore.getters.getAuthUser().role === "ROLE_ADMIN");
+      return this.$stateStore.getters.isAdmin();
     },
-    login() {
-      if (this.$route.name != "login") this.$router.push({ name: "login" });
+  },
+  methods: {
+    /**
+     * Go (refresh page) if already on the same page, or pushes if it is a different page. Does not support params
+     */
+    pushOrGo: async function(routeName) {
+      this.$route.name === routeName?
+          this.$router.go():
+          this.$router.push({ name: routeName });
     },
-    logOut() {
-      // Set authUser state to null
-      this.$stateStore.actions.deleteAuthUser();
-      this.onLogOut();
+
+    /**
+     * Navigate to log in page
+     */
+    login: async function() {
+      return this.pushOrGo("login");
     },
-    search() {
+
+    /**
+     * Navigate to sign up page
+     */
+    signUp: async function() {
+      return this.pushOrGo("signUp");
+    },
+
+    /**
+     * Removes authorized user and redirects to home,
+     * or error page if log out fails
+     */
+    logOut: async function() {
+      try {
+        await Api.logOut();
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) return;
+        this.logOutErrorMessage = err.userFacingErrorMessage;
+        return;
+      }
+
+      await this.$stateStore.actions.deleteAuthUser();
+      await this.pushOrGo("home");
+    },
+
+    /**
+     * Handler when search button clicked
+     * Navigates to search page with current query, or reloads page if on search page and query has not changed
+     */
+    search: async function() {
       const searchName = "search";
       let newQuery = this.$route.params.query;
 
       if (this.$route.name == searchName && newQuery == this.query) {
-        this.forceSearchUpdate();
-
-        // Reloads the search component by updating the key, but doesn't add it to history
+        await this.$router.go();
         return;
       }
-      this.$router.push({
+
+      await this.$router.push({
         name: searchName,
         params: {
           query: this.query,
         },
       });
-    },
-    signUp() {
-      if (this.$route.path != "/signUp") this.$router.push("/signUp");
     },
   },
 };

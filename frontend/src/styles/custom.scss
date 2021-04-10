@@ -82,3 +82,17 @@ nav {
   background-color: $slightly-transparent-background;
 }
 
+
+.navbara-pigeon-peek::after {
+  content: "";
+  display: block;
+  height: max(200px, 20vh);
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-image: url("/navbara-pigeon.svg");
+  background-size: contain;
+  background-position: right;
+  background-repeat: no-repeat;
+}

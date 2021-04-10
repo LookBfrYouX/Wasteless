@@ -176,7 +176,7 @@
 
 
 <script>
-import ErrorModal from './ErrorModal.vue';
+import ErrorModal from './Errors/ErrorModal.vue';
 import { ApiRequestError } from "./../ApiRequestError";
 const Api = require("./../Api").default;
 
@@ -233,6 +233,7 @@ export default {
         this.statusMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
         return;
       } catch (err) {
+        if (await Api.handle401.call(this, err)) return;
         this.statusMessage = err.userFacingErrorMessage;
         return;
       }
@@ -254,6 +255,7 @@ export default {
         }
         return;
       } catch (err) {
+        if (await Api.handle401.call(this, err)) return;
         this.statusMessage = err.userFacingErrorMessage;
         return;
       }
@@ -278,29 +280,6 @@ export default {
       return Api.profile(userId);
     },
 
-
-    /**
-     * TODO move this to somewhere else
-     * Logs the user out client-side and redirects to a logout page
-     * @param {ApiRequestError} error handle logout when a 401 is returned by the api
-     * @return {Boolean} false if it was not handled
-     */
-    handle401: async function(error) {
-        if (typeof error === "object" && error.status === 401) {
-            await this.$stateStore.actions.deleteAuthUser();
-            await this.$router.push({
-              name: "error",
-              params: {
-                title: "We had to log you out",
-                subheading: "After a period of inactivity, you are automatically signed out for security reasons",
-                text: "You were probably attempted to run an operation that requires you to be logged in. Log in again and try again"
-              }
-            });
-            return true;
-        }
-        return false;
-    },
-
     /**
      * Parses the API response given a promise to the request
      */
@@ -308,9 +287,8 @@ export default {
       try {
         const response = await apiCall;
         this.userInfo = response.data;
-
       } catch (err) {
-        await this.handle401(err);
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },

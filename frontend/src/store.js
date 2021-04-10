@@ -19,6 +19,20 @@ export const store = {
         getWelcomeMessage: () => {
             return state.welcomeMessage;
         },
+    
+        /**
+         * Checks if a user is logged in or not
+         */
+        isLoggedIn() {
+            return state.authUser !== null && state.authUser !== undefined;
+        },
+    
+        /**
+         * True if admin, false if not OR IF NOT LOGGED IN
+         */
+        isAdmin() {
+            return state.authUser && state.authUser.role === "ROLE_ADMIN";
+        },
     },
     actions: {
         // Set the current welcome message (example)
