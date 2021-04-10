@@ -34,7 +34,7 @@
             <li class="list-group-item card text-wrap" v-on:click="viewUser(user.id)" v-for="(user, index) in displayedResults" v-bind:key="index">
               <h4 class="card-title">{{user.firstName}} {{user.middleName}} {{user.lastName}} {{user.nickname? `(${user.nickname})`: ""}}</h4>
               <img v-if="user.role && user.role == 'ROLE_ADMIN'" class="admin-icon" src="id-card.svg" alt="Admin role icon">
-              <div>{{user.region}}, {{user.city}}, {{user.country}}</div>
+              <div>{{user.homeAddress.streetNumber}} {{user.homeAddress.streetName}}, {{user.homeAddress.city}}, {{user.homeAddress.region}}, {{user.homeAddress.country}} {{user.homeAddress.postcode}}</div>
               <div class="text-muted">{{user.email}}</div>
             </li>
           </ul>
@@ -104,25 +104,10 @@
         });
       },
 
+      /* this code was all unnecessary just refer to variables as user.homeaddress.city rather than map each of them to user.city*/
       parseSearchResults: function(results) {
         return results.map(user => {
-          let region = '';
-          let city = '';
-          let country = '';
-          console.log("test");
-          if (user.homeAddress != undefined) {
-            region = user.homeAddress.region;
-            city = user.homeAddress.city;
-            country = user.homeAddress.country;
-            // const address = user.homeAddress.split(",").map(item => item.trim());
-            // if (address.length > 1) country = address[address.length - 1];
-            // if (address.length > 2) city = address[address.length - 2];
-            // if (address.length > 3) region = address[address.length - 3];
-          }
           return {
-            region,
-            city,
-            country,
             ...user
           }
         });
