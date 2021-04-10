@@ -105,6 +105,7 @@
                 title="The password must be at least 8 characters long and contain lowercase, uppercase and number characters"
                 required
               />
+              <!-- ENSURE BACKEND PASSWORD REGEXP ALSO UPDATED -->
           </div>
           <div class="form-group col-12 order-md-3">
             <small class="form-text">
@@ -347,6 +348,7 @@ export default {
       this.countryCodeErrorMessage = null;
       this.confirmPasswordErrorMessage = null;
       this.dateOfBirthErrorMessage = null;
+      this.emailErrorMessage = null;
 
       if (this.password != this.confirmPassword) {
         this.errorMessage = this.confirmPasswordErrorMessage = "The passwords do not match";
@@ -407,6 +409,8 @@ export default {
       this.emailErrorMessage = null;
       this.confirmPasswordErrorMessage = null;
       this.dateOfBirthErrorMessage = null;
+
+      console.warn("TODO SIGN UP SHOULD RETURN FULL USER PROFILE; USE THIS TO SET AUTHUSER");
       window.localStorage.setItem("userId", response.data.userId);
       this.$router.push({ name: "profile" });
     }

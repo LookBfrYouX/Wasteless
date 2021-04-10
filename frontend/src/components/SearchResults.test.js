@@ -1,4 +1,5 @@
 import { shallowMount } from "@vue/test-utils";
+import { globalStateMocks } from "../../test/testHelper";
 import SearchResults from "./SearchResults";
 
 let wrapper;
@@ -10,9 +11,7 @@ beforeEach(() => {
       propsData: {
           search: "a"
       },
-      mocks: {},
-      stubs: {},
-      methods: {}
+      mocks: { ...globalStateMocks() },
     });
   });
 
@@ -24,10 +23,11 @@ describe("parse search results", () => {
             homeAddress: "",
 
         }])).toEqual([
-            {region: "",
-            city: "",
-            country: "",
-            homeAddress: ""
+            {
+                region: "",
+                city: "",
+                country: "",
+                homeAddress: ""
             }
         ])
     });
@@ -36,10 +36,11 @@ describe("parse search results", () => {
             homeAddress: "33",
 
         }])).toEqual([
-            {region: "",
-            city: "",
-            country: "",
-            homeAddress: "33"
+            {
+                region: "",
+                city: "",
+                country: "",
+                homeAddress: "33"
             }
         ])
     });
@@ -49,10 +50,11 @@ describe("parse search results", () => {
             homeAddress: "33B Dovedale, Ilam",
 
         }])).toEqual([
-            {region: "",
-            city: "",
-            country: "Ilam",
-            homeAddress: "33B Dovedale, Ilam"
+            {
+                region: "",
+                city: "",
+                country: "Ilam",
+                homeAddress: "33B Dovedale, Ilam"
             }
         ])
     });
@@ -62,10 +64,11 @@ describe("parse search results", () => {
             homeAddress: "2 Homestead Lane, Ilam, Christchurch",
 
         }])).toEqual([
-            {region: "",
-            city: "Ilam",
-            country: "Christchurch",
-            homeAddress: "2 Homestead Lane, Ilam, Christchurch"
+            {
+                region: "",
+                city: "Ilam",
+                country: "Christchurch",
+                homeAddress: "2 Homestead Lane, Ilam, Christchurch"
             }
         ])
     });
@@ -75,10 +78,11 @@ describe("parse search results", () => {
             homeAddress: "2 Homestead Lane, Ilam, Christchurch, New Zealand",
 
         }])).toEqual([
-            {region: "Ilam",
-            city: "Christchurch",
-            country: "New Zealand",
-            homeAddress: "2 Homestead Lane, Ilam, Christchurch, New Zealand"
+            {
+                region: "Ilam",
+                city: "Christchurch",
+                country: "New Zealand",
+                homeAddress: "2 Homestead Lane, Ilam, Christchurch, New Zealand"
             }
         ])
     });
@@ -88,10 +92,11 @@ describe("parse search results", () => {
             homeAddress: "2 Homestead Lane, Ilam, Christchurch, New, Zealand",
 
         }])).toEqual([
-            {region: "Christchurch",
-            city: "New",
-            country: "Zealand",
-            homeAddress: "2 Homestead Lane, Ilam, Christchurch, New, Zealand"
+            {
+                region: "Christchurch",
+                city: "New",
+                country: "Zealand",
+                homeAddress: "2 Homestead Lane, Ilam, Christchurch, New, Zealand"
             }
         ])
     });
@@ -149,6 +154,7 @@ describe("sortedResults", () => {
         wrapper.setData({
             sortBy: null
         });
+
         expect(wrapper.vm.sortedResults).toEqual(wrapper.vm.results);
     });
 
@@ -156,43 +162,87 @@ describe("sortedResults", () => {
         wrapper.setData({
             reversed: false,
             sortBy: 'firstName',
-            results: [{firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''},
-                      {firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''}]
+            results: [
+                {
+                    firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+                }, {
+                    firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+                }
+            ]
         });
-        expect(wrapper.vm.sortedResults).toEqual([{firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''},
-                                                  {firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''}])
+
+        expect(wrapper.vm.sortedResults).toEqual([
+            {
+                firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+            }, {
+                firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+            }
+        ]);
     });
 
     test("Reverse sorting different string", () => {
         wrapper.setData({
             reversed: true,
             sortBy: 'firstName',
-            results: [{firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''},
-                      {firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''}]
+            results: [
+                {
+                    firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+                }, {
+                    firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+                }
+            ]
         });
-        expect(wrapper.vm.sortedResults).toEqual([{firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''},
-                                                  {firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''}])
+
+        expect(wrapper.vm.sortedResults).toEqual([
+            {
+                firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+            }, {
+                firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '',    dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+            }
+        ]);
     });
 
     test("Sorting string and empty string", () => {
         wrapper.setData({
             reversed: false,
             sortBy: 'nickname',
-            results: [{firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: 'AA', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''},
-                      {firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''}]
+            results: [
+                {
+                    firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: 'AA', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+                }, {
+                    firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+                }
+            ]
         });
-        expect(wrapper.vm.sortedResults).toEqual([{firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''},
-                                                  {firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: 'AA', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''}])
+
+        expect(wrapper.vm.sortedResults).toEqual([
+            {
+                firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+            }, {
+                firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: 'AA', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+            }
+        ]);
     });
 
     test("Reverse sorting string and empty string", () => {
         wrapper.setData({
             reversed: true,
             sortBy: 'nickname',
-            results: [{firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: 'AA', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''},
-                      {firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''}]
+            results: [
+                {
+                    firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: 'AA', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+                }, {
+                    firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+                }
+            ]
         });
-        expect(wrapper.vm.sortedResults).toEqual([{firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: 'AA', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''},
-                                                  {firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''}])
+        
+        expect(wrapper.vm.sortedResults).toEqual([
+            {
+                firstName: 'Alice', middleName: 'Eve', lastName: 'Smith', nickname: 'AA', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+            }, {
+                firstName: 'Bob', middleName: 'Eve', lastName: 'Smith', nickname: '', email: '', password: '', dateOfBirth: '', homeAddress: '', phoneNumber: '', bio: ''
+            }
+        ]);
     });
 })

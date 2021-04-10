@@ -1,4 +1,5 @@
 import { mount } from "@vue/test-utils";
+import { globalStateMocks } from "../../test/testHelper";
 import Login from "./Login";
 
 let wrapper;
@@ -15,10 +16,7 @@ const successfulResponse = () => {
 
 beforeEach(() => {
   wrapper = mount(Login, {
-    propsData: {},
-    mocks: {},
-    stubs: {
-    }
+    mocks: { ...globalStateMocks() }
   });
 });
 

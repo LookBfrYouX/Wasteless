@@ -1,5 +1,6 @@
 import { shallowMount } from "@vue/test-utils";
 import Profile from "./Profile";
+import { globalStateMocks } from "./../../test/testHelper";
 
 jest.useFakeTimers();
 
@@ -8,14 +9,12 @@ let wrapper;
 
 window.alert = jest.fn();
 
-beforeEach(() => {
+beforeEach(() => {  
   wrapper = shallowMount(Profile, {
     propsData: {
       userId: 20
     },
-    mocks: {},
-    stubs: {},
-    methods: {}
+    mocks: { ...globalStateMocks() }
   });
 });
 

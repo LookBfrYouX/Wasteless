@@ -138,13 +138,17 @@ export default {
     /**
      * Logs the user out client-side and redirects to a logout page
      * Call using `Api.handle401.call(this, err) from the vue component
+     * If `this.$stateStore` and `this.$router`  are not defined, likely because
+     * `.call` has not been used, or because the jest test has not mocked these, an error message will
+     * be printed and the method will return false.
      * @param {ApiRequestError} error handle logout when a 401 is returned by the api
      * @param {this} callee
      * @return {Boolean} true if it was a 401 error
      */
     handle401: async function(err) {
         if (this.$stateStore === undefined || this.$router === undefined) {
-            console.error("Call this method using `.call(this, err)` - need access to Vue's state and router variables, which this does not have access to");
+            console.warn("[Api.js, handle401]. Call this method using `.call(this, err)` - need access to Vue's state and router variables, which this does not have access to");
+            return false;
         }
         if (err && err.status === 401) {
             await this.$stateStore.actions.deleteAuthUser();

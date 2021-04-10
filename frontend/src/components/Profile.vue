@@ -49,7 +49,7 @@
           <div class="profile-buttons d-flex">
             <button class="btn btn-white-bg-primary mx-1 d-flex" disabled><span class="material-icons mr-1">send</span>Send Message</button>
             <button
-                v-if="checkAdmin() &&  userInfo.role != 'ROLE_ADMIN'"
+                v-if="isAdmin && userInfo.role != 'ROLE_ADMIN'"
                 class="btn btn-white-bg-primary mx-1 d-flex"
                 id="makeAdmin"
                 type="button"
@@ -59,7 +59,7 @@
               Make Admin
             </button>
             <button
-                v-if="checkAdmin() && userInfo.role == 'ROLE_ADMIN'"
+                v-if="isAdmin && userInfo.role == 'ROLE_ADMIN'"
                 class="btn btn-white-bg-primary mx-1 d-flex"
                 id="revokeAdmin"
                 type="button"
@@ -195,6 +195,7 @@ export default {
       apiErrorMessage: null
     }
   },
+
   props: {
     userId: {
       type: Number, // may be NaN
@@ -209,16 +210,6 @@ export default {
   },
 
   methods: {
-    // TODO: make admin buttons auto update without refresh
-
-    /**
-     * Checks to see if logged in user is an admin using cookie storing session.
-     */
-    checkAdmin: function () {
-      const user = this.$stateStore.getters.getAuthUser();
-      return (user && user.role === "ROLE_ADMIN");
-    },
-
     /**
      * Calls to the API to from the profile view with a given user ID to make requested user an Administrator
      * Returns a message to user to indicate whether or not the user has been updated to the Administrator role.
@@ -226,7 +217,7 @@ export default {
     makeAdmin: async function (userId) {
       try {
         await Api.makeAdmin(userId);
-        if (userId === this.$stateStore.getters.getAuthUser().id) {
+        if (userId === this.authUser.id) {
           this.$stateStore.actions.makeAdmin();
         }
         this.userInfo.role = "ROLE_ADMIN";
@@ -241,18 +232,16 @@ export default {
 
     /**
      * Calls to the API to from the profile view with a given user ID to revoke requested user from an Administrator
-     * Returns a message to user to indicate whether selected user has been premoted to Admin or request failed.
+     * Sets a message to user to indicate whether selected user has been premoted to Admin or request failed.
      */
     revokeAdmin: async function (userId) {
       try {
         await Api.revokeAdmin(userId);
         this.userInfo.role = "ROLE_USER";
-        if (userId.toString() === this.$stateStore.getters.getAuthUser().id) {
+        if (userId.toString() === this.authUser.id) {
           this.$stateStore.actions.revokeAdmin();
-          this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
-        } else {
-          this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
         }
+        this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
         return;
       } catch (err) {
         if (await Api.handle401.call(this, err)) return;
@@ -334,9 +323,13 @@ export default {
   },
 
   computed: {
-    authUser() {
-      return this.$stateStore.getters.getAuthUser();
-    },
+    authUser() { return this.$stateStore.getters.getAuthUser() },
+    isLoggedIn() { return this.$stateStore.getters.isLoggedIn() },
+    isAdmin() { return this.$stateStore.getters.isAdmin() },
+
+    /**
+     * Formatted text for date of birth
+     */
     dateOfBirthText: function () {
       if (isNaN(Date.parse(this.userInfo.dateOfBirth))) {
         return "Unknown";
@@ -344,6 +337,9 @@ export default {
       return this.formatDate(this.userInfo.dateOfBirth);
     },
 
+    /**
+     * Formatted text for member since text
+     */
     memberSinceText: function () {
       if (isNaN(Date.parse(this.userInfo.created))) {
         return "Unknown";
@@ -360,7 +356,9 @@ export default {
   },
 
   watch: {
-    // if userid changes updates text fields
+    /**
+     * If user id is updated, need to refresh content
+     */
     userId: function () {
       this.apiPipeline();
     }
