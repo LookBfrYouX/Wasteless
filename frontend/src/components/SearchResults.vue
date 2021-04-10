@@ -109,11 +109,15 @@
           let region = '';
           let city = '';
           let country = '';
+          console.log("test");
           if (user.homeAddress != undefined) {
-            const address = user.homeAddress.split(",").map(item => item.trim());
-            if (address.length > 1) country = address[address.length - 1];
-            if (address.length > 2) city = address[address.length - 2];
-            if (address.length > 3) region = address[address.length - 3];
+            region = user.homeAddress.region;
+            city = user.homeAddress.city;
+            country = user.homeAddress.country;
+            // const address = user.homeAddress.split(",").map(item => item.trim());
+            // if (address.length > 1) country = address[address.length - 1];
+            // if (address.length > 2) city = address[address.length - 2];
+            // if (address.length > 3) region = address[address.length - 3];
           }
           return {
             region,
