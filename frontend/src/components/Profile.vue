@@ -308,7 +308,6 @@ export default {
       try {
         const response = await apiCall;
         this.userInfo = response.data;
-        throw new ApiRequestError("MESSAGE CONTENT", {response:{status:401}});
 
       } catch (err) {
         await this.handle401(err);
