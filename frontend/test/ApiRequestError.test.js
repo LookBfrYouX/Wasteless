@@ -45,9 +45,4 @@ describe("createFromMessageMap", () => {
     expect(ApiRequestError.createFromMessageMap(getError(401), customMessages).userFacingErrorMessage)
     .toEqual("401");
   });
-
-  test("This should fail", () => {
-    expect(ApiRequestError.createFromMessageMap(getError(401), customMessages).userFacingErrorMessage)
-    .toEqual("FAIL");
-  });
 });
