@@ -1,7 +1,7 @@
 import {mount} from "@vue/test-utils";
-import {globalStateMocks} from "../../test/testHelper";
+import {globalStateMocks} from "./testHelper";
 import {ApiRequestError} from "../ApiRequestError";
-import SignUp from "./SignUp";
+import SignUp from "../components/SignUp";
 
 jest.useFakeTimers();
 

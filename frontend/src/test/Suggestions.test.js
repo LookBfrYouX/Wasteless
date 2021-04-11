@@ -1,5 +1,5 @@
 import {shallowMount} from "@vue/test-utils";
-import Suggestions from "./Suggestions";
+import Suggestions from "../components/Suggestions";
 
 jest.useFakeTimers();
 

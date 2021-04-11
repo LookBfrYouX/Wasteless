@@ -1,6 +1,6 @@
 import {shallowMount} from "@vue/test-utils";
-import {globalStateMocks} from "../../test/testHelper";
-import SearchResults from "./SearchResults";
+import {globalStateMocks} from "./testHelper";
+import SearchResults from "../components/SearchResults";
 
 let wrapper;
 

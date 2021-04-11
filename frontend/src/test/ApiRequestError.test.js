@@ -1,4 +1,4 @@
-import {ApiRequestError} from "./../src/ApiRequestError";
+import {ApiRequestError} from "../ApiRequestError";
 
 const customMessages = {
   [ApiRequestError.NO_RESPONSE_KEY]: "A",

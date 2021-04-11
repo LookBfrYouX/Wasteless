@@ -1,5 +1,5 @@
 import {shallowMount} from "@vue/test-utils";
-import AddressForm from "./AddressForm";
+import AddressForm from "../components/AddressForm";
 
 let wrapper;
 

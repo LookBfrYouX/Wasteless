@@ -1,6 +1,6 @@
 import {mount} from "@vue/test-utils";
-import {globalStateMocks} from "../../test/testHelper";
-import Login from "./Login";
+import {globalStateMocks} from "./testHelper";
+import Login from "../components/Login";
 
 let wrapper;
 
