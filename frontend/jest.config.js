@@ -18,4 +18,5 @@ module.exports = {
     "html",
     "text-summary"
   ],
+  testResultsProcessor: "jest-sonar-reporter"
 }
