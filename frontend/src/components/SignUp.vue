@@ -113,7 +113,7 @@
               number characters. It may not contain spaces
             </small>
           </div>
-          <div class="form-group required col-12 col-md-6 mb-0">
+          <div class="form-group required col-12 col-md-6 mb-md-0">
             <label for="confirmPassword">Confirm Password</label>
             <input
                 v-model="confirmPassword"
@@ -392,19 +392,23 @@ export default {
         return;
       }
 
+      let userData = {
+        firstName: this.firstName,
+        middleName: this.middleName,
+        lastName: this.lastName,
+        nickname: this.nickname,
+        email: this.email,
+        password: this.password,
+        dateOfBirth: dateOfBirth,
+        homeAddress: this.address, // API stores address as homeAddress, not address
+        phoneNumber: phoneNumber,
+        bio: this.bio
+      }
+
+      let response;
+
       try {
-        var response = await this.callApi({
-          firstName: this.firstName,
-          middleName: this.middleName,
-          lastName: this.lastName,
-          nickname: this.nickname,
-          email: this.email,
-          password: this.password,
-          dateOfBirth: dateOfBirth,
-          homeAddress: this.address, // API stores address as homeAddress, not address
-          phoneNumber: phoneNumber,
-          bio: this.bio,
-        });
+        response = await this.callApi(userData);
       } catch (err) {
         if (err.status === 409) {
           this.emailErrorMessage = this.errorMessage = "Your email has already been registered";
@@ -419,10 +423,11 @@ export default {
       this.confirmPasswordErrorMessage = null;
       this.dateOfBirthErrorMessage = null;
 
-      // TODO: Below
-      console.warn("TODO SIGN UP SHOULD RETURN FULL USER PROFILE; USE THIS TO SET AUTHUSER");
-      window.localStorage.setItem("userId", response.data.userId);
-      this.$router.push({name: "profile"});
+      // Instead of calling /user API to get user info, just use the sign up request
+      delete userData.password;
+      userData.id = response.data.userId;
+      await this.$stateStore.actions.setAuthUser(userData);
+      await this.$router.push({name: "profile"});
     }
   }
 }
