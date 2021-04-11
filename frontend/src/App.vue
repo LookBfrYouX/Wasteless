@@ -6,7 +6,6 @@
   <div id="app">
     <navbar
         v-bind:query="query"
-        v-bind:userId="userId"
         v-on:input="event => this.query = event.target.value"
     />
     <div class="w-100 d-flex justify-content-center gradient-background pb-4">
@@ -34,8 +33,6 @@ export default {
   components: {
     Navbar
   },
-
-  props: ["userId"],
 
   methods: {
     updateInput: function (query) {

@@ -69,7 +69,7 @@
         <!-- otherwise shows login button-->
         <span v-else>
           <a
-              v-if="this.$route.path != '/login'"
+              v-if="this.$route.name != 'login'"
               class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
               type="button"
               v-on:click="login"
@@ -77,7 +77,7 @@
             Login
           </a>
           <a
-              v-if="this.$route.path != '/signUp'"
+              v-if="this.$route.name != 'signUp'"
               class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
               type="button"
               v-on:click="signUp"
