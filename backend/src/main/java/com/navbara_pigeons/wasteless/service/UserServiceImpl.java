@@ -76,17 +76,10 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public JSONObject saveUser(User user)
       throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException {
-    // Check for null
-    if (
-          user.getEmail() == null ||
-          user.getDateOfBirth() == null ||
-          user.getFirstName() == null ||
-          user.getLastName() == null ||
-          user.getHomeAddress() == null
-    ) {
-      throw new UserRegistrationException("Missing value");
-    }
     // Email validation
+    if (!UserServiceValidation.isUserValid(user)) {
+      throw new UserRegistrationException("Required user fields cannot be null");
+    }
     if (!UserServiceValidation.isEmailValid(user.getEmail())) {
       throw new UserRegistrationException("Invalid email");
     }
@@ -107,9 +100,6 @@ public class UserServiceImpl implements UserService {
     // Password and field validation
     if (!UserServiceValidation.isPasswordValid(user.getPassword())) {
       throw new UserRegistrationException("Password does not pass validation check");
-    }
-    if (!UserServiceValidation.isUserValid(user)) {
-      throw new UserRegistrationException("Required user fields cannot be null");
     }
     // Address validation
     if (!UserServiceValidation.isAddressValid(user)) {
