@@ -76,6 +76,16 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public JSONObject saveUser(User user)
       throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException {
+    // Check for null
+    if (
+          user.getEmail() == null ||
+          user.getDateOfBirth() == null ||
+          user.getFirstName() == null ||
+          user.getLastName() == null ||
+          user.getHomeAddress() == null
+    ) {
+      throw new UserRegistrationException("Missing value");
+    }
     // Email validation
     if (!UserServiceValidation.isEmailValid(user.getEmail())) {
       throw new UserRegistrationException("Invalid email");

@@ -92,7 +92,7 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad Request");
     } catch (Exception exc) {
       log.error("CRITICAL REGISTER ERROR: " + exc);
-
+      exc.printStackTrace();
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
     }
   }
