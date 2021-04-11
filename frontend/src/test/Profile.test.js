@@ -13,7 +13,28 @@ beforeEach(() => {
     propsData: {
       userId: 20
     },
-    mocks: {...globalStateMocks()}
+    mocks: {
+      callApi: jest.fn(() => Promise.resolve({
+        firstName: "returned user firstName",
+        middleName: "returned user middleName",
+        lastName: "returned user lastName",
+        nickname: "returned user nickname",
+        role: "returned user ROLE_ADMIN",
+        email: "returned user email@example.com",
+        dateOfBirth: "2000-01-01",
+        homeAddress: {
+          streetNumber: "returned user streetNumber",
+          streetName: "returned user streetName",
+          postcode: "returned user postcode",
+          city: "returned user city",
+          region: "returned user region",
+          country: "returned user country",
+        },
+        phoneNumber: "returned user phoneNumber",
+        bio: "returned user bio"
+      })),
+      ...globalStateMocks()
+    }
   });
 });
 

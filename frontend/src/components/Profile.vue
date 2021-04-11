@@ -19,7 +19,7 @@
               {{ userInfo.lastName }}</h2>
             <!--Location data-->
             <div
-                v-if="userInfo.homeAddress.city || userInfo.homeAddress.country"
+                v-if="userInfo.homeAddress && (userInfo.homeAddress.city || userInfo.homeAddress.country)"
                 class="d-flex align-items-center">
               <span class="material-icons md-dark md-inactive ml-2">location_on</span>
               <span class="text-muted">
@@ -83,7 +83,7 @@
     <div class="row">
       <div class="col-md-4 order-2 order-md-1 m-2 card">
         <h5 class="text-muted mt-3">Businesses</h5>
-        <div v-if="userInfo.businesses.length !== 0">
+        <div v-if="Array.isArray(userInfo.businesses) && userInfo.businesses.length !== 0">
           <h1 class="title">Businesses</h1>
           <ul class="profile-business-info list-unstyled">
             <li v-for="(business, index) in userInfo.businesses"
@@ -156,7 +156,7 @@
               <th style="white-space: nowrap;">Phone Number:</th>
               <td class="col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
             </tr>
-            <tr v-if="true" scope="row">
+            <tr v-if="userInfo.homeAddress" scope="row">
               <th style="white-space: nowrap;">Address:</th>
               <td class="col-md value">
                 <p>{{
