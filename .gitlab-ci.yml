@@ -65,6 +65,7 @@ dev-sonarqube:
     - cd frontend
     - npm run sonarqube
     - cd ../backend
+    - ./gradlew jaocoTestReport
     - ./gradlew sonarqube
   only:
     - S2-dev
