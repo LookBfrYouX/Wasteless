@@ -1,62 +1,62 @@
-
 <!doctype html>
 <html lang="en">
 
 <head>
-    <title>Code coverage report for AddressForm.vue</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="prettify.css" />
-    <link rel="stylesheet" href="base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type='text/css'>
-        .coverage-summary .sorter {
-            background-image: url(sort-arrow-sprite.png);
-        }
-    </style>
+  <title>Code coverage report for AddressForm.vue</title>
+  <meta charset="utf-8"/>
+  <link href="prettify.css" rel="stylesheet"/>
+  <link href="base.css" rel="stylesheet"/>
+  <link href="favicon.png" rel="shortcut icon" type="image/x-icon"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <style type='text/css'>
+    .coverage-summary .sorter {
+      background-image: url(sort-arrow-sprite.png);
+    }
+  </style>
 </head>
-    
+
 <body>
 <div class='wrapper'>
-    <div class='pad1'>
-        <h1><a href="index.html">All files</a> AddressForm.vue</h1>
-        <div class='clearfix'>
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">88.33% </span>
-                <span class="quiet">Statements</span>
-                <span class='fraction'>53/60</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>18/21</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">94.12% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>16/17</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">88.33% </span>
-                <span class="quiet">Lines</span>
-                <span class='fraction'>53/60</span>
-            </div>
-        
-            
-        </div>
-        <p class="quiet">
-            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
-        </p>
+  <div class='pad1'>
+    <h1><a href="index.html">All files</a> AddressForm.vue</h1>
+    <div class='clearfix'>
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">88.33% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>53/60</span>
+      </div>
+
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">85.71% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>18/21</span>
+      </div>
+
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">94.12% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>16/17</span>
+      </div>
+
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">88.33% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>53/60</span>
+      </div>
+
+
     </div>
-    <div class='status-line high'></div>
-    <pre><table class="coverage">
+    <p class="quiet">
+      Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or
+      <em>k</em> for the previous block.
+    </p>
+  </div>
+  <div class='status-line high'></div>
+  <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -446,7 +446,8 @@
 <a name='L387'></a><a href='#L387'>387</a>
 <a name='L388'></a><a href='#L388'>388</a>
 <a name='L389'></a><a href='#L389'>389</a>
-<a name='L390'></a><a href='#L390'>390</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L390'></a><a href='#L390'>390</a></td><td class="line-coverage quiet"><span
+    class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -835,7 +836,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;!--
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre
+    class="prettyprint lang-js">&lt;!--
 Address Form Component
 &nbsp;
 Styling of the inputs are not supported yet
@@ -1122,11 +1124,11 @@ export default {
       // Using dict instead of array to remove duplicates (e.g. shops in a mall will have different name but otherwise same address)
 &nbsp;
       for (const { type, properties } of this.addressSuggestionsRaw) {
-<span class="missing-if-branch" title="if path not taken" >I</span>        if (type != "Feature") continue;
+<span class="missing-if-branch" title="if path not taken">I</span>        if (type != "Feature") continue;
         const addressComponents = this.mapOSMPropertiesToAddressComponents(properties);
         
         const addressString = this.generateAddressStringFromAddressComponents(addressComponents, this.activeAddressInputName, true);
-<span class="missing-if-branch" title="if path not taken" >I</span>        if (addressString == undefined) continue;
+<span class="missing-if-branch" title="if path not taken">I</span>        if (addressString == undefined) continue;
         // Ignore any suggestions where the necessary components are not present
 &nbsp;
         suggestionsDict[addressString] = {
@@ -1141,19 +1143,19 @@ export default {
     /**
      * Pipeline for getting suggestions from axios, filtering then and placing them into suggestions array
      */
-<span class="fstat-no" title="function not covered" >    addressSuggestionsPipeline: async function() {</span>
-<span class="cstat-no" title="statement not covered" >      const url = `https://photon.komoot.io/api?q=${encodeURIComponent(this.generateAddressString())}`;</span>
+<span class="fstat-no" title="function not covered">    addressSuggestionsPipeline: async function() {</span>
+<span class="cstat-no" title="statement not covered">      const url = `https://photon.komoot.io/api?q=${encodeURIComponent(this.generateAddressString())}`;</span>
       let response;
-<span class="cstat-no" title="statement not covered" >      try {</span>
-<span class="cstat-no" title="statement not covered" >        response = await axios.get(url);</span>
+<span class="cstat-no" title="statement not covered">      try {</span>
+<span class="cstat-no" title="statement not covered">        response = await axios.get(url);</span>
       } catch(_) {
-<span class="cstat-no" title="statement not covered" >        return;</span>
+<span class="cstat-no" title="statement not covered">        return;</span>
         // If autocomplete does not work, just don't show a response
       }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      const { data } = response;</span>
-<span class="cstat-no" title="statement not covered" >      this.addressSuggestionsRaw = data.features;</span>
-<span class="cstat-no" title="statement not covered" >      this.addressSuggestions = this.generateAddressSuggestions();</span>
+<span class="cstat-no" title="statement not covered">      const { data } = response;</span>
+<span class="cstat-no" title="statement not covered">      this.addressSuggestionsRaw = data.features;</span>
+<span class="cstat-no" title="statement not covered">      this.addressSuggestions = this.generateAddressSuggestions();</span>
     },
         
     /**
@@ -1163,7 +1165,7 @@ export default {
       window.clearTimeout(this.apiRequestTimeout);
       this.apiRequestTimeout = window.setTimeout(() =&gt; {
         this.apiRequestTimeout = null;
-<span class="missing-if-branch" title="else path not taken" >E</span>        if (this.generateAddressString().length &gt; API_MIN_QUERY_LENGTH) {
+<span class="missing-if-branch" title="else path not taken">E</span>        if (this.generateAddressString().length &gt; API_MIN_QUERY_LENGTH) {
           this.addressSuggestionsPipeline();
         }
       }, API_CALL_DEBOUNCE_TIME);
@@ -1226,22 +1228,22 @@ export default {
 &lt;/script&gt;
 &nbsp;</pre></td></tr></table></pre>
 
-                <div class='push'></div><!-- for sticky footer -->
-            </div><!-- /wrapper -->
-            <div class='footer quiet pad2 space-top1 center small'>
-                Code coverage generated by
-                <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 18 2021 15:39:53 GMT+1300 (New Zealand Daylight Time)
-            </div>
-        </div>
-        <script src="prettify.js"></script>
-        <script>
-            window.onload = function () {
-                prettyPrint();
-            };
-        </script>
-        <script src="sorter.js"></script>
-        <script src="block-navigation.js"></script>
-    </body>
+  <div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage generated by
+  <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
+  at Thu Mar 18 2021 15:39:53 GMT+1300 (New Zealand Daylight Time)
+</div>
+</div>
+<script src="prettify.js"></script>
+<script>
+  window.onload = function () {
+    prettyPrint();
+  };
+</script>
+<script src="sorter.js"></script>
+<script src="block-navigation.js"></script>
+</body>
 </html>
     

@@ -3,9 +3,8 @@ package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-
-import javax.management.InvalidAttributeValueException;
 import java.util.List;
+import javax.management.InvalidAttributeValueException;
 
 public interface UserDao {
 

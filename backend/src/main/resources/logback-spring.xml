@@ -2,8 +2,6 @@
 <configuration>
   <!-- TRACE < DEBUG < INFO < WARN < ERROR -->
 
-  <property name="LOGS" value="./logs" />
-
   <appender class="ch.qos.logback.core.ConsoleAppender"
     name="Console">
     <layout class="ch.qos.logback.classic.PatternLayout">
@@ -13,7 +11,6 @@
     </layout>
   </appender>
 
-  <!-- One appender for each output stream -->
   <appender class="ch.qos.logback.core.FileAppender"
     name="ErrorAppender">
     <encoder
@@ -29,6 +26,7 @@
     </filter>
   </appender>
 
+  <!-- One appender for each output stream -->
   <appender class="ch.qos.logback.core.FileAppender"
     name="EventAppender">
     <encoder
@@ -48,6 +46,8 @@
     <appender-ref ref="EventAppender"/>
     <appender-ref ref="ErrorAppender"/>
   </logger>
+
+  <property name="LOGS" value="./logs"/>
 
   <!-- LOG everything at INFO level with the console appender -->
   <property name="LOGS" value="./logs"/>

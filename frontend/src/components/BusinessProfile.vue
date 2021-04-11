@@ -5,28 +5,31 @@
       <ul class="bprofile-info list-unstyled">
         <li class="row">
           <dt class="col-md label">Business Title:</dt>
-          <dd class="col-md value"> {{ businessInfo.name }} </dd>
+          <dd class="col-md value"> {{ businessInfo.name }}</dd>
         </li>
         <li class="row">
           <dt class="col-md label">Description:</dt>
-          <dd class="col-md value"> {{ businessInfo.description }} </dd>
+          <dd class="col-md value"> {{ businessInfo.description }}</dd>
         </li>
         <li class="row">
           <dt class="col-md label">Address:</dt>
-          <dd class="col-md value"> {{[businessInfo.homeAddress.streetNumber + " " +
-          businessInfo.homeAddress.streetName, businessInfo.homeAddress.city,
-          businessInfo.homeAddress.region, businessInfo.homeAddress.country,
-          businessInfo.homeAddress.postcode].join(", ")}} </dd>
+          <dd class="col-md value"> {{
+              [businessInfo.homeAddress.streetNumber + " " +
+              businessInfo.homeAddress.streetName, businessInfo.homeAddress.city,
+                businessInfo.homeAddress.region, businessInfo.homeAddress.country,
+                businessInfo.homeAddress.postcode].join(", ")
+            }}
+          </dd>
         </li>
         <li class="row">
           <dt class="col-md label">Business Type:</dt>
-          <dd class="col-md value"> {{ businessInfo.businessType}} </dd>
+          <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
         </li>
       </ul>
-      <div class="row mt-2" v-if="errorMessage.length > 0">
-          <div class="col">
-            <p class="alert alert-warning">{{ errorMessage }}</p>
-          </div>
+      <div v-if="errorMessage.length > 0" class="row mt-2">
+        <div class="col">
+          <p class="alert alert-warning">{{ errorMessage }}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -58,41 +61,39 @@ export default {
     }
   },
 
-  beforeMount: function() {
+  beforeMount: function () {
     // gets user information from api
     this.parseApiResponse(this.callApi(this.businessId));
   },
-
 
   methods: {
     /**
      * Calls the API to get profile information with the given business ID
      * Returns the promise, not the response
      */
-    callApi: function(businessId) {
+    callApi: function (businessId) {
       return Api.businessProfile(businessId);
     },
 
     /**
      * Parses the API response given a promise to the request
      */
-    parseApiResponse: async function(apiCall) {
+    parseApiResponse: async function (apiCall) {
       try {
         const response = await apiCall;
         console.log(response.data);
         this.businessInfo = response.data;
-      } catch(err) {
-        alert(err.userFacingErrorMessage == undefined? err.toString(): err.userFacingErrorMessage);
+      } catch (err) {
+        alert(
+            err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
       }
     },
   },
 
-  computed: {
-
-  },
+  computed: {},
 
   watch: {
-    businessId: function() {
+    businessId: function () {
       this.parseApiResponse(this.callApi(this.businessId))
     }
   },

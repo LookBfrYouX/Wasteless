@@ -7,11 +7,10 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import java.util.List;
+import javax.management.InvalidAttributeValueException;
 import net.minidev.json.JSONObject;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
-
-import javax.management.InvalidAttributeValueException;
 
 public interface UserService {
 

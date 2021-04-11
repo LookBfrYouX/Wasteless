@@ -15,34 +15,28 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("ALL")
 @SpringBootTest
 class UserServiceImplTest {
 
-  @Autowired
-  UserController userController;
-
-  @Autowired
-  UserDao userDao;
-
-  @Autowired
-  AddressDao addressDao;
-
-  @Autowired
-  UserService userService;
   private final String password = "pass";
   private final String email = "test@example.com";
-
+  @Autowired
+  UserController userController;
+  @Autowired
+  UserDao userDao;
+  @Autowired
+  AddressDao addressDao;
+  @Autowired
+  UserService userService;
 
   void actuallySaveUser(User user) {
     this.addressDao.saveAddress(user.getHomeAddress());
@@ -71,6 +65,7 @@ class UserServiceImplTest {
       throw throwable;
     }
   }
+
   @Test
   @Transactional
   void saveValidUser() {
@@ -105,7 +100,7 @@ class UserServiceImplTest {
   void saveInvalidUserEmail() throws Throwable {
     // Test invalid email address
     String[] testValues = {"alec", "alec@", "alec@.", "alec@gmail", "alec@gmail.", "@", "@gmail",
-            "@gmail.com"};
+        "@gmail.com"};
     User user = makeUser();
 
     for (String testValue : testValues) {
@@ -148,20 +143,23 @@ class UserServiceImplTest {
     actuallySaveUser(user);
     User userCheck = makeUser("testEmail@user.co.nz", false, password);
     actuallySaveUser(userCheck);
-    assertUserWithJson(userCheck, getUserAsUser(user.getEmail(), password, userCheck.getId()), true);
+    assertUserWithJson(userCheck, getUserAsUser(user.getEmail(), password, userCheck.getId()),
+        true);
     actuallyDeleteUser(user);
     actuallyDeleteUser(userCheck);
   }
 
   /**
    * Gets a user using credentials
-   * @param email email of authorizer
+   *
+   * @param email    email of authorizer
    * @param password password of authorizer
-   * @param id id of user to get
+   * @param id       id of user to get
    * @return user with id `id` as JSONObject
    * @throws UserNotFoundException
    */
-  private JSONObject getUserAsUser(String email, String password, long id) throws UserNotFoundException {
+  private JSONObject getUserAsUser(String email, String password, long id)
+      throws UserNotFoundException {
     UserCredentials userCredentials = new UserCredentials();
     userCredentials.setEmail(email);
     userCredentials.setPassword(password);
@@ -179,7 +177,7 @@ class UserServiceImplTest {
 
     // TODO created dates
 //    Assertions.assertEquals(expect.getCreated(), response.getAsString("created"));
-    assertEquals(user.getMiddleName(),  response.getAsString("middleName"));
+    assertEquals(user.getMiddleName(), response.getAsString("middleName"));
     assertEquals(user.getRole(), response.getAsString("role"));
 
     if (!publicOnly) {
@@ -352,6 +350,7 @@ class UserServiceImplTest {
 
   /**
    * Makes a non-admin user
+   *
    * @return
    */
   User makeUser() {
@@ -360,6 +359,7 @@ class UserServiceImplTest {
 
   /**
    * Creates test user with given details
+   *
    * @param email
    * @param isAdmin
    * @param password
@@ -386,7 +386,7 @@ class UserServiceImplTest {
         .setDateOfBirth("2000-03-10")
         .setHomeAddress(address)
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
-        .setRole(isAdmin? "ROLE_ADMIN": "ROLE_USER")
+        .setRole(isAdmin ? "ROLE_ADMIN" : "ROLE_USER")
         .setPassword(encodePass(password));
 
     // Save user using DAO and retrieve by Email

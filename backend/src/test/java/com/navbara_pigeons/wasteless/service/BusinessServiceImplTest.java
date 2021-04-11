@@ -1,6 +1,5 @@
 package com.navbara_pigeons.wasteless.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.navbara_pigeons.wasteless.controller.UserController;
@@ -64,7 +63,8 @@ public class BusinessServiceImplTest {
       e.printStackTrace();
     }
 
-    String[] businessTypeTests = {"Accommodation and Food Services", "Retail Trade", "Charitable organisation", "Non-profit organisation"};
+    String[] businessTypeTests = {"Accommodation and Food Services", "Retail Trade",
+        "Charitable organisation", "Non-profit organisation"};
     for (String businessTypeTest : businessTypeTests) {
       Business testBusiness = makeBusiness();
       testBusiness.setBusinessType(businessTypeTest);

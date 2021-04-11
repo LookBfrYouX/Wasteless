@@ -30,158 +30,159 @@
  */
 
 import axios from 'axios';
-import { ApiRequestError } from "./ApiRequestError";
+import {ApiRequestError} from "./ApiRequestError";
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
 const TIMEOUT = 1000;
 
 const instance = axios.create({
-    baseURL: SERVER_URL,
-    timeout: TIMEOUT,
-    withCredentials: true
+  baseURL: SERVER_URL,
+  timeout: TIMEOUT,
+  withCredentials: true
 });
 
-
 export default {
-    /**
-     * Sends login request
-     * @param props object with 'email' and 'password'
-     * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
-     */
-    login: (props) => {
-        return instance.post("/login", props).catch(error => {
-            throw ApiRequestError.createFromMessageMap(error, {
-                400: "Your email or password is incorrect"
-            });
-        })
-    },
+  /**
+   * Sends login request
+   * @param props object with 'email' and 'password'
+   * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  login: (props) => {
+    return instance.post("/login", props).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        400: "Your email or password is incorrect"
+      });
+    })
+  },
 
-    /**
-     *
-     * @param {object} props with properties:
-     * `userId`
-     * @returns promise. If it fails the error will be shown using the `userFacingErrorMessage` property
-     */
-    makeAdmin: async (userId) => {
-        return instance.put(`/users/${userId}/makeAdmin`).catch(error => {
-            throw ApiRequestError.createFromMessageMap(error, {
-                403: "You must be an administrator to give others admin permissions",
-                406: "Invalid user ID given"
-            });
-        })
-    },
+  /**
+   *
+   * @param {object} props with properties:
+   * `userId`
+   * @returns promise. If it fails the error will be shown using the `userFacingErrorMessage` property
+   */
+  makeAdmin: async (userId) => {
+    return instance.put(`/users/${userId}/makeAdmin`).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        403: "You must be an administrator to give others admin permissions",
+        406: "Invalid user ID given"
+      });
+    })
+  },
 
-    /**
-     *
-     * @param {object} props with properties:
-     * `userId`
-     * @returns promise. If it fails the error will be shown to user using the `userFacingErrorMessage` property
-     */
-    revokeAdmin: async (userId) => {
-        return instance.put(`/users/${userId}/revokeAdmin`).catch(error => {
-            throw ApiRequestError.createFromMessageMap(error, {
-                403: "You must be an administrator to revoke admin permissions",
-                406: "Invalid user ID given",
-                409: "Cannot revoke the DGAA's administrator privileges"
-            });
-        })
-    },
+  /**
+   *
+   * @param {object} props with properties:
+   * `userId`
+   * @returns promise. If it fails the error will be shown to user using the `userFacingErrorMessage` property
+   */
+  revokeAdmin: async (userId) => {
+    return instance.put(`/users/${userId}/revokeAdmin`).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        403: "You must be an administrator to revoke admin permissions",
+        406: "Invalid user ID given",
+        409: "Cannot revoke the DGAA's administrator privileges"
+      });
+    })
+  },
 
-    /**
-     *
-     * @param {object} props with properties:
-     *   firstName`, `middleName`, `lastName`, `nickname`,
-     *  `email`, `password`, `dateOfBirth`, `homeAddress`, `phoneNumber`, `bio`
-     * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
-     */
-    signUp: (props) => {
-        return instance.post("/users", props).catch(error => {
-            throw ApiRequestError.createFromMessageMap(error, {
-                409: "Your email address has already been registered"
-            });
-        });
-    },
+  /**
+   *
+   * @param {object} props with properties:
+   *   firstName`, `middleName`, `lastName`, `nickname`,
+   *  `email`, `password`, `dateOfBirth`, `homeAddress`, `phoneNumber`, `bio`
+   * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  signUp: (props) => {
+    return instance.post("/users", props).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        409: "Your email address has already been registered"
+      });
+    });
+  },
 
-    /**
-     *
-     * @param {*} id ID of user to fetch
-     * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
-     */
-    profile: (id) => {
-        return instance.get(`/users/${id}`).catch(error => {
-            throw ApiRequestError.createFromMessageMap(error, {
-                406: "The user does not exist"
-            });
-        });
-    },
+  /**
+   *
+   * @param {*} id ID of user to fetch
+   * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  profile: (id) => {
+    return instance.get(`/users/${id}`).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        406: "The user does not exist"
+      });
+    });
+  },
 
-    /**
-     *
-     * @param {*} id ID of business to fetch
-     * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
-     */
-    businessProfile: (id) => {
-        return instance.get(`/businesses/${id}`).catch(error => {
-            throw ApiRequestError.createFromMessageMap(error, {
-                406: "Information for this business was not found"
-            });
-        });
-    },
+  /**
+   *
+   * @param {*} id ID of business to fetch
+   * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  businessProfile: (id) => {
+    return instance.get(`/businesses/${id}`).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        406: "Information for this business was not found"
+      });
+    });
+  },
 
-    /**
-     *
-     * @param {object} props with properties:
-     * `name`, `description`, `homeAddress`, `businessType`
-     * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
-     */
-    registerBusiness: (props) => {
-        return instance.post("/businesses", props).catch(error => {
-            throw ApiRequestError.createFromMessageMap(error, {});
-        });
-    },
+  /**
+   *
+   * @param {object} props with properties:
+   * `name`, `description`, `homeAddress`, `businessType`
+   * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  registerBusiness: (props) => {
+    return instance.post("/businesses", props).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {});
+    });
+  },
 
-    /**
-     * Sends a search query
-     * @param searchQuery
-     * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
-     */
-    search: (searchQuery) => {
-        return instance.get(`/users/search?searchQuery=${encodeURIComponent(searchQuery)}`)
-        .catch(error => {
-            throw ApiRequestError.createFromMessageMap(error);
-        });
-    },
-    /**
-     * Invalidates user cookie on back end, hence logging user out
-     * @returns {Promise<AxiosResponse<any> | void>} If it fails, the error will have the `userFacingErrorMessage` property
-     */
-    logOut: () => {
-        return instance.get("/logout").catch(error => {
-            throw ApiRequestError.createFromMessageMap(error);
-        });
-    },
+  /**
+   * Sends a search query
+   * @param searchQuery
+   * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  search: (searchQuery) => {
+    return instance.get(
+        `/users/search?searchQuery=${encodeURIComponent(searchQuery)}`)
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error);
+    });
+  },
+  /**
+   * Invalidates user cookie on back end, hence logging user out
+   * @returns {Promise<AxiosResponse<any> | void>} If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  logOut: () => {
+    return instance.get("/logout").catch(error => {
+      throw ApiRequestError.createFromMessageMap(error);
+    });
+  },
 
-    /**
-     * Logs the user out client-side and redirects to a logout page
-     * Call using `Api.handle401.call(this, err) from the vue component
-     * If `this.$stateStore` and `this.$router`  are not defined, likely because
-     * `.call` has not been used, or because the jest test has not mocked these, an error message will
-     * be printed and the method will return false.
-     * @param {ApiRequestError} error handle logout when a 401 is returned by the api
-     * @param {this} callee
-     * @return {Boolean} true if it was a 401 error
-     */
-    handle401: async function(err) {
-        if (this.$stateStore === undefined || this.$router === undefined) {
-            console.warn("[Api.js, handle401]. Call this method using `.call(this, err)` - need access to Vue's state and router variables, which this does not have access to");
-            return false;
-        }
-        if (err && err.status === 401) {
-            await this.$stateStore.actions.deleteAuthUser();
-            await this.$router.push({ name: "error401" });
-            return true;
-        }
-
-        return false;
+  /**
+   * Logs the user out client-side and redirects to a logout page
+   * Call using `Api.handle401.call(this, err) from the vue component
+   * If `this.$stateStore` and `this.$router`  are not defined, likely because
+   * `.call` has not been used, or because the jest test has not mocked these, an error message will
+   * be printed and the method will return false.
+   * @param {ApiRequestError} error handle logout when a 401 is returned by the api
+   * @param {this} callee
+   * @return {Boolean} true if it was a 401 error
+   */
+  handle401: async function (err) {
+    if (this.$stateStore === undefined || this.$router === undefined) {
+      console.warn(
+          "[Api.js, handle401]. Call this method using `.call(this, err)` - need access to Vue's state and router variables, which this does not have access to");
+      return false;
     }
+    if (err && err.status === 401) {
+      await this.$stateStore.actions.deleteAuthUser();
+      await this.$router.push({name: "error401"});
+      return true;
+    }
+
+    return false;
+  }
 }

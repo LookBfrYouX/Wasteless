@@ -8,10 +8,8 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
-import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.transaction.Transactional;
@@ -81,7 +79,8 @@ public class BusinessServiceImpl implements BusinessService {
    * @return the Business instance of the business
    */
   @Override
-  public JSONObject getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException {
+  public JSONObject getBusinessById(long id)
+      throws BusinessNotFoundException, UserNotFoundException {
     Business business = this.businessDao.getBusinessById(id);
 
     SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -113,7 +112,7 @@ public class BusinessServiceImpl implements BusinessService {
       }
     }
     // sensitive details (e.g. email, postcode) are not returned
-    if ( business.getPrimaryAdministratorId() == user.getId() || isAdministrator || isAdmin ) {
+    if (business.getPrimaryAdministratorId() == user.getId() || isAdministrator || isAdmin) {
       address.put("streetNumber", user.getHomeAddress().getStreetNumber());
       address.put("streetName", user.getHomeAddress().getStreetName());
       address.put("postcode", user.getHomeAddress().getPostcode());

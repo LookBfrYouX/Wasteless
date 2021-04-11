@@ -30,22 +30,20 @@
  */
 import Vue from 'vue';
 import App from './App';
-import { router } from './router';
-import { store } from './store';
+import {router} from './router';
+import {store} from './store';
 import "bootstrap";
 import "./styles/custom.scss";
-
+import VueLogger from 'vuejs-logger';
 
 Vue.config.productionTip = false
 
-import VueLogger from 'vuejs-logger';
-
 const options = {
   isEnabled: true,
-  logLevel : 'debug',
-  stringifyArguments : false,
-  showLogLevel : true,
-  showMethodName : false,
+  logLevel: 'debug',
+  stringifyArguments: false,
+  showLogLevel: true,
+  showMethodName: false,
   separator: '|',
   showConsoleColors: true
 };

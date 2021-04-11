@@ -1,5 +1,5 @@
-import { mount } from "@vue/test-utils";
-import { globalStateMocks } from "../../test/testHelper";
+import {mount} from "@vue/test-utils";
+import {globalStateMocks} from "../../test/testHelper";
 import Login from "./Login";
 
 let wrapper;
@@ -16,15 +16,13 @@ const successfulResponse = () => {
 
 beforeEach(() => {
   wrapper = mount(Login, {
-    mocks: { ...globalStateMocks() }
+    mocks: {...globalStateMocks()}
   });
 });
 
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 afterEach(() => wrapper.destroy());
-
-
 
 describe("testing login page", () => {
   test("checking signUp has been called on click", () => {
@@ -45,19 +43,19 @@ describe("testing login page", () => {
     expect(wrapper.vm.login).toHaveBeenCalled();
   });
 
-test("successful login", async () => {
+  test("successful login", async () => {
     wrapper.vm.login = jest.fn(() => {
-    const data = successfulResponse();
-    wrapper.setData(data)
-    expect(wrapper.vm.responseSuccess).toBeTruthy();
+      const data = successfulResponse();
+      wrapper.setData(data)
+      expect(wrapper.vm.responseSuccess).toBeTruthy();
     });
   });
-test("unsuccessful login", async () => {
+  test("unsuccessful login", async () => {
     wrapper.vm.login = jest.fn(() => {
-    const data = successfulResponse();
-    data.password = "notlogin";
-    wrapper.setData(data)
-    expect(wrapper.vm.responseSuccess).toBeFalsy();
+      const data = successfulResponse();
+      data.password = "notlogin";
+      wrapper.setData(data)
+      expect(wrapper.vm.responseSuccess).toBeFalsy();
     });
   });
 });

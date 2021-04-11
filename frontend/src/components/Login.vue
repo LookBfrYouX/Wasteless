@@ -1,7 +1,7 @@
 <template>
   <div class="w-100 d-flex justify-content-center login-container gradient-background pb-4">
     <div class="container">
-      <form v-on:submit.prevent="login" class="slightly-transparent-inputs">
+      <form class="slightly-transparent-inputs" v-on:submit.prevent="login">
         <div class="row">
           <div class="col">
             <h1>Login</h1>
@@ -12,30 +12,30 @@
           <div class="col-12 form-group required">
             <label for="email">Email</label>
             <input
-              class="form-control"
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Email"
-              maxlength="50"
-              v-model="email"
-              autocomplete="email"
-              required
+                id="email"
+                v-model="email"
+                autocomplete="email"
+                class="form-control"
+                maxlength="50"
+                name="email"
+                placeholder="Email"
+                required
+                type="email"
             />
           </div>
 
           <div class="col-12 form-group required">
             <label for="password">Password</label>
             <input
-              class="form-control"
-              type="password"
-              name="password"
-              id="password"
-              placeholder="Password"
-              maxlength="50"
-              v-model="password"
-              autocomplete="current-password"
-              required
+                id="password"
+                v-model="password"
+                autocomplete="current-password"
+                class="form-control"
+                maxlength="50"
+                name="password"
+                placeholder="Password"
+                required
+                type="password"
             />
           </div>
         </div>
@@ -43,12 +43,12 @@
         <div class="row">
           <div class="col">
             <div class="d-flex justify-content-between">
-              <input class="btn btn-primary" id="loginSubmit" type="submit" value="Login"/>
+              <input id="loginSubmit" class="btn btn-primary" type="submit" value="Login"/>
               <button
-                class="btn btn-white-bg-primary"
-                id="signUp"
-                type="button"
-                v-on:click="signUp()"
+                  id="signUp"
+                  class="btn btn-white-bg-primary"
+                  type="button"
+                  v-on:click="signUp()"
               >
                 Sign Up
               </button>
@@ -56,7 +56,7 @@
           </div>
         </div>
 
-        <div class="row mt-2" v-if="errorMessage.length > 0">
+        <div v-if="errorMessage.length > 0" class="row mt-2">
           <div class="col">
             <p class="alert alert-warning">{{ errorMessage }}</p>
           </div>
@@ -95,29 +95,30 @@ export default {
   methods: {
     signUp() {
       // redirects user to to the signup page
-      this.$router.push({ name: "signup" });
+      this.$router.push({name: "signup"});
     },
-    login: async function() {
+    login: async function () {
       // uses mock API to determine whether to allow user to login or be rejected
       let response;
 
       try {
         // Attempt to login and get the userId
-        response = await Api.login({ email: this.email, password: this.password });
+        response = await Api.login({email: this.email, password: this.password});
         const userId = response.data.userId;
         // Get and set the current logged in user information
 
-        console.warn("TODO SIGN IN SHOULD RETURN FULL USER PROFILE; USE THIS TO SET AUTHUSER INSTEAD OF CALLING API.PROFILE");
+        console.warn(
+            "TODO SIGN IN SHOULD RETURN FULL USER PROFILE; USE THIS TO SET AUTHUSER INSTEAD OF CALLING API.PROFILE");
         response = await Api.profile(userId);
         const authUser = response.data;
         this.$stateStore.actions.setAuthUser(authUser);
-      } catch(err) {
+      } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
         return;
       }
 
       this.errorMessage = "";
-      await this.$router.push({ name: "profile" });
+      await this.$router.push({name: "profile"});
     },
   },
 };

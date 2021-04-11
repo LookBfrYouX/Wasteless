@@ -12,8 +12,7 @@ public class UserServiceValidation {
   /**
    * Returns false if the password doesnt pass validation: At least 8 chars Contains at least one
    * digit, contains at least one lower alpha char and one upper alpha char, does not contain
-   * space/tab/etc.
-   * Ensure sign up form password regexp also updated
+   * space/tab/etc. Ensure sign up form password regexp also updated
    *
    * @param password Users password
    */
@@ -30,10 +29,13 @@ public class UserServiceValidation {
   public static boolean isEmailValid(String email) {
     // An RFC 5322 compliant regex string for email validation (though actual validation would still be better)
     String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
-            "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])" +
-            "*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4]" +
-            "[0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:" +
-            "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+        "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])"
+        +
+        "*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4]"
+        +
+        "[0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:"
+        +
+        "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
     return Pattern.matches(emailRegex, email);
   }
 
@@ -54,6 +56,7 @@ public class UserServiceValidation {
 
   /**
    * Checks if the given string is null, empty, or contains whitespace only
+   *
    * @param str value string to check
    * @return true if the given string is null, empty, or contains whitespace only
    */
@@ -68,10 +71,12 @@ public class UserServiceValidation {
    */
   public static boolean isUserValid(User user) {
     // Checks user fields are not null/empty
-    for(String val: new String[] {
-            user.getFirstName(), user.getLastName()
+    for (String val : new String[]{
+        user.getFirstName(), user.getLastName()
     }) {
-      if (UserServiceValidation.isNullOrTrimmedEmpty(val)) return false;
+      if (UserServiceValidation.isNullOrTrimmedEmpty(val)) {
+        return false;
+      }
     }
 
     return true;
@@ -85,11 +90,13 @@ public class UserServiceValidation {
   public static boolean isAddressValid(User user) {
     // Checks user fields are not null/empty
     Address address = user.getHomeAddress();
-    for(String val: new String[] {
+    for (String val : new String[]{
         address.getStreetNumber(), address.getStreetName(), address.getPostcode(),
         address.getCity(), address.getRegion(), address.getCountry()
     }) {
-      if (UserServiceValidation.isNullOrTrimmedEmpty(val)) return false;
+      if (UserServiceValidation.isNullOrTrimmedEmpty(val)) {
+        return false;
+      }
     }
 
     return true;

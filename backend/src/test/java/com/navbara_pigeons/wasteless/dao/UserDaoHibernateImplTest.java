@@ -1,26 +1,20 @@
 package com.navbara_pigeons.wasteless.dao;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.management.InvalidAttributeValueException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.management.InvalidAttributeValueException;
 
 @SuppressWarnings({"ALL", "SpellCheckingInspection"})
 @SpringBootTest
@@ -198,7 +192,6 @@ class UserDaoHibernateImplTest {
       List<User> validNnameQuery = userDao.searchUsers(nickname);
       List<User> validFullNameQuery = userDao
           .searchUsers(firstName + ' ' + middleName + ' ' + lastName);
-
 
       // ASSERT
       assertEquals(userToSearch.getId(), validFnameQuery.get(0).getId());

@@ -2,10 +2,10 @@
   <div class="w-100 d-flex justify-content-center signup-container gradient-background pb-4">
     <div class="container">
       <form
-        v-on:submit.prevent="register"
-        class="slightly-transparent-inputs"
-        autocomplete="on"
-        method="POST"
+          autocomplete="on"
+          class="slightly-transparent-inputs"
+          method="POST"
+          v-on:submit.prevent="register"
       >
         <div class="row">
           <div class="col">
@@ -18,54 +18,54 @@
           <div class="form-group required col-12 col-md-6">
             <label for="fname">First Name</label>
             <input
-              class="form-control"
-              type="text"
-              name="fname"
-              v-model="firstName"
-              placeholder="First name"
-              maxlength="30"
-              autocomplete="given-name"
-              required
+                v-model="firstName"
+                autocomplete="given-name"
+                class="form-control"
+                maxlength="30"
+                name="fname"
+                placeholder="First name"
+                required
+                type="text"
             />
           </div>
 
           <div class="form-group col-12 col-md-6">
             <label for="mname">Middle Name</label>
             <input
-              class="form-control"
-              type="text"
-              name="mname"
-              v-model="middleName"
-              placeholder="Middle name (optional)"
-              autocomplete="additional-name"
-              maxlength="30"
+                v-model="middleName"
+                autocomplete="additional-name"
+                class="form-control"
+                maxlength="30"
+                name="mname"
+                placeholder="Middle name (optional)"
+                type="text"
             />
           </div>
 
           <div class="form-group required col-12 col-md-6">
             <label for="lname">Last Name</label>
             <input
-              class="form-control"
-              type="text"
-              name="lname"
-              v-model="lastName"
-              placeholder="Last name"
-              maxlength="30"
-              autocomplete="family-name"
-              required
+                v-model="lastName"
+                autocomplete="family-name"
+                class="form-control"
+                maxlength="30"
+                name="lname"
+                placeholder="Last name"
+                required
+                type="text"
             />
           </div>
 
           <div class="form-group col-12 col-md-6">
             <label for="nickname">Nickname</label>
             <input
-              class="form-control"
-              type="text"
-              name="nickname"
-              placeholder="Nickname (optional)"
-              autocomplete="nickname"
-              v-model="nickname"
-              maxlength="30"
+                v-model="nickname"
+                autocomplete="nickname"
+                class="form-control"
+                maxlength="30"
+                name="nickname"
+                placeholder="Nickname (optional)"
+                type="text"
             />
           </div>
         </div>
@@ -73,17 +73,17 @@
 
         <div class="row">
           <div class="col form-group required">
-            <label for="email" ref="emailLabel">Email</label>
+            <label ref="emailLabel" for="email">Email</label>
             <input
-              class="form-control"
-              v-bind:class="{'is-invalid': emailErrorMessage !== null }"
-              type="email"
-              name="email"
-              v-model="email"
-              placeholder="Email"
-              maxlength="50"
-              autocomplete="email"
-              required
+                v-model="email"
+                autocomplete="email"
+                class="form-control"
+                maxlength="50"
+                name="email"
+                placeholder="Email"
+                required
+                type="email"
+                v-bind:class="{'is-invalid': emailErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ emailErrorMessage }}</div>
           </div>
@@ -91,58 +91,59 @@
 
         <div class="row">
           <div class="form-group required col-12 col-md-6 mb-0">
-              <label for="password" ref="passwordLabel">Password</label>
-              <input
-                class="form-control"
-                type="password"
-                name="password"
+            <label ref="passwordLabel" for="password">Password</label>
+            <input
                 v-model="password"
-                placeholder="Password"
-                minlength="8"
-                maxlength="50"
                 autocomplete="new-password"
+                class="form-control"
+                maxlength="50"
+                minlength="8"
+                name="password"
                 pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,}$"
-                title="The password must be at least 8 characters long and contain lowercase, uppercase and number characters"
+                placeholder="Password"
                 required
-              />
-              <!-- ENSURE BACKEND PASSWORD REGEXP ALSO UPDATED -->
+                title="The password must be at least 8 characters long and contain lowercase, uppercase and number characters"
+                type="password"
+            />
+            <!-- ENSURE BACKEND PASSWORD REGEXP ALSO UPDATED -->
           </div>
           <div class="form-group col-12 order-md-3">
             <small class="form-text">
-              Your password must be at least 8 characters long and contain lowercase, uppercase and number characters. It may not contain spaces
+              Your password must be at least 8 characters long and contain lowercase, uppercase and
+              number characters. It may not contain spaces
             </small>
           </div>
           <div class="form-group required col-12 col-md-6 mb-0">
             <label for="confirmPassword">Confirm Password</label>
             <input
-              class="form-control"
-              v-bind:class="{'is-invalid': confirmPasswordErrorMessage !== null }"
-              type="password"
-              name="confirmPassword"
-              v-model="confirmPassword"
-              placeholder="Confirm password"
-              minlength="8"
-              maxlength="50"
-              autocomplete="new-password"
-              required
+                v-model="confirmPassword"
+                autocomplete="new-password"
+                class="form-control"
+                maxlength="50"
+                minlength="8"
+                name="confirmPassword"
+                placeholder="Confirm password"
+                required
+                type="password"
+                v-bind:class="{'is-invalid': confirmPasswordErrorMessage !== null }"
             />
-            <div class="invalid-feedback">{{confirmPasswordErrorMessage}}</div>
+            <div class="invalid-feedback">{{ confirmPasswordErrorMessage }}</div>
           </div>
         </div>
 
 
         <div class="row">
           <div class="form-group required col-12">
-            <label for="dateOfBirth" ref="dateOfBirthLabel">Date of Birth</label>
+            <label ref="dateOfBirthLabel" for="dateOfBirth">Date of Birth</label>
             <input
-              class="form-control"
-              v-bind:class="{ 'is-invalid': dateOfBirthErrorMessage !== null }"
-              type="date"
-              name="dateOfBirth"
-              v-model="dateOfBirth"
-              placeholder="Date of birth"
-              autocomplete="bday"
-              required
+                v-model="dateOfBirth"
+                autocomplete="bday"
+                class="form-control"
+                name="dateOfBirth"
+                placeholder="Date of birth"
+                required
+                type="date"
+                v-bind:class="{ 'is-invalid': dateOfBirthErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ dateOfBirthErrorMessage }}</div>
           </div>
@@ -152,20 +153,20 @@
 
         <div class="form-row">
           <div class="col-12 col-md-3 mb-3">
-            <label for="countryCode" ref="countryCodeLabel">Phone Country Code</label>
+            <label ref="countryCodeLabel" for="countryCode">Phone Country Code</label>
             <!-- Data list taken from https://github.com/etjossem/country-codes-html/blob/master/_country_codes.html (formatted to json) -->
             <select
-              class="form-control"
-              v-bind:class="{ 'is-invalid': countryCodeErrorMessage !== null }"
-              name="countryCode"
-              autocomplete="tel-country-code"
-              v-model="countryCode"
+                v-model="countryCode"
+                autocomplete="tel-country-code"
+                class="form-control"
+                name="countryCode"
+                v-bind:class="{ 'is-invalid': countryCodeErrorMessage !== null }"
             >
               <!---Add blank element to country code list so that user can choose not to enter phone-->
               <option
-                v-for="code in [{value: '', name: ''}, ...countryCodes]"
-                :value="code.value"
-                :key="code.name"
+                  v-for="code in [{value: '', name: ''}, ...countryCodes]"
+                  :key="code.name"
+                  :value="code.value"
               >
                 {{ code.name }}
               </option>
@@ -175,13 +176,13 @@
           <div class="col-12 col-md-9 mb-3">
             <label for="phoneNumber">Phone Number</label>
             <input
-              class="form-control"
-              v-bind:class="{'is-invalid': phoneErrorMessage !== null }"
-              v-model="phoneNumber"
-              type="tel"
-              pattern='^\d{5,13}$'
-              placeholder="Phone number"
-              autocomplete="tel-national"
+                v-model="phoneNumber"
+                autocomplete="tel-national"
+                class="form-control"
+                pattern='^\d{5,13}$'
+                placeholder="Phone number"
+                type="tel"
+                v-bind:class="{'is-invalid': phoneErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ phoneErrorMessage }}</div>
           </div>
@@ -192,14 +193,14 @@
           <div class="form-group col px-0">
             <label for="bio">Bio</label>
             <textarea
-              class="form-control"
-              type="text"
-              rows="5"
-              name="bio"
-              placeholder="Bio"
-              v-model="bio"
-              maxlength="500"
-              autocomplete="off"
+                v-model="bio"
+                autocomplete="off"
+                class="form-control"
+                maxlength="500"
+                name="bio"
+                placeholder="Bio"
+                rows="5"
+                type="text"
             />
           </div>
         </div>
@@ -210,7 +211,7 @@
           </div>
         </div>
 
-        <div class="row mt-2" v-if="errorMessage.length > 0">
+        <div v-if="errorMessage.length > 0" class="row mt-2">
           <div class="col">
             <p class="alert alert-warning">{{ errorMessage }}</p>
           </div>
@@ -231,7 +232,6 @@ const Api = require("./../Api").default;
 const AddressForm = require("./AddressForm").default;
 
 import countryCodesJson from "./../assets/countryCodes.json";
-
 
 export default {
   name: "signUpPage",
@@ -286,8 +286,8 @@ export default {
     /**
      * Method which is called when update address event occurs on address form component
      */
-    addressUpdate: function(newAddress) {
-      const { toString, ...addressObject } = newAddress;
+    addressUpdate: function (newAddress) {
+      const {toString, ...addressObject} = newAddress;
       // Don't want the toString method to be part of the address, so remove it
       this.addressAsString = toString();
       this.address = addressObject;
@@ -296,7 +296,7 @@ export default {
     /**
      * Wrapper which simply calls the sign up method of the api
      */
-    callApi: function(data) {
+    callApi: function (data) {
       return Api.signUp(data);
     },
 
@@ -306,12 +306,16 @@ export default {
      * @param{Date} currentDate. Uses Date.now if not given
      * @return {string|null} returns null if there is no error
      */
-    validateDateOfBirth: function(dateOfBirth, currentDate = undefined) {
-      if (currentDate == undefined) currentDate = new Date(Date.now());
+    validateDateOfBirth: function (dateOfBirth, currentDate = undefined) {
+      if (currentDate == undefined) {
+        currentDate = new Date(Date.now());
+      }
       const MIN_AGE = 13;
       const regexp = /(\d{4})-(\d{2})-(\d{2})/;
       const result = regexp.exec(dateOfBirth);
-      if (result === null) return "Date of birth must be in 'YYYY-MM-DD' format";
+      if (result === null) {
+        return "Date of birth must be in 'YYYY-MM-DD' format";
+      }
 
       const year = parseInt(result[1], 10);
       const monthIndex = parseInt(result[2], 10) - 1; // month: JS uses zero indexing
@@ -324,15 +328,20 @@ export default {
         return "Date of birth given bad date";
       }
 
-
       const yearDelta = currentDate.getFullYear() - year;
-      if (yearDelta > MIN_AGE) return null; // More than 13 years old
+      if (yearDelta > MIN_AGE) {
+        return null;
+      } // More than 13 years old
       if (yearDelta == MIN_AGE) {
         const monthDelta = currentDate.getMonth() - monthIndex;
-        if (monthDelta > 0) return null;
+        if (monthDelta > 0) {
+          return null;
+        }
         if (monthDelta == 0) {
           const dayDelta = currentDate.getDate() - day;
-          if (dayDelta >= 0) return null;
+          if (dayDelta >= 0) {
+            return null;
+          }
         }
       }
 
@@ -366,17 +375,17 @@ export default {
         return;
       }
 
-      if(!phoneNumberEntered && countryCodeEntered) {
+      if (!phoneNumberEntered && countryCodeEntered) {
         this.errorMessage = this.phoneErrorMessage = "Country code and phone number must both be blank or filled in";
         this.$refs.countryCodeLabel.scrollIntoView();
         return;
       }
 
-      const phoneNumber = (typeof this.countryCode == "number"?
-        `+${this.countryCode} `: ""
-        ) + this.phoneNumber.trim();
+      const phoneNumber = (typeof this.countryCode == "number" ?
+              `+${this.countryCode} ` : ""
+      ) + this.phoneNumber.trim();
 
-      const dateOfBirth = this.dateOfBirth === null? null: this.dateOfBirth.trim();
+      const dateOfBirth = this.dateOfBirth === null ? null : this.dateOfBirth.trim();
       if (this.validateDateOfBirth(dateOfBirth) !== null) {
         this.dateOfBirthErrorMessage = this.errorMessage = this.validateDateOfBirth(dateOfBirth);
         this.$refs.dateOfBirthLabel.scrollIntoView();
@@ -384,7 +393,7 @@ export default {
       }
 
       try {
-          var response = await this.callApi({
+        var response = await this.callApi({
           firstName: this.firstName,
           middleName: this.middleName,
           lastName: this.lastName,
@@ -396,7 +405,7 @@ export default {
           phoneNumber: phoneNumber,
           bio: this.bio,
         });
-      } catch(err) {
+      } catch (err) {
         if (err.status === 409) {
           this.emailErrorMessage = this.errorMessage = "Your email has already been registered";
           this.$refs.emailLabel.scrollIntoView();
@@ -413,7 +422,7 @@ export default {
       // TODO: Below
       console.warn("TODO SIGN UP SHOULD RETURN FULL USER PROFILE; USE THIS TO SET AUTHUSER");
       window.localStorage.setItem("userId", response.data.userId);
-      this.$router.push({ name: "profile" });
+      this.$router.push({name: "profile"});
     }
   }
 }

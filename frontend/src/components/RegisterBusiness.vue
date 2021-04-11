@@ -1,12 +1,12 @@
 <template>
   <div
-    class="w-100 d-flex justify-content-center signup-container gradient-background pb-4"
+      class="w-100 d-flex justify-content-center signup-container gradient-background pb-4"
   >
     <div class="container">
       <form
-        v-on:submit.prevent="register"
-        class="slightly-transparent-inputs"
-        method="POST"
+          class="slightly-transparent-inputs"
+          method="POST"
+          v-on:submit.prevent="register"
       >
         <div class="row">
           <div class="col">
@@ -18,23 +18,23 @@
           <div class="form-group required col-12 col-md-6">
             <label>Name</label>
             <input
-              class="form-control"
-              type="text"
-              name="name"
-              v-model="name"
-              placeholder="Name"
-              maxlength="30"
-              required
+                v-model="name"
+                class="form-control"
+                maxlength="30"
+                name="name"
+                placeholder="Name"
+                required
+                type="text"
             />
           </div>
 
           <div class="form-group required col-12 col-md-6">
             <label>Type</label>
             <select
-              name="type"
-              class="form-control"
-              v-bind:class="{ 'is-invalid': typeRequired }"
-              v-model="type"
+                v-model="type"
+                class="form-control"
+                name="type"
+                v-bind:class="{ 'is-invalid': typeRequired }"
             >
               <option v-for="code in types" :key="code.message">
                 {{ code }}
@@ -44,21 +44,21 @@
         </div>
 
         <address-form
-          v-bind:address="address"
-          v-on:addressupdate="addressUpdate"
+            v-bind:address="address"
+            v-on:addressupdate="addressUpdate"
         />
 
         <div class="row>">
           <div class="form-group col px-0">
             <label>Description</label>
             <textarea
-              class="form-control"
-              type="text"
-              rows="5"
-              name="description"
-              placeholder="Description"
-              v-model="description"
-              maxlength="500"
+                v-model="description"
+                class="form-control"
+                maxlength="500"
+                name="description"
+                placeholder="Description"
+                rows="5"
+                type="text"
             />
           </div>
         </div>
@@ -66,14 +66,14 @@
         <div class="row">
           <div class="col">
             <input
-              class="btn btn-block btn-primary"
-              type="submit"
-              value="Register"
+                class="btn btn-block btn-primary"
+                type="submit"
+                value="Register"
             />
           </div>
         </div>
 
-        <div class="row mt-2" v-if="errorMessage.length > 0">
+        <div v-if="errorMessage.length > 0" class="row mt-2">
           <div class="col">
             <p class="alert alert-warning">{{ errorMessage }}</p>
           </div>
@@ -123,8 +123,8 @@ export default {
     };
   },
   methods: {
-    addressUpdate: function(newAddress) {
-      const { toString, ...addressObject } = newAddress;
+    addressUpdate: function (newAddress) {
+      const {toString, ...addressObject} = newAddress;
       // Don't want the toString method to be part of the address, so remove it
       this.addressAsString = toString();
       this.address = addressObject;
@@ -163,7 +163,7 @@ export default {
       this.emailUsed = false;
       window.localStorage.setItem("businessId", response.data.businessId);
       // TODO: push the business page view, not the profile page
-      this.$router.push({ name: "profile" });
+      this.$router.push({name: "profile"});
     },
   },
 };

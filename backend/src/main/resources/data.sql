@@ -6,46 +6,46 @@ DROP TABLE IF EXISTS ADDRESS;
 
 CREATE TABLE ADDRESS
 (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
+    ID            INT AUTO_INCREMENT PRIMARY KEY,
     STREET_NUMBER VARCHAR(100),
-    STREET_NAME VARCHAR(200),
-    POSTCODE VARCHAR(30),
-    CITY VARCHAR(200),
-    REGION VARCHAR(200),
-    COUNTRY VARCHAR(100) NOT NULL
+    STREET_NAME   VARCHAR(200),
+    POSTCODE      VARCHAR(30),
+    CITY          VARCHAR(200),
+    REGION        VARCHAR(200),
+    COUNTRY       VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE USER
 (
-    ID            INT AUTO_INCREMENT PRIMARY KEY,
-    FIRST_NAME    VARCHAR(50)  NOT NULL,
-    LAST_NAME     VARCHAR(50)  NOT NULL,
-    MIDDLE_NAME   VARCHAR(50),
-    NICKNAME      VARCHAR(50),
-    BIO           VARCHAR(250),
-    EMAIL         VARCHAR(50)  NOT NULL UNIQUE,
-    DATE_OF_BIRTH DATE         NOT NULL,
-    PHONE_NUMBER  VARCHAR(18),
+    ID              INT AUTO_INCREMENT PRIMARY KEY,
+    FIRST_NAME      VARCHAR(50) NOT NULL,
+    LAST_NAME       VARCHAR(50) NOT NULL,
+    MIDDLE_NAME     VARCHAR(50),
+    NICKNAME        VARCHAR(50),
+    BIO             VARCHAR(250),
+    EMAIL           VARCHAR(50) NOT NULL UNIQUE,
+    DATE_OF_BIRTH   DATE        NOT NULL,
+    PHONE_NUMBER    VARCHAR(18),
 
-    CREATED       DATETIME     NOT NULL,
-    ROLE          VARCHAR(30)  NOT NULL,
-    PASSWORD      CHAR(60)     NOT NULL,
+    CREATED         DATETIME    NOT NULL,
+    ROLE            VARCHAR(30) NOT NULL,
+    PASSWORD        CHAR(60)    NOT NULL,
 
-    HOME_ADDRESS_ID    INT          NOT NULL,
-    CONSTRAINT    USER_ADDRESS_FK   FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES ADDRESS (ID)
+    HOME_ADDRESS_ID INT         NOT NULL,
+    CONSTRAINT USER_ADDRESS_FK FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES ADDRESS (ID)
 );
 
 CREATE TABLE BUSINESS
 (
-    ID            INT AUTO_INCREMENT PRIMARY KEY,
-    NAME          VARCHAR(50)  NOT NULL,
-    DESCRIPTION   VARCHAR(250),
-    BUSINESS_TYPE VARCHAR(50)  NOT NULL,
-    CREATED       DATETIME     NOT NULL,
+    ID                       INT AUTO_INCREMENT PRIMARY KEY,
+    NAME                     VARCHAR(50) NOT NULL,
+    DESCRIPTION              VARCHAR(250),
+    BUSINESS_TYPE            VARCHAR(50) NOT NULL,
+    CREATED                  DATETIME    NOT NULL,
 
-    PRIMARY_ADMINISTRATOR_ID INT NOT NULL,
-    ADDRESS_ID    INT          NOT NULL,
-    CONSTRAINT    BUSINESS_ADDRESS_FK   FOREIGN KEY (ADDRESS_ID) REFERENCES ADDRESS (ID)
+    PRIMARY_ADMINISTRATOR_ID INT         NOT NULL,
+    ADDRESS_ID               INT         NOT NULL,
+    CONSTRAINT BUSINESS_ADDRESS_FK FOREIGN KEY (ADDRESS_ID) REFERENCES ADDRESS (ID)
 );
 
 CREATE TABLE USER_BUSINESS
@@ -60,63 +60,55 @@ CREATE TABLE USER_BUSINESS
         FOREIGN KEY (BUSINESS_ID) references BUSINESS (ID)
 );
 
-INSERT INTO ADDRESS(
-    ID,
-    STREET_NUMBER,
-    STREET_NAME,
-    POSTCODE,
-    CITY,
-    REGION,
-    COUNTRY
-) VALUES (
-    0,
-    '0',
-    'Void Street',
-    '-1',
-    'Nil City',
-    'Undefined Plains',
-    'Null Island'
-), (
-    1,
-    '10',
-    'Downing Street',
-    'SW1A 2AA',
-    'Westminster',
-    'London',
-    'United Kingdom'
-), (
-    2,
-    '99',
-    'Waimari Road',
-    '8041',
-    'Christchurch',
-    'Canterbury',
-    'New Zealand'
-), (
-    3,
-    '53',
-    'Ilam Road',
-    '8041',
-    'Christchurch',
-    'Canterbury',
-    'New Zealand'
-), (
-    4,
-    '123',
-    'Fake Street',
-    '8041',
-    'Christchurch',
-    'Canterbury',
-    'New Zealand'
-), (
-    5,
-    '79',
-    'Place Road',
-    '8041',
-    'Christchurch',
-    'Canterbury',
-    'New Zealand'
-);
+INSERT INTO ADDRESS(ID,
+                    STREET_NUMBER,
+                    STREET_NAME,
+                    POSTCODE,
+                    CITY,
+                    REGION,
+                    COUNTRY)
+VALUES (0,
+        '0',
+        'Void Street',
+        '-1',
+        'Nil City',
+        'Undefined Plains',
+        'Null Island'),
+       (1,
+        '10',
+        'Downing Street',
+        'SW1A 2AA',
+        'Westminster',
+        'London',
+        'United Kingdom'),
+       (2,
+        '99',
+        'Waimari Road',
+        '8041',
+        'Christchurch',
+        'Canterbury',
+        'New Zealand'),
+       (3,
+        '53',
+        'Ilam Road',
+        '8041',
+        'Christchurch',
+        'Canterbury',
+        'New Zealand'),
+       (4,
+        '123',
+        'Fake Street',
+        '8041',
+        'Christchurch',
+        'Canterbury',
+        'New Zealand'),
+       (5,
+        '79',
+        'Place Road',
+        '8041',
+        'Christchurch',
+        'Canterbury',
+        'New Zealand');
 
 -- Inserting test user
 
@@ -194,7 +186,7 @@ VALUES ('TestName',
         5,
         'Retail Trade',
         '2020-07-14T14:32:00Z'),
-        ('Fake Business',
+       ('Fake Business',
         4,
         'Shh very secret',
         4,
@@ -205,5 +197,5 @@ INSERT INTO USER_BUSINESS(USER_ID,
                           BUSINESS_ID)
 VALUES (4,
         1),
-        (4,
+       (4,
         2);

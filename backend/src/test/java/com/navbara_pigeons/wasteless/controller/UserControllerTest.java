@@ -1,7 +1,6 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import static org.springframework.test.util.AssertionErrors.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.navbara_pigeons.wasteless.dao.AddressDao;
@@ -10,13 +9,8 @@ import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import net.minidev.json.parser.JSONParser;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.BasicJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
@@ -29,23 +23,18 @@ import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.http.HttpSession;
-import java.util.Date;
-import java.util.Map;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserControllerTest {
 
   @Autowired
-  private WebApplicationContext wac;
-  @Autowired
-  public MockMvc mockMvc;
-  @Autowired
   private final AddressDao addressDao;
   @Autowired
   private final UserDao userDao;
-
+  @Autowired
+  public MockMvc mockMvc;
+  @Autowired
+  private WebApplicationContext wac;
   private String password = "pass";
 
   private User user;
@@ -75,14 +64,16 @@ class UserControllerTest {
     MvcResult mvcResult = this.mockMvc.perform(
         setCorsHeaders(post("/login"))
             .header("Content-Type", "application/json")
-            .content("{ \"email\": \"" + user.getEmail() + "\", \"password\": \"" + password + "\"}")
+            .content(
+                "{ \"email\": \"" + user.getEmail() + "\", \"password\": \"" + password + "\"}")
     )
         .andExpect(status().isOk())
         .andReturn();
 
     String attributeName = "SPRING_SECURITY_CONTEXT";
     MockHttpSession session = new MockHttpSession();
-    session.setAttribute(attributeName, mvcResult.getRequest().getSession().getAttribute(attributeName));
+    session.setAttribute(attributeName,
+        mvcResult.getRequest().getSession().getAttribute(attributeName));
 
     return session;
   }

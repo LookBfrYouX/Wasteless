@@ -28,43 +28,43 @@ junit:
     - cd backend
     - ./gradlew test
 
-# Run acceptance (cucumber) tests
-# Uncomment after ATDD workshop (at the latest)
-# cucumber:
-#   stage: test
-#   script:
-#     - cd backend
-#     - ./gradlew cucumber
+  # Run acceptance (cucumber) tests
+  # Uncomment after ATDD workshop (at the latest)
+  # cucumber:
+  #   stage: test
+  #   script:
+  #     - cd backend
+  #     - ./gradlew cucumber
 
-# Run Jest (Javascript) tests
-# Uncomment after Jest workshop (at the latest)
- jest:
-   stage: test
-   cache:
-     key: node-modules
-     paths:
-       - frontend/node_modules
-     policy: pull
-   script:
-     - cd frontend
-     - npm run test
+  # Run Jest (Javascript) tests
+  # Uncomment after Jest workshop (at the latest)
+  jest:
+    stage: test
+    cache:
+      key: node-modules
+      paths:
+        - frontend/node_modules
+      policy: pull
+    script:
+      - cd frontend
+      - npm run test
 
 # Export sonarqube (static code analysis) reports
 # Uncomment after ATDD workshop (at the latest)
 dev-sonarqube:
- stage: sonarqube
- cache:
-   key: node-modules
-   paths:
-     - frontend/node_modules
-   policy: pull
- script:
-   - cd frontend
-   - npm run sonarqube
-   - cd ../backend
-   - ./gradlew sonarqube
- only:
-   - S2-dev
+  stage: sonarqube
+  cache:
+    key: node-modules
+    paths:
+      - frontend/node_modules
+    policy: pull
+  script:
+    - cd frontend
+    - npm run sonarqube
+    - cd ../backend
+    - ./gradlew sonarqube
+  only:
+    - S2-dev
 
 # builds all branches, except dev and master
 branch-build:

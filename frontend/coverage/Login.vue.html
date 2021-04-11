@@ -1,62 +1,62 @@
-
 <!doctype html>
 <html lang="en">
 
 <head>
-    <title>Code coverage report for Login.vue</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="prettify.css" />
-    <link rel="stylesheet" href="base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type='text/css'>
-        .coverage-summary .sorter {
-            background-image: url(sort-arrow-sprite.png);
-        }
-    </style>
+  <title>Code coverage report for Login.vue</title>
+  <meta charset="utf-8"/>
+  <link href="prettify.css" rel="stylesheet"/>
+  <link href="base.css" rel="stylesheet"/>
+  <link href="favicon.png" rel="shortcut icon" type="image/x-icon"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <style type='text/css'>
+    .coverage-summary .sorter {
+      background-image: url(sort-arrow-sprite.png);
+    }
+  </style>
 </head>
-    
+
 <body>
 <div class='wrapper'>
-    <div class='pad1'>
-        <h1><a href="index.html">All files</a> Login.vue</h1>
-        <div class='clearfix'>
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
-                <span class="quiet">Statements</span>
-                <span class='fraction'>2/10</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>1/3</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
-                <span class="quiet">Lines</span>
-                <span class='fraction'>2/10</span>
-            </div>
-        
-            
-        </div>
-        <p class="quiet">
-            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
-        </p>
+  <div class='pad1'>
+    <h1><a href="index.html">All files</a> Login.vue</h1>
+    <div class='clearfix'>
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>2/10</span>
+      </div>
+
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/0</span>
+      </div>
+
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>1/3</span>
+      </div>
+
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>2/10</span>
+      </div>
+
+
     </div>
-    <div class='status-line low'></div>
-    <pre><table class="coverage">
+    <p class="quiet">
+      Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or
+      <em>k</em> for the previous block.
+    </p>
+  </div>
+  <div class='status-line low'></div>
+  <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -174,7 +174,8 @@
 <a name='L115'></a><a href='#L115'>115</a>
 <a name='L116'></a><a href='#L116'>116</a>
 <a name='L117'></a><a href='#L117'>117</a>
-<a name='L118'></a><a href='#L118'>118</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L118'></a><a href='#L118'>118</a></td><td class="line-coverage quiet"><span
+    class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -291,7 +292,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;template&gt;
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre
+    class="prettyprint lang-js">&lt;template&gt;
   &lt;div class="w-100 d-flex justify-content-center login-container gradient-background pb-4"&gt;
     &lt;div class="container"&gt;
       &lt;form v-on:submit.prevent="login" class="slightly-transparent-inputs"&gt;
@@ -386,46 +388,48 @@ export default {
   },
 &nbsp;
   methods: {
-<span class="fstat-no" title="function not covered" >    signUp() {</span>
+<span class="fstat-no" title="function not covered">    signUp() {</span>
       // redirects user to to the signup page
-<span class="cstat-no" title="statement not covered" >      this.$router.push({ name: "signup" });</span>
+<span class="cstat-no"
+      title="statement not covered">      this.$router.push({ name: "signup" });</span>
     },
-<span class="fstat-no" title="function not covered" >    login: async function() {</span>
+<span class="fstat-no" title="function not covered">    login: async function() {</span>
       // uses mock API to determine whether to allow user to login or be rejected
       let response;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      try {</span>
-<span class="cstat-no" title="statement not covered" >        response = await Api.login({ email: this.email, password: this.password });</span>
+<span class="cstat-no" title="statement not covered">      try {</span>
+<span class="cstat-no" title="statement not covered">        response = await Api.login({ email: this.email, password: this.password });</span>
       } catch(err) {
-<span class="cstat-no" title="statement not covered" >        this.errorMessage = err.userFacingErrorMessage;</span>
-<span class="cstat-no" title="statement not covered" >        return;</span>
+<span class="cstat-no" title="statement not covered">        this.errorMessage = err.userFacingErrorMessage;</span>
+<span class="cstat-no" title="statement not covered">        return;</span>
       }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      this.errorMessage = "";</span>
-<span class="cstat-no" title="statement not covered" >      window.localStorage.setItem("userId", response.data.id);</span>
-<span class="cstat-no" title="statement not covered" >      this.$router.push({ name: "profile" });</span>
+<span class="cstat-no" title="statement not covered">      this.errorMessage = "";</span>
+<span class="cstat-no" title="statement not covered">      window.localStorage.setItem("userId", response.data.id);</span>
+<span class="cstat-no"
+      title="statement not covered">      this.$router.push({ name: "profile" });</span>
     },
   },
 };
 &lt;/script&gt;
 &nbsp;</pre></td></tr></table></pre>
 
-                <div class='push'></div><!-- for sticky footer -->
-            </div><!-- /wrapper -->
-            <div class='footer quiet pad2 space-top1 center small'>
-                Code coverage generated by
-                <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 18 2021 15:39:53 GMT+1300 (New Zealand Daylight Time)
-            </div>
-        </div>
-        <script src="prettify.js"></script>
-        <script>
-            window.onload = function () {
-                prettyPrint();
-            };
-        </script>
-        <script src="sorter.js"></script>
-        <script src="block-navigation.js"></script>
-    </body>
+  <div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage generated by
+  <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
+  at Thu Mar 18 2021 15:39:53 GMT+1300 (New Zealand Daylight Time)
+</div>
+</div>
+<script src="prettify.js"></script>
+<script>
+  window.onload = function () {
+    prettyPrint();
+  };
+</script>
+<script src="sorter.js"></script>
+<script src="block-navigation.js"></script>
+</body>
 </html>
     

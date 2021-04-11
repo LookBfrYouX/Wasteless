@@ -1,17 +1,17 @@
 <style lang="scss">
-  @import "./styles/custom.scss";
+@import "./styles/custom.scss";
 </style>
 
 <template>
   <div id="app">
     <navbar
-        v-bind:userId="userId"
         v-bind:query="query"
+        v-bind:userId="userId"
         v-on:input="event => this.query = event.target.value"
     />
     <div class="w-100 d-flex justify-content-center gradient-background pb-4">
       <router-view
-        v-on:searchresultscreated="updateInput"
+          v-on:searchresultscreated="updateInput"
       ></router-view>
     </div>
     <footer class="info">
@@ -25,7 +25,7 @@ import Navbar from './components/Navbar.vue';
 
 export default {
   name: 'app',
-  data: function() {
+  data: function () {
     return {
       query: '',
     };
@@ -38,7 +38,7 @@ export default {
   props: ["userId"],
 
   methods: {
-    updateInput: function(query) {
+    updateInput: function (query) {
       // When page is loaded and if router-view is search results page,
       // the search results page will send an event with the current value of the text box
       // to App, which will then input Navbar props

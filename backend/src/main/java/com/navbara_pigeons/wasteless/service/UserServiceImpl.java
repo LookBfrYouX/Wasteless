@@ -2,7 +2,6 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
-import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
@@ -12,15 +11,12 @@ import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import javax.transaction.Transactional;
-
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,9 +68,9 @@ public class UserServiceImpl implements UserService {
    * the dao
    *
    * @param user User object to be saved.
+   * @return login response
    * @throws UserAlreadyExistsException Thrown when a user already exists in the database
    * @throws UserRegistrationException  Thrown when invalid fields received
-   * @return login response
    */
   @Override
   @Transactional
@@ -127,9 +123,10 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * Calls the userDao to get the specified user
-   * If not an admin or retrieving details for another user, the user email address, date of birth, phone number
-   * and home address street number/name/post code are not returned
+   * Calls the userDao to get the specified user If not an admin or retrieving details for another
+   * user, the user email address, date of birth, phone number and home address street
+   * number/name/post code are not returned
+   *
    * @param id the id of the user
    * @return the User instance of the user
    */
@@ -156,7 +153,7 @@ public class UserServiceImpl implements UserService {
     String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
 
     // sensitive details (e.g. email, postcode) are not returned
-    if ( username.equals(user.getEmail()) || isAdmin() ) {
+    if (username.equals(user.getEmail()) || isAdmin()) {
       response.put("email", user.getEmail());
       response.put("dateOfBirth", user.getDateOfBirth());
       response.put("phoneNumber", user.getPhoneNumber());
@@ -177,9 +174,9 @@ public class UserServiceImpl implements UserService {
    * authenticate the user. Authentication is done through the global AuthenticationManagerBuilder.
    *
    * @param userCredentials The UserCredentials object storing the email and password.
+   * @return JSON response with user ID
    * @throws AuthenticationException An authentication exception that is assigned HTTP error codes
    *                                 at the controller.
-   * @return JSON response with user ID
    */
   @Override
   public JSONObject login(UserCredentials userCredentials)
@@ -303,7 +300,9 @@ public class UserServiceImpl implements UserService {
   public boolean isAdmin() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    if (authentication == null) return false;
+    if (authentication == null) {
+      return false;
+    }
     for (GrantedAuthority simpleGrantedAuthority : authentication.getAuthorities()) {
       if (simpleGrantedAuthority.getAuthority().contains("ADMIN")) {
         return true;

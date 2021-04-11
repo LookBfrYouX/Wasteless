@@ -30,29 +30,29 @@ Notes:
 <template>
   <div v-bind:class="divClasses">
     <input
-      v-bind="$attrs"
+        v-bind="$attrs"
 
-      v-bind:class="inputClasses"
+        v-bind:class="inputClasses"
 
-      v-bind:value="value"
-      v-on:input="args => $emit('input', args.target.value)"
-      v-on:keydown="keydown"
-      v-on:focus="focus"
-      v-on:blur="blur"
+        v-bind:value="value"
+        v-on:blur="blur"
+        v-on:focus="focus"
+        v-on:input="args => $emit('input', args.target.value)"
+        v-on:keydown="keydown"
     />
     <ul v-if="showSuggestions"
-      v-bind:class="ulClasses"
+        v-bind:class="ulClasses"
     >
       <li
-        v-for="(suggestion, i) in suggestions"
-        v-bind:key="i"
-        :data-index="i"
-        v-on:click="suggestionClick"
-        v-on:mouseover="suggestionMouseover"
-        v-bind:class="{
+          v-for="(suggestion, i) in suggestions"
+          v-bind:key="i"
+          :data-index="i"
+          v-bind:class="{
           ...(i == index? liActiveClasses: liInactiveClasses),
           ...liClasses
         }"
+          v-on:click="suggestionClick"
+          v-on:mouseover="suggestionMouseover"
       >
         {{ suggestion.toString() }}
       </li>
@@ -75,42 +75,50 @@ export default {
   props: {
     suggestions: {
       required: true,
-      default: () => { return [] }
+      default: () => {
+        return []
+      }
     },
     value: {
       default: ""
     },
 
     divClasses: {
-      default: () => { return {
-        }
+      default: () => {
+        return {}
       }
     },
     // in Vue 2, class attribute not part of $attrs and gets applied to the root element even if inheritAttrs is false
     inputClasses: {
-      default: () => { return {} }
+      default: () => {
+        return {}
+      }
     },
     ulClasses: {
-      default: () => { return {
+      default: () => {
+        return {
           "list-group": true,
           "suggestions-list": true
         }
       }
     },
     liClasses: {
-      default: () => { return {
-        "list-group-item": true,
+      default: () => {
+        return {
+          "list-group-item": true,
         }
       }
     },
     liActiveClasses: {
-      default: () => { return {
-        "active": true
+      default: () => {
+        return {
+          "active": true
         }
       }
-    },liInactiveClasses: {
-      default: () => { return {
-        "slightly-transparent-background": true
+    }, liInactiveClasses: {
+      default: () => {
+        return {
+          "slightly-transparent-background": true
         }
       }
     },
@@ -128,16 +136,16 @@ export default {
   },
 
   methods: {
-    keydown: function(event) {
+    keydown: function (event) {
       // If user clicked enter on suggestion, suggestions are hidden, so if they start typing again show suggestions
       this.showSuggestions = true;
       switch (event.code) {
-        case "ArrowDown": 
+        case "ArrowDown":
           event.preventDefault();
           this.index = Math.min(this.suggestions.length - 1, this.index + 1);
           break;
 
-        case "ArrowUp": 
+        case "ArrowUp":
           event.preventDefault();
           if (this.index != -1) {
             this.index = Math.max(this.index - 1, -1);
@@ -148,13 +156,13 @@ export default {
           this.suggestionSelected();
           event.preventDefault();
           break;
-        
+
         default:
           this.$emit("keydown", event);
       }
     },
 
-    focus: function(event) {
+    focus: function (event) {
       // If there is a blur and focus in event within the blurDelay, suggestions will be
       // shown and immediately hidden again. This prevents this
       window.clearTimeout(this.blurTimeout);
@@ -162,8 +170,7 @@ export default {
       this.$emit('focus', event);
     },
 
-
-    blur: function(event) {
+    blur: function (event) {
       // Without this, when user clicks the suggestion blur is called before click,
       // causing li to become hidden
       this.blurTimeout = window.setTimeout(() => {
@@ -175,7 +182,7 @@ export default {
     /**
      * Sets the index to the clicked element, hides the suggestions and inputs an `input` event
      */
-    suggestionClick: function(event) {
+    suggestionClick: function (event) {
       this.suggestionMouseover(event);
       this.suggestionSelected();
     },
@@ -183,17 +190,17 @@ export default {
     /**
      * Sets the index to that of the index currently being selected
      */
-    suggestionMouseover: function(event) {
+    suggestionMouseover: function (event) {
       const index = event.target.getAttribute("data-index");
       this.index = index;
     },
 
     /**
      * Hides the suggestion box and emits an `input` event
-    */
-    suggestionSelected: function() {
+     */
+    suggestionSelected: function () {
       this.showSuggestions = false;
-        // Sanity check before emitting the event
+      // Sanity check before emitting the event
       if (this.index >= 0 && this.index < this.suggestions.length) {
         const suggestion = this.suggestions[this.index];
         this.$emit("input", suggestion.toString());
@@ -207,7 +214,7 @@ export default {
     /**
      * Ensures that if the list gets shorter, the current index is never after the last suggestion
      */
-    suggestions: function() {
+    suggestions: function () {
       if (this.index >= this.suggestions.length) {
         this.index = this.suggestions.length - 1;
       }

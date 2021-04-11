@@ -1,10 +1,9 @@
-import { mount, shallowMount } from "@vue/test-utils";
-import { globalStateMocks } from "../../test/testHelper";
-import { ApiRequestError } from "../ApiRequestError";
+import {mount} from "@vue/test-utils";
+import {globalStateMocks} from "../../test/testHelper";
+import {ApiRequestError} from "../ApiRequestError";
 import SignUp from "./SignUp";
 
 jest.useFakeTimers();
-
 
 const getData = () => {
   return {
@@ -12,19 +11,19 @@ const getData = () => {
     middleName: "MN",
     lastName: "LN",
     nickName: "NN",
-    
+
     email: "example@example.com",
-    
+
     password: "Passw0rd",
     confirmPassword: "Passw0rd",
 
     dateOfBirth: "2000-01-01",
-    
+
     addressAsString: "10 Downing Street, Covent Garden, SW123, London, Greater London, United Kingdom",
-    
+
     countryCode: 64,
     phoneNumber: "220230345",
-    
+
     bio: "Every day is Mac Pro day",
   }
 }
@@ -33,10 +32,12 @@ const getData = () => {
  * Mounts sign up with data, overwriting results of `getData` with provided properties from data
  * @param {*} data data object any properties to override
  * @param {object} otherOptions other options to instantiate the component with e.g. mock
- * @returns 
+ * @returns
  */
 const mountWithData = (data, otherOptions = undefined) => {
-  if (otherOptions === undefined) otherOptions = {};
+  if (otherOptions === undefined) {
+    otherOptions = {};
+  }
 
   return mount(SignUp, {
     ...otherOptions,
@@ -57,15 +58,13 @@ window.localStorage = {
   push: jest.fn()
 };
 
-
-
 afterEach(() => wrapper.destroy());
 
 describe("Date of birth", () => {
   const now = new Date(2020, 1, 22); // 2020-02-22
   test("Too young by years", () => {
-      wrapper = mount(SignUp, {});
-      expect(wrapper.vm.validateDateOfBirth("2010-03-05", now)).toBeTruthy();
+    wrapper = mount(SignUp, {});
+    expect(wrapper.vm.validateDateOfBirth("2010-03-05", now)).toBeTruthy();
   });
   test("Too young by months", () => {
     wrapper = mount(SignUp, {});
@@ -115,9 +114,7 @@ describe("Sign up error handling", () => {
   test("email used", async () => {
     wrapper = mountWithData({
       email: "notregistered@example.com"
-    }, {
-
-    });
+    }, {});
     wrapper.vm.callApi = jest.fn(() => {
       const error = new ApiRequestError("Some error message");
       error.status = 409;
@@ -171,7 +168,7 @@ describe("Sign up error handling", () => {
 
     await wrapper.vm.register();
     expect(wrapper.vm.callApi.mock.calls.length).toBe(1);
-    
+
     expect(wrapper.vm.errorMessage).toBeFalsy();
     expect(wrapper.vm.phoneErrorMessage).toBeFalsy();
     //Ensures all the error messages are cleared

@@ -4,11 +4,11 @@
       <!--User profile image card-->
       <div class="col-md-4 m-2 card">
         <!--Upload image button overlay-->
-        <button type="button" class="image-upload-button btn btn-lg btn-primary" disabled>
+        <button class="image-upload-button btn btn-lg btn-primary" disabled type="button">
           <span class="material-icons md-48">file_upload</span>
         </button>
         <!--User profile image-->
-        <img class="my-3 rounded-circle" src="placeholder-profile.png" alt="Users profile image">
+        <img alt="Users profile image" class="my-3 rounded-circle" src="placeholder-profile.png">
 
       </div>
       <div class="col-md-7 m-2 card">
@@ -39,11 +39,13 @@
 
           <br>
           <div class="profile-buttons d-flex">
-            <button class="btn btn-white-bg-primary mx-1 d-flex" disabled><span class="material-icons mr-1">send</span>Send Message</button>
+            <button class="btn btn-white-bg-primary mx-1 d-flex" disabled><span
+                class="material-icons mr-1">send</span>Send Message
+            </button>
             <button
                 v-if="isAdmin && userInfo.role != 'ROLE_ADMIN'"
-                class="btn btn-white-bg-primary mx-1 d-flex"
                 id="makeAdmin"
+                class="btn btn-white-bg-primary mx-1 d-flex"
                 type="button"
                 v-on:click="makeAdmin(userId)"
             >
@@ -52,8 +54,8 @@
             </button>
             <button
                 v-if="isAdmin && userInfo.role == 'ROLE_ADMIN'"
-                class="btn btn-white-bg-primary mx-1 d-flex"
                 id="revokeAdmin"
+                class="btn btn-white-bg-primary mx-1 d-flex"
                 type="button"
                 v-on:click="revokeAdmin(userId)"
             >
@@ -70,7 +72,7 @@
               Register Business
             </button>
           </div>
-          <div class="row mt-2" v-if="statusMessage.length > 0">
+          <div v-if="statusMessage.length > 0" class="row mt-2">
             <div class="col">
               <p class="alert alert-warning">{{ statusMessage }}</p>
             </div>
@@ -84,9 +86,13 @@
         <div v-if="userInfo.businesses.length !== 0">
           <h1 class="title">Businesses</h1>
           <ul class="profile-business-info list-unstyled">
-            <li class="list-group-item card text-wrap" v-for="(business, index) in userInfo.businesses" v-bind:key="index">
+            <li v-for="(business, index) in userInfo.businesses"
+                v-bind:key="index" class="list-group-item card text-wrap">
               <dt class="col-md label">Business Name:</dt>
-              <dd class="col-md value" v-on:click="viewBusiness(business.id)"> {{ business.name }} </dd>
+              <dd class="col-md value" v-on:click="viewBusiness(business.id)"> {{
+                  business.name
+                }}
+              </dd>
             </li>
           </ul>
         </div>
@@ -96,8 +102,8 @@
             <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
             <p class="card-text">Some quick example text to build on the card title and make up the
               bulk of the card's content.</p>
-            <a href="/profile" class="card-link">Card link</a>
-            <a href="/profile" class="card-link">Another link</a>
+            <a class="card-link" href="/profile">Card link</a>
+            <a class="card-link" href="/profile">Another link</a>
           </div>
         </div>
         <div class="card my-2">
@@ -106,8 +112,8 @@
             <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
             <p class="card-text">Some quick example text to build on the card title and make up the
               bulk of the card's content.</p>
-            <a href="/profile" class="card-link">Card link</a>
-            <a href="/profile" class="card-link">Another link</a>
+            <a class="card-link" href="/profile">Card link</a>
+            <a class="card-link" href="/profile">Another link</a>
           </div>
         </div>
 
@@ -115,7 +121,7 @@
       <div class="col-md-7 order-1 order-md-2 m-2 card">
         <ul class="nav nav-tabs mt-2">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page">Details</a>
+            <a aria-current="page" class="nav-link active">Details</a>
           </li>
           <li class="nav-item">
             <a class="nav-link disabled">Future Tab</a>
@@ -154,7 +160,7 @@
               <th style="white-space: nowrap;">Address:</th>
               <td class="col-md value">
                 <p>{{
-                    [userInfo.homeAddress.streetNumber + ' ' + userInfo.homeAddress.streetName ,
+                    [userInfo.homeAddress.streetNumber + ' ' + userInfo.homeAddress.streetName,
                       userInfo.homeAddress.city,
                       userInfo.homeAddress.region,
                       userInfo.homeAddress.postcode,
@@ -170,13 +176,13 @@
       </div>
     </div>
     <error-modal
-      title="Error fetching user details"
-      v-bind:show="apiErrorMessage !== null"
-      v-bind:hideCallback="() => apiErrorMessage = null"
-      v-bind:refresh="true"
-      v-bind:retry="this.apiPipeline"
+        title="Error fetching user details"
+        v-bind:hideCallback="() => apiErrorMessage = null"
+        v-bind:refresh="true"
+        v-bind:retry="this.apiPipeline"
+        v-bind:show="apiErrorMessage !== null"
     >
-      <p>{{apiErrorMessage}}</p>
+      <p>{{ apiErrorMessage }}</p>
     </error-modal>
   </div>
 </template>
@@ -184,7 +190,8 @@
 
 <script>
 import ErrorModal from './Errors/ErrorModal.vue';
-import { ApiRequestError } from "./../ApiRequestError";
+import {ApiRequestError} from "./../ApiRequestError";
+
 const Api = require("./../Api").default;
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August",
@@ -193,7 +200,7 @@ Object.freeze(MONTH_NAMES);
 
 export default {
   name: 'profilePage',
-  components: { ErrorModal },
+  components: {ErrorModal},
 
   data() {
     return {
@@ -231,7 +238,9 @@ export default {
         this.statusMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
         return;
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.statusMessage = err.userFacingErrorMessage;
         return;
       }
@@ -251,7 +260,9 @@ export default {
         this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
         return;
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.statusMessage = err.userFacingErrorMessage;
         return;
       }
@@ -260,14 +271,14 @@ export default {
     /**
      * TODO: Add documentation
      */
-    registerBusiness: function() {
-      this.$router.push({ name: "registerBusiness" });
+    registerBusiness: function () {
+      this.$router.push({name: "registerBusiness"});
     },
 
     /**
      * Calls the API and updates the component's data with the result
      */
-    apiPipeline: function() {
+    apiPipeline: function () {
       this.parseApiResponse(this.callApi(this.userId));
     },
 
@@ -277,7 +288,8 @@ export default {
      */
     callApi: function (userId) {
       if (typeof userId != "number" || isNaN(userId)) {
-        const err = new ApiRequestError("Cannot load profile page (no profile given). You may need to log in");
+        const err = new ApiRequestError(
+            "Cannot load profile page (no profile given). You may need to log in");
         return Promise.reject(err);
       }
       return Api.profile(userId);
@@ -291,7 +303,9 @@ export default {
         const response = await apiCall;
         this.userInfo = response.data;
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
@@ -346,9 +360,15 @@ export default {
   },
 
   computed: {
-    authUser() { return this.$stateStore.getters.getAuthUser() },
-    isLoggedIn() { return this.$stateStore.getters.isLoggedIn() },
-    isAdmin() { return this.$stateStore.getters.isAdmin() },
+    authUser() {
+      return this.$stateStore.getters.getAuthUser()
+    },
+    isLoggedIn() {
+      return this.$stateStore.getters.isLoggedIn()
+    },
+    isAdmin() {
+      return this.$stateStore.getters.isAdmin()
+    },
 
     /**
      * Formatted text for date of birth

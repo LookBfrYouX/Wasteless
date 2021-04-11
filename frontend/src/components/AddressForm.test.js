@@ -1,4 +1,4 @@
-import { shallowMount } from "@vue/test-utils";
+import {shallowMount} from "@vue/test-utils";
 import AddressForm from "./AddressForm";
 
 let wrapper;
@@ -16,7 +16,7 @@ beforeEach(() => {
         country: "",
       }
     },
-    mocks: { },
+    mocks: {},
     stubs: {},
     methods: {}
   });
@@ -46,7 +46,6 @@ const standardOSMAddress = () => {
   };
 }
 
-
 describe("text entry", () => {
   test("props updated", async () => {
     wrapper.vm.addressSuggestionsPipeline = jest.fn();
@@ -56,26 +55,28 @@ describe("text entry", () => {
     });
 
     jest.runAllTimers();
-    
+
     expect(wrapper.vm.addressSuggestionsPipeline.mock.calls.length).toBe(1);
   });
 
   test("suggestionSelected", async () => {
     wrapper.vm.activeAddressInputName = "city";
     wrapper.vm.suggestionSelected(standardAddress());
-    
+
     await wrapper.vm.$nextTick();
 
     const events = wrapper.emitted("addressupdate");
     expect(events.length).toBe(1);
-    const { toString, ...address } = events[0][0];
-    
+    const {toString, ...address} = events[0][0];
+
     let expected = standardAddress();
     expected.addressLine = "";
     expected.postcode = "";
 
     expect(address).toEqual(expected);
-    expect(toString()).toEqual(wrapper.vm.generateAddressStringFromAddressComponents(expected, "city"));
+    expect(toString()).toEqual(
+        wrapper.vm.generateAddressStringFromAddressComponents(expected,
+            "city"));
   });
 
   test("on address input", async () => {
@@ -85,15 +86,15 @@ describe("text entry", () => {
     wrapper.setData({
       activeAddressInputName: "postcode"
     });
-    
+
     wrapper.vm.onAddressInput(postcode);
 
     await wrapper.vm.$nextTick();
-    
+
     const events = wrapper.emitted("addressupdate");
     expect(events.length).toBe(1);
-    const { toString, ...address } = events[0][0];
-    
+    const {toString, ...address} = events[0][0];
+
     expect(address).toEqual({
       addressLine: "",
       postcode: postcode,
@@ -101,7 +102,7 @@ describe("text entry", () => {
       state: "",
       country: "",
     });
-    
+
     expect(toString()).toEqual(postcode);
 
     jest.runAllTimers();
@@ -132,10 +133,10 @@ test("generateAddressSuggestions", () => {
     delete addr.toString; // already tested elsewhere
     return addr;
   })).toEqual(
-    // a same as b in terms of the string value, so only a or b should be given
-    [b , c].map(addr => {
-      return wrapper.vm.mapOSMPropertiesToAddressComponents(addr);
-    })
+      // a same as b in terms of the string value, so only a or b should be given
+      [b, c].map(addr => {
+        return wrapper.vm.mapOSMPropertiesToAddressComponents(addr);
+      })
   );
 });
 
@@ -151,7 +152,8 @@ describe("mapOSMPropertiesToAddressComponents", () => {
     let address = standardAddress();
     delete address.city;
 
-    expect(wrapper.vm.mapOSMPropertiesToAddressComponents(addressOSM)).toEqual(address);
+    expect(wrapper.vm.mapOSMPropertiesToAddressComponents(addressOSM)).toEqual(
+        address);
   });
 
   test("Street number missing", () => {
@@ -160,7 +162,8 @@ describe("mapOSMPropertiesToAddressComponents", () => {
     let address = standardAddress();
     address.addressLine = addressOSM.street;
 
-    expect(wrapper.vm.mapOSMPropertiesToAddressComponents(addressOSM)).toEqual(address);
+    expect(wrapper.vm.mapOSMPropertiesToAddressComponents(addressOSM)).toEqual(
+        address);
   });
 
   test("Street name missing", () => {
@@ -169,15 +172,15 @@ describe("mapOSMPropertiesToAddressComponents", () => {
     let address = standardAddress();
     delete address.addressLine;
 
-    expect(wrapper.vm.mapOSMPropertiesToAddressComponents(addressOSM)).toEqual(address);
+    expect(wrapper.vm.mapOSMPropertiesToAddressComponents(addressOSM)).toEqual(
+        address);
   });
 });
-
 
 describe("generateAddressStringFromAddressComponents", () => {
   test("All sections", () => {
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
-      standardAddress()
+        standardAddress()
     )).toEqual("NUM STREET, P, C, STATE, COUNTRY");
   });
 
@@ -185,31 +188,29 @@ describe("generateAddressStringFromAddressComponents", () => {
     let address = standardAddress();
     address.addressLine = "  ";
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
-      address,
+        address,
     )).toEqual("P, C, STATE, COUNTRY");
   });
 
   test("Postcode and up", () => {
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
-      standardAddress(),
-      "postcode"
+        standardAddress(),
+        "postcode"
     )).toEqual("P, C, STATE, COUNTRY");
   });
 
-    
   test("Invalid section name", () => {
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
-      standardAddress(),
-      "INVALID"
+        standardAddress(),
+        "INVALID"
     )).toEqual("NUM STREET, P, C, STATE, COUNTRY");
   });
 
-    
   test("Invalid section name + one undefined", () => {
     let address = standardAddress();
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
-      address,
-      "INVALID"
+        address,
+        "INVALID"
     )).toEqual("NUM STREET, P, C, STATE, COUNTRY");
   });
 
@@ -217,9 +218,9 @@ describe("generateAddressStringFromAddressComponents", () => {
     let address = standardAddress();
     delete address.addressLine;
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
-      address,
-      "INVALID",
-      true
+        address,
+        "INVALID",
+        true
     )).toEqual(undefined);
   });
 });

@@ -32,7 +32,7 @@ export const globalStateMocks = () => {
       revokeAdmin: jest.fn()
     }
   }
-  
+
   const $router = {
     push: jest.fn(),
     go: jest.fn()

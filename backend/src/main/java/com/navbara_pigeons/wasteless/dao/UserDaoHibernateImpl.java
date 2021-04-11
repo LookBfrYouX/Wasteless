@@ -8,8 +8,6 @@ import javax.management.InvalidAttributeValueException;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,7 +117,8 @@ public class UserDaoHibernateImpl implements UserDao {
   public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
     Session currentSession = getSession();
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
-    CriteriaQuery<User> criteriaQuery = HibernateCriteriaQueryBuilder.parseUserSearchQuery(currentSession, searchQuery);
+    CriteriaQuery<User> criteriaQuery = HibernateCriteriaQueryBuilder
+        .parseUserSearchQuery(currentSession, searchQuery);
 
     Query<User> query = currentSession.createQuery(criteriaQuery);
     List<User> results = query.getResultList();

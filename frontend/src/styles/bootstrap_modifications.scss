@@ -12,48 +12,45 @@
 // $test: rgb(255, 58, 255);
 
 // $blue:    #1b80ec;
-$blue:    rgb(109, 144, 250);
+$blue: rgb(109, 144, 250);
 
 // $indigo:  #6610f2;
-$purple:  #6f42c1;
+$purple: #6f42c1;
 
-$pink:    #e83e8c;
-$pink:    rgb(227, 68, 196);
+$pink: #e83e8c;
+$pink: rgb(227, 68, 196);
 
 // $red:     #dc3545;
-$red:     rgb(230, 18, 18);
+$red: rgb(230, 18, 18);
 
 // $orange:  #fd7e14;
-$orange:  rgb(255, 133, 40);
+$orange: rgb(255, 133, 40);
 
 
 // $yellow:  #ffc107;
-$yellow:  rgb(255, 233, 31);
+$yellow: rgb(255, 233, 31);
 
 // $green:   #20df4d;
-$green:   rgb(30, 201, 150);
+$green: rgb(30, 201, 150);
 
-$teal:    #20c997;
+$teal: #20c997;
 
 // $cyan:    #17a2b8;
-$cyan:    rgb(0, 155, 255);
+$cyan: rgb(0, 155, 255);
 
 $light: #d2dacc;
 
 $theme-colors: (
-  primary: $green,
-  secondary: $gray-600,
-  success: $blue,
-  info: $cyan,
-  warning: $yellow,
-  danger: $red,
-  light: $gray-100,
-  dark: $gray-800
+    primary: $green,
+    secondary: $gray-600,
+    success: $blue,
+    info: $cyan,
+    warning: $yellow,
+    danger: $red,
+    light: $gray-100,
+    dark: $gray-800
 );
 // END BOOTSTRAP COLOUR DEFINITION UPDATES
-
-
-
 
 
 /*
@@ -97,6 +94,7 @@ This is a modification of btn-outline since it is hard to read with the gradient
     @include button-white-bg-variant($value, #fff);
   }
 }
+
 /* END btn-white-bg*/
 
 

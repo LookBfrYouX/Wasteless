@@ -19,9 +19,9 @@ import org.springframework.web.context.WebApplicationContext;
 class CORSConfigTest {
 
   @Autowired
-  private WebApplicationContext wac;
-  @Autowired
   public MockMvc mockMvc;
+  @Autowired
+  private WebApplicationContext wac;
 
   @Before
   public void setup() {

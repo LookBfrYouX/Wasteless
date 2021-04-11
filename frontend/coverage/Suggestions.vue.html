@@ -1,62 +1,62 @@
-
 <!doctype html>
 <html lang="en">
 
 <head>
-    <title>Code coverage report for Suggestions.vue</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="prettify.css" />
-    <link rel="stylesheet" href="base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type='text/css'>
-        .coverage-summary .sorter {
-            background-image: url(sort-arrow-sprite.png);
-        }
-    </style>
+  <title>Code coverage report for Suggestions.vue</title>
+  <meta charset="utf-8"/>
+  <link href="prettify.css" rel="stylesheet"/>
+  <link href="base.css" rel="stylesheet"/>
+  <link href="favicon.png" rel="shortcut icon" type="image/x-icon"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <style type='text/css'>
+    .coverage-summary .sorter {
+      background-image: url(sort-arrow-sprite.png);
+    }
+  </style>
 </head>
-    
+
 <body>
 <div class='wrapper'>
-    <div class='pad1'>
-        <h1><a href="index.html">All files</a> Suggestions.vue</h1>
-        <div class='clearfix'>
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">94.74% </span>
-                <span class="quiet">Statements</span>
-                <span class='fraction'>36/38</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>10/12</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">93.75% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>15/16</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">94.74% </span>
-                <span class="quiet">Lines</span>
-                <span class='fraction'>36/38</span>
-            </div>
-        
-            
-        </div>
-        <p class="quiet">
-            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
-        </p>
+  <div class='pad1'>
+    <h1><a href="index.html">All files</a> Suggestions.vue</h1>
+    <div class='clearfix'>
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">94.74% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>36/38</span>
+      </div>
+
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">83.33% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>10/12</span>
+      </div>
+
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">93.75% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>15/16</span>
+      </div>
+
+
+      <div class='fl pad1y space-right2'>
+        <span class="strong">94.74% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>36/38</span>
+      </div>
+
+
     </div>
-    <div class='status-line high'></div>
-    <pre><table class="coverage">
+    <p class="quiet">
+      Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or
+      <em>k</em> for the previous block.
+    </p>
+  </div>
+  <div class='status-line high'></div>
+  <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -274,7 +274,8 @@
 <a name='L215'></a><a href='#L215'>215</a>
 <a name='L216'></a><a href='#L216'>216</a>
 <a name='L217'></a><a href='#L217'>217</a>
-<a name='L218'></a><a href='#L218'>218</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L218'></a><a href='#L218'>218</a></td><td class="line-coverage quiet"><span
+    class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -491,7 +492,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;!--
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre
+    class="prettyprint lang-js">&lt;!--
 Component which has input element and list of suggestions wrapped in a div
 &nbsp;
 Notes:
@@ -568,7 +570,8 @@ export default {
   props: {
     suggestions: {
       required: true,
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >      default: () =&gt; { return [] }</span></span>
+<span class="cstat-no" title="statement not covered"><span class="fstat-no"
+                                                           title="function not covered">      default: () =&gt; { return [] }</span></span>
     },
     value: {
       default: ""
@@ -642,8 +645,8 @@ export default {
           event.preventDefault();
           break;
         
-<span class="branch-3 cbranch-no" title="branch not covered" >        default:</span>
-<span class="cstat-no" title="statement not covered" >          this.$emit("keydown", event);</span>
+<span class="branch-3 cbranch-no" title="branch not covered">        default:</span>
+<span class="cstat-no" title="statement not covered">          this.$emit("keydown", event);</span>
       }
     },
 &nbsp;
@@ -687,7 +690,7 @@ export default {
     suggestionSelected: function() {
       this.showSuggestions = false;
         // Sanity check before emitting the event
-<span class="missing-if-branch" title="else path not taken" >E</span>      if (this.index &gt;= 0 &amp;&amp; this.index &lt; this.suggestions.length) {
+<span class="missing-if-branch" title="else path not taken">E</span>      if (this.index &gt;= 0 &amp;&amp; this.index &lt; this.suggestions.length) {
         const suggestion = this.suggestions[this.index];
         this.$emit("input", suggestion.toString());
         this.$emit("suggestion", suggestion);
@@ -710,22 +713,22 @@ export default {
 &nbsp;
 &lt;/script&gt;</pre></td></tr></table></pre>
 
-                <div class='push'></div><!-- for sticky footer -->
-            </div><!-- /wrapper -->
-            <div class='footer quiet pad2 space-top1 center small'>
-                Code coverage generated by
-                <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 18 2021 15:39:53 GMT+1300 (New Zealand Daylight Time)
-            </div>
-        </div>
-        <script src="prettify.js"></script>
-        <script>
-            window.onload = function () {
-                prettyPrint();
-            };
-        </script>
-        <script src="sorter.js"></script>
-        <script src="block-navigation.js"></script>
-    </body>
+  <div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage generated by
+  <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
+  at Thu Mar 18 2021 15:39:53 GMT+1300 (New Zealand Daylight Time)
+</div>
+</div>
+<script src="prettify.js"></script>
+<script>
+  window.onload = function () {
+    prettyPrint();
+  };
+</script>
+<script src="sorter.js"></script>
+<script src="block-navigation.js"></script>
+</body>
 </html>
     

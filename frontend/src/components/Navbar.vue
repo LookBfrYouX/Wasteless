@@ -1,26 +1,26 @@
 <template>
   <div id="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <router-link to="/" exact>
+      <router-link exact to="/">
         <a class="navbar-brand">App Logo</a>
       </router-link>
 
       <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+          class="navbar-toggler"
+          data-target="#navbarSupportedContent"
+          data-toggle="collapse"
+          type="button"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div id="navbarSupportedContent" class="collapse navbar-collapse">
 
         <ul class="navbar-nav mr-auto">
-          <router-link v-if="isLoggedIn" active-class="active" to="/profile" exact>
+          <router-link v-if="isLoggedIn" active-class="active" exact to="/profile">
             <li class="nav-item">
               <a class="nav-link">
                 Profile
@@ -37,25 +37,29 @@
               </div>
               <input
                   class=" form-control mr-sm-2 h-100"
+                  placeholder="Search"
                   type="text"
                   v-bind:value="query"
                   v-on:input="event => $emit('input', event)"
-                  placeholder="Search"
               />
             </div>
 
           </form>
-          <div class="collapse navbar-collapse" id="navbar-list-4">
+          <div id="navbar-list-4" class="collapse navbar-collapse">
             <ul class="navbar-nav">
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a id="navbarDropdownMenuLink" aria-expanded="false"
+                   aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown"
+                   href="#" role="button">
                   <img class="nav-picture rounded-circle" src="placeholder-profile.png">
                   <div class="d-flex flex-column mx-1">
-                    <span class="m-0 p-0 text-dark">{{ authUser.firstName }} {{ authUser.lastName }}</span>
+                    <span class="m-0 p-0 text-dark">{{ authUser.firstName }} {{
+                        authUser.lastName
+                      }}</span>
                     <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
                   </div>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                <div aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-right">
                   <button class="dropdown-item" v-on:click="logOut">Log out</button>
                 </div>
               </li>
@@ -65,18 +69,18 @@
         <!-- otherwise shows login button-->
         <span v-else>
           <a
-            class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
-            v-on:click="login"
-            type="button"
-            v-if="this.$route.path != '/login'"
+              v-if="this.$route.path != '/login'"
+              class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
+              type="button"
+              v-on:click="login"
           >
             Login
           </a>
           <a
-            class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
-            v-on:click="signUp"
-            type="button"
-            v-if="this.$route.path != '/signUp'"
+              v-if="this.$route.path != '/signUp'"
+              class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
+              type="button"
+              v-on:click="signUp"
           >
             Sign Up
           </a>
@@ -84,13 +88,13 @@
       </div>
     </nav>
     <error-modal
-      title="Couldn't log you out"
-      v-bind:show="logOutErrorMessage !== null"
-      v-bind:hideCallback="() => logOutErrorMessage = null"
-      v-bind:refresh="false"
-      v-bind:retry="this.logOut"
+        title="Couldn't log you out"
+        v-bind:hideCallback="() => logOutErrorMessage = null"
+        v-bind:refresh="false"
+        v-bind:retry="this.logOut"
+        v-bind:show="logOutErrorMessage !== null"
     >
-      <p>{{logOutErrorMessage}}</p>
+      <p>{{ logOutErrorMessage }}</p>
     </error-modal>
   </div>
 </template>
@@ -102,7 +106,7 @@ import ErrorModal from "./Errors/ErrorModal";
 export default {
   name: "navbar",
   props: ["query"],
-  components: { ErrorModal },
+  components: {ErrorModal},
   data() {
     return {
       logOutErrorMessage: null
@@ -113,10 +117,10 @@ export default {
      * Wrapper around state store auth user
      */
     authUser: {
-      get: function() {
+      get: function () {
         return this.$stateStore.getters.getAuthUser();
       },
-      set: function(val) {
+      set: function (val) {
         this.$stateStore.actions.setAuthUser(val);
       }
     },
@@ -139,23 +143,23 @@ export default {
     /**
      * Go (refresh page) if already on the same page, or pushes if it is a different page. Does not support params
      */
-    pushOrGo: async function(routeName) {
-      this.$route.name === routeName?
-          this.$router.go():
-          this.$router.push({ name: routeName });
+    pushOrGo: async function (routeName) {
+      this.$route.name === routeName ?
+          this.$router.go() :
+          this.$router.push({name: routeName});
     },
 
     /**
      * Navigate to log in page
      */
-    login: async function() {
+    login: async function () {
       return this.pushOrGo("login");
     },
 
     /**
      * Navigate to sign up page
      */
-    signUp: async function() {
+    signUp: async function () {
       return this.pushOrGo("signUp");
     },
 
@@ -163,11 +167,13 @@ export default {
      * Removes authorized user and redirects to home,
      * or error page if log out fails
      */
-    logOut: async function() {
+    logOut: async function () {
       try {
         await Api.logOut();
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.logOutErrorMessage = err.userFacingErrorMessage;
         return;
       }
@@ -180,7 +186,7 @@ export default {
      * Handler when search button clicked
      * Navigates to search page with current query, or reloads page if on search page and query has not changed
      */
-    search: async function() {
+    search: async function () {
       const searchName = "search";
       let newQuery = this.$route.params.query;
 
