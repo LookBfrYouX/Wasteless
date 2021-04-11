@@ -122,20 +122,9 @@ export default {
      */
     businessProfile: (id) => {
         return instance.get(`/businesses/${id}`).catch(error => {
-            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
-
-            if (error != undefined && error.response != undefined) {
-                if (error.response.status == 401) {
-                    userFacingErrorMessage = "You don't have permission to access this page";
-                } else if (error.response.status == 406) {
-                    userFacingErrorMessage = "Information for the user was not found";
-                } else {
-                    userFacingErrorMessage = unknownErrorMessage(error);
-                }
-            }
-
-            error.userFacingErrorMessage = userFacingErrorMessage;
-            throw error;
+            throw ApiRequestError.createFromMessageMap(error, {
+                406: "Information for this business was not found"
+            });
         });
     },
 
@@ -146,18 +135,8 @@ export default {
      * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
      */
     registerBusiness: (props) => {
-        console.log(props);
         return instance.post("/businesses", props).catch(error => {
-            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
-            if (error != undefined && error.response != undefined) {
-                if (error.response.status == 401) {
-                    userFacingErrorMessage = "You don't have permission to access this page";
-                } else {
-                    userFacingErrorMessage = unknownErrorMessage(error);
-                }
-            }
-            error.userFacingErrorMessage = userFacingErrorMessage;
-            throw error;
+            throw ApiRequestError.createFromMessageMap(error, {});
         });
     },
 
