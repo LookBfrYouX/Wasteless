@@ -1,19 +1,11 @@
 package com.navbara_pigeons.wasteless.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.Data;
 import lombok.ToString;
 
@@ -53,17 +45,18 @@ public class User {
   @Column(name = "PHONE_NUMBER")
   private String phoneNumber;
 
-  @Column(name = "HOME_ADDRESS")
-  private String homeAddress;
-
   @Column(name = "CREATED")
-  private String created;
+  private ZonedDateTime created;
 
   @Column(name = "ROLE")
   private String role;
 
   @Column(name = "PASSWORD")
   private String password;
+
+  @OneToOne(fetch = FetchType.EAGER, optional = false)
+  @JoinColumn(name = "HOME_ADDRESS_ID", referencedColumnName = "ID")
+  private Address homeAddress;
 
   @JsonIgnore
   @ToString.Exclude

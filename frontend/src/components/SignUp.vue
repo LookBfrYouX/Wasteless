@@ -266,8 +266,8 @@ export default {
       confirmPassword: "",
 
       address: {
-        addressLine1: "",
-        addressLine2: "",
+        streetNumber: "",
+        streetName: "",
         postcode: "",
         city: "",
         region: "",
@@ -312,7 +312,7 @@ export default {
       const regexp = /(\d{4})-(\d{2})-(\d{2})/;
       const result = regexp.exec(dateOfBirth);
       if (result === null) return "Date of birth must be in 'YYYY-MM-DD' format";
-      
+
       const year = parseInt(result[1], 10);
       const monthIndex = parseInt(result[2], 10) - 1; // month: JS uses zero indexing
       const day = parseInt(result[3], 10);
@@ -324,7 +324,7 @@ export default {
         return "Date of birth given bad date";
       }
 
-      
+
       const yearDelta = currentDate.getFullYear() - year;
       if (yearDelta > MIN_AGE) return null; // More than 13 years old
       if (yearDelta == MIN_AGE) {
@@ -340,7 +340,7 @@ export default {
     },
 
     /**
-     * Function responsible for registration pipeline, from when register button is 
+     * Function responsible for registration pipeline, from when register button is
      * clicked to redirect
      */
     register: async function () {
@@ -392,7 +392,7 @@ export default {
           email: this.email,
           password: this.password,
           dateOfBirth: dateOfBirth,
-          homeAddress: this.addressAsString, // API stores address as homeAddress, not address
+          homeAddress: this.address, // API stores address as homeAddress, not address
           phoneNumber: phoneNumber,
           bio: this.bio,
         });
@@ -410,6 +410,7 @@ export default {
       this.confirmPasswordErrorMessage = null;
       this.dateOfBirthErrorMessage = null;
 
+      // TODO: Below
       console.warn("TODO SIGN UP SHOULD RETURN FULL USER PROFILE; USE THIS TO SET AUTHUSER");
       window.localStorage.setItem("userId", response.data.userId);
       this.$router.push({ name: "profile" });

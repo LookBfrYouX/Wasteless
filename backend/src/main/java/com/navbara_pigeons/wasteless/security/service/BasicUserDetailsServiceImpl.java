@@ -28,7 +28,7 @@ public class BasicUserDetailsServiceImpl implements UserDetailsService, BasicUse
     try {
       user = userDao.getUserByEmail(userName);
     } catch (UserNotFoundException e) {
-      e.printStackTrace();
+//      e.printStackTrace();
     }
     if (user == null) {
       throw new UsernameNotFoundException("User not found: " + userName);

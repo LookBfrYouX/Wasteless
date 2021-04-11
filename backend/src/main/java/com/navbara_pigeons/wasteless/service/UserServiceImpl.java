@@ -1,6 +1,8 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
@@ -11,13 +13,11 @@ import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.management.InvalidAttributeValueException;
 import javax.transaction.Transactional;
 
@@ -42,6 +42,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
+  private final AddressDao addressDao;
   private final UserDao userDao;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final BCryptPasswordEncoder encoder;
@@ -58,9 +59,10 @@ public class UserServiceImpl implements UserService {
    * @param encoder                      Password encoder.
    */
   @Autowired
-  public UserServiceImpl(UserDao userDao,
+  public UserServiceImpl(UserDao userDao, AddressDao addressDao,
       AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder encoder) {
     this.userDao = userDao;
+    this.addressDao = addressDao;
     this.authenticationManagerBuilder = authenticationManagerBuilder;
     this.encoder = encoder;
   }
@@ -71,7 +73,8 @@ public class UserServiceImpl implements UserService {
    *
    * @param user User object to be saved.
    * @throws UserAlreadyExistsException Thrown when a user already exists in the database
-   * @throws UserRegistrationException  Thrown when an invalid dob is received
+   * @throws UserRegistrationException  Thrown when invalid fields received
+   * @return login response
    */
   @Override
   @Transactional
@@ -102,16 +105,20 @@ public class UserServiceImpl implements UserService {
     if (!UserServiceValidation.isUserValid(user)) {
       throw new UserRegistrationException("Required user fields cannot be null");
     }
+    // Address validation
+    if (!UserServiceValidation.isAddressValid(user)) {
+      throw new UserRegistrationException("Required address fields cannot be null");
+    }
 
     // Set user credentials for logging in after registering
     UserCredentials userCredentials = new UserCredentials();
     userCredentials.setEmail(user.getEmail());
     userCredentials.setPassword(user.getPassword());
-    System.out.println("Here");
     // Set created date, hash password
-    user.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+    user.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     user.setPassword(encoder.encode(user.getPassword()));
     user.setRole("ROLE_USER");
+    this.addressDao.saveAddress(user.getHomeAddress());
     this.userDao.saveUser(user);
 
     // Logging in the user and returning the id
@@ -121,27 +128,47 @@ public class UserServiceImpl implements UserService {
 
   /**
    * Calls the userDao to get the specified user
-   *
+   * If not an admin or retrieving details for another user, the user email address, date of birth, phone number
+   * and home address street number/name/post code are not returned
    * @param id the id of the user
    * @return the User instance of the user
    */
   @Override
   public JSONObject getUserById(long id) throws UserNotFoundException {
-    // TODO change this implementation to just hide the users password instead of creating a new JSONObject
     User user = this.userDao.getUserById(id);
     JSONObject response = new JSONObject();
-    response.put("id", Long.toString(id));
+    response.put("id", id);
     response.put("firstName", user.getFirstName());
     response.put("lastName", user.getLastName());
     response.put("middleName", user.getMiddleName());
     response.put("nickname", user.getNickname());
     response.put("bio", user.getBio());
-    response.put("email", user.getEmail());
-    response.put("dateOfBirth", user.getDateOfBirth());
-    response.put("phoneNumber", user.getPhoneNumber());
-    response.put("homeAddress", user.getHomeAddress());
     response.put("created", user.getCreated());
     response.put("role", user.getRole());
+
+    JSONObject address = new JSONObject();
+    response.put("homeAddress", address);
+    response.put("businesses", user.getBusinesses());
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    // Email of user that made the request
+    String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
+
+    // sensitive details (e.g. email, postcode) are not returned
+    if ( username.equals(user.getEmail()) || isAdmin() ) {
+      response.put("email", user.getEmail());
+      response.put("dateOfBirth", user.getDateOfBirth());
+      response.put("phoneNumber", user.getPhoneNumber());
+
+      address.put("streetNumber", user.getHomeAddress().getStreetNumber());
+      address.put("streetName", user.getHomeAddress().getStreetName());
+      address.put("postcode", user.getHomeAddress().getPostcode());
+    }
+
+    address.put("city", user.getHomeAddress().getCity());
+    address.put("region", user.getHomeAddress().getRegion());
+    address.put("country", user.getHomeAddress().getCountry());
     return response;
   }
 
@@ -152,6 +179,7 @@ public class UserServiceImpl implements UserService {
    * @param userCredentials The UserCredentials object storing the email and password.
    * @throws AuthenticationException An authentication exception that is assigned HTTP error codes
    *                                 at the controller.
+   * @return JSON response with user ID
    */
   @Override
   public JSONObject login(UserCredentials userCredentials)
@@ -270,10 +298,12 @@ public class UserServiceImpl implements UserService {
   /**
    * This helper method tests whether the current user has the ADMIN role
    *
-   * @return true if user is admin.
+   * @return true if user is admin, false if not admin or not authenticated
    */
   public boolean isAdmin() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication == null) return false;
     for (GrantedAuthority simpleGrantedAuthority : authentication.getAuthorities()) {
       if (simpleGrantedAuthority.getAuthority().contains("ADMIN")) {
         return true;

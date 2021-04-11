@@ -80,6 +80,15 @@
     <div class="row">
       <div class="col-md-4 order-2 order-md-1 m-2 card">
         <h5 class="text-muted mt-3">Businesses</h5>
+        <div v-if="userInfo.businesses.length !== 0">
+          <h1 class="title">Businesses</h1>
+          <ul class="profile-business-info list-unstyled">
+            <li class="list-group-item card text-wrap" v-for="(business, index) in userInfo.businesses" v-bind:key="index">
+              <dt class="col-md label">Business Name:</dt>
+              <dd class="col-md value" v-on:click="viewBusiness(business.id)"> {{ business.name }} </dd>
+            </li>
+          </ul>
+        </div>
         <div class="card my-2">
           <div class="card-body">
             <h5 class="card-title">Card title</h5>
@@ -251,6 +260,13 @@ export default {
     },
 
     /**
+     * TODO: Add documentation
+     */
+    registerBusiness: function() {
+      this.$router.push({ name: "registerBusiness" });
+    },
+
+    /**
      * Calls the API and updates the component's data with the result
      */
     apiPipeline: function() {
@@ -320,6 +336,15 @@ export default {
 
       return `${yearsText}, ${monthsText}`;
     },
+
+    viewBusiness(businessId) {
+      this.$router.push({
+        name: "businessProfile",
+        params: {
+          businessId
+        }
+      });
+    }
   },
 
   computed: {

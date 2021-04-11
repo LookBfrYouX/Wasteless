@@ -10,6 +10,6 @@ public interface BusinessService {
 
   JSONObject saveBusiness(Business business) throws BusinessTypeException, UserNotFoundException;
 
-  Business getBusinessById(long id) throws BusinessNotFoundException;
+  JSONObject getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException;
 
 }

@@ -5,10 +5,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +24,13 @@ import javax.management.InvalidAttributeValueException;
 
 @SuppressWarnings({"ALL", "SpellCheckingInspection"})
 @SpringBootTest
-class userDaoTest {
+class UserDaoHibernateImplTest {
 
   @Autowired
   UserDao userDao;
+
+  @Autowired
+  AddressDao addressDao;
 
   @Test
   void saveValidUserAndGetByEmail() {
@@ -38,8 +44,8 @@ class userDaoTest {
         .setNickname("")
         .setEmail(testEmail)
         .setDateOfBirth("2000-03-10")
-        .setHomeAddress("")
-        .setCreated("2020-07-14T14:32:00Z")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("user")
         .setPassword("myPassword");
 
@@ -71,8 +77,8 @@ class userDaoTest {
         .setNickname("dnb36")
         .setEmail("fake@uclive.ac.nz")
         .setDateOfBirth("2001-11-23")
-        .setHomeAddress("123 Fake st")
-        .setCreated("2020-07-14T14:32:00Z")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("user")
         .setPassword("$2y$12$dhGJXGeytGMritdpvgPYCusLaldDTUUvsZXDV2g6zT4wHvtnlLsva");
 
@@ -102,8 +108,8 @@ class userDaoTest {
         .setNickname("Fman")
         .setEmail("fake1@uclive.ac.nz")
         .setDateOfBirth("2001-11-23")
-        .setHomeAddress("123 Fake st")
-        .setCreated("2020-07-14T14:32:00Z")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("user")
         .setPassword("test1");
 
@@ -115,8 +121,8 @@ class userDaoTest {
         .setNickname("Frodo")
         .setEmail("fake2@uclive.ac.nz")
         .setDateOfBirth("2001-11-23")
-        .setHomeAddress("123 Fake st")
-        .setCreated("2020-07-14T14:32:00Z")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("user")
         .setPassword("test2");
 
@@ -128,8 +134,8 @@ class userDaoTest {
         .setNickname("tt")
         .setEmail("fake3@uclive.ac.nz")
         .setDateOfBirth("2001-11-23")
-        .setHomeAddress("123 Fake st")
-        .setCreated("2020-07-14T14:32:00Z")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("user")
         .setPassword("test3");
 
@@ -140,22 +146,22 @@ class userDaoTest {
     List<User> results1 = null;
     try {
       results1 = userDao.searchUsers("Fred");
-    assertEquals(results1.size(), 2);
+      assertEquals(results1.size(), 2);
 
-    List<User> results2 = userDao.searchUsers("smiths");
-    assertEquals(results2.size(), 1);
-    assertEquals(results2.get(0).getId(), testUser2.getId());
-    assertEquals(results2.get(0).getEmail(), testUser2.getEmail());
+      List<User> results2 = userDao.searchUsers("smiths");
+      assertEquals(results2.size(), 1);
+      assertEquals(results2.get(0).getId(), testUser2.getId());
+      assertEquals(results2.get(0).getEmail(), testUser2.getEmail());
 
-    List<User> results3 = userDao.searchUsers("UsEr");
-    assertEquals(results3.size(), 1);
-    assertEquals(results3.get(0).getId(), testUser3.getId());
-    assertEquals(results3.get(0).getEmail(), testUser3.getEmail());
+      List<User> results3 = userDao.searchUsers("UsEr");
+      assertEquals(results3.size(), 1);
+      assertEquals(results3.get(0).getId(), testUser3.getId());
+      assertEquals(results3.get(0).getEmail(), testUser3.getEmail());
 
-    List<User> results4 = userDao.searchUsers("Frod");
-    assertEquals(results4.size(), 1);
-    assertEquals(results4.get(0).getId(), testUser2.getId());
-    assertEquals(results4.get(0).getEmail(), testUser2.getEmail());
+      List<User> results4 = userDao.searchUsers("Frod");
+      assertEquals(results4.size(), 1);
+      assertEquals(results4.get(0).getId(), testUser2.getId());
+      assertEquals(results4.get(0).getEmail(), testUser2.getEmail());
     } catch (InvalidAttributeValueException e) {
       e.printStackTrace();
     }
@@ -176,8 +182,8 @@ class userDaoTest {
         .setNickname(nickname)
         .setEmail("John.Jono@uclive.ac.nz")
         .setDateOfBirth("2001-11-23")
-        .setHomeAddress("123 Fake st")
-        .setCreated("2021-03-16 23:13:59.223794")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("ROLE_USER")
         .setPassword("this_is_my_pass")
         .setBusinesses(new ArrayList<Business>());
@@ -187,19 +193,19 @@ class userDaoTest {
     List<User> validFnameQuery = null;
     try {
       validFnameQuery = userDao.searchUsers(firstName);
-    List<User> validMnameQuery = userDao.searchUsers(middleName);
-    List<User> validLnameQuery = userDao.searchUsers(lastName);
-    List<User> validNnameQuery = userDao.searchUsers(nickname);
-    List<User> validFullNameQuery = userDao
-        .searchUsers(firstName + ' ' + middleName + ' ' + lastName);
+      List<User> validMnameQuery = userDao.searchUsers(middleName);
+      List<User> validLnameQuery = userDao.searchUsers(lastName);
+      List<User> validNnameQuery = userDao.searchUsers(nickname);
+      List<User> validFullNameQuery = userDao
+          .searchUsers(firstName + ' ' + middleName + ' ' + lastName);
 
 
-    // ASSERT
-    assertEquals(userToSearch.getId(), validFnameQuery.get(0).getId());
-    assertEquals(userToSearch.getId(), validMnameQuery.get(0).getId());
-    assertEquals(userToSearch.getId(), validLnameQuery.get(0).getId());
-    assertEquals(userToSearch.getId(), validNnameQuery.get(0).getId());
-    assertEquals(userToSearch.getId(), validFullNameQuery.get(0).getId());
+      // ASSERT
+      assertEquals(userToSearch.getId(), validFnameQuery.get(0).getId());
+      assertEquals(userToSearch.getId(), validMnameQuery.get(0).getId());
+      assertEquals(userToSearch.getId(), validLnameQuery.get(0).getId());
+      assertEquals(userToSearch.getId(), validNnameQuery.get(0).getId());
+      assertEquals(userToSearch.getId(), validFullNameQuery.get(0).getId());
     } catch (InvalidAttributeValueException e) {
       e.printStackTrace();
     }
@@ -225,8 +231,8 @@ class userDaoTest {
         .setNickname(nickname)
         .setEmail("William.Pitt@uclive.ac.nz")
         .setDateOfBirth("2001-11-23")
-        .setHomeAddress("123 Fake st")
-        .setCreated("2021-03-16 23:13:59.223794")
+        .setHomeAddress(mockAddress())
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("ROLE_USER")
         .setPassword("this_is_my_pass");
     userDao.saveUser(userToSearch);
@@ -237,20 +243,33 @@ class userDaoTest {
     List<User> invalidFnameQuery = null;
     try {
       invalidFnameQuery = userDao.searchUsers("Philliam");
-    List<User> invalidMnameQuery = userDao.searchUsers("Gladley");
-    List<User> invalidLnameQuery = userDao.searchUsers("PittBull");
-    List<User> invalidNnameQuery = userDao.searchUsers("Lado");
-    List<User> invalidFullNameQuery = userDao
-        .searchUsers("Philliam Gladley PittBull");
+      List<User> invalidMnameQuery = userDao.searchUsers("Gladley");
+      List<User> invalidLnameQuery = userDao.searchUsers("PittBull");
+      List<User> invalidNnameQuery = userDao.searchUsers("Lado");
+      List<User> invalidFullNameQuery = userDao
+          .searchUsers("Philliam Gladley PittBull");
 
-    // ASSERT
-    assertEquals(expectedResult, invalidFnameQuery);
-    assertEquals(expectedResult, invalidMnameQuery);
-    assertEquals(expectedResult, invalidLnameQuery);
-    assertEquals(expectedResult, invalidNnameQuery);
-    assertEquals(expectedResult, invalidFullNameQuery);
+      // ASSERT
+      assertEquals(expectedResult, invalidFnameQuery);
+      assertEquals(expectedResult, invalidMnameQuery);
+      assertEquals(expectedResult, invalidLnameQuery);
+      assertEquals(expectedResult, invalidNnameQuery);
+      assertEquals(expectedResult, invalidFullNameQuery);
     } catch (InvalidAttributeValueException e) {
       e.printStackTrace();
     }
+  }
+
+  private Address mockAddress() {
+    Address address = new Address()
+        .setStreetNumber("3/24")
+        .setStreetName("Ilam Road")
+        .setPostcode("90210")
+        .setCity("Christchurch")
+        .setRegion("Canterbury")
+        .setCountry("New Zealand");
+
+    addressDao.saveAddress(address);
+    return address;
   }
 }

@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.navbara_pigeons.wasteless.controller.UserController;
+import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
+import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import org.junit.jupiter.api.Assertions;
@@ -22,6 +24,9 @@ public class BusinessServiceImplTest {
   BusinessDao businessDao;
 
   @Autowired
+  AddressDao addressDao;
+
+  @Autowired
   BusinessService businessService;
 
   @Autowired
@@ -30,6 +35,15 @@ public class BusinessServiceImplTest {
   @Test
   void saveInvalidBusiness() {
     // Test invalid businessType fields
+    UserCredentials userCredentials = new UserCredentials();
+    userCredentials.setEmail("dnb36@uclive.ac.nz");
+    userCredentials.setPassword("fun123");
+    try {
+      userService.login(userCredentials);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     String[] businessTypeTests = {"asd", "123", "Marketing", "Retail", "Service"};
     for (String businessTypeTest : businessTypeTests) {
       Business testBusiness = makeBusiness();
@@ -58,12 +72,24 @@ public class BusinessServiceImplTest {
     }
   }
 
+  Address makeAddress() {
+    Address address = new Address();
+    address.setStreetNumber("3/24")
+        .setStreetName("Ilam Road")
+        .setPostcode("90210")
+        .setCity("Christchurch")
+        .setRegion("Canterbury")
+        .setCountry("New Zealand");
+    addressDao.saveAddress(address);
+    return address;
+  }
+
   Business makeBusiness() {
     Business business = new Business();
     business.setName("test")
         .setCreated("2020-07-14T14:32:00Z")
-        .setAddress("some address")
         .setBusinessType("Non-profit organisation")
+        .setAddress(makeAddress())
         .setId(0)
         .setDescription("some description");
     return business;

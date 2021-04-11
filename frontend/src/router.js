@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Login from './components/Login.vue'
 import SignUp from './components/SignUp.vue'
 import Profile from './components/Profile.vue'
+import BusinessProfile from './components/BusinessProfile'
+import RegisterBusiness from './components/RegisterBusiness'
 import Home from "./components/Home.vue"
 
 export default [
@@ -53,20 +55,34 @@ export const router = new VueRouter({
             props: route => ({ search: route.params.query })
         },
         {
-            name: "error",
-            path: "/error",
-            component: () => import("./components/Errors/Error.vue")
+            name: "registerBusiness",
+            path: "/registerbusiness",
+            component: RegisterBusiness
         },
         {
-            name: "error401",
-            path: "/error401",
-            component: () => import("./components/Errors/Error401.vue")
+            name: "businessProfile",
+            path: "/businessprofile/:businessId(\\d+)",
+            component: BusinessProfile,
+            props: route => {
+                let businessId = parseInt(route.params.businessId)
+                return { businessId: businessId }
+            }
         },
-        {
-            name: "error404",
-            path: "/*",
-            component: () => import("./components/Errors/Error404.vue"),
-            props: route => ({ path: route.fullPath })
-        }
+      {
+        name: "error",
+        path: "/error",
+        component: () => import("./components/Errors/Error.vue")
+      },
+      {
+        name: "error401",
+        path: "/error401",
+        component: () => import("./components/Errors/Error401.vue")
+      },
+      {
+        name: "error404",
+        path: "/*",
+        component: () => import("./components/Errors/Error404.vue"),
+        props: route => ({ path: route.fullPath })
+      }
     ],
 })

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,9 @@ public class BusinessDaoTest {
 
   @Autowired
   BusinessDao businessDao;
+
+  @Autowired
+  AddressDao addressDao;
 
   @Test
   @Transactional
@@ -49,13 +53,24 @@ public class BusinessDaoTest {
 
   }
 
+  Address makeAddress() {
+    Address address = new Address();
+    address.setStreetNumber("3/24")
+        .setStreetName("Ilam Road")
+        .setPostcode("90210")
+        .setCity("Christchurch")
+        .setRegion("Canterbury")
+        .setCountry("New Zealand");
+    addressDao.saveAddress(address);
+    return address;
+  }
 
   Business makeBusiness() {
     Business business = new Business();
     business.setName("test")
         .setCreated("2020-07-14T14:32:00Z")
-        .setAddress("some address")
         .setBusinessType("Non-profit organisation")
+        .setAddress(makeAddress())
         .setId(0)
         .setDescription("some description");
     return business;

@@ -36,7 +36,7 @@ export default {
   },
 
   props: ["userId"],
-  
+
   methods: {
     updateInput: function(query) {
       // When page is loaded and if router-view is search results page,

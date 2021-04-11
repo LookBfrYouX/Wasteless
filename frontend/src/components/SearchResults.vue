@@ -38,7 +38,7 @@
                 <span class="text-muted">{{ user.role && user.role === 'ROLE_ADMIN' ? 'Admin' : '' }}</span>
               </div>
               <div class="text-muted">{{user.email}}</div>
-              <div class="text-muted">{{[user.region, user.city, user.country].filter(Boolean).join(', ')}}</div>
+              <div class="text-muted">{{user.homeAddress.streetNumber}} {{user.homeAddress.streetName}}, {{user.homeAddress.city}}, {{user.homeAddress.region}}, {{user.homeAddress.country}} {{user.homeAddress.postcode}}</div>
             </li>
           </ul>
           <div aria-label="table-nav" class="mt-2">
@@ -124,23 +124,7 @@ import ErrorModal from "./Errors/ErrorModal.vue";
       },
 
       parseSearchResults: function(results) {
-        return results.map(user => {
-          let region = '';
-          let city = '';
-          let country = '';
-          if (user.homeAddress != undefined) {
-            const address = user.homeAddress.split(",").map(item => item.trim());
-            if (address.length > 1) country = address[address.length - 1];
-            if (address.length > 2) city = address[address.length - 2];
-            if (address.length > 3) region = address[address.length - 3];
-          }
-          return {
-            region,
-            city,
-            country,
-            ...user
-          }
-        });
+        return results;
       },
 
       setPages() {
@@ -231,7 +215,6 @@ button.page-link {
   padding-left: 15px;
   z-index: 1000;
 }
-
 .sort-results {
   width: 200px;
   position: fixed;
