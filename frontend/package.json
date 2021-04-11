@@ -1,6 +1,6 @@
 {
-  "name": "seng302-team-300",
-  "version": "0.0.2",
+  "name": "seng302-team-15",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --port 9500",
@@ -8,7 +8,7 @@
     "build-prod": "vue-cli-service build --mode prod",
     "kill-all": "fuser -k 9500/tcp 9499/tcp",
     "lint": "vue-cli-service lint",
-    "test": "jest --coverage",
+    "test": "jest --coverage -- detectOpenHandles",
     "sonarqube": "node sonarqube-analysis.js"
   },
   "dependencies": {
@@ -32,8 +32,8 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.3",
-    "eslint": "^7.23.0",
-    "eslint-plugin-vue": "^7.8.0",
+    "eslint": "^7.19.0",
+    "eslint-plugin-vue": "^7.5.0",
     "jest": "^26.6.3",
     "jest-sonar-reporter": "^2.0.0",
     "sonarqube-scanner": "^2.8.0",
