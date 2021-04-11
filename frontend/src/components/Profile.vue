@@ -60,6 +60,15 @@
               <span class="material-icons mr-1">person</span>
               Revoke Admin
             </button>
+            <button
+                v-if="isLoggedIn && authUser.id === userInfo.id"
+                class="btn btn-white-bg-primary mx-1 d-flex"
+                type="button"
+                v-on:click="registerBusiness()"
+            >
+              <span class="material-icons mr-1">person</span>
+              Register Business
+            </button>
           </div>
           <div class="row mt-2" v-if="statusMessage.length > 0">
             <div class="col">
