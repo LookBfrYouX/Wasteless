@@ -36,10 +36,7 @@
               v-bind:class="{ 'is-invalid': typeRequired }"
               v-model="type"
             >
-              <option
-              v-for="code in types"
-              :key="code.message"
-              >
+              <option v-for="code in types" :key="code.message">
                 {{ code }}
               </option>
             </select>
@@ -85,12 +82,6 @@
     </div>
   </div>
 </template>
-
-<style scoped>
-.signup-container > div {
-  max-width: 50em;
-}
-</style>
 
 <script>
 const Api = require("../Api").default;
@@ -147,12 +138,21 @@ export default {
     },
 
     register: async function () {
+      // TODO: Associate userId with the registered business account
       try {
         var response = await this.callApi({
+          primaryAdministratorId: window.localStorage.getItem("userId"),
           name: this.name,
-          type: this.type,
-          homeAddress: this.address, // API stores address as homeAddress, not address
           description: this.description,
+          address: {
+            streetNumber: this.address.streetNumber,
+            streetName: this.address.streetName,
+            postcode: this.address.postcode,
+            city: this.address.city,
+            region: this.address.region,
+            country: this.address.country
+          }, // API stores address as homeAddress, not address
+          businessType: this.type, // API stores the type as businessType not type
         });
       } catch (err) {
         // TODO: Need to handle errors here
@@ -168,3 +168,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.signup-container > div {
+  max-width: 50em;
+}
+</style>
+
