@@ -92,15 +92,9 @@ public class UserServiceValidation {
   public static boolean isAddressValid(User user) {
     // Checks user fields are not null/empty
     Address address = user.getHomeAddress();
-    for (String val : new String[]{
-        address.getStreetNumber(), address.getStreetName(), address.getPostcode(),
-        address.getCity(), address.getRegion(), address.getCountry()
-    }) {
-      if (UserServiceValidation.isNullOrTrimmedEmpty(val)) {
-        return false;
-      }
+    if (UserServiceValidation.isNullOrTrimmedEmpty(address.getCountry())) {
+      return false;
     }
-
     return true;
   }
 }
