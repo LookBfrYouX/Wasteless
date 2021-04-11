@@ -1,4 +1,5 @@
 <template>
+<div class="w-100">
   <div class="w-100" v-if="results.length != 0">
     <div class="button-expand-sidebar-wrapper" v-if="!isVisible" >
       <button v-on:click="toggleSidebar()" type="button" class="btn btn-info mt-2">
@@ -31,10 +32,13 @@
                          out of {{results.length}}
           <ul class="list-unstyled list-group">
             <!--viewUser method uses router.push to display profile page-->
-            <li class="list-group-item card text-wrap" v-on:click="viewUser(user.id)" v-for="(user, index) in displayedResults" v-bind:key="index">
-              <h4 class="card-title">{{user.firstName}} {{user.middleName}} {{user.lastName}} {{user.nickname? `(${user.nickname})`: ""}}</h4>
-              <div>{{user.region}}, {{user.city}}, {{user.country}}</div>
+            <li class="list-group-item card " v-on:click="viewUser(user.id)" v-for="(user, index) in displayedResults" v-bind:key="index">
+              <div class="d-flex flex-wrap justify-content-between">
+                <h4 class="card-title mb-0">{{user.firstName}} {{user.middleName}} {{user.lastName}} {{user.nickname? `(${user.nickname})`: ""}}</h4>
+                <span class="text-muted">{{ user.role && user.role === 'ROLE_ADMIN' ? 'Admin' : '' }}</span>
+              </div>
               <div class="text-muted">{{user.email}}</div>
+              <div class="text-muted">{{[user.region, user.city, user.country].filter(Boolean).join(', ')}}</div>
             </li>
           </ul>
           <div aria-label="table-nav" class="mt-2">
@@ -53,19 +57,31 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
-  <div v-else>
-    No results found
+  <div v-else class="container pt-4">
+    <h4>No results found</h4>
   </div>
+  <error-modal
+    title="Error making search request"
+    v-bind:show="apiErrorMessage !== null"
+    v-bind:hideCallback="() => apiErrorMessage = null"
+    v-bind:refresh="true"
+    v-bind:retry="this.query"
+  >
+    <p>{{apiErrorMessage}}</p>
+  </error-modal>
+</div>
 </template>
 
 <script>
+import ErrorModal from "./Errors/ErrorModal.vue";
+
   const Api = require("./../Api").default;
 
   const SearchResults = {
     name: "SearchResults",
+    components: { ErrorModal },
     /*has a search prop from app.vue*/
     props: ['search'],
     data: function() {
@@ -78,7 +94,8 @@
         pages: [],
         sortBy: null,
         reversed: false,
-        isVisible: false
+        isVisible: false,
+        apiErrorMessage: null,
       }
     },
     methods: {
@@ -91,16 +108,19 @@
         }
         this.sortBy = newSortBy;
       },
-      query() {
+
+      /**
+       * Sends API request and sets results variable
+       */
+      query: async function() {
         /* makes a query to the api to search for the prop value from the app.vue main page*/
-        Api.search(this.search)
-        .then((response) => {
-          /* saves data of response as this.results*/
-          this.results = this.parseSearchResults(response.data);
-        })
-        .catch(err => {
-          alert(err.userFacingErrorMessage);
-        });
+        try {
+          const { data } = await Api.search(this.search);
+          this.results = this.parseSearchResults(data);
+        } catch(err) {
+          if (await Api.handle401.call(this, err)) return;
+          this.apiErrorMessage = err.userFacingErrorMessage;
+        }
       },
 
       parseSearchResults: function(results) {

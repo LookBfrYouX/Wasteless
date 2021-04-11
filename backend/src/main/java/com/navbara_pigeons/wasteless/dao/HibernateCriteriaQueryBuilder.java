@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class HibernateCriteriaQueryBuilder {
 
     public static CriteriaQuery parseUserSearchQuery(Session currentSession, String searchQuery) throws InvalidAttributeValueException {
-        // Setup stuff
+        // Setup
         CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
 
@@ -31,7 +31,7 @@ public class HibernateCriteriaQueryBuilder {
         // Breaking down the searchQuery appropriately
         // -- currently just using spaces
 
-        List<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<>();
         Matcher matcher = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(searchQuery);
         while (matcher.find()) {
             tokens.add(matcher.group(1));
@@ -58,7 +58,7 @@ public class HibernateCriteriaQueryBuilder {
         }
 
         // Checking for null predicates
-        if (predicates.size() <= 0) {
+        if (predicates.size() <= 0 && !searchQuery.equals("")) {
             throw new InvalidAttributeValueException("No search query tokens found");
         }
 

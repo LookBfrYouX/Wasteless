@@ -30,6 +30,7 @@
  */
 
 import axios from 'axios';
+import { ApiRequestError } from "./ApiRequestError";
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
 const TIMEOUT = 1000;
@@ -40,9 +41,6 @@ const instance = axios.create({
     withCredentials: true
 });
 
-const NO_SERVER_RESPONSE_ERROR_MESSAGE = "Could not connect to server. Try again in a few minutes";
-
-let unknownErrorMessage = err => `An unknown error (${err.response.status}) occurred: ${err}`;
 
 export default {
     /**
@@ -52,20 +50,42 @@ export default {
      */
     login: (props) => {
         return instance.post("/login", props).catch(error => {
-            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
-            if (error != undefined && error.response !== undefined) {
-                if (error.response.status === 400) {
-                    userFacingErrorMessage = "Your email or password is incorrect";
-                } else {
-                    userFacingErrorMessage = unknownErrorMessage(error);
-                }
-            }
-
-            error.userFacingErrorMessage = userFacingErrorMessage;
-            throw error;
+            throw ApiRequestError.createFromMessageMap(error, {
+                400: "Your email or password is incorrect"
+            });
+        })
+    },
+   
+    /**
+     * 
+     * @param {object} props with properties:
+     * `userId`
+     * @returns promise. If it fails the error will be shown using the `userFacingErrorMessage` property
+     */
+    makeAdmin: async (userId) => {
+        return instance.put(`/users/${userId}/makeAdmin`).catch(error => {
+            throw ApiRequestError.createFromMessageMap(error, {
+                403: "You must be an administrator to give others admin permissions",
+                406: "Invalid user ID given"
+            });
         })
     },
 
+    /**
+     * 
+     * @param {object} props with properties:
+     * `userId`
+     * @returns promise. If it fails the error will be shown to user using the `userFacingErrorMessage` property
+     */
+    revokeAdmin: async (userId) => {
+        return instance.put(`/users/${userId}/revokeAdmin`).catch(error => {
+            throw ApiRequestError.createFromMessageMap(error, {
+                403: "You must be an administrator to revoke admin permissions",
+                406: "Invalid user ID given",
+                409: "Cannot revoke the DGAA's administrator privileges"
+            });
+        })
+    },
 
     /**
      *
@@ -76,18 +96,9 @@ export default {
      */
     signUp: (props) => {
         return instance.post("/users", props).catch(error => {
-            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
-
-            if (error != undefined && error.response != undefined) {
-                if (error.response.status == 409) {
-                    userFacingErrorMessage = "Your email address has already been registered";
-                } else {
-                    userFacingErrorMessage = unknownErrorMessage(error);
-                }
-            }
-
-            error.userFacingErrorMessage = userFacingErrorMessage;
-            throw error;
+            throw ApiRequestError.createFromMessageMap(error, {
+                409: "Your email address has already been registered"
+            });
         });
     },
 
@@ -98,20 +109,9 @@ export default {
      */
     profile: (id) => {
         return instance.get(`/users/${id}`).catch(error => {
-            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
-
-            if (error != undefined && error.response != undefined) {
-                if (error.response.status == 401) {
-                    userFacingErrorMessage = "You don't have permission to access this page";
-                } else if (error.response.status == 405) {
-                    userFacingErrorMessage = "Information for the user was not found";
-                } else {
-                    userFacingErrorMessage = unknownErrorMessage(error);
-                }
-            }
-
-            error.userFacingErrorMessage = userFacingErrorMessage;
-            throw error;
+            throw ApiRequestError.createFromMessageMap(error, {
+                406: "The user does not exist"
+            });
         });
     },
     /**
@@ -122,17 +122,7 @@ export default {
     search: (searchQuery) => {
         return instance.get(`/users/search?searchQuery=${encodeURIComponent(searchQuery)}`)
         .catch(error => {
-            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
-
-            if (error != undefined && error.response != undefined) {
-                if (error.response.status == 401) {
-                    userFacingErrorMessage = "You don't have permission to access this page";
-                } else {
-                    userFacingErrorMessage = unknownErrorMessage(error);
-                }
-            }
-            error.userFacingErrorMessage = userFacingErrorMessage;
-            throw error;
+            throw ApiRequestError.createFromMessageMap(error);
         });
     },
     /**
@@ -141,13 +131,31 @@ export default {
      */
     logOut: () => {
         return instance.get("/logout").catch(error => {
-            let userFacingErrorMessage = NO_SERVER_RESPONSE_ERROR_MESSAGE;
-
-            if (error != undefined && error.response != undefined) {
-                userFacingErrorMessage = unknownErrorMessage(error);
-            }
-            error.userFacingErrorMessage = userFacingErrorMessage;
-            throw error;
+            throw ApiRequestError.createFromMessageMap(error);
         });
+    },
+
+    /**
+     * Logs the user out client-side and redirects to a logout page
+     * Call using `Api.handle401.call(this, err) from the vue component
+     * If `this.$stateStore` and `this.$router`  are not defined, likely because
+     * `.call` has not been used, or because the jest test has not mocked these, an error message will
+     * be printed and the method will return false.
+     * @param {ApiRequestError} error handle logout when a 401 is returned by the api
+     * @param {this} callee
+     * @return {Boolean} true if it was a 401 error
+     */
+    handle401: async function(err) {
+        if (this.$stateStore === undefined || this.$router === undefined) {
+            console.warn("[Api.js, handle401]. Call this method using `.call(this, err)` - need access to Vue's state and router variables, which this does not have access to");
+            return false;
+        }
+        if (err && err.status === 401) {
+            await this.$stateStore.actions.deleteAuthUser();
+            await this.$router.push({ name: "error401" });
+            return true;
+        }
+
+        return false;
     }
 }

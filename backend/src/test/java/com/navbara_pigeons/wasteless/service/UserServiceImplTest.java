@@ -9,12 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.navbara_pigeons.wasteless.controller.UserController;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -30,6 +32,12 @@ class UserServiceImplTest {
 
   @Autowired
   UserService userService;
+
+  @Value("${dgaa.user.email}")
+  private String dgaaEmail;
+
+  @Value("${dgaa.user.password}")
+  private String dgaaPassword;
 
   @Test
   void saveValidUser() {
@@ -196,6 +204,35 @@ class UserServiceImplTest {
     } catch (UserNotFoundException e) {
       System.out.println("EXPECTED ERROR");
     }
+  }
+
+  @Test
+  void revokeDgaaAdminTest() {
+    User dgaaUser = null;
+
+    // Waiting for dgga scheduler is difficult (and makes tests take longer), so just make the DGGA user if it doesn't
+    // exist already
+    try {
+      dgaaUser = userDao.getUserByEmail(dgaaEmail);
+      System.out.println("DGAA user found");
+    } catch(UserNotFoundException e) {
+      dgaaUser = makeUser();
+      dgaaUser.setEmail(dgaaEmail);
+      dgaaUser.setRole("ROLE_ADMIN");
+      dgaaUser.setPassword(encodePass(dgaaPassword));
+      userDao.saveUser(dgaaUser);
+    }
+
+    UserCredentials credentials = new UserCredentials();
+    credentials.setEmail(dgaaEmail);
+    credentials.setPassword(dgaaPassword);
+    userController.login(credentials);
+
+    User finalDgaaUser = dgaaUser;
+    assertThrows(
+            NotAcceptableException.class,
+            () -> userService.revokeAdmin(finalDgaaUser.getId())
+    );
   }
 
   String encodePass(String password) {

@@ -49,7 +49,7 @@ public class SchedulerConfig {
       if (!dgaa.getRole().contains("ADMIN")) {
         dgaa.makeAdmin();
         userDao.saveUser(dgaa);
-        log.info("RE-GRANTED ADMIN TO DGAA USER");
+        log.info("Granted Admin role to DGAA user");
       }
     } catch (UserNotFoundException err) {
       insertDgaa();
@@ -70,7 +70,7 @@ public class SchedulerConfig {
         .setRole("ROLE_ADMIN")
         .setPassword(bCryptPasswordEncoder.encode(this.dgaaPassword));
     userDao.saveUser(dgaa);
-    log.info("RE-INSERTED DGAA USER");
+    log.info("Inserted DGAA user");
   }
 
 }

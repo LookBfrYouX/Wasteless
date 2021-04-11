@@ -28,9 +28,13 @@
 /**
  * Main entry point for your Vue app
  */
-import Vue from 'vue'
-import App from './App'
-import { router } from './router' 
+import Vue from 'vue';
+import App from './App';
+import { router } from './router';
+import { store } from './store';
+import "bootstrap";
+import "./styles/custom.scss";
+
 
 Vue.config.productionTip = false
 
@@ -46,8 +50,10 @@ const options = {
   showConsoleColors: true
 };
 
-
 Vue.use(VueLogger, options);
+
+// Set the state storage as a global variable - accessed through this.$stateStorage in components
+Vue.prototype.$stateStore = store;
 
 /* eslint-disable no-new */
 new Vue({
