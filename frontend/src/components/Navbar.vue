@@ -20,13 +20,6 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
         <ul class="navbar-nav mr-auto">
-          <router-link v-if="isLoggedIn" active-class="active" to="/home" exact>
-            <li class="nav-item">
-              <a class="nav-link">
-                Home
-              </a>
-            </li>
-          </router-link>
           <router-link v-if="isLoggedIn" active-class="active" to="/profile" exact>
             <li class="nav-item">
               <a class="nav-link">
