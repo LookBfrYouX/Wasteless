@@ -27,9 +27,11 @@ export const globalStateMocks = () => {
       isLoggedIn: jest.fn(() => true),
       getAuthUser: jest.fn(() => GLOBAL_STATE)
     },
-    setters: {
+    actions: {
       makeAdmin: jest.fn(),
-      revokeAdmin: jest.fn()
+      revokeAdmin: jest.fn(),
+      setAuthUser: jest.fn(),
+      deleteAuthUser: jest.fn()
     }
   }
 
