@@ -48,6 +48,9 @@ jest:
   script:
     - cd frontend
     - npm run test
+  artifacts:
+    paths:
+      - frontend/coverage
 
 # Export sonarqube (static code analysis) reports
 # Uncomment after ATDD workshop (at the latest)
