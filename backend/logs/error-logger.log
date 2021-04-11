@@ -1,0 +1,4 @@
+2021-04-11 21:30:07,402 ERROR com.navbara_pigeons.wasteless.controller.UserController [http-nio-9499-exec-3] COULD NOT REGISTER USER - EMAIL ALREADY EXISTS: johnsmith99@gmail.com
+2021-04-11 21:30:09,325 ERROR com.navbara_pigeons.wasteless.controller.UserController [http-nio-9499-exec-5] COULD NOT REGISTER USER - EMAIL ALREADY EXISTS: johnsmith99@gmail.com
+2021-04-11 21:30:10,399 ERROR com.navbara_pigeons.wasteless.controller.UserController [http-nio-9499-exec-4] COULD NOT REGISTER USER - EMAIL ALREADY EXISTS: johnsmith99@gmail.com
+2021-04-11 21:30:11,476 ERROR com.navbara_pigeons.wasteless.controller.UserController [http-nio-9499-exec-6] COULD NOT REGISTER USER - EMAIL ALREADY EXISTS: johnsmith99@gmail.com

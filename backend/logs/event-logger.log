@@ -3,3 +3,14 @@
 2021-03-19 20:59:47,363 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.208 seconds (JVM running for 4.733)
 2021-03-19 20:59:47,367 INFO MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@c8531b9
 2021-03-19 20:59:48,620 INFO SchedulerConfig [scheduling-1] RE-INSERTED DGAA USER
+2021-04-11 21:29:44,527 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 27557 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-04-11 21:29:44,529 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-04-11 21:29:48,617 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.548 seconds (JVM running for 4.901)
+2021-04-11 21:29:48,621 INFO com.navbara_pigeons.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@758311ed
+2021-04-11 21:29:49,894 INFO com.navbara_pigeons.wasteless.configuration.SchedulerConfig [scheduling-1] Inserted DGAA user
+2021-04-11 21:29:53,940 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 11.0.10 on maximilian-ubuntu with PID 27656 (/home/maximilian/Development/University/Wasteless/team-300/backend/build/classes/java/main started by maximilian in /home/maximilian/Development/University/Wasteless/team-300/backend)
+2021-04-11 21:29:53,942 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-04-11 21:29:58,271 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 4.787 seconds (JVM running for 5.227)
+2021-04-11 21:29:58,275 INFO com.navbara_pigeons.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@72c5064f
+2021-04-11 21:29:59,521 INFO com.navbara_pigeons.wasteless.configuration.SchedulerConfig [scheduling-1] Inserted DGAA user
+2021-04-11 21:30:05,412 INFO com.navbara_pigeons.wasteless.controller.UserController [http-nio-9499-exec-2] ACCOUNT CREATED SUCCESSFULLY: johnsmith99@gmail.com
