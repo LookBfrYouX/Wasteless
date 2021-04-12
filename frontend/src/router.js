@@ -35,17 +35,7 @@ export const router = new VueRouter({
       name: "profile",
       path: "/profile/:userId(\\d+)?",
       component: Profile,
-      props: route => {
-        let userId = route.params.userId;
-        if (userId == null) {
-          const loggedInId = parseInt(window.localStorage.getItem("userId"));
-          userId = loggedInId; // may be NaN
-        } else {
-          userId = parseInt(userId, 10); // Using \d so parseInt should always work
-        }
-
-        return {userId};
-      }
+      props: route => ({userId: route.params.userId? parseInt(route.params.userId, 10): NaN })
     },
     {
       name: "search",

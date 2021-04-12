@@ -2,9 +2,15 @@ import Vue from 'vue';
 
 // This is the state object. It is reactive and can not be accessed directly by components.
 // Use getters and actions to modify this object.
+
+let authUser = null;
+try {
+  authUser = JSON.parse(JSON.parse(localStorage.getItem("authUser")));
+/* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
+} catch(_) {}
+
 const state = new Vue.observable({
-  authUser: JSON.parse(localStorage.getItem("authUser")),
-  welcomeMessage: "HERE WE GOOO",
+  authUser
 });
 
 // This is the globally accessible store. It allows the state to be read and modified.
@@ -14,10 +20,6 @@ export const store = {
     // Get the authenticated user
     getAuthUser: () => {
       return state.authUser;
-    },
-    // Get the current welcome message (example)
-    getWelcomeMessage: () => {
-      return state.welcomeMessage;
     },
 
     /**
@@ -43,13 +45,11 @@ export const store = {
     setAuthUser: (authUser) => {
       state.authUser = authUser;
       localStorage.setItem("authUser", JSON.stringify(authUser));
-      localStorage.setItem("userId", state.authUser.id);
     },
     // log the user out and sync with local storage
     deleteAuthUser: () => {
       state.authUser = null;
       localStorage.removeItem("authUser");
-      localStorage.removeItem("userId");
     },
     // Make the currently logged in user admin
     makeAdmin: () => {

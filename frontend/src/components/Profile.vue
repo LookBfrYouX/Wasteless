@@ -198,6 +198,11 @@ const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "Ju
   "September", "October", "November", "December"];
 Object.freeze(MONTH_NAMES);
 
+/**
+ * Shows user profile
+ * `userId` passed as prop. If NaN, it will use the currently authenticated user (from stateStore)
+ * If they are not logged in it will pop up with an error message
+ */
 export default {
   name: 'profilePage',
   components: {ErrorModal},
@@ -211,10 +216,12 @@ export default {
   },
 
   props: {
+    /**
+     * Don't use! Use `acualUserId` since that will user authUser id if logged in and userId is NaN
+     */
     userId: {
       type: Number, // may be NaN
       required: true
-      // default: 10
     }
   },
 
@@ -279,7 +286,7 @@ export default {
      * Calls the API and updates the component's data with the result
      */
     apiPipeline: function () {
-      this.parseApiResponse(this.callApi(this.userId));
+      this.parseApiResponse(this.callApi(this.actualUserId));
     },
 
     /**
@@ -287,7 +294,7 @@ export default {
      * Returns the promise, not the response
      */
     callApi: function (userId) {
-      if (typeof userId != "number" || isNaN(userId)) {
+      if (!Number.isInteger(userId)) {
         const err = new ApiRequestError(
             "Cannot load profile page (no profile given). You may need to log in");
         return Promise.reject(err);
@@ -360,6 +367,14 @@ export default {
   },
 
   computed: {
+    /**
+     * `userId`, unless `userId` is NaN and the user is logged in
+     */
+    actualUserId() {
+      if (Number.isInteger(this.userId)) return this.userId;
+      else if (this.isLoggedIn) return this.authUser.id;
+      return NaN;
+    },
     authUser() {
       return this.$stateStore.getters.getAuthUser()
     },
