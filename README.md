@@ -1,4 +1,4 @@
-# Seng302 Example Project
+# Navbar Pigeons
 
 Basic project template using `gradle`, `npm`, `Spring Boot`, `Vue.js` and `Gitlab CI`.
 
@@ -48,7 +48,14 @@ Running on: http://localhost:9499/ by default
 
 ## Contributors
 
-- SENG302 teaching team
+- Alec Fox (amf133)
+- Fletcher Dick (fdi19)
+- Haruka Ichinose (hic21)
+- Jordan Pyott (jpy19)
+- Maximilian Birzer (mbi47)
+- Niko Tainui (nbt25)
+- Rio Ogino (rog19)
+- Dawson Berry (dnb36)
 
 ## References
 
