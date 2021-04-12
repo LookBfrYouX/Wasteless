@@ -30,8 +30,6 @@ public class SchedulerConfig {
 
   @Value("${spring.datasource.url}")
   private String dburl;
-  @Value("${spring.profiles.active}")
-  private String activepro;
 
   @Value("${dgaa.user.email}")
   private String dgaaEmail;
@@ -54,7 +52,6 @@ public class SchedulerConfig {
   @Transactional
   public void testScheduler() {
     log.info(this.dburl);
-    log.info(this.activepro);
     try {
       User dgaa = userDao.getUserByEmail(this.dgaaEmail);
       if (!dgaa.getRole().contains("ADMIN")) {
