@@ -22,20 +22,15 @@ public class UserServiceValidation {
   }
 
   /**
-   * Returns false if the email doesnt pass validation
-   *
+   * Uses regexp to check validity. Does not conform to RFC5322 but uses stricter version similar to that
+   * used by browsers for email validation, modified to disallow dot-less domains. The same regexp is used
+   * in the sign up form.
+   * See https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type%3Demail) for original
    * @param email Users email
+   * @return false if email doesn't pass validation
    */
   public static boolean isEmailValid(String email) {
-    // An RFC 5322 compliant regex string for email validation (though actual validation would still be better)
-    String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
-        "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])"
-        +
-        "*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4]"
-        +
-        "[0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:"
-        +
-        "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+    String emailRegex = "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"; // The + at the end is a replacement for * to disallow dot-less domains
     return Pattern.matches(emailRegex, email);
   }
 

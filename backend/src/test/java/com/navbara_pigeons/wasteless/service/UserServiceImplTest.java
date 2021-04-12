@@ -100,7 +100,7 @@ class UserServiceImplTest {
   void saveInvalidUserEmail() throws Throwable {
     // Test invalid email address
     String[] testValues = {"alec", "alec@", "alec@.", "alec@gmail", "alec@gmail.", "@", "@gmail",
-        "@gmail.com"};
+        "@gmail.com", "a@a"};
     User user = makeUser();
 
     for (String testValue : testValues) {
