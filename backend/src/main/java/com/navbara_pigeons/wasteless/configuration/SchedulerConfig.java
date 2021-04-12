@@ -28,6 +28,9 @@ public class SchedulerConfig {
   private final UserDao userDao;
   private final AddressDao addressDao;
 
+  @Value("${spring.datasource.url}")
+  private String dburl;
+
   @Value("${dgaa.user.email}")
   private String dgaaEmail;
   @Value("${dgaa.user.password}")
@@ -48,6 +51,7 @@ public class SchedulerConfig {
   @Scheduled(fixedRateString = "${dgaa.scheduler.interval}", initialDelay = 1000)
   @Transactional
   public void testScheduler() {
+    log.info(this.dburl);
     try {
       User dgaa = userDao.getUserByEmail(this.dgaaEmail);
       if (!dgaa.getRole().contains("ADMIN")) {

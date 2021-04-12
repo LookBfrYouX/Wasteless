@@ -29,6 +29,7 @@ package com.navbara_pigeons.wasteless;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -61,7 +62,6 @@ public class Main {
    * mappings (all, denoted by "/**")
    *
    * @return the configurer that check incoming origins for CORS purposes
-   * @see https://spring.io/guides/gs/rest-service-cors/
    */
   @Bean
   @Order(Ordered.HIGHEST_PRECEDENCE)

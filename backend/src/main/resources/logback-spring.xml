@@ -45,6 +45,7 @@
   </appender>
 
   <logger additivity="false" level="info" name="com.navbara_pigeons.wasteless">
+    <appender-ref ref="Console"/>
     <appender-ref ref="EventAppender"/>
     <appender-ref ref="ErrorAppender"/>
   </logger>
