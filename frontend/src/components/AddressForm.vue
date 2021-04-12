@@ -22,7 +22,26 @@ The parent component must provide `address` prop. When the address is updated in
 -->
 <template>
   <div class="row">
-    <div class="form-group col-12">
+    <div class="form-group col-3">
+      <label>Address Number</label>
+      <suggestions
+          inputClasses="form-control"
+          maxlength="200"
+          name="addressNumber"
+          placeholder="Address number"
+          required
+          type="text"
+
+          v-bind:suggestions="addressSuggestions"
+          v-bind:value="address.addressNumber"
+          v-on:focus="activeAddressInputName = 'addressNumber'"
+
+          v-on:input="onAddressInput"
+          v-on:suggestion="suggestionSelected"
+      />
+    </div>
+
+    <div class="form-group col-9">
       <label>Address Line</label>
       <suggestions
           autocomplete="address-line"
@@ -128,7 +147,7 @@ const Suggestions = require("./Suggestions").default;
 
 // Fields in order of specifity
 // When updating this, ensure all address related functions and input properties are updated as well
-export const ADDRESS_SECTION_NAMES = ["addressLine", "postcode", "city", "state", "country"];
+export const ADDRESS_SECTION_NAMES = ["addressNumber", "addressLine", "postcode", "city", "state", "country"];
 Object.freeze(ADDRESS_SECTION_NAMES);
 
 const API_CALL_DEBOUNCE_TIME = 100;
@@ -144,6 +163,7 @@ export default {
     address: {
       required: true,
       default: {
+        addressNumber: "",
         addressLine: "",
         postcode: "",
         city: "",
@@ -169,7 +189,8 @@ export default {
      */
     mapOSMPropertiesToAddressComponents: function (properties) {
       const {
-        housenumber, street, //addressLine
+        housenumber,
+        street, //addressLine
         postcode,
         county, // city
         state, // state
@@ -178,6 +199,7 @@ export default {
       } = properties;
 
       const components = {
+        addressNumber: housenumber,
         addressLine: street,
         postcode: postcode,
         city: county,
@@ -186,7 +208,8 @@ export default {
       };
 
       if (street != undefined && housenumber != undefined) {
-        components.addressLine = `${housenumber} ${street}`;
+        components.addressNumber = `${housenumber}`;
+        components.addressLine = `${street}`;
       }
       // If street is undefined but housenumber isn't, leave addressLine undefined
 
@@ -201,8 +224,9 @@ export default {
       // Was getting strange errors where sometimes a component would be undefined
       // Think its to do with accessing properties via this['someString'] so this
       // is a workaround
-      let {addressLine, city, state, postcode, country} = this.address;
+      let {addressNumber, addressLine, city, state, postcode, country} = this.address;
       let components = {
+        addressNumber,
         addressLine,
         postcode,
         city,
