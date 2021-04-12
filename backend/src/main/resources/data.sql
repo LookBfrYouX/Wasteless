@@ -1,10 +1,10 @@
 -- ###############################  Users Setup  ###############################
-DROP TABLE IF EXISTS user_business;
-DROP TABLE IF EXISTS business;
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS address;
+DROP TABLE IF EXISTS USER_BUSINESS;
+DROP TABLE IF EXISTS BUSINESS;
+DROP TABLE IF EXISTS USER;
+DROP TABLE IF EXISTS ADDRESS;
 
-CREATE TABLE address
+CREATE TABLE ADDRESS
 (
     ID            INT AUTO_INCREMENT PRIMARY KEY,
     STREET_NUMBER VARCHAR(100),
@@ -15,7 +15,7 @@ CREATE TABLE address
     COUNTRY       VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE user
+CREATE TABLE USER
 (
     ID              INT AUTO_INCREMENT PRIMARY KEY,
     FIRST_NAME      VARCHAR(50) NOT NULL,
@@ -32,10 +32,10 @@ CREATE TABLE user
     PASSWORD        CHAR(60)    NOT NULL,
 
     HOME_ADDRESS_ID INT         NOT NULL,
-    CONSTRAINT user_address_fk FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES address (ID)
+    CONSTRAINT USER_ADDRESS_FK FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES ADDRESS (ID)
 );
 
-CREATE TABLE business
+CREATE TABLE BUSINESS
 (
     ID                       INT AUTO_INCREMENT PRIMARY KEY,
     NAME                     VARCHAR(50) NOT NULL,
@@ -45,52 +45,65 @@ CREATE TABLE business
 
     PRIMARY_ADMINISTRATOR_ID INT         NOT NULL,
     ADDRESS_ID               INT         NOT NULL,
-    CONSTRAINT business_address_fk FOREIGN KEY (ADDRESS_ID) REFERENCES address (ID)
+    CONSTRAINT BUSINESS_ADDRESS_FK FOREIGN KEY (ADDRESS_ID) REFERENCES ADDRESS (ID)
 );
 
-CREATE TABLE user_business
+CREATE TABLE USER_BUSINESS
 (
     USER_ID     INT NOT NULL,
     BUSINESS_ID INT NOT NULL,
-    CONSTRAINT user_business_pk
+    CONSTRAINT USER_BUSINESS_PK
         UNIQUE (USER_ID, BUSINESS_ID),
-    CONSTRAINT user_business_user_fk
-        FOREIGN KEY (USER_ID) REFERENCES user (ID),
-    CONSTRAINT user_business_business_fk
-        FOREIGN KEY (BUSINESS_ID) references business (ID)
+    CONSTRAINT USER_BUSINESS_USER_FK
+        FOREIGN KEY (USER_ID) REFERENCES USER (ID),
+    CONSTRAINT USER_BUSINESS_BUSINESS_FK
+        FOREIGN KEY (BUSINESS_ID) references BUSINESS (ID)
 );
 
-INSERT INTO address(STREET_NUMBER,
+INSERT INTO ADDRESS(ID,
+                    STREET_NUMBER,
                     STREET_NAME,
                     POSTCODE,
                     CITY,
                     REGION,
                     COUNTRY)
-VALUES ('10',
+VALUES (0,
+        '0',
+        'Void Street',
+        '-1',
+        'Nil City',
+        'Undefined Plains',
+        'Null Island'),
+       (1,
+        '10',
         'Downing Street',
         'SW1A 2AA',
         'Westminster',
         'London',
         'United Kingdom'),
-       ('99',
+       (2,
+        '99',
         'Waimari Road',
         '8041',
         'Christchurch',
         'Canterbury',
         'New Zealand'),
-       ('53',
+       (3,
+        '53',
         'Ilam Road',
         '8041',
         'Christchurch',
         'Canterbury',
         'New Zealand'),
-       ('123',
+       (4,
+        '123',
         'Fake Street',
         '8041',
         'Christchurch',
         'Canterbury',
         'New Zealand'),
-       ('79',
+       (5,
+        '79',
         'Place Road',
         '8041',
         'Christchurch',
@@ -99,7 +112,7 @@ VALUES ('10',
 
 -- Inserting test user
 
-INSERT INTO user(FIRST_NAME,
+INSERT INTO USER(FIRST_NAME,
                  LAST_NAME,
                  MIDDLE_NAME,
                  NICKNAME,
@@ -115,12 +128,13 @@ VALUES ('Fletcher',
         'Dick',
         'James',
         'fdi19',
-        'Hello! I am Fletcher and I am currently studying Software Engineering.',
+        'Hello! I''m Fletcher and I am currently studying Software Engineering ' ||
+        'in my second to last year. In my spare time I like to skate and hang with mates.',
         'fdi19@uclive.ac.nz',
         '2000-03-10',
         '+64 22 104 1375',
-        1,
-        '2020-07-14T14:32:00.000000',
+        0,
+        '2020-07-14T14:32:00Z',
         'ROLE_USER',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi'),
        ('Maximilian',
@@ -132,7 +146,7 @@ VALUES ('Fletcher',
         '1986-12-22',
         '+64 21 0266 7255',
         1,
-        '2020-07-14T14:32:00.000000',
+        '2020-07-14T14:32:00Z',
         'ROLE_ADMIN',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi'),
        ('Alec',
@@ -144,7 +158,7 @@ VALUES ('Fletcher',
         '2000-10-31',
         '',
         2,
-        '2020-07-14T14:32:00.000000',
+        '2020-07-14T14:32:00Z',
         'ROLE_ADMIN',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi'),
        ('Dawson',
@@ -156,11 +170,11 @@ VALUES ('Fletcher',
         '2001-11-23',
         '',
         3,
-        '2020-07-14T14:32:00.000000',
+        '2020-07-14T14:32:00Z',
         'ROLE_USER',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi');
 
-INSERT INTO business(NAME,
+INSERT INTO BUSINESS(NAME,
                      PRIMARY_ADMINISTRATOR_ID,
                      DESCRIPTION,
                      ADDRESS_ID,
@@ -171,15 +185,15 @@ VALUES ('TestName',
         'A Good business',
         5,
         'Retail Trade',
-        '2020-07-14T14:32:00.000000'),
+        '2020-07-14T14:32:00Z'),
        ('Fake Business',
         4,
         'Shh very secret',
         4,
         'Retail Trade',
-        '2020-07-14T14:32:00.000000');
+        '2020-07-14T14:32:00Z');
 
-INSERT INTO user_business(USER_ID,
+INSERT INTO USER_BUSINESS(USER_ID,
                           BUSINESS_ID)
 VALUES (4,
         1),
