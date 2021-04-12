@@ -80,13 +80,13 @@ The parent component must provide `address` prop. When the address is updated in
       />
     </div>
     <div class="form-group col-12 col-md-6">
-      <label>Region/region</label>
+      <label>Region</label>
       <suggestions
           autocomplete="address-level1"
           inputClasses="form-control"
           maxlength="100"
           name="region"
-          placeholder="Region/region"
+          placeholder="Region"
           required
           type="text"
 
