@@ -26,7 +26,8 @@ afterEach(() => wrapper.destroy());
 
 const standardAddress = () => {
   return {
-    addressLine: "NUM STREET",
+    addressNumber: "NUM",
+    addressLine: "STREET",
     postcode: "P",
     city: "C",
     state: "STATE",
@@ -71,6 +72,7 @@ describe("text entry", () => {
 
     let expected = standardAddress();
     expected.addressLine = "";
+    delete expected.addressNumber;
     expected.postcode = "";
 
     expect(address).toEqual(expected);
@@ -158,7 +160,6 @@ describe("mapOSMPropertiesToAddressComponents", () => {
 
   test("Street number missing", () => {
     let addressOSM = standardOSMAddress();
-    delete addressOSM.housenumber;
     let address = standardAddress();
     address.addressLine = addressOSM.street;
 
@@ -181,7 +182,7 @@ describe("generateAddressStringFromAddressComponents", () => {
   test("All sections", () => {
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
         standardAddress()
-    )).toEqual("NUM STREET, P, C, STATE, COUNTRY");
+    )).toEqual("NUM, STREET, P, C, STATE, COUNTRY");
   });
 
   test("Blank section", () => {
@@ -189,7 +190,7 @@ describe("generateAddressStringFromAddressComponents", () => {
     address.addressLine = "  ";
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
         address,
-    )).toEqual("P, C, STATE, COUNTRY");
+    )).toEqual("NUM, P, C, STATE, COUNTRY");
   });
 
   test("Postcode and up", () => {
@@ -203,7 +204,7 @@ describe("generateAddressStringFromAddressComponents", () => {
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
         standardAddress(),
         "INVALID"
-    )).toEqual("NUM STREET, P, C, STATE, COUNTRY");
+    )).toEqual("NUM, STREET, P, C, STATE, COUNTRY");
   });
 
   test("Invalid section name + one undefined", () => {
@@ -211,7 +212,7 @@ describe("generateAddressStringFromAddressComponents", () => {
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
         address,
         "INVALID"
-    )).toEqual("NUM STREET, P, C, STATE, COUNTRY");
+    )).toEqual("NUM, STREET, P, C, STATE, COUNTRY");
   });
 
   test("Invalid section name + one undefined + failOnErr", () => {
