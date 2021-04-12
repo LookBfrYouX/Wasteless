@@ -189,7 +189,7 @@ export default {
      */
     mapOSMPropertiesToAddressComponents: function (properties) {
       const {
-        housenumber,
+        housenumber, //addressNumber
         street, //addressLine
         postcode,
         county, // city
@@ -212,7 +212,6 @@ export default {
         components.addressLine = `${street}`;
       }
       // If street is undefined but housenumber isn't, leave addressLine undefined
-
       return components;
     },
 
@@ -323,7 +322,6 @@ export default {
         return;
         // If autocomplete does not work, just don't show a response
       }
-
       const {data} = response;
       this.addressSuggestionsRaw = data.features;
       this.addressSuggestions = this.generateAddressSuggestions();
