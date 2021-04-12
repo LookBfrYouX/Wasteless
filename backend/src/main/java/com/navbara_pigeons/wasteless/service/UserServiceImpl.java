@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
@@ -14,8 +15,10 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
+import javax.swing.JList;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +148,27 @@ public class UserServiceImpl implements UserService {
 
     JSONObject address = new JSONObject();
     response.put("homeAddress", address);
-    response.put("businesses", user.getBusinesses());
+    List<JSONObject> businesses = new ArrayList<>();
+    for (Business i : user.getBusinesses()) {
+      JSONObject business = new JSONObject();
+      business.put("id", i.getId());
+      business.put("primaryAdministratorId", i.getPrimaryAdministratorId());
+      business.put("name", i.getName());
+      business.put("description", i.getDescription());
+      business.put("businessType", i.getBusinessType());
+      business.put("created", i.getCreated());
+      business.put("address", i.getAddress());
+      List<JSONObject> administrators = new ArrayList<>();
+      for (User j : i.getAdministrators()) {
+        JSONObject administrator = new JSONObject();
+        administrator.put("id", j.getId());
+        administrators.add(administrator);
+      }
+      business.put("administrators", administrators);
+      businesses.add(business);
+    }
+    response.put("businesses", businesses);
+
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
