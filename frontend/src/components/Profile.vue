@@ -159,8 +159,11 @@
             <tr v-if="userInfo.homeAddress" scope="row">
               <th style="white-space: nowrap;">Address:</th>
               <td class="col-md value">
+                <!-- Both of street number and name should be defined before showing it -->
                 <p>{{
-                    [userInfo.homeAddress.streetNumber + ' ' + userInfo.homeAddress.streetName,
+                    [(userInfo.homeAddress.streetNumber && userInfo.homeAddress.streetName)?
+                        userInfo.homeAddress.streetNumber + ' ' + userInfo.homeAddress.streetName:
+                        null,
                       userInfo.homeAddress.city,
                       userInfo.homeAddress.region,
                       userInfo.homeAddress.postcode,
