@@ -102,6 +102,8 @@ deploy-staging-backend:
     - cp -r ./build/libs /home/gitlab-runner/staging-backend
     - cp ../runner/staging-backend.sh /home/gitlab-runner/staging-backend.sh
     - printenv | grep "DGAA_\|DB_" | sed "s/^/export /" > /home/gitlab-runner/env.txt
+    - echo 'DB_USERNAME=seng302-team300' >> /home/gitlab-runner/env.txt
+    - echo 'DB_PASSWORD=LowestVaries9525' >> /home/gitlab-runner/env.txt
     - chmod u+x /home/gitlab-runner/staging-backend.sh
     - sudo systemctl restart seng302-staging-backend
   artifacts:
