@@ -12,6 +12,8 @@ import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,8 +96,44 @@ public class BusinessServiceImpl implements BusinessService {
     response.put("created", business.getCreated());
 
     JSONObject address = new JSONObject();
-    response.put("homeAddress", address);
+    response.put("address", address);
     response.put("primaryAdministratorId", business.getPrimaryAdministratorId());
+    List<JSONObject> administrators = new ArrayList<>();
+    for (User i : business.getAdministrators()) {
+      JSONObject administrator = new JSONObject();
+      administrator.put("id", i.getId());
+      administrator.put("firstName", i.getFirstName());
+      administrator.put("lastName", i.getLastName());
+      administrator.put("middleName", i.getMiddleName());
+      administrator.put("nickname", i.getNickname());
+      administrator.put("bio", i.getBio());
+      administrator.put("created", i.getCreated());
+      administrator.put("role", i.getRole());
+      JSONObject homeAddress = new JSONObject();
+      homeAddress.put("city", i.getHomeAddress().getCity());
+      homeAddress.put("region", i.getHomeAddress().getRegion());
+      homeAddress.put("country", i.getHomeAddress().getCountry());
+      administrator.put("homeAddress", homeAddress);
+
+      List<JSONObject> businesses = new ArrayList<>();
+      for (Business j : i.getBusinesses()) {
+        JSONObject businessAdministrated = new JSONObject();
+        businessAdministrated.put("id", j.getId());
+        businesses.add(businessAdministrated);
+      }
+      administrator.put("businessesAdministered", businesses);
+
+      if (i == user) {
+        homeAddress.put("streetNumber", i.getHomeAddress().getStreetNumber());
+        homeAddress.put("streetName", i.getHomeAddress().getStreetName());
+        homeAddress.put("postcode", i.getHomeAddress().getPostcode());
+        administrator.put("email", i.getEmail());
+        administrator.put("dateOfBirth", i.getDateOfBirth());
+        administrator.put("phoneNumber", i.getPhoneNumber());
+      }
+      administrators.add(administrator);
+    }
+    response.put("administrators", administrators);
 
     // Email of user that made the request
     String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
