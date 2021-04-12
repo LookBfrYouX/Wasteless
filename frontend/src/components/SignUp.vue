@@ -271,9 +271,9 @@ export default {
       address: {
         streetNumber: "",
         streetName: "",
-        postcode: "",
         city: "",
         region: "",
+        postcode: "",
         country: "",
       },
       addressAsString: "",
