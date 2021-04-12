@@ -151,14 +151,14 @@ public class BusinessServiceImpl implements BusinessService {
     }
     // sensitive details (e.g. email, postcode) are not returned
     if (business.getPrimaryAdministratorId() == user.getId() || isAdministrator || isAdmin) {
-      address.put("streetNumber", user.getHomeAddress().getStreetNumber());
-      address.put("streetName", user.getHomeAddress().getStreetName());
-      address.put("postcode", user.getHomeAddress().getPostcode());
+      address.put("streetNumber", business.getAddress().getStreetNumber());
+      address.put("streetName", business.getAddress().getStreetName());
+      address.put("postcode", business.getAddress().getPostcode());
     }
 
-    address.put("city", user.getHomeAddress().getCity());
-    address.put("region", user.getHomeAddress().getRegion());
-    address.put("country", user.getHomeAddress().getCountry());
+    address.put("city", business.getAddress().getCity());
+    address.put("region", business.getAddress().getRegion());
+    address.put("country", business.getAddress().getCountry());
     return response;
   }
 
