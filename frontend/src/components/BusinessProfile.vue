@@ -5,25 +5,33 @@
       <ul class="bprofile-info list-unstyled">
         <li class="row">
           <dt class="col-md label">Business Title:</dt>
-          <dd class="col-md value"> {{ businessInfo.name }}</dd>
+          <dd class="col-md value">{{ businessInfo.name }}</dd>
         </li>
         <li class="row">
           <dt class="col-md label">Description:</dt>
-          <dd class="col-md value"> {{ businessInfo.description }}</dd>
+          <dd class="col-md value">{{ businessInfo.description }}</dd>
         </li>
         <li class="row">
           <dt class="col-md label">Address:</dt>
-          <dd class="col-md value"> {{
-              [businessInfo.address.streetNumber + " " +
-              businessInfo.address.streetName, businessInfo.address.city,
-                businessInfo.address.region, businessInfo.address.country,
-                businessInfo.address.postcode].join(", ")
+          <dd class="col-md value">
+            {{
+              [
+                businessInfo.address.streetNumber +
+                  " " +
+                  businessInfo.address.streetName,
+                businessInfo.address.city,
+                businessInfo.address.region,
+                businessInfo.address.postcode,
+                businessInfo.address.country,
+              ]
+                .filter(Boolean)
+                .join(", ")
             }}
           </dd>
         </li>
         <li class="row">
           <dt class="col-md label">Business Type:</dt>
-          <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
+          <dd class="col-md value">{{ businessInfo.businessType }}</dd>
         </li>
       </ul>
       <div v-if="errorMessage.length > 0" class="row mt-2">
@@ -39,7 +47,7 @@
 const Api = require("./../Api").default;
 
 export default {
-  name: 'businessProfile',
+  name: "businessProfile",
   components: {},
 
   data() {
@@ -51,14 +59,14 @@ export default {
         businessType: "",
       },
       errorMessage: "",
-    }
+    };
   },
 
   props: {
     businessId: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
 
   beforeMount: function () {
@@ -84,8 +92,12 @@ export default {
         this.businessInfo = response.data;
       } catch (err) {
         alert(
-            err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
+          err.userFacingErrorMessage == undefined
+            ? err.toString()
+            : err.userFacingErrorMessage
+        );
       }
+      console.log(this.businessInfo);
     },
   },
 
@@ -93,10 +105,10 @@ export default {
 
   watch: {
     businessId: function () {
-      this.parseApiResponse(this.callApi(this.businessId))
-    }
+      this.parseApiResponse(this.callApi(this.businessId));
+    },
   },
-}
+};
 </script>
 
 <style scoped>
@@ -120,5 +132,4 @@ export default {
   justify-content: center;
   padding: 30px;
 }
-
 </style>

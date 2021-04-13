@@ -203,14 +203,14 @@ public class UserController {
    * @throws ResponseStatusException Unknown Error.
    */
   @PostMapping("/businesses")
-  public ResponseEntity<String> registerBusiness(@RequestBody Business business) {
-    try {
-      businessService.saveBusiness(business);
-      return new ResponseEntity<>("Business account successfully created", HttpStatus.valueOf(201));
-    } catch (Exception exc) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
+    public ResponseEntity<JSONObject> registerBusiness(@RequestBody Business business) {
+      try {
+        JSONObject response = businessService.saveBusiness(business);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+      } catch (Exception exc) {
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
+      }
     }
-  }
 
   /**
    * Search for a specific business using the id field.

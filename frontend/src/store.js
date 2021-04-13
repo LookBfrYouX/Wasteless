@@ -15,6 +15,10 @@ export const store = {
     getAuthUser: () => {
       return state.authUser;
     },
+    // Get businessId for a select business
+    getBusinessId: () => {
+      return state.businessId;
+    },
     // Get the current welcome message (example)
     getWelcomeMessage: () => {
       return state.welcomeMessage;
@@ -44,6 +48,12 @@ export const store = {
       state.authUser = authUser;
       localStorage.setItem("authUser", JSON.stringify(authUser));
       localStorage.setItem("userId", state.authUser.id);
+    },
+    // Set the businessId to be in sync with persistent storage
+    setBusinessId: (businessId) => {
+      state.businessId = businessId;
+      localStorage.setItem("businessId", JSON.stringify(businessId));
+      localStorage.setItem("userId", state.businessId);
     },
     // log the user out and sync with local storage
     deleteAuthUser: () => {

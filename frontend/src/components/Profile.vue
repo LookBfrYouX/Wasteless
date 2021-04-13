@@ -111,16 +111,16 @@
               >
             </li>
           </ul>
-          <button
-            v-if="isLoggedIn && authUser.id === userInfo.id"
-            class="btn btn-white-bg-primary mx-1 d-flex mb-3"
-            type="button"
-            v-on:click="registerBusiness()"
-          >
-            <span class="material-icons mr-1">person</span>
-            Register Business
-          </button>
         </div>
+        <button
+          v-if="isLoggedIn && authUser.id === userInfo.id"
+          class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3"
+          type="button"
+          v-on:click="registerBusiness()"
+          >
+          <span class="material-icons mr-1">person</span>
+          Register Business
+        </button>
       </div>
       <div class="col-md-7 order-1 order-md-2 m-2 card">
         <ul class="nav nav-tabs mt-2">
@@ -303,7 +303,7 @@ export default {
     },
 
     /**
-     * TODO: Add documentation
+     * Calls the router to reroute the user to register a new business
      */
     registerBusiness: function () {
       this.$router.push({ name: "registerBusiness" });

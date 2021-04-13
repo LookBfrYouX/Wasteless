@@ -120,8 +120,6 @@ export default {
   },
 
   methods: {
-    // TODO: make admin buttons auto update without refresh
-
     /**
      * Checks to see if logged in user is an admin using cookie storing session.
      */
