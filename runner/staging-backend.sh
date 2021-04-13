@@ -2,8 +2,6 @@
 
 # Run the staging backend server
 
-echo 'DB_USERNAME=seng302-team300' >> ./env.txt
-echo 'DB_PASSWORD=LowestVaries9525' >> ./env.txt
 source ./env.txt
 
 # Makes Spring use application-production.properties
