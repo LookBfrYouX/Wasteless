@@ -63,7 +63,7 @@ export const router = new VueRouter({
       path: "/businessprofile/:businessId(\\d+)",
       component: BusinessProfile,
       props: route => {
-        let businessId = route.params.userId;
+        let businessId = route.params.businesssId;
         if (businessId == null) {
           const business = parseInt(window.localStorage.getItem("businessId"));
           businessId = business; // may be NaN

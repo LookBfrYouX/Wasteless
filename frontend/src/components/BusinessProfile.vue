@@ -97,7 +97,6 @@ export default {
             : err.userFacingErrorMessage
         );
       }
-      console.log(this.businessInfo);
     },
   },
 

@@ -157,7 +157,6 @@ export default {
           },
           businessType: this.type, // API stores the type as businessType not type
         });
-        console.log(response.data.address);
       } catch (err) {
         // TODO: Need to handle errors here
         return;
