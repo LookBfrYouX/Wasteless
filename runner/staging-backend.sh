@@ -4,8 +4,6 @@
 
 source ./env.txt
 
-printenv
-
 # Makes Spring use application-production.properties
 export SPRING_PROFILES_ACTIVE=staging
 
