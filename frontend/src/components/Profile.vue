@@ -391,10 +391,12 @@ export default {
     },
 
     viewBusiness(businessId) {
+      console.log(businessId);
+      this.$stateStore.actions.setBusinessId(businessId);
       this.$router.push({
         name: "businessProfile",
         params: {
-          businessId,
+          businessId
         },
       });
     },

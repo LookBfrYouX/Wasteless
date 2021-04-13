@@ -64,9 +64,8 @@ export const router = new VueRouter({
       component: BusinessProfile,
       props: route => {
         let businessId = route.params.businesssId;
-        if (businessId == null) {
-          const business = parseInt(window.localStorage.getItem("businessId"));
-          businessId = business; // may be NaN
+        if (businessId == undefined || businessId == null) {
+          businessId = parseInt(window.localStorage.getItem("businessId"));
         } else {
           businessId = parseInt(businessId, 10); // Using \d so parseInt should always work
         }

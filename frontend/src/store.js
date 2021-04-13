@@ -5,6 +5,7 @@ import Vue from 'vue';
 const state = new Vue.observable({
   authUser: JSON.parse(localStorage.getItem("authUser")),
   welcomeMessage: "HERE WE GOOO",
+  businessId: null
 });
 
 // This is the globally accessible store. It allows the state to be read and modified.
@@ -52,8 +53,7 @@ export const store = {
     // Set the businessId to be in sync with persistent storage
     setBusinessId: (businessId) => {
       state.businessId = businessId;
-      localStorage.setItem("businessId", JSON.stringify(businessId));
-      localStorage.setItem("userId", state.businessId);
+      localStorage.setItem("businessId", state.businessId);
     },
     // log the user out and sync with local storage
     deleteAuthUser: () => {

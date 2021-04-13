@@ -142,6 +142,9 @@ export default {
      */
     register: async function () {
       try {
+        this.nameErrorMessage = null;
+        this.typeErrorMessage = null;
+        this.descriptionErrorMessage = null;
         const user = this.$stateStore.getters.getAuthUser();
         var response = await this.callApi({
           primaryAdministratorId: user.id,
