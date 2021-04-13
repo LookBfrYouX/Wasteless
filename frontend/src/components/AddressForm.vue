@@ -141,8 +141,11 @@ The parent component must provide `address` prop. When the address is updated in
   </div>
 </template>
 <script>
-
 const axios = require("axios");
+const { EditDistance } = require("./../EditDistance");
+
+const calculateEditDistance = (stringA, stringB) => new EditDistance(stringA.toLowerCase(), stringB.toLowerCase(), 1, 50, 50).calculate();
+
 const Suggestions = require("./Suggestions").default;
 
 // Fields in order of specifity
@@ -150,6 +153,7 @@ const Suggestions = require("./Suggestions").default;
 export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "city", "region", "postcode", "country"];
 Object.freeze(ADDRESS_SECTION_NAMES);
 
+const WORST_EDIT_DISTANCE_RATIO = 2;
 const API_CALL_DEBOUNCE_TIME = 100;
 const API_MIN_QUERY_LENGTH = 3;
 export default {
@@ -280,12 +284,33 @@ export default {
     },
 
     /**
+     * Generates address string from OSM object for string comparison with edit distance
+     * Includes properties not used in the rest of the component such as district, locality
+     */
+    generateComparisonString(osmAddress) {
+      if (osmAddress.housenumber && osmAddress.street) osmAddress["streetaddress"] = osmAddress.housenumber + " " + osmAddress.street;
+      const components = [
+        "streetaddress",
+        "district",
+        "locality",
+        "city",
+        "county",
+        "state",
+        "postcode",
+        "country"
+      ];
+      const result = components.filter(name => osmAddress[name]).reduce((prev, curr) => prev + osmAddress[curr] + ", ", ""); // Concatenate with comma and space
+      if (result.length) return result.slice(0, -2);
+      return result;
+    },
+
+    /**
      * Filters raw address suggestions and formats them in a way suitable for the autofill component
      */
     generateAddressSuggestions: function () {
       const suggestionsDict = {};
       // Using dict instead of array to remove duplicates (e.g. shops in a mall will have different name but otherwise same address)
-
+      const originalString = this.generateAddressString();
       for (const {type, properties} of this.addressSuggestionsRaw) {
         if (type != "Feature") {
           continue;
@@ -296,6 +321,15 @@ export default {
             this.activeAddressInputName, true);
         if (addressString == undefined) {
           // Ignore any suggestions where the necessary components are not present
+          continue;
+        }
+
+        const resultString = this.generateComparisonString(properties);
+        const distance = calculateEditDistance(originalString, resultString);
+        const ratio = distance/Math.abs(resultString.length);
+        // Use ratio to not favour longer suggestions
+        if (ratio > WORST_EDIT_DISTANCE_RATIO) {
+          // Suggestion too bad
           continue;
         }
 
