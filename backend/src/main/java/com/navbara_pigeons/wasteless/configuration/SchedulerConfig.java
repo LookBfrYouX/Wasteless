@@ -45,7 +45,7 @@ public class SchedulerConfig {
   /**
    * Scheduler method, runs every timeDelay ms
    */
-  @Scheduled(fixedRateString = "${dgaa.scheduler.interval}", initialDelay = 1000)
+  @Scheduled(fixedRateString = "${dgaa.scheduler.interval}", initialDelay = 15000)
   @Transactional
   public void testScheduler() {
     try {
