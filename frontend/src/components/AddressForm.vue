@@ -298,6 +298,8 @@ export default {
     /**
      * Generates address string from OSM object for string comparison with edit distance
      * Includes properties not used in the rest of the component such as district, locality
+     * @param {object} osmAddress OSM object
+     * @return {string} OSM address with several relevant fields concatanated together with commas and spaces
      */
     generateComparisonString(osmAddress) {
       if (osmAddress.housenumber && osmAddress.street) osmAddress["streetaddress"] = osmAddress.housenumber + " " + osmAddress.street;
@@ -311,8 +313,11 @@ export default {
         "postcode",
         "country"
       ];
-      const result = components.filter(name => osmAddress[name]).reduce((prev, curr) => prev + osmAddress[curr] + ", ", ""); // Concatenate with comma and space
-      if (result.length) return result.slice(0, -2);
+
+      // Concatenate with comma and space
+      // housenumber/street could be undefined so streetaddress could be undefined as well. Hence, filter
+      const result = components.filter(name => osmAddress[name]).reduce((prev, curr) => prev + osmAddress[curr] + ", ", "");
+      if (result.length) return result.slice(0, -2); // Remove comma and space from end
       return result;
     },
 
