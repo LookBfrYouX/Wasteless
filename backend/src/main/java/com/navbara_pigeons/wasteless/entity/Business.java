@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -43,7 +44,7 @@ public class Business {
   private String businessType;
 
   @Column(name = "CREATED")
-  private String created;
+  private ZonedDateTime created;
 
   @ManyToMany(
       fetch = FetchType.EAGER,

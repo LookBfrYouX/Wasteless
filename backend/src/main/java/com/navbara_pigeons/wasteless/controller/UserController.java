@@ -38,11 +38,9 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
 
   private final UserService userService;
-  private final BusinessService businessService;
 
-  public UserController(@Autowired UserService userService, BusinessService businessService) {
+  public UserController(@Autowired UserService userService) {
     this.userService = userService;
-    this.businessService = businessService;
   }
 
   /**
@@ -193,47 +191,4 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient privileges");
     }
   }
-
-  /**
-   * Endpoint allowing a user to register a business account Returns error with message if service
-   * business logic doesnt pass
-   *
-   * @param business The Business object that is sent from the front-end.
-   * @return Returns the newly created businesses id and 201 status code in a ResponseEntity
-   * @throws ResponseStatusException Unknown Error.
-   */
-  @PostMapping("/businesses")
-  public ResponseEntity<String> registerBusiness(@RequestBody Business business) {
-    try {
-      businessService.saveBusiness(business);
-      return new ResponseEntity<>("Business account successfully created", HttpStatus.valueOf(201));
-    } catch (Exception exc) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-    }
-  }
-
-  /**
-   * Search for a specific business using the id field.
-   *
-   * @param id unique identifier of the business being searched for
-   * @return business entity matching the given id
-   * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
-   */
-  @GetMapping("/businesses/{id}")
-  public ResponseEntity<JSONObject> getBusinessById(@PathVariable String id) {
-    try {
-      log.info("GETTING BUSINESS BY ID: " + id);
-      return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)),
-          HttpStatus.valueOf(200));
-    } catch (BusinessNotFoundException exc) {
-      log.error("BUSINESS NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (NumberFormatException exc) {
-      log.error("INVALID ID FORMAT ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), "ID format not valid");
-    } catch (Exception exc) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-    }
-  }
-
 }

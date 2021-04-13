@@ -11,6 +11,8 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
@@ -64,7 +66,7 @@ public class BusinessServiceImpl implements BusinessService {
     Authentication authentication = securityContext.getAuthentication();
     User currentUser = this.userDao.getUserByEmail(authentication.getName());
     business.addAdministrator(currentUser);
-    business.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+    business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     this.addressDao.saveAddress(business.getAddress());
     this.businessDao.saveBusiness(business);
     JSONObject response = new JSONObject();
