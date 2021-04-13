@@ -9,13 +9,14 @@ export class EditDistance {
   insertCost = 1;
   deleteCost = 1;
   substituteCost = 1;
+
   /**
    * Creates EditDistance instance
-   * @param {*} original original string
-   * @param {*} modified modified string to compare to the original
-   * @param {*} insertCost cost of an insertion operation
-   * @param {*} deleteCost cost of an deletion operation
-   * @param {*} substituteCost cost of an substitution operation
+   * @param {String} original original string
+   * @param {String} modified modified string to compare to the original
+   * @param {Number} insertCost cost of an insertion operation
+   * @param {Number} deleteCost cost of an deletion operation
+   * @param {Number} substituteCost cost of an substitution operation
    */
   constructor(original, modified, insertCost = 1, deleteCost = 1, substituteCost = 1) {
     this.original = original;
@@ -28,8 +29,8 @@ export class EditDistance {
 
   /**
    * Gets edit distance from the cache
-   * @param {*} i index in original string
-   * @param {*} j index in modified string
+   * @param {Number} i index in original string
+   * @param {Number} j index in modified string
    * @returns undefined if not present, edit distance otherwise
    */
   _getFromCache(i, j) {
@@ -38,9 +39,9 @@ export class EditDistance {
 
   /**
    * Inserts edit distance into cache
-   * @param {*} i index in original string
-   * @param {*} j index in modified string
-   * @param {*} value 
+   * @param {Number} i index in original string
+   * @param {Number} j index in modified string
+   * @param {Number} value 
    */
   _insertIntoCache(i, j, value) {
     if (this.cache[i] === undefined) this.cache[i] = {
@@ -51,23 +52,33 @@ export class EditDistance {
 
   /**
    * Calculates edit distance
-   * @param {*} i index in original string; edit distance if the original string was a substring from index 0 to index i inclusive
-   * @param {*} j index in modified string; edit distance if the modified string was a substring from index 0 to index j inclusive
+   * @param {Number | undefined} i index in original string; edit distance if the original string was a substring from index 0 to index i inclusive
+   * @param {Number | undefined} j index in modified string; edit distance if the modified string was a substring from index 0 to index j inclusive
    * @returns edit distance
    */
-  _calculate(i, j) {
-    if (i <= 0) return j * this.insertCost;
-    if (j <= 0) return i * this.deleteCost;
+  _calculate(i = undefined, j = undefined) {
+    if (i == undefined || j == undefined) {
+      i = this.original.length - 1;
+      j = this.modified.length - 1;
+    }
+    if (i < 0 && j < 0) return 0;
+    // 0 means string length 1 so need to insert/delete length of other string + 1
+    else if (i < 0) return (j + 1) * this.insertCost;
+    else if (j < 0) return (i + 1) * this.deleteCost;
     
     const cached = this._getFromCache(i, j);
     if (cached !== undefined) return cached;
     
     
-    if (this.original[i] === this.modified[j]) return this.calculate(i - 1, j - 1);
+    if (this.original[i] === this.modified[j]) {
+      const distance = this._calculate(i - 1, j - 1);
+      this._insertIntoCache(i, j, distance);
+      return distance;
+    }
     
-    const deletion = this.calculate(i - 1, j) + this.deleteCost;
-    const insertion = this.calculate(i, j - 1) + this.insertCost;
-    const substitution = this.calculate(i - 1, j - 1) + this.substituteCost;
+    const deletion = this._calculate(i - 1, j) + this.deleteCost;
+    const insertion = this._calculate(i, j - 1) + this.insertCost;
+    const substitution = this._calculate(i - 1, j - 1) + this.substituteCost;
     
     const result = Math.min(deletion, insertion, substitution);
     this._insertIntoCache(i, j, result);
@@ -79,8 +90,18 @@ export class EditDistance {
    * @returns edit distance
    */
   calculate() {
-    const i = this.original.length - 1;
-    const j = this.modified.length - 1;
-    return this._calculate(i, j);
+    return this._calculate();
+  }
+
+  /**
+   * Static method which calculates edit distance between original and modified strings
+   * @param {String} original original string
+   * @param {String} modified modified string to compare to the original
+   * @param {Number} insertCost cost of an insertion operation
+   * @param {Number} deleteCost cost of an deletion operation
+   * @param {Number} substituteCost cost of an substitution operation
+   */
+   static calculate(original, modified, insertCost = 1, deleteCost = 1, substituteCost = 1) {
+    return (new EditDistance(original, modified, insertCost, deleteCost, substituteCost)).calculate();
   }
 }

@@ -144,8 +144,6 @@ The parent component must provide `address` prop. When the address is updated in
 const axios = require("axios");
 const { EditDistance } = require("./../EditDistance");
 
-const calculateEditDistance = (stringA, stringB) => new EditDistance(stringA.toLowerCase(), stringB.toLowerCase(), 1, 50, 50).calculate();
-
 const Suggestions = require("./Suggestions").default;
 
 // Fields in order of specifity
@@ -153,7 +151,21 @@ const Suggestions = require("./Suggestions").default;
 export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "city", "region", "postcode", "country"];
 Object.freeze(ADDRESS_SECTION_NAMES);
 
-const WORST_EDIT_DISTANCE_RATIO = 2;
+/**
+ * Edit distance divided by (modified) string length
+ * Use ratio instead of raw measure to not favour longer strings
+ */
+const EDIT_DISTANCE_WORST_RATIO = 2;
+
+/**
+ * Delete/substitute costs are very high since suggestions are likely to be much longer than the input string
+ * Typos are probably fairly rare so most of the time character should be inserted, not modified - that probably means
+ * the Photon suggestion does not match input at all (e.g. 'name' property matches but we don't care about the name)
+ */
+const EDIT_DISTANCE_INSERT_COST = 1;
+const EDIT_DISTANCE_DELETE_COST = 50;
+const EDIT_DISTANCE_SUBSTITUTE_COST = 50;
+
 const API_CALL_DEBOUNCE_TIME = 100;
 const API_MIN_QUERY_LENGTH = 3;
 export default {
@@ -310,7 +322,8 @@ export default {
     generateAddressSuggestions: function () {
       const suggestionsDict = {};
       // Using dict instead of array to remove duplicates (e.g. shops in a mall will have different name but otherwise same address)
-      const originalString = this.generateAddressString();
+      
+      const originalString = this.generateAddressString().toLocaleLowerCase();
       for (const {type, properties} of this.addressSuggestionsRaw) {
         if (type != "Feature") {
           continue;
@@ -325,10 +338,18 @@ export default {
         }
 
         const resultString = this.generateComparisonString(properties);
-        const distance = calculateEditDistance(originalString, resultString);
+        const distance = EditDistance.calculate(
+          originalString,
+          resultString.toLocaleLowerCase(),
+          EDIT_DISTANCE_INSERT_COST,
+          EDIT_DISTANCE_DELETE_COST,
+          EDIT_DISTANCE_SUBSTITUTE_COST
+        );
+
         const ratio = distance/Math.abs(resultString.length);
+
         // Use ratio to not favour longer suggestions
-        if (ratio > WORST_EDIT_DISTANCE_RATIO) {
+        if (ratio > EDIT_DISTANCE_WORST_RATIO) {
           // Suggestion too bad
           continue;
         }
