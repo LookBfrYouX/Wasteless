@@ -17,21 +17,25 @@ export const router = new VueRouter({
   base: process.env.VUE_APP_BASE_URL,
   routes: [
     {
+      meta: { title: 'Home' },
       name: "home",
       path: "/",
       component: Home
     },
     {
+      meta: { title: 'Login' },
       name: "login",
       path: "/login",
       component: Login
     },
     {
+      meta: { title: 'Sign Up' },
       name: "signUp",
       path: "/signUp",
       component: SignUp
     },
     {
+      meta: { title: 'Dashboard' },
       name: "profile",
       path: "/profile/:userId(\\d+)?",
       component: Profile,
@@ -48,17 +52,20 @@ export const router = new VueRouter({
       }
     },
     {
+      meta: { title: 'Search' },
       name: "search",
       path: "/searchresults/:query(.*)",
       component: () => import('./components/SearchResults.vue'),
       props: route => ({search: route.params.query})
     },
     {
+      meta: { title: 'Register Business' },
       name: "registerBusiness",
       path: "/registerbusiness",
       component: RegisterBusiness
     },
     {
+      meta: { title: 'Business Dashboard' },
       name: "businessProfile",
       path: "/businessprofile/:businessId(\\d+)",
       component: BusinessProfile,
