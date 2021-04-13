@@ -58,6 +58,9 @@ export default {
     businessId: {
       type: Number,
       required: true
+    },
+    setDocumentTitle: {
+      required: true
     }
   },
 
@@ -95,6 +98,10 @@ export default {
   watch: {
     businessId: function () {
       this.parseApiResponse(this.callApi(this.businessId))
+    },
+
+    businessInfo() {
+      if (this.businessInfo !== null) this.setDocumentTitle(`${this.businessInfo.name} | Business`);
     }
   },
 }
