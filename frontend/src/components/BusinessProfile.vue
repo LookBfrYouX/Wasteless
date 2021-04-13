@@ -2,6 +2,11 @@
   <div class="bprofile-card card container">
     <div>
       <h1 class="title">Business Information</h1>
+      <button class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3" type="button"
+              v-if="this.userId" v-on:click="backToProfile">
+        <span class="material-icons mr-1">arrow_back</span>
+        Back to Profile
+      </button>
       <ul class="bprofile-info list-unstyled">
         <li class="row">
           <dt class="col-md label">Business Title:</dt>
@@ -17,15 +22,15 @@
             {{
               [
                 businessInfo.address.streetNumber +
-                  " " +
-                  businessInfo.address.streetName,
+                " " +
+                businessInfo.address.streetName,
                 businessInfo.address.city,
                 businessInfo.address.region,
                 businessInfo.address.postcode,
                 businessInfo.address.country,
               ]
-                .filter(Boolean)
-                .join(", ")
+              .filter(Boolean)
+              .join(", ")
             }}
           </dd>
         </li>
@@ -61,12 +66,21 @@ export default {
       errorMessage: "",
     };
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.prevRoute = from
+    })
+  },
 
   props: {
     businessId: {
       type: Number,
       required: true,
     },
+    userId: {
+      type: Number,
+      required: false,
+    }
   },
 
   beforeMount: function () {
@@ -83,6 +97,17 @@ export default {
       return Api.businessProfile(businessId);
     },
 
+    showBackButton: function () {
+      console.log(this.userId);
+      return this.userId != undefined;
+    },
+
+    backToProfile: function () {
+      this.$router.push({
+        path: "/profile/" + this.userId
+      });
+    },
+
     /**
      * Parses the API response given a promise to the request
      */
@@ -92,9 +117,9 @@ export default {
         this.businessInfo = response.data;
       } catch (err) {
         alert(
-          err.userFacingErrorMessage == undefined
-            ? err.toString()
-            : err.userFacingErrorMessage
+            err.userFacingErrorMessage == undefined
+                ? err.toString()
+                : err.userFacingErrorMessage
         );
       }
     },

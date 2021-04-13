@@ -106,7 +106,7 @@
                 {{ business.businessType }}
               </h6>
               <p class="card-text">{{ business.description }}</p>
-              <a class="card-link" v-on:click="viewBusiness(business.id)"
+              <a class="card-link" v-on:click="viewBusiness(business.id, userId)"
                 >More info</a
               >
             </li>
@@ -390,13 +390,13 @@ export default {
       return `${yearsText}, ${monthsText}`;
     },
 
-    viewBusiness(businessId) {
-      console.log(businessId);
+    viewBusiness(businessId, userId) {
       this.$stateStore.actions.setBusinessId(businessId);
       this.$router.push({
         name: "businessProfile",
         params: {
-          businessId
+          businessId,
+          userId
         },
       });
     },

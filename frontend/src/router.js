@@ -64,12 +64,13 @@ export const router = new VueRouter({
       component: BusinessProfile,
       props: route => {
         let businessId = route.params.businesssId;
+        let userId = route.params.userId;
         if (businessId == undefined || businessId == null) {
           businessId = parseInt(window.localStorage.getItem("businessId"));
         } else {
           businessId = parseInt(businessId, 10); // Using \d so parseInt should always work
         }
-        return {businessId};
+        return {businessId, userId};
       }
     },
     {
