@@ -141,32 +141,21 @@ export default {
      * Returns a promise, not a response
      */
     register: async function () {
-      try {
-        this.nameErrorMessage = null;
-        this.typeErrorMessage = null;
-        this.descriptionErrorMessage = null;
-        const user = this.$stateStore.getters.getAuthUser();
-        var response = await this.callApi({
-          primaryAdministratorId: user.id,
-          name: this.name,
-          description: this.description,
-          address: {
-            streetNumber: this.address.streetNumber,
-            streetName: this.address.streetName,
-            postcode: this.address.postcode,
-            city: this.address.city,
-            region: this.address.region,
-            country: this.address.country,
-          },
-          businessType: this.type, // API stores the type as businessType not type
-        });
-      } catch (err) {
-        // TODO: Need to handle errors here
-        return;
-      }
-
-      this.errorMessage = "";
-      this.emailUsed = false;
+      const user = this.$stateStore.getters.getAuthUser();
+      var response = await this.callApi({
+        primaryAdministratorId: user.id,
+        name: this.name,
+        description: this.description,
+        address: {
+          streetNumber: this.address.streetNumber,
+          streetName: this.address.streetName,
+          postcode: this.address.postcode,
+          city: this.address.city,
+          region: this.address.region,
+          country: this.address.country,
+        },
+        businessType: this.type, // API stores the type as businessType not type
+      });
       this.$stateStore.actions.setBusinessId(response.data.businessId);
       await this.$router.push({ name: "businessProfile" });
     },

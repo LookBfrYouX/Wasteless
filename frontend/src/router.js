@@ -36,6 +36,7 @@ export const router = new VueRouter({
       path: "/profile/:userId(\\d+)?",
       component: Profile,
       props: route => {
+        // TODO: figure out new way of routing without local storage
         let userId = route.params.userId;
         if (userId == null) {
           const loggedInId = parseInt(window.localStorage.getItem("userId"));
@@ -63,6 +64,7 @@ export const router = new VueRouter({
       path: "/businessprofile/:businessId(\\d+)",
       component: BusinessProfile,
       props: route => {
+        // TODO: figure out new way of routing without local storage
         let businessId = route.params.businesssId;
         let userId = route.params.userId;
         if (businessId == undefined || businessId == null) {
