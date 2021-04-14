@@ -34,6 +34,7 @@
               v-model="type"
               class="form-control"
               name="type"
+              required
               v-bind:class="{ 'is-invalid': typeRequired }"
             >
               <option v-for="code in types" :key="code.message">
