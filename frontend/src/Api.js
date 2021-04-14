@@ -146,8 +146,8 @@ export default {
    * `name`, `id`, `description`, `recommendedRetailPrice`
    * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
-  createProduct: (props) => {
-    return instance.post(`/businesses/${id}/products`, id, props).catch(error => {
+  createProduct: (id, props) => {
+    return instance.post(`/businesses/${id}/products`, props).catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {});
     });
   },

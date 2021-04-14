@@ -116,8 +116,8 @@ export default {
      */
     callApi: function (data) {
       console.warn("NOTE: Because we don't have the changes from U5 businesses, this will not work until state is updated to use getBusinessId() function");
-      const businessId = this.$stateStore.getters.getBusinessId();
-      return Api.createProduct(businessId, data);
+      // const businessId = this.$stateStore.getters.getBusinessId();
+      // return Api.createProduct(businessId, data);
     },
 
     createProduct: async function () {
