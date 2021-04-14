@@ -33,4 +33,20 @@ public class ProductController {
         }
     }
 
+    /**
+     * This endpoint is to add a product to the catalog
+     * @param id The id of business
+     * @param product The product to be added
+     */
+    @PostMapping("/businesses/{id}/products")
+    public ResponseEntity<String> showAllBusinessProducts(@PathVariable String id, @RequestBody Product product) {
+        try {
+            return new ResponseEntity<>(HttpStatus.valueOf(201), "Product created successfully");
+        } catch (ProductRegistrationException exc) {
+            throw new ResponseStatusException(HttpStatus.valueOf(400), "There was some error with the data supplied by the user");
+        } catch (Exception exc) {
+            throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
+        }
+    }
+
 }
