@@ -95,7 +95,7 @@
 </template>
 
 <script>
-const Api = require("../Api").default;
+// const Api = require("../Api").default;
 
 export default {
   data() {
@@ -114,20 +114,20 @@ export default {
     /**
      * Wrapper which simply calls the sign up method of the api
      */
-    callApi: function (data) {
-      console.warn("NOTE: Because we don't have the changes from U5 businesses, this will not work until state is updated to use getBusinessId() function");
+    //TODO: implement state getBusinessId method on U15 (from U5)
+    // callApi: function (data) {
       // const businessId = this.$stateStore.getters.getBusinessId();
       // return Api.createProduct(businessId, data);
-    },
+    // },
 
-    createProduct: async function () {
-        await this.callApi({
-          name: this.name,
-          id: this.id,
-          description: this.description,
-          recommendedRetailPrice: this.price, // API stores the type as businessType not type
-        });
-      },
+    // createProduct: async function () {
+    //     await this.callApi({
+    //       name: this.name,
+    //       id: this.id,
+    //       description: this.description,
+    //       recommendedRetailPrice: this.price, // API stores the type as businessType not type
+    //     });
+    //   },
     },
 };
 </script>
