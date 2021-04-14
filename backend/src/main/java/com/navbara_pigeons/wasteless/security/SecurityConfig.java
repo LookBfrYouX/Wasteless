@@ -69,6 +69,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.PUT, "/users/{id}/revokeAdmin", "/admin").hasRole("ADMIN")
         .antMatchers(HttpMethod.POST, "/businesses").authenticated()
         .antMatchers(HttpMethod.GET, "/businesses/{id}").authenticated()
+        .antMatchers(HttpMethod.GET, "/businesses/{id}/products").authenticated()
+        // Calls custom cors handler and parses the path variable 'id'
+        .antMatchers(HttpMethod.POST, "/businesses/{id}/products").access("@customCors.isBusinessAdmin(#id)")
         .anyRequest().authenticated()
         .and()
         .httpBasic()
