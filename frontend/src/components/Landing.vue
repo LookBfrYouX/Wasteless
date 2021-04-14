@@ -1,13 +1,13 @@
 <!-- home page will include inventory / product catalogue later. -->
 <template>
   <div class="container pt-4">
-    <h1>Home Page</h1>
-    <p>Beautiful, ain't it?</p>
+    <h1>Landing Page</h1>
+    <p>Why aren't you signed in?</p>
   </div>
 </template>
 <script>
 
 export default {
-  name: "homePage"
+  name: "landingPage"
 }
 </script>

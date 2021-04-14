@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import {store} from './store'
 import Login from './components/Login.vue'
 import SignUp from './components/SignUp.vue'
 import Profile from './components/Profile.vue'
 import BusinessProfile from './components/BusinessProfile'
 import RegisterBusiness from './components/RegisterBusiness'
 import Home from "./components/Home.vue"
+import Landing from "./components/Landing.vue"
 
 export default []
 
@@ -17,9 +19,20 @@ export const router = new VueRouter({
   base: process.env.VUE_APP_BASE_URL,
   routes: [
     {
-      name: "home",
+      name: "landing",
       path: "/",
-      component: Home
+      component: Landing
+    },
+    {
+      name: "home",
+      path: "/home",
+      component: Home,
+      beforeEnter: (to, from, next) => {
+        if (store.getters.isLoggedIn()) {
+          next()
+        }
+        else next({name:'landing'});
+      }
     },
     {
       name: "login",
