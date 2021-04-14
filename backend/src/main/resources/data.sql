@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS user_business;
 DROP TABLE IF EXISTS business;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS address;
+DROP TABLE IF EXISTS product;
 
 CREATE TABLE address
 (
@@ -58,6 +59,15 @@ CREATE TABLE user_business
         FOREIGN KEY (USER_ID) REFERENCES user (ID),
     CONSTRAINT user_business_business_fk
         FOREIGN KEY (BUSINESS_ID) references business (ID)
+);
+
+CREATE TABLE product
+(
+    ID          INT           NOT NULL,
+    NAME        VARCHAR(100),
+    DESCRIPTION VARCHAR(200),
+    RRP         DECIMAL(6, 2) NOT NULL,
+    CREATED     DATETIME      NOT NULL
 );
 
 INSERT INTO address(STREET_NUMBER,
