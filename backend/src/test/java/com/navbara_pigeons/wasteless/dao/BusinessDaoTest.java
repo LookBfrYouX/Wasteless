@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +70,7 @@ public class BusinessDaoTest {
   Business makeBusiness() {
     Business business = new Business();
     business.setName("test")
-        .setCreated("2020-07-14T14:32:00Z")
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setBusinessType("Non-profit organisation")
         .setAddress(makeAddress())
         .setId(0)

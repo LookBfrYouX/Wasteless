@@ -8,6 +8,8 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +89,7 @@ public class BusinessServiceImplTest {
   Business makeBusiness() {
     Business business = new Business();
     business.setName("test")
-        .setCreated("2020-07-14T14:32:00Z")
+        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setBusinessType("Non-profit organisation")
         .setAddress(makeAddress())
         .setId(0)
