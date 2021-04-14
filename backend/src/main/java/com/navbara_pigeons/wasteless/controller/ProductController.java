@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,7 +43,7 @@ public class ProductController {
     @PostMapping("/businesses/{id}/products")
     public ResponseEntity<String> showAllBusinessProducts(@PathVariable String id, @RequestBody Product product) {
         try {
-            return new ResponseEntity<>(HttpStatus.valueOf(201), "Product created successfully");
+            return new ResponseEntity<>("Product created successfully", HttpStatus.valueOf(201));
         } catch (ProductRegistrationException exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(400), "There was some error with the data supplied by the user");
         } catch (Exception exc) {
