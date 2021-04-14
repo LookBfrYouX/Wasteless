@@ -60,6 +60,11 @@
                   </div>
                 </a>
                 <div aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-right">
+                  <button v-for="business in actingAsEntities" :key="business.id"
+                          v-on:click="switchActingAs(business)">
+                    {{business.name}}
+                  </button>
+
                   <button class="dropdown-item" v-on:click="logOut">Log out</button>
                 </div>
               </li>
@@ -138,6 +143,19 @@ export default {
     isAdmin() {
       return this.$stateStore.getters.isAdmin();
     },
+
+    actingAsEntities() {
+      let actingAsEntities = this.authUser.businesses;
+      console.log(actingAsEntities);
+      let currentBusiness = this.$stateStore.getters.getActingAs()
+      if (currentBusiness != null) {
+        let index = actingAsEntities.indexOf(currentBusiness);
+        if (index !== -1) {
+          actingAsEntities.splice(index, 1);
+        }
+      }
+      return actingAsEntities;
+    }
   },
   methods: {
     /**
@@ -153,6 +171,7 @@ export default {
      * Navigate to log in page
      */
     login: async function () {
+      console.log(localStorage.getItem("authUser"));
       return this.pushOrGo("login");
     },
 
@@ -201,6 +220,10 @@ export default {
           query: this.query,
         },
       });
+    },
+
+    switchActingAs: function (business) {
+      this.$stateStore.actions.setActingAs(business);
     },
   },
 };

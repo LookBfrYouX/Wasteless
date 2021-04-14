@@ -67,8 +67,8 @@ export const store = {
       localStorage.setItem("authUser", JSON.stringify(state.authUser));
     },
     // Get business of user acting as
-    setActingAs: (businessId) => {
-      state.actingAs = businessId;
+    setActingAs: (business) => {
+      state.actingAs = business;
     },
     // Delete business of user acting as when user switch back to individual
     deleteActingAS: () => {
