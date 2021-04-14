@@ -140,6 +140,18 @@ export default {
   },
 
   /**
+   *
+   * @param {object} props with properties:
+   * `name`, `id`, `description`, `recommendedRetailPrice`
+   * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  createProduct: (props) => {
+    return instance.post(`/businesses/${id}/products`, id, props).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {});
+    });
+  },
+
+  /**
    * Sends a search query
    * @param searchQuery
    * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property

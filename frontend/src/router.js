@@ -6,6 +6,7 @@ import Profile from './components/Profile.vue'
 import BusinessProfile from './components/BusinessProfile'
 import RegisterBusiness from './components/RegisterBusiness'
 import Home from "./components/Home.vue"
+import CreateProduct from "@/components/CreateProduct";
 
 export default []
 
@@ -57,6 +58,11 @@ export const router = new VueRouter({
       name: "registerBusiness",
       path: "/registerbusiness",
       component: RegisterBusiness
+    },
+    {
+      name: "createProduct",
+      path: "/createproduct",
+      component: CreateProduct
     },
     {
       name: "businessProfile",
