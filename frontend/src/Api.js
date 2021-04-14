@@ -141,6 +141,7 @@ export default {
 
   /**
    *
+   * @param {*} id ID of business
    * @param {object} props with properties:
    * `name`, `id`, `description`, `recommendedRetailPrice`
    * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
