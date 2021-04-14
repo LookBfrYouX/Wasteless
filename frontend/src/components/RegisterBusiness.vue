@@ -157,7 +157,13 @@ export default {
         businessType: this.type, // API stores the type as businessType not type
       });
       this.$stateStore.actions.setBusinessId(response.data.businessId);
-      await this.$router.push({ name: "businessProfile" });
+      const businessId = this.$stateStore.actions.getBusinessId();
+      await this.$router.push({
+        name: "businessProfile",
+        params: {
+          businessId,
+        },
+      });
     },
   },
 };
