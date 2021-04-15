@@ -3,12 +3,10 @@ package com.navbara_pigeons.wasteless.service;
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
+import com.navbara_pigeons.wasteless.validation.AddressValidator;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -40,6 +38,7 @@ public class UserServiceImpl implements UserService {
 
   private final AddressDao addressDao;
   private final UserDao userDao;
+  private final AddressValidator addressValidator;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final BCryptPasswordEncoder encoder;
 
@@ -51,14 +50,17 @@ public class UserServiceImpl implements UserService {
    * for interacting with all user related services.
    *
    * @param userDao                      The UserDataAccessObject.
+   * @param addressDao                   The AddressDataAccessObject
+   * @param addressValidator             The address validator
    * @param authenticationManagerBuilder The global AuthenticationManagerBuilder.
    * @param encoder                      Password encoder.
    */
   @Autowired
-  public UserServiceImpl(UserDao userDao, AddressDao addressDao,
+  public UserServiceImpl(UserDao userDao, AddressDao addressDao, AddressValidator addressValidator,
       AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder encoder) {
     this.userDao = userDao;
     this.addressDao = addressDao;
+    this.addressValidator = addressValidator;
     this.authenticationManagerBuilder = authenticationManagerBuilder;
     this.encoder = encoder;
   }
@@ -101,9 +103,18 @@ public class UserServiceImpl implements UserService {
     if (!UserServiceValidation.isPasswordValid(user.getPassword())) {
       throw new UserRegistrationException("Password does not pass validation check");
     }
+
     // Address validation
-    if (!UserServiceValidation.isAddressValid(user)) {
+    if (!addressValidator.isAddressValid(user.getHomeAddress())) {
       throw new UserRegistrationException("Required address fields cannot be null");
+    }
+    try {
+      if (!addressValidator.isCountryValid(user.getHomeAddress().getCountry())) {
+        throw new UserRegistrationException("Country does not exist is is not known");
+      }
+    } catch(FetchRequestException e) {
+      // TODO change this to a 500?
+      throw new UserRegistrationException("Could not fetch list of countries for validation");
     }
 
     // Set user credentials for logging in after registering
