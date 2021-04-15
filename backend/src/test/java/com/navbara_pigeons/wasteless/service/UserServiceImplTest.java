@@ -126,6 +126,13 @@ class UserServiceImplTest {
     }
   }
 
+  @Test
+  void saveInvalidCountry() throws Throwable {
+    User user = makeUser();
+    user.getHomeAddress().setCountry("Fake Zealand");
+    trySaveUserExpectError(user);
+  }
+
 
   @Test
   @Transactional

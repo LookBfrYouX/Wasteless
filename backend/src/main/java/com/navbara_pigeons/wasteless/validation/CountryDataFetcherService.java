@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.validation;
 
+import com.navbara_pigeons.wasteless.exception.FetchRequestException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -9,6 +10,8 @@ import org.springframework.web.client.RestTemplate;
 import java.io.Serializable;
 import java.util.HashMap;
 
+// TODO add minimum delay between requests?
+// TODO business service not validating address
 @Service
 public class CountryDataFetcherService {
     private final RestTemplate restTemplate;
@@ -24,8 +27,9 @@ public class CountryDataFetcherService {
     /**
      * Gets a list of country **objects** (not country name)
      * @return list of country objects
+     * @throws FetchRequestException if could not get response from API
      */
-    public Country[] getCountries() {
+    public Country[] getCountries() throws FetchRequestException {
         if (this.countries != null) return this.countries;
 
         this.fetchCountries();
@@ -35,16 +39,23 @@ public class CountryDataFetcherService {
 
     /**
      * Fetches countries from the API and sets this.countries
+     * @throws FetchRequestException if could not get response from API
      */
-    private void fetchCountries() {
-        this.countries = this.restTemplate.getForObject(this.requestPath, Country[].class);
+    private void fetchCountries() throws FetchRequestException {
+        try {
+            this.countries = this.restTemplate.getForObject(this.requestPath, Country[].class);
+        } catch(Exception e) {
+            // No network connection, no response, could not parse etc.
+            throw new FetchRequestException(e);
+        }
     }
 
     /**
      * Gets a hash map with the country name as key and the currency that should be used in that country
      * @return hash map
+     * @throws FetchRequestException if could not get response from API
      */
-    public HashMap<String, Currency> getCurrencyHashMap() {
+    public HashMap<String, Currency> getCurrencyHashMap() throws FetchRequestException {
         if (this.currencyHashMap != null) return this.currencyHashMap;
         else this.generateCurrencyHashMap(this.getCountries());
         return this.currencyHashMap;
@@ -53,8 +64,9 @@ public class CountryDataFetcherService {
     /**
      * Generates hash map between country name and the currency that should be used in that country,
      * setting this.currencyHashMap
+     * @throws FetchRequestException if could not get response from API
      */
-    private void generateCurrencyHashMap(Country[] countries) {
+    private void generateCurrencyHashMap(Country[] countries) throws FetchRequestException {
         this.currencyHashMap = new HashMap<>();
         for (Country country: countries) {
             Currency currencyToUse = null;
@@ -76,17 +88,19 @@ public class CountryDataFetcherService {
      * Checks if country exists (or if the REST Api returns that country and there is a currency we can use)
      * @param country name of the country
      * @return true if country is known
+     * @throws FetchRequestException if could not get response from API
      */
-    public boolean countryExists(String country) {
+    public boolean countryExists(String country) throws FetchRequestException {
         return this.getCurrencyHashMap().containsKey(country);
     }
 
     /**
      * Gets the currency for the country
      * @param country name of the country
-     * @returnn null if country not found, currency that should be used in the country otherwise
+     * @return null if country not found, currency that should be used in the country otherwise
+     * @throws FetchRequestException if could not get response from API
      */
-    public Currency getCurrencyForCountry(String country) {
+    public Currency getCurrencyForCountry(String country) throws FetchRequestException {
         return this.getCurrencyHashMap().get(country);
     }
 }
