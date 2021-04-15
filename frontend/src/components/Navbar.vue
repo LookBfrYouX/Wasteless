@@ -60,12 +60,26 @@
                   </div>
                 </a>
                 <div aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-right">
-                  <button v-for="business in actingAsEntities" :key="business.id"
-                          v-on:click="switchActingAs(business)">
+                  <h4 class="dropdown-header">Logged in as</h4>
+                  <div class="dropdown-item">
+                    {{ authUser.firstName }} {{ authUser.lastName }}
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <h4 class="dropdown-header">Act as</h4>
+                  <a v-if="this.$stateStore.getters.getActingAs() == null"
+                     class="dropdown-item">
+                    {{ authUser.firstName }} {{ authUser.lastName }}
+                  </a>
+                  <a v-for="business in actingAsEntities" :key="business.id"
+                          v-on:click="switchActingAs(business)"
+                          class="dropdown-item">
                     {{business.name}}
-                  </button>
-
-                  <button class="dropdown-item" v-on:click="logOut">Log out</button>
+                    <span>
+                      &#10003;
+                    </span>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" v-on:click="logOut">Log out</a>
                 </div>
               </li>
             </ul>
