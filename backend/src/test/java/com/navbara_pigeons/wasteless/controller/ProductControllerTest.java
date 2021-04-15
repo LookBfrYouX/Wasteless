@@ -1,30 +1,41 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.entity.Product;
-import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = ProductController.class)
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class ProductControllerTest {
 
     @Autowired
     public MockMvc mockMvc;
 
-    @MockBean
-    private Product product;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Test
+    @WithMockUser(username = "admin@wasteless.co.nz", password = "admin")
+    void getProductsFromOneBusinessTest() throws Exception {
+        String endpointUrl = "/businesses/1/products";
+        this.mockMvc.perform(get(endpointUrl)).andExpect(status().isOk());
+    }
 
     // Throws a 400 status code on a bad request to the controller
     @Test

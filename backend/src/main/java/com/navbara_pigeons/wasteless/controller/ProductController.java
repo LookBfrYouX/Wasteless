@@ -25,12 +25,13 @@ public class ProductController {
 
     /**
      * This endpoint retrieves a list of all products listed by a particular business (id).
-     * @param id
-     * @return
+     * @param id The ID of the business whose products are to be displayed
+     * @return response A JSONObject containing the product information of all products listed for the business.
      */
     @GetMapping("/businesses/{id}/products")
     public ResponseEntity<JSONObject> showAllBusinessProducts(@PathVariable String id) {
         try {
+            //JSONObject response = productService.getAllBusinesses(id);
             return new ResponseEntity<>(new JSONObject(), HttpStatus.valueOf(200));
         } catch (Exception exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
