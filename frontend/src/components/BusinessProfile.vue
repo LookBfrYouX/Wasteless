@@ -98,7 +98,6 @@ export default {
     },
 
     showBackButton: function () {
-      console.log(this.userId);
       return this.userId != undefined;
     },
 
