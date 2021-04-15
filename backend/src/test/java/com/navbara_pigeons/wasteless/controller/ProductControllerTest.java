@@ -1,52 +1,88 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.entity.Product;
-import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = ProductController.class)
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
 public class ProductControllerTest {
 
     @Autowired
     public MockMvc mockMvc;
 
-    @MockBean
-    private Product product;
-
     @Autowired
     private ObjectMapper objectMapper;
 
-    // Throws a 400 status code on a bad request to the controller
     @Test
-    public void throwErrorOnBadProductTest() throws Exception {
+    @WithMockUser(username = "admin@wasteless.co.nz", password = "admin")
+    void getProductsFromOneBusinessTestAsAdmin() throws Exception {
+        String endpointUrl = "/businesses/1/products";
+        this.mockMvc.perform(get(endpointUrl)).andExpect(status().isOk());
+    }
+
+    @Test
+    void getProductsFromOneBusinessTestAsAnon() throws Exception {
+        String endpointUrl = "/businesses/1/products";
+        this.mockMvc.perform(get(endpointUrl)).andExpect(status().isUnauthorized());
+    }
+
+    // Throw 201 on successful request to controller
+    @Test
+    @WithMockUser(username = "dnb36@uclive.ac.nz", password = "fun123")
+    public void return201OnAddProductTest() throws Exception {
+        Product product = new Product("WATT-420-BEANS", "Watties Baked Beans - 420g can", "Baked Beans as they should be.", 2.2);
+
+        mockMvc.perform(post("/businesses/1/products")
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(product)))
+            .andExpect(status().isCreated());
+    }
+
+    // Throws 400 on bad request to controller
+    @Test
+    @WithMockUser(username = "dnb36@uclive.ac.nz", password = "fun123")
+    public void throw400OnBadProductTest() throws Exception {
         Product product = new Product(null, null, "Hello", 40.99);
 
-        mockMvc.perform(MockMvcRequestBuilders
-            .post("/businesses/{id}/products")
+        mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(product)))
             .andExpect(status().isBadRequest());
     }
 
-    // Throws a 201 status code on a successful request to the controller
+    // Throw 401 on bad request to controller
     @Test
-    public void return201OnAddProductTest() throws Exception {
+    @WithAnonymousUser
+    public void return401OnAddProductTest() throws Exception {
         Product product = new Product("WATT-420-BEANS", "Watties Baked Beans - 420g can", "Baked Beans as they should be.", 2.2);
 
-        mockMvc.perform(MockMvcRequestBuilders
-            .post("/businesses/{id}/products")
+        mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(product)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isUnauthorized());
+    }
+
+    // Throw 403 on bad request to controller
+    @Test
+    @WithMockUser(username = "tony@gmail.com", password = "tony")
+    public void return403OnAddProductTest() throws Exception {
+        Product product = new Product("WATT-420-BEANS", "Watties Baked Beans - 420g can", "Baked Beans as they should be.", 2.2);
+
+        mockMvc.perform(post("/businesses/1/products")
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(product)))
+            .andExpect(status().isForbidden());
     }
 }
