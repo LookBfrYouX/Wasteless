@@ -1,8 +1,16 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
+import com.navbara_pigeons.wasteless.dao.ProductDao;
+import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * A ProductService Implementation
@@ -27,6 +35,13 @@ public class ProductsServiceImpl  implements ProductsService{
     }
 
 
+    @Override
+    public JSONObject getProducts(Business business) throws BusinessNotFoundException, UserNotFoundException {
+        return null;
+    }
 
-
+    @Override
+    public JSONObject addProduct(Product product, Business business) throws BusinessTypeException, ProductRegistrationException {
+        return null;
+    }
 }

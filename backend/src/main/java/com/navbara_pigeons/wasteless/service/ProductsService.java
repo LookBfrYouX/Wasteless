@@ -11,7 +11,7 @@ import net.minidev.json.JSONObject;
 
 public interface ProductsService {
 
-    JSONObject getProducts(Business business) throws BusinessNotFoundException, UserNotFoundException
+    JSONObject getProducts(Business business) throws BusinessNotFoundException, UserNotFoundException;
 
-    JSONObject addProduct(Product product, Business business) throws BusinessTypeException, ProductRegistrationException
+    JSONObject addProduct(Product product, Business business) throws BusinessTypeException, ProductRegistrationException;
 }
