@@ -32,9 +32,15 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username = "admin@wasteless.co.nz", password = "admin")
-    void getProductsFromOneBusinessTest() throws Exception {
+    void getProductsFromOneBusinessTestAsAdmin() throws Exception {
         String endpointUrl = "/businesses/1/products";
         this.mockMvc.perform(get(endpointUrl)).andExpect(status().isOk());
+    }
+
+    @Test
+    void getProductsFromOneBusinessTestAsAnon() throws Exception {
+        String endpointUrl = "/businesses/1/products";
+        this.mockMvc.perform(get(endpointUrl)).andExpect(status().isUnauthorized());
     }
 
     // Throws a 400 status code on a bad request to the controller
