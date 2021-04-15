@@ -54,4 +54,20 @@ public class U15ProductCatalogueStepDefs extends SpringIntegrationTest {
     public void theProductIsNotDisplayed(String productName) {
         System.out.println("THEN 2 >>>> " + productName);
     }
+
+  @Given("a user with name {string} has a {string} business {string} in {string}")
+  public void aUserWithNameHasABusinessIn(String userName, String businessType, String business, String country) {
+    // Create user
+    // Create business
+  }
+
+  @When("{string} has a product {string} to sell at business {string}")
+  public void hasAProductToSellAtBusiness(String userName, String product, String business) {
+      // Add product to business catalogue
+  }
+
+  @Then("the business {string} catalogue shows the product {string}")
+  public void theBusinessCatalogueShowsTheProduct(String business, String product) {
+      // Show product exists in business catalogue
+  }
 }

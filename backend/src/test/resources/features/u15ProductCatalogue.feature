@@ -7,7 +7,10 @@ Feature: U15 Product Catalogue
     When "Bobby" accesses another business called "Bellas Burgers" product "Bass Burger"
     Then the product "Bass Burger" is not displayed
 
-
+  Scenario: AC2 - Adding items to catalogue.
+    Given a user with name "Amy" has a "Retail Trade" business "Ancient Antiques" in "Australia"
+    When "Amy" has a product "Arty Artichokes" to sell at business "Ancient Antiques"
+    Then the business "Ancient Antiques" catalogue shows the product "Arty Artichokes"
 #  AC2: I can add items to my catalogue.  For now, this is done via an appropriate form—later
 #  we may support bulk loading.  Each catalogue entry has a mandatory product code.
 #  Product codes are unique and provide a conveniently short way to identify products.
