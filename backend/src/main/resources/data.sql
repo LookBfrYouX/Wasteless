@@ -1,7 +1,8 @@
 -- ###############################  Users Setup  ###############################
 DROP TABLE IF EXISTS user_business;
-DROP TABLE IF EXISTS business;
+DROP TABLE IF EXISTS product_business;
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS business;
 DROP TABLE IF EXISTS address;
 DROP TABLE IF EXISTS product;
 
@@ -49,6 +50,15 @@ CREATE TABLE business
     CONSTRAINT business_address_fk FOREIGN KEY (ADDRESS_ID) REFERENCES address (ID)
 );
 
+CREATE TABLE product
+(
+    ID          INT AUTO_INCREMENT PRIMARY KEY,
+    NAME        VARCHAR(100),
+    DESCRIPTION VARCHAR(500),
+    RRP         DECIMAL(6, 2) NOT NULL,
+    CREATED     DATETIME      NOT NULL
+);
+
 CREATE TABLE user_business
 (
     USER_ID     INT NOT NULL,
@@ -58,17 +68,25 @@ CREATE TABLE user_business
     CONSTRAINT user_business_user_fk
         FOREIGN KEY (USER_ID) REFERENCES user (ID),
     CONSTRAINT user_business_business_fk
-        FOREIGN KEY (BUSINESS_ID) references business (ID)
+        FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
 
-CREATE TABLE product
+CREATE TABLE product_business
 (
-    ID          INT           NOT NULL,
-    NAME        VARCHAR(100),
-    DESCRIPTION VARCHAR(200),
-    RRP         DECIMAL(6, 2) NOT NULL,
-    CREATED     DATETIME      NOT NULL
+    PRODUCT_ID  INT NOT NULL,
+    BUSINESS_ID INT NOT NULL,
+    QUANTITY    INT NOT NULL,
+    CONSTRAINT product_business_pk
+        UNIQUE (PRODUCT_ID, BUSINESS_ID),
+    CONSTRAINT product_business_product_fk
+        FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
+    CONSTRAINT product_business_business_fk
+        FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
+
+-- INSERTING TEST DATA BELOW
+
+-- Inserting test address data
 
 INSERT INTO address(STREET_NUMBER,
                     STREET_NAME,
@@ -107,7 +125,7 @@ VALUES ('10',
         'Canterbury',
         'New Zealand');
 
--- Inserting test user
+-- Inserting test user data
 
 INSERT INTO user(FIRST_NAME,
                  LAST_NAME,
@@ -182,6 +200,8 @@ VALUES ('Fletcher',
         'ROLE_ADMIN',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi');
 
+-- Inserting test business data
+
 INSERT INTO business(NAME,
                      PRIMARY_ADMINISTRATOR_ID,
                      DESCRIPTION,
@@ -201,9 +221,54 @@ VALUES ('TestName',
         'Retail Trade',
         '2020-07-14T14:32:00.000000');
 
+-- Inserting test user-business data
+
 INSERT INTO user_business(USER_ID,
                           BUSINESS_ID)
 VALUES (4,
         1),
        (4,
         2);
+
+-- Inserting product data
+
+INSERT INTO product (NAME, DESCRIPTION, RRP, CREATED)
+VALUES ('Anchor Milk Standard Blue Top',
+        'Essential goodness for your family. Anchor blue top is the milk that new zealanders grow up on. Its brimming with important nutrients, and it delivers more energy than most types of milk. Enjoy a glassful of great nz tradition. Number shown on pack is a guide only and not indicative of what will be supplied.',
+        4.67,
+        '2020-07-14T14:32:00.000000'),
+       ('Meadow Fresh Milk Standard Family Fresh Homogenised',
+        'At meadow fresh we believe the more goodness the better. That''s why our milk is less processed and permeate free for natural levels of protein and calcium.',
+        4.62,
+        '2020-07-14T14:32:00.000000'),
+       ('Sanitarium So Good Almond Milk Unsweetened Long Life',
+        'So good almond milk unsweetened from sanitarium new zealand is a delicious plant-based milk made from almonds. So good almond unsweetened can be enjoyed by the glass, on cereal, or in your favourite recipe. It’s a good source of calcium and a source of vitamins e, b2 and b12. It''s low in fat and is also 100% lactose, gluten and dairy free. Plus it contains no added sugar!.',
+        3.00,
+        '2020-07-14T14:32:00.000000'),
+       ('Lewis Road Creamery Milk Standard Homogenised Jersey Milk',
+        'Homogenised jersey milk is naturally better. High in protein, calcium and a2 beta casein with a full bodied flavour. Bottled in 100% recycled plastic, contains no permeate and no pke used to supplement feed.',
+        5.90,
+        '2020-07-14T14:32:00.000000'),
+       ('Sanitarium So Good Oat Milk No Added Sugar',
+        'Made in Australia from at least 97% Australian ingredients.',
+        3.30,
+        '2020-07-14T14:32:00.000000');
+
+-- Inserting the product to business relationship data
+
+INSERT INTO product_business (PRODUCT_ID, BUSINESS_ID, QUANTITY)
+VALUES (1,
+        1,
+        50),
+       (2,
+        2,
+        100),
+       (3,
+        1,
+        10),
+       (4,
+        2,
+        13),
+       (5,
+        1,
+        68);
