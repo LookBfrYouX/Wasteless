@@ -149,23 +149,26 @@ public class UserServiceImpl implements UserService {
     JSONObject address = new JSONObject();
     response.put("homeAddress", address);
     List<JSONObject> businesses = new ArrayList<>();
-    for (Business i : user.getBusinesses()) {
-      JSONObject business = new JSONObject();
-      business.put("id", i.getId());
-      business.put("primaryAdministratorId", i.getPrimaryAdministratorId());
-      business.put("name", i.getName());
-      business.put("description", i.getDescription());
-      business.put("businessType", i.getBusinessType());
-      business.put("created", i.getCreated());
-      business.put("address", i.getAddress());
-      List<JSONObject> administrators = new ArrayList<>();
-      for (User j : i.getAdministrators()) {
-        JSONObject administrator = new JSONObject();
-        administrator.put("id", j.getId());
-        administrators.add(administrator);
+    System.out.println(user.getBusinesses());
+    if (user.getBusinesses() != null) {
+      for (Business i : user.getBusinesses()) {
+        JSONObject business = new JSONObject();
+        business.put("id", i.getId());
+        business.put("primaryAdministratorId", i.getPrimaryAdministratorId());
+        business.put("name", i.getName());
+        business.put("description", i.getDescription());
+        business.put("businessType", i.getBusinessType());
+        business.put("created", i.getCreated());
+        business.put("address", i.getAddress());
+        List<JSONObject> administrators = new ArrayList<>();
+        for (User j : i.getAdministrators()) {
+          JSONObject administrator = new JSONObject();
+          administrator.put("id", j.getId());
+          administrators.add(administrator);
+        }
+        business.put("administrators", administrators);
+        businesses.add(business);
       }
-      business.put("administrators", administrators);
-      businesses.add(business);
     }
     response.put("businesses", businesses);
 
