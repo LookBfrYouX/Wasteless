@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.validation;
 import com.navbara_pigeons.wasteless.exception.FetchRequestException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,6 +19,10 @@ public class CountryDataFetcherService {
     private final String requestPath = "https://restcountries.eu/rest/v2/all";
     private Country[] countries = null;
     private HashMap<String, Currency> currencyHashMap;
+    private Long lastRequestTime = null;
+
+    @Value("${api_request_min_delay_ms}")
+    private int minDelayBetweenRequests;
 
     @Autowired
     public CountryDataFetcherService(RestTemplateBuilder restTemplateBuilder) {
@@ -32,17 +37,25 @@ public class CountryDataFetcherService {
     public Country[] getCountries() throws FetchRequestException {
         if (this.countries != null) return this.countries;
 
-        this.fetchCountries();
+        this.fetchCountries(false);
         // Following https://attacomsian.com/blog/http-requests-resttemplate-spring-boot
         return this.countries;
     }
 
     /**
      * Fetches countries from the API and sets this.countries
+     * @param force if true, will fetch regardless of recency of previous request
      * @throws FetchRequestException if could not get response from API
      */
-    private void fetchCountries() throws FetchRequestException {
+    private void fetchCountries(boolean force) throws FetchRequestException {
+        if (!force && lastRequestTime != null &&
+                System.currentTimeMillis() - this.lastRequestTime < this.minDelayBetweenRequests) {
+            throw new FetchRequestException("Previous API request was less than " + this.minDelayBetweenRequests +
+                    " milliseconds ago; please wait before making another request");
+        }
+
         try {
+            this.lastRequestTime = System.currentTimeMillis();
             this.countries = this.restTemplate.getForObject(this.requestPath, Country[].class);
         } catch(Exception e) {
             // No network connection, no response, could not parse etc.
