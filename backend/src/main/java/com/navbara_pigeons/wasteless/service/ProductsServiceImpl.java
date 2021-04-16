@@ -7,10 +7,11 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * A ProductService Implementation
@@ -36,8 +37,10 @@ public class ProductsServiceImpl  implements ProductsService{
 
 
     @Override
-    public JSONObject getProducts(Business business) throws BusinessNotFoundException, UserNotFoundException {
-        return null;
+    public List<Product> getProducts(String businessId) throws BusinessNotFoundException {
+         Business business = businessDao.getBusinessById(Long.parseLong(businessId));
+         List<Product> productCatalogue = business.getProductsCatalogue();
+         return productCatalogue;
     }
 
     @Override

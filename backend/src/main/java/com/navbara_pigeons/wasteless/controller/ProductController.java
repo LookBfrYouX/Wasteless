@@ -2,8 +2,10 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
+import com.navbara_pigeons.wasteless.service.ProductsService;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 /**
  * This controller class provides the endpoints for dealing with products. All requests for products
  * listed by businesses are received here.
@@ -23,16 +27,23 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("")
 public class ProductController {
 
+    private final ProductsService productsService;
+
+    @Autowired
+    public ProductController(ProductsService productsService) {
+        this.productsService = productsService;
+    }
+
     /**
      * This endpoint retrieves a list of all products listed by a particular business (id).
      * @param id The ID of the business whose products are to be displayed
      * @return response A JSONObject containing the product information of all products listed for the business.
      */
     @GetMapping("/businesses/{id}/products")
-    public ResponseEntity<JSONObject> showAllBusinessProducts(@PathVariable String id) {
+    public ResponseEntity<List> showAllBusinessProducts(@PathVariable String id) {
         try {
-            //JSONObject response = productService.getAllBusinesses(id);
-            return new ResponseEntity<>(new JSONObject(), HttpStatus.valueOf(200));
+            List<Product> response = productsService.getProducts(id);
+            return new ResponseEntity<>(response, HttpStatus.valueOf(200));
         } catch (Exception exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
         }

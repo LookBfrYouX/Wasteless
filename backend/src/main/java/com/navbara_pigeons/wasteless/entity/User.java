@@ -71,7 +71,7 @@ public class User {
   @JsonIgnore
   @ToString.Exclude
   @ManyToMany(
-      fetch = FetchType.EAGER,
+      fetch = FetchType.LAZY,
       cascade = {
           CascadeType.DETACH,
           CascadeType.MERGE,

@@ -47,7 +47,7 @@ public class Business {
   private ZonedDateTime created;
 
   @ManyToMany(
-      fetch = FetchType.EAGER,
+      fetch = FetchType.LAZY,
       cascade = {
           CascadeType.DETACH,
           CascadeType.MERGE,
@@ -63,7 +63,7 @@ public class Business {
   private List<User> administrators;
 
   @ManyToMany(
-          fetch = FetchType.EAGER,
+          fetch = FetchType.LAZY,
           cascade = {
                   CascadeType.DETACH,
                   CascadeType.MERGE,
