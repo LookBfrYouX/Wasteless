@@ -151,19 +151,19 @@ public class UserServiceImpl implements UserService {
     List<JSONObject> businesses = new ArrayList<>();
     System.out.println(user.getBusinesses());
     if (user.getBusinesses() != null) {
-      for (Business i : user.getBusinesses()) {
+      for (Business businessI : user.getBusinesses()) {
         JSONObject business = new JSONObject();
-        business.put("id", i.getId());
-        business.put("primaryAdministratorId", i.getPrimaryAdministratorId());
-        business.put("name", i.getName());
-        business.put("description", i.getDescription());
-        business.put("businessType", i.getBusinessType());
-        business.put("created", i.getCreated());
-        business.put("address", i.getAddress());
+        business.put("id", businessI.getId());
+        business.put("primaryAdministratorId", businessI.getPrimaryAdministratorId());
+        business.put("name", businessI.getName());
+        business.put("description", businessI.getDescription());
+        business.put("businessType", businessI.getBusinessType());
+        business.put("created", businessI.getCreated());
+        business.put("address", businessI.getAddress());
         List<JSONObject> administrators = new ArrayList<>();
-        for (User j : i.getAdministrators()) {
+        for (User administratorI : businessI.getAdministrators()) {
           JSONObject administrator = new JSONObject();
-          administrator.put("id", j.getId());
+          administrator.put("id", administratorI.getId());
           administrators.add(administrator);
         }
         business.put("administrators", administrators);

@@ -87,7 +87,7 @@ public class BusinessServiceImpl implements BusinessService {
 
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
-    User user = this.userDao.getUserByEmail(authentication.getName());
+    User loggedIn = this.userDao.getUserByEmail(authentication.getName());
     JSONObject response = new JSONObject();
     response.put("id", id);
     response.put("name", business.getName());
@@ -100,37 +100,37 @@ public class BusinessServiceImpl implements BusinessService {
     response.put("primaryAdministratorId", business.getPrimaryAdministratorId());
     List<JSONObject> administrators = new ArrayList<>();
     if (business.getAdministrators() != null) {
-      for (User i : business.getAdministrators()) {
+      for (User user : business.getAdministrators()) {
         JSONObject administrator = new JSONObject();
-        administrator.put("id", i.getId());
-        administrator.put("firstName", i.getFirstName());
-        administrator.put("lastName", i.getLastName());
-        administrator.put("middleName", i.getMiddleName());
-        administrator.put("nickname", i.getNickname());
-        administrator.put("bio", i.getBio());
-        administrator.put("created", i.getCreated());
-        administrator.put("role", i.getRole());
+        administrator.put("id", user.getId());
+        administrator.put("firstName", user.getFirstName());
+        administrator.put("lastName", user.getLastName());
+        administrator.put("middleName", user.getMiddleName());
+        administrator.put("nickname", user.getNickname());
+        administrator.put("bio", user.getBio());
+        administrator.put("created", user.getCreated());
+        administrator.put("role", user.getRole());
         JSONObject homeAddress = new JSONObject();
-        homeAddress.put("city", i.getHomeAddress().getCity());
-        homeAddress.put("region", i.getHomeAddress().getRegion());
-        homeAddress.put("country", i.getHomeAddress().getCountry());
+        homeAddress.put("city", user.getHomeAddress().getCity());
+        homeAddress.put("region", user.getHomeAddress().getRegion());
+        homeAddress.put("country", user.getHomeAddress().getCountry());
         administrator.put("homeAddress", homeAddress);
 
         List<JSONObject> businesses = new ArrayList<>();
-        for (Business j : i.getBusinesses()) {
+        for (Business businessI : user.getBusinesses()) {
           JSONObject businessAdministrated = new JSONObject();
-          businessAdministrated.put("id", j.getId());
+          businessAdministrated.put("id", businessI.getId());
           businesses.add(businessAdministrated);
         }
         administrator.put("businessesAdministered", businesses);
 
-        if (i == user) {
-          homeAddress.put("streetNumber", i.getHomeAddress().getStreetNumber());
-          homeAddress.put("streetName", i.getHomeAddress().getStreetName());
-          homeAddress.put("postcode", i.getHomeAddress().getPostcode());
-          administrator.put("email", i.getEmail());
-          administrator.put("dateOfBirth", i.getDateOfBirth());
-          administrator.put("phoneNumber", i.getPhoneNumber());
+        if (user == loggedIn) {
+          homeAddress.put("streetNumber", user.getHomeAddress().getStreetNumber());
+          homeAddress.put("streetName", user.getHomeAddress().getStreetName());
+          homeAddress.put("postcode", user.getHomeAddress().getPostcode());
+          administrator.put("email", user.getEmail());
+          administrator.put("dateOfBirth", user.getDateOfBirth());
+          administrator.put("phoneNumber", user.getPhoneNumber());
         }
         administrators.add(administrator);
       }
@@ -152,7 +152,7 @@ public class BusinessServiceImpl implements BusinessService {
       }
     }
     // sensitive details (e.g. email, postcode) are not returned
-    if (business.getPrimaryAdministratorId() == user.getId() || isAdministrator || isAdmin) {
+    if (business.getPrimaryAdministratorId() == loggedIn.getId() || isAdministrator || isAdmin) {
       address.put("streetNumber", business.getAddress().getStreetNumber());
       address.put("streetName", business.getAddress().getStreetName());
       address.put("postcode", business.getAddress().getPostcode());
