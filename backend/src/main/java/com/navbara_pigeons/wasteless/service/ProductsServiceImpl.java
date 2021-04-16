@@ -44,7 +44,7 @@ public class ProductsServiceImpl  implements ProductsService{
     }
 
     @Override
-    public JSONObject addProduct(Product product, Business business) throws BusinessTypeException, ProductRegistrationException {
-        return null;
+    public JSONObject addProduct(long id, Product product) throws BusinessTypeException, ProductRegistrationException {
+        throw new ProductRegistrationException();
     }
 }

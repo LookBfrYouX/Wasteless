@@ -64,7 +64,7 @@ public class ProductControllerTest {
         Product product = new Product();
         product.setName(null)
                 .setDescription(null)
-                .setRrp(40.99)
+                .setRrp(null)
                 .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
         mockMvc.perform(post("/businesses/1/products")

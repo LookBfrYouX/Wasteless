@@ -24,7 +24,7 @@ public class Product {
   private String description;
 
   @Column(name = "RRP")
-  private double rrp;
+  private Double rrp;
 
   @Column(name = "CREATED")
   private ZonedDateTime created;

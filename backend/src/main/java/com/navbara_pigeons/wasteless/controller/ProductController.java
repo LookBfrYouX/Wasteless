@@ -58,12 +58,11 @@ public class ProductController {
     public ResponseEntity<String> addToCatalogue(@PathVariable String id, @RequestBody Product product) {
         try {
             // Need to call service for the error on line 49 to go away
+            productsService.addProduct(Long.parseLong(id), product);
             return new ResponseEntity<>("Product created successfully", HttpStatus.valueOf(201));
-        }
-//        catch (ProductRegistrationException exc) {
-//            throw new ResponseStatusException(HttpStatus.valueOf(400), "There was some error with the data supplied by the user");
-//        }
-        catch (Exception exc) {
+        } catch (ProductRegistrationException exc) {
+            throw new ResponseStatusException(HttpStatus.valueOf(400), "There was some error with the data supplied by the user");
+        } catch (Exception exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
         }
     }
