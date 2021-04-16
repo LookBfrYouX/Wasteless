@@ -26,14 +26,7 @@ public class Product {
   @Column(name = "RRP")
   private double rrp;
 
-//  @CreatedDate
-//  @Column(name = "CREATED")
-//  private ZonedDateTime created;
+  @Column(name = "CREATED")
+  private ZonedDateTime created;
 
-  public Product(String id, String name, String description, double rrp) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.rrp = rrp;
-  }
 }

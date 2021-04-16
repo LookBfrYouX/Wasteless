@@ -2,9 +2,9 @@
 DROP TABLE IF EXISTS user_business;
 DROP TABLE IF EXISTS product_business;
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS business;
 DROP TABLE IF EXISTS address;
-DROP TABLE IF EXISTS product;
 
 CREATE TABLE address
 (
