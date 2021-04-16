@@ -13,28 +13,24 @@ export const router = new VueRouter({
   base: process.env.VUE_APP_BASE_URL,
   routes: [
     {
-      meta: { title: 'Home' },
       name: "home",
       path: "/",
       component: Home,
       meta: {title: "Home | Wasteless"}
     },
     {
-      meta: { title: 'Login' },
       name: "login",
       path: "/login",
       component: () => import("./components/Login.vue"),
       meta: {title: "Login | Wasteless"}
     },
     {
-      meta: { title: 'Sign Up' },
       name: "signUp",
       path: "/signUp",
       component: () => import("./components/SignUp.vue"),
       meta: {title: "Sign Up | Wasteless"}
     },
     {
-      meta: { title: 'Dashboard' },
       name: "profile",
       path: "/profile/:userId(\\d+)?",
       component: () => import("./components/Profile.vue"),
@@ -52,7 +48,6 @@ export const router = new VueRouter({
       }
     },
     {
-      meta: { title: 'Search' },
       name: "search",
       path: "/searchresults/:query(.*)",
       component: () => import('./components/SearchResults.vue'),
@@ -60,14 +55,12 @@ export const router = new VueRouter({
       props: route => ({search: route.params.query}),
     },
     {
-      meta: { title: 'Register Business' },
       name: "registerBusiness",
       path: "/registerbusiness",
       meta: {title: "Create Business | Wasteless"},
       component: () => import("./components/RegisterBusiness.vue"),
     },
     {
-      meta: { title: 'Business Dashboard' },
       name: "businessProfile",
       path: "/businessprofile/:businessId(\\d+)",
       meta: {title: "Business Profile | Wasteless"},
