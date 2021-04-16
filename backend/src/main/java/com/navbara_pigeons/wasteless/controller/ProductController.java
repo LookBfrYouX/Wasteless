@@ -40,7 +40,7 @@ public class ProductController {
      * @return response A JSONObject containing the product information of all products listed for the business.
      */
     @GetMapping("/businesses/{id}/products")
-    public ResponseEntity<List> showAllBusinessProducts(@PathVariable String id) {
+    public ResponseEntity<List> showBusinessCatalogue(@PathVariable String id) {
         try {
             List<Product> response = productsService.getProducts(id);
             return new ResponseEntity<>(response, HttpStatus.valueOf(200));
@@ -55,7 +55,7 @@ public class ProductController {
      * @param product The product to be added
      */
     @PostMapping("/businesses/{id}/products")
-    public ResponseEntity<String> showAllBusinessProducts(@PathVariable String id, @RequestBody Product product) {
+    public ResponseEntity<String> addToCatalogue(@PathVariable String id, @RequestBody Product product) {
         try {
             // Need to call service for the error on line 49 to go away
             return new ResponseEntity<>("Product created successfully", HttpStatus.valueOf(201));

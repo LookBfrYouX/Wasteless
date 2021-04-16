@@ -1,10 +1,12 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
+import com.navbara_pigeons.wasteless.controller.BusinessController;
+import com.navbara_pigeons.wasteless.controller.ProductController;
 import com.navbara_pigeons.wasteless.controller.UserController;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,12 +22,19 @@ public class SpringIntegrationTest {
     @Autowired
     UserController userController;
 
-    protected void login(UserCredentials userCredentials) {
-        userController.login(userCredentials);
-    }
+    @Autowired
+    BusinessController businessController;
 
-    protected void registerUser(User user) {
-        userController.registerUser(user);
+    @Autowired
+    ProductController productController;
+
+    Product makeProduct(String productName) {
+        Product product = new Product();
+        product.setName(productName)
+                .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
+                .setDescription("A test product.")
+                .setRrp(20.25);
+        return product;
     }
 
     /**
@@ -33,13 +42,12 @@ public class SpringIntegrationTest {
      * from the given parameters.
      * @return Business business
      */
-    Business makeBusiness() {
+    Business makeBusiness(String businessName) {
         Business business = new Business();
-        business.setName("test")
+        business.setName(businessName)
                 .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
                 .setBusinessType("Non-profit organisation")
                 .setAddress(makeAddress())
-                .setId(0)
                 .setDescription("some description");
         return business;
     }

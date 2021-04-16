@@ -75,7 +75,6 @@ CREATE TABLE product_business
 (
     PRODUCT_ID  INT NOT NULL,
     BUSINESS_ID INT NOT NULL,
-    QUANTITY    INT NOT NULL,
     CONSTRAINT product_business_pk
         UNIQUE (PRODUCT_ID, BUSINESS_ID),
     CONSTRAINT product_business_product_fk
@@ -219,16 +218,21 @@ VALUES ('TestName',
         'Shh very secret',
         4,
         'Retail Trade',
+        '2020-07-14T14:32:00.000000'),
+       ('Pie Palace',
+        2,
+        'Pies for all',
+        4,
+        'Retail Trade',
         '2020-07-14T14:32:00.000000');
 
 -- Inserting test user-business data
 
 INSERT INTO user_business(USER_ID,
                           BUSINESS_ID)
-VALUES (4,
-        1),
-       (4,
-        2);
+VALUES (4, 1),
+       (4, 2),
+       (2, 3);
 
 -- Inserting product data
 
@@ -252,23 +256,19 @@ VALUES ('Anchor Milk Standard Blue Top',
        ('Sanitarium So Good Oat Milk No Added Sugar',
         'Made in Australia from at least 97% Australian ingredients.',
         3.30,
+        '2020-07-14T14:32:00.000000'),
+       ('Mr Macs Pies',
+        'Made in Ilam from at least 97% Cows.',
+        4.70,
         '2020-07-14T14:32:00.000000');
 
 -- Inserting the product to business relationship data
 
-INSERT INTO product_business (PRODUCT_ID, BUSINESS_ID, QUANTITY)
-VALUES (1,
-        1,
-        50),
-       (2,
-        2,
-        100),
-       (3,
-        1,
-        10),
-       (4,
-        2,
-        13),
-       (5,
-        1,
-        68);
+INSERT INTO product_business (PRODUCT_ID, BUSINESS_ID)
+VALUES (1, 1),
+       (2, 2),
+       (3, 1),
+       (4, 2),
+       (5, 1),
+       (6, 3),
+       (2, 3);

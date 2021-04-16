@@ -11,6 +11,9 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,7 +45,11 @@ public class ProductControllerTest {
     @Test
     @WithMockUser(username = "dnb36@uclive.ac.nz", password = "fun123")
     public void return201OnAddProductTest() throws Exception {
-        Product product = new Product("WATT-420-BEANS", "Watties Baked Beans - 420g can", "Baked Beans as they should be.", 2.2);
+        Product product = new Product();
+        product.setName("WATT-420-BEANS")
+                .setDescription("Watties Baked Beans - 420g can")
+                .setRrp(2.2)
+                .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
@@ -54,7 +61,11 @@ public class ProductControllerTest {
     @Test
     @WithMockUser(username = "dnb36@uclive.ac.nz", password = "fun123")
     public void throw400OnBadProductTest() throws Exception {
-        Product product = new Product(null, null, "Hello", 40.99);
+        Product product = new Product();
+        product.setName(null)
+                .setDescription(null)
+                .setRrp(40.99)
+                .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
@@ -66,7 +77,11 @@ public class ProductControllerTest {
     @Test
     @WithAnonymousUser
     public void return401OnAddProductTest() throws Exception {
-        Product product = new Product("WATT-420-BEANS", "Watties Baked Beans - 420g can", "Baked Beans as they should be.", 2.2);
+        Product product = new Product();
+        product.setName("WATT-420-BEANS")
+                .setDescription("Watties Baked Beans - 420g can")
+                .setRrp(2.2)
+                .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
@@ -78,7 +93,11 @@ public class ProductControllerTest {
     @Test
     @WithMockUser(username = "tony@gmail.com", password = "tony")
     public void return403OnAddProductTest() throws Exception {
-        Product product = new Product("WATT-420-BEANS", "Watties Baked Beans - 420g can", "Baked Beans as they should be.", 2.2);
+        Product product = new Product();
+        product.setName("WATT-420-BEANS")
+                .setDescription("Watties Baked Beans - 420g can")
+                .setRrp(2.2)
+                .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
