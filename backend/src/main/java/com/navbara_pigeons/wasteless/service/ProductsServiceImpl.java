@@ -36,11 +36,17 @@ public class ProductsServiceImpl  implements ProductsService{
     }
 
 
+    /**
+     * This method retrieves a list of all the products listed by a specific business
+     * from the ProductDao given the business ID.
+     * @param businessId The ID of the business whose products are to be retrieved.
+     * @return productCatalogue A List<Product> of products that are in the business product catalogue.
+     * @throws BusinessNotFoundException If the business is not listed in the database.
+     */
     @Override
     public List<Product> getProducts(String businessId) throws BusinessNotFoundException {
          Business business = businessDao.getBusinessById(Long.parseLong(businessId));
-         List<Product> productCatalogue = business.getProductsCatalogue();
-         return productCatalogue;
+        return business.getProductsCatalogue();
     }
 
     @Override

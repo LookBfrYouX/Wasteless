@@ -29,16 +29,24 @@ public class ProductControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser(username = "admin@wasteless.co.nz", password = "admin")
+    @WithMockUser
     void getProductsFromOneBusinessTestAsAdmin() throws Exception {
         String endpointUrl = "/businesses/1/products";
         this.mockMvc.perform(get(endpointUrl)).andExpect(status().isOk());
     }
 
     @Test
+    @WithAnonymousUser
     void getProductsFromOneBusinessTestAsAnon() throws Exception {
         String endpointUrl = "/businesses/1/products";
         this.mockMvc.perform(get(endpointUrl)).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void getProductsFromOneBusinessTestInvalidId() throws Exception {
+        String enpointUrl = "/businesses/-1/products";
+        this.mockMvc.perform(get(enpointUrl)).andExpect(status().is(406));
     }
 
     // Throw 201 on successful request to controller

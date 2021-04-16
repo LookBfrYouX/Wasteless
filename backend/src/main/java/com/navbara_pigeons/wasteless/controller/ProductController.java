@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.service.ProductsService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,8 @@ public class ProductController {
         try {
             List<Product> response = productsService.getProducts(id);
             return new ResponseEntity<>(response, HttpStatus.valueOf(200));
+        } catch (BusinessNotFoundException exc) {
+            throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
         } catch (Exception exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
         }
