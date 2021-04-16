@@ -17,7 +17,7 @@ import java.util.List;
  * A ProductService Implementation
  */
 @Service
-public class ProductsServiceImpl  implements ProductsService{
+public class ProductServiceImpl implements ProductService {
 
     private final BusinessDao businessDao;
 
@@ -30,7 +30,7 @@ public class ProductsServiceImpl  implements ProductsService{
      * @param businessDao The BusinessDataAccessObject.
      */
      @Autowired
-     public ProductsServiceImpl(BusinessDao businessDao, ProductDao productDao) {
+     public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao) {
         this.businessDao = businessDao;
         this.productDao = productDao;
     }

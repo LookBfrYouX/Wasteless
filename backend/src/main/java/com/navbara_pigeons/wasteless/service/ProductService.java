@@ -10,7 +10,7 @@ import net.minidev.json.JSONObject;
 
 import java.util.List;
 
-public interface ProductsService {
+public interface ProductService {
 
     List<Product> getProducts(String businessId) throws BusinessNotFoundException;
 

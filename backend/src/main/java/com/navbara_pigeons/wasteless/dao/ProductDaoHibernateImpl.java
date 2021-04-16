@@ -40,7 +40,7 @@ public class ProductDaoHibernateImpl implements ProductDao {
      * @return products A List<Product> of products.
      */
     @Override
-    public List<Product> getProducts(int businessId) {
+    public List<Product> getProducts(long businessId) {
         return null;
     }
 

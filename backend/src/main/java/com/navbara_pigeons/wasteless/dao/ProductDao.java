@@ -8,6 +8,6 @@ public interface ProductDao {
 
     void saveProduct(Product product);
 
-    List<Product> getProducts(int businessId);
+    List<Product> getProducts(long businessId);
 
 }
