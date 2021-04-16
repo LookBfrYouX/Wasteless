@@ -11,11 +11,9 @@
     <div class="w-100 d-flex justify-content-center gradient-background pb-4">
       <router-view
           v-on:searchresultscreated="updateInput"
+          v-bind:setDocumentTitle="setDocumentTitle"
       ></router-view>
     </div>
-    <footer class="info">
-
-    </footer>
   </div>
 </template>
 
@@ -49,6 +47,15 @@ export default {
         document.title = to.meta.title + " - Wasteless" || 'Wasteless';
       }
     },
+
+    /**
+     * Set document title
+     * Title is set on router component load (see router.js), but if the page
+     * needs to update title, this callback should be used
+     */
+    setDocumentTitle(title) {
+      document.title = title;
+    }
   }
 }
 </script>
