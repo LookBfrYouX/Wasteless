@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * A ProductService Implementation
+ * Class for dealing with all business logic to do with products
  */
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -60,10 +60,11 @@ public class ProductServiceImpl implements ProductService {
 
   /**
    * This method adds a new product to a specific business catalogue
+   *
    * @param businessId The ID of the business.
    * @param jsonProduct JSONObject of the product to be added.
-   * @return productCatalogue A List<Product> of products that are in the business product catalogue.
-   * @throws BusinessNotFoundException If the business is not listed in the database.
+   * @throws ProductRegistrationException If data supplied is not expected (bad request)
+   * @throws ProductForbiddenException If user if not an admin of the business (forbidden)
    */
     @Override
     public void addProduct(long businessId, JSONObject jsonProduct) throws ProductRegistrationException,
@@ -95,8 +96,8 @@ public class ProductServiceImpl implements ProductService {
       }
       // Convert jsonProduct to Product, cant be done in controller as we need to accept id in POST
       Product product = new Product();
-      product.setName(jsonProduct.getOrDefault("name", "").toString());
-      product.setDescription(jsonProduct.getOrDefault("description", "").toString());
+      product.setName((jsonProduct.get("name") != null ? jsonProduct.get("name") : "").toString());
+      product.setDescription((jsonProduct.get("description") != null ? jsonProduct.get("description") : "").toString());
       product.setRecommendedRetailPrice(Double.parseDouble(jsonProduct.getOrDefault("recommendedRetailPrice", 0.0).toString()));
       // Product validation
       if (!ProductServiceValidation.isProductValid(product)) {

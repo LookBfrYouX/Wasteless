@@ -2,17 +2,15 @@ package com.navbara_pigeons.wasteless.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.navbara_pigeons.wasteless.entity.Product;
+import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,7 +22,6 @@ public class ProductControllerTest {
 
     @Autowired
     public MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -49,67 +46,55 @@ public class ProductControllerTest {
         this.mockMvc.perform(get(enpointUrl)).andExpect(status().is(406));
     }
 
-    // Throw 201 on successful request to controller
+    // Return 201 on successful request to controller
     @Test
-    @WithMockUser(username = "dnb36@uclive.ac.nz", password = "fun123")
+    @WithUserDetails(value="dnb36@uclive.ac.nz")
     public void return201OnAddProductTest() throws Exception {
-        Product product = new Product();
-        product.setName("WATT-420-BEANS")
-                .setDescription("Watties Baked Beans - 420g can")
-                .setRecommendedRetailPrice(2.2)
-                .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
+        JSONObject mockProduct = new JSONObject();
+        mockProduct.put("name", "Pizza");
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(product)))
+            .content(objectMapper.writeValueAsString(mockProduct)))
             .andExpect(status().isCreated());
     }
 
-    // Throws 400 on bad request to controller
+    // Throw 400 on bad request to controller (name is required)
     @Test
-    @WithMockUser(username = "dnb36@uclive.ac.nz", password = "fun123")
+    @WithUserDetails(value="dnb36@uclive.ac.nz")
     public void throw400OnBadProductTest() throws Exception {
-        Product product = new Product();
-        product.setName(null)
-                .setDescription(null)
-                .setRecommendedRetailPrice(null)
-                .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
+        JSONObject mockProduct = new JSONObject();
+        mockProduct.put("name", null);
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(product)))
+            .content(objectMapper.writeValueAsString(mockProduct)))
             .andExpect(status().isBadRequest());
     }
 
-    // Throw 401 on bad request to controller
+    // Throw 401 when unauthorized
     @Test
     @WithAnonymousUser
-    public void return401OnAddProductTest() throws Exception {
-        Product product = new Product();
-        product.setName("WATT-420-BEANS")
-                .setDescription("Watties Baked Beans - 420g can")
-                .setRecommendedRetailPrice(2.2)
-                .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
+    public void throw401OnAddProductTest() throws Exception {
+        JSONObject mockProduct = new JSONObject();
+        mockProduct.put("name", "Pizza");
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(product)))
+            .content(objectMapper.writeValueAsString(mockProduct)))
             .andExpect(status().isUnauthorized());
     }
 
-    // Throw 403 on bad request to controller
+    // Throw 403 when not business admin
     @Test
-    @WithMockUser(username = "tony@gmail.com", password = "tony")
-    public void return403OnAddProductTest() throws Exception {
-        Product product = new Product();
-        product.setName("WATT-420-BEANS")
-                .setDescription("Watties Baked Beans - 420g can")
-                .setRecommendedRetailPrice(2.2)
-                .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
+    @WithUserDetails(value="amf133@uclive.ac.nz")
+    public void throw403OnAddProductTest() throws Exception {
+        JSONObject mockProduct = new JSONObject();
+        mockProduct.put("name", "Pizza");
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(product)))
+            .content(objectMapper.writeValueAsString(mockProduct)))
             .andExpect(status().isForbidden());
     }
 }

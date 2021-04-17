@@ -33,7 +33,7 @@ public class SpringIntegrationTest {
         product.setName(productName)
                 .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
                 .setDescription("A test product.")
-                .setRrp(20.25);
+                .setRecommendedRetailPrice(20.25);
         return product;
     }
 
