@@ -5,7 +5,7 @@ import Vue from 'vue';
 const state = new Vue.observable({
   authUser: JSON.parse(localStorage.getItem("authUser")),
   welcomeMessage: "HERE WE GOOO",
-  actingAs: null,
+  actingAs: null,   // ID of business that an user is currently acting as
 });
 
 // This is the globally accessible store. It allows the state to be read and modified.
@@ -66,7 +66,7 @@ export const store = {
       state.authUser.role = "ROLE_USER";
       localStorage.setItem("authUser", JSON.stringify(state.authUser));
     },
-    // Get business of user acting as
+    // Set business of user acting as
     setActingAs: (business) => {
       state.actingAs = business;
     },
