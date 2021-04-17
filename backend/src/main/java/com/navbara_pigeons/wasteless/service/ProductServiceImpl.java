@@ -11,6 +11,7 @@ import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
+import com.navbara_pigeons.wasteless.validation.ProductServiceValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -89,8 +90,12 @@ public class ProductServiceImpl implements ProductService {
       if (!businessAdmin) {
         throw new ProductForbiddenException();
       }
+      // Product validation
+      if (!ProductServiceValidation.isProductValid(product)) {
+        throw new ProductRegistrationException();
+      }
+
+      // TODO: Save product in DAO
     }
 
-    // TODO: Validate product
-    // TODO: Save product in DAO
 }

@@ -56,7 +56,7 @@ public class ProductControllerTest {
         Product product = new Product();
         product.setName("WATT-420-BEANS")
                 .setDescription("Watties Baked Beans - 420g can")
-                .setRrp(2.2)
+                .setRecommendedRetailPrice(2.2)
                 .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
         mockMvc.perform(post("/businesses/1/products")
@@ -72,7 +72,7 @@ public class ProductControllerTest {
         Product product = new Product();
         product.setName(null)
                 .setDescription(null)
-                .setRrp(null)
+                .setRecommendedRetailPrice(null)
                 .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
         mockMvc.perform(post("/businesses/1/products")
@@ -88,7 +88,7 @@ public class ProductControllerTest {
         Product product = new Product();
         product.setName("WATT-420-BEANS")
                 .setDescription("Watties Baked Beans - 420g can")
-                .setRrp(2.2)
+                .setRecommendedRetailPrice(2.2)
                 .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
         mockMvc.perform(post("/businesses/1/products")
@@ -104,7 +104,7 @@ public class ProductControllerTest {
         Product product = new Product();
         product.setName("WATT-420-BEANS")
                 .setDescription("Watties Baked Beans - 420g can")
-                .setRrp(2.2)
+                .setRecommendedRetailPrice(2.2)
                 .setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
         mockMvc.perform(post("/businesses/1/products")
