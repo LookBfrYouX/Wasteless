@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import net.minidev.json.JSONObject;
 
@@ -14,5 +15,6 @@ public interface ProductService {
 
     List<Product> getProducts(String businessId) throws BusinessNotFoundException;
 
-    JSONObject addProduct(long id, Product product) throws BusinessTypeException, ProductRegistrationException;
+    void addProduct(long id, Product product) throws ProductRegistrationException,
+        ProductForbiddenException;
 }
