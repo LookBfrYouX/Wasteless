@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -59,11 +60,12 @@ public class ProductController {
     @PostMapping("/businesses/{id}/products")
     public ResponseEntity<String> addToCatalogue(@PathVariable String id, @RequestBody Product product) {
         try {
-            // Need to call service for the error on line 49 to go away
             productService.addProduct(Long.parseLong(id), product);
             return new ResponseEntity<>("Product created successfully", HttpStatus.valueOf(201));
         } catch (ProductRegistrationException exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(400), "There was some error with the data supplied by the user");
+        } catch (ProductForbiddenException exc) {
+            throw new ResponseStatusException(HttpStatus.valueOf(403), "Forbidden");
         } catch (Exception exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
         }
