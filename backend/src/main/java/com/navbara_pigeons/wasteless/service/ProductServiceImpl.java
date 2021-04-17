@@ -12,6 +12,9 @@ import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.validation.ProductServiceValidation;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,12 +61,12 @@ public class ProductServiceImpl implements ProductService {
   /**
    * This method adds a new product to a specific business catalogue
    * @param businessId The ID of the business.
-   * @param product The product to be added.
+   * @param jsonProduct JSONObject of the product to be added.
    * @return productCatalogue A List<Product> of products that are in the business product catalogue.
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
     @Override
-    public void addProduct(long businessId, Product product) throws ProductRegistrationException,
+    public void addProduct(long businessId, JSONObject jsonProduct) throws ProductRegistrationException,
         ProductForbiddenException {
       // Throw 400 if bad request, 403 if user is not business admin
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -90,12 +93,16 @@ public class ProductServiceImpl implements ProductService {
       if (!businessAdmin) {
         throw new ProductForbiddenException();
       }
+      // Convert jsonProduct to Product, cant be done in controller as we need to accept id in POST
+      Product product = new Product();
+      product.setName(jsonProduct.getOrDefault("name", "").toString());
+      product.setDescription(jsonProduct.getOrDefault("description", "").toString());
+      product.setRecommendedRetailPrice(Double.parseDouble(jsonProduct.getOrDefault("recommendedRetailPrice", 0.0).toString()));
       // Product validation
       if (!ProductServiceValidation.isProductValid(product)) {
         throw new ProductRegistrationException();
       }
-
-      // TODO: Save product in DAO
+      product.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
+      productDao.saveProduct(product);
     }
-
 }

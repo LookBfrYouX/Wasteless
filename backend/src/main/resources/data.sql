@@ -1,6 +1,10 @@
+-- noinspection SqlDialectInspectionForFile
+
+-- noinspection SqlNoDataSourceInspectionForFile
+
 -- ###############################  Users Setup  ###############################
-DROP TABLE IF EXISTS user_business;
 DROP TABLE IF EXISTS product_business;
+DROP TABLE IF EXISTS user_business;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS business;
@@ -53,10 +57,10 @@ CREATE TABLE business
 CREATE TABLE product
 (
     ID          INT AUTO_INCREMENT PRIMARY KEY,
-    NAME        VARCHAR(100),
+    NAME        VARCHAR(100) NOT NULL,
     DESCRIPTION VARCHAR(500),
-    RRP         DECIMAL(6, 2) NOT NULL,
-    CREATED     DATETIME      NOT NULL
+    RRP         DECIMAL(6, 2),
+    CREATED     DATETIME
 );
 
 CREATE TABLE user_business

@@ -32,6 +32,7 @@ public class ProductDaoHibernateImpl implements ProductDao {
     @Override
     public void saveProduct(Product product) {
         Session currentSession = getSession();
+        currentSession.saveOrUpdate(product);
     }
 
     /**

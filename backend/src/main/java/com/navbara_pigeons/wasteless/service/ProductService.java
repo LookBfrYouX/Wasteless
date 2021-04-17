@@ -15,6 +15,6 @@ public interface ProductService {
 
     List<Product> getProducts(String businessId) throws BusinessNotFoundException;
 
-    void addProduct(long id, Product product) throws ProductRegistrationException,
+    void addProduct(long id, JSONObject product) throws ProductRegistrationException,
         ProductForbiddenException;
 }

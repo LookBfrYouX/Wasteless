@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,7 @@ public class ProductController {
      * @param product The product to be added
      */
     @PostMapping("/businesses/{id}/products")
-    public ResponseEntity<String> addToCatalogue(@PathVariable String id, @RequestBody Product product) {
+    public ResponseEntity<String> addToCatalogue(@PathVariable String id, @RequestBody JSONObject product) {
         try {
             productService.addProduct(Long.parseLong(id), product);
             return new ResponseEntity<>("Product created successfully", HttpStatus.valueOf(201));

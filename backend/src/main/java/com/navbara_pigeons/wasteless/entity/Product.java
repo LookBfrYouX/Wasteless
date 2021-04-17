@@ -3,10 +3,11 @@ package com.navbara_pigeons.wasteless.entity;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
 
 @Data
 @Entity
@@ -14,8 +15,9 @@ import org.springframework.data.annotation.CreatedDate;
 public class Product {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ID")
-  private String id;
+  private int id;
 
   @Column(name = "NAME")
   private String name;
