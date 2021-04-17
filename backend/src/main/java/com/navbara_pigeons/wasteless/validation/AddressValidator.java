@@ -1,8 +1,7 @@
 package com.navbara_pigeons.wasteless.validation;
 
 import com.navbara_pigeons.wasteless.entity.Address;
-import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.FetchRequestException;
+import com.navbara_pigeons.wasteless.service.CountryDataFetcherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +31,10 @@ public class AddressValidator {
     /**
      * Checks if the country is valid
      * @param country name of country
-     * @return true if country known
-     * @throws FetchRequestException if could not fetch list of countries
+     * @return null if cannot check, true if country known
      */
-    public boolean isCountryValid(String country) throws FetchRequestException {
+    public Boolean isCountryValid(String country) {
+        if (!this.countryDataFetcherService.dataLoaded()) return null;
         return this.countryDataFetcherService.countryExists(country);
     }
 }

@@ -108,13 +108,13 @@ public class UserServiceImpl implements UserService {
     if (!addressValidator.isAddressValid(user.getHomeAddress())) {
       throw new UserRegistrationException("Required address fields cannot be null");
     }
-    try {
-      if (!addressValidator.isCountryValid(user.getHomeAddress().getCountry())) {
-        throw new UserRegistrationException("Country does not exist is is not known");
-      }
-    } catch(FetchRequestException e) {
-      // TODO change this to a 500?
+
+    Boolean countryValid = addressValidator.isCountryValid(user.getHomeAddress().getCountry());
+    if (countryValid == null) {
+      // TODO change this to a 500 error instead
       throw new UserRegistrationException("Could not fetch list of countries for validation");
+    } else if (!countryValid.booleanValue()) {
+      throw new UserRegistrationException("Country does not exist is is not known");
     }
 
     // Set user credentials for logging in after registering
