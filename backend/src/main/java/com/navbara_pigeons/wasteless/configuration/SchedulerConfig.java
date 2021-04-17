@@ -28,6 +28,7 @@ public class SchedulerConfig {
   private final UserDao userDao;
   private final AddressDao addressDao;
 
+
   @Value("${dgaa.user.email}")
   private String dgaaEmail;
   @Value("${dgaa.user.password}")

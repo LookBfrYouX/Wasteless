@@ -215,6 +215,9 @@ export default {
       type: Number, // may be NaN
       required: true
       // default: 10
+    },
+    setDocumentTitle: {
+      required: true
     }
   },
 
@@ -271,22 +274,22 @@ export default {
     /**
      * TODO: Add documentation
      */
-    registerBusiness: function () {
-      this.$router.push({name: "registerBusiness"});
+    registerBusiness: async function() {
+      await this.$router.push({name: "registerBusiness"});
     },
 
     /**
      * Calls the API and updates the component's data with the result
      */
-    apiPipeline: function () {
-      this.parseApiResponse(this.callApi(this.userId));
+    apiPipeline: async function() {
+      await this.parseApiResponse(this.callApi(this.userId));
     },
 
     /**
      * Calls the API to get profile information with the given user ID
      * Returns the promise, not the response
      */
-    callApi: function (userId) {
+    callApi: async function(userId) {
       if (typeof userId != "number" || isNaN(userId)) {
         const err = new ApiRequestError(
             "Cannot load profile page (no profile given). You may need to log in");
@@ -296,7 +299,7 @@ export default {
     },
 
     /**
-     * Parses the API response given a promise to the request
+     * Parses the API response given a promise to the request and sets `userInfo`
      */
     parseApiResponse: async function (apiCall) {
       try {
@@ -404,6 +407,11 @@ export default {
      */
     userId: function () {
       this.apiPipeline();
+    },
+
+    userInfo() {
+      if (this.userInfo !== null) this.setDocumentTitle(`${this.userInfo.firstName} ${this.userInfo.firstName} | Profile`);
+      // If switch user profile and request fails will be stuck with old title
     }
   },
 }
