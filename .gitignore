@@ -36,3 +36,4 @@ out/
 .vscode/
 .settings/
 bin/
+rest-countries-country-info.json

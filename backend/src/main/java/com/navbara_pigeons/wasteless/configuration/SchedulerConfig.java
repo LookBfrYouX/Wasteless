@@ -57,7 +57,7 @@ public class SchedulerConfig {
    * How often it should check the age of the file. Note that if downloading/parsing fails in one session, the country
    * or currency will be unusable until at least the next scheduler session
    */
-  @Value("${country_data.scheduler_interval}")
+  @Value("${country_data.scheduler.interval}")
   private int countryDataSchedulerInterval;
 
   private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -75,8 +75,7 @@ public class SchedulerConfig {
   /**
    * Scheduler method, runs every timeDelay ms
    */
-//  @Scheduled(fixedRateString = "${dgaa.scheduler.interval}", initialDelay = 1000)
-  @Scheduled(fixedRateString = "4000", initialDelay = 1000)
+  @Scheduled(fixedRateString = "${dgaa.scheduler.interval}", initialDelay = 1000)
   @Transactional
   public void testScheduler() {
     try {
@@ -91,7 +90,7 @@ public class SchedulerConfig {
     }
   }
 
-  @Scheduled(fixedRateString = "${country_data.scheduler_interval}", initialDelay = 1000)
+  @Scheduled(fixedRateString = "${country_data.scheduler.interval}", initialDelayString = "${country_data.scheduler.initial_delay}")
   public void countryDataScheduler() {
     countryDataScheduler(0);
   }
@@ -175,8 +174,6 @@ public class SchedulerConfig {
         }
       }
     }
-
-    if (countryDataFetcherService.dataLoaded()) System.out.println(countryDataFetcherService.getCurrencyForCountry("New Zealand"));
   }
 
   /**

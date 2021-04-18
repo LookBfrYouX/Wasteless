@@ -69,6 +69,13 @@ public class CountryDataFetcherService {
     }
 
     /**
+     * For testing purposes, reset country data to null
+     */
+    public void resetCountryData() {
+        this.currencyHashMap = null;
+    }
+
+    /**
      * Reads a file containing an API response from disk and generates the country hash map
      * @param path path to JSON response
      * @throws IOException
@@ -157,6 +164,14 @@ class Currency implements Serializable {
     private String code; // Use as ID
     private String name;
     private String symbol;
+
+    public Currency() {}
+
+    public Currency(String code, String name, String symbol) {
+        this.code = code;
+        this.name = name;
+        this.symbol = symbol;
+    }
 
     @Override
     public String toString() {

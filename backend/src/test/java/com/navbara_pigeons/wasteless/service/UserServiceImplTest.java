@@ -12,11 +12,18 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import net.minidev.json.JSONObject;
+import org.junit.BeforeClass;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,6 +44,8 @@ class UserServiceImplTest {
   AddressDao addressDao;
   @Autowired
   UserService userService;
+  @Autowired
+  CountryDataFetcherService countryDataFetcherService;
 
   void actuallySaveUser(User user) {
     this.addressDao.saveAddress(user.getHomeAddress());
@@ -57,13 +66,35 @@ class UserServiceImplTest {
   }
 
 
+  /**
+   * Tries to save a user, expecting an Exception to be thrown
+   * @param user
+   * @throws Throwable
+   */
   void trySaveUserExpectError(User user) throws Throwable {
+    trySaveUserExpectError(user, Exception.class);
+  }
+
+  /**
+   * Tries to save a user, expecting an exception of a specific class to be thrown
+   * @param user
+   * @param exceptionType
+   * @throws Throwable
+   */
+  void trySaveUserExpectError(User user, Class exceptionType) throws Throwable {
     try {
-      assertThrows(Exception.class, () -> userService.saveUser(user));
+      assertThrows(exceptionType, () -> userService.saveUser(user));
     } catch (Throwable throwable) {
       actuallyDeleteUser(user);
       throw throwable;
     }
+  }
+
+  @BeforeEach
+  void loadCountryData() throws URISyntaxException, IOException {
+    if (!countryDataFetcherService.dataLoaded()) countryDataFetcherService.reloadCountryDataFromDisk(
+            Path.of(ClassLoader.getSystemClassLoader().getResource("countryDataFetcherService/standard.json").toURI())
+    );
   }
 
   @Test
@@ -127,10 +158,18 @@ class UserServiceImplTest {
   }
 
   @Test
+  @Transactional
   void saveInvalidCountry() throws Throwable {
     User user = makeUser();
     user.getHomeAddress().setCountry("Fake Zealand");
     trySaveUserExpectError(user);
+  }
+
+  @Test
+  @Transactional
+  void noCountryData() throws Throwable {
+    countryDataFetcherService.resetCountryData();
+    trySaveUserExpectError(makeUser(), UserRegistrationException.class);
   }
 
 
