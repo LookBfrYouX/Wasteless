@@ -20,6 +20,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+
+import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import net.minidev.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Assertions;
@@ -32,20 +34,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("ALL")
 @SpringBootTest
-class UserServiceImplTest {
+class UserServiceImplTest extends ServiceTestProvider {
 
   private final String password = "pass";
   private final String email = "test@example.com";
+
   @Autowired
   UserController userController;
+
   @Autowired
   UserDao userDao;
+
   @Autowired
   AddressDao addressDao;
-  @Autowired
-  UserService userService;
-  @Autowired
-  CountryDataFetcherService countryDataFetcherService;
 
   void actuallySaveUser(User user) {
     this.addressDao.saveAddress(user.getHomeAddress());
@@ -176,7 +177,7 @@ class UserServiceImplTest {
   @Test
   @Transactional
   public void getUserSelf() throws UserNotFoundException {
-    User user = makeUser(email, false, password);
+    User user = makeUser(email, password, false);
     actuallySaveUser(user);
     assertUserWithJson(user, getUserAsUser(user.getEmail(), password, user.getId()), false);
     actuallyDeleteUser(user);
@@ -185,9 +186,9 @@ class UserServiceImplTest {
   @Test
   @Transactional
   public void getUserOther() throws UserNotFoundException {
-    User user = makeUser(email, false, password);
+    User user = makeUser(email, password, false);
     actuallySaveUser(user);
-    User userCheck = makeUser("testEmail@user.co.nz", false, password);
+    User userCheck = makeUser("testEmail@user.co.nz", password, false);
     actuallySaveUser(userCheck);
     assertUserWithJson(userCheck, getUserAsUser(user.getEmail(), password, userCheck.getId()),
         true);
@@ -264,7 +265,7 @@ class UserServiceImplTest {
 
     // Set up a valid user and credentials
     // Make a user and save with encoded password
-    User testUser = makeUser("test@test.com", false, password);
+    User testUser = makeUser("test@test.com", password, false);
 
     // -- Set up credentials
     UserCredentials testCredentials = new UserCredentials();
@@ -293,8 +294,8 @@ class UserServiceImplTest {
   @Transactional
   void makeAdminTest() {
     // Make two users (admin/non-admin)
-    User adminUser = makeUser("admin@test.com", true, password);
-    User toBeAdminUser = makeUser("toBeAdmin@test.com", false, password);
+    User adminUser = makeUser("admin@test.com", password, true);
+    User toBeAdminUser = makeUser("toBeAdmin@test.com", password, false);
 
     // Persist users
     actuallySaveUser(adminUser);
@@ -394,48 +395,13 @@ class UserServiceImplTest {
     return bCryptPasswordEncoder.encode(password);
   }
 
+
   /**
-   * Makes a non-admin user
+   * Makes a non-admin user with default email/password
    *
    * @return
    */
   User makeUser() {
-    return makeUser(email, false, password);
-  }
-
-  /**
-   * Creates test user with given details
-   *
-   * @param email
-   * @param isAdmin
-   * @param password
-   * @return
-   */
-  User makeUser(String email, boolean isAdmin, String password) {
-    User testUser = new User();
-    Address address = new Address()
-        .setStreetNumber("3/24")
-        .setStreetName("Ilam Road")
-        .setPostcode("90210")
-        .setCity("Christchurch")
-        .setRegion("Canterbury")
-        .setCountry("New Zealand");
-
-    // Create test user
-    testUser.setId(0)
-        .setFirstName("Tony")
-        .setLastName("Last")
-        .setMiddleName("Middle")
-        .setNickname("Nick")
-        .setEmail(email)
-        .setPhoneNumber("+6412345678")
-        .setDateOfBirth("2000-03-10")
-        .setHomeAddress(address)
-        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
-        .setRole(isAdmin ? "ROLE_ADMIN" : "ROLE_USER")
-        .setPassword(encodePass(password));
-
-    // Save user using DAO and retrieve by Email
-    return testUser;
+    return makeUser(email, password, false);
   }
 }

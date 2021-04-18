@@ -5,10 +5,9 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
+import com.navbara_pigeons.wasteless.validation.AddressValidator;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -35,6 +34,7 @@ public class BusinessServiceImpl implements BusinessService {
 
   private final UserDao userDao;
 
+  private final AddressValidator addressValidator;
   /**
    * BusinessServiceImplementation constructor that takes autowired parameters and sets up the
    * service for interacting with all business related services.
@@ -42,10 +42,11 @@ public class BusinessServiceImpl implements BusinessService {
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, AddressDao addressDao, UserDao userDao) {
+  public BusinessServiceImpl(BusinessDao businessDao, AddressDao addressDao, UserDao userDao, AddressValidator addressValidator) {
     this.businessDao = businessDao;
     this.addressDao = addressDao;
     this.userDao = userDao;
+    this.addressValidator = addressValidator;
   }
 
   /**
@@ -58,10 +59,25 @@ public class BusinessServiceImpl implements BusinessService {
   @Override
   @Transactional
   public JSONObject saveBusiness(Business business)
-      throws BusinessTypeException, UserNotFoundException {
+          throws BusinessTypeException, UserNotFoundException, BusinessRegistrationException {
     if (!BusinessServiceValidation.isBusinessTypeValid(business.getBusinessType())) {
       throw new BusinessTypeException("Invalid BusinessType");
     }
+
+    // Address validation
+    if (!addressValidator.isAddressValid(business.getAddress())) {
+      throw new BusinessRegistrationException("Required address fields cannot be null");
+    }
+
+    Boolean countryValid = addressValidator.isCountryValid(business.getAddress().getCountry());
+    if (countryValid == null) {
+      // TODO change this to a 500 error instead
+      throw new BusinessRegistrationException("Could not fetch list of countries for validation");
+    } else if (!countryValid.booleanValue()) {
+      throw new BusinessRegistrationException("Country does not exist is is not known");
+    }
+
+
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     User currentUser = this.userDao.getUserByEmail(authentication.getName());
