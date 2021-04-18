@@ -53,32 +53,36 @@
                    href="#" role="button">
                   <img class="nav-picture rounded-circle" src="placeholder-profile.png">
                   <div class="d-flex flex-column mx-1">
-                    <span class="m-0 p-0 text-dark">{{ authUser.firstName }} {{
-                        authUser.lastName
-                      }}</span>
+                    <span class="m-0 p-0 text-dark">
+                      {{ printCurrentActingAs }}
+                    </span>
                     <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
                   </div>
                 </a>
                 <div aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-right">
-                  <h4 class="dropdown-header">Logged in as</h4>
-                  <div class="dropdown-item">
-                    {{ authUser.firstName }} {{ authUser.lastName }}
+                  <div v-if="actingAsEntities.length !== 0"
+                       class="switch-acting-as-wrapper">
+                    <h4 class="dropdown-header">Logged in as</h4>
+                    <div class="dropdown-item">
+                      {{ authUser.firstName }} {{ authUser.lastName }}
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <h4 class="dropdown-header">Act as</h4>
+                    <a v-if="currentActingAs != null"
+                       v-on:click="switchActingAs()"
+                       class="dropdown-item">
+                      {{ authUser.firstName }} {{ authUser.lastName }}
+                    </a>
+                    <a v-for="business in actingAsEntities" :key="business.id"
+                            v-on:click="switchActingAs(business)"
+                            class="dropdown-item">
+                      {{business.name}}
+                      <span v-if="business === currentActingAs">
+                        &#10003;
+                      </span>
+                    </a>
+                    <div class="dropdown-divider"></div>
                   </div>
-                  <div class="dropdown-divider"></div>
-                  <h4 class="dropdown-header">Act as</h4>
-                  <a v-if="this.$stateStore.getters.getActingAs() == null"
-                     class="dropdown-item">
-                    {{ authUser.firstName }} {{ authUser.lastName }}
-                  </a>
-                  <a v-for="business in actingAsEntities" :key="business.id"
-                          v-on:click="switchActingAs(business)"
-                          class="dropdown-item">
-                    {{business.name}}
-                    <span>
-                      &#10003;
-                    </span>
-                  </a>
-                  <div class="dropdown-divider"></div>
                   <a class="dropdown-item" v-on:click="logOut">Log out</a>
                 </div>
               </li>
@@ -144,6 +148,18 @@ export default {
       }
     },
 
+    currentActingAs() {
+      return this.$stateStore.getters.getActingAs();
+    },
+
+    printCurrentActingAs() {
+      if (this.currentActingAs != null) {
+        return this.currentActingAs.name;
+      } else {
+        return `${this.authUser.firstName} ${this.authUser.lastName}`;
+      }
+    },
+
     /**
      * Checks if a user is logged in or not
      */
@@ -159,16 +175,7 @@ export default {
     },
 
     actingAsEntities() {
-      let actingAsEntities = this.authUser.businesses;
-      console.log(actingAsEntities);
-      let currentBusiness = this.$stateStore.getters.getActingAs()
-      if (currentBusiness != null) {
-        let index = actingAsEntities.indexOf(currentBusiness);
-        if (index !== -1) {
-          actingAsEntities.splice(index, 1);
-        }
-      }
-      return actingAsEntities;
+      return this.authUser.businesses;
     }
   },
   methods: {
@@ -237,7 +244,11 @@ export default {
     },
 
     switchActingAs: function (business) {
-      this.$stateStore.actions.setActingAs(business);
+      if (business === null) {
+        this.$stateStore.actions.deleteActingAS();
+      } else {
+        this.$stateStore.actions.setActingAs(business);
+      }
     },
   },
 };

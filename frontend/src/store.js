@@ -67,6 +67,7 @@ export const store = {
       localStorage.setItem("authUser", JSON.stringify(state.authUser));
     },
     // Set business of user acting as
+    // Stored as a whole business object from authUser.businesses
     setActingAs: (business) => {
       state.actingAs = business;
     },
