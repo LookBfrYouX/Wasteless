@@ -3,7 +3,7 @@ package com.navbara_pigeons.wasteless.validation;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Product;
 
-public class ProductServiceValidator {
+public class ProductServiceValidation {
   /**
    * Checks if the required fields are not empty
    * @param product product to be a part of a business category or inventory
