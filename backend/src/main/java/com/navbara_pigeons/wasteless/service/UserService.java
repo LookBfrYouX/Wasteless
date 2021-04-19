@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
+import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
@@ -20,7 +21,7 @@ public interface UserService {
   JSONObject login(UserCredentials userCredentials)
       throws AuthenticationException, UserNotFoundException;
 
-  JSONObject getUserById(long id) throws UserNotFoundException;
+  JSONObject getUserById(long id) throws UserNotFoundException, UnhandledException;
 
   User getUserByEmail(String email) throws UserNotFoundException;
 

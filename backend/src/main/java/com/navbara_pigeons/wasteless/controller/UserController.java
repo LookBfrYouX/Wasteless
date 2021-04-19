@@ -3,7 +3,9 @@ package com.navbara_pigeons.wasteless.controller;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
+import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
@@ -105,20 +107,16 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/users/{id}")
-  public ResponseEntity<JSONObject> getUserById(@PathVariable String id) {
+  public ResponseEntity<JSONObject> getUserById(@PathVariable long id) {
     try {
       log.info("GETTING USER BY ID: " + id);
-      return new ResponseEntity<>(userService.getUserById(Long.parseLong(id)),
-          HttpStatus.valueOf(200));
+      return new ResponseEntity<>(userService.getUserById(id), HttpStatus.valueOf(200));
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (AuthenticationException exc) {
-      log.error("AUTHENTICATION ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(401), "Something went wrong");
-    } catch (NumberFormatException exc) {
-      log.error("INVALID ID FORMAT ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(401), "ID format not valid");
+    } catch (UnhandledException exc) {
+      log.error(exc.getMessage());
+      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Server Error");
     }
   }
 
@@ -203,6 +201,9 @@ public class UserController {
       try {
         JSONObject response = businessService.saveBusiness(business);
         return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+      } catch (BusinessTypeException exc) {
+        log.error("Error with supplied data");
+        throw new ResponseStatusException(HttpStatus.valueOf(400), "Error with supplied data");
       } catch (Exception exc) {
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
       }
@@ -219,7 +220,7 @@ public class UserController {
   public ResponseEntity<JSONObject> getBusinessById(@PathVariable long id) {
     try {
       log.info("GETTING BUSINESS BY ID: " + id);
-      return new ResponseEntity<>(businessService.getBusinessById(id),
+      return new ResponseEntity<>(businessService.getBusinessById(id, true),
           HttpStatus.valueOf(200));
     } catch (BusinessNotFoundException exc) {
       log.error("BUSINESS NOT FOUND ERROR: " + id);
