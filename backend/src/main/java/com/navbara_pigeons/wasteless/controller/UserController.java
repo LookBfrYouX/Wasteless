@@ -172,15 +172,11 @@ public class UserController {
    * @return HttpStatus 406 for Invalid ID format or User Doesn't Exist exception.
    */
   @PutMapping("/users/{id}/revokeAdmin")
-  public ResponseEntity<String> revokeAdminPermissions(@PathVariable String id) {
+  public ResponseEntity<String> revokeAdminPermissions(@PathVariable long id) {
     try {
-      long userId = Long.parseLong(id);
-      userService.revokeAdmin(userId);
+      userService.revokeAdmin(id);
       log.info("ADMIN PRIVILEGES REVOKED FROM: " + id);
       return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));
-    } catch (NumberFormatException exc) {
-      log.error("INVALID ID FORMAT ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), "Invalid ID format");
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), "The user does not exist.");
@@ -220,20 +216,16 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/businesses/{id}")
-  public ResponseEntity<JSONObject> getBusinessById(@PathVariable String id) {
+  public ResponseEntity<JSONObject> getBusinessById(@PathVariable long id) {
     try {
       log.info("GETTING BUSINESS BY ID: " + id);
-      return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)),
+      return new ResponseEntity<>(businessService.getBusinessById(id),
           HttpStatus.valueOf(200));
     } catch (BusinessNotFoundException exc) {
       log.error("BUSINESS NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (NumberFormatException exc) {
-      log.error("INVALID ID FORMAT ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), "ID format not valid");
+      throw new ResponseStatusException(HttpStatus.valueOf(406), "Business not found");
     } catch (Exception exc) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
     }
   }
-
 }

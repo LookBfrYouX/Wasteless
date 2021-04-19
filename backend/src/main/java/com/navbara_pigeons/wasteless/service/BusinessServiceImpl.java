@@ -1,5 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
@@ -7,18 +9,18 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,10 +32,9 @@ import org.springframework.stereotype.Service;
 public class BusinessServiceImpl implements BusinessService {
 
   private final BusinessDao businessDao;
-
   private final AddressDao addressDao;
-
   private final UserDao userDao;
+  private ObjectMapper objectMapper;
 
   /**
    * BusinessServiceImplementation constructor that takes autowired parameters and sets up the
@@ -42,10 +43,12 @@ public class BusinessServiceImpl implements BusinessService {
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, AddressDao addressDao, UserDao userDao) {
+  public BusinessServiceImpl(BusinessDao businessDao, AddressDao addressDao, UserDao userDao,
+      ObjectMapper objectMapper) {
     this.businessDao = businessDao;
     this.addressDao = addressDao;
     this.userDao = userDao;
+    this.objectMapper = objectMapper;
   }
 
   /**
@@ -79,89 +82,31 @@ public class BusinessServiceImpl implements BusinessService {
    *
    * @param id the id of the business
    * @return the Business instance of the business
+   * @throws BusinessNotFoundException when business with given id does not exist
+   * @throws UnhandledException thrown when converting business to JSONObject (internal error 500)
    */
   @Override
-  public JSONObject getBusinessById(long id)
-      throws BusinessNotFoundException, UserNotFoundException {
-    Business business = this.businessDao.getBusinessById(id);
+  public JSONObject getBusinessById(long id) throws BusinessNotFoundException, UnhandledException {
+    Business business = businessDao.getBusinessById(id);
 
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    Authentication authentication = securityContext.getAuthentication();
-    User loggedIn = this.userDao.getUserByEmail(authentication.getName());
-    JSONObject response = new JSONObject();
-    response.put("id", id);
-    response.put("name", business.getName());
-    response.put("description", business.getDescription());
-    response.put("businessType", business.getBusinessType());
-    response.put("created", business.getCreated());
-
-    JSONObject address = new JSONObject();
-    response.put("address", address);
-    response.put("primaryAdministratorId", business.getPrimaryAdministratorId());
-    List<JSONObject> administrators = new ArrayList<>();
-    if (business.getAdministrators() != null) {
-      for (User user : business.getAdministrators()) {
-        JSONObject administrator = new JSONObject();
-        administrator.put("id", user.getId());
-        administrator.put("firstName", user.getFirstName());
-        administrator.put("lastName", user.getLastName());
-        administrator.put("middleName", user.getMiddleName());
-        administrator.put("nickname", user.getNickname());
-        administrator.put("bio", user.getBio());
-        administrator.put("created", user.getCreated());
-        administrator.put("role", user.getRole());
-        JSONObject homeAddress = new JSONObject();
-        homeAddress.put("city", user.getHomeAddress().getCity());
-        homeAddress.put("region", user.getHomeAddress().getRegion());
-        homeAddress.put("country", user.getHomeAddress().getCountry());
-        administrator.put("homeAddress", homeAddress);
-
-        List<JSONObject> businesses = new ArrayList<>();
-        for (Business businessI : user.getBusinesses()) {
-          JSONObject businessAdministrated = new JSONObject();
-          businessAdministrated.put("id", businessI.getId());
-          businesses.add(businessAdministrated);
-        }
-        administrator.put("businessesAdministered", businesses);
-
-        if (user == loggedIn) {
-          homeAddress.put("streetNumber", user.getHomeAddress().getStreetNumber());
-          homeAddress.put("streetName", user.getHomeAddress().getStreetName());
-          homeAddress.put("postcode", user.getHomeAddress().getPostcode());
-          administrator.put("email", user.getEmail());
-          administrator.put("dateOfBirth", user.getDateOfBirth());
-          administrator.put("phoneNumber", user.getPhoneNumber());
-        }
-        administrators.add(administrator);
-      }
+    // Convert business entity JSONObject (convert to String then to JSONObject)
+    String jsonStringBusiness = null;
+    try {
+      jsonStringBusiness = objectMapper.writeValueAsString(business);
+    } catch (JsonProcessingException exc) {
+      throw new UnhandledException("JSON processing exception");
     }
-    response.put("administrators", administrators);
-
-    // Email of user that made the request
-    String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
-    boolean isAdmin = false;
-    for (GrantedAuthority simpleGrantedAuthority : authentication.getAuthorities()) {
-      if (simpleGrantedAuthority.getAuthority().contains("ADMIN")) {
-        isAdmin = true;
-      }
-    }
-    boolean isAdministrator = false;
-    for (User administrator : business.getAdministrators()) {
-      if (administrator.getEmail() == username) {
-        isAdministrator = true;
-      }
-    }
-    // sensitive details (e.g. email, postcode) are not returned
-    if (business.getPrimaryAdministratorId() == loggedIn.getId() || isAdministrator || isAdmin) {
-      address.put("streetNumber", business.getAddress().getStreetNumber());
-      address.put("streetName", business.getAddress().getStreetName());
-      address.put("postcode", business.getAddress().getPostcode());
+    JSONObject response = null;
+    try {
+      response = (JSONObject) new JSONParser().parse(jsonStringBusiness);
+    } catch (ParseException exc) {
+      throw new UnhandledException("JSON parse exception");
     }
 
-    address.put("city", business.getAddress().getCity());
-    address.put("region", business.getAddress().getRegion());
-    address.put("country", business.getAddress().getCountry());
+    // Remove password fields from response
+    for (Object user : (ArrayList) response.get("administrators")) {
+      ((JSONObject) user).remove("password");
+    }
     return response;
   }
-
 }
