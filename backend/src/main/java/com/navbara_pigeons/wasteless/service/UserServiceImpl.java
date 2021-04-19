@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
   public JSONObject saveUser(User user)
       throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException {
     // Email validation
-    if (!UserServiceValidation.isUserValid(user)) {
+    if (!UserServiceValidation.requiredFieldsNotEmpty(user)) {
       throw new UserRegistrationException("Required user fields cannot be null");
     }
     if (!UserServiceValidation.isEmailValid(user.getEmail())) {
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // Address validation
-    if (!addressValidator.isAddressValid(user.getHomeAddress())) {
+    if (!addressValidator.requiredFieldsNotEmpty(user.getHomeAddress())) {
       throw new UserRegistrationException("Required address fields cannot be null");
     }
 

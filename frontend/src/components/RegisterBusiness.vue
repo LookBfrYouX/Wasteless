@@ -156,6 +156,7 @@ export default {
         });
       } catch (err) {
         // TODO: Need to handle errors here
+        this.errorMessage = err.userFacingErrorMessage;
         return;
       }
 

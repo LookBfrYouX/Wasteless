@@ -16,12 +16,12 @@ public class AddressValidator {
 
     /**
      * Returns false if required address fields are null or empty.
-     * Does not check if country is valid.
+     * DOES NOT CHECK IF COUNTRY IS VALID
      * @param address address to validate
      */
-    public boolean isAddressValid(Address address) {
+    public boolean requiredFieldsNotEmpty(Address address) {
         // Checks user fields are not null/empty
-        if (UserServiceValidation.isNullOrTrimmedEmpty(address.getCountry())) {
+        if (ValidationHelper.isNullOrTrimmedEmpty(address.getCountry())) {
             return false;
         }
 

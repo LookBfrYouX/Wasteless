@@ -9,10 +9,9 @@ import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.validation.AddressValidator;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
-import java.time.LocalDateTime;
+
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +64,7 @@ public class BusinessServiceImpl implements BusinessService {
     }
 
     // Address validation
-    if (!addressValidator.isAddressValid(business.getAddress())) {
+    if (!addressValidator.requiredFieldsNotEmpty(business.getAddress())) {
       throw new BusinessRegistrationException("Required address fields cannot be null");
     }
 
