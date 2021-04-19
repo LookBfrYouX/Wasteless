@@ -361,11 +361,15 @@ export default {
 
         suggestionsDict[addressString] = {
           ...addressComponents,
+          score: ratio,
           toString: () => addressString
         }
       }
 
-      return Array.from(Object.values(suggestionsDict));
+      const sorted = Array.from(Object.values(suggestionsDict));
+      sorted.sort((a, b) => a.score - b.score);
+      // Highest score at the top
+      return sorted;
     },
 
     /**
