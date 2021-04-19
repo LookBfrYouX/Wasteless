@@ -100,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
       product.setDescription((jsonProduct.get("description") != null ? jsonProduct.get("description") : "").toString());
       product.setRecommendedRetailPrice(Double.parseDouble(jsonProduct.getOrDefault("recommendedRetailPrice", 0.0).toString()));
       // Product validation
-      if (!ProductServiceValidation.isProductValid(product)) {
+      if (!ProductServiceValidation.requiredFieldsNotEmpty(product)) {
         throw new ProductRegistrationException();
       }
       product.setCreated(ZonedDateTime.now(ZoneOffset.UTC));

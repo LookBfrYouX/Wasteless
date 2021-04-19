@@ -1,12 +1,12 @@
 <template>
   <div
-      class="w-100 d-flex justify-content-center signup-container gradient-background pb-4"
+    class="w-100 d-flex justify-content-center signup-container gradient-background pb-4"
   >
     <div class="container">
       <form
-          class="slightly-transparent-inputs"
-          method="POST"
-          v-on:submit.prevent="register"
+        class="slightly-transparent-inputs"
+        method="POST"
+        v-on:submit.prevent="createProduct"
       >
         <div class="row">
           <div class="col">
@@ -18,13 +18,13 @@
           <div class="form-group required col px-3">
             <label>Name</label>
             <input
-                v-model="name"
-                class="form-control"
-                maxlength="30"
-                name="name"
-                placeholder="Name"
-                required
-                type="text"
+              v-model="name"
+              class="form-control"
+              maxlength="30"
+              name="name"
+              placeholder="Name"
+              required
+              type="text"
             />
           </div>
         </div>
@@ -33,13 +33,13 @@
           <div class="form-group required col px-3">
             <label>Catalog ID</label>
             <input
-                v-model="id"
-                class="form-control"
-                maxlength="30"
-                name="id"
-                placeholder="Catalog ID"
-                required
-                type="text"
+              v-model="id"
+              class="form-control"
+              maxlength="30"
+              name="id"
+              placeholder="Catalog ID"
+              required
+              type="text"
             />
           </div>
         </div>
@@ -48,13 +48,13 @@
           <div class="form-group required col px-3">
             <label>Recommended Price</label>
             <input
-                v-model="price"
-                class="form-control"
-                maxlength="30"
-                name="price"
-                placeholder="Price"
-                required
-                type="number"
+              v-model="price"
+              class="form-control"
+              maxlength="30"
+              name="price"
+              placeholder="Price"
+              required
+              type="number"
             />
           </div>
         </div>
@@ -63,13 +63,13 @@
           <div class="form-group col px-0">
             <label>Description</label>
             <textarea
-                v-model="description"
-                class="form-control"
-                maxlength="500"
-                name="description"
-                placeholder="Description"
-                rows="5"
-                type="text"
+              v-model="description"
+              class="form-control"
+              maxlength="500"
+              name="description"
+              placeholder="Description"
+              rows="5"
+              type="text"
             />
           </div>
         </div>
@@ -77,9 +77,9 @@
         <div class="row">
           <div class="col">
             <input
-                class="btn btn-block btn-primary"
-                type="submit"
-                value="Add Product"
+              class="btn btn-block btn-primary"
+              type="submit"
+              value="Add Product"
             />
           </div>
         </div>
@@ -95,7 +95,7 @@
 </template>
 
 <script>
-// const Api = require("../Api").default;
+const Api = require("../Api").default;
 
 export default {
   data() {
@@ -114,21 +114,26 @@ export default {
     /**
      * Wrapper which simply calls the sign up method of the api
      */
-    //TODO: implement state getBusinessId method on U15 (from U5)
-    // callApi: function (data) {
-      // const businessId = this.$stateStore.getters.getBusinessId();
-      // return Api.createProduct(businessId, data);
-    // },
-
-    // createProduct: async function () {
-    //     await this.callApi({
-    //       name: this.name,
-    //       id: this.id,
-    //       description: this.description,
-    //       recommendedRetailPrice: this.price, // API stores the type as businessType not type
-    //     });
-    //   },
+    callApi: function (data) {
+      const businessId = this.$stateStore.getters.getActingAs().id;
+      console.log(businessId);
+      return Api.createProduct(businessId, data);
     },
+
+    /**
+     * Creates a new product Object with attributes
+     * `name`, `id`, `recommendedRetailPrice`, `description`
+     * @returns {Promise<void>} a promise
+     */
+    createProduct: async function () {
+      await this.callApi({
+        name: this.name,
+        id: this.id,
+        recommendedRetailPrice: this.price, // API stores the type as businessType not type
+        description: this.description,
+      });
+    },
+  },
 };
 </script>
 

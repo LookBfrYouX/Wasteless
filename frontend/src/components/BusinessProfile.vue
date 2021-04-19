@@ -26,6 +26,14 @@
           <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
         </li>
       </ul>
+      <div class="card my-2" v-for="(product, index) in businessInfo.product"
+           v-bind:key="index">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{ product.recommendedRetailPrice }}</h6>
+          <p class="card-text">{{ product.description }}</p>
+        </div>
+      </div>
       <div v-if="errorMessage.length > 0" class="row mt-2">
         <div class="col">
           <p class="alert alert-warning">{{ errorMessage }}</p>
@@ -49,6 +57,7 @@ export default {
         description: "",
         homeAddress: "",
         businessType: "",
+        products: [],
       },
       errorMessage: "",
     }
@@ -63,7 +72,7 @@ export default {
 
   beforeMount: function () {
     // gets user information from api
-    this.parseApiResponse(this.callApi(this.businessId));
+    this.parseApiResponse(this.callApi(this.businessId))
   },
 
   methods: {
@@ -83,6 +92,21 @@ export default {
         const response = await apiCall;
         console.log(response.data);
         this.businessInfo = response.data;
+        await this.getProducts();
+      } catch (err) {
+        alert(
+            err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
+      }
+    },
+
+    /**
+     * Calls the API to get product information with the given business ID
+     */
+    getProducts: async function () {
+      try {
+        const {data} = await Api.getProducts(this.businessId);
+        console.log(data);
+        this.businessInfo.products = data;
       } catch (err) {
         alert(
             err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
