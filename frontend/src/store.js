@@ -5,6 +5,7 @@ import Vue from 'vue';
 const state = new Vue.observable({
   authUser: JSON.parse(localStorage.getItem("authUser")),
   welcomeMessage: "HERE WE GOOO",
+  actingAs: null
 });
 
 // This is the globally accessible store. It allows the state to be read and modified.
@@ -18,6 +19,10 @@ export const store = {
     // Get the current welcome message (example)
     getWelcomeMessage: () => {
       return state.welcomeMessage;
+    },
+
+    getActingAs:() => {
+      return state.actingAs;
     },
 
     /**
@@ -60,6 +65,14 @@ export const store = {
     revokeAdmin: () => {
       state.authUser.role = "ROLE_USER";
       localStorage.setItem("authUser", JSON.stringify(state.authUser));
+    },
+
+    setActingAs: (business) => {
+      state.actingAs = business;
+    },
+
+    deleteActingAs: () => {
+      state.actingAs = null;
     }
   },
 };

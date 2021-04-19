@@ -27,7 +27,15 @@
               </a>
             </li>
           </router-link>
+          <router-link v-if="isActingAsBusiness" active-class="active" exact to="/ProductCatalogue">
+            <li class="nav-item">
+              <a class="nav-link">
+                Product Catalogue
+              </a>
+            </li>
+          </router-link>
         </ul>
+
         <!--if logged in shows this section-->
         <div v-if="isLoggedIn" class="d-flex">
           <form class="input-group mt-2 navbar-center form-inline" v-on:submit.prevent="search">
@@ -53,14 +61,37 @@
                    href="#" role="button">
                   <img class="nav-picture rounded-circle" src="placeholder-profile.png">
                   <div class="d-flex flex-column mx-1">
-                    <span class="m-0 p-0 text-dark">{{ authUser.firstName }} {{
-                        authUser.lastName
-                      }}</span>
+                    <span class="m-0 p-0 text-dark">
+                      {{ printCurrentActingAs }}
+                    </span>
                     <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
                   </div>
                 </a>
                 <div aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-right">
-                  <button class="dropdown-item" v-on:click="logOut">Log out</button>
+                  <div v-if="actingAsEntities.length !== 0"
+                       class="switch-acting-as-wrapper">
+                    <h4 class="dropdown-header">Logged in as</h4>
+                    <div class="dropdown-item">
+                      {{ authUser.firstName }} {{ authUser.lastName }}
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <h4 class="dropdown-header">Act as</h4>
+                    <a v-if="currentActingAs != null"
+                       v-on:click="switchActingAs()"
+                       class="dropdown-item">
+                      {{ authUser.firstName }} {{ authUser.lastName }}
+                    </a>
+                    <a v-for="business in actingAsEntities" :key="business.id"
+                            v-on:click="switchActingAs(business)"
+                            class="dropdown-item">
+                      {{business.name}}
+                      <span v-if="business === currentActingAs">
+                        &#10003;
+                      </span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                  </div>
+                  <a class="dropdown-item" v-on:click="logOut">Log out</a>
                 </div>
               </li>
             </ul>
@@ -99,6 +130,8 @@
   </div>
 </template>
 
+
+
 <script>
 const Api = require("./../Api").default;
 import ErrorModal from "./Errors/ErrorModal";
@@ -133,11 +166,38 @@ export default {
     },
 
     /**
+    * returns null if not acting as a business
+    */
+    isActingAsBusiness() {
+      if (this.currentActingAs != null) {
+        return this.currentActingAs.name;
+      } else {
+        return null;
+      }
+    },
+
+    /**
      * True if admin, false if not OR IF NOT LOGGED IN
      */
     isAdmin() {
       return this.$stateStore.getters.isAdmin();
     },
+
+    actingAsEntities() {
+      return this.authUser.businesses;
+    },
+
+    currentActingAs() {
+      return this.$stateStore.getters.getActingAs();
+    },
+
+    printCurrentActingAs() {
+      if (this.currentActingAs != null) {
+        return this.currentActingAs.name;
+      } else {
+        return `${this.authUser.firstName} ${this.authUser.lastName}`;
+      }
+    }
   },
   methods: {
     /**
@@ -201,6 +261,14 @@ export default {
           query: this.query,
         },
       });
+    },
+
+    switchActingAs: function (business) {
+      if (business === null) {
+        this.$stateStore.actions.deleteActingAs();
+      } else {
+        this.$stateStore.actions.setActingAs(business);
+      }
     },
   },
 };
