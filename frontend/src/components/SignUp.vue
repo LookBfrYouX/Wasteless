@@ -430,7 +430,7 @@ export default {
       delete userData.password;
       userData.id = response.data.userId;
       await this.$stateStore.actions.setAuthUser(userData);
-      await this.$router.push({name: "profile"});
+      await this.$router.push({name: "home"});
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div id="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <router-link exact to="/">
+      <router-link exact to="/home">
         <a class="navbar-brand">App Logo</a>
       </router-link>
 
