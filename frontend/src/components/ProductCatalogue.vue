@@ -133,7 +133,7 @@ const ProductCatalogue = {
     },
 
     /**
-     * Sends API request and sets results variable
+     * Sends API request and sets results variable, needs to run first which is why its called in the created hook
      */
     query: async function () {
       /* makes a query to the api to search for the prop value from the app.vue main page*/
@@ -167,6 +167,7 @@ const ProductCatalogue = {
     },
 
     paginate(results) {
+      // calculates information for results
       let page = this.pageNum;
       let resultsPerPage = this.resultsPerPage;
       let from = page * resultsPerPage;
@@ -176,6 +177,7 @@ const ProductCatalogue = {
     }
   },
   computed: {
+    /*computed comes after created*/
     sortedResults() {
       if (this.sortBy == null) {
         return this.results;
@@ -192,7 +194,7 @@ const ProductCatalogue = {
         return (this.reversed ? -1 : 1) * (formatter(a) > formatter(b) ? 1 : -1);
       })
     },
-
+    // used for for loop in html
     displayedResults() {
       console.log('Displaying Results')
       return this.paginate(this.sortedResults);

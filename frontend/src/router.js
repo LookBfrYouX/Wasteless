@@ -6,7 +6,7 @@ import Profile from './components/Profile.vue'
 import BusinessProfile from './components/BusinessProfile'
 import RegisterBusiness from './components/RegisterBusiness'
 import Home from "./components/Home.vue"
-import CreateProduct from "@/components/CreateProduct"
+import CreateProduct from "./components/CreateProduct"
 import ProductCatalogue from './components/ProductCatalogue';
 
 export default []
