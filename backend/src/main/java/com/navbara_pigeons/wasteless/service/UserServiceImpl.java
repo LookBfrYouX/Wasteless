@@ -142,10 +142,11 @@ public class UserServiceImpl implements UserService {
    * number/name/post code are not returned
    *
    * @param id the id of the user
+   * @param includeBusinesses true if businesses are to be included in the response
    * @return the User instance of the user
    */
   @Override
-  public JSONObject getUserById(long id) throws UserNotFoundException,
+  public JSONObject getUserById(long id, boolean includeBusinesses) throws UserNotFoundException,
       UnhandledException {
     User user = userDao.getUserById(id);
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -178,18 +179,19 @@ public class UserServiceImpl implements UserService {
     }
 
     // Add administered business
-    ArrayList<JSONObject> businesses = new ArrayList<>();
-    if (user.getBusinesses() != null) {
-      for (Business business : user.getBusinesses()) {
-        try {
-          businesses.add(businessService.getBusinessById(business.getId(), false));
-        } catch (BusinessNotFoundException e) {
-          ; // If no businesses found, don't append any to list!
+    if (includeBusinesses) {
+      ArrayList<JSONObject> businesses = new ArrayList<>();
+      if (user.getBusinesses() != null) {
+        for (Business business : user.getBusinesses()) {
+          try {
+            businesses.add(businessService.getBusinessById(business.getId(), false));
+          } catch (BusinessNotFoundException e) {
+            ; // If no businesses found, don't append any to list!
+          }
         }
       }
-
+      response.appendField("businessesAdministered", businesses);
     }
-    response.appendField("businessesAdministered", businesses);
     return response;
   }
 

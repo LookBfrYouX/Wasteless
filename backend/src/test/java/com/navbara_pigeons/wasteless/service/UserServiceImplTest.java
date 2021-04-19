@@ -165,7 +165,7 @@ class UserServiceImplTest {
     userCredentials.setPassword(password);
     userController.login(userCredentials);
 
-    return userService.getUserById(id);
+    return userService.getUserById(id, true);
   }
 
   void assertUserWithJson(User user, JSONObject response, boolean publicOnly) {

@@ -198,4 +198,6 @@ INSERT INTO USER_BUSINESS(USER_ID,
 VALUES (4,
         1),
        (4,
-        2);
+        2),
+        (3,
+        1);

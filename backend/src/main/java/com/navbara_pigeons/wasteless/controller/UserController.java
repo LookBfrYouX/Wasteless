@@ -110,7 +110,7 @@ public class UserController {
   public ResponseEntity<JSONObject> getUserById(@PathVariable long id) {
     try {
       log.info("GETTING USER BY ID: " + id);
-      return new ResponseEntity<>(userService.getUserById(id), HttpStatus.valueOf(200));
+      return new ResponseEntity<>(userService.getUserById(id, true), HttpStatus.valueOf(200));
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
