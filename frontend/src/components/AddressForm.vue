@@ -369,7 +369,10 @@ export default {
       const sorted = Array.from(Object.values(suggestionsDict));
       sorted.sort((a, b) => a.score - b.score);
       // Highest score at the top
-      return sorted;
+      return sorted.map(el => {
+        const {score, ...withoutScore} = el;
+        return withoutScore;
+      });
     },
 
     /**
