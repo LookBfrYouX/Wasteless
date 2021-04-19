@@ -33,7 +33,7 @@ import axios from 'axios';
 import {ApiRequestError} from "./ApiRequestError";
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
-const TIMEOUT = 1000;
+const TIMEOUT = 2500;
 
 const instance = axios.create({
   baseURL: SERVER_URL,

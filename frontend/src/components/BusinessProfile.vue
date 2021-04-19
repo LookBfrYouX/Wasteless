@@ -47,7 +47,7 @@ export default {
       businessInfo: {
         name: "",
         description: "",
-        homeAddress: "",
+        homeAddress: {},
         businessType: "",
       },
       errorMessage: "",
@@ -81,7 +81,6 @@ export default {
     parseApiResponse: async function (apiCall) {
       try {
         const response = await apiCall;
-        console.log(response.data);
         this.businessInfo = response.data;
       } catch (err) {
         alert(

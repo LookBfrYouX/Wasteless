@@ -84,7 +84,10 @@
                 required
                 type="email"
                 v-bind:class="{'is-invalid': emailErrorMessage !== null }"
+                pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"
+                title="You must enter a valid email address. Dotless domains are not supported"
             />
+            <!-- regexp from https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type%3Demail), but modified to disallow dot-less domains -->
             <div class="invalid-feedback">{{ emailErrorMessage }}</div>
           </div>
         </div>
@@ -268,9 +271,9 @@ export default {
       address: {
         streetNumber: "",
         streetName: "",
-        postcode: "",
         city: "",
         region: "",
+        postcode: "",
         country: "",
       },
       addressAsString: "",

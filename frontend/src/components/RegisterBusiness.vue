@@ -139,9 +139,14 @@ export default {
 
     register: async function () {
       // TODO: Associate userId with the registered business account
+      const authUser = this.$stateStore.getters.getAuthUser();
+      if (authUser === null) {
+        this.errorMessage = "You must be logged in to register a business";
+        return;
+      }
       try {
         var response = await this.callApi({
-          primaryAdministratorId: window.localStorage.getItem("userId"),
+          primaryAdministratorId: authUser.id,
           name: this.name,
           description: this.description,
           address: {

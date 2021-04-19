@@ -22,40 +22,39 @@ The parent component must provide `address` prop. When the address is updated in
 -->
 <template>
   <div class="row">
-    <div class="form-group col-12">
-      <label>Address Line</label>
+    <div class="form-group col-12 col-md-3">
+      <label>Street number</label>
       <suggestions
-          autocomplete="address-line"
           inputClasses="form-control"
-          maxlength="200"
-          name="addressLine"
-          placeholder="Address line"
+          maxlength="50"
+          name="streetnumber"
+          placeholder="Street number"
           required
           type="text"
 
-          v-bind:suggestions="addressSuggestions"
-          v-bind:value="address.addressLine"
-          v-on:focus="activeAddressInputName = 'addressLine'"
+          v-bind:suggestions="[]"
+          v-bind:value="address.streetNumber"
+          v-on:focus="activeAddressInputName = 'streetNumber'"
 
           v-on:input="onAddressInput"
           v-on:suggestion="suggestionSelected"
       />
+      <!-- No suggestions for street number -->
     </div>
-
-    <div class="form-group col-12 col-md-6">
-      <label>Post code</label>
+    <div class="form-group col-12 col-md-9">
+      <label>Street name</label>
       <suggestions
-          autocomplete="postal-code"
+          autocomplete="address-line"
           inputClasses="form-control"
-          maxlength="10"
-          name="postcode"
-          placeholder="Post code"
+          maxlength="200"
+          name="streetName"
+          placeholder="Street name"
           required
           type="text"
 
           v-bind:suggestions="addressSuggestions"
-          v-bind:value="address.postcode"
-          v-on:focus="activeAddressInputName = 'postcode'"
+          v-bind:value="address.streetName"
+          v-on:focus="activeAddressInputName = 'streetName'"
 
           v-on:input="onAddressInput"
           v-on:suggestion="suggestionSelected"
@@ -81,19 +80,39 @@ The parent component must provide `address` prop. When the address is updated in
       />
     </div>
     <div class="form-group col-12 col-md-6">
-      <label>Region/state</label>
+      <label>Region</label>
       <suggestions
           autocomplete="address-level1"
           inputClasses="form-control"
           maxlength="100"
-          name="state"
-          placeholder="Region/state"
+          name="region"
+          placeholder="Region"
           required
           type="text"
 
           v-bind:suggestions="addressSuggestions"
-          v-bind:value="address.state"
-          v-on:focus="activeAddressInputName = 'state'"
+          v-bind:value="address.region"
+          v-on:focus="activeAddressInputName = 'region'"
+
+          v-on:input="onAddressInput"
+          v-on:suggestion="suggestionSelected"
+      />
+    </div>
+    
+    <div class="form-group col-12 col-md-6">
+      <label>Post code</label>
+      <suggestions
+          autocomplete="postal-code"
+          inputClasses="form-control"
+          maxlength="10"
+          name="postcode"
+          placeholder="Post code"
+          required
+          type="text"
+
+          v-bind:suggestions="addressSuggestions"
+          v-bind:value="address.postcode"
+          v-on:focus="activeAddressInputName = 'postcode'"
 
           v-on:input="onAddressInput"
           v-on:suggestion="suggestionSelected"
@@ -122,14 +141,30 @@ The parent component must provide `address` prop. When the address is updated in
   </div>
 </template>
 <script>
-
 const axios = require("axios");
+const { EditDistance } = require("./../EditDistance");
+
 const Suggestions = require("./Suggestions").default;
 
 // Fields in order of specifity
 // When updating this, ensure all address related functions and input properties are updated as well
-export const ADDRESS_SECTION_NAMES = ["addressLine", "postcode", "city", "state", "country"];
+export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "city", "region", "postcode", "country"];
 Object.freeze(ADDRESS_SECTION_NAMES);
+
+/**
+ * Edit distance divided by (modified) string length
+ * Use ratio instead of raw measure to not favour longer strings
+ */
+const EDIT_DISTANCE_WORST_RATIO = 2;
+
+/**
+ * Delete/substitute costs are very high since suggestions are likely to be much longer than the input string
+ * Typos are probably fairly rare so most of the time character should be inserted, not modified - that probably means
+ * the Photon suggestion does not match input at all (e.g. 'name' property matches but we don't care about the name)
+ */
+const EDIT_DISTANCE_INSERT_COST = 1;
+const EDIT_DISTANCE_DELETE_COST = 50;
+const EDIT_DISTANCE_SUBSTITUTE_COST = 50;
 
 const API_CALL_DEBOUNCE_TIME = 100;
 const API_MIN_QUERY_LENGTH = 3;
@@ -144,10 +179,11 @@ export default {
     address: {
       required: true,
       default: {
-        addressLine: "",
-        postcode: "",
+        streetNumber: "",
+        streetName: "",
         city: "",
-        state: "",
+        region: "",
+        postcode: "",
         country: "",
       }
     }
@@ -169,26 +205,23 @@ export default {
      */
     mapOSMPropertiesToAddressComponents: function (properties) {
       const {
-        housenumber, street, //addressLine
-        postcode,
+        housenumber, // streetNumber
+        street, // streetName
         county, // city
-        state, // state
+        state, // region
+        postcode,
         country,
         // osm_id,
       } = properties;
 
       const components = {
-        addressLine: street,
-        postcode: postcode,
+        streetNumber: housenumber,
+        streetName: street,
         city: county,
-        state: state,
+        region: state,
+        postcode: postcode,
         country: country
       };
-
-      if (street != undefined && housenumber != undefined) {
-        components.addressLine = `${housenumber} ${street}`;
-      }
-      // If street is undefined but housenumber isn't, leave addressLine undefined
 
       return components;
     },
@@ -201,19 +234,20 @@ export default {
       // Was getting strange errors where sometimes a component would be undefined
       // Think its to do with accessing properties via this['someString'] so this
       // is a workaround
-      let {addressLine, city, state, postcode, country} = this.address;
+      let {streetNumber, streetName, city, region, postcode, country} = this.address;
       let components = {
-        addressLine,
-        postcode,
+        streetNumber,
+        streetName,
         city,
-        state,
+        region,
+        postcode,
         country
       };
       return this.generateAddressStringFromAddressComponents(components);
     },
 
     /**
-     * Generates address string
+     * Generates address string in display order
      * @param addressComponents object containing components of address
      * @param mostSpecificComponentName name most specific address component present in the returned string
      * If invalid, returns all components (default behaviour)
@@ -233,10 +267,14 @@ export default {
         }
         const trimmed = component.trim();
         if (trimmed.length == 0) {
+          if (name == "streetName") address = "";
+          // If street name is blank then get rid of street number too
           continue;
         }
         if (address.length != 0) {
-          address += ", ";
+          if (name === "streetName") address += " ";
+          // No comma between street number and street name; just a space
+          else address += ", ";
         }
         address += trimmed
       }
@@ -245,7 +283,7 @@ export default {
 
     /**
      * Returns an ordered list of sections that are less specific than the given component
-     * e.g. if city is given, city, state, postcode, country are returned
+     * e.g. if city is given, city, region, postcode, country are returned
      * If componentName is not valid, it will return all section names
      */
     getAddressComponentNamesLessSpecificThan(componentName) {
@@ -258,12 +296,39 @@ export default {
     },
 
     /**
+     * Generates address string from OSM object for string comparison with edit distance
+     * Includes properties not used in the rest of the component such as district, locality
+     * @param {object} osmAddress OSM object
+     * @return {string} OSM address with several relevant fields concatanated together with commas and spaces
+     */
+    generateComparisonString(osmAddress) {
+      if (osmAddress.housenumber && osmAddress.street) osmAddress["streetaddress"] = osmAddress.housenumber + " " + osmAddress.street;
+      const components = [
+        "streetaddress",
+        "district",
+        "locality",
+        "city",
+        "county",
+        "state",
+        "postcode",
+        "country"
+      ];
+
+      // Concatenate with comma and space
+      // housenumber/street could be undefined so streetaddress could be undefined as well. Hence, filter
+      const result = components.filter(name => osmAddress[name]).reduce((prev, curr) => prev + osmAddress[curr] + ", ", "");
+      if (result.length) return result.slice(0, -2); // Remove comma and space from end
+      return result;
+    },
+
+    /**
      * Filters raw address suggestions and formats them in a way suitable for the autofill component
      */
     generateAddressSuggestions: function () {
       const suggestionsDict = {};
       // Using dict instead of array to remove duplicates (e.g. shops in a mall will have different name but otherwise same address)
-
+      
+      const originalString = this.generateAddressString().toLocaleLowerCase();
       for (const {type, properties} of this.addressSuggestionsRaw) {
         if (type != "Feature") {
           continue;
@@ -273,17 +338,42 @@ export default {
         const addressString = this.generateAddressStringFromAddressComponents(addressComponents,
             this.activeAddressInputName, true);
         if (addressString == undefined) {
+          // Ignore any suggestions where the necessary components are not present
           continue;
         }
-        // Ignore any suggestions where the necessary components are not present
+
+        const resultString = this.generateComparisonString(properties);
+        const distance = EditDistance.calculate(
+          originalString,
+          resultString.toLocaleLowerCase(),
+          EDIT_DISTANCE_INSERT_COST,
+          EDIT_DISTANCE_DELETE_COST,
+          EDIT_DISTANCE_SUBSTITUTE_COST
+        );
+
+        const ratio = distance/Math.abs(resultString.length);
+
+        // Use ratio to not favour longer suggestions
+        if (ratio > EDIT_DISTANCE_WORST_RATIO) {
+          // Suggestion too bad
+          continue;
+        }
 
         suggestionsDict[addressString] = {
           ...addressComponents,
+          score: ratio,
           toString: () => addressString
         }
       }
 
-      return Array.from(Object.values(suggestionsDict));
+      const sorted = Array.from(Object.values(suggestionsDict));
+      sorted.sort((a, b) => a.score - b.score);
+      // Highest score at the top
+      return sorted.map(el => {
+        // eslint-disable-next-line no-unused-vars
+        const {score, ...withoutScore} = el;
+        return withoutScore;
+      });
     },
 
     /**
@@ -320,13 +410,14 @@ export default {
 
     /**
      * Updates the address values in the model when there is an input event
+     * unless it is the street number input
      * Also notifies the parent
      */
     onAddressInput: function (value) {
       this.$set(this.address, this.activeAddressInputName, value);
       // Think Vue might have issues reacting to updates when set via object['key'] syntax?
       // this[this.activeAddressInputName] = value;
-      this.addressChange();
+      if (this.activeAddressInputName !== "streetNumber") this.addressChange();
       this.sendAddressUpdateEvent();
     },
 
@@ -358,15 +449,23 @@ export default {
   },
 
   watch: {
+    /**
+     * Update address suggestions text when the active input address field changes,
+     * unless it is focused on the street number 
+     */
     activeAddressInputName: function () {
       // Couldn't make addressSuggestions a computed property for some reason: would never update
       // Hence, when active address input changes the address suggestions array has to be updated
       // (toString value changes)
+      if (this.activeAddressInputName !== "streetNumber") this.addressChange();
       this.addressSuggestions = this.generateAddressSuggestions();
     },
 
+    /**
+     * When callee updates address, need to trigger API again
+     */
     address: function () {
-      this.addressChange();
+      if (this.activeAddressInputName !== "streetNumber") this.addressChange();
     }
   }
 }

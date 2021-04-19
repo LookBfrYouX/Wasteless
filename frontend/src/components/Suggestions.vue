@@ -40,29 +40,35 @@ Notes:
         v-on:input="args => $emit('input', args.target.value)"
         v-on:keydown="keydown"
     />
-    <ul v-if="showSuggestions"
-        v-bind:class="ulClasses"
-    >
-      <li
-          v-for="(suggestion, i) in suggestions"
-          v-bind:key="i"
-          :data-index="i"
-          v-bind:class="{
-          ...(i == index? liActiveClasses: liInactiveClasses),
-          ...liClasses
-        }"
-          v-on:click="suggestionClick"
-          v-on:mouseover="suggestionMouseover"
+    <div v-if="showSuggestions" class="ul-wrapper">
+      <ul 
+          v-bind:class="ulClasses"
       >
-        {{ suggestion.toString() }}
-      </li>
-    </ul>
+        <li
+            v-for="(suggestion, i) in suggestions"
+            v-bind:key="i"
+            :data-index="i"
+            v-bind:class="{
+            ...(i == index? liActiveClasses: liInactiveClasses),
+            ...liClasses
+          }"
+            v-on:click="suggestionClick"
+            v-on:mouseover="suggestionMouseover"
+        >
+          {{ suggestion.toString() }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 <style scoped>
 .suggestions-list {
   position: relative;
   z-index: 1;
+}
+
+.ul-wrapper {
+  height: 0;
 }
 </style>
 <script>
@@ -98,7 +104,7 @@ export default {
       default: () => {
         return {
           "list-group": true,
-          "suggestions-list": true
+          "suggestions-list": true,
         }
       }
     },
