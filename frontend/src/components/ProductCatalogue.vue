@@ -44,11 +44,11 @@
               <li v-for="(product, index) in displayedResults" v-bind:key="index"
                   class="list-group-item card ">
                 <div class="d-flex flex-wrap justify-content-between">
-                  <h4 class="card-title mb-0">{{ product.name }} ({{ product.id }})</h4>
+                  <h4 class="card-title mb-0">{{ product.name }} (Id: {{ product.id }})</h4>
                 </div>
-                <div class="text-muted">{{ product.description }}</div>
-                <div class="text-muted">{{ product.recommendedRetailPrice }}</div>
-                <div class="text-muted">{{ product.created }}</div>
+                <div class="text-muted">Description: {{ product.description }}</div>
+                <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
+                <div class="text-muted">Created: {{ product.created }}</div>
               </li>
             </ul>
           </div>
