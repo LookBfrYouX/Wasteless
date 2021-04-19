@@ -2,6 +2,8 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import com.navbara_pigeons.wasteless.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +43,13 @@ public class BusinessController {
     public ResponseEntity<String> registerBusiness(@RequestBody Business business) {
         try {
             businessService.saveBusiness(business);
+            log.info("BUSINESS CREATED SUCCESSFULLY: " + business.getId());
             return new ResponseEntity<>("Business account successfully created", HttpStatus.valueOf(201));
-        } catch (Exception exc) {
+        } catch(BusinessRegistrationException exc) {
+            log.error("COULD NOT REGISTER BUSINESS (" + exc.getMessage() + "): " + business.getName());
+            throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad Request");
+        }catch (Exception exc) {
+            log.error("CRITICAL BUSINESS REGISTRATION ERROR (" + exc.getMessage() + ")");
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
         }
     }

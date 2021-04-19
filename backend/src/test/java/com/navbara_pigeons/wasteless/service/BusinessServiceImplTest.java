@@ -7,16 +7,24 @@ import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+
+import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class BusinessServiceImplTest {
+public class BusinessServiceImplTest extends ServiceTestProvider {
 
   @Autowired
   UserController userController;
@@ -30,40 +38,27 @@ public class BusinessServiceImplTest {
   @Autowired
   BusinessService businessService;
 
-  @Autowired
-  UserService userService;
+  @BeforeEach
+  void loadCountryData() throws IOException, URISyntaxException {
+    loadDefaultCountryDataIfNotLoaded();
+  }
 
   @Test
-  void saveInvalidBusiness() {
+  void saveBusinessInvalidBusinessTypes() {
     // Test invalid businessType fields
-    UserCredentials userCredentials = new UserCredentials();
-    userCredentials.setEmail("dnb36@uclive.ac.nz");
-    userCredentials.setPassword("fun123");
-    try {
-      userService.login(userCredentials);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
+    loginWithCredentials();
     String[] businessTypeTests = {"asd", "123", "Marketing", "Retail", "Service"};
     for (String businessTypeTest : businessTypeTests) {
       Business testBusiness = makeBusiness();
       testBusiness.setBusinessType(businessTypeTest);
-      assertThrows(Exception.class, () -> businessService.saveBusiness(testBusiness));
+      assertThrows(BusinessTypeException.class, () -> businessService.saveBusiness(testBusiness));
     }
   }
 
   @Test
-  void saveValidBusiness() {
+  void saveBusinessValidBusinessTypes() {
     // Test valid businessType fields
-    UserCredentials userCredentials = new UserCredentials();
-    userCredentials.setEmail("dnb36@uclive.ac.nz");
-    userCredentials.setPassword("fun123");
-    try {
-      userService.login(userCredentials);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    loginWithCredentials();
 
     String[] businessTypeTests = {"Accommodation and Food Services", "Retail Trade",
         "Charitable organisation", "Non-profit organisation"};
@@ -74,27 +69,27 @@ public class BusinessServiceImplTest {
     }
   }
 
-  Address makeAddress() {
-    Address address = new Address();
-    address.setStreetNumber("3/24")
-        .setStreetName("Ilam Road")
-        .setPostcode("90210")
-        .setCity("Christchurch")
-        .setRegion("Canterbury")
-        .setCountry("New Zealand");
-    addressDao.saveAddress(address);
-    return address;
+  @Test void saveBusinessInvalidAddressTest() {
+    loginWithCredentials();
+
+    Business testBusiness = makeBusiness();
+    testBusiness.getAddress().setCountry("");
+    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 
-  Business makeBusiness() {
-    Business business = new Business();
-    business.setName("test")
-        .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
-        .setBusinessType("Non-profit organisation")
-        .setAddress(makeAddress())
-        .setId(0)
-        .setDescription("some description");
-    return business;
+  @Test void saveBusinessInvalidCountryTest() {
+    loginWithCredentials();
+
+    Business testBusiness = makeBusiness();
+    testBusiness.getAddress().setCountry("Fake Zealand");
+    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 
+  @Test void saveBusinessNoCountryDataTest() {
+    loginWithCredentials();
+    countryDataFetcherService.resetCountryData();
+    Business testBusiness = makeBusiness();
+    testBusiness.getAddress().setCountry("New Zealand");
+    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
+  }
 }
