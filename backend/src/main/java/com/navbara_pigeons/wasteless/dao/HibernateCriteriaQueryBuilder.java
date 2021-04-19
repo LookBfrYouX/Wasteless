@@ -39,7 +39,6 @@ public class HibernateCriteriaQueryBuilder {
 
     for (int i = 0; i < tokens.size(); i++) {
       String currentToken = tokens.get(i);
-      System.out.println(currentToken);
       if (currentToken.toUpperCase().matches("AND")) {
         // AND is default join for predicates so this is empty
       } else if (currentToken.toUpperCase().matches("OR")) {

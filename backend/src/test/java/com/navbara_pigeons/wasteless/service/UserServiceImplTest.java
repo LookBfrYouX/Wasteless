@@ -121,7 +121,6 @@ class UserServiceImplTest {
 
     for (String testValue : testValues) {
       user.setPassword(testValue);
-      System.out.println(testValue);
       trySaveUserExpectError(user);
     }
   }
@@ -173,8 +172,6 @@ class UserServiceImplTest {
     assertEquals(user.getLastName(), response.getAsString("lastName"));
     assertEquals(user.getNickname(), response.getAsString("nickname"));
 
-    System.out.println(response.getAsString("created"));
-
     // TODO created dates
 //    Assertions.assertEquals(expect.getCreated(), response.getAsString("created"));
     assertEquals(user.getMiddleName(), response.getAsString("middleName"));
@@ -185,8 +182,6 @@ class UserServiceImplTest {
       assertEquals(user.getDateOfBirth(), response.getAsString("dateOfBirth"));
       assertEquals(user.getPhoneNumber(), response.getAsString("phoneNumber"));
     } else {
-      System.out.println("!");
-      System.out.println(response.getAsString("email"));
       Assertions.assertNull(response.get("email"));
       Assertions.assertNull(response.get("dateOfBirth"));
       Assertions.assertNull(response.get("phoneNumber"));
@@ -281,7 +276,7 @@ class UserServiceImplTest {
       // Test for green flow
       assertDoesNotThrow(() -> userController.revokeAdminPermissions(Long.toString(toBeAdminId)));
     } catch (UserNotFoundException e) {
-      System.out.println("EXPECTED ERROR");
+      Assertions.fail(e);
     } finally {
       actuallyDeleteUser(adminUser);
       actuallyDeleteUser(toBeAdminUser);
@@ -309,8 +304,6 @@ class UserServiceImplTest {
     try {
       revokerUser = userService.getUserByEmail("revoker@test");
       revokeeUser = userService.getUserByEmail("revokee@test");
-      System.out.println("REVOKER USER: " + revokerUser.getId());
-      System.out.println("REVOKEE USER: " + revokeeUser.getId());
 
       // Log admin user in
       userCredentials.setEmail("revoker@test");
