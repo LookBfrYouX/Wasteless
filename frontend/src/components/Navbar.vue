@@ -43,15 +43,23 @@
                   v-on:input="event => $emit('input', event)"
               />
             </div>
-
           </form>
+
           <div id="navbar-list-4" class="collapse navbar-collapse">
             <ul class="navbar-nav">
               <li class="nav-item dropdown">
                 <a id="navbarDropdownMenuLink" aria-expanded="false"
                    aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown"
                    href="#" role="button">
-                  <img class="nav-picture rounded-circle" src="placeholder-profile.png">
+                  <!--Show user thumbnail if acting as an individual, business thumbnail when acting as a business-->
+                  <img v-if="currentActingAs == null"
+                       class="nav-picture rounded-circle"
+                       alt="User thumbnail"
+                       src="default-user-thumbnail.svg">
+                  <img v-else
+                       class="nav-picture rounded-circle"
+                       atl="Business thumbnail"
+                       src="default-business-thumbnail.svg">
                   <div class="d-flex flex-column mx-1">
                     <span class="m-0 p-0 text-dark">
                       {{ printCurrentActingAs }}
@@ -60,13 +68,16 @@
                   </div>
                 </a>
                 <div aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-right">
+                  <!--.switch-acting-as-wrapper is only visible for user owing at least one business.-->
                   <div v-if="actingAsEntities.length !== 0"
                        class="switch-acting-as-wrapper">
+                    <!--Shows the name of user currenly logged in regardless of acting as a business or not.-->
                     <h4 class="dropdown-header">Logged in as</h4>
-                    <div class="dropdown-item">
+                    <router-link class="dropdown-item" exact to="/profile">
                       {{ authUser.firstName }} {{ authUser.lastName }}
-                    </div>
+                    </router-link>
                     <div class="dropdown-divider"></div>
+                    <!--List of entities (user and businesses) to switch acting as state.-->
                     <h4 class="dropdown-header">Act as</h4>
                     <a v-if="currentActingAs != null"
                        v-on:click="switchActingAs()"
@@ -77,12 +88,13 @@
                             v-on:click="switchActingAs(business)"
                             class="dropdown-item">
                       {{business.name}}
+                      <!--Checkmark on currently acting as business-->
                       <span v-if="business === currentActingAs">
                         &#10003;
                       </span>
                     </a>
                     <div class="dropdown-divider"></div>
-                  </div>
+                  </div> <!--Close of .switch-acting-as-wrapper-->
                   <a class="dropdown-item" v-on:click="logOut">Log out</a>
                 </div>
               </li>
@@ -148,10 +160,16 @@ export default {
       }
     },
 
+    /**
+     * Returns null when the user is currently acting as individual, the whole business object otherwise
+     */
     currentActingAs() {
       return this.$stateStore.getters.getActingAs();
     },
 
+    /**
+     * Return formatted string of name of user or business which currently acting as
+     */
     printCurrentActingAs() {
       if (this.currentActingAs != null) {
         return this.currentActingAs.name;
@@ -174,6 +192,9 @@ export default {
       return this.$stateStore.getters.isAdmin();
     },
 
+    /**
+     * Returns a list of business. The list is empty if the user have no business registered.
+     */
     actingAsEntities() {
       return this.authUser.businesses;
     }
@@ -243,6 +264,12 @@ export default {
       });
     },
 
+    /**
+     * Updates acting as state of user.
+     * If no business are passed, switches back to acting as individual by deleting acting as.
+     * Else, sets business as currently acting as.
+     * @param business A whole business object which is an item of list authUser.businesses
+     */
     switchActingAs: function (business) {
       if (business === null) {
         this.$stateStore.actions.deleteActingAS();
@@ -255,6 +282,10 @@ export default {
 </script>
 
 <style scoped>
+
+a:hover {
+  cursor: pointer;
+}
 
 .admin-text {
   margin: -0.5em 0 0;

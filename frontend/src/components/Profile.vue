@@ -2,13 +2,13 @@
   <div class="container">
     <div class="row mt-2">
       <!--User profile image card-->
-      <div class="col-md-4 m-2 card">
+      <div class="col-md-4 m-2 card bg-transparent border-0">
         <!--Upload image button overlay-->
         <button class="image-upload-button btn btn-lg btn-primary" disabled type="button">
           <span class="material-icons md-48">file_upload</span>
         </button>
         <!--User profile image-->
-        <img alt="Users profile image" class="my-3 rounded-circle" src="placeholder-profile.png">
+        <img alt="Users profile image" class="my-3 rounded-circle border border-light" src="default-user-thumbnail.svg">
 
       </div>
       <div class="col-md-7 m-2 card">
