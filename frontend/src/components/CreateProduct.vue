@@ -117,7 +117,8 @@ export default {
     callApi: function (data) {
       const businessId = this.$stateStore.getters.getActingAs().id;
       console.log(businessId);
-      return Api.createProduct(businessId, data);
+      Api.createProduct(businessId, data);
+      this.$router.push({name: "productcatalogue"});
     },
 
     /**
@@ -142,4 +143,3 @@ export default {
   max-width: 50em;
 }
 </style>
-

@@ -159,7 +159,7 @@ export default {
    */
   getProducts: (id) => {
     return instance.get(`/businesses/${id}/products`).catch(error => {
-      throw ApiRequestError.createFromMessageMap(error, {});
+      throw ApiRequestError.createFromMessageMap(error);
     });
   },
 

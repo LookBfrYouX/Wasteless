@@ -1,5 +1,12 @@
 <template>
   <div class="w-100">
+    <div class="mt-2">
+      <router-link active-class="active" exact to="/CreateProduct">
+        <button class="btn btn-info mt-2 mr-3 float-right" type="button">
+          <span>Create Product</span>
+        </button>
+      </router-link>
+    </div>
     <div v-if="results.length != 0" class="w-100">
       <div v-if="!isVisible" class="button-expand-sidebar-wrapper">
         <button class="btn btn-info mt-2" type="button" v-on:click="toggleSidebar()">
@@ -11,12 +18,12 @@
           <div class="p-3">
             <h3 class="d-inline">Sort by</h3>
             <button class="float-right btn btn-light" type="button" v-on:click="toggleSidebar()">
-              <span>suhh</span>
+              <span>Go</span>
             </button>
             <ul id="search-headers" class="list-unstyled"
                 v-bind:class='{"table-reversed": reversed}'>
               <li
-                  v-for="[key, value] in Object.entries({firstName: 'First Name', middleName: 'Middle Name', lastName: 'Last Name', nickname: 'Nickname', region: 'Region', city: 'City', country: 'Country', email: 'Email Address'})"
+                  v-for="[key, value] in Object.entries({name: 'Name', id: 'ID', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
                   v-bind:key="key"
                   class="mb-1"
                   v-bind:class='{"current-sort": sortBy==key}'
@@ -40,8 +47,8 @@
                   <h4 class="card-title mb-0">{{ product.name }} ({{ product.id }})</h4>
                 </div>
                 <div class="text-muted">{{ product.description }}</div>
-                <div class="text-muted">{{ product.recommendedRetailPrice}}</div>
-                <div class="text-muted">{{ product.created}}</div>
+                <div class="text-muted">{{ product.recommendedRetailPrice }}</div>
+                <div class="text-muted">{{ product.created }}</div>
               </li>
             </ul>
           </div>
@@ -109,6 +116,11 @@ const ProductCatalogue = {
       apiErrorMessage: null,
     }
   },
+
+  created: function() {
+    this.query();
+  },
+
   methods: {
     toggleSidebar() {
       this.isVisible = !this.isVisible;
@@ -126,8 +138,10 @@ const ProductCatalogue = {
     query: async function () {
       /* makes a query to the api to search for the prop value from the app.vue main page*/
       try {
-        const {data} = await Api.getProducts(this.$stateStore.getActingAs.id)
+        const {data} = await Api.getProducts(this.$stateStore.getters.getActingAs().id)
         this.results = this.parseSearchResults(data);
+        console.log(this.results)
+        this.setPages();
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -143,9 +157,12 @@ const ProductCatalogue = {
     setPages() {
       /* calculates number of pages which is reliant on resultsPerPage set in the data section*/
       let numOfPages = Math.ceil(this.results.length / this.resultsPerPage);
+      console.log(this.results.length, 'length')
+      console.log(this.results, 'array')
       this.pages = [];
       for (let i = 0; i < numOfPages; i++) {
         this.pages.push(i);
+
       }
     },
 
@@ -154,20 +171,21 @@ const ProductCatalogue = {
       let resultsPerPage = this.resultsPerPage;
       let from = page * resultsPerPage;
       let to = from + resultsPerPage;
+      console.log(results.slice(from, to));
       return results.slice(from, to);
-    },
-
+    }
+  },
   computed: {
     sortedResults() {
       if (this.sortBy == null) {
         return this.results;
       }
 
-      let formatter = user => {
-        if (user[this.sortBy] == null) {
+      let formatter = product => {
+        if (product[this.sortBy] == null) {
           return "";
         }
-        return user[this.sortBy].toLowerCase();
+        return product[this.sortBy].toLowerCase();
       }
 
       return this.results.sort((a, b) => { // sort using this.orderBy
@@ -176,25 +194,8 @@ const ProductCatalogue = {
     },
 
     displayedResults() {
+      console.log('Displaying Results')
       return this.paginate(this.sortedResults);
-    }
-  },
-  watch: {
-    results() {
-      this.setPages();
-    },
-    search() {
-      this.pageNum = 0;
-      this.setPages();
-      this.query();
-    }
-  },
-  created() {
-    this.query();
-    // When this is created, sends the query to the parent
-    // Necessary as router.js is aware of the param but App.js,
-    // which has the input field, is not
-    this.$emit("searchresultscreated", this.search);
     }
   }
 };
