@@ -153,6 +153,17 @@ export default {
   },
 
   /**
+   * Sends a get products query
+   * @param id
+   * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  getProducts: (id) => {
+    return instance.get(`/businesses/${id}/products`).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {});
+    });
+  },
+
+  /**
    * Sends a search query
    * @param searchQuery
    * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
