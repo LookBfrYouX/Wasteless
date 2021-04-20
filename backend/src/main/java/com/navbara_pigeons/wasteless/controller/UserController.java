@@ -3,7 +3,9 @@ package com.navbara_pigeons.wasteless.controller;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
+import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
@@ -105,20 +107,16 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/users/{id}")
-  public ResponseEntity<JSONObject> getUserById(@PathVariable String id) {
+  public ResponseEntity<JSONObject> getUserById(@PathVariable long id) {
     try {
       log.info("GETTING USER BY ID: " + id);
-      return new ResponseEntity<>(userService.getUserById(Long.parseLong(id)),
-          HttpStatus.valueOf(200));
+      return new ResponseEntity<>(userService.getUserById(id, true), HttpStatus.valueOf(200));
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (AuthenticationException exc) {
-      log.error("AUTHENTICATION ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(401), "Something went wrong");
-    } catch (NumberFormatException exc) {
-      log.error("INVALID ID FORMAT ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(401), "ID format not valid");
+    } catch (UnhandledException exc) {
+      log.error(exc.getMessage());
+      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Server Error");
     }
   }
 
@@ -172,15 +170,11 @@ public class UserController {
    * @return HttpStatus 406 for Invalid ID format or User Doesn't Exist exception.
    */
   @PutMapping("/users/{id}/revokeAdmin")
-  public ResponseEntity<String> revokeAdminPermissions(@PathVariable String id) {
+  public ResponseEntity<String> revokeAdminPermissions(@PathVariable long id) {
     try {
-      long userId = Long.parseLong(id);
-      userService.revokeAdmin(userId);
+      userService.revokeAdmin(id);
       log.info("ADMIN PRIVILEGES REVOKED FROM: " + id);
       return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));
-    } catch (NumberFormatException exc) {
-      log.error("INVALID ID FORMAT ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), "Invalid ID format");
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), "The user does not exist.");
@@ -203,14 +197,17 @@ public class UserController {
    * @throws ResponseStatusException Unknown Error.
    */
   @PostMapping("/businesses")
-  public ResponseEntity<String> registerBusiness(@RequestBody Business business) {
-    try {
-      businessService.saveBusiness(business);
-      return new ResponseEntity<>("Business account successfully created", HttpStatus.valueOf(201));
-    } catch (Exception exc) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
+    public ResponseEntity<JSONObject> registerBusiness(@RequestBody Business business) {
+      try {
+        JSONObject response = businessService.saveBusiness(business);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+      } catch (BusinessTypeException exc) {
+        log.error("Error with supplied data");
+        throw new ResponseStatusException(HttpStatus.valueOf(400), "Error with supplied data");
+      } catch (Exception exc) {
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
+      }
     }
-  }
 
   /**
    * Search for a specific business using the id field.
@@ -220,20 +217,16 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/businesses/{id}")
-  public ResponseEntity<JSONObject> getBusinessById(@PathVariable String id) {
+  public ResponseEntity<JSONObject> getBusinessById(@PathVariable long id) {
     try {
       log.info("GETTING BUSINESS BY ID: " + id);
-      return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)),
+      return new ResponseEntity<>(businessService.getBusinessById(id, true),
           HttpStatus.valueOf(200));
     } catch (BusinessNotFoundException exc) {
       log.error("BUSINESS NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (NumberFormatException exc) {
-      log.error("INVALID ID FORMAT ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), "ID format not valid");
+      throw new ResponseStatusException(HttpStatus.valueOf(406), "Business not found");
     } catch (Exception exc) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
     }
   }
-
 }

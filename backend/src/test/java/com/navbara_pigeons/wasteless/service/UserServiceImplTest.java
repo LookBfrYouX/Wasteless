@@ -11,6 +11,7 @@ import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import java.time.ZoneOffset;
@@ -128,7 +129,7 @@ class UserServiceImplTest {
 
   @Test
   @Transactional
-  public void getUserSelf() throws UserNotFoundException {
+  public void getUserSelf() throws UserNotFoundException, UnhandledException {
     User user = makeUser(email, false, password);
     actuallySaveUser(user);
     assertUserWithJson(user, getUserAsUser(user.getEmail(), password, user.getId()), false);
@@ -137,7 +138,7 @@ class UserServiceImplTest {
 
   @Test
   @Transactional
-  public void getUserOther() throws UserNotFoundException {
+  public void getUserOther() throws UserNotFoundException, UnhandledException {
     User user = makeUser(email, false, password);
     actuallySaveUser(user);
     User userCheck = makeUser("testEmail@user.co.nz", false, password);
@@ -158,13 +159,13 @@ class UserServiceImplTest {
    * @throws UserNotFoundException
    */
   private JSONObject getUserAsUser(String email, String password, long id)
-      throws UserNotFoundException {
+      throws UserNotFoundException, UnhandledException {
     UserCredentials userCredentials = new UserCredentials();
     userCredentials.setEmail(email);
     userCredentials.setPassword(password);
     userController.login(userCredentials);
 
-    return userService.getUserById(id);
+    return userService.getUserById(id, true);
   }
 
   void assertUserWithJson(User user, JSONObject response, boolean publicOnly) {
@@ -274,7 +275,7 @@ class UserServiceImplTest {
       userController.login(userCredentials);
 
       // Test for green flow
-      assertDoesNotThrow(() -> userController.revokeAdminPermissions(Long.toString(toBeAdminId)));
+      assertDoesNotThrow(() -> userController.revokeAdminPermissions(toBeAdminId));
     } catch (UserNotFoundException e) {
       Assertions.fail(e);
     } finally {
@@ -326,7 +327,7 @@ class UserServiceImplTest {
       // Test for permission denied (as revokee is no longer admin)
       long revokerId = revokerUser.getId();
       assertThrows(Exception.class,
-          () -> userController.revokeAdminPermissions(Long.toString(revokerId)));
+          () -> userController.revokeAdminPermissions(revokerId));
 
     } catch (UserNotFoundException e) {
       Assertions.fail();

@@ -2,28 +2,41 @@
   <div class="bprofile-card card container">
     <div>
       <h1 class="title">Business Information</h1>
+      <button class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3" type="button"
+              v-if="this.userId" v-on:click="backToProfile">
+        <span class="material-icons mr-1">arrow_back</span>
+        Back to Profile
+      </button>
       <ul class="bprofile-info list-unstyled">
         <li class="row">
           <dt class="col-md label">Business Title:</dt>
-          <dd class="col-md value"> {{ businessInfo.name }}</dd>
+          <dd class="col-md value">{{ businessInfo.name }}</dd>
         </li>
         <li class="row">
           <dt class="col-md label">Description:</dt>
-          <dd class="col-md value"> {{ businessInfo.description }}</dd>
+          <dd class="col-md value">{{ businessInfo.description }}</dd>
         </li>
         <li class="row">
           <dt class="col-md label">Address:</dt>
-          <dd class="col-md value"> {{
-              [businessInfo.homeAddress.streetNumber + " " +
-              businessInfo.homeAddress.streetName, businessInfo.homeAddress.city,
-                businessInfo.homeAddress.region, businessInfo.homeAddress.country,
-                businessInfo.homeAddress.postcode].join(", ")
+          <dd class="col-md value">
+            {{
+              [
+                businessInfo.address.streetNumber +
+                " " +
+                businessInfo.address.streetName,
+                businessInfo.address.city,
+                businessInfo.address.region,
+                businessInfo.address.postcode,
+                businessInfo.address.country,
+              ]
+              .filter(Boolean)
+              .join(", ")
             }}
           </dd>
         </li>
         <li class="row">
           <dt class="col-md label">Business Type:</dt>
-          <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
+          <dd class="col-md value">{{ businessInfo.businessType }}</dd>
         </li>
       </ul>
       <div v-if="errorMessage.length > 0" class="row mt-2">
@@ -39,7 +52,7 @@
 const Api = require("./../Api").default;
 
 export default {
-  name: 'businessProfile',
+  name: "businessProfile",
   components: {},
 
   data() {
@@ -47,17 +60,26 @@ export default {
       businessInfo: {
         name: "",
         description: "",
-        homeAddress: {},
+        address: "",
         businessType: "",
       },
       errorMessage: "",
-    }
+    };
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.prevRoute = from
+    })
   },
 
   props: {
     businessId: {
       type: Number,
-      required: true
+      required: true,
+    },
+    userId: {
+      type: Number,
+      required: false,
     }
   },
 
@@ -75,6 +97,16 @@ export default {
       return Api.businessProfile(businessId);
     },
 
+    showBackButton: function () {
+      return this.userId != undefined;
+    },
+
+    backToProfile: function () {
+      this.$router.push({
+        path: "/profile/" + this.userId
+      });
+    },
+
     /**
      * Parses the API response given a promise to the request
      */
@@ -84,7 +116,10 @@ export default {
         this.businessInfo = response.data;
       } catch (err) {
         alert(
-            err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
+            err.userFacingErrorMessage == undefined
+                ? err.toString()
+                : err.userFacingErrorMessage
+        );
       }
     },
   },
@@ -93,10 +128,10 @@ export default {
 
   watch: {
     businessId: function () {
-      this.parseApiResponse(this.callApi(this.businessId))
-    }
+      this.parseApiResponse(this.callApi(this.businessId));
+    },
   },
-}
+};
 </script>
 
 <style scoped>
@@ -120,5 +155,4 @@ export default {
   justify-content: center;
   padding: 30px;
 }
-
 </style>

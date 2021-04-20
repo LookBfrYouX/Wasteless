@@ -1,9 +1,14 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
+import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
@@ -14,10 +19,13 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -42,6 +50,8 @@ public class UserServiceImpl implements UserService {
   private final UserDao userDao;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final BCryptPasswordEncoder encoder;
+  private final ObjectMapper objectMapper;
+  private final BusinessService businessService;
 
   @Value("${dgaa.user.email}")
   private String dgaaEmail;
@@ -53,14 +63,18 @@ public class UserServiceImpl implements UserService {
    * @param userDao                      The UserDataAccessObject.
    * @param authenticationManagerBuilder The global AuthenticationManagerBuilder.
    * @param encoder                      Password encoder.
+   * @param businessService
    */
   @Autowired
   public UserServiceImpl(UserDao userDao, AddressDao addressDao,
-      AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder encoder) {
+      AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder encoder,
+      ObjectMapper objectMapper, BusinessService businessService) {
     this.userDao = userDao;
     this.addressDao = addressDao;
     this.authenticationManagerBuilder = authenticationManagerBuilder;
     this.encoder = encoder;
+    this.objectMapper = objectMapper;
+    this.businessService = businessService;
   }
 
   /**
@@ -128,44 +142,56 @@ public class UserServiceImpl implements UserService {
    * number/name/post code are not returned
    *
    * @param id the id of the user
+   * @param includeBusinesses true if businesses are to be included in the response
    * @return the User instance of the user
    */
   @Override
-  public JSONObject getUserById(long id) throws UserNotFoundException {
-    User user = this.userDao.getUserById(id);
-    JSONObject response = new JSONObject();
-    response.put("id", id);
-    response.put("firstName", user.getFirstName());
-    response.put("lastName", user.getLastName());
-    response.put("middleName", user.getMiddleName());
-    response.put("nickname", user.getNickname());
-    response.put("bio", user.getBio());
-    response.put("created", user.getCreated());
-    response.put("role", user.getRole());
-
-    JSONObject address = new JSONObject();
-    response.put("homeAddress", address);
-    response.put("businesses", user.getBusinesses());
-
+  public JSONObject getUserById(long id, boolean includeBusinesses) throws UserNotFoundException,
+      UnhandledException {
+    User user = userDao.getUserById(id);
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-    // Email of user that made the request
     String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
 
-    // sensitive details (e.g. email, postcode) are not returned
-    if (username.equals(user.getEmail()) || isAdmin()) {
-      response.put("email", user.getEmail());
-      response.put("dateOfBirth", user.getDateOfBirth());
-      response.put("phoneNumber", user.getPhoneNumber());
-
-      address.put("streetNumber", user.getHomeAddress().getStreetNumber());
-      address.put("streetName", user.getHomeAddress().getStreetName());
-      address.put("postcode", user.getHomeAddress().getPostcode());
+    // Convert user entity JSONObject (convert to String then to JSONObject)
+    String jsonStringBusiness = null;
+    try {
+      jsonStringBusiness = objectMapper.writeValueAsString(user);
+    } catch (JsonProcessingException exc) {
+      throw new UnhandledException("JSON processing exception");
+    }
+    JSONObject response = null;
+    try {
+      response = (JSONObject) new JSONParser().parse(jsonStringBusiness);
+    } catch (ParseException exc) {
+      throw new UnhandledException("JSON parse exception");
     }
 
-    address.put("city", user.getHomeAddress().getCity());
-    address.put("region", user.getHomeAddress().getRegion());
-    address.put("country", user.getHomeAddress().getCountry());
+    // Remove sensitive information from response
+    response.remove("password");
+    if (!username.equals(user.getEmail()) && !isAdmin()) {
+      response.remove("email");
+      response.remove("dateOfBirth");
+      response.remove("phoneNumber");
+
+      ((JSONObject)(response.get("homeAddress"))).remove("streetNumber");
+      ((JSONObject)(response.get("homeAddress"))).remove("streetName");
+      ((JSONObject)(response.get("homeAddress"))).remove("postcode");
+    }
+
+    // Add administered business
+    if (includeBusinesses) {
+      ArrayList<JSONObject> businesses = new ArrayList<>();
+      if (user.getBusinesses() != null) {
+        for (Business business : user.getBusinesses()) {
+          try {
+            businesses.add(businessService.getBusinessById(business.getId(), false));
+          } catch (BusinessNotFoundException e) {
+            ; // If no businesses found, don't append any to list!
+          }
+        }
+      }
+      response.appendField("businessesAdministered", businesses);
+    }
     return response;
   }
 

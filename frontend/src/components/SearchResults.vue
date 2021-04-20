@@ -44,10 +44,8 @@
                     }}</span>
                 </div>
                 <div class="text-muted">{{ user.email }}</div>
-                <div v-if="user.homeAddress" class="text-muted">{{ user.homeAddress.streetNumber }}
-                  {{ user.homeAddress.streetName }}, {{ user.homeAddress.city }},
-                  {{ user.homeAddress.region }}, {{ user.homeAddress.country }}
-                  {{ user.homeAddress.postcode }}
+                <div v-if="user.homeAddress" class="text-muted"> {{[user.homeAddress.city, user.homeAddress.region,
+                    user.homeAddress.country].filter(Boolean).join(", ")}}
                 </div>
                 <div v-else class="text-muted">Address unknown</div>
               </li>

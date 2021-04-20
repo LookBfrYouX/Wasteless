@@ -10,16 +10,27 @@ try {
 } catch(_) {}
 
 const state = new Vue.observable({
-  authUser
+  authUser,
+  businessId: null
 });
 
 // This is the globally accessible store. It allows the state to be read and modified.
 // Currently, vue has been set up to give access to this object using this.$stateStore within components.
 export const store = {
   getters: {
-    // Get the authenticated user
+    /**
+     * Get the authenticated user
+     * @returns {any}
+     */
     getAuthUser: () => {
       return state.authUser;
+    },
+    /**
+     * Get businessId for a select business
+     * @returns {null}
+     */
+    getBusinessId: () => {
+      return state.businessId;
     },
 
     /**
@@ -45,11 +56,18 @@ export const store = {
     setAuthUser: (authUser) => {
       state.authUser = authUser;
       localStorage.setItem("authUser", JSON.stringify(authUser));
+      localStorage.setItem("userId", state.authUser.id);
+    },
+    // Set the businessId to be in sync with persistent storage
+    setBusinessId: (businessId) => {
+      state.businessId = businessId;
+      localStorage.setItem("businessId", state.businessId);
     },
     // log the user out and sync with local storage
     deleteAuthUser: () => {
       state.authUser = null;
       localStorage.removeItem("authUser");
+      localStorage.removeItem("userId");
     },
     // Make the currently logged in user admin
     makeAdmin: () => {

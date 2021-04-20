@@ -1,12 +1,12 @@
 <template>
   <div
-      class="w-100 d-flex justify-content-center signup-container gradient-background pb-4"
+    class="w-100 d-flex justify-content-center signup-container gradient-background pb-4"
   >
     <div class="container">
       <form
-          class="slightly-transparent-inputs"
-          method="POST"
-          v-on:submit.prevent="register"
+        class="slightly-transparent-inputs"
+        method="POST"
+        v-on:submit.prevent="register"
       >
         <div class="row">
           <div class="col">
@@ -18,23 +18,24 @@
           <div class="form-group required col-12 col-md-6">
             <label>Name</label>
             <input
-                v-model="name"
-                class="form-control"
-                maxlength="30"
-                name="name"
-                placeholder="Name"
-                required
-                type="text"
+              v-model="name"
+              class="form-control"
+              maxlength="30"
+              name="name"
+              placeholder="Name"
+              required
+              type="text"
             />
           </div>
 
           <div class="form-group required col-12 col-md-6">
             <label>Type</label>
             <select
-                v-model="type"
-                class="form-control"
-                name="type"
-                v-bind:class="{ 'is-invalid': typeRequired }"
+              v-model="type"
+              class="form-control"
+              name="type"
+              required
+              v-bind:class="{ 'is-invalid': typeRequired }"
             >
               <option v-for="code in types" :key="code.message">
                 {{ code }}
@@ -44,21 +45,21 @@
         </div>
 
         <address-form
-            v-bind:address="address"
-            v-on:addressupdate="addressUpdate"
+          v-bind:address="address"
+          v-on:addressupdate="addressUpdate"
         />
 
         <div class="row>">
           <div class="form-group col px-0">
             <label>Description</label>
             <textarea
-                v-model="description"
-                class="form-control"
-                maxlength="500"
-                name="description"
-                placeholder="Description"
-                rows="5"
-                type="text"
+              v-model="description"
+              class="form-control"
+              maxlength="500"
+              name="description"
+              placeholder="Description"
+              rows="5"
+              type="text"
             />
           </div>
         </div>
@@ -66,9 +67,9 @@
         <div class="row">
           <div class="col">
             <input
-                class="btn btn-block btn-primary"
-                type="submit"
-                value="Register"
+              class="btn btn-block btn-primary"
+              type="submit"
+              value="Register"
             />
           </div>
         </div>
@@ -97,7 +98,6 @@ export default {
   data() {
     return {
       errorMessage: "",
-
       name: "",
       description: "",
       type: "",
@@ -124,7 +124,7 @@ export default {
   },
   methods: {
     addressUpdate: function (newAddress) {
-      const {toString, ...addressObject} = newAddress;
+      const { toString, ...addressObject } = newAddress;
       // Don't want the toString method to be part of the address, so remove it
       this.addressAsString = toString();
       this.address = addressObject;
@@ -137,38 +137,34 @@ export default {
       return Api.registerBusiness(data);
     },
 
+    /**
+     * Calls the API to create business information
+     * Returns a promise, not a response
+     */
     register: async function () {
-      // TODO: Associate userId with the registered business account
-      const authUser = this.$stateStore.getters.getAuthUser();
-      if (authUser === null) {
-        this.errorMessage = "You must be logged in to register a business";
-        return;
-      }
-      try {
-        var response = await this.callApi({
-          primaryAdministratorId: authUser.id,
-          name: this.name,
-          description: this.description,
-          address: {
-            streetNumber: this.address.streetNumber,
-            streetName: this.address.streetName,
-            postcode: this.address.postcode,
-            city: this.address.city,
-            region: this.address.region,
-            country: this.address.country
-          }, // API stores address as homeAddress, not address
-          businessType: this.type, // API stores the type as businessType not type
-        });
-      } catch (err) {
-        // TODO: Need to handle errors here
-        return;
-      }
-
-      this.errorMessage = "";
-      this.emailUsed = false;
-      window.localStorage.setItem("businessId", response.data.businessId);
-      // TODO: push the business page view, not the profile page
-      this.$router.push({name: "profile"});
+      const user = this.$stateStore.getters.getAuthUser();
+      var response = await this.callApi({
+        primaryAdministratorId: user.id,
+        name: this.name,
+        description: this.description,
+        address: {
+          streetNumber: this.address.streetNumber,
+          streetName: this.address.streetName,
+          postcode: this.address.postcode,
+          city: this.address.city,
+          region: this.address.region,
+          country: this.address.country,
+        },
+        businessType: this.type, // API stores the type as businessType not type
+      });
+      this.$stateStore.actions.setBusinessId(response.data.businessId);
+      const businessId = this.$stateStore.getters.getBusinessId();
+      await this.$router.push({
+        name: "businessProfile",
+        params: {
+          businessId,
+        },
+      });
     },
   },
 };
