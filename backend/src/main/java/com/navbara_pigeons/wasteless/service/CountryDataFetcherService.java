@@ -148,17 +148,17 @@ public class CountryDataFetcherService {
             JSONObject obj = new JSONObject();
             Currency currency = currencyHashMap.get(country.getName());
             // Use first country code
-            Integer countryCode = null;
+            Integer phoneExtensionCode = null;
             if (country.getCallingCodes().length > 0) {
                 try {
-                    countryCode = Integer.parseInt(country.getCallingCodes()[0]);
+                    phoneExtensionCode = Integer.parseInt(country.getCallingCodes()[0]);
                 } catch(NumberFormatException __) {}
             }
-            if (currency == null || countryCode == null) continue;
+            if (currency == null || phoneExtensionCode == null) continue;
             obj.appendField("name", country.getName());
             obj.appendField("code", country.getAlpha2Code());
             obj.appendField("currency", currency);
-            obj.appendField("countryCode", countryCode.intValue());
+            obj.appendField("phoneExtensionCode", phoneExtensionCode.intValue());
             arr.appendElement(obj);
         }
 

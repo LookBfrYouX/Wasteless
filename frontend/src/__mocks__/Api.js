@@ -12,5 +12,5 @@ const responses = {
 
 export const Api = {
   countryDataOrFallback: () => responses.countryDataOrFallback(),
-  _setCountryDataOrFallback: val => responses.countryCodes = val
+  _setCountryDataOrFallback: val => responses.countryDataOrFallback = val
 }

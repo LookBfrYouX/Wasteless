@@ -166,13 +166,14 @@
                 name="countryCode"
                 v-bind:class="{ 'is-invalid': countryCodeErrorMessage !== null }"
             >
+              <!-- Blank option so that the user has option of not entering phone number -->
               <option value=""></option>
               <option
                   v-for="country in countryData"
                   v-bind:key="country.code"
-                  v-bind:value="country.countryCode"
+                  v-bind:value="country.phoneExtensionCode"
               >
-                {{ country.name }} (+{{country.countryCode }})
+                {{ country.name }} (+{{country.phoneExtensionCode }})
               </option>
             </select>
             <div class="invalid-feedback">{{ countryCodeErrorMessage }}</div>
