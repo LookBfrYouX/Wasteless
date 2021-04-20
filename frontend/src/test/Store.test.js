@@ -16,7 +16,7 @@ describe("Setting actingAs", () => {
       name: "Haruka's Hamburgers",
     }
     store.actions.setActingAs(business);
-    store.actions.deleteActingAS();
+    store.actions.deleteActingAs();
     expect(store.getters.getActingAs()).toEqual(null);
   })
 })
