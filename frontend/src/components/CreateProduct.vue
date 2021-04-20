@@ -81,7 +81,7 @@
 </template>
 
 <script>
-const Api = require("../Api").default;
+const { Api } = require("./../Api.js");
 
 export default {
   data() {

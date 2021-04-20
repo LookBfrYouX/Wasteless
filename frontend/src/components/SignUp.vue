@@ -228,7 +228,7 @@
 </style>
 
 <script>
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 const AddressForm = require("./AddressForm").default;
 
 import countryCodesJson from "./../assets/countryCodes.json";

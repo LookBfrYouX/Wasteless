@@ -139,7 +139,7 @@ The parent component must provide `address` prop. When the address is updated in
 <script>
 
 const axios = require("axios");
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 const Suggestions = require("./Suggestions").default;
 const fallbackCountryCodesList = require("./../assets/fallbackCountryCodesList.json");
 

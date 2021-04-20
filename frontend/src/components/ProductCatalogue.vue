@@ -96,7 +96,7 @@
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
 
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 
 const ProductCatalogue = {
   name: "ProductCatalogue",
@@ -140,7 +140,6 @@ const ProductCatalogue = {
       try {
         const {data} = await Api.getProducts(this.$stateStore.getters.getActingAs().id)
         this.results = this.parseSearchResults(data);
-        console.log(this.results)
         this.setPages();
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
@@ -157,8 +156,6 @@ const ProductCatalogue = {
     setPages() {
       /* calculates number of pages which is reliant on resultsPerPage set in the data section*/
       let numOfPages = Math.ceil(this.results.length / this.resultsPerPage);
-      console.log(this.results.length, 'length')
-      console.log(this.results, 'array')
       this.pages = [];
       for (let i = 0; i < numOfPages; i++) {
         this.pages.push(i);
@@ -172,7 +169,6 @@ const ProductCatalogue = {
       let resultsPerPage = this.resultsPerPage;
       let from = page * resultsPerPage;
       let to = from + resultsPerPage;
-      console.log(results.slice(from, to));
       return results.slice(from, to);
     }
   },
@@ -196,7 +192,6 @@ const ProductCatalogue = {
     },
     // used for for loop in html
     displayedResults() {
-      console.log('Displaying Results')
       return this.paginate(this.sortedResults);
     }
   }
