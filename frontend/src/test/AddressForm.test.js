@@ -127,6 +127,7 @@ test("generateAddressSuggestions", () => {
   let b = standardOSMAddress();
   b.housenumber = "DIFF";
   let c = standardOSMAddress();
+  c.countrycode = "BB";
   c.country = "COUNTRY2";
 
   const name = "postcode";
