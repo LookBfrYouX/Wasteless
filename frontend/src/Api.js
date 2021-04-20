@@ -185,6 +185,14 @@ export default {
     });
   },
 
+  getCurrencies: (country) => {
+    return fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+        .then(res => res.json())
+        .catch(err => {
+        throw ApiRequestError.createFromMessageMap(err);
+      });
+    },
+
   /**
    * Logs the user out client-side and redirects to a logout page
    * Call using `Api.handle401.call(this, err) from the vue component

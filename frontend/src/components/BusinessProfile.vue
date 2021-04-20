@@ -25,8 +25,11 @@
           <dt class="col-md label">Business Type:</dt>
           <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
         </li>
+        <li class="row" v-if="Array.isArray(products) && products.length !== 0">
+          <dt class="col-md label">Products:</dt>
+        </li>
       </ul>
-      <div class="card my-2" v-for="(product, index) in businessInfo.product"
+      <div class="card my-2" v-for="(product, index) in products"
            v-bind:key="index">
         <div class="card-body">
           <h5 class="card-title">{{ product.name }}</h5>
@@ -39,6 +42,14 @@
           <p class="alert alert-warning">{{ errorMessage }}</p>
         </div>
       </div>
+      <button
+          class="btn btn-white-bg-primary mx-1 d-flex"
+          type="button"
+          v-on:click="createProduct()"
+      >
+        <span class="material-icons mr-1">person</span>
+        Add Product To Catalogue
+      </button>
     </div>
   </div>
 </template>
@@ -57,8 +68,8 @@ export default {
         description: "",
         homeAddress: "",
         businessType: "",
-        products: [],
       },
+      products: [],
       errorMessage: "",
     }
   },
@@ -73,6 +84,7 @@ export default {
   beforeMount: function () {
     // gets user information from api
     this.parseApiResponse(this.callApi(this.businessId))
+    this.getProducts()
   },
 
   methods: {
@@ -84,6 +96,10 @@ export default {
       return Api.businessProfile(businessId);
     },
 
+    createProduct: function() {
+      this.$router.push({name: "createProduct"});
+    },
+
     /**
      * Parses the API response given a promise to the request
      */
@@ -92,7 +108,6 @@ export default {
         const response = await apiCall;
         console.log(response.data);
         this.businessInfo = response.data;
-        await this.getProducts();
       } catch (err) {
         alert(
             err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
@@ -100,13 +115,13 @@ export default {
     },
 
     /**
-     * Calls the API to get product information with the given business ID
+     * Calls the API to get product information with the current business ID
      */
     getProducts: async function () {
       try {
-        const {data} = await Api.getProducts(this.businessId);
-        console.log(data);
-        this.businessInfo.products = data;
+        const response = await Api.getProducts(this.businessId);
+        console.log(response.data);
+        this.products = response.data;
       } catch (err) {
         alert(
             err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
@@ -119,6 +134,7 @@ export default {
   watch: {
     businessId: function () {
       this.parseApiResponse(this.callApi(this.businessId))
+      this.getProducts()
     }
   },
 }

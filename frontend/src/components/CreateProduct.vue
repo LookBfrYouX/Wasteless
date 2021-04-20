@@ -33,28 +33,14 @@
           <div class="form-group required col px-3">
             <label>Catalog ID</label>
             <input
-              v-model="id"
-              class="form-control"
-              maxlength="30"
-              name="id"
-              placeholder="Catalog ID"
-              required
-              type="text"
-            />
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="form-group required col px-3">
-            <label>Recommended Price</label>
-            <input
-              v-model="price"
-              class="form-control"
-              maxlength="30"
-              name="price"
-              placeholder="Price"
-              required
-              type="number"
+                v-model="price"
+                v-bind:placeholder="symbol + currency"
+                class="form-control"
+                min="0.01"
+                step="0.01"
+                name="price"
+                required
+                type="number"
             />
           </div>
         </div>
@@ -77,10 +63,10 @@
         <div class="row">
           <div class="col">
             <input
-              class="btn btn-block btn-primary"
-              type="submit"
-              value="Add Product"
-            />
+                class="btn btn-block btn-primary"
+                type="submit"
+                value="Add Product"
+            /> <!-- v-on to be used for testing -->
           </div>
         </div>
 
@@ -103,22 +89,35 @@ export default {
       errorMessage: "",
 
       name: "",
-      id: "",
       description: "",
       price: "",
+      symbol: "",
+      currency: "",
 
       typeRequired: false, // If phone entered but not country code
     };
   },
+
+  created() {
+    this.getCurrencies(this.$stateStore.getters.getActingAs().address.country);
+  },
+
   methods: {
+    /**
+     * Find the currency associated with the country of the user
+     */
+    getCurrencies: async function (country) {
+      let response = await Api.getCurrencies(country);
+      this.currency = response[0].currencies[0].code;
+      this.symbol = response[0].currencies[0].symbol;
+
+    },
     /**
      * Wrapper which simply calls the sign up method of the api
      */
     callApi: function (data) {
       const businessId = this.$stateStore.getters.getActingAs().id;
-      console.log(businessId);
-      Api.createProduct(businessId, data);
-      this.$router.push({name: "productcatalogue"});
+      return Api.createProduct(businessId, data);
     },
 
     /**
@@ -129,7 +128,6 @@ export default {
     createProduct: async function () {
       await this.callApi({
         name: this.name,
-        id: this.id,
         recommendedRetailPrice: this.price, // API stores the type as businessType not type
         description: this.description,
       });
