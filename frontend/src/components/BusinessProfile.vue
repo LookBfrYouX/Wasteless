@@ -25,6 +25,9 @@
           <dt class="col-md label">Business Type:</dt>
           <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
         </li>
+        <li class="row" v-if="Array.isArray(products) && products.length !== 0">
+          <dt class="col-md label">Products:</dt>
+        </li>
       </ul>
       <div class="card my-2" v-for="(product, index) in products"
            v-bind:key="index">
