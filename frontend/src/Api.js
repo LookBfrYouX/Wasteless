@@ -186,8 +186,8 @@ export const Api = {
   },
 
 
-  countryCodes: () => {
-    return instance.get("/misc/countryCodes")
+  countryData: () => {
+    return instance.get("/misc/countryData")
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
         500: "Country data not available at the moment"

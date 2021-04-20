@@ -18,15 +18,13 @@ import java.net.URI;
 import java.nio.file.*;
 import java.util.HashMap;
 
-// TODO add minimum delay between requests?
-// TODO business service not validating address
 @Service
 public class CountryDataFetcherService {
     private final RestTemplate restTemplate;
     private final String requestPath = "https://restcountries.eu/rest/v2/all";
     private final String fileName = "rest-countries-country-info.json";
     private HashMap<String, Currency> currencyHashMap;
-    private JSONObject twoDigitCountryCodeDictionary;
+    private JSONArray countryDataArray;
 
     public CountryDataFetcherService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
@@ -78,7 +76,7 @@ public class CountryDataFetcherService {
      */
     public void resetCountryData() {
         this.currencyHashMap = null;
-        this.twoDigitCountryCodeDictionary = null;
+        this.countryDataArray = null;
     }
 
     /**
@@ -93,7 +91,7 @@ public class CountryDataFetcherService {
         // JSON has lots of unnecessary properties that we can ignore
         Country[] countries = mapper.readValue(path.toFile(), Country[].class);
         currencyHashMap = generateCurrencyHashMap(countries);
-        twoDigitCountryCodeDictionary = generateTwoDigitCountryCodeDictionary(countries);
+        countryDataArray = generateCountryDataArray(countries, currencyHashMap);
     }
 
     /**
@@ -101,7 +99,7 @@ public class CountryDataFetcherService {
      * @return true if currency hash map exists
      */
     public boolean dataLoaded() {
-        return this.currencyHashMap != null && this.twoDigitCountryCodeDictionary != null;
+        return this.currencyHashMap != null && this.countryDataArray != null;
     }
 
     /**
@@ -140,27 +138,41 @@ public class CountryDataFetcherService {
     }
 
     /**
-     * Generates JSON object mapping two digit country code to country name
+     * Generates JSON array with two-digit country code, country name, phone extensions etc.
      * @param countries list of country objects
-     * @return JSON dictionary
+     * @return JSON array
      */
-    private JSONObject generateTwoDigitCountryCodeDictionary(Country[] countries) {
-        JSONObject obj = new JSONObject();
+    private JSONArray generateCountryDataArray(Country[] countries, HashMap<String, Currency> currencyHashMap) {
+        JSONArray arr = new JSONArray();
         for(Country country: countries) {
-            obj.appendField(country.getAlpha2Code(), country.getName());
+            JSONObject obj = new JSONObject();
+            Currency currency = currencyHashMap.get(country.getName());
+            // Use first country code
+            Integer countryCode = null;
+            if (country.getCallingCodes().length > 0) {
+                try {
+                    countryCode = Integer.parseInt(country.getCallingCodes()[0]);
+                } catch(NumberFormatException __) {}
+            }
+            if (currency == null || countryCode == null) continue;
+            obj.appendField("name", country.getName());
+            obj.appendField("code", country.getAlpha2Code());
+            obj.appendField("currency", currency);
+            obj.appendField("countryCode", countryCode.intValue());
+            arr.appendElement(obj);
         }
 
-        return obj;
+        return arr;
     }
 
     /**
-     * Gets JSON object mapping two digit country code to country name
-     * @return JSON dictionary
+     * Gets JSON array with two-digit country code, country name, phone numbers etc.
+     * @return JSON array
      * @throws IllegalStateException if there is no country data
      */
-    public JSONObject getTwoDigitCountryCodeDictionary() throws IllegalStateException {
+    public JSONArray getCountryDataArray() throws IllegalStateException {
         if (!dataLoaded()) throw new IllegalStateException();
-        return twoDigitCountryCodeDictionary;
+        return countryDataArray;
     }
 
     /**
@@ -190,6 +202,7 @@ class Country implements Serializable {
     private String name;
     private String alpha2Code;
     private Currency[] currencies;
+    private String[] callingCodes;
 }
 
 @Data

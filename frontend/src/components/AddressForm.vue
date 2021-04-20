@@ -112,7 +112,7 @@ The parent component must provide `address` prop. When the address is updated in
       >
       <!-- countryCodes is key-value map from code to name. Get array of codes, convert to {code, name} object array then sort by name -->
         <option
-          v-for="country in Object.keys(countryCodes).map(code => ({code, name: countryCodes[code]})).sort((a, b) => a.name < b.name? -1: 1)"
+          v-for="country in countryData"
           v-bind:key="country.code"
           v-bind:value="country.name">{{country.name}}</option>
       </select>
@@ -141,7 +141,7 @@ The parent component must provide `address` prop. When the address is updated in
 const axios = require("axios");
 const { Api } = require("./../Api.js");
 const Suggestions = require("./Suggestions").default;
-const fallbackCountryCodesList = require("./../assets/fallbackCountryCodesList.json");
+const fallbackCountryDataArray = require("./../assets/fallbackCountryDataArray.json");
 
 // Fields in order of specifity
 // When updating this, ensure all address related functions and input properties are updated as well
@@ -175,7 +175,7 @@ export default {
       activeAddressInputName: null,
       addressSuggestionsRaw: [],
       addressSuggestions: [],
-      countryCodes: fallbackCountryCodesList
+      countryData: fallbackCountryDataArray
     }
   },
 
@@ -198,7 +198,7 @@ export default {
       } = properties;
 
       // Convert from OSM country name to restcountries name
-      const country = this.countryCodes[countrycode];
+      const country = this.countryCodeToNameDict[countrycode];
 
       const components = {
         addressLine: street,
@@ -220,18 +220,18 @@ export default {
      * Call API to get list of country codes and country names
      * @return Promise
      */
-    getCountryCodes: async function() {
-      return Api.countryCodes();
+    getCountryData: async function() {
+      return Api.countryData();
     },
 
     /**
      * Sets country codes given promise. If it fails, default country codes list is used
      */
-    countryCodesPipeline: async function(countryCodesPromise) {
+    countryCodesPipeline: async function(countryDataPromise) {
       try {
-        this.countryCodes = (await countryCodesPromise).data;
+        this.countryData = (await countryDataPromise).data;
       } catch(error) {
-        this.countryCodes = fallbackCountryCodesList;
+        this.countryData = fallbackCountryDataArray;
       }
     },
 
@@ -415,7 +415,21 @@ export default {
   },
 
   beforeMount: async function() {
-    await this.countryCodesPipeline(this.getCountryCodes());
+    await this.countryCodesPipeline(this.getCountryData());
+  },
+
+  computed: {
+    /**
+     * Converts countryData to { 2DigitCountryCode: countryName } dictionary
+     */
+    countryCodeToNameDict: function() {
+      const dict = {};
+      this.countryData.forEach(country => {
+        dict[country.code] = country.name;
+      });
+
+      return dict;
+    }
   }
 }
 </script>

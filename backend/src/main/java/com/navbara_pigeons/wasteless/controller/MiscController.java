@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.service.CountryDataFetcherService;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,10 @@ public class MiscController {
         this.countryDataFetcherService = countryDataFetcherService;
     }
 
-    @GetMapping("/misc/countryCodes")
-    public ResponseEntity<JSONObject> countryCodes() {
+    @GetMapping("/misc/countryData")
+    public ResponseEntity<JSONArray> countryData() {
         try {
-            return new ResponseEntity<>(countryDataFetcherService.getTwoDigitCountryCodeDictionary(), HttpStatus.valueOf(200));
+            return new ResponseEntity<>(countryDataFetcherService.getCountryDataArray(), HttpStatus.valueOf(200));
         } catch (IllegalStateException e) {
             log.warn("Could not send country data", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Country data not available at the moment");

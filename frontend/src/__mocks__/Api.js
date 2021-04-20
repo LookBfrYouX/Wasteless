@@ -6,11 +6,11 @@
  */
 
 const responses = {
-  countryCodes: () => Promise.resolve({data: {}})
+  countryData: () => Promise.resolve({data: {}})
 
 }
 
 export const Api = {
-  countryCodes: () => responses.countryCodes(),
-  _setCountryCodes: val => responses.countryCodes = val
+  countryData: () => responses.countryCodes(),
+  _setCountryData: val => responses.countryCodes = val
 }

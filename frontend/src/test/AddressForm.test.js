@@ -7,10 +7,15 @@ import AddressForm from "../components/AddressForm";
 
 Api._setCountryCodes(() => {
   return Promise.resolve({
-    data: {
-      "AA": "COUNTRY",
-      "BB": "COUNTRY2"
-    }
+    data: [
+      {
+        name: "COUNTRY",
+        code: "AA",
+      }, {
+        name: "COUNTRY2",
+        code: "BB"
+      }
+    ]
   });
 });
 
