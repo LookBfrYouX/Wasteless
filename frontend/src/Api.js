@@ -41,7 +41,7 @@ const instance = axios.create({
   withCredentials: true
 });
 
-export default {
+export const Api = {
   /**
    * Sends login request
    * @param props object with 'email' and 'password'
@@ -183,6 +183,16 @@ export default {
     return instance.get("/logout").catch(error => {
       throw ApiRequestError.createFromMessageMap(error);
     });
+  },
+
+
+  countryCodes: () => {
+    return instance.get("/misc/countryCodes")
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        500: "Country data not available at the moment"
+      });
+    })
   },
 
   getCurrencies: (country) => {

@@ -1,6 +1,7 @@
 [
   {
     "name": "Cook Islands",
+    "alpha2Code": "CK",
     "currencies": [
       { "code": "NZD", "name": "New Zealand dollar", "symbol": "$" },
       { "code": "CKD", "name": "Cook Islands dollar", "symbol": "$" }
@@ -8,12 +9,14 @@
   },
   {
     "name": "New Zealand",
+    "alpha2Code": "NZ",
     "currencies": [
       { "code": "NZD", "name": "New Zealand dollar", "symbol": "$" }
     ]
   },
   {
-    "name": "British Virgin Islands",
+    "name": "Virgin Islands (British)",
+    "alpha2Code": "VG",
     "currencies": [
       { "code": null, "name": "[D]", "symbol": "$" },
       { "code": "USD", "name": "United States dollar", "symbol": "$" }
@@ -22,6 +25,7 @@
   },
   {
     "name": "Two Currencies First Null",
+    "alpha2Code": "FN",
     "currencies": [
       { "code": null, "name": "NAME1", "symbol": "SYMBOL1" },
       { "code": "CODE2", "name": "NAME2", "symbol": "SYMBOL2" }
@@ -29,6 +33,7 @@
   },
   {
     "name": "Two Currencies Second Null",
+    "alpha2Code": "SN",
     "currencies": [
       { "code": "CODE1", "name": "NAME1", "symbol": "SYMBOL1" },
       { "code": "null", "name": "NAME2", "symbol": "SYMBOL2" }
@@ -36,6 +41,7 @@
   },
   {
     "name": "Two Valid Currencies",
+    "alpha2Code": "TV",
     "currencies": [
       { "code": "CODE1", "name": "NAME1", "symbol": "SYMBOL1" },
       { "code": "CODE2", "name": "NAME2", "symbol": "SYMBOL2" }
@@ -43,12 +49,14 @@
   },
   {
     "name": "Valid Currency",
+    "alpha2Code": "OV",
     "currencies": [
       { "code": "CODE", "name": "NAME", "symbol": "SYMBOL" }
     ]
   },
   {
     "name": "Null Currency",
+    "alpha2Code": "NC",
     "currencies": [
       {
         "code": null, "name": "Nullcoin", "symbol": "🕛"

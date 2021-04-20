@@ -104,7 +104,6 @@ public class SchedulerConfig {
    */
   private boolean fileOlderThan(Path path, long maxAgeMs) throws IOException {
     BasicFileAttributes attributes = Files.readAttributes(path, BasicFileAttributes.class);
-
     return (attributes.lastModifiedTime().toMillis() + maxAgeMs < System.currentTimeMillis());
   }
 
@@ -130,7 +129,7 @@ public class SchedulerConfig {
     try {
       if (path.toFile().exists()) {
         if (fileOlderThan(path, maxDeltaMilliseconds)) {
-          log.info(String.format("Country data file older than %f days; re-downloading", maxAgeDays));
+          log.info(String.format("Country data file older than %.2f days; re-downloading", maxAgeDays));
           download = true;
         }
       } else {

@@ -101,7 +101,22 @@ The parent component must provide `address` prop. When the address is updated in
     </div>
     <div class="form-group required col-12 col-md-6">
       <label>Country</label>
-      <suggestions
+      <select
+        name="country"
+        class="form-control"
+        placeholder="Country"
+        autocomplete="country-name"
+        v-bind:value="address.country"
+        v-on:input="event => onAddressInput(event.target.value)"
+        v-on:focus="activeAddressInputName = 'country'"
+      >
+      <!-- countryCodes is key-value map from code to name. Get array of codes, convert to {code, name} object array then sort by name -->
+        <option
+          v-for="country in Object.keys(countryCodes).map(code => ({code, name: countryCodes[code]})).sort((a, b) => a.name < b.name? -1: 1)"
+          v-bind:key="country.code"
+          v-bind:value="country.name">{{country.name}}</option>
+      </select>
+      <!-- <suggestions
           autocomplete="country-name"
           inputClasses="form-control"
           maxlength="50"
@@ -117,14 +132,16 @@ The parent component must provide `address` prop. When the address is updated in
 
           v-on:input="onAddressInput"
           v-on:suggestion="suggestionSelected"
-      />
+      /> -->
     </div>
   </div>
 </template>
 <script>
 
 const axios = require("axios");
+const Api = require("./../Api").default;
 const Suggestions = require("./Suggestions").default;
+const fallbackCountryCodesList = require("./../assets/fallbackCountryCodesList.json");
 
 // Fields in order of specifity
 // When updating this, ensure all address related functions and input properties are updated as well
@@ -158,6 +175,7 @@ export default {
       activeAddressInputName: null,
       addressSuggestionsRaw: [],
       addressSuggestions: [],
+      countryCodes: fallbackCountryCodesList
     }
   },
 
@@ -165,7 +183,9 @@ export default {
     /**
      * Map OSM properties object to address components used in the sign up page
      * @argument properties OSM properties object
-     * @return object. Components may be undefined
+     * @return object. Components may be undefined. Country may be undefined if OSM's 
+     * two character country code (`countrycode`) is not found in country codes list.
+     * 
      */
     mapOSMPropertiesToAddressComponents: function (properties) {
       const {
@@ -173,16 +193,19 @@ export default {
         postcode,
         county, // city
         state, // state
-        country,
+        countrycode,
         // osm_id,
       } = properties;
+
+      // Convert from OSM country name to restcountries name
+      const country = this.countryCodes[countrycode];
 
       const components = {
         addressLine: street,
         postcode: postcode,
         city: county,
         state: state,
-        country: country
+        country: country,
       };
 
       if (street != undefined && housenumber != undefined) {
@@ -191,6 +214,25 @@ export default {
       // If street is undefined but housenumber isn't, leave addressLine undefined
 
       return components;
+    },
+
+    /**
+     * Call API to get list of country codes and country names
+     * @return Promise
+     */
+    getCountryCodes: async function() {
+      return Api.countryCodes();
+    },
+
+    /**
+     * Sets country codes given promise. If it fails, default country codes list is used
+     */
+    countryCodesPipeline: async function(countryCodesPromise) {
+      try {
+        this.countryCodes = (await countryCodesPromise).data;
+      } catch(error) {
+        this.countryCodes = fallbackCountryCodesList;
+      }
     },
 
     /**
@@ -269,6 +311,8 @@ export default {
           continue;
         }
         const addressComponents = this.mapOSMPropertiesToAddressComponents(properties);
+
+        if (addressComponents.country == undefined) continue; // Unknown country
 
         const addressString = this.generateAddressStringFromAddressComponents(addressComponents,
             this.activeAddressInputName, true);
@@ -368,6 +412,10 @@ export default {
     address: function () {
       this.addressChange();
     }
+  },
+
+  beforeMount: async function() {
+    await this.countryCodesPipeline(this.getCountryCodes());
   }
 }
 </script>

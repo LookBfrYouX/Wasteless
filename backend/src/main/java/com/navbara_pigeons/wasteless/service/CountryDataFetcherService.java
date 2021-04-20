@@ -1,8 +1,12 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +26,7 @@ public class CountryDataFetcherService {
     private final String requestPath = "https://restcountries.eu/rest/v2/all";
     private final String fileName = "rest-countries-country-info.json";
     private HashMap<String, Currency> currencyHashMap;
+    private JSONObject twoDigitCountryCodeDictionary;
 
     public CountryDataFetcherService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
@@ -73,6 +78,7 @@ public class CountryDataFetcherService {
      */
     public void resetCountryData() {
         this.currencyHashMap = null;
+        this.twoDigitCountryCodeDictionary = null;
     }
 
     /**
@@ -80,12 +86,14 @@ public class CountryDataFetcherService {
      * @param path path to JSON response
      * @throws IOException
      */
-    public void reloadCountryDataFromDisk(Path path) throws IOException {
+    public void reloadCountryDataFromDisk(Path path) throws IOException
+    {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         // JSON has lots of unnecessary properties that we can ignore
         Country[] countries = mapper.readValue(path.toFile(), Country[].class);
         currencyHashMap = generateCurrencyHashMap(countries);
+        twoDigitCountryCodeDictionary = generateTwoDigitCountryCodeDictionary(countries);
     }
 
     /**
@@ -93,7 +101,7 @@ public class CountryDataFetcherService {
      * @return true if currency hash map exists
      */
     public boolean dataLoaded() {
-        return this.currencyHashMap != null;
+        return this.currencyHashMap != null && this.twoDigitCountryCodeDictionary != null;
     }
 
     /**
@@ -102,7 +110,7 @@ public class CountryDataFetcherService {
      * @throws IllegalStateException if currency hash map has not been generated
      */
     public HashMap<String, Currency> getCurrencyHashMap() throws IllegalStateException {
-        if (this.currencyHashMap == null) throw new IllegalStateException("Currency hash map has not been generated yet");
+        if (!dataLoaded()) throw new IllegalStateException("Currency hash map has not been generated yet");
         return this.currencyHashMap;
     }
 
@@ -132,6 +140,30 @@ public class CountryDataFetcherService {
     }
 
     /**
+     * Generates JSON object mapping two digit country code to country name
+     * @param countries list of country objects
+     * @return JSON dictionary
+     */
+    private JSONObject generateTwoDigitCountryCodeDictionary(Country[] countries) {
+        JSONObject obj = new JSONObject();
+        for(Country country: countries) {
+            obj.appendField(country.getAlpha2Code(), country.getName());
+        }
+
+        return obj;
+    }
+
+    /**
+     * Gets JSON object mapping two digit country code to country name
+     * @return JSON dictionary
+     * @throws IllegalStateException if there is no country data
+     */
+    public JSONObject getTwoDigitCountryCodeDictionary() throws IllegalStateException {
+        if (!dataLoaded()) throw new IllegalStateException();
+        return twoDigitCountryCodeDictionary;
+    }
+
+    /**
      * Checks if country exists (or if the REST Api returns that country and there is a currency we can use)
      * @param country name of the country
      * @return true if country is known
@@ -156,6 +188,7 @@ public class CountryDataFetcherService {
 @Data
 class Country implements Serializable {
     private String name;
+    private String alpha2Code;
     private Currency[] currencies;
 }
 
