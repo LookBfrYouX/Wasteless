@@ -42,6 +42,14 @@
           <p class="alert alert-warning">{{ errorMessage }}</p>
         </div>
       </div>
+      <button
+          class="btn btn-white-bg-primary mx-1 d-flex"
+          type="button"
+          v-on:click="createProduct()"
+      >
+        <span class="material-icons mr-1">person</span>
+        Add Product To Catalogue
+      </button>
     </div>
   </div>
 </template>
@@ -86,6 +94,10 @@ export default {
      */
     callApi: function (businessId) {
       return Api.businessProfile(businessId);
+    },
+
+    createProduct: function() {
+      this.$router.push({name: "createProduct"});
     },
 
     /**
