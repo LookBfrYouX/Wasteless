@@ -45,6 +45,7 @@
 
         <address-form
             v-bind:address="address"
+            v-bind:countryData="countryData"
             v-on:addressupdate="addressUpdate"
         />
 
@@ -86,12 +87,20 @@
 <script>
 const { Api } = require("./../Api.js");
 const AddressForm = require("./AddressForm").default;
+const fallbackCountryDataArray = require("./../assets/fallbackCountryDataArray.json");
 
 export default {
   name: "registerBusiness",
 
   components: {
     "address-form": AddressForm,
+  },
+
+  /**
+   * Sets country data
+   */
+  beforeMount: async function() {
+    this.countryData = await Api.countryDataOrFallback();
   },
 
   data() {
@@ -120,6 +129,7 @@ export default {
         country: "",
       },
       addressAsString: "",
+      countryData: fallbackCountryDataArray
     };
   },
   methods: {

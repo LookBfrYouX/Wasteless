@@ -6,11 +6,11 @@
  */
 
 const responses = {
-  countryData: () => Promise.resolve({data: {}})
+  countryDataOrFallback: () => Promise.resolve([])
 
 }
 
 export const Api = {
-  countryData: () => responses.countryData(),
-  _setCountryData: val => responses.countryCodes = val
+  countryDataOrFallback: () => responses.countryDataOrFallback(),
+  _setCountryDataOrFallback: val => responses.countryCodes = val
 }

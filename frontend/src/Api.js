@@ -31,6 +31,7 @@
 
 import axios from 'axios';
 import {ApiRequestError} from "./ApiRequestError";
+const fallbackCountryDataArray = require("./assets/fallbackCountryDataArray.json");
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
 const TIMEOUT = 1000;
@@ -186,13 +187,18 @@ export const Api = {
   },
 
 
-  countryData: () => {
-    return instance.get("/misc/countryData")
-    .catch(error => {
-      throw ApiRequestError.createFromMessageMap(error, {
-        500: "Country data not available at the moment"
-      });
-    })
+  /**
+   * Attempts to get country data. If it fails it returns fallback country data.
+   * Returns array, **not** a {data: JSONResponse} object
+   * 
+   * @returns {Promise<{[]>} country data array promise. Will never fail
+   */
+  countryDataOrFallback: async function() {
+    try {
+      return (await instance.get("/misc/countryData")).data;
+    } catch {
+      return fallbackCountryDataArray;
+    }
   },
 
   getCurrencies: (country) => {

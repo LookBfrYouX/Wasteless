@@ -116,32 +116,13 @@ The parent component must provide `address` prop. When the address is updated in
           v-bind:key="country.code"
           v-bind:value="country.name">{{country.name}}</option>
       </select>
-      <!-- <suggestions
-          autocomplete="country-name"
-          inputClasses="form-control"
-          maxlength="50"
-          name="country"
-          placeholder="Country"
-          required
-
-          type="text"
-
-          v-bind:suggestions="addressSuggestions"
-          v-bind:value="address.country"
-          v-on:focus="activeAddressInputName = 'country'"
-
-          v-on:input="onAddressInput"
-          v-on:suggestion="suggestionSelected"
-      /> -->
     </div>
   </div>
 </template>
 <script>
 
 const axios = require("axios");
-const { Api } = require("./../Api.js");
 const Suggestions = require("./Suggestions").default;
-const fallbackCountryDataArray = require("./../assets/fallbackCountryDataArray.json");
 
 // Fields in order of specifity
 // When updating this, ensure all address related functions and input properties are updated as well
@@ -150,6 +131,7 @@ Object.freeze(ADDRESS_SECTION_NAMES);
 
 const API_CALL_DEBOUNCE_TIME = 100;
 const API_MIN_QUERY_LENGTH = 3;
+
 export default {
   name: "address-form",
 
@@ -167,6 +149,10 @@ export default {
         state: "",
         country: "",
       }
+    },
+    // Array of countries with { name: countryNameString, code: twoCharacterCountryCode }
+    countryData: {
+      required: true
     }
   },
 
@@ -175,7 +161,6 @@ export default {
       activeAddressInputName: null,
       addressSuggestionsRaw: [],
       addressSuggestions: [],
-      countryData: fallbackCountryDataArray
     }
   },
 
@@ -214,25 +199,6 @@ export default {
       // If street is undefined but housenumber isn't, leave addressLine undefined
 
       return components;
-    },
-
-    /**
-     * Call API to get list of country codes and country names
-     * @return Promise
-     */
-    getCountryData: async function() {
-      return Api.countryData();
-    },
-
-    /**
-     * Sets country codes given promise. If it fails, default country codes list is used
-     */
-    countryCodesPipeline: async function(countryDataPromise) {
-      try {
-        this.countryData = (await countryDataPromise).data;
-      } catch(error) {
-        this.countryData = fallbackCountryDataArray;
-      }
     },
 
     /**
@@ -412,10 +378,6 @@ export default {
     address: function () {
       this.addressChange();
     }
-  },
-
-  beforeMount: async function() {
-    await this.countryCodesPipeline(this.countryData());
   },
 
   computed: {

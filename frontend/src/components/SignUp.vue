@@ -149,7 +149,11 @@
           </div>
         </div>
 
-        <address-form v-bind:address="address" v-on:addressupdate="addressUpdate"/>
+        <address-form
+          v-bind:address="address"
+          v-bind:countryData="countryData"
+          v-on:addressupdate="addressUpdate"
+        />
 
         <div class="form-row">
           <div class="col-12 col-md-3 mb-3">
@@ -162,13 +166,13 @@
                 name="countryCode"
                 v-bind:class="{ 'is-invalid': countryCodeErrorMessage !== null }"
             >
-              <!---Add blank element to country code list so that user can choose not to enter phone-->
+              <option value=""></option>
               <option
-                  v-for="code in [{value: '', name: ''}, ...countryCodes]"
-                  :key="code.name"
-                  :value="code.value"
+                  v-for="country in countryData"
+                  v-bind:key="country.code"
+                  v-bind:value="country.countryCode"
               >
-                {{ code.name }}
+                {{ country.name }} (+{{country.countryCode }})
               </option>
             </select>
             <div class="invalid-feedback">{{ countryCodeErrorMessage }}</div>
@@ -230,8 +234,7 @@
 <script>
 const { Api } = require("./../Api.js");
 const AddressForm = require("./AddressForm").default;
-
-import countryCodesJson from "./../assets/countryCodes.json";
+const fallbackCountryDataArray = require("./../assets/fallbackCountryDataArray.json");
 
 export default {
   name: "signUpPage",
@@ -240,9 +243,17 @@ export default {
     "address-form": AddressForm
   },
 
+  /**
+   * Sets country data
+   */
+  beforeMount: async function() {
+    this.countryData = await Api.countryDataOrFallback();
+  },
+
+
   data() {
     return {
-      countryCodes: countryCodesJson,
+      countryData: fallbackCountryDataArray,
       emailErrorMessage: null, // If email address has already been registered
       confirmPasswordErrorMessage: null, // If password and confirm password fields different
       dateOfBirthErrorMessage: null, // too young etc.
@@ -347,6 +358,7 @@ export default {
 
       return "You must be 13 years or older to sign up";
     },
+
 
     /**
      * Function responsible for registration pipeline, from when register button is
