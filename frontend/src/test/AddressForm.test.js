@@ -1,23 +1,5 @@
-jest.mock("./../Api");
-const { Api } = require("./../Api");
-
-
 import {shallowMount} from "@vue/test-utils";
 import AddressForm from "../components/AddressForm";
-
-Api._setCountryData(() => {
-  return Promise.resolve({
-    data: [
-      {
-        name: "COUNTRY",
-        code: "AA",
-      }, {
-        name: "COUNTRY2",
-        code: "BB"
-      }
-    ]
-  });
-});
 
 let wrapper;
 
@@ -32,7 +14,16 @@ beforeEach(() => {
         city: "",
         state: "",
         country: "",
-      }
+      },
+      countryData: [
+        {
+          name: "COUNTRY",
+          code: "AA",
+        }, {
+          name: "COUNTRY2",
+          code: "BB"
+        }
+      ]
     },
   });
 });
