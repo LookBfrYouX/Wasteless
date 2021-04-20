@@ -48,15 +48,10 @@ export const store = {
     },
   },
   actions: {
-    // Set the current welcome message (example)
-    setWelcomeMessage: (message) => {
-      state.welcomeMessage = message;
-    },
     // Set the currently logged in user and sync with persistent storage
     setAuthUser: (authUser) => {
       state.authUser = authUser;
       localStorage.setItem("authUser", JSON.stringify(authUser));
-      localStorage.setItem("userId", state.authUser.id);
     },
     // Set the businessId to be in sync with persistent storage
     setBusinessId: (businessId) => {
@@ -67,7 +62,6 @@ export const store = {
     deleteAuthUser: () => {
       state.authUser = null;
       localStorage.removeItem("authUser");
-      localStorage.removeItem("userId");
     },
     // Make the currently logged in user admin
     makeAdmin: () => {

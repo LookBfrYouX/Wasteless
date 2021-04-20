@@ -107,8 +107,6 @@ export default {
         const userId = response.data.userId;
         // Get and set the current logged in user information
 
-        console.warn(
-            "TODO SIGN IN SHOULD RETURN FULL USER PROFILE; USE THIS TO SET AUTHUSER INSTEAD OF CALLING API.PROFILE");
         response = await Api.profile(userId);
         const authUser = response.data;
         this.$stateStore.actions.setAuthUser(authUser);

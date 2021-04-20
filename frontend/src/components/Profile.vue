@@ -62,7 +62,7 @@
               id="makeAdmin"
               class="btn btn-white-bg-primary mx-1 d-flex"
               type="button"
-              v-on:click="makeAdmin(userId)"
+              v-on:click="makeAdmin(actualUserId)"
             >
               <span class="material-icons mr-1">person</span>
               Make Admin
@@ -72,7 +72,7 @@
               id="revokeAdmin"
               class="btn btn-white-bg-primary mx-1 d-flex"
               type="button"
-              v-on:click="revokeAdmin(userId)"
+              v-on:click="revokeAdmin(actualUserId)"
             >
               <span class="material-icons mr-1">person</span>
               Revoke Admin
@@ -91,13 +91,13 @@
         <h5 class="text-muted mt-3">Businesses</h5>
         <div
           v-if="
-            Array.isArray(userInfo.businesses) &&
-            userInfo.businesses.length !== 0
+            Array.isArray(userInfo.businessesAdministered) &&
+            userInfo.businessesAdministered.length !== 0
           "
         >
           <ul class="profile-business-info list-unstyled">
             <li
-              v-for="(business, index) in userInfo.businesses"
+              v-for="(business, index) in userInfo.businessesAdministered"
               v-bind:key="index"
               class="list-group-item card text-wrap"
             >
@@ -106,7 +106,7 @@
                 {{ business.businessType }}
               </h6>
               <p class="card-text">{{ business.description }}</p>
-              <a class="card-link" v-on:click="viewBusiness(business.id, userId)"
+              <a class="card-link" v-on:click="viewBusiness(business.id, actualUserId)"
                 >More info</a
               >
             </li>
@@ -248,7 +248,7 @@ export default {
     userId: {
       type: Number, // may be NaN
       required: true,
-      // default: 10
+      default: NaN
     },
   },
 
@@ -313,7 +313,7 @@ export default {
      * Calls the API and updates the component's data with the result
      */
     apiPipeline: function () {
-      this.parseApiResponse(this.callApi(this.userId));
+      this.parseApiResponse(this.callApi(this.actualUserId));
     },
 
     /**
@@ -411,6 +411,13 @@ export default {
     },
     isAdmin() {
       return this.$stateStore.getters.isAdmin();
+    },
+
+    /**
+     * Ues this instead of user ID: if user ID is NaN and user is signed in, will use user ID
+     */
+    actualUserId() {
+      return isNaN(this.userId) && this.authUser != null? this.authUser.id: this.userId;
     },
 
     /**

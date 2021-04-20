@@ -179,7 +179,7 @@ export default {
       }
 
       await this.$stateStore.actions.deleteAuthUser();
-      await this.pushOrGo("home");
+      await this.pushOrGo("landing");
     },
 
     /**
