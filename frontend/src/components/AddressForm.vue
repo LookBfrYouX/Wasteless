@@ -415,7 +415,7 @@ export default {
   },
 
   beforeMount: async function() {
-    await this.countryCodesPipeline(this.getCountryData());
+    await this.countryCodesPipeline(this.countryData());
   },
 
   computed: {

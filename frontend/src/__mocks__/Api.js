@@ -11,6 +11,6 @@ const responses = {
 }
 
 export const Api = {
-  countryData: () => responses.countryCodes(),
+  countryData: () => responses.countryData(),
   _setCountryData: val => responses.countryCodes = val
 }

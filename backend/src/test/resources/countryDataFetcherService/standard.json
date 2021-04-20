@@ -2,6 +2,7 @@
   {
     "name": "Cook Islands",
     "alpha2Code": "CK",
+    "callingCodes": ["682"],
     "currencies": [
       { "code": "NZD", "name": "New Zealand dollar", "symbol": "$" },
       { "code": "CKD", "name": "Cook Islands dollar", "symbol": "$" }
@@ -10,6 +11,7 @@
   {
     "name": "New Zealand",
     "alpha2Code": "NZ",
+    "callingCodes": ["64"],
     "currencies": [
       { "code": "NZD", "name": "New Zealand dollar", "symbol": "$" }
     ]
@@ -17,6 +19,7 @@
   {
     "name": "Virgin Islands (British)",
     "alpha2Code": "VG",
+    "callingCodes": ["1284"],
     "currencies": [
       { "code": null, "name": "[D]", "symbol": "$" },
       { "code": "USD", "name": "United States dollar", "symbol": "$" }
@@ -26,6 +29,7 @@
   {
     "name": "Two Currencies First Null",
     "alpha2Code": "FN",
+    "callingCodes": ["000"],
     "currencies": [
       { "code": null, "name": "NAME1", "symbol": "SYMBOL1" },
       { "code": "CODE2", "name": "NAME2", "symbol": "SYMBOL2" }
@@ -34,6 +38,7 @@
   {
     "name": "Two Currencies Second Null",
     "alpha2Code": "SN",
+    "callingCodes": ["123"],
     "currencies": [
       { "code": "CODE1", "name": "NAME1", "symbol": "SYMBOL1" },
       { "code": "null", "name": "NAME2", "symbol": "SYMBOL2" }
@@ -42,6 +47,7 @@
   {
     "name": "Two Valid Currencies",
     "alpha2Code": "TV",
+    "callingCodes": ["666"],
     "currencies": [
       { "code": "CODE1", "name": "NAME1", "symbol": "SYMBOL1" },
       { "code": "CODE2", "name": "NAME2", "symbol": "SYMBOL2" }
@@ -50,6 +56,7 @@
   {
     "name": "Valid Currency",
     "alpha2Code": "OV",
+    "callingCodes": ["12"],
     "currencies": [
       { "code": "CODE", "name": "NAME", "symbol": "SYMBOL" }
     ]
@@ -57,6 +64,7 @@
   {
     "name": "Null Currency",
     "alpha2Code": "NC",
+    "callingCodes": ["1"],
     "currencies": [
       {
         "code": null, "name": "Nullcoin", "symbol": "🕛"
@@ -65,6 +73,28 @@
   },
   {
     "name": "No Currencies",
+    "alpha2Code": "NN",
+    "callingCodes": ["682"],
     "currencies": []
+  },
+  {
+    "name": "Two Country Codes",
+    "alpha2Code": "NN",
+    "callingCodes": ["111", "222"],
+    "currencies": [
+      {
+        "code": "CC", "name": "Nullcoin", "symbol": "🕛"
+      }
+    ]
+  },
+  {
+    "name": "No Country Codes",
+    "alpha2Code": "NC",
+    "callingCodes": [],
+    "currencies": [
+      {
+        "code": "CC", "name": "Nullcoin", "symbol": "🕛"
+      }
+    ]
   }
 ]

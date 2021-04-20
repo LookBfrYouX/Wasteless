@@ -5,7 +5,7 @@ const { Api } = require("./../Api");
 import {shallowMount} from "@vue/test-utils";
 import AddressForm from "../components/AddressForm";
 
-Api._setCountryCodes(() => {
+Api._setCountryData(() => {
   return Promise.resolve({
     data: [
       {

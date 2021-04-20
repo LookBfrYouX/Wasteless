@@ -1,6 +1,8 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.service.CountryDataFetcherService;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
@@ -131,4 +133,46 @@ public class CountryDataFetcherServiceTest {
                 countryDataFetcherService.getCurrencyForCountry("New Zealand")
         );
     }
+
+    @Test
+    void checkGetCountryData() {
+        load();
+        JSONArray data = countryDataFetcherService.getCountryDataArray();
+        for (int i = 0; i < data.size(); i++) {
+            JSONObject country = (JSONObject) data.get(i);
+            if (country.get("code") == "NZ") {
+                Assert.assertEquals(64, country.get("countryCode"));
+                Assert.assertEquals("New Zealand", country.get("name"));
+                JSONObject currency = (JSONObject) country.get("currency");
+                Assert.assertEquals("NZD", currency.get("code"));
+                Assert.assertEquals("$", currency.get("symbol"));
+                Assert.assertEquals("New Zealand dollar", currency.get("New Zealand dollar"));
+                break;
+            }
+        }
+    }
+
+    @Test
+    void checkGetCountryTwoPhoneCountryCodes() {
+        load();
+        JSONArray data = countryDataFetcherService.getCountryDataArray();
+        for (int i = 0; i < data.size(); i++) {
+            JSONObject country = (JSONObject) data.get(i);
+            if (country.get("name") == "Two Country Codes") {
+                Assert.assertEquals(111, country.get("countryCode"));
+                break;
+            }
+        }
+    }
+
+    @Test
+    void checkGetCountryNoPhoneCountryCodes() {
+        load();
+        JSONArray data = countryDataFetcherService.getCountryDataArray();
+        for (int i = 0; i < data.size(); i++) {
+            JSONObject country = (JSONObject) data.get(i);
+            if (country.get("name") == "No Country Codes") Assert.fail();
+        }
+    }
+
 }
