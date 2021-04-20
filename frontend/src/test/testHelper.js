@@ -16,7 +16,25 @@ export const GLOBAL_STATE = {
       country: "country",
     },
     phoneNumber: "phoneNumber",
-    bio: "bio"
+    bio: "bio",
+    businesses: [
+      {
+        businessType: "Retail Trade",
+        created: "2020-07-14 14:32:00.0",
+        description: "A Good business",
+        homeAddress: {
+          city: "Christchurch",
+          country: "New Zealand",
+          postcode: "8041",
+          region: "Canterbury",
+          streetName: "Ilam Road",
+          streetNumber: "53"
+        },
+        id: 1,
+        name: "TestName",
+        primaryAdministratorId: 4
+      }
+    ]
   }
 };
 
@@ -25,13 +43,15 @@ export const globalStateMocks = () => {
     getters: {
       isAdmin: jest.fn(() => GLOBAL_STATE.authUser.role == "ROLE_ADMIN"),
       isLoggedIn: jest.fn(() => true),
-      getAuthUser: jest.fn(() => GLOBAL_STATE)
+      getAuthUser: jest.fn(() => GLOBAL_STATE.authUser),
+      getActingAs: jest.fn(() => null)
     },
     actions: {
       makeAdmin: jest.fn(),
       revokeAdmin: jest.fn(),
       setAuthUser: jest.fn(),
-      deleteAuthUser: jest.fn()
+      deleteAuthUser: jest.fn(),
+      setActingAs: jest.fn()
     }
   }
 

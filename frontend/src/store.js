@@ -72,7 +72,7 @@ export const store = {
       state.actingAs = business;
     },
     // Delete business of user acting as when user switch back to individual
-    deleteActingAS: () => {
+    deleteActingAs: () => {
       state.actingAs = null;
     }
   },

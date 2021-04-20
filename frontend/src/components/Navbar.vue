@@ -1,9 +1,7 @@
 <template>
   <div id="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <router-link exact to="/">
-        <a class="navbar-brand">App Logo</a>
-      </router-link>
+      <a v-on:click="viewHome" class="navbar-brand">App Logo</a>
 
       <button
           aria-controls="navbarSupportedContent"
@@ -20,13 +18,13 @@
       <div id="navbarSupportedContent" class="collapse navbar-collapse">
 
         <ul class="navbar-nav mr-auto">
-          <router-link v-if="isLoggedIn" active-class="active" exact to="/profile">
-            <li class="nav-item">
-              <a class="nav-link">
-                Profile
-              </a>
-            </li>
-          </router-link>
+          <li>
+            <a v-if="isLoggedIn"
+               v-on:click="viewHome"
+               class="nav-link">
+                  Profile
+            </a>
+          </li>
         </ul>
         <!--if logged in shows this section-->
         <div v-if="isLoggedIn" class="d-flex">
@@ -73,9 +71,10 @@
                        class="switch-acting-as-wrapper">
                     <!--Shows the name of user currenly logged in regardless of acting as a business or not.-->
                     <h4 class="dropdown-header">Logged in as</h4>
-                    <router-link class="dropdown-item" exact to="/profile">
+                    <a v-on:click="viewProfile"
+                       class="dropdown-item">
                       {{ authUser.firstName }} {{ authUser.lastName }}
-                    </router-link>
+                    </a>
                     <div class="dropdown-divider"></div>
                     <!--List of entities (user and businesses) to switch acting as state.-->
                     <h4 class="dropdown-header">Act as</h4>
@@ -244,6 +243,20 @@ export default {
     },
 
     /**
+     * Navigate to profile page
+     */
+    viewProfile: async function () {
+      return this.pushOrGo("profile");
+    },
+
+    /**
+     * Navigate to home page
+     */
+    viewHome: async function () {
+      return this.pushOrGo("home")
+    },
+
+    /**
      * Handler when search button clicked
      * Navigates to search page with current query, or reloads page if on search page and query has not changed
      */
@@ -272,7 +285,7 @@ export default {
      */
     switchActingAs: function (business) {
       if (business === null) {
-        this.$stateStore.actions.deleteActingAS();
+        this.$stateStore.actions.deleteActingAs();
       } else {
         this.$stateStore.actions.setActingAs(business);
       }
