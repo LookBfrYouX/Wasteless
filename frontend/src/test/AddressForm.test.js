@@ -1,5 +1,18 @@
+jest.mock("./../Api");
+const { Api } = require("./../Api");
+
+
 import {shallowMount} from "@vue/test-utils";
 import AddressForm from "../components/AddressForm";
+
+Api._setCountryCodes(() => {
+  return Promise.resolve({
+    data: {
+      "AA": "COUNTRY",
+      "BB": "COUNTRY2"
+    }
+  });
+});
 
 let wrapper;
 
@@ -16,9 +29,6 @@ beforeEach(() => {
         country: "",
       }
     },
-    mocks: {},
-    stubs: {},
-    methods: {}
   });
 });
 
@@ -41,7 +51,8 @@ const standardOSMAddress = () => {
     postcode: "P",
     county: "C", // city
     state: "STATE", // state
-    country: "COUNTRY",
+    countrycode: "AA",
+    country: "COUNTRY_OSM",
     // osm_id,
   };
 }
@@ -116,7 +127,7 @@ test("generateAddressSuggestions", () => {
   let b = standardOSMAddress();
   b.housenumber = "DIFF";
   let c = standardOSMAddress();
-  c.country = "DIFF COUNTRY";
+  c.country = "COUNTRY2";
 
   const name = "postcode";
   wrapper.setData({
@@ -151,7 +162,6 @@ describe("mapOSMPropertiesToAddressComponents", () => {
     delete addressOSM.county;
     let address = standardAddress();
     delete address.city;
-
     expect(wrapper.vm.mapOSMPropertiesToAddressComponents(addressOSM)).toEqual(
         address);
   });
@@ -161,10 +171,19 @@ describe("mapOSMPropertiesToAddressComponents", () => {
     delete addressOSM.housenumber;
     let address = standardAddress();
     address.addressLine = addressOSM.street;
-
     expect(wrapper.vm.mapOSMPropertiesToAddressComponents(addressOSM)).toEqual(
         address);
   });
+
+  test("Unknown country code", () => {
+    let addressOSM = standardOSMAddress();
+    addressOSM.countrycode = "ZZ";
+    let address = standardAddress();
+    address.country = undefined;
+    expect(wrapper.vm.mapOSMPropertiesToAddressComponents(addressOSM)).toEqual(
+        address);
+  });
+
 
   test("Street name missing", () => {
     let addressOSM = standardOSMAddress();
