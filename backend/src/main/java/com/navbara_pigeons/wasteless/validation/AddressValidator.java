@@ -3,9 +3,10 @@ package com.navbara_pigeons.wasteless.validation;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.service.CountryDataFetcherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 public class AddressValidator {
     private final CountryDataFetcherService countryDataFetcherService;
 

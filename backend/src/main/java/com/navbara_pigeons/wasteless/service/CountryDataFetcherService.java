@@ -1,9 +1,9 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.navbara_pigeons.wasteless.entity.Address;
+import com.navbara_pigeons.wasteless.entity.Currency;
 import lombok.Data;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -203,24 +203,4 @@ class Country implements Serializable {
     private String alpha2Code;
     private Currency[] currencies;
     private String[] callingCodes;
-}
-
-@Data
-class Currency implements Serializable {
-    private String code; // Use as ID
-    private String name;
-    private String symbol;
-
-    public Currency() {}
-
-    public Currency(String code, String name, String symbol) {
-        this.code = code;
-        this.name = name;
-        this.symbol = symbol;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s (%s, %s)", name, code, symbol);
-    }
 }
