@@ -1,10 +1,10 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.navbara_pigeons.wasteless.service.CountryDataFetcherService;
+import com.navbara_pigeons.wasteless.entity.Address;
+import com.navbara_pigeons.wasteless.entity.Currency;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
