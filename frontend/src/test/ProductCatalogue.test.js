@@ -1,13 +1,13 @@
 import {shallowMount} from "@vue/test-utils";
 import {globalStateMocks} from "./testHelper";
-import SearchResults from "../components/ProductCatalogue";
+import ProductCatalogue from "../components/ProductCatalogue";
 
 let wrapper;
 
 window.alert = jest.fn();
 
 beforeEach(() => {
-  wrapper = shallowMount(SearchResults, {
+  wrapper = shallowMount(ProductCatalogue, {
 
     mocks: {callApi: jest.fn(() => {
       return Promise.resolve({
