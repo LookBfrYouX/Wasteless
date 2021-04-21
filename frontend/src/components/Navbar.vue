@@ -279,12 +279,12 @@ export default {
 
     /**
      * Updates acting as state of user.
-     * If no business are passed, switches back to acting as individual by deleting acting as.
+     * If no business are passed or null is passed, switches back to acting as individual by deleting acting as.
      * Else, sets business as currently acting as.
      * @param business A whole business object which is an item of list authUser.businesses
      */
     switchActingAs: function (business) {
-      if (business === null) {
+      if (business === null || business === undefined) {
         this.$stateStore.actions.deleteActingAs();
       } else {
         this.$stateStore.actions.setActingAs(business);

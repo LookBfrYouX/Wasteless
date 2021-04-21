@@ -35,7 +35,8 @@ export const GLOBAL_STATE = {
         primaryAdministratorId: 4
       }
     ]
-  }
+  },
+  actingAs: null
 };
 
 export const globalStateMocks = () => {
@@ -44,14 +45,15 @@ export const globalStateMocks = () => {
       isAdmin: jest.fn(() => GLOBAL_STATE.authUser.role == "ROLE_ADMIN"),
       isLoggedIn: jest.fn(() => true),
       getAuthUser: jest.fn(() => GLOBAL_STATE.authUser),
-      getActingAs: jest.fn(() => null)
+      getActingAs: jest.fn(() => GLOBAL_STATE.actingAs)
     },
     actions: {
       makeAdmin: jest.fn(),
       revokeAdmin: jest.fn(),
       setAuthUser: jest.fn(),
       deleteAuthUser: jest.fn(),
-      setActingAs: jest.fn()
+      setActingAs: jest.fn(business => GLOBAL_STATE.actingAs = business),
+      deleteActingAs: jest.fn(() => GLOBAL_STATE.actingAs = null)
     }
   }
 
