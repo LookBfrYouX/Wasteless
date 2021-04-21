@@ -161,6 +161,12 @@ export default {
       activeAddressInputName: null,
       addressSuggestionsRaw: [],
       addressSuggestions: [],
+      /**
+       * If country name is set and is different from the country used by OSM, Photon may not
+       * return results. Hence, before sending the query to Photon, convert the country name
+       * from the canonical name to that used by Photon if it is known - a previous query returned that country name
+       */
+      canonicalCountryNameToOsmCountryNameCache: {}
     }
   },
 
@@ -179,18 +185,25 @@ export default {
         county, // city
         state, // state
         countrycode,
+        country
         // osm_id,
       } = properties;
 
       // Convert from OSM country name to restcountries name
-      const country = this.countryCodeToNameDict[countrycode];
+      const countryCanonical = this.countryCodeToNameDict[countrycode];
+
+      if (countryCanonical != undefined && country != undefined && 
+          this.canonicalCountryNameToOsmCountryNameCache[countryCanonical] == undefined) {
+        this.canonicalCountryNameToOsmCountryNameCache[countryCanonical] = country;
+        // Add OSM country name to cache
+      }
 
       const components = {
         addressLine: street,
         postcode: postcode,
         city: county,
         state: state,
-        country: country,
+        country: countryCanonical,
       };
 
       if (street != undefined && housenumber != undefined) {
@@ -204,12 +217,18 @@ export default {
     /**
      * Generates address string from current inputs
      * If any values are undefined, it is ignored
+     * @param convertCountryToOsmName if true, converts country name to country name used by OSM
      */
-    generateAddressString: function () {
+    generateAddressString: function (convertCountryToOsmName = false) {
       // Was getting strange errors where sometimes a component would be undefined
       // Think its to do with accessing properties via this['someString'] so this
       // is a workaround
       let {addressLine, city, state, postcode, country} = this.address;
+
+      if (convertCountryToOsmName && this.canonicalCountryNameToOsmCountryNameCache[country] !== undefined) {
+        country = this.canonicalCountryNameToOsmCountryNameCache[country];
+      }
+
       let components = {
         addressLine,
         postcode,
@@ -277,7 +296,6 @@ export default {
           continue;
         }
         const addressComponents = this.mapOSMPropertiesToAddressComponents(properties);
-
         if (addressComponents.country == undefined) continue; // Unknown country
 
         const addressString = this.generateAddressStringFromAddressComponents(addressComponents,
@@ -301,7 +319,7 @@ export default {
      */
     addressSuggestionsPipeline: async function () {
       const url = `https://photon.komoot.io/api?q=${encodeURIComponent(
-          this.generateAddressString())}`;
+          this.generateAddressString(true))}`;
       let response;
       try {
         response = await axios.get(url);
@@ -350,7 +368,6 @@ export default {
         // Vue can't track changes made when using this[propName] (or this.someArray[index])
         // so this alternative syntax is required
       }
-
       this.sendAddressUpdateEvent(); // Autofill suggestion modifies the addresses so need to send event to parent
     },
 
