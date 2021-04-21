@@ -125,7 +125,7 @@ export default {
       }
     },
     blurDelay: {
-      default: 100
+      default: 150 // found 100 to be a bit short on my PC when I had a lot of apps open
     }
   },
 
