@@ -3,15 +3,8 @@ import Vue from 'vue';
 // This is the state object. It is reactive and can not be accessed directly by components.
 // Use getters and actions to modify this object.
 
-let authUser = null;
-try {
-  authUser = JSON.parse(JSON.parse(localStorage.getItem("authUser")));
-/* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
-} catch(_) {}
-
 const state = new Vue.observable({
-  authUser,
-  businessId: null
+  authUser: JSON.parse(localStorage.getItem("authUser")),
 });
 
 // This is the globally accessible store. It allows the state to be read and modified.
