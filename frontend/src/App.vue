@@ -38,6 +38,16 @@ export default {
       // the search results page will send an event with the current value of the text box
       // to App, which will then input Navbar props
       this.query = query;
+    },
+
+    
+    /**
+     * Set document title
+     * Title is set on router component load (see router.js), but if the page
+     * needs to update title, this callback should be used
+     */
+    setDocumentTitle(title) {
+      document.title = title;
     }
   },
   watch: {
@@ -46,15 +56,6 @@ export default {
       handler(to) {
         document.title = to.meta.title + " - Wasteless" || 'Wasteless';
       }
-    },
-
-    /**
-     * Set document title
-     * Title is set on router component load (see router.js), but if the page
-     * needs to update title, this callback should be used
-     */
-    setDocumentTitle(title) {
-      document.title = title;
     }
   }
 }
