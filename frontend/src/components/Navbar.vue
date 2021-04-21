@@ -20,7 +20,7 @@
         <ul class="navbar-nav mr-auto">
           <li>
             <a v-if="isLoggedIn"
-               v-on:click="viewHome"
+               v-on:click="viewProfile"
                class="nav-link">
                   Profile
             </a>
@@ -253,7 +253,7 @@ export default {
      * Navigate to home page
      */
     viewHome: async function () {
-      return this.pushOrGo("home")
+      return this.pushOrGo("home");
     },
 
     /**
