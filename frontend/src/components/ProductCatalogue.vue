@@ -1,12 +1,8 @@
 <template>
   <div class="w-100">
-    <div class="mt-2">
-      <router-link active-class="active" exact to="/CreateProduct">
-        <button class="btn btn-info mt-2 mr-3 float-right" type="button">
-          <span>Create Product</span>
-        </button>
-      </router-link>
-    </div>
+    <button v-on:click="createProduct" id="create-product-button" class="btn btn-info position-absolute mt-2 mr-3" type="button">
+      <span>Create Product</span>
+    </button>
     <div v-if="results.length != 0" class="w-100">
       <div v-if="!isVisible" class="button-expand-sidebar-wrapper">
         <button class="btn btn-info mt-2" type="button" v-on:click="toggleSidebar()">
@@ -51,7 +47,6 @@
                 <div class="text-muted">Created: {{ product.created }}</div>
               </li>
             </ul>
-          </div>
             <div aria-label="table-nav" class="mt-2">
               <ul class="paginate list-unstyled d-flex justify-content-center">
                 <li class="pageItem">
@@ -75,6 +70,8 @@
                 </li>
               </ul>
             </div>
+          </div>
+
           </div>
         </div>
       </div>
@@ -174,6 +171,10 @@ const ProductCatalogue = {
       let to = from + resultsPerPage;
       console.log(results.slice(from, to));
       return results.slice(from, to);
+    },
+
+    createProduct() {
+      this.$router.push("createProduct");
     }
   },
   computed: {
@@ -206,6 +207,12 @@ export default ProductCatalogue;
 </script>
 
 <style>
+
+#create-product-button {
+  top: 50px;
+  right: 15px;
+}
+
 button.page-link {
   display: inline-block;
 }
