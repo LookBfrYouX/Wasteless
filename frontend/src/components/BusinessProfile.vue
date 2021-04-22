@@ -36,7 +36,7 @@
           </button>
         </div>
         <div class="p-relative w-100 d-flex align-items-stretch">
-          <div v-if="isVisible" class="sort-results bg-light">
+          <div v-if="isVisible" class="sort-products bg-light">
             <div class="p-3">
               <h3 class="d-inline">Sort by</h3>
               <button class="float-right btn btn-light" type="button" v-on:click="toggleSidebar()">
@@ -56,13 +56,12 @@
             </div>
           </div>
           <div v-if="isVisible" class="overlay w-100 d-md-none" v-on:click="toggleSidebar()"></div>
-          <div class="results-content container d-flex justify-content-end justify-content-md-center">
-            <div class="results-wrapper col-12 col-md-8 mt-5">
+          <div class="products-content container d-flex justify-content-end justify-content-md-center">
+            <div class="products-wrapper col-12 col-md-8 mt-5">
               Displaying products {{ 10 * this.pageNum + 1 }} -
               {{ Math.min(products.length, 10 * (this.pageNum + 1)) }}
               out of {{ products.length }}
               <ul class="list-unstyled list-group">
-                <!--viewUser method uses router.push to display profile page-->
                 <li v-for="(product, index) in displayedProducts" v-bind:key="index"
                     class="list-group-item card">
                   <div class="d-flex flex-wrap justify-content-between">
@@ -132,7 +131,7 @@ export default {
       },
       products: [],
       pageNum: 0, // Page number starts from 0 but it will shown as 1 on UI
-      resultsPerPage: 10,
+      productsPerPage: 10,
       pages: [],
       sortBy: null,
       reversed: false,
@@ -204,20 +203,20 @@ export default {
       this.sortBy = newSortBy;
     },
     setPages() {
-      /* calculates number of pages which is reliant on resultsPerPage set in the data section*/
-      let numOfPages = Math.ceil(this.products.length / this.resultsPerPage);
+      /* calculates number of pages which is reliant on productsPerPage set in the data section*/
+      let numOfPages = Math.ceil(this.products.length / this.productsPerPage);
       this.pages = [];
       for (let i = 0; i < numOfPages; i++) {
         this.pages.push(i);
       }
     },
 
-    paginate(results) {
+    paginate(products) {
       let page = this.pageNum;
-      let resultsPerPage = this.resultsPerPage;
-      let from = page * resultsPerPage;
-      let to = from + resultsPerPage;
-      return results.slice(from, to);
+      let productsPerPage = this.productsPerPage;
+      let from = page * productsPerPage;
+      let to = from + productsPerPage;
+      return products.slice(from, to);
     },
 
     sortProducts() {
