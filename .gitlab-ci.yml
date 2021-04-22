@@ -95,6 +95,7 @@ branch-build:
 deploy-staging-backend:
   stage: deploy
   script:
+    - echo $(date '+%Y-%m-%d %H:%M:%S') >> ~/test_file
     - cd backend
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/staging-backend/ || true
