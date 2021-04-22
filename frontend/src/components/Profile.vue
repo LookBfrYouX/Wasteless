@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row mt-2">
       <!--User profile image card-->
-      <div class="col-md-4 m-2 card">
+      <div class="col-md-4 m-2 card bg-transparent border-0">
         <!--Upload image button overlay-->
         <button
           class="image-upload-button btn btn-lg btn-primary"
@@ -12,11 +12,7 @@
           <span class="material-icons md-48">file_upload</span>
         </button>
         <!--User profile image-->
-        <img
-          alt="Users profile image"
-          class="my-3 rounded-circle"
-          src="placeholder-profile.png"
-        />
+        <img alt="Users profile image" class="my-3 rounded-circle border border-light" src="default-user-thumbnail.svg">
       </div>
       <div class="col-md-7 m-2 card">
         <div class="m-3">
@@ -250,6 +246,9 @@ export default {
       required: true,
       default: NaN
     },
+    setDocumentTitle: {
+      required: true
+    }
   },
 
   beforeMount: function () {
@@ -305,22 +304,22 @@ export default {
     /**
      * Calls the router to reroute the user to register a new business
      */
-    registerBusiness: function () {
-      this.$router.push({ name: "registerBusiness" });
+    registerBusiness: async function() {
+      await this.$router.push({name: "registerBusiness"});
     },
 
     /**
      * Calls the API and updates the component's data with the result
      */
-    apiPipeline: function () {
-      this.parseApiResponse(this.callApi(this.actualUserId));
+    apiPipeline: async function() {
+      await this.parseApiResponse(this.callApi(this.userId));
     },
 
     /**
      * Calls the API to get profile information with the given user ID
      * Returns the promise, not the response
      */
-    callApi: function (userId) {
+    callApi: async function(userId) {
       if (typeof userId != "number" || isNaN(userId)) {
         const err = new ApiRequestError(
           "Cannot load profile page (no profile given). You may need to log in"
@@ -331,7 +330,7 @@ export default {
     },
 
     /**
-     * Parses the API response given a promise to the request
+     * Parses the API response given a promise to the request and sets `userInfo`
      */
     parseApiResponse: async function (apiCall) {
       try {
@@ -455,6 +454,11 @@ export default {
     userId: function () {
       this.apiPipeline();
     },
+
+    userInfo() {
+      if (this.userInfo !== null) this.setDocumentTitle(`${this.userInfo.firstName} ${this.userInfo.firstName} | Profile`);
+      // If switch user profile and request fails will be stuck with old title
+    }
   },
 };
 </script>

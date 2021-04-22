@@ -79,7 +79,10 @@ export default {
     },
     userId: {
       type: Number,
-      required: false,
+      required: false
+    },
+    setDocumentTitle: {
+      required: true
     }
   },
 
@@ -128,8 +131,12 @@ export default {
 
   watch: {
     businessId: function () {
-      this.parseApiResponse(this.callApi(this.businessId));
+      this.parseApiResponse(this.callApi(this.businessId))
     },
+
+    businessInfo() {
+      if (this.businessInfo !== null) this.setDocumentTitle(`${this.businessInfo.name} | Business`);
+    }
   },
 };
 </script>

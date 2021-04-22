@@ -1,9 +1,7 @@
 <template>
   <div id="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <router-link exact to="/home">
-        <a class="navbar-brand">App Logo</a>
-      </router-link>
+      <a v-on:click="viewHome" class="navbar-brand">App Logo</a>
 
       <button
           aria-controls="navbarSupportedContent"
@@ -20,13 +18,13 @@
       <div id="navbarSupportedContent" class="collapse navbar-collapse">
 
         <ul class="navbar-nav mr-auto">
-          <router-link v-if="isLoggedIn" active-class="active" exact to="/profile">
-            <li class="nav-item">
-              <a class="nav-link">
-                Profile
-              </a>
-            </li>
-          </router-link>
+          <li>
+            <a v-if="isLoggedIn"
+               v-on:click="viewProfile"
+               class="nav-link">
+                  Profile
+            </a>
+          </li>
         </ul>
         <!--if logged in shows this section-->
         <div v-if="isLoggedIn" class="d-flex">
@@ -43,24 +41,60 @@
                   v-on:input="event => $emit('input', event)"
               />
             </div>
-
           </form>
+
           <div id="navbar-list-4" class="collapse navbar-collapse">
             <ul class="navbar-nav">
               <li class="nav-item dropdown">
                 <a id="navbarDropdownMenuLink" aria-expanded="false"
                    aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown"
                    href="#" role="button">
-                  <img class="nav-picture rounded-circle" src="placeholder-profile.png">
+                  <!--Show user thumbnail if acting as an individual, business thumbnail when acting as a business-->
+                  <img v-if="currentActingAs == null"
+                       class="nav-picture rounded-circle"
+                       alt="User thumbnail"
+                       src="default-user-thumbnail.svg">
+                  <img v-else
+                       class="nav-picture rounded-circle"
+                       atl="Business thumbnail"
+                       src="default-business-thumbnail.svg">
                   <div class="d-flex flex-column mx-1">
-                    <span class="m-0 p-0 text-dark">{{ authUser.firstName }} {{
-                        authUser.lastName
-                      }}</span>
+                    <span class="m-0 p-0 text-dark">
+                      {{ printCurrentActingAs }}
+                    </span>
                     <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
                   </div>
                 </a>
                 <div aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-right">
-                  <button class="dropdown-item" v-on:click="logOut">Log out</button>
+                  <!--.switch-acting-as-wrapper is only visible for user owing at least one business.-->
+                  <div v-if="actingAsEntities.length !== 0"
+                       class="switch-acting-as-wrapper">
+                    <!--Shows the name of user currenly logged in regardless of acting as a business or not.-->
+                    <h4 class="dropdown-header">Logged in as</h4>
+                    <a v-on:click="viewProfile"
+                       class="dropdown-item">
+                      {{ authUser.firstName }} {{ authUser.lastName }}
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <!--List of entities (user and businesses) to switch acting as state.-->
+                    <h4 class="dropdown-header">Act as</h4>
+                    <a v-if="currentActingAs != null"
+                       v-on:click="switchActingAs()"
+                       class="dropdown-item">
+                      {{ authUser.firstName }} {{ authUser.lastName }}
+                    </a>
+                    <a v-for="business in actingAsEntities" :key="business.id"
+                            v-on:click="switchActingAs(business)"
+                            class="dropdown-item">
+                      {{business.name}}
+                      <!--Checkmark on currently acting as business-->
+                      <span v-if="business === currentActingAs">
+                        &#10003;
+                      </span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                  </div> <!--Close of .switch-acting-as-wrapper-->
+                  <a class="dropdown-item" v-on:click="logOut">Log out</a>
                 </div>
               </li>
             </ul>
@@ -126,6 +160,24 @@ export default {
     },
 
     /**
+     * Returns null when the user is currently acting as individual, the whole business object otherwise
+     */
+    currentActingAs() {
+      return this.$stateStore.getters.getActingAs();
+    },
+
+    /**
+     * Return formatted string of name of user or business which currently acting as
+     */
+    printCurrentActingAs() {
+      if (this.currentActingAs != null) {
+        return this.currentActingAs.name;
+      } else {
+        return `${this.authUser.firstName} ${this.authUser.lastName}`;
+      }
+    },
+
+    /**
      * Checks if a user is logged in or not
      */
     isLoggedIn() {
@@ -138,6 +190,13 @@ export default {
     isAdmin() {
       return this.$stateStore.getters.isAdmin();
     },
+
+    /**
+     * Returns a list of business. The list is empty if the user have no business registered.
+     */
+    actingAsEntities() {
+      return this.authUser.businesses;
+    }
   },
   methods: {
     /**
@@ -153,6 +212,7 @@ export default {
      * Navigate to log in page
      */
     login: async function () {
+      console.log(localStorage.getItem("authUser"));
       return this.pushOrGo("login");
     },
 
@@ -183,6 +243,20 @@ export default {
     },
 
     /**
+     * Navigate to profile page
+     */
+    viewProfile: async function () {
+      return this.pushOrGo("profile");
+    },
+
+    /**
+     * Navigate to home page
+     */
+    viewHome: async function () {
+      return this.pushOrGo("home");
+    },
+
+    /**
      * Handler when search button clicked
      * Navigates to search page with current query, or reloads page if on search page and query has not changed
      */
@@ -202,11 +276,29 @@ export default {
         },
       });
     },
+
+    /**
+     * Updates acting as state of user.
+     * If no business are passed or null is passed, switches back to acting as individual by deleting acting as.
+     * Else, sets business as currently acting as.
+     * @param business A whole business object which is an item of list authUser.businesses
+     */
+    switchActingAs: function (business) {
+      if (business === null || business === undefined) {
+        this.$stateStore.actions.deleteActingAs();
+      } else {
+        this.$stateStore.actions.setActingAs(business);
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
+
+a:hover {
+  cursor: pointer;
+}
 
 .admin-text {
   margin: -0.5em 0 0;
