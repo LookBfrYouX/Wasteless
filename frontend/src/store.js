@@ -41,7 +41,7 @@ export const store = {
       if (state.authUser == null) return null;
       if (!Number.isInteger(state.actingAsId)) return null;
     
-      const business = state.authUser.businesses.find(business =>  business.id == state.actingAsId);
+      const business = state.authUser.businessesAdministered.find(business => business.id == state.actingAsId);
       if (business != undefined) return business;
       return null;
     },
@@ -88,18 +88,24 @@ export const store = {
     },
     
     /**
-     * Sets the business the user is acting as. Only uses the ID of the business;
-     * when `getActingAs` is called, it returns the business in `authUser` with the same ID. Hence, if the business with the given ID does not exist in `authUser`'s businesses array, `getActingAs` will return null.
+     * Sets the business the user is acting as.
+     * When `getActingAs` is called, it returns the business in `authUser` with the same ID. Hence, if the business with the given ID does not exist in `authUser`'s businesses array, `getActingAs` will return null.
      * This ensures that there is will not be multiple copies of the business object that may go out of sync
-     * @param {*} business business the user is acting as (or object with `id`), or null
+     * @param {*} business ID of business, the business the user is acting as (or object with `id`), or null to remove
+     * @throws error if business ID not in the list of user businesses ()
      */
     setActingAs: (business) => {
       if (business == null) {
         state.actingAsId = null;
         localStorage.removeItem("actingAsId");
       } else {
-        state.actingAsId = business.id;
-        localStorage.setItem("actingAsId", business.id);
+        const id = Number.isInteger(business)? business: business.id;
+        if (
+          state.authUser == null || 
+          state.authUser.businessesAdministered.find(business => business.id == id) == undefined
+        ) throw new Error("Tried to set acting as business, but business ID not found in authUser's businesses");
+        state.actingAsId = id;
+        localStorage.setItem("actingAsId", id);
       }
     },
     // Delete business of user acting as when user switch back to individual

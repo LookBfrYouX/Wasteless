@@ -6,7 +6,7 @@ const business = {
 };
 const user = {
   id: 10,
-  businesses: [
+  businessesAdministered: [
     business
   ]
 };
@@ -18,10 +18,21 @@ describe("Setting actingAs", () => {
     expect(store.getters.getActingAs()).toEqual(business);
   });
 
+  test("Set a business, passing only ID", () => {
+    store.actions.setAuthUser(user);
+    store.actions.setActingAs(business.id);
+    expect(store.getters.getActingAs()).toEqual(business);
+  });
+
   test("Delete a business and switch back to individual", () => {
     store.actions.setAuthUser(user);
     store.actions.setActingAs(business);
     store.actions.deleteActingAs();
     expect(store.getters.getActingAs()).toEqual(null);
-  })
-})
+  });
+
+  test("Set a business with bad ID", () => {
+    store.actions.setAuthUser(user);
+    expect(() => store.actions.setActingAs(4)).toThrow(Error);
+  });
+});

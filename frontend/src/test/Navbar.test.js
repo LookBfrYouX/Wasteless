@@ -23,7 +23,7 @@ describe("State of acting as entity", () => {
   test("Show business name on Navbar", () => {
     const mocks = globalStateMocks();
     let authUser = mocks.$stateStore.getters.getAuthUser();
-    mocks.$stateStore.actions.setActingAs(authUser.businesses[0]);
+    mocks.$stateStore.actions.setActingAs(authUser.businessesAdministered[0]);
     wrapper = shallowMount(Navbar, {
       mocks,
     });
@@ -33,7 +33,7 @@ describe("State of acting as entity", () => {
   test("Switch from individual to business", () => {
     const mocks = globalStateMocks();
     let authUser = mocks.$stateStore.getters.getAuthUser();
-    let business = authUser.businesses[0]
+    let business = authUser.businessesAdministered[0]
     wrapper = shallowMount(Navbar, {
       mocks,
     });
@@ -44,7 +44,7 @@ describe("State of acting as entity", () => {
   test("Switch from business to individual", () => {
     const mocks = globalStateMocks();
     let authUser = mocks.$stateStore.getters.getAuthUser();
-    mocks.$stateStore.actions.setActingAs(authUser.businesses[0]);
+    mocks.$stateStore.actions.setActingAs(authUser.businessesAdministered[0]);
     wrapper = shallowMount(Navbar, {
       mocks,
     });
@@ -55,10 +55,10 @@ describe("State of acting as entity", () => {
   test("Return a list of businesses", () => {
     const mocks = globalStateMocks();
     let authUser = mocks.$stateStore.getters.getAuthUser();
-    let businesses = authUser.businesses;
+    let businessesAdministered = authUser.businessesAdministered;
     wrapper = shallowMount(Navbar, {
       mocks,
     });
-    expect(wrapper.vm.actingAsEntities).toEqual(businesses);
+    expect(wrapper.vm.actingAsEntities).toEqual(businessesAdministered);
   });
 });

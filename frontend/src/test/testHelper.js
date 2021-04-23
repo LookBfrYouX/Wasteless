@@ -17,7 +17,7 @@ export const GLOBAL_STATE = {
     },
     phoneNumber: "phoneNumber",
     bio: "bio",
-    businesses: [
+    businessesAdministered: [
       {
         businessType: "Retail Trade",
         created: "2020-07-14 14:32:00.0",

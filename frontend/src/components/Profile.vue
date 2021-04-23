@@ -58,7 +58,7 @@
               id="makeAdmin"
               class="btn btn-white-bg-primary mx-1 d-flex"
               type="button"
-              v-on:click="makeAdmin(actualUserId)"
+              v-on:click="makeAdmin(userId)"
             >
               <span class="material-icons mr-1">person</span>
               Make Admin
@@ -68,7 +68,7 @@
               id="revokeAdmin"
               class="btn btn-white-bg-primary mx-1 d-flex"
               type="button"
-              v-on:click="revokeAdmin(actualUserId)"
+              v-on:click="revokeAdmin(userId)"
             >
               <span class="material-icons mr-1">person</span>
               Revoke Admin
@@ -102,7 +102,7 @@
                 {{ business.businessType }}
               </h6>
               <p class="card-text">{{ business.description }}</p>
-              <a class="card-link" v-on:click="viewBusiness(business.id, actualUserId)"
+              <a class="card-link" v-on:click="viewBusiness(business.id, userId)"
                 >More info</a
               >
             </li>
@@ -198,6 +198,7 @@
       v-bind:hideCallback="() => (apiErrorMessage = null)"
       v-bind:refresh="true"
       v-bind:retry="this.apiPipeline"
+      v-bind:goBack="false"
       v-bind:show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
@@ -320,9 +321,9 @@ export default {
      * Returns the promise, not the response
      */
     callApi: async function(userId) {
-      if (typeof userId != "number" || isNaN(userId)) {
+      if (!Number.isInteger(userId)) {
         const err = new ApiRequestError(
-          "Cannot load profile page (no profile given). You may need to log in"
+          "Cannot load profile page (no profile given). Please log in before viewing this page"
         );
         return Promise.reject(err);
       }
@@ -390,7 +391,6 @@ export default {
     },
 
     viewBusiness(businessId, userId) {
-      this.$stateStore.actions.setBusinessId(businessId);
       this.$router.push({
         name: "businessProfile",
         params: {
@@ -410,13 +410,6 @@ export default {
     },
     isAdmin() {
       return this.$stateStore.getters.isAdmin();
-    },
-
-    /**
-     * Ues this instead of user ID: if user ID is NaN and user is signed in, will use user ID
-     */
-    actualUserId() {
-      return isNaN(this.userId) && this.authUser != null? this.authUser.id: this.userId;
     },
 
     /**

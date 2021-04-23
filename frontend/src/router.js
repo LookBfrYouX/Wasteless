@@ -47,8 +47,13 @@ export const router = new VueRouter({
     {
       name: "profile",
       path: "/profile/:userId(\\d+)?",
-      component: import("./components/Profile.vue"),
-      props: route => ({userId: route.params.userId? parseInt(route.params.userId, 10): NaN })
+      component: () => import("./components/Profile.vue"),
+      props: route => {
+        let userId = route.params.userId? parseInt(route.params.userId, 10): NaN;
+        // Using \d so parseInt should never fail
+        if (isNaN(userId) && store.getters.isLoggedIn()) userId = store.getters.getAuthUser().id;
+        return { userId };
+      }
     },
     {
       name: "search",
@@ -69,15 +74,10 @@ export const router = new VueRouter({
       meta: {title: "Business Profile | Wasteless"},
       component: () => import("./components/BusinessProfile.vue"),
       props: route => {
-        // TODO: figure out new way of routing without local storage
-        let businessId = route.params.businesssId;
-        let userId = route.params.userId;
-        if (businessId == undefined || businessId == null) {
-          businessId = parseInt(window.localStorage.getItem("businessId"));
-        } else {
-          businessId = parseInt(businessId, 10); // Using \d so parseInt should always work
-        }
-        return {businessId, userId};
+        // If business ID is optional, user can switch back to acting as user in navbar, causing page to fail
+        let businessId = parseInt(route.params.businessId, 10);
+        const userId = route.params.userId; // Optional
+        return { userId, businessId };
       }
     },
     {

@@ -39,21 +39,28 @@
           <dd class="col-md value">{{ businessInfo.businessType }}</dd>
         </li>
       </ul>
-      <div v-if="errorMessage.length > 0" class="row mt-2">
-        <div class="col">
-          <p class="alert alert-warning">{{ errorMessage }}</p>
-        </div>
-      </div>
+      <error-modal
+        title="Error fetching business details"
+        v-bind:hideCallback="() => (apiErrorMessage = null)"
+        v-bind:refresh="false"
+        v-bind:retry="false"
+        v-bind:goBack="true"
+        v-bind:show="apiErrorMessage !== null"
+      >
+        <p>{{ apiErrorMessage }}</p>
+    </error-modal>
     </div>
   </div>
 </template>
 
 <script>
+import ErrorModal from "./Errors/ErrorModal.vue";
+import { ApiRequestError } from "./../ApiRequestError";
 const Api = require("./../Api").default;
 
 export default {
   name: "businessProfile",
-  components: {},
+  components: { ErrorModal },
 
   data() {
     return {
@@ -63,7 +70,7 @@ export default {
         address: "",
         businessType: "",
       },
-      errorMessage: "",
+      apiErrorMessage: null,
     };
   },
   beforeRouteEnter(to, from, next) {
@@ -75,7 +82,7 @@ export default {
   props: {
     businessId: {
       type: Number,
-      required: true,
+      required: true
     },
     userId: {
       type: Number,
@@ -97,6 +104,13 @@ export default {
      * Returns the promise, not the response
      */
     callApi: function (businessId) {
+      if (!Number.isInteger(businessId)) {
+        const err = new ApiRequestError(
+          "Cannot load business profile page - business ID not given"
+        );
+        return Promise.reject(err);
+      }
+
       return Api.businessProfile(businessId);
     },
 
@@ -118,11 +132,10 @@ export default {
         const response = await apiCall;
         this.businessInfo = response.data;
       } catch (err) {
-        alert(
-            err.userFacingErrorMessage == undefined
-                ? err.toString()
-                : err.userFacingErrorMessage
-        );
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
+        this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
   },

@@ -10,12 +10,15 @@
         <div class="modal-body">
           <slot></slot>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" v-if="retry || refresh || goBack">
           <button v-if="retry" class="btn btn-primary" type="button" v-on:click="retryClicked">
             Retry
           </button>
           <button v-if="refresh" class="btn btn-primary" type="button" v-on:click="refreshClicked">
             Refresh Page
+          </button>
+          <button v-if="goBack" class="btn btn-primary" type="button" v-on:click="goBackClicked">
+            Go back
           </button>
         </div>
       </div>
@@ -33,23 +36,45 @@ export default {
     title: {
       type: String
     },
+    /**
+     * Determines if error modal is being shown or not; state is owned by callee
+     */
     show: {
       type: Boolean,
       required: true
     },
+    /**
+     * Called when error modal hidden or any  of the buttons clicked.
+     * Event passed as argument
+     */
     hideCallback: {
-      // Called when hidden, or any of the buttons clicked
       type: Function,
       required: true
     },
+    /**
+     * Boolean or function
+     * If boolean, will determine if shown or not and use default refresh handler
+     * Otherwise, the function will be called with the event passed as an argument
+     */
     refresh: {
-      // Boolean or function
-      // if false will not be shown
-      // If true will show refresh button and refresh
-      // if function it will simply call this method
+      required: true
     },
+
+    /**
+     * If false or not given, retry button will not be shown
+     * Otherwise, the function will be called with the event passed as an argument
+     */
     retry: {
-      type: Function
+      required: false
+    },
+
+    /**
+     * Boolean or function
+     * If boolean, will determine if shown or not and use default back handler
+     * Otherwise, the function will be called with the event passed as an argument
+     */
+    goBack: {
+      required: true,
     }
   },
   watch: {
@@ -59,10 +84,16 @@ export default {
   },
 
   methods: {
+    /**
+     * Synchronizes modal visibility with state
+     */
     updateModalVisibility: function () {
       this.show ? this.modal.show() : this.modal.hide();
     },
 
+    /**
+     * Refresh button clicked; send modal hidden callback and refresh
+     */
     refreshClicked: function (event) {
       this.hideCallback();
       if (this.refresh === true) {
@@ -73,10 +104,25 @@ export default {
       }
     },
 
+    /**
+     * Retry button clicked; send modal hidden and retry callbacks
+     */
     retryClicked: function (event) {
       this.hideCallback();
       if (this.retry) {
         this.retry(event);
+      }
+    },
+
+    /**
+     * Go back button clicked; send modal hidden and go back
+     */
+    goBackClicked: function (event) {
+      this.hideCallback();
+      if (this.goBack == true) {
+        this.$router.go(-1);
+      } else {
+        this.goBack(event);
       }
     }
   },

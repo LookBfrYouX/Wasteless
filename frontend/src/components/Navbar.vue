@@ -126,6 +126,7 @@
         v-bind:hideCallback="() => logOutErrorMessage = null"
         v-bind:refresh="false"
         v-bind:retry="this.logOut"
+        v-bind:goBack="false"
         v-bind:show="logOutErrorMessage !== null"
     >
       <p>{{ logOutErrorMessage }}</p>
@@ -192,10 +193,11 @@ export default {
     },
 
     /**
-     * Returns a list of business. The list is empty if the user have no business registered.
+     * Returns a list of business
+     * @return empty list if user not logged in or has no businesses
      */
     actingAsEntities() {
-      return this.authUser.businesses;
+      return this.authUser != null? this.authUser.businessesAdministered: [];
     }
   },
   methods: {
@@ -281,7 +283,7 @@ export default {
      * Updates acting as state of user.
      * If no business are passed or null is passed, switches back to acting as individual by deleting acting as.
      * Else, sets business as currently acting as.
-     * @param business A whole business object which is an item of list authUser.businesses
+     * @param business A whole business object which is an item of list authUser.businessesAdministered
      */
     switchActingAs: function (business) {
       if (business === null || business === undefined) {

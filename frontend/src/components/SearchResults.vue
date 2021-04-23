@@ -84,6 +84,7 @@
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.query"
+        v-bind:goBack="false"
         v-bind:show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
