@@ -12,7 +12,7 @@
           <span class="material-icons md-48">file_upload</span>
         </button>
         <!--User profile image-->
-        <img alt="Users profile image" class="my-3 rounded-circle border border-light" src="default-user-thumbnail.svg">
+        <img alt="Users profile image" class="my-3 rounded-circle border border-light" v-bind:src="$helper.asset('images/default-user-thumbnail.svg')">
       </div>
       <div class="col-md-7 m-2 card">
         <div class="m-3">

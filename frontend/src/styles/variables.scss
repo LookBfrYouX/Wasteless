@@ -1,5 +1,12 @@
+@import "bootstrap/scss/functions.scss";
+@import "bootstrap/scss/variables.scss";
+
+
+// CUSTOM
 $slightly-transparent-background: rgba(255, 255, 255, 0.9);
 
+
+// FONT
 // setting default font families
 $headings-font-family: 'Catamaran', sans-serif;
 $text-font-family: 'Montserrat', sans-serif;
@@ -9,3 +16,56 @@ $headings-font-size-large: 3em;
 $headings-font-size-medium: 2em;
 $headings-font-size-small: 1.4em;
 
+
+
+// COLOR
+
+// $test: rgb(0, 255, 179);
+// $test: rgb(0, 133, 93);
+// $test: rgb(0, 189, 215);
+// $test: rgb(255, 126, 126);
+// $test: rgb(201, 31, 3);
+// $test: rgb(201, 51, 255);
+// $test: rgb(255, 58, 255);
+
+// $blue:    #1b80ec;
+$blue: rgb(109, 144, 250);
+
+// $indigo:  #6610f2;
+$purple: #6f42c1;
+
+$pink: #e83e8c;
+$pink: rgb(227, 68, 196);
+
+// $red:     #dc3545;
+$red: rgb(230, 18, 18);
+
+// $orange:  #fd7e14;
+$orange: rgb(255, 133, 40);
+
+
+// $yellow:  #ffc107;
+$yellow: rgb(255, 233, 31);
+
+// $green:   #20df4d;
+$green: rgb(30, 201, 150);
+
+$teal: #20c997;
+
+// $cyan:    #17a2b8;
+$cyan: rgb(0, 155, 255);
+
+$light: #d2dacc;
+
+
+// THEMES
+$theme-colors: (
+    primary: $green,
+    secondary: $gray-600,
+    success: $blue,
+    info: $cyan,
+    warning: $yellow,
+    danger: $red,
+    light: $gray-100,
+    dark: $gray-800
+);
