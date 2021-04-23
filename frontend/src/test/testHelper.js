@@ -1,3 +1,5 @@
+import { helper } from "./../helper";
+
 export const GLOBAL_STATE = {
   authUser: {
     firstName: "firstName",
@@ -62,9 +64,12 @@ export const globalStateMocks = () => {
     go: jest.fn()
   }
 
+  const $helper = helper;
+
   return {
     $stateStore,
-    $router
+    $router,
+    $helper
   }
 }
 
