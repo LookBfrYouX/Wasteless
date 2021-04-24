@@ -102,7 +102,7 @@
                 {{ business.businessType }}
               </h6>
               <p class="card-text">{{ business.description }}</p>
-              <a class="card-link" v-on:click="viewBusiness(business.id, userId)"
+              <a class="card-link" v-on:click="viewBusiness(business.id)"
                 >More info</a
               >
             </li>
@@ -390,12 +390,12 @@ export default {
       return `${yearsText}, ${monthsText}`;
     },
 
-    viewBusiness(businessId, userId) {
+    viewBusiness(businessId) {
       this.$router.push({
         name: "businessProfile",
         params: {
           businessId,
-          userId
+          showBackButton: true
         },
       });
     },

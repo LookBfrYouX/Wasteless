@@ -3,7 +3,7 @@
     <div>
       <h1 class="title">Business Information</h1>
       <button class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3" type="button"
-              v-if="this.userId" v-on:click="backToProfile">
+              v-if="showBackButton" v-on:click="$router.go(-1)">
         <span class="material-icons mr-1">arrow_back</span>
         Back to Profile
       </button>
@@ -73,20 +73,21 @@ export default {
       apiErrorMessage: null,
     };
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.prevRoute = from
-    })
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   next(vm => {
+  //     vm.prevRoute = from
+  //   })
+  // },
 
   props: {
     businessId: {
       type: Number,
       required: true
     },
-    userId: {
-      type: Number,
-      required: false
+    showBackButton: {
+      type: Boolean,
+      required: false,
+      default: false
     },
     setDocumentTitle: {
       required: true
@@ -112,16 +113,6 @@ export default {
       }
 
       return Api.businessProfile(businessId);
-    },
-
-    showBackButton: function () {
-      return this.userId != undefined;
-    },
-
-    backToProfile: function () {
-      this.$router.push({
-        path: "/profile/" + this.userId
-      });
     },
 
     /**
