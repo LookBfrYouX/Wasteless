@@ -8,13 +8,9 @@ $slightly-transparent-background: rgba(255, 255, 255, 0.9);
 
 // FONT
 // setting default font families
-$headings-font-family: 'Catamaran', sans-serif;
-$text-font-family: 'Montserrat', sans-serif;
-
-// setting default font sizes
-$headings-font-size-large: 3em;
-$headings-font-size-medium: 2em;
-$headings-font-size-small: 1.4em;
+$font-family-sans-serif:      'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-family-base:            $font-family-sans-serif;
+$headings-font-family:        'Catamaran', $font-family-sans-serif;
 
 
 

@@ -37,8 +37,6 @@ for (let varName in process.env) {
   }
 }
 
-console.log(sassVariables);
-
 module.exports = {
   // allows to define reusable templates instead of simple views
   // see https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only
