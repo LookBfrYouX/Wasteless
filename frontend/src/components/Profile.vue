@@ -6,10 +6,9 @@
         <!--Upload image button overlay-->
         <button
           class="image-upload-button btn btn-lg btn-primary"
-          disabled
           type="button"
         >
-          <span class="material-icons md-48">file_upload</span>
+          <span class="material-icons">file_upload</span>
         </button>
         <!--User profile image-->
         <img alt="Users profile image" class="my-3 rounded-circle border border-light" src="default-user-thumbnail.svg">
