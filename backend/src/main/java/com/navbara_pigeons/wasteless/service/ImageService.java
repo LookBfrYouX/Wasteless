@@ -1,10 +1,11 @@
 package com.navbara_pigeons.wasteless.service;
 
 
-import org.springframework.http.ResponseEntity;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageService {
 
-  ResponseEntity<String> uploadProfileImage(MultipartFile image);
+  String uploadProfileImage(MultipartFile image) throws UserNotFoundException, IOException;
 }

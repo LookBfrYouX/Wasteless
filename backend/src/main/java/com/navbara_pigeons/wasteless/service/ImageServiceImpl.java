@@ -1,11 +1,17 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,22 +20,45 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-  public final String storagePath = "./src/main/resources/images/";
+  private final UserDao userDao;
 
-  public ResponseEntity<String> uploadProfileImage(MultipartFile image) {
+  private final String storagePath = "./src/main/resources/images/";
+
+  public ImageServiceImpl(UserDao userDao) {
+    this.userDao = userDao;
+  }
+
+  /**
+   * Upload a given profile image to the machine and store the image name in the database
+   *
+   * @param image The image file to be saved
+   * @return The URI to access the saved image
+   * @throws UserNotFoundException The user could not be found from the Session
+   * @throws IOException           The new filename could not be created
+   */
+  public String uploadProfileImage(MultipartFile image)
+      throws UserNotFoundException, IOException {
+    // Get the User object so we can use their ID
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    Authentication authentication = securityContext.getAuthentication();
+    User currentUser = this.userDao.getUserByEmail(authentication.getName());
+
+    // Get the file extension of the given file
     String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-    Path destination = Paths.get(storagePath + "user/" + fileName);
+    String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-    try {
-      Files.copy(image.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    // Generate a new random filename prefixed with 'U{userId}_'
+    String newFileName = File.createTempFile("U" + currentUser.getId() + "_", "." + fileExtension)
+        .getName();
 
-    String imagePathURI = ServletUriComponentsBuilder.fromCurrentContextPath()
+    // Save the image in the images/user/ directory, replacing if needed
+    Path destination = Paths.get(storagePath + "user/" + newFileName);
+    Files.copy(image.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
+    // Return the URI for to download the image
+    return ServletUriComponentsBuilder.fromCurrentContextPath()
         .path("/images/user/download/")
-        .path(fileName)
+        .path(newFileName)
         .toUriString();
-    return ResponseEntity.ok(imagePathURI);
   }
 }

@@ -33,7 +33,7 @@ public class SchedulerConfig {
   private String dgaaEmail;
   @Value("${dgaa.user.password}")
   private String dgaaPassword;
-  private BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Autowired
   public SchedulerConfig(UserDao userDao, AddressDao addressDao,

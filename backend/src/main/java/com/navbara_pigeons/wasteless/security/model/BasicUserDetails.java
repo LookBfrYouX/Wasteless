@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class BasicUserDetails implements UserDetails {
 
-  private User user;
+  private final User user;
 
   public BasicUserDetails(@Autowired User user) {
     this.user = user;

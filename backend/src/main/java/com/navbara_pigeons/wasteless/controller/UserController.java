@@ -197,17 +197,17 @@ public class UserController {
    * @throws ResponseStatusException Unknown Error.
    */
   @PostMapping("/businesses")
-    public ResponseEntity<JSONObject> registerBusiness(@RequestBody Business business) {
-      try {
-        JSONObject response = businessService.saveBusiness(business);
-        return new ResponseEntity<>(response, HttpStatus.valueOf(201));
-      } catch (BusinessTypeException exc) {
-        log.error("Error with supplied data");
-        throw new ResponseStatusException(HttpStatus.valueOf(400), "Error with supplied data");
-      } catch (Exception exc) {
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-      }
+  public ResponseEntity<JSONObject> registerBusiness(@RequestBody Business business) {
+    try {
+      JSONObject response = businessService.saveBusiness(business);
+      return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+    } catch (BusinessTypeException exc) {
+      log.error("Error with supplied data");
+      throw new ResponseStatusException(HttpStatus.valueOf(400), "Error with supplied data");
+    } catch (Exception exc) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
     }
+  }
 
   /**
    * Search for a specific business using the id field.

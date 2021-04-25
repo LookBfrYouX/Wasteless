@@ -36,7 +36,7 @@ public class BusinessServiceImpl implements BusinessService {
   private final AddressDao addressDao;
   private final UserDao userDao;
   private final ObjectMapper objectMapper;
-  private UserService userService;
+  private final UserService userService;
 
   /**
    * BusinessServiceImplementation constructor that takes autowired parameters and sets up the
@@ -84,14 +84,16 @@ public class BusinessServiceImpl implements BusinessService {
   /**
    * Calls the businessDao to get the specified business
    *
-   * @param id the id of the business
+   * @param id            the id of the business
    * @param includeAdmins true if admins are to be included in the response
    * @return the Business instance of the business
    * @throws BusinessNotFoundException when business with given id does not exist
-   * @throws UnhandledException thrown when converting business to JSONObject (internal error 500)
+   * @throws UnhandledException        thrown when converting business to JSONObject (internal error
+   *                                   500)
    */
   @Override
-  public JSONObject getBusinessById(long id, boolean includeAdmins) throws BusinessNotFoundException, UnhandledException {
+  public JSONObject getBusinessById(long id, boolean includeAdmins)
+      throws BusinessNotFoundException, UnhandledException {
     Business business = businessDao.getBusinessById(id);
 
     // Convert business entity JSONObject (convert to String then to JSONObject)
@@ -115,7 +117,9 @@ public class BusinessServiceImpl implements BusinessService {
         try {
           // Using index 0 as new admins are being added to the back of the array
           // Looks complicated but its just a lot of type casting
-          long adminId = Long.parseLong((((JSONObject)((JSONArray) (response.get("administrators"))).get(0)).get("id").toString()));
+          long adminId = Long.parseLong(
+              (((JSONObject) ((JSONArray) (response.get("administrators"))).get(0)).get("id")
+                  .toString()));
           ((JSONArray) (response.get("administrators"))).remove(0);
           JSONObject newAdmin = userService.getUserById(adminId, false);
           ((JSONArray) (response.get("administrators"))).appendElement(newAdmin);

@@ -22,10 +22,11 @@ public class UserServiceValidation {
   }
 
   /**
-   * Uses regexp to check validity. Does not conform to RFC5322 but uses stricter version similar to that
-   * used by browsers for email validation, modified to disallow dot-less domains. The same regexp is used
-   * in the sign up form.
-   * See https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type%3Demail) for original
+   * Uses regexp to check validity. Does not conform to RFC5322 but uses stricter version similar to
+   * that used by browsers for email validation, modified to disallow dot-less domains. The same
+   * regexp is used in the sign up form. See https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type%3Demail)
+   * for original
+   *
    * @param email Users email
    * @return false if email doesn't pass validation
    */
@@ -87,9 +88,6 @@ public class UserServiceValidation {
   public static boolean isAddressValid(User user) {
     // Checks user fields are not null/empty
     Address address = user.getHomeAddress();
-    if (UserServiceValidation.isNullOrTrimmedEmpty(address.getCountry())) {
-      return false;
-    }
-    return true;
+    return !UserServiceValidation.isNullOrTrimmedEmpty(address.getCountry());
   }
 }

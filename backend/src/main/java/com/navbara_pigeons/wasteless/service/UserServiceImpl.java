@@ -141,7 +141,7 @@ public class UserServiceImpl implements UserService {
    * user, the user email address, date of birth, phone number and home address street
    * number/name/post code are not returned
    *
-   * @param id the id of the user
+   * @param id                the id of the user
    * @param includeBusinesses true if businesses are to be included in the response
    * @return the User instance of the user
    */
@@ -173,9 +173,9 @@ public class UserServiceImpl implements UserService {
       response.remove("dateOfBirth");
       response.remove("phoneNumber");
 
-      ((JSONObject)(response.get("homeAddress"))).remove("streetNumber");
-      ((JSONObject)(response.get("homeAddress"))).remove("streetName");
-      ((JSONObject)(response.get("homeAddress"))).remove("postcode");
+      ((JSONObject) (response.get("homeAddress"))).remove("streetNumber");
+      ((JSONObject) (response.get("homeAddress"))).remove("streetName");
+      ((JSONObject) (response.get("homeAddress"))).remove("postcode");
     }
 
     // Add administered business
@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
           try {
             businesses.add(businessService.getBusinessById(business.getId(), false));
           } catch (BusinessNotFoundException e) {
-            ; // If no businesses found, don't append any to list!
+            // If no businesses found, don't append any to list!
           }
         }
       }
