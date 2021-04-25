@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Controller
 @Slf4j
-@RequestMapping("images")
+@RequestMapping("/images")
 public class ImageController {
 
   private final ImageService imageService;
@@ -24,9 +24,9 @@ public class ImageController {
     this.imageService = imageService;
   }
 
-  @PostMapping("/upload")
-  public ResponseEntity uploadImage(@RequestParam MultipartFile file) {
-    return imageService.uploadToLocalFileSystem(file);
+  @PostMapping("/user/upload")
+  public ResponseEntity<String> uploadProfileImage(@RequestParam MultipartFile image) {
+    return imageService.uploadProfileImage(image);
   }
 
 //  @GetMapping(
