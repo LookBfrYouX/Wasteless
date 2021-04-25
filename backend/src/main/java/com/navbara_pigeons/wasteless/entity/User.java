@@ -25,7 +25,6 @@ import lombok.ToString;
 @Table(name = "USER")
 public class User {
 
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ID")
@@ -54,6 +53,9 @@ public class User {
 
   @Column(name = "PHONE_NUMBER")
   private String phoneNumber;
+
+  @Column(name = "IMAGE_NAME")
+  private String imageName;
 
   @Column(name = "CREATED")
   private ZonedDateTime created;

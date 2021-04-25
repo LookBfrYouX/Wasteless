@@ -48,8 +48,11 @@ public class ImageServiceImpl implements ImageService {
     String newFileName = File.createTempFile("U" + currentUser.getId() + "_", "." + fileExtension)
         .getName();
 
-    // Save the image in the images/user/ directory, replacing if needed
-    imageDao.saveProfileImage(image, newFileName);
+    // Save the image in the images/user/ directory then save image name in DB
+    imageDao.saveProfileImageToMachine(image, newFileName);
+    currentUser.setImageName(newFileName);
+    userDao.saveUser(currentUser);
+
 
     // Return the URI for to download the image
     return ServletUriComponentsBuilder.fromCurrentContextPath()

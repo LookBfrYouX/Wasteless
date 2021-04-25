@@ -26,6 +26,7 @@ CREATE TABLE user
     EMAIL           VARCHAR(50) NOT NULL UNIQUE,
     DATE_OF_BIRTH   DATE        NOT NULL,
     PHONE_NUMBER    VARCHAR(18),
+    IMAGE_NAME      VARCHAR(30),
 
     CREATED         DATETIME    NOT NULL,
     ROLE            VARCHAR(30) NOT NULL,
@@ -185,5 +186,5 @@ VALUES (4,
         1),
        (4,
         2),
-        (3,
+       (3,
         1);

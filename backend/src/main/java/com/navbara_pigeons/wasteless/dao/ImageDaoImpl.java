@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.entity.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,8 +17,12 @@ public class ImageDaoImpl implements ImageDao {
 
   private final String storagePath = "./src/main/resources/images/";
 
-  public void saveProfileImage(MultipartFile image, String fileName) throws IOException {
+  public void saveProfileImageToMachine(MultipartFile image, String fileName) throws IOException {
     Path destination = Paths.get(storagePath + "user/" + fileName);
     Files.copy(image.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+  }
+
+  public void saveImageNameToDB(User user, String fileName) {
+
   }
 }
