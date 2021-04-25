@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,12 +40,19 @@ public class ImageServiceImpl implements ImageService {
    * @throws IOException           The new filename could not be created
    */
   @Transactional
-  public String uploadProfileImage(MultipartFile image)
+  public String uploadProfileImage(Long userId, MultipartFile image)
       throws UserNotFoundException, IOException {
     // Get the User object so we can use their ID
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
-    User currentUser = this.userDao.getUserByEmail(authentication.getName());
+    User loggedInUser = this.userDao.getUserByEmail(authentication.getName());
+
+    // Get the user by passed id
+    User userToEdit = userDao.getUserById(userId);
+
+    if (loggedInUser.getId() != userToEdit.getId()) {
+      throw new BadCredentialsException("You cannot edit another users Profile Image");
+    }
 
     // Get the file extension of the given file
     String fileName = StringUtils.cleanPath(image.getOriginalFilename());
@@ -52,12 +60,12 @@ public class ImageServiceImpl implements ImageService {
 
     // Generate a new random filename prefixed with 'U{userId}_'
     String newFileName = File
-        .createTempFile(userPrefix + currentUser.getId() + "_", "." + fileExtension)
+        .createTempFile(userPrefix + loggedInUser.getId() + "_", "." + fileExtension)
         .getName();
 
     // Save the image in the images/user/ directory then save image name in DB
     imageDao.saveProfileImageToMachine(image, newFileName);
-    currentUser.setImageName(newFileName);
+    loggedInUser.setImageName(newFileName);
 
     // Return the URI for to download the image
     return ServletUriComponentsBuilder.fromCurrentContextPath()

@@ -27,13 +27,11 @@ public class SchedulerConfig {
 
   private final UserDao userDao;
   private final AddressDao addressDao;
-
-
+  private final BCryptPasswordEncoder bCryptPasswordEncoder;
   @Value("${dgaa.user.email}")
   private String dgaaEmail;
   @Value("${dgaa.user.password}")
   private String dgaaPassword;
-  private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Autowired
   public SchedulerConfig(UserDao userDao, AddressDao addressDao,

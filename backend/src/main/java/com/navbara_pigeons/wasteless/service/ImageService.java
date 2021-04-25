@@ -7,5 +7,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageService {
 
-  String uploadProfileImage(MultipartFile image) throws UserNotFoundException, IOException;
+  String uploadProfileImage(Long id, MultipartFile image) throws UserNotFoundException, IOException;
 }
