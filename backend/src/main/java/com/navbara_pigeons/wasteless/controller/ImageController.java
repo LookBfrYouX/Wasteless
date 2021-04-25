@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.ImageService;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,12 +32,12 @@ public class ImageController {
   public ResponseEntity<String> uploadProfileImage(@RequestParam MultipartFile image) {
     try {
       String response = imageService.uploadProfileImage(image);
-      return new ResponseEntity<>(response, HttpStatus.valueOf(200));
+      return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR");
-      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, exc.getMessage());
     } catch (Exception exc) {
-      log.error("UNKNOWN ERROR OCCURRED WHEN UPLOADING PROFILE IMAGE");
+      log.error("FAILED WHEN UPLOADING PROFILE IMAGE");
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
     }
   }

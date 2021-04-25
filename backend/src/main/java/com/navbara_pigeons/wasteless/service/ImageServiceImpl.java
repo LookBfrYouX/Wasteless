@@ -1,14 +1,11 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.navbara_pigeons.wasteless.dao.ImageDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,11 +18,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class ImageServiceImpl implements ImageService {
 
   private final UserDao userDao;
+  private final ImageDao imageDao;
 
-  private final String storagePath = "./src/main/resources/images/";
-
-  public ImageServiceImpl(UserDao userDao) {
+  public ImageServiceImpl(UserDao userDao, ImageDao imageDao) {
     this.userDao = userDao;
+    this.imageDao = imageDao;
   }
 
   /**
@@ -52,8 +49,7 @@ public class ImageServiceImpl implements ImageService {
         .getName();
 
     // Save the image in the images/user/ directory, replacing if needed
-    Path destination = Paths.get(storagePath + "user/" + newFileName);
-    Files.copy(image.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+    imageDao.saveProfileImage(image, newFileName);
 
     // Return the URI for to download the image
     return ServletUriComponentsBuilder.fromCurrentContextPath()
