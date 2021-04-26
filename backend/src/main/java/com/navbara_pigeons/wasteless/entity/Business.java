@@ -72,7 +72,7 @@ public class Business {
           }
   )
   @JoinTable(
-          name = "PRODUCT_BUSINESS",
+          name = "CATALOGUE",
           joinColumns = @JoinColumn(name = "BUSINESS_ID"),
           inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
   )

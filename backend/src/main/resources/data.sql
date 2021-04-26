@@ -1,14 +1,11 @@
--- noinspection SqlDialectInspectionForFile
-
--- noinspection SqlNoDataSourceInspectionForFile
-
 -- ###############################  Users Setup  ###############################
-DROP TABLE IF EXISTS product_business;
+DROP TABLE IF EXISTS catalogue;
+DROP TABLE IF EXISTS inventory;
 DROP TABLE IF EXISTS user_business;
 DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS business;
 DROP TABLE IF EXISTS address;
+DROP TABLE IF EXISTS product;
 
 CREATE TABLE address
 (
@@ -75,17 +72,34 @@ CREATE TABLE user_business
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
 
-CREATE TABLE product_business
+CREATE TABLE catalogue
 (
     PRODUCT_ID  INT NOT NULL,
     BUSINESS_ID INT NOT NULL,
-    CONSTRAINT product_business_pk
+    CONSTRAINT catalogue_pk
         UNIQUE (PRODUCT_ID, BUSINESS_ID),
-    CONSTRAINT product_business_product_fk
+    CONSTRAINT catalogue_product_fk
         FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
-    CONSTRAINT product_business_business_fk
+    CONSTRAINT catalogue_business_fk
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
+
+CREATE TABLE inventory
+(
+    PRODUCT_ID INT NOT NULL,
+    BUSINESS_ID INT NOT NULL,
+    QUANTITY INT NOT NULL,
+    PRICE DECIMAL(6, 2) NOT NULL,
+    EXPIRY DATETIME NOT NULL,
+    CONSTRAINT inventory_pk
+        UNIQUE (PRODUCT_ID, BUSINESS_ID),
+    CONSTRAINT inventory_product_fk
+        FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
+    CONSTRAINT inventory_business_fk
+        FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
+);
+
+
 
 -- INSERTING TEST DATA BELOW
 
@@ -268,7 +282,7 @@ VALUES ('Anchor Milk Standard Blue Top',
 
 -- Inserting the product to business relationship data
 
-INSERT INTO product_business (PRODUCT_ID, BUSINESS_ID)
+INSERT INTO catalogue (PRODUCT_ID, BUSINESS_ID)
 VALUES (1, 1),
        (2, 2),
        (3, 1),
