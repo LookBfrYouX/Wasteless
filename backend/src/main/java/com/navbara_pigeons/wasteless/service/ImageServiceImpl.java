@@ -72,8 +72,9 @@ public class ImageServiceImpl implements ImageService {
 
     // Return the URI for to download the image
     return ServletUriComponentsBuilder.fromCurrentContextPath()
-        .path("/users/" + loggedInUser.getId() + "/images/")
-        .path(newFileName)
+        .path("/users/")
+        .path(Long.toString(loggedInUser.getId()))
+        .path("/images/")
         .toUriString();
   }
 
