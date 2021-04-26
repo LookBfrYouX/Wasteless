@@ -72,8 +72,14 @@ public class ImageServiceImpl implements ImageService {
 
     // Return the URI for to download the image
     return ServletUriComponentsBuilder.fromCurrentContextPath()
-        .path("/images/user/download/")
+        .path("/users/" + loggedInUser.getId() + "/images/")
         .path(newFileName)
         .toUriString();
+  }
+
+  public byte[] downloadProfileImage(long userId) throws UserNotFoundException, IOException {
+    // Get the user by passed id
+    User usersImageToDownload = userDao.getUserById(userId);
+    return imageDao.getProfileImageOnMachine(usersImageToDownload.getImageName());
   }
 }
