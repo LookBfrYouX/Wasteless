@@ -17,12 +17,14 @@ public class ImageDaoImpl implements ImageDao {
 
   private final String storagePath = "./src/main/resources/images/";
 
-  public void saveProfileImageToMachine(MultipartFile image, String fileName) throws IOException {
-    Path destination = Paths.get(storagePath + "user/" + fileName);
+  public void saveProfileImageToMachine(MultipartFile image, String imageName) throws IOException {
+    Path destination = Paths.get(storagePath + "user/" + imageName);
     Files.copy(image.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
   }
 
-  public void saveImageNameToDB(User user, String fileName) {
-
+  public void deleteProfileImageOnMachine(String imageName) throws IOException {
+    Path destination = Paths.get(storagePath + "user/" + imageName);
+    Files.delete(destination);
   }
+
 }

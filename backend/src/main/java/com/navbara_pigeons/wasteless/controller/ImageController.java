@@ -32,6 +32,8 @@ public class ImageController {
       @RequestParam MultipartFile image) {
     try {
       String response = imageService.uploadProfileImage(id, image);
+      log.info(
+          "USER " + id + " SUCCESSFULLY UPLOADED PROFILE IMAGE " + image.getOriginalFilename());
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);

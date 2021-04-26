@@ -54,14 +54,17 @@ public class ImageServiceImpl implements ImageService {
       throw new BadCredentialsException("You cannot edit another users Profile Image");
     }
 
+    // Delete the existing image if it exists
+    if (loggedInUser.getImageName() != null) {
+      imageDao.deleteProfileImageOnMachine(loggedInUser.getImageName());
+    }
+
     // Get the file extension of the given file
     String fileName = StringUtils.cleanPath(image.getOriginalFilename());
     String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-    // Generate a new random filename prefixed with 'U{userId}_'
-    String newFileName = File
-        .createTempFile(userPrefix + loggedInUser.getId() + "_", "." + fileExtension)
-        .getName();
+    // Generate a new filename prefixed with 'U{userId}_'
+    String newFileName = userPrefix + loggedInUser.getId() + "_image." + fileExtension;
 
     // Save the image in the images/user/ directory then save image name in DB
     imageDao.saveProfileImageToMachine(image, newFileName);
