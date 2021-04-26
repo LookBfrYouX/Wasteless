@@ -191,7 +191,7 @@ export const Api = {
    * Attempts to get country data. If it fails it returns fallback country data.
    * Returns array, **not** a {data: JSONResponse} object
    * 
-   * @returns {Promise<{[]>} country data array promise. Will never fail
+   * @returns {Promise<Country[]>} country data array promise. Will never fail
    */
   countryDataOrFallback: async function() {
     try {
@@ -203,11 +203,22 @@ export const Api = {
 
   getCurrencies: (country) => {
     return fetch(`https://restcountries.eu/rest/v2/name/${country}`)
-        .then(res => res.json())
-        .catch(err => {
-        throw ApiRequestError.createFromMessageMap(err);
-      });
-    },
+      .then(res => res.json())
+      .catch(err => {
+      throw ApiRequestError.createFromMessageMap(err);
+    });
+  },
+
+  /**
+   * Calls Photon API to fetch address suggestions
+   * @param {*} query query string
+   * @returns {Promise<Object[]>} array of photon response objects, or error
+   */
+  addressSuggestions: async function(query) {
+    return fetch(`https://photon.komoot.io/api?q=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .catch(err => { throw ApiRequestError.createFromMessageMap(err) });
+  },
 
   /**
    * Logs the user out client-side and redirects to a logout page
