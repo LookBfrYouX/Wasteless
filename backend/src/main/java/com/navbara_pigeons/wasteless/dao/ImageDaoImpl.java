@@ -1,6 +1,6 @@
 package com.navbara_pigeons.wasteless.dao;
 
-import com.navbara_pigeons.wasteless.entity.User;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +25,15 @@ public class ImageDaoImpl implements ImageDao {
   public void deleteProfileImageOnMachine(String imageName) throws IOException {
     Path destination = Paths.get(storagePath + "user/" + imageName);
     Files.delete(destination);
+  }
+
+  @Override
+  public byte[] getProfileImageOnMachine(String imageName) throws IOException {
+    Path destination = Paths.get(storagePath + "user/" + imageName);
+    if (!Files.exists(destination)) {
+      throw new IOException("User does not have an image uploaded");
+    }
+    return Files.readAllBytes(destination);
   }
 
 }

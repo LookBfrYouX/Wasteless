@@ -9,4 +9,6 @@ public interface ImageDao {
   void saveProfileImageToMachine(MultipartFile image, String imageName) throws IOException;
 
   void deleteProfileImageOnMachine(String imageName) throws IOException;
+
+  byte[] getProfileImageOnMachine(String imageName) throws IOException;
 }
