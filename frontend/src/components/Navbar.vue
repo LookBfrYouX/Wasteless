@@ -53,11 +53,11 @@
                   <img v-if="currentActingAs == null"
                        class="nav-picture rounded-circle"
                        alt="User thumbnail"
-                       src="default-user-thumbnail.svg">
+                       v-bind:src="$helper.asset('images/default-user-thumbnail.svg')">
                   <img v-else
                        class="nav-picture rounded-circle"
-                       atl="Business thumbnail"
-                       src="default-business-thumbnail.svg">
+                       alt="Business thumbnail"
+                       v-bind:src="$helper.asset('images/default-business-thumbnail.svg')">
                   <div class="d-flex flex-column mx-1">
                     <span class="m-0 p-0 text-dark">
                       {{ printCurrentActingAs }}
@@ -194,7 +194,7 @@ export default {
 
     /**
      * Returns a list of business
-     * @return empty list if user not logged in or has no businesses
+     * @return {Business[]} empty list if user not logged in or has no businesses
      */
     actingAsEntities() {
       return this.authUser != null? this.authUser.businessesAdministered: [];

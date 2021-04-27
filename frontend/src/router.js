@@ -76,8 +76,8 @@ export const router = new VueRouter({
       props: route => {
         // If business ID is optional, user can switch back to acting as user in navbar, causing page to fail
         let businessId = parseInt(route.params.businessId, 10);
-        const userId = route.params.userId; // Optional
-        return { userId, businessId };
+        const showBackButton = route.params.showBackButton; // Optional
+        return { businessId, showBackButton };
       }
     },
     {

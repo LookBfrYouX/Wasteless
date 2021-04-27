@@ -12,7 +12,7 @@
           <span class="material-icons md-48">file_upload</span>
         </button>
         <!--User profile image-->
-        <img alt="Users profile image" class="my-3 rounded-circle border border-light" src="default-user-thumbnail.svg">
+        <img alt="Users profile image" class="my-3 rounded-circle border border-light" v-bind:src="$helper.asset('images/default-user-thumbnail.svg')">
       </div>
       <div class="col-md-7 m-2 card">
         <div class="m-3">
@@ -102,7 +102,7 @@
                 {{ business.businessType }}
               </h6>
               <p class="card-text">{{ business.description }}</p>
-              <a class="card-link" v-on:click="viewBusiness(business.id, userId)"
+              <a class="card-link" v-on:click="viewBusiness(business.id)"
                 >More info</a
               >
             </li>
@@ -390,12 +390,12 @@ export default {
       return `${yearsText}, ${monthsText}`;
     },
 
-    viewBusiness(businessId, userId) {
+    viewBusiness(businessId) {
       this.$router.push({
         name: "businessProfile",
         params: {
           businessId,
-          userId
+          showBackButton: true
         },
       });
     },
