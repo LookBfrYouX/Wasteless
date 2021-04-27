@@ -184,5 +184,16 @@ export default {
     }
 
     return false;
+  },
+  uploadProfileImage: (image, id) => {
+    const formData = new FormData();
+    formData.append("image", image);
+    return instance.post(`/users/${id}/images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {});
+    });
   }
 }

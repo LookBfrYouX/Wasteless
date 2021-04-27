@@ -7,11 +7,18 @@
         <button
           class="image-upload-button btn btn-lg btn-primary"
           type="button"
+          @click="onPickFile"
         >
           <span class="material-icons">file_upload</span>
         </button>
+        <input
+            type="file"
+            style="display: none"
+            ref="fileInput"
+            accept="image/*"
+            @change="onFilePicked"/>
         <!--User profile image-->
-        <img alt="Users profile image" class="my-3 rounded-circle border border-light" src="default-user-thumbnail.svg">
+        <img alt="Users profile image" class="profile-image my-3 rounded-circle" :src="this.profileImageURL">
       </div>
       <div class="col-md-7 m-2 card">
         <div class="m-3">
@@ -237,6 +244,7 @@ export default {
       userInfo: {},
       statusMessage: "",
       apiErrorMessage: null,
+      profileImageURL: `http://localhost:9499/users/${this.userId}/images/`
     };
   },
 
@@ -257,6 +265,23 @@ export default {
   },
 
   methods: {
+    onPickFile () {
+      this.$refs.fileInput.click()
+    },
+    onFilePicked (event) {
+      const files = event.target.files
+
+      const promise = Api.uploadProfileImage(files[0], this.userId);
+      const prevImage = this.profileImageURL;
+      this.profileImageURL = '';
+      promise.then(result => {
+        if (result.status === 201) {
+          this.profileImageURL = result.data;
+        } else {
+          this.profileImageURL = prevImage;
+        }
+      });
+    },
     /**
      * Calls to the API to from the profile view with a given user ID to make requested user an Administrator
      * Returns a message to user to indicate whether or not the user has been updated to the Administrator role.
