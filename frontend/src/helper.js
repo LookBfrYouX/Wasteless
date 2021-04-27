@@ -8,8 +8,8 @@ export const helper = {
    * @param {string} absolute path to (public) asset
    * @return path to asset
    */
-  asset(path) {
-    if (path.length && path[0] == "/") path = path.substr(1); // Remove leading / if present
-    return process.env.VUE_APP_BASE_URL + path;
-  }
+  // asset(path) {
+  //   if (path.length && path[0] == "/") path = path.substr(1); // Remove leading / if present
+  //   return process.env.VUE_APP_BASE_URL + path;
+  // }
 }
