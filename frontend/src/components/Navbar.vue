@@ -53,11 +53,11 @@
                   <img v-if="currentActingAs == null"
                        class="nav-picture rounded-circle"
                        alt="User thumbnail"
-                       src="images/default-user-thumbnail.svg">
+                       v-bind:src="$helper.asset('images/default-user-thumbnail.svg')">
                   <img v-else
                        class="nav-picture rounded-circle"
                        alt="Business thumbnail"
-                       src="images/default-business-thumbnail.svg">
+                       v-bind:src="$helper.asset('images/default-business-thumbnail.svg')">
                   <div class="d-flex flex-column mx-1">
                     <span class="m-0 p-0 text-dark">
                       {{ printCurrentActingAs }}
