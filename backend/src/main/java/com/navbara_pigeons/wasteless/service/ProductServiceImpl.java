@@ -6,10 +6,7 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
-import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.validation.ProductServiceValidation;
 import java.time.ZoneOffset;
@@ -17,6 +14,7 @@ import java.time.ZonedDateTime;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +30,8 @@ public class ProductServiceImpl implements ProductService {
     private final BusinessDao businessDao;
     private final ProductDao productDao;
     private final UserDao userDao;
+    private final UserService userService;
+    private final BusinessService businessService;
 
     /**
      * ProductImplementation constructor that takes autowired parameters and sets up the
@@ -40,10 +40,12 @@ public class ProductServiceImpl implements ProductService {
      * @param businessDao The BusinessDataAccessObject.
      */
      @Autowired
-     public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao, UserDao userDao) {
+     public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao, UserDao userDao, UserService userService, BusinessService businessService) {
         this.businessDao = businessDao;
         this.productDao = productDao;
         this.userDao = userDao;
+        this.userService = userService;
+        this.businessService = businessService;
     }
 
     /**
@@ -54,9 +56,13 @@ public class ProductServiceImpl implements ProductService {
      * @throws BusinessNotFoundException If the business is not listed in the database.
      */
     @Override
-    public List<Product> getProducts(String businessId) throws BusinessNotFoundException {
-         Business business = businessDao.getBusinessById(Long.parseLong(businessId));
-        return business.getProductsCatalogue();
+    public List<Product> getProducts(String businessId) throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
+        if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(Long.parseLong(businessId))) {
+            Business business = businessDao.getBusinessById(Long.parseLong(businessId));
+            return business.getProductsCatalogue();
+        } else {
+            throw new InsufficientPrivilegesException("You are not permitted to modify this business");
+        }
     }
 
   /**

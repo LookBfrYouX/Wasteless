@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.service.ProductService;
@@ -46,6 +47,8 @@ public class ProductController {
         try {
             List<Product> response = productService.getProducts(id);
             return new ResponseEntity<>(response, HttpStatus.valueOf(200));
+        } catch (InsufficientPrivilegesException exc) {
+            throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient Privileges");
         } catch (BusinessNotFoundException exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
         } catch (Exception exc) {
