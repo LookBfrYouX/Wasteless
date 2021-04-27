@@ -26,22 +26,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class BusinessServiceImplTest extends ServiceTestProvider {
 
-  @Autowired
-  UserController userController;
-
-  @Autowired
-  BusinessDao businessDao;
-
-  @Autowired
-  AddressDao addressDao;
-
-  @Autowired
-  BusinessService businessService;
-
-  @BeforeEach
-  void loadCountryData() throws IOException, URISyntaxException {
-    loadDefaultCountryDataIfNotLoaded();
-  }
 
   @Test
   void saveBusinessInvalidBusinessTypes() {

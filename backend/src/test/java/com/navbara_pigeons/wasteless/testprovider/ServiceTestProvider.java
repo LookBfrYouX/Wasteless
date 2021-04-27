@@ -6,7 +6,10 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.service.*;
+import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -32,6 +35,11 @@ public class ServiceTestProvider extends MainTestProvider {
 
     @Autowired
     protected CountryDataFetcherService countryDataFetcherService;
+
+    @BeforeEach
+    void loadCountryData() throws IOException, URISyntaxException {
+        loadDefaultCountryDataIfNotLoaded();
+    }
 
     protected Product makeProduct(String productName) {
         Product product = new Product();
