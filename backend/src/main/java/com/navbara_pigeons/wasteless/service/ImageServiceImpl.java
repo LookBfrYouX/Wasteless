@@ -7,12 +7,12 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.mock.web.MockMultipartFile;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -94,7 +93,8 @@ public class ImageServiceImpl implements ImageService {
     return imageDao.getProfileImageOnMachine(usersImageToDownload.getImageName());
   }
 
-  private MultipartFile cropImageToSquare(MultipartFile image, String extension, String fileName) throws IOException {
+  private MultipartFile cropImageToSquare(MultipartFile image, String extension, String fileName)
+      throws IOException {
     InputStream in = new ByteArrayInputStream(image.getBytes());
     BufferedImage imageToCrop = ImageIO.read(in);
 
