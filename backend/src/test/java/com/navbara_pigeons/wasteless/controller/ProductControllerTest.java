@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class ProductControllerTest {
+public class ProductControllerTest extends ControllerTestProvider {
 
     @Autowired
     public MockMvc mockMvc;
@@ -26,10 +25,24 @@ public class ProductControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser
+    @WithUserDetails(value = "mbi47@uclive.ac.nz")
     void getProductsFromOneBusinessTestAsAdmin() throws Exception {
         String endpointUrl = "/businesses/1/products";
         this.mockMvc.perform(get(endpointUrl)).andExpect(status().isOk());
+    }
+
+    @Test
+    @WithUserDetails(value = "fdi19@uclive.ac.nz")
+    void getProductsFromOneBusinessTestAsWrongUser() throws Exception {
+        String endpointUrl = "/businesses/3/products";
+        this.mockMvc.perform(get(endpointUrl)).andExpect(status().is(403));
+    }
+
+    @Test
+    @WithUserDetails(value = "fdi19@uclive.ac.nz")
+    void getProductsFromOneNonExistingBusinessTest() throws Exception {
+        String endpointUrl = "/businesses/9999/products";
+        this.mockMvc.perform(get(endpointUrl)).andExpect(status().is(406));
     }
 
     @Test
