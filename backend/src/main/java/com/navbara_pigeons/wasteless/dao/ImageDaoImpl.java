@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageDaoImpl implements ImageDao {
 
   private final String storagePath = "./src/main/resources/images/";
+  private final String defaultUserPath = "user/default-user.png";
+  private final String defaultBusinessPath = "business/default-business.png";
 
   public void saveProfileImageToMachine(MultipartFile image, String imageName) throws IOException {
     Path destination = Paths.get(storagePath + "user/" + imageName);
@@ -32,6 +34,12 @@ public class ImageDaoImpl implements ImageDao {
     if (!Files.exists(destination)) {
       throw new IOException("User does not have an image uploaded");
     }
+    return Files.readAllBytes(destination);
+  }
+
+  @Override
+  public byte[] getDefaultProfileImage() throws IOException {
+    Path destination = Paths.get(storagePath + defaultUserPath);
     return Files.readAllBytes(destination);
   }
 

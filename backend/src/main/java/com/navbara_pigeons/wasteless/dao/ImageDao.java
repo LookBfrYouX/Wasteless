@@ -10,4 +10,6 @@ public interface ImageDao {
   void deleteProfileImageOnMachine(String imageName) throws IOException;
 
   byte[] getProfileImageOnMachine(String imageName) throws IOException;
+
+  byte[] getDefaultProfileImage() throws IOException;
 }

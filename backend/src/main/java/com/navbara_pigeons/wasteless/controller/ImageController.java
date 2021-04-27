@@ -60,7 +60,7 @@ public class ImageController {
     try {
       byte[] response = imageService.downloadProfileImage(id);
       log.info("SUCCESSFULLY DOWNLOADED USER " + id + "'s PROFILE IMAGE");
-      return new ResponseEntity<>(response, HttpStatus.CREATED);
+      return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The user does not exist");

@@ -90,6 +90,9 @@ public class ImageServiceImpl implements ImageService {
   public byte[] downloadProfileImage(long userId) throws UserNotFoundException, IOException {
     // Get the user by passed id
     User usersImageToDownload = userDao.getUserById(userId);
+    if (usersImageToDownload.getImageName() == null) {
+      return imageDao.getDefaultProfileImage();
+    }
     return imageDao.getProfileImageOnMachine(usersImageToDownload.getImageName());
   }
 

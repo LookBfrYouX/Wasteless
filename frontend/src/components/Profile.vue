@@ -5,6 +5,7 @@
       <div class="col-md-4 m-2 card bg-transparent border-0">
         <!--Upload image button overlay-->
         <button
+            v-if="isLoggedIn && authUser.id === userInfo.id"
             class="image-upload-button btn btn-lg btn-primary"
             type="button"
             @click="onPickFile"
@@ -274,7 +275,7 @@ export default {
 
       const promise = Api.uploadProfileImage(files[0], this.userId);
       const prevImage = this.profileImageURL;
-      this.profileImageURL = '';
+      this.profileImageURL = "default-user-thumbnail.svg";
       promise.then(result => {
         if (result.status === 201) {
           this.profileImageURL = result.data;
