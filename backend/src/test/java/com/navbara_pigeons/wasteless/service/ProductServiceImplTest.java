@@ -64,11 +64,31 @@ public class ProductServiceImplTest extends ServiceTestProvider {
     }
 
     @Test
+    @Transactional
     @WithUserDetails(value="dnb36@uclive.ac.nz")
     void createProductExpectException() {
         JSONObject mockProduct = new JSONObject();
         mockProduct.put("name", null);
 
         assertThrows(Exception.class, () -> productService.addProduct(1, mockProduct));
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value="dnb36@uclive.ac.nz")
+    void createProductExpectInCatalogue() {
+        try {
+            String productName = "Pizza";
+            JSONObject mockProduct = new JSONObject();
+            mockProduct.put("name", productName);
+            Business mockBusiness = makeBusiness("testBusiness");
+            businessService.saveBusiness(mockBusiness);
+            assertDoesNotThrow(() -> productService.addProduct(mockBusiness.getId(), mockProduct));
+            assertEquals(mockBusiness.getProductsCatalogue().get(0).getName(), productName);
+            // Fail test if any unexpected exceptions occur
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            assertTrue(false);
+        }
     }
 }
