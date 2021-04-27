@@ -4,8 +4,13 @@ import com.navbara_pigeons.wasteless.dao.ImageDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.mock.web.MockMultipartFile;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -66,12 +72,16 @@ public class ImageServiceImpl implements ImageService {
     // Generate a new filename prefixed with 'U{userId}_'
     String newFileName = userPrefix + loggedInUser.getId() + "_image." + fileExtension;
 
+    // Crop the image
+    image = cropImageToSquare(image, fileExtension, newFileName);
+
     // Save the image in the images/user/ directory then save image name in DB
     imageDao.saveProfileImageToMachine(image, newFileName);
     loggedInUser.setImageName(newFileName);
 
     // Return the URI for to download the image
-    return ServletUriComponentsBuilder.fromCurrentContextPath()
+    return ServletUriComponentsBuilder
+        .fromCurrentContextPath()
         .path("/users/")
         .path(Long.toString(loggedInUser.getId()))
         .path("/images/")
@@ -82,5 +92,35 @@ public class ImageServiceImpl implements ImageService {
     // Get the user by passed id
     User usersImageToDownload = userDao.getUserById(userId);
     return imageDao.getProfileImageOnMachine(usersImageToDownload.getImageName());
+  }
+
+  private MultipartFile cropImageToSquare(MultipartFile image, String extension, String fileName) throws IOException {
+    InputStream in = new ByteArrayInputStream(image.getBytes());
+    BufferedImage imageToCrop = ImageIO.read(in);
+
+    // Get the image dimensions
+    int height = imageToCrop.getHeight();
+    int width = imageToCrop.getWidth();
+
+    // The image is not already a square
+    if (height != width) {
+      // Compute the size of the square
+      int squareSize = (Math.min(height, width));
+
+      // Coordinates of the image's middle
+      int xc = width / 2;
+      int yc = height / 2;
+
+      // Crop the image
+      imageToCrop = imageToCrop.getSubimage(
+          xc - (squareSize / 2), // x coordinate of the upper-left corner
+          yc - (squareSize / 2), // y coordinate of the upper-left corner
+          squareSize,            // widht
+          squareSize             // height
+      );
+    }
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ImageIO.write(imageToCrop, extension, baos);
+    return new MockMultipartFile(fileName, baos.toByteArray());
   }
 }
