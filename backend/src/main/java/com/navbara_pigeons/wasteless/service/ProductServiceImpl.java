@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -67,6 +68,7 @@ public class ProductServiceImpl implements ProductService {
    * @throws ProductForbiddenException If user if not an admin of the business (forbidden)
    */
     @Override
+    @Transactional
     public void addProduct(long businessId, JSONObject jsonProduct) throws ProductRegistrationException,
         ProductForbiddenException {
       // Throw 400 if bad request, 403 if user is not business admin
@@ -105,5 +107,10 @@ public class ProductServiceImpl implements ProductService {
       }
       product.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
       productDao.saveProduct(product);
+
+      // add product to catalogue table
+      business.addCatalogueProduct(product);
+      businessDao.saveBusiness(business);
     }
+
 }
