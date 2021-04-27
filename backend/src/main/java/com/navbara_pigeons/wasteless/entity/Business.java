@@ -3,6 +3,9 @@ package com.navbara_pigeons.wasteless.entity;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Data;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,9 +16,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.Data;
 
 @Data
 @Entity
@@ -62,7 +65,7 @@ public class Business {
   )
   private List<User> administrators;
 
-  @ManyToMany(
+  @OneToMany(
           fetch = FetchType.LAZY,
           cascade = {
                   CascadeType.DETACH,
