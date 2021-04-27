@@ -28,15 +28,6 @@
 // See https://cli.vuejs.org/config/#vue-config-js
 
 
-// https://www.matt-helps.com/post/expose-env-variables-vue-cli-sass/
-// Add environment variables starting with `VUE_APP` as variables for SASS files
-let sassVariables = "";
-for (let varName in process.env) {
-  if (/^VUE_APP_/.test(varName)) {
-    sassVariables += `$${varName}: "${process.env[varName]}";\n`;
-  }
-}
-
 module.exports = {
   // allows to define reusable templates instead of simple views
   // see https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only
