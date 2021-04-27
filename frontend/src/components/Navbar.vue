@@ -53,11 +53,11 @@
                   <img v-if="currentActingAs == null"
                        class="nav-picture rounded-circle"
                        alt="User thumbnail"
-                       v-bind:src="$helper.asset('images/default-user-thumbnail.svg')">
+                       src="./../../assets/images/default-user-thumbnail.svg">
                   <img v-else
                        class="nav-picture rounded-circle"
                        alt="Business thumbnail"
-                       v-bind:src="$helper.asset('images/default-business-thumbnail.svg')">
+                       src="./../../assets/images/default-business-thumbnail.svg">
                   <div class="d-flex flex-column mx-1">
                     <span class="m-0 p-0 text-dark">
                       {{ printCurrentActingAs }}
@@ -214,7 +214,6 @@ export default {
      * Navigate to log in page
      */
     login: async function () {
-      console.log(localStorage.getItem("authUser"));
       return this.pushOrGo("login");
     },
 

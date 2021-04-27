@@ -53,7 +53,7 @@ nav {
   top: 0;
   left: 0;
   z-index: -1;
-  background-image: url($VUE_APP_BASE_URL + "images/background.svg");
+  background-image: url("./../../assets/images/background.svg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -84,7 +84,7 @@ nav {
   position: absolute;
   bottom: 0;
   right: 0;
-  background-image: url($VUE_APP_BASE_URL + "images/navbara-pigeon.svg");
+  background-image: url("./../../assets/images/navbara-pigeon.svg");
   background-size: contain;
   background-position: right;
   background-repeat: no-repeat;
