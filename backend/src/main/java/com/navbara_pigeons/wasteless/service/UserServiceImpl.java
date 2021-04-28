@@ -160,8 +160,9 @@ public class UserServiceImpl implements UserService {
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+
+    String username = ((UserDetails) authentication.getPrincipal()).getUsername();
     // Email of user that made the request
-    String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
 
     // sensitive details (e.g. email, postcode) are not returned
     if (username.equals(user.getEmail()) || isAdmin()) {
