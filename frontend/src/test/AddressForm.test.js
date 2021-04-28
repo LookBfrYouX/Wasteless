@@ -1,6 +1,5 @@
 import {shallowMount} from "@vue/test-utils";
 import AddressForm from "../components/AddressForm";
-import jest, {beforeEach, afterEach, describe, test, expect} from "jest"
 
 jest.mock("./../Api");
 const { Api } = require("./../Api");
