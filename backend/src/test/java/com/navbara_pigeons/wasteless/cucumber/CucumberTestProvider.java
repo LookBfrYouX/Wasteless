@@ -7,26 +7,28 @@ import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 @CucumberContextConfiguration
-@SpringBootTest
-public class SpringIntegrationTest {
+public class CucumberTestProvider extends MainTestProvider {
 
     @Autowired
-    UserController userController;
+    protected UserController userController;
 
     @Autowired
-    BusinessController businessController;
+    protected BusinessController businessController;
 
     @Autowired
-    ProductController productController;
+    protected ProductController productController;
 
     Product makeProduct(String productName) {
         Product product = new Product();
@@ -68,8 +70,7 @@ public class SpringIntegrationTest {
                 .setCountry("New Zealand");
 
         // Create test user
-        testUser.setId(0)
-                .setFirstName("Tony")
+        testUser.setFirstName("Tony")
                 .setLastName("Last")
                 .setMiddleName("Middle")
                 .setNickname("Nick")

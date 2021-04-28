@@ -193,6 +193,17 @@ export default {
       });
     },
 
+    /**
+     * Calls Photon API to fetch address suggestions
+     * @param {*} query query string
+     * @returns {Promise<Object[]>} array of photon response objects, or error
+     */
+    addressSuggestions: async function(query) {
+      return fetch(`https://photon.komoot.io/api?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .catch(err => { throw ApiRequestError.createFromMessageMap(err) });
+    },
+
   /**
    * Logs the user out client-side and redirects to a logout page
    * Call using `Api.handle401.call(this, err) from the vue component

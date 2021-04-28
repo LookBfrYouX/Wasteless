@@ -25,6 +25,9 @@ public class Product {
   @Column(name = "DESCRIPTION")
   private String description;
 
+  @Column(name = "MANUFACTURER")
+  private String manufacturer;
+
   @Column(name = "RRP")
   private Double recommendedRetailPrice;
 

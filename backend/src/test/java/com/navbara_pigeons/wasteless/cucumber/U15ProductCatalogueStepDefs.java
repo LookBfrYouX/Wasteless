@@ -1,18 +1,11 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
-public class U15ProductCatalogueStepDefs extends SpringIntegrationTest {
+public class U15ProductCatalogueStepDefs extends CucumberTestProvider {
 
     @Before
     public void setup() {
