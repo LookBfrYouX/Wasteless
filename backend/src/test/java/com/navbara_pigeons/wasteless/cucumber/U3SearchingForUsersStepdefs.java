@@ -5,6 +5,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,7 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
             newUser.setLastName(columns.get("lastName"));
             newUser.setNickname(columns.get("nickname"));
             System.out.println("CREATED NEW USER: " + newUser.toString());
-            try {
-                userController.registerUser(newUser);
-            } catch (Exception exc) {
-                exc.printStackTrace();
-            }
+            Assertions.assertDoesNotThrow(() -> userController.registerUser(newUser));
         }
     }
 
