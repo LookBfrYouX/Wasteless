@@ -13,4 +13,6 @@ public interface BusinessService {
 
   JSONObject getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException;
 
+  boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException;
+
 }
