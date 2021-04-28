@@ -36,16 +36,6 @@ public class ProductDaoHibernateImpl implements ProductDao {
     }
 
     /**
-     * This method retrieves all products listed by one business
-     * @param businessId The id of the business.
-     * @return products A List<Product> of products.
-     */
-    @Override
-    public List<Product> getProducts(long businessId) {
-        return null;
-    }
-
-    /**
      * Get the entity manager session
      *
      * @return Instance of the Session class
