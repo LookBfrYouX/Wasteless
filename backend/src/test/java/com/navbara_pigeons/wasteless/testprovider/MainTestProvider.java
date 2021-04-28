@@ -5,10 +5,14 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.service.CountryDataFetcherService;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -20,6 +24,35 @@ import java.util.List;
  */
 @SpringBootTest
 public class MainTestProvider {
+    @Autowired
+    protected CountryDataFetcherService countryDataFetcherService;
+
+    @BeforeEach
+    void loadCountryData() throws IOException, URISyntaxException {
+        loadDefaultCountryDataIfNotLoaded();
+    }
+
+    /**
+     * Helper which loads default country data
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    protected void loadDefaultCountryData() throws URISyntaxException, IOException {
+        countryDataFetcherService.reloadCountryDataFromDisk(
+                Path.of(ClassLoader.getSystemClassLoader().getResource("countryDataFetcherService/standard.json").toURI())
+        );
+    }
+
+    /**
+     * Helper which loads default country data if there is no country data loaded
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    protected void loadDefaultCountryDataIfNotLoaded() throws URISyntaxException, IOException {
+        if (!countryDataFetcherService.dataLoaded()) loadDefaultCountryData();
+    }
+
+
     protected Product makeProduct(String productName) {
         Product product = new Product();
         product.setName(productName)

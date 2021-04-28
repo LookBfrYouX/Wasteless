@@ -33,35 +33,6 @@ public class ServiceTestProvider extends MainTestProvider {
     @Autowired
     protected ProductService productService;
 
-    @Autowired
-    protected CountryDataFetcherService countryDataFetcherService;
-
-    @BeforeEach
-    void loadCountryData() throws IOException, URISyntaxException {
-        loadDefaultCountryDataIfNotLoaded();
-    }
-
-    /**
-     * Helper which loads default country data
-     * @throws URISyntaxException
-     * @throws IOException
-     */
-    protected void loadDefaultCountryData() throws URISyntaxException, IOException {
-        countryDataFetcherService.reloadCountryDataFromDisk(
-                Path.of(ClassLoader.getSystemClassLoader().getResource("countryDataFetcherService/standard.json").toURI())
-        );
-    }
-
-    /**
-     * Helper which loads default country data if there is no country data loaded
-     * @throws URISyntaxException
-     * @throws IOException
-     */
-    protected void loadDefaultCountryDataIfNotLoaded() throws URISyntaxException, IOException {
-        if (!countryDataFetcherService.dataLoaded()) loadDefaultCountryData();
-    }
-
-
     /**
      * Logs in with a default set of credentials
      */
