@@ -1,5 +1,26 @@
 Feature: U3 Searching for Users using Name
 
+  Background:
+    Given these users exist
+    |emailAddress |firstName |lastName |nickName
+    |bob@fri.com  |Bob       |Vance    |Fridgeman
+    |beet@dm.com  |Dwight    |Shrute   |Bear
+    |bo@ring.com  |Andrew    |Tuna     |Randyandy
+    |michael@dm.com |Michael |Scott    |Bossman
+
+  Scenario: AC1 successfully search for user based on name or nickname
+    Given A user "Jim" is logged in.
+
+      When A search is performed for another user named "Dwight"
+      Then A user record for user "Dwight" is returned.
+
+      When A search is performed for another user with nickname "boss"
+      Then A user record for user "Michael" is returned.
+
+      When A search is performed for a non existent user "Donald"
+      Then No user records are returned
+
+
 #  See the notes on “Search” in the section at the beginning of this document.
 #  Future stories will allow searches based on other criteria.
 #  AC1: As a logged-in individual user, I can access a search facility containing one textbox to search for users based on their name or nickname.
