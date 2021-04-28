@@ -34,7 +34,6 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest extends MainTestProvider {
     @Mock
     UserDao userDaoMock;
