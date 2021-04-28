@@ -16,7 +16,7 @@ Implementation:
 - This is sent to all autocomplete
 
 The parent component must provide `address` prop. When the address is updated in this component, an
-`addressupdate` event is emitted with the updated address as the argument. The object also has a 
+`addressupdate` event is emitted with the updated address as the argument. The object also has a
 `toString` method which returns the address as a string, components separated by commas (if the components are of non-zero length)
 
 -->
@@ -123,7 +123,7 @@ The parent component must provide `address` prop. When the address is updated in
 </template>
 <script>
 
-const axios = require("axios");
+const {Api} = require("./../Api");
 const Suggestions = require("./Suggestions").default;
 
 // Fields in order of specifity
@@ -290,17 +290,14 @@ export default {
      * Pipeline for getting suggestions from axios, filtering then and placing them into suggestions array
      */
     addressSuggestionsPipeline: async function () {
-      const url = `https://photon.komoot.io/api?q=${encodeURIComponent(
-          this.generateAddressString())}`;
-      let response;
+      let data;
       try {
-        response = await axios.get(url);
+        data = await Api.addressSuggestions(this.generateAddressString());
       } catch (_) {
         return;
         // If autocomplete does not work, just don't show a response
       }
 
-      const {data} = response;
       this.addressSuggestionsRaw = data.features;
       this.addressSuggestions = this.generateAddressSuggestions();
     },

@@ -1,5 +1,9 @@
 import {shallowMount} from "@vue/test-utils";
 import AddressForm from "../components/AddressForm";
+import jest, {beforeEach, afterEach, describe, test, expect} from "jest"
+
+jest.mock("./../Api");
+const { Api } = require("./../Api");
 
 let wrapper;
 
@@ -45,6 +49,33 @@ const standardOSMAddress = () => {
     // osm_id,
   };
 }
+
+describe("Full pipeline", () => {
+  test("addressSuggestionsPipeline", async () => {
+    const responseOsmObject = {
+      type: "Feature",
+      properties: standardOSMAddress()
+    };
+
+    Api._setMethod("addressSuggestions", () => {
+      return Promise.resolve({
+        features: [responseOsmObject]
+      });
+    });
+
+    await wrapper.setProps({
+      address: standardAddress()
+    });
+    jest.runAllTimers();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.addressSuggestionsRaw).toEqual([responseOsmObject]);
+
+    expect(wrapper.vm.addressSuggestions.length).toBe(1);
+    // eslint-disable-next-line no-unused-vars
+    const { toString, ...response } = wrapper.vm.addressSuggestions[0];
+    expect(response).toEqual(standardAddress());
+  });
+});
 
 describe("text entry", () => {
   test("props updated", async () => {
