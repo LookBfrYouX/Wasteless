@@ -1,6 +1,6 @@
 -- ###############################  Users Setup  ###############################
-DROP TABLE IF EXISTS catalogue;
 DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS catalogue;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS user_business;
 DROP TABLE IF EXISTS business;
