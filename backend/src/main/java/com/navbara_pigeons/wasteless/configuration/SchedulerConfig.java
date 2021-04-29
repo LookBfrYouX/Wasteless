@@ -34,41 +34,19 @@ public class SchedulerConfig {
 
   private final UserDao userDao;
   private final AddressDao addressDao;
-  private final CountryDataFetcherService countryDataFetcherService;
 
   @Value("${dgaa.user.email}")
   private String dgaaEmail;
   @Value("${dgaa.user.password}")
   private String dgaaPassword;
 
-  /**
-   * Oldest the country info file can be before it must be re-downloaded
-   */
-  @Value("${country_data.max_age_days}")
-  private float maxAgeDays;
-
-  /**
-   * Number of times it can try re-download/re-parse the country info file in a single scheduler interval
-   */
-  @Value("${country_data.num_retries}")
-  private int numRetries;
-
-  /**
-   * How often it should check the age of the file. Note that if downloading/parsing fails in one session, the country
-   * or currency will be unusable until at least the next scheduler session
-   */
-  @Value("${country_data.scheduler.interval}")
-  private int countryDataSchedulerInterval;
-
   private BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Autowired
   public SchedulerConfig(UserDao userDao, AddressDao addressDao,
-                         CountryDataFetcherService countryDataFetcherService,
                          BCryptPasswordEncoder bCryptPasswordEncoder) {
     this.userDao = userDao;
     this.addressDao = addressDao;
-    this.countryDataFetcherService = countryDataFetcherService;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
   }
 
