@@ -29,18 +29,32 @@
           </div>
         </div>
 
+        <!-- up for discussion about setting a step price -->
         <div class="row">
           <div class="form-group required col px-3">
-            <label>Catalog ID</label>
+            <label>Price</label>
             <input
                 v-model="price"
-                v-bind:placeholder="symbol + currency"
+                v-bind:placeholder="symbol + ' ' + currency"
                 class="form-control"
-                min="0.01"
-                step="0.01"
+                step="0.10"
                 name="price"
                 required
                 type="number"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group required col px-3">
+            <label>Manufacturer</label>
+            <input
+                v-model="manufacturer"
+                placeholder="Manufacturer"
+                class="form-control"
+                name="manufacturer"
+                required
+                type="text"
             />
           </div>
         </div>
@@ -90,6 +104,7 @@ export default {
 
       name: "",
       description: "",
+      manufacturer: "",
       price: "",
       symbol: "",
       currency: "",
@@ -100,6 +115,7 @@ export default {
 
   created() {
     this.getCurrencies(this.$stateStore.getters.getActingAs().address.country);
+    console.log(this.getCurrencies(this.$stateStore.getters.getActingAs().address.country))
   },
 
   methods: {
@@ -126,11 +142,20 @@ export default {
      * @returns {Promise<void>} a promise
      */
     createProduct: async function () {
-      await this.callApi({
-        name: this.name,
-        recommendedRetailPrice: this.price, // API stores the type as businessType not type
-        description: this.description,
-      });
+      if (this.price < 0 || this.price == "") {
+        this.errorMessage = "Please enter a valid price";
+        } else if (this.name == "") {
+          this.errorMessage = "Please enter a name for your product";
+        } else {
+          await this.callApi({
+            name: this.name,
+            recommendedRetailPrice: this.price, // API stores the type as businessType not type
+            manufacturer: this.manufacturer,
+            description: this.description,
+          });
+          this.errorMessage = "";
+          this.$router.push("productCatalogue");
+        }
     },
   },
 };

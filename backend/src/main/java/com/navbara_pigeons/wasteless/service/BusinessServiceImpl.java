@@ -33,6 +33,8 @@ public class BusinessServiceImpl implements BusinessService {
 
   private final UserDao userDao;
 
+  private final UserService userService;
+
   private final AddressValidator addressValidator;
   /**
    * BusinessServiceImplementation constructor that takes autowired parameters and sets up the
@@ -41,11 +43,12 @@ public class BusinessServiceImpl implements BusinessService {
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, AddressDao addressDao, UserDao userDao, AddressValidator addressValidator) {
+  public BusinessServiceImpl(BusinessDao businessDao, AddressDao addressDao, UserDao userDao, AddressValidator addressValidator, UserService userService) {
     this.businessDao = businessDao;
     this.addressDao = addressDao;
     this.userDao = userDao;
     this.addressValidator = addressValidator;
+    this.userService = userService;
   }
 
   /**
@@ -139,6 +142,28 @@ public class BusinessServiceImpl implements BusinessService {
     address.put("region", user.getHomeAddress().getRegion());
     address.put("country", user.getHomeAddress().getCountry());
     return response;
+  }
+
+  /**
+   * This helper method tests if the currently logged in user is an administrator of the business with the given ID.
+   * @param businessId The business to test against.
+   * @return True if the current user is the primary admin or a regular admin
+   * @throws BusinessNotFoundException The business does not exist
+   * @throws UserNotFoundException The user does not exist
+   */
+  public boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException {
+    Business business = this.businessDao.getBusinessById(businessId);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    User authUser = this.userService.getUserByEmail(auth.getName());
+    if (business.getPrimaryAdministratorId() == authUser.getId()) {
+      return true;
+    }
+    for (User user : business.getAdministrators()) {
+      if (authUser.getId() == user.getId()) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

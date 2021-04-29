@@ -7,10 +7,7 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Currency;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
-import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.validation.ProductServiceValidation;
 import java.time.ZoneOffset;
@@ -18,9 +15,11 @@ import java.time.ZonedDateTime;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -33,6 +32,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductDao productDao;
     private final UserDao userDao;
     private final CountryDataFetcherService countryDataFetcherService;
+    private final UserService userService;
+    private final BusinessService businessService;
 
     /**
      * ProductImplementation constructor that takes autowired parameters and sets up the
@@ -42,12 +43,14 @@ public class ProductServiceImpl implements ProductService {
      * @param countryDataFetcherService
      */
      @Autowired
-     public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao, UserDao userDao, CountryDataFetcherService countryDataFetcherService) {
+     public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao, UserDao userDao, UserService userService, BusinessService businessService, CountryDataFetcherService countryDataFetcherService) {
         this.businessDao = businessDao;
         this.productDao = productDao;
         this.userDao = userDao;
+        this.userService = userService;
+        this.businessService = businessService;
         this.countryDataFetcherService = countryDataFetcherService;
-     }
+    }
 
     /**
      * This method retrieves a list of all the products listed by a specific business
@@ -57,9 +60,13 @@ public class ProductServiceImpl implements ProductService {
      * @throws BusinessNotFoundException If the business is not listed in the database.
      */
     @Override
-    public List<Product> getProducts(String businessId) throws BusinessNotFoundException {
-         Business business = businessDao.getBusinessById(Long.parseLong(businessId));
-        return business.getProductsCatalogue();
+    public List<Product> getProducts(String businessId) throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
+        if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(Long.parseLong(businessId))) {
+            Business business = businessDao.getBusinessById(Long.parseLong(businessId));
+            return business.getProductsCatalogue();
+        } else {
+            throw new InsufficientPrivilegesException("You are not permitted to modify this business");
+        }
     }
 
   /**
@@ -71,6 +78,7 @@ public class ProductServiceImpl implements ProductService {
    * @throws ProductForbiddenException If user if not an admin of the business (forbidden)
    */
     @Override
+    @Transactional
     public void addProduct(long businessId, JSONObject jsonProduct) throws ProductRegistrationException,
         ProductForbiddenException {
       // Throw 400 if bad request, 403 if user is not business admin
@@ -114,5 +122,10 @@ public class ProductServiceImpl implements ProductService {
 
       product.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
       productDao.saveProduct(product);
+
+      // add product to catalogue table
+      business.addCatalogueProduct(product);
+      businessDao.saveBusiness(business);
     }
+
 }

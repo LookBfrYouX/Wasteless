@@ -16,7 +16,7 @@ Implementation:
 - This is sent to all autocomplete
 
 The parent component must provide `address` prop. When the address is updated in this component, an
-`addressupdate` event is emitted with the updated address as the argument. The object also has a 
+`addressupdate` event is emitted with the updated address as the argument. The object also has a
 `toString` method which returns the address as a string, components separated by commas (if the components are of non-zero length)
 
 -->
@@ -420,6 +420,7 @@ export default {
       let data;
       try {
         data = await Api.addressSuggestions(this.generateAddressString(true));
+        // Convert country name to that used by OSM
       } catch (_) {
         return;
         // If autocomplete does not work, just don't show a response

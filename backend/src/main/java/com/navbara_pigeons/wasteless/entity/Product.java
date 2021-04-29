@@ -27,6 +27,9 @@ public class Product {
 
   @Column(name = "CURRENCY")
   private String currency;
+  
+  @Column(name = "MANUFACTURER")
+  private String manufacturer;
 
   @Column(name = "RRP")
   private Double recommendedRetailPrice;

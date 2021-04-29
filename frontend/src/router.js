@@ -66,7 +66,7 @@ export const router = new VueRouter({
       component: CreateProduct
     },
     {
-      name: "productcatalogue",
+      name: "productCatalogue",
       path: "/productcatalogue",
       component: ProductCatalogue
     },

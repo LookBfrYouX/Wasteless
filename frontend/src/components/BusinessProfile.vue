@@ -25,18 +25,7 @@
           <dt class="col-md label">Business Type:</dt>
           <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
         </li>
-        <li class="row" v-if="Array.isArray(products) && products.length !== 0">
-          <dt class="col-md label">Products:</dt>
-        </li>
       </ul>
-      <div class="card my-2" v-for="(product, index) in products"
-           v-bind:key="index">
-        <div class="card-body">
-          <h5 class="card-title">{{ product.name }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{ product.recommendedRetailPrice }}</h6>
-          <p class="card-text">{{ product.description }}</p>
-        </div>
-      </div>
       <div v-if="errorMessage.length > 0" class="row mt-2">
         <div class="col">
           <p class="alert alert-warning">{{ errorMessage }}</p>
@@ -69,7 +58,6 @@ export default {
         homeAddress: "",
         businessType: "",
       },
-      products: [],
       errorMessage: "",
     }
   },
@@ -84,7 +72,6 @@ export default {
   beforeMount: function () {
     // gets user information from api
     this.parseApiResponse(this.callApi(this.businessId))
-    this.getProducts()
   },
 
   methods: {
@@ -113,20 +100,6 @@ export default {
             err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
       }
     },
-
-    /**
-     * Calls the API to get product information with the current business ID
-     */
-    getProducts: async function () {
-      try {
-        const response = await Api.getProducts(this.businessId);
-        console.log(response.data);
-        this.products = response.data;
-      } catch (err) {
-        alert(
-            err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
-      }
-    },
   },
 
   computed: {},
@@ -134,8 +107,7 @@ export default {
   watch: {
     businessId: function () {
       this.parseApiResponse(this.callApi(this.businessId))
-      this.getProducts()
-    }
+    },
   },
 }
 </script>

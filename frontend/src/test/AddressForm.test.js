@@ -88,7 +88,6 @@ describe("Full pipeline", () => {
   });
 });
 
-
 describe("text entry", () => {
   test("props updated", async () => {
     wrapper.vm.addressSuggestionsPipeline = jest.fn();

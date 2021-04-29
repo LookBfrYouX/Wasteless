@@ -1,51 +1,53 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.navbara_pigeons.wasteless.dao.AddressDao;
-import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
-import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import javax.transaction.Transactional;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
 public class ProductServiceImplTest extends ServiceTestProvider {
-    @Autowired
-    ProductService productService;
-    @Autowired
-    BusinessDao businessDao;
-    @Autowired
-    AddressDao addressDao;
 
     @Test
+    @Transactional
+    @WithUserDetails(value = "mbi47@uclive.ac.nz")
     void getProductsTest() {
+        try {
+            // Set up business and product
+            String testProdName = "testProd";
+            Business mockBusiness = makeBusiness("testBusiness");
+            Product mockProduct = makeProduct(testProdName);
+            mockBusiness.addCatalogueProduct(mockProduct);
+            // Save and retrieve the business
+            businessService.saveBusiness(mockBusiness);
+            List<Product> products = productService.getProducts(Long.toString(mockBusiness.getId()));
+            // Assert the business has at least one product
+            assertTrue(products.size() > 0);
+            // Assert the business has exactly the one product we added to it
+            assertTrue(products.size() == 1);
+            // Assert the product has the same name as the one we saved
+            assertTrue(products.get(0).getName().equals(testProdName));
+
+            // Fail test if any unexpected exceptions occur
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            assertTrue(false);
+        }
     }
 
-    Product findProductWithName(long businessId, String productName) throws BusinessNotFoundException {
+    Product findProductWithName(long businessId, String productName) throws BusinessNotFoundException, UserNotFoundException, InsufficientPrivilegesException {
         Product savedProduct = null;
         for(Product product: productService.getProducts(String.valueOf(businessId))) {
             if (product.getName() == productName) {
@@ -60,20 +62,24 @@ public class ProductServiceImplTest extends ServiceTestProvider {
     }
 
     @Test
-    @Disabled
+    @Transactional
     @WithUserDetails(value="dnb36@uclive.ac.nz")
-    void createProductExpectOk() throws BusinessNotFoundException {
+    void createProductExpectOk() throws UserNotFoundException, BusinessTypeException, BusinessRegistrationException, InsufficientPrivilegesException, BusinessNotFoundException {
         JSONObject mockProduct = new JSONObject();
         final String name = "Pizza";
-        final int businessId = 1;
         final double price = 9.99;
         final String description = "DESCRIPTION";
-
+        
+        Business mockBusiness = makeBusiness("testBusiness");
+        businessService.saveBusiness(mockBusiness);
+        
         mockProduct.put("name", name);
-        assertDoesNotThrow(() -> productService.addProduct(businessId, mockProduct));
+        mockProduct.put("recommendedRetailPrice", price);
+        mockProduct.put("description", description);
 
-        Product savedProduct = this.findProductWithName(businessId, name);
+        assertDoesNotThrow(() -> productService.addProduct(mockBusiness.getId(), mockProduct));
 
+        Product savedProduct = findProductWithName(mockBusiness.getId(), name);
         assertEquals(name, savedProduct.getName());
         assertEquals("NZD", savedProduct.getCurrency());
         assertEquals(price, savedProduct.getRecommendedRetailPrice());
@@ -83,12 +89,32 @@ public class ProductServiceImplTest extends ServiceTestProvider {
     }
 
     @Test
+    @Transactional
     @WithUserDetails(value="dnb36@uclive.ac.nz")
     void createProductExpectException() {
         JSONObject mockProduct = new JSONObject();
         mockProduct.put("name", null);
 
         assertThrows(Exception.class, () -> productService.addProduct(1, mockProduct));
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value="dnb36@uclive.ac.nz")
+    void createProductExpectInCatalogue() {
+        try {
+            String productName = "Pizza";
+            JSONObject mockProduct = new JSONObject();
+            mockProduct.put("name", productName);
+            Business mockBusiness = makeBusiness("testBusiness");
+            businessService.saveBusiness(mockBusiness);
+            assertDoesNotThrow(() -> productService.addProduct(mockBusiness.getId(), mockProduct));
+            assertEquals(mockBusiness.getProductsCatalogue().get(0).getName(), productName);
+            // Fail test if any unexpected exceptions occur
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            assertTrue(false);
+        }
     }
 }
 

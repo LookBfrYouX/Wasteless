@@ -1,19 +1,16 @@
 <template>
   <div class="w-100">
-    <div class="mt-2">
-      <router-link active-class="active" exact to="/CreateProduct">
-        <button class="btn btn-info mt-2 mr-3 float-right" type="button">
-          <span>Create Product</span>
-        </button>
-      </router-link>
-    </div>
-    <div v-if="results.length != 0" class="w-100">
-      <div v-if="!isVisible" class="button-expand-sidebar-wrapper">
-        <button class="btn btn-info mt-2" type="button" v-on:click="toggleSidebar()">
+    <div class="w-100">
+      <div class="button-expand-sidebar-wrapper mt-2 mx-2">
+        <button v-if="results.length && !isVisible" class="btn btn-info" type="button" v-on:click="toggleSidebar()">
           <span>Sort results</span>
         </button>
+        <!-- create product button doesn't really belong here, but want it aligned with the sort results button -->
+        <button v-on:click="createProduct" id="create-product-button" class="btn btn-info float-right" type="button">
+          <span>Create Product</span>
+        </button>
       </div>
-      <div class="p-relative w-100 d-flex align-items-stretch">
+      <div v-if="results.length" class="p-relative w-100 d-flex align-items-stretch">
         <div v-if="isVisible" class="sort-results bg-light">
           <div class="p-3">
             <h3 class="d-inline">Sort by</h3>
@@ -51,7 +48,6 @@
                 <div class="text-muted">Created: {{ product.created }}</div>
               </li>
             </ul>
-          </div>
             <div aria-label="table-nav" class="mt-2">
               <ul class="paginate list-unstyled d-flex justify-content-center">
                 <li class="pageItem">
@@ -71,16 +67,16 @@
                   <button v-if="pageNum < pages.length - 1" class="page-link" name="button"
                           type="button" v-on:click="pageNum++">Next
                   </button>
-
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-      <div v-else class="container pt-4">
+      <div v-if="results.length == 0" class="container pt-4">
         <h4>No results found</h4>
       </div>
+    </div>
     <error-modal
         title="Error making search request"
         v-bind:hideCallback="() => apiErrorMessage = null"
@@ -170,6 +166,10 @@ const ProductCatalogue = {
       let from = page * resultsPerPage;
       let to = from + resultsPerPage;
       return results.slice(from, to);
+    },
+
+    createProduct() {
+      this.$router.push("createProduct");
     }
   },
   computed: {
@@ -201,6 +201,12 @@ export default ProductCatalogue;
 </script>
 
 <style>
+
+#create-product-button {
+  top: 50px;
+  right: 15px;
+}
+
 button.page-link {
   display: inline-block;
 }
@@ -219,7 +225,7 @@ button.page-link {
 .button-expand-sidebar-wrapper {
   position: fixed;
   left: 0;
-  padding-left: 15px;
+  right: 0;
   z-index: 1000;
 }
 

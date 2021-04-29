@@ -1,13 +1,10 @@
--- noinspection SqlDialectInspectionForFile
-
--- noinspection SqlNoDataSourceInspectionForFile
-
 -- ###############################  Users Setup  ###############################
-DROP TABLE IF EXISTS product_business;
-DROP TABLE IF EXISTS user_business;
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS catalogue;
 DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS user_business;
 DROP TABLE IF EXISTS business;
+DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS address;
 
 CREATE TABLE address
@@ -60,6 +57,7 @@ CREATE TABLE product
     NAME        VARCHAR(100) NOT NULL,
     DESCRIPTION VARCHAR(500),
     CURRENCY    VARCHAR(4),
+    MANUFACTURER VARCHAR(100),
     RRP         DECIMAL(6, 2),
     CREATED     DATETIME
 );
@@ -76,17 +74,34 @@ CREATE TABLE user_business
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
 
-CREATE TABLE product_business
+CREATE TABLE catalogue
 (
     PRODUCT_ID  INT NOT NULL,
     BUSINESS_ID INT NOT NULL,
-    CONSTRAINT product_business_pk
+    CONSTRAINT catalogue_pk
         UNIQUE (PRODUCT_ID, BUSINESS_ID),
-    CONSTRAINT product_business_product_fk
+    CONSTRAINT catalogue_product_fk
         FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
-    CONSTRAINT product_business_business_fk
+    CONSTRAINT catalogue_business_fk
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
+
+CREATE TABLE inventory
+(
+    PRODUCT_ID INT NOT NULL,
+    BUSINESS_ID INT NOT NULL,
+    QUANTITY INT NOT NULL,
+    PRICE DECIMAL(6, 2) NOT NULL,
+    EXPIRY DATETIME NOT NULL,
+    CONSTRAINT inventory_pk
+        UNIQUE (PRODUCT_ID, BUSINESS_ID),
+    CONSTRAINT inventory_product_fk
+        FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
+    CONSTRAINT inventory_business_fk
+        FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
+);
+
+
 
 -- INSERTING TEST DATA BELOW
 
@@ -241,39 +256,50 @@ VALUES (4, 1),
 
 -- Inserting product data
 
-INSERT INTO product (NAME, DESCRIPTION, RRP, CREATED)
+INSERT INTO product (
+                     NAME,
+                     DESCRIPTION,
+                     MANUFACTURER,
+                     RRP,
+                     CREATED
+                     )
 VALUES ('Anchor Milk Standard Blue Top',
         'Essential goodness for your family. Anchor blue top is the milk that new zealanders grow up on. Its brimming with important nutrients, and it delivers more energy than most types of milk. Enjoy a glassful of great nz tradition. Number shown on pack is a guide only and not indicative of what will be supplied.',
+        'North Korean Milk GmbH',
         4.67,
         '2020-07-14T14:32:00.000000'),
        ('Meadow Fresh Milk Standard Family Fresh Homogenised',
         'At meadow fresh we believe the more goodness the better. That''s why our milk is less processed and permeate free for natural levels of protein and calcium.',
+        'Cows teat co.',
         4.62,
         '2020-07-14T14:32:00.000000'),
        ('Sanitarium So Good Almond Milk Unsweetened Long Life',
         'So good almond milk unsweetened from sanitarium new zealand is a delicious plant-based milk made from almonds. So good almond unsweetened can be enjoyed by the glass, on cereal, or in your favourite recipe. It’s a good source of calcium and a source of vitamins e, b2 and b12. It''s low in fat and is also 100% lactose, gluten and dairy free. Plus it contains no added sugar!.',
+        'Ozi ozi ozi',
         3.00,
         '2020-07-14T14:32:00.000000'),
        ('Lewis Road Creamery Milk Standard Homogenised Jersey Milk',
         'Homogenised jersey milk is naturally better. High in protein, calcium and a2 beta casein with a full bodied flavour. Bottled in 100% recycled plastic, contains no permeate and no pke used to supplement feed.',
+        'Creamy co.',
         5.90,
         '2020-07-14T14:32:00.000000'),
        ('Sanitarium So Good Oat Milk No Added Sugar',
         'Made in Australia from at least 97% Australian ingredients.',
+        'Ozi ozi ozi',
         3.30,
         '2020-07-14T14:32:00.000000'),
        ('Mr Macs Pies',
         'Made in Ilam from at least 97% Cows.',
+        'Sweenies corpses co.',
         4.70,
         '2020-07-14T14:32:00.000000');
 
 -- Inserting the product to business relationship data
 
-INSERT INTO product_business (PRODUCT_ID, BUSINESS_ID)
+INSERT INTO catalogue (PRODUCT_ID, BUSINESS_ID)
 VALUES (1, 1),
        (2, 2),
        (3, 1),
        (4, 2),
        (5, 1),
-       (6, 3),
-       (2, 3);
+       (6, 3);
