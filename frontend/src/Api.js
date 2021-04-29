@@ -185,15 +185,6 @@ export const Api = {
     });
   },
 
-
-  getCurrencies: (country) => {
-    return fetch(`https://restcountries.eu/rest/v2/name/${country}`)
-      .then(res => res.json())
-      .catch(err => {
-      throw ApiRequestError.createFromMessageMap(err);
-    });
-  },
-
   /**
    * Calls Photon API to fetch address suggestions
    * @param {*} query query string

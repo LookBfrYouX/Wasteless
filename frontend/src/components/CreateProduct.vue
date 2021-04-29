@@ -96,6 +96,7 @@
 
 <script>
 const { Api } = require("./../Api.js");
+const countryData = require("./../assets/countryData.json");
 
 export default {
   data() {
@@ -113,6 +114,15 @@ export default {
     };
   },
 
+  props() {
+    return {
+      countryData: {
+        required: false,
+        default: countryData
+      }
+    }
+  },
+
   created() {
     this.getCurrencies(this.$stateStore.getters.getActingAs().address.country);
     console.log(this.getCurrencies(this.$stateStore.getters.getActingAs().address.country))
@@ -122,11 +132,15 @@ export default {
     /**
      * Find the currency associated with the country of the user
      */
-    getCurrencies: async function (country) {
-      let response = await Api.getCurrencies(country);
-      this.currency = response[0].currencies[0].code;
-      this.symbol = response[0].currencies[0].symbol;
+    getCurrencies: async function (countryName) {
+      const country = countryData.find(country => country.name == countryName);
+      const currency = country? country.currency: {
+        code: "NZD",
+        symbol: "$"
+      };
 
+      this.currency = currency.code;
+      this.symbol = currency.symbol;
     },
     /**
      * Wrapper which simply calls the sign up method of the api
