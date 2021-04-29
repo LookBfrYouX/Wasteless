@@ -1,5 +1,6 @@
 stages:
   - npm-dependencies
+  - get-dependencies
   - build
   - test
   - sonarqube
@@ -21,6 +22,11 @@ npm-install:
   script:
     - cd frontend
     - npm install
+
+country-data-download:
+  stage: get-dependencies
+  script:
+    - node downloadCountryData.js
 
 junit:
   stage: test

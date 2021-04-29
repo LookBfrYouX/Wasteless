@@ -38,11 +38,6 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
   @Autowired
   BusinessService businessService;
 
-  @BeforeEach
-  void loadCountryData() throws IOException, URISyntaxException {
-    loadDefaultCountryDataIfNotLoaded();
-  }
-
   @Test
   void saveBusinessInvalidBusinessTypes() {
     // Test invalid businessType fields
@@ -82,14 +77,6 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
 
     Business testBusiness = makeBusiness();
     testBusiness.getAddress().setCountry("Fake Zealand");
-    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
-  }
-
-  @Test void saveBusinessNoCountryDataTest() {
-    loginWithCredentials();
-    countryDataFetcherService.resetCountryData();
-    Business testBusiness = makeBusiness();
-    testBusiness.getAddress().setCountry("New Zealand");
     assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 }

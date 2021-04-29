@@ -151,7 +151,6 @@
 
         <address-form
           v-bind:address="address"
-          v-bind:countryData="countryData"
           v-on:addressupdate="addressUpdate"
         />
 
@@ -235,7 +234,7 @@
 <script>
 const { Api } = require("./../Api.js");
 const AddressForm = require("./AddressForm").default;
-const fallbackCountryDataArray = require("./../assets/fallbackCountryDataArray.json");
+const countryData = require("./../assets/countryData.json");
 
 export default {
   name: "signUpPage",
@@ -244,17 +243,8 @@ export default {
     "address-form": AddressForm
   },
 
-  /**
-   * Sets country data
-   */
-  beforeMount: async function() {
-    this.countryData = await Api.countryDataOrFallback();
-  },
-
-
   data() {
     return {
-      countryData: fallbackCountryDataArray,
       emailErrorMessage: null, // If email address has already been registered
       confirmPasswordErrorMessage: null, // If password and confirm password fields different
       dateOfBirthErrorMessage: null, // too young etc.
@@ -292,6 +282,8 @@ export default {
       phoneNumber: "",
 
       bio: "",
+
+      countryData
     };
   },
   methods: {

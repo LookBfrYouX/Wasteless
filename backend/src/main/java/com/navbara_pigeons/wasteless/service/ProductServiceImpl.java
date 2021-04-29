@@ -104,7 +104,6 @@ public class ProductServiceImpl implements ProductService {
       product.setDescription((jsonProduct.get("description") != null ? jsonProduct.get("description") : "").toString());
       product.setRecommendedRetailPrice(Double.parseDouble(jsonProduct.getOrDefault("recommendedRetailPrice", 0.0).toString()));
 
-      if (!countryDataFetcherService.dataLoaded()) throw new ProductRegistrationException("Country data not available");
       Currency currency = countryDataFetcherService.getCurrencyForCountry(business.getAddress().getCountry());
       if (currency == null) throw new ProductRegistrationException("Unknown country; cannot set currency");
       product.setCurrency(currency.getCode());

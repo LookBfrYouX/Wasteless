@@ -123,6 +123,7 @@ The parent component must provide `address` prop. When the address is updated in
 
 const { Api } = require("./../Api");
 const Suggestions = require("./Suggestions").default;
+const countryData = require("./../assets/countryData.json");
 
 // Fields in order of specifity
 // When updating this, ensure all address related functions and input properties are updated as well
@@ -149,10 +150,6 @@ export default {
         state: "",
         country: "",
       }
-    },
-    // Array of countries with { name: countryNameString, code: twoCharacterCountryCode }
-    countryData: {
-      required: true
     }
   },
 
@@ -166,7 +163,8 @@ export default {
        * return results. Hence, before sending the query to Photon, convert the country name
        * from the canonical name to that used by Photon if it is known - a previous query returned that country name
        */
-      canonicalCountryNameToOsmCountryNameCache: {}
+      canonicalCountryNameToOsmCountryNameCache: {},
+      countryData
     }
   },
 

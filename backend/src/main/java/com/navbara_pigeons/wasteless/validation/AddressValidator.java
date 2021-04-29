@@ -32,10 +32,9 @@ public class AddressValidator {
     /**
      * Checks if the country is valid
      * @param country name of country
-     * @return null if cannot check, true if country known
+     * @return true if country known
      */
     public Boolean isCountryValid(String country) {
-        if (!this.countryDataFetcherService.dataLoaded()) return null;
         return this.countryDataFetcherService.countryExists(country);
     }
 }
