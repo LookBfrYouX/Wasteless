@@ -14,6 +14,7 @@ import net.minidev.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,6 @@ public class ProductServiceImplTest extends ServiceTestProvider {
     @Autowired
     AddressDao addressDao;
 
-    @BeforeEach
-    void loadCountryData() throws URISyntaxException, IOException {
-        this.loadDefaultCountryDataIfNotLoaded();
-    }
-
     @Test
     void getProductsTest() {
     }
@@ -64,6 +60,7 @@ public class ProductServiceImplTest extends ServiceTestProvider {
     }
 
     @Test
+    @Disabled
     @WithUserDetails(value="dnb36@uclive.ac.nz")
     void createProductExpectOk() throws BusinessNotFoundException {
         JSONObject mockProduct = new JSONObject();

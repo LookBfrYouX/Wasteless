@@ -31,7 +31,6 @@
 
 import axios from 'axios';
 import {ApiRequestError} from "./ApiRequestError";
-const fallbackCountryDataArray = require("./assets/fallbackCountryDataArray.json");
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
 const TIMEOUT = 1000;
@@ -186,20 +185,6 @@ export const Api = {
     });
   },
 
-
-  /**
-   * Attempts to get country data. If it fails it returns fallback country data.
-   * Returns array, **not** a {data: JSONResponse} object
-   * 
-   * @returns {Promise<Country[]>} country data array promise. Will never fail
-   */
-  countryDataOrFallback: async function() {
-    try {
-      return (await instance.get("/misc/countryData")).data;
-    } catch {
-      return fallbackCountryDataArray;
-    }
-  },
 
   getCurrencies: (country) => {
     return fetch(`https://restcountries.eu/rest/v2/name/${country}`)
