@@ -88,7 +88,7 @@ const Api = require("../Api").default;
 const AddressForm = require("./AddressForm").default;
 
 export default {
-  name: "registerBusiness",
+  name: "Register Business",
 
   components: {
     "address-form": AddressForm,
@@ -164,7 +164,7 @@ export default {
       this.emailUsed = false;
       window.localStorage.setItem("businessId", response.data.businessId);
       // TODO: push the business page view, not the profile page
-      this.$router.push({name: "profile"});
+      this.$router.push({name: "Profile"});
     },
   },
 };
@@ -175,4 +175,3 @@ export default {
   max-width: 50em;
 }
 </style>
-

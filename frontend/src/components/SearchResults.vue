@@ -99,7 +99,7 @@ import ErrorModal from "./Errors/ErrorModal.vue";
 const Api = require("./../Api").default;
 
 const SearchResults = {
-  name: "SearchResults",
+  name: "Search Results",
   components: {ErrorModal},
   /*has a search prop from app.vue*/
   props: ['search'],
@@ -167,7 +167,7 @@ const SearchResults = {
 
     viewUser(userId) {
       this.$router.push({
-        name: "profile",
+        name: "Profile",
         params: {
           userId
         }

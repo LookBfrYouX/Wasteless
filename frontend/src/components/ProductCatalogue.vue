@@ -1,8 +1,8 @@
 <template>
   <div class="w-100">
     <div class="w-100">
-      <div class="button-expand-sidebar-wrapper mt-2 mx-2">
-        <button v-if="results.length && !isVisible" class="btn btn-info" type="button" v-on:click="toggleSidebar()">
+      <div v-if="!isVisible" class="button-expand-sidebar-wrapper mt-2 mx-2">
+        <button class="btn btn-info" type="button" v-on:click="toggleSidebar()">
           <span>Sort results</span>
         </button>
         <!-- create product button doesn't really belong here, but want it aligned with the sort results button -->
@@ -10,17 +10,17 @@
           <span>Create Product</span>
         </button>
       </div>
-      <div v-if="results.length" class="p-relative w-100 d-flex align-items-stretch">
+      <div class="p-relative w-100 d-flex align-items-stretch">
         <div v-if="isVisible" class="sort-results bg-light">
           <div class="p-3">
             <h3 class="d-inline">Sort by</h3>
             <button class="float-right btn btn-light" type="button" v-on:click="toggleSidebar()">
-              <span>Go</span>
+              <span>&larr;</span>
             </button>
             <ul id="search-headers" class="list-unstyled"
                 v-bind:class='{"table-reversed": reversed}'>
               <li
-                  v-for="[key, value] in Object.entries({name: 'Name', id: 'ID', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
+                  v-for="[key, value] in Object.entries({name: 'Name', manufacturer: 'Manufacturer', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
                   v-bind:key="key"
                   class="mb-1"
                   v-bind:class='{"current-sort": sortBy==key}'
@@ -41,11 +41,13 @@
               <li v-for="(product, index) in displayedResults" v-bind:key="index"
                   class="list-group-item card ">
                 <div class="d-flex flex-wrap justify-content-between">
-                  <h4 class="card-title mb-0">{{ product.name }} (Id: {{ product.id }})</h4>
+                  <h4 class="card-title mb-0">{{ product.name }}</h4>
                 </div>
+                <div class="text-muted">Manufacturer: {{product.manufacturer }}</div>
                 <div class="text-muted">Description: {{ product.description }}</div>
-                <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
-                <div class="text-muted">Created: {{ product.created }}</div>
+                <div class="text-muted">RRP: {{product.recommendedRetailPrice }}</div>
+
+                <div class="text-muted">Created: {{ product.created.split("T")[0] }} (YYY-MM-DD)</div>
               </li>
             </ul>
             <div aria-label="table-nav" class="mt-2">
@@ -95,7 +97,7 @@ import ErrorModal from "./Errors/ErrorModal.vue";
 const Api = require("./../Api").default;
 
 const ProductCatalogue = {
-  name: "ProductCatalogue",
+  name: "Product Catalogue",
   components: {ErrorModal},
   /*has a search prop from app.vue*/
   data: function () {
@@ -121,6 +123,7 @@ const ProductCatalogue = {
     toggleSidebar() {
       this.isVisible = !this.isVisible;
     },
+
     sortByClicked(newSortBy) {
       if (this.sortBy == newSortBy) {
         this.reversed = !this.reversed;
@@ -136,7 +139,6 @@ const ProductCatalogue = {
       try {
         const {data} = await Api.getProducts(this.$stateStore.getters.getActingAs().id)
         this.results = this.parseSearchResults(data);
-        console.log(this.results)
         this.setPages();
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
@@ -153,8 +155,6 @@ const ProductCatalogue = {
     setPages() {
       /* calculates number of pages which is reliant on resultsPerPage set in the data section*/
       let numOfPages = Math.ceil(this.results.length / this.resultsPerPage);
-      console.log(this.results.length, 'length')
-      console.log(this.results, 'array')
       this.pages = [];
       for (let i = 0; i < numOfPages; i++) {
         this.pages.push(i);
@@ -168,7 +168,6 @@ const ProductCatalogue = {
       let resultsPerPage = this.resultsPerPage;
       let from = page * resultsPerPage;
       let to = from + resultsPerPage;
-      console.log(results.slice(from, to));
       return results.slice(from, to);
     },
 
@@ -187,7 +186,7 @@ const ProductCatalogue = {
         if (product[this.sortBy] == null) {
           return "";
         }
-        return product[this.sortBy].toLowerCase();
+        return product[this.sortBy];
       }
 
       return this.results.sort((a, b) => { // sort using this.orderBy
@@ -196,7 +195,6 @@ const ProductCatalogue = {
     },
     // used for for loop in html
     displayedResults() {
-      console.log('Displaying Results')
       return this.paginate(this.sortedResults);
     }
   }

@@ -80,7 +80,7 @@ export default {
   /* creates vue variables to be manipulates
      initilizes object with methods and data
   */
-  name: "loginPage",
+  name: "Login Page",
   components: {},
 
   data() {
@@ -95,7 +95,7 @@ export default {
   methods: {
     signUp() {
       // redirects user to to the signup page
-      this.$router.push({name: "signup"});
+      this.$router.push({name: "Sign Up"});
     },
     login: async function () {
       // uses mock API to determine whether to allow user to login or be rejected
@@ -118,7 +118,7 @@ export default {
       }
 
       this.errorMessage = "";
-      await this.$router.push({name: "profile"});
+      await this.$router.push({name: "Profile"});
     },
   },
 };

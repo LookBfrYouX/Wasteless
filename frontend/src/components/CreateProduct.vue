@@ -154,7 +154,7 @@ export default {
             description: this.description,
           });
           this.errorMessage = "";
-          this.$router.push("productCatalogue");
+          this.$router.push("Product Catalogue");
         }
     },
   },

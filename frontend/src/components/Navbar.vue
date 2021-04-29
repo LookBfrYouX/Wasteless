@@ -23,12 +23,12 @@
           <div class="d-lg-flex">
             <!--Profile page link -->
             <li class="nav-item mr-lg-auto" v-if="isLoggedIn">
-              <a class="nav-link" v-on:click="pushOrGo('profile')">
+              <a class="nav-link" v-on:click="pushOrGo('Profile')">
                 Profile
               </a>
             </li>
             <!-- Product catalog link -->
-            <li class="navbar-item" v-if="isActingAsBusiness">
+            <li class="navbar-item mr-lg-auto" v-if="isActingAsBusiness">
               <a class="nav-link" v-on:click="pushOrGo('productCatalogue')">
                 Catalogue
               </a>
@@ -54,7 +54,7 @@
               </div>
             </form>
           </li>
-          
+
           <!-- Right group: User and acting as -->
           <li v-if="isLoggedIn" class="nav-item dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
@@ -103,16 +103,16 @@
               <a
                 class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
                 type="button"
-                v-on:click="pushOrGo('login')"
+                v-on:click="pushOrGo('Login')"
               >
               Login
               </a>
             </li>
-            <li v-if="this.$route.name != 'signUp'" class="nav-item">
+            <li v-if="this.$route.name != 'Sign Up'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
                   type="button"
-                  v-on:click="pushOrGo('signUp')"
+                  v-on:click="pushOrGo('Sign Up')"
               >
                 Sign Up
               </a>
@@ -173,7 +173,7 @@ export default {
     * @returns true if logged in and acting as business
     */
     isActingAsBusiness() {
-      return this.currentActingAs != null;
+      return this.$stateStore.getters.isActingAsBusiness();
     },
 
     /**
@@ -223,9 +223,9 @@ export default {
         this.logOutErrorMessage = err.userFacingErrorMessage;
         return;
       }
-
+      await this.$stateStore.actions.deleteActingAs();
       await this.$stateStore.actions.deleteAuthUser();
-      await this.pushOrGo("home");
+      await this.pushOrGo("Home");
     },
 
     /**
@@ -233,7 +233,7 @@ export default {
      * Navigates to search page with current query, or reloads page if on search page and query has not changed
      */
     search: async function () {
-      const searchName = "search";
+      const searchName = "Search";
       let newQuery = this.$route.params.query;
 
       if (this.$route.name == searchName && newQuery == this.query) {
@@ -261,6 +261,10 @@ export default {
 </script>
 
 <style scoped>
+
+.dropdown-menu {
+  z-index:900000;
+}
 
 .admin-text {
   margin: -0.5em 0 0;

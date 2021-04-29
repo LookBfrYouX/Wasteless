@@ -38,6 +38,12 @@ export const store = {
     isAdmin() {
       return state.authUser && state.authUser.role === "ROLE_ADMIN";
     },
+
+    isActingAsBusiness() {
+      return state.actingAs !== null;
+    },
+
+
   },
   actions: {
     // Set the current welcome message (example)
@@ -54,6 +60,7 @@ export const store = {
     deleteAuthUser: () => {
       state.authUser = null;
       localStorage.removeItem("authUser");
+      localStorage.removeItem("actingAs");
       localStorage.removeItem("userId");
     },
     // Make the currently logged in user admin

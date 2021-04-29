@@ -234,7 +234,7 @@ const AddressForm = require("./AddressForm").default;
 import countryCodesJson from "./../assets/countryCodes.json";
 
 export default {
-  name: "signUpPage",
+  name: "Sign Up Page",
 
   components: {
     "address-form": AddressForm
@@ -427,7 +427,7 @@ export default {
       delete userData.password;
       userData.id = response.data.userId;
       await this.$stateStore.actions.setAuthUser(userData);
-      await this.$router.push({name: "profile"});
+      await this.$router.push({name: "Profile"});
     }
   }
 }

@@ -19,22 +19,22 @@ export const router = new VueRouter({
   base: process.env.VUE_APP_BASE_URL,
   routes: [
     {
-      name: "home",
+      name: "Home",
       path: "/",
       component: Home
     },
     {
-      name: "login",
+      name: "Login",
       path: "/login",
       component: Login
     },
     {
-      name: "signUp",
+      name: "Sign Up",
       path: "/signUp",
       component: SignUp
     },
     {
-      name: "profile",
+      name: "Profile",
       path: "/profile/:userId(\\d+)?",
       component: Profile,
       props: route => {
@@ -50,28 +50,28 @@ export const router = new VueRouter({
       }
     },
     {
-      name: "search",
+      name: "Search",
       path: "/searchresults/:query(.*)",
       component: () => import('./components/SearchResults.vue'),
       props: route => ({search: route.params.query})
     },
     {
-      name: "registerBusiness",
+      name: "Register Business",
       path: "/registerbusiness",
       component: RegisterBusiness
     },
     {
-      name: "createProduct",
+      name: "Create Product",
       path: "/createproduct",
       component: CreateProduct
     },
     {
-      name: "productCatalogue",
+      name: "Product Catalogue",
       path: "/productcatalogue",
       component: ProductCatalogue
     },
     {
-      name: "businessProfile",
+      name: "Business Profile",
       path: "/businessprofile/:businessId(\\d+)",
       component: BusinessProfile,
       props: route => {
