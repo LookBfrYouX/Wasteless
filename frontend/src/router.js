@@ -46,7 +46,7 @@ export const router = new VueRouter({
           userId = parseInt(userId, 10); // Using \d so parseInt should always work
         }
 
-        return {userId};
+        return {userId, };
       }
     },
     {

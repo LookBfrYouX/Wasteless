@@ -111,6 +111,8 @@ export default {
             "TODO SIGN IN SHOULD RETURN FULL USER PROFILE; USE THIS TO SET AUTHUSER INSTEAD OF CALLING API.PROFILE");
         response = await Api.profile(userId);
         const authUser = response.data;
+        // Adding the image URL (the GET request to backend) to the User object
+        authUser.imageURL = process.env.VUE_APP_SERVER_ADD + `/users/${userId}/images/`;
         this.$stateStore.actions.setAuthUser(authUser);
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;

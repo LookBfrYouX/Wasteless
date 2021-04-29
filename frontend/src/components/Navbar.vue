@@ -60,7 +60,7 @@
             <a id="navbarDropdownMenuLink" aria-expanded="false"
                 aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown"
                 href="#" role="button">
-              <img class="nav-picture rounded-circle" src="placeholder-profile.png">
+              <img class="nav-picture rounded-circle" :src="authUser.imageURL">
               <div class="d-flex flex-column mx-1">
                 <span class="m-0 p-0 text-dark">
                   {{ printCurrentActingAs }}

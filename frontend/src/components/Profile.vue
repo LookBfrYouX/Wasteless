@@ -4,12 +4,23 @@
       <!--User profile image card-->
       <div class="col-md-4 m-2 card">
         <!--Upload image button overlay-->
-        <button class="image-upload-button btn btn-lg btn-primary" disabled type="button">
-          <span class="material-icons md-48">file_upload</span>
+        <button
+            v-if="isLoggedIn && authUser.id === userInfo.id"
+            class="image-upload-button btn btn-lg btn-primary"
+            type="button"
+            @click="onPickFile"
+        >
+          <span class="material-icons">file_upload</span>
         </button>
+        <input
+            ref="fileInput"
+            accept="image/*"
+            style="display: none"
+            type="file"
+            @change="onFilePicked"/>
         <!--User profile image-->
-        <img alt="Users profile image" class="my-3 rounded-circle" src="placeholder-profile.png">
-
+        <img :src="profileURL" alt="Users profile image"
+             class="profile-image my-3 rounded-circle">
       </div>
       <div class="col-md-7 m-2 card">
         <div class="m-3">
@@ -206,7 +217,8 @@ export default {
     return {
       userInfo: {},
       statusMessage: "",
-      apiErrorMessage: null
+      apiErrorMessage: null,
+      profileURL: process.env.VUE_APP_SERVER_ADD + `/users/${this.userId}/images/`
     }
   },
 
@@ -224,6 +236,26 @@ export default {
   },
 
   methods: {
+    onPickFile() {
+      this.$refs.fileInput.click()
+    },
+    onFilePicked(event) {
+      const files = event.target.files
+
+      const promise = Api.uploadProfileImage(files[0], this.userId);
+      const prevImage = this.authUser.imageURL;
+      this.authUser.imageURL = "default-user-thumbnail.svg";
+      this.profileURL = "default-user-thumbnail.svg";
+
+      promise.then(result => {
+        if (result.status === 201) {
+          this.authUser.imageURL = result.data;
+          this.profileURL = result.data;
+        } else {
+          this.authUser.imageURL = prevImage;
+        }
+      });
+    },
     /**
      * Calls to the API to from the profile view with a given user ID to make requested user an Administrator
      * Returns a message to user to indicate whether or not the user has been updated to the Administrator role.
@@ -302,6 +334,7 @@ export default {
       try {
         const response = await apiCall;
         this.userInfo = response.data;
+        this.userInfo.imageURL = process.env.VUE_APP_SERVER_ADD + `/users/${this.userId}/images/`;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -404,7 +437,10 @@ export default {
      */
     userId: function () {
       this.apiPipeline();
+    },
+    userInfo() {
+
     }
-  },
+  }
 }
 </script>
