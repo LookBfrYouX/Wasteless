@@ -53,7 +53,7 @@
                   <img v-if="currentActingAs == null"
                        class="nav-picture rounded-circle"
                        alt="User thumbnail"
-                       src="default-user-thumbnail.svg">
+                       :src="authUser.imageURL">
                   <img v-else
                        class="nav-picture rounded-circle"
                        atl="Business thumbnail"

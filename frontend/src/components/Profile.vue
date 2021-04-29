@@ -19,7 +19,7 @@
             type="file"
             @change="onFilePicked"/>
         <!--User profile image-->
-        <img :src="this.profileImageURL" alt="Users profile image"
+        <img :src="userInfo.imageURL" alt="Users profile image"
              class="profile-image my-3 rounded-circle">
       </div>
       <div class="col-md-7 m-2 card">
@@ -245,11 +245,9 @@ export default {
     return {
       userInfo: {},
       statusMessage: "",
-      apiErrorMessage: null,
-      profileImageURL: `http://localhost:9499/users/${this.userId}/images/`
+      apiErrorMessage: null
     };
   },
-
   props: {
     userId: {
       type: Number, // may be NaN
@@ -274,13 +272,15 @@ export default {
       const files = event.target.files
 
       const promise = Api.uploadProfileImage(files[0], this.userId);
-      const prevImage = this.profileImageURL;
-      this.profileImageURL = "default-user-thumbnail.svg";
+      const prevImage = this.authUser.imageURL;
+      this.authUser.imageURL = "default-user-thumbnail.svg";
+      this.userInfo.imageURL = "default-user-thumbnail.svg";
+
       promise.then(result => {
         if (result.status === 201) {
-          this.profileImageURL = result.data;
+          this.authUser.imageURL = result.data;
         } else {
-          this.profileImageURL = prevImage;
+          this.authUser.imageURL = prevImage;
         }
       });
     },
@@ -363,6 +363,7 @@ export default {
       try {
         const response = await apiCall;
         this.userInfo = response.data;
+        this.userInfo.imageURL = process.env.VUE_APP_SERVER_ADD + `/users/${this.userId}/images/`;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
