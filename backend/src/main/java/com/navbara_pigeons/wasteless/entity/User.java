@@ -55,6 +55,9 @@ public class User {
   @Column(name = "PHONE_NUMBER")
   private String phoneNumber;
 
+  @Column(name = "IMAGE_NAME")
+  private String imageName;
+
   @Column(name = "CREATED")
   private ZonedDateTime created;
 
