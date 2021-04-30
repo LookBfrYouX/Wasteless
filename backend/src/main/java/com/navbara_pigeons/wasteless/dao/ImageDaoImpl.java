@@ -28,7 +28,7 @@ public class ImageDaoImpl implements ImageDao {
   }
 
   /**
-   * Save a product image to the machines local storage
+   * Save a product image name to the Db
    * @param image The image to be saved
    * @throws IOException Exception if saving to the machine fails
    */
