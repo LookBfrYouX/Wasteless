@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.entity.Image;
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,4 +15,6 @@ public interface ImageDao {
   byte[] getDefaultProfileImage() throws IOException;
 
   void saveProductImageToMachine(MultipartFile image, String filename) throws IOException;
+
+  void saveProductImageToDb(Image image);
 }

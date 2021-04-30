@@ -1,9 +1,9 @@
 -- ###############################  Users Setup  ###############################
 DROP TABLE IF EXISTS inventory;
 DROP TABLE IF EXISTS product_image;
-DROP TABLE IF EXISTS image;
 DROP TABLE IF EXISTS catalogue;
 DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS image;
 DROP TABLE IF EXISTS user_business;
 DROP TABLE IF EXISTS business;
 DROP TABLE IF EXISTS user;
@@ -54,6 +54,13 @@ CREATE TABLE business
     CONSTRAINT business_address_fk FOREIGN KEY (ADDRESS_ID) REFERENCES address (ID)
 );
 
+CREATE TABLE image
+(
+    ID                 INT AUTO_INCREMENT PRIMARY KEY,
+    FILENAME           VARCHAR(50) NOT NULL,
+    THUMBNAIL_FILENAME VARCHAR(60) NOT NULL
+);
+
 CREATE TABLE product
 (
     ID           INT AUTO_INCREMENT PRIMARY KEY,
@@ -61,14 +68,9 @@ CREATE TABLE product
     DESCRIPTION  VARCHAR(500),
     MANUFACTURER VARCHAR(100),
     RRP          DECIMAL(6, 2),
-    CREATED      DATETIME
-);
-
-CREATE TABLE image
-(
-    ID                 INT AUTO_INCREMENT PRIMARY KEY,
-    FILENAME           VARCHAR(50) NOT NULL,
-    THUMBNAIL_FILENAME VARCHAR(60) NOT NULL
+    CREATED      DATETIME,
+    PRIMARY_IMAGE_ID INT,
+    CONSTRAINT product_image_fk FOREIGN KEY (PRIMARY_IMAGE_ID) REFERENCES image (ID)
 );
 
 CREATE TABLE product_image

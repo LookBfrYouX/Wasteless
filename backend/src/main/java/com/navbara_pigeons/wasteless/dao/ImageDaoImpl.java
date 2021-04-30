@@ -1,10 +1,14 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.entity.Image;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import javax.persistence.EntityManager;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +21,22 @@ public class ImageDaoImpl implements ImageDao {
   private final String storagePath = "./src/main/resources/images/";
   private final String defaultUserPath = "user/default-user.png";
   private final String defaultBusinessPath = "business/default-business.png";
+  private final EntityManager entityManager;
+
+  public ImageDaoImpl(@Autowired EntityManager entityManager) {
+    this.entityManager = entityManager;
+  }
+
+  /**
+   * Save a product image to the machines local storage
+   * @param image The image to be saved
+   * @throws IOException Exception if saving to the machine fails
+   */
+  @Override
+  public void saveProductImageToDb(Image image) {
+    Session currentSession = getSession();
+    currentSession.saveOrUpdate(image);
+  }
 
   /**
    * Save a product image to the machines local storage
@@ -73,5 +93,14 @@ public class ImageDaoImpl implements ImageDao {
   public byte[] getDefaultProfileImage() throws IOException {
     Path destination = Paths.get(storagePath + defaultUserPath);
     return Files.readAllBytes(destination);
+  }
+
+  /**
+   * Get the entity manager session
+   *
+   * @return Instance of the Session class
+   */
+  private Session getSession() {
+    return this.entityManager.unwrap(Session.class);
   }
 }

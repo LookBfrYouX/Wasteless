@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Data;
 
@@ -40,6 +41,10 @@ public class Product {
 
   @Column(name = "CREATED")
   private ZonedDateTime created;
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "PRIMARY_IMAGE_ID", referencedColumnName = "ID")
+  private Image primaryProductImage;
 
   @OneToMany(
       fetch = FetchType.LAZY,

@@ -72,8 +72,14 @@ public class ImageServiceImpl implements ImageService {
     cropImageToSquare(image, fileExtension, fileName);
     Image imageEntity = new Image(fileExtension);
     productEntity.addProductImage(imageEntity);
+    if (productEntity.getPrimaryProductImage() == null) {
+      productEntity.setPrimaryProductImage(imageEntity);
+    }
     imageDao.saveProductImageToMachine(image, imageEntity.getFilename());
+    imageDao.saveProductImageToDb(imageEntity);
 
+    System.out.println(productEntity.getPrimaryProductImage());
+    System.out.println(productEntity.getProductImages());
     // Return the URI for to download the image
     return "/images/product/" + imageEntity.getFilename();
   }
