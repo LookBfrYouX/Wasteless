@@ -168,4 +168,18 @@ public class ImageServiceImpl implements ImageService {
     ImageIO.write(imageToCrop, extension, baos);
     return new MockMultipartFile(fileName, baos.toByteArray());
   }
+
+  public void deleteProductImage(long imageId, long businessId, long productId) {
+    // get product
+    // get path
+    // remove from database
+    // unlink image from fs
+  }
+
+  public void deleteUserImage(long userId) {
+    // get path
+    // remove from database
+    // unlink image from fs
+  }
+
 }

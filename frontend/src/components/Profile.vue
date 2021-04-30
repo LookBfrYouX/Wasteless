@@ -15,7 +15,7 @@
         <input
             ref="fileInput"
             accept="image/*"
-            style="display: none"
+            class="d-none"
             type="file"
             @change="onFilePicked"/>
         <!--User profile image-->
@@ -333,7 +333,14 @@ export default {
     parseApiResponse: async function (apiCall) {
       try {
         const response = await apiCall;
+        const authUser = this.$stateStore.getters.getAuthUser();
+        
         this.userInfo = response.data;
+
+        if (authUser && authUser.id == this.userInfo.id) {
+          this.$stateStore.actions.setAuthUser(this.userInfo);
+        }
+
         this.userInfo.imageURL = process.env.VUE_APP_SERVER_ADD + `/users/${this.userId}/images/`;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
