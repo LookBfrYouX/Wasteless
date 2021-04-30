@@ -50,6 +50,11 @@ public class ImageDaoImpl implements ImageDao {
     Files.copy(image.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
   }
 
+  public void deleteProductImageFromMachine(String filename) throws IOException {
+    Path imagePath = Paths.get(storagePath + "product/" + filename);
+    Files.delete(imagePath);
+  }
+
   /**
    * Save the Users Profile image to the local storage
    * @param image The byte data of the image

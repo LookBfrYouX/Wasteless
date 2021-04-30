@@ -20,4 +20,6 @@ public interface ImageDao {
 
   void deleteImage(Image image);
 
+  void deleteProductImageFromMachine(String filename) throws IOException;
+
 }

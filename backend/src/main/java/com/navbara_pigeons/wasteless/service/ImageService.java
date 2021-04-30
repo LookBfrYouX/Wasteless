@@ -15,7 +15,7 @@ public interface ImageService {
   String uploadProductImage(long businessId, long productId, MultipartFile image)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, IOException;
 
-  void deleteProductImage(long imageId, long businessId, long productId) throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException;
+  void deleteProductImage(long imageId, long businessId, long productId) throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException, IOException;
 
   void deleteUserImage(long userId);
 
