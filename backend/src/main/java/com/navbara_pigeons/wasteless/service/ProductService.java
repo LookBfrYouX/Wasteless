@@ -14,4 +14,6 @@ public interface ProductService {
 
     void addProduct(long id, JSONObject product) throws ProductRegistrationException,
         ProductForbiddenException;
+
+    Product getProduct(long productId) throws ProductNotFoundException;
 }

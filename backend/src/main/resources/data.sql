@@ -1,5 +1,7 @@
 -- ###############################  Users Setup  ###############################
 DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS product_image;
+DROP TABLE IF EXISTS image;
 DROP TABLE IF EXISTS catalogue;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS user_business;
@@ -54,12 +56,31 @@ CREATE TABLE business
 
 CREATE TABLE product
 (
-    ID          INT AUTO_INCREMENT PRIMARY KEY,
-    NAME        VARCHAR(100) NOT NULL,
-    DESCRIPTION VARCHAR(500),
+    ID           INT AUTO_INCREMENT PRIMARY KEY,
+    NAME         VARCHAR(100) NOT NULL,
+    DESCRIPTION  VARCHAR(500),
     MANUFACTURER VARCHAR(100),
-    RRP         DECIMAL(6, 2),
-    CREATED     DATETIME
+    RRP          DECIMAL(6, 2),
+    CREATED      DATETIME
+);
+
+CREATE TABLE image
+(
+    ID                 INT AUTO_INCREMENT PRIMARY KEY,
+    FILENAME           VARCHAR(50) NOT NULL,
+    THUMBNAIL_FILENAME VARCHAR(60) NOT NULL
+);
+
+CREATE TABLE product_image
+(
+    PRODUCT_ID  INT NOT NULL,
+    IMAGE_ID    INT NOT NULL,
+    CONSTRAINT product_image_pk
+        UNIQUE (PRODUCT_ID, IMAGE_ID),
+    CONSTRAINT product_fk
+        FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
+    CONSTRAINT image_fk
+        FOREIGN KEY (IMAGE_ID) REFERENCES image (ID)
 );
 
 CREATE TABLE user_business
@@ -88,11 +109,11 @@ CREATE TABLE catalogue
 
 CREATE TABLE inventory
 (
-    PRODUCT_ID INT NOT NULL,
-    BUSINESS_ID INT NOT NULL,
-    QUANTITY INT NOT NULL,
-    PRICE DECIMAL(6, 2) NOT NULL,
-    EXPIRY DATETIME NOT NULL,
+    PRODUCT_ID  INT           NOT NULL,
+    BUSINESS_ID INT           NOT NULL,
+    QUANTITY    INT           NOT NULL,
+    PRICE       DECIMAL(6, 2) NOT NULL,
+    EXPIRY      DATETIME      NOT NULL,
     CONSTRAINT inventory_pk
         UNIQUE (PRODUCT_ID, BUSINESS_ID),
     CONSTRAINT inventory_product_fk
@@ -256,13 +277,11 @@ VALUES (4, 1),
 
 -- Inserting product data
 
-INSERT INTO product (
-                     NAME,
+INSERT INTO product (NAME,
                      DESCRIPTION,
                      MANUFACTURER,
                      RRP,
-                     CREATED
-                     )
+                     CREATED)
 VALUES ('Anchor Milk Standard Blue Top',
         'Essential goodness for your family. Anchor blue top is the milk that new zealanders grow up on. Its brimming with important nutrients, and it delivers more energy than most types of milk. Enjoy a glassful of great nz tradition. Number shown on pack is a guide only and not indicative of what will be supplied.',
         'North Korean Milk GmbH',

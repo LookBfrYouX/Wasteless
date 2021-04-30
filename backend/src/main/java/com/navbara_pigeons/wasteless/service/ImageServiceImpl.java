@@ -2,6 +2,8 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ImageDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.entity.Image;
+import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
@@ -30,8 +32,6 @@ public class ImageServiceImpl implements ImageService {
   private final UserDao userDao;
   private final ImageDao imageDao;
   private final String userPrefix = "U";
-  private final String productPrefix = "P";
-  private final String businessPrefix = "B";
 
   @Autowired
   public ImageServiceImpl(UserDao userDao, ImageDao imageDao) {
@@ -50,18 +50,6 @@ public class ImageServiceImpl implements ImageService {
   @Transactional
   public String uploadProductImage(long businessId, long productId, MultipartFile image)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, IOException {
-    // Get the User object so we can use their ID
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    Authentication authentication = securityContext.getAuthentication();
-    User loggedInUser = this.userDao.getUserByEmail(authentication.getName());
-
-    // Check if the product exists
-    // TODO: Create the 'check if product exists' method
-    if (!productService.productExists(productId)) {
-      throw new ProductNotFoundException(productId);
-    }
-
-    // Check whether the logged in user is an administer of the business
     if (!businessService.isBusinessAdmin(businessId)) {
       throw new BadCredentialsException("You must be an administer of the business to upload a product image");
     }
@@ -70,22 +58,14 @@ public class ImageServiceImpl implements ImageService {
     String fileName = StringUtils.cleanPath(image.getOriginalFilename());
     String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-    // Generate a new filename prefixed with 'B{businessId}P{productId}_'
-    String newFileName = businessPrefix + businessId + productPrefix + productId + imageName + fileExtension;
-
-    // Crop the image
-    image = cropImageToSquare(image, fileExtension, newFileName);
-
-    // TODO: save image entity
-
-    // TODO: Save the image in the 'images/product/' directory
-    imageDao.saveProductImageToMachine(image, newFileName);
-    // TODO: Link image to the product in DB
-    productService.addProductImage(businessId, productId, newFileName);
+    // Crop the image and then save it to the DB + Machine
+    cropImageToSquare(image, fileExtension, fileName);
+    Image imageEntity = new Image(fileExtension);
+    productEntity.addProductImage(imageEntity);
+    imageDao.saveProductImageToMachine(image, imageEntity.getFilename());
 
     // Return the URI for to download the image
-    String URI = "/images/product/";
-    return URI;
+    return "/images/product/" + imageEntity.getFilename();
   }
 
   /**

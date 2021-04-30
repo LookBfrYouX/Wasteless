@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * @author Fletcher Dick, Haruka Ichinose
+ * @author Alec Fox, Fletcher Dick, Haruka Ichinose
  */
 @Controller
 @Slf4j
@@ -27,6 +27,10 @@ public class ImageController {
 
   private final ImageService imageService;
 
+  /**
+   * The Constructor fot the imageContrller class
+   * @param imageService The Image service to be linked
+   */
   public ImageController(@Autowired ImageService imageService) {
     this.imageService = imageService;
   }
@@ -47,7 +51,7 @@ public class ImageController {
       String response = imageService.uploadProductImage(businessId, productId, image);
       log.info(
           "PRODUCT " + productId + " SUCCESSFULLY UPLOADED IMAGE " + image.getOriginalFilename() +
-          "TO BUSINESS" + businessId);
+          " TO BUSINESS " + businessId);
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (UserNotFoundException exc) {
       log.error("PRODUCT NOT FOUND ERROR: " + productId);

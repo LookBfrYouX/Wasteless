@@ -119,4 +119,9 @@ public class ProductServiceImpl implements ProductService {
       businessDao.saveBusiness(business);
     }
 
+  @Override
+  public Product getProduct(long productId) throws ProductNotFoundException {
+    return productDao.getProduct(productId);
+  }
+
 }

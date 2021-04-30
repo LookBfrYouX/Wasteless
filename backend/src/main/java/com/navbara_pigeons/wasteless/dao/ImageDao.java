@@ -12,4 +12,6 @@ public interface ImageDao {
   byte[] getProfileImageOnMachine(String imageName) throws IOException;
 
   byte[] getDefaultProfileImage() throws IOException;
+
+  void saveProductImageToMachine(MultipartFile image, String filename) throws IOException;
 }

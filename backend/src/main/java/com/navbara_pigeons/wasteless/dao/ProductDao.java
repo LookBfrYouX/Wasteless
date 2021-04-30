@@ -8,4 +8,5 @@ public interface ProductDao {
 
     void saveProduct(Product product);
 
+    Product getProduct(long productId) throws ProductNotFoundException;
 }
