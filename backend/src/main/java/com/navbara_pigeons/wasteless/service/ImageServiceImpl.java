@@ -5,9 +5,8 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Image;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,14 +33,16 @@ public class ImageServiceImpl implements ImageService {
   private final BusinessService businessService;
   private final ProductService productService;
   private final String userPrefix = "U";
+  private final UserService userService;
 
   @Autowired
   public ImageServiceImpl(UserDao userDao, ImageDao imageDao, BusinessService businessService,
-      ProductService productService) {
+      ProductService productService, UserService userService) {
     this.userDao = userDao;
     this.imageDao = imageDao;
     this.businessService = businessService;
     this.productService = productService;
+    this.userService = userService;
   }
 
   /**
@@ -173,7 +174,18 @@ public class ImageServiceImpl implements ImageService {
     return new MockMultipartFile(fileName, baos.toByteArray());
   }
 
-  public void deleteProductImage(long imageId, long businessId, long productId) {
+  public void deleteProductImage(long imageId, long businessId, long productId)
+          throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException {
+    if (!this.businessService.isBusinessAdmin(businessId) || !this.userService.isAdmin()){
+      throw new InsufficientPrivilegesException("You can not administer this business");
+    }
+    Product product = this.productService.getProduct(productId);
+    Image image = product.getImageById(imageId);
+    String thumbPath = image.getThumbnailFilename();
+    String imgPath = image.getFilename();
+    product.deleteProductImage(imageId);
+    System.out.println(thumbPath);
+    System.out.println(imgPath);
     // get product
     // get path
     // remove from database

@@ -12,11 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -125,6 +121,13 @@ public class ImageController {
       log.error("FAILED WHEN DOWNLOADING PROFILE IMAGE");
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
     }
+  }
+
+  @DeleteMapping("/businesses/{businessId}/products/{productId}/images/{imageId}")
+  public ResponseEntity deleteProductImage(@PathVariable String businessId, @PathVariable String productId, @PathVariable String imageId) {
+    // TODO
+    System.out.println(businessId + " : " + productId + " : " + imageId);
+    return new ResponseEntity(HttpStatus.valueOf(200));
   }
 
 }
