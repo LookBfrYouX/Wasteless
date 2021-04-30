@@ -15,4 +15,7 @@ public interface ProductService {
         ProductForbiddenException;
 
     Product getProduct(long productId) throws ProductNotFoundException;
+
+    void saveProduct(Product product);
+
 }

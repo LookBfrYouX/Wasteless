@@ -124,4 +124,9 @@ public class ProductServiceImpl implements ProductService {
     return productDao.getProduct(productId);
   }
 
+  @Transactional
+  public void saveProduct(Product product) {
+        this.productDao.saveProduct(product);
+  }
+
 }

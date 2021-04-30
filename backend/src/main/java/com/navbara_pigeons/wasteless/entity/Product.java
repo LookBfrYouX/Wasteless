@@ -76,12 +76,13 @@ public class Product {
     this.productImages.add(image);
   }
 
-  public void deleteProductImage(long id) {
-    for (Image image : this.productImages) {
-      if (image.getId() == id) {
-        this.productImages.remove(image);
-      }
+  public void deleteProductImage(long id) throws ImageNotFoundException {
+    Image imageToRemove = getImageById(id);
+    if (this.primaryProductImage == imageToRemove) {
+      this.primaryProductImage = null;
     }
+    this.productImages.remove(getImageById(id));
+    System.out.println("REMOVING IMAGE: " + id);
   }
 
   public Image getImageById(long id) throws ImageNotFoundException {

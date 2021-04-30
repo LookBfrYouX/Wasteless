@@ -1,8 +1,6 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.service.ImageService;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -126,8 +124,26 @@ public class ImageController {
   @DeleteMapping("/businesses/{businessId}/products/{productId}/images/{imageId}")
   public ResponseEntity deleteProductImage(@PathVariable String businessId, @PathVariable String productId, @PathVariable String imageId) {
     // TODO
-    System.out.println(businessId + " : " + productId + " : " + imageId);
-    return new ResponseEntity(HttpStatus.valueOf(200));
+    try {
+      System.out.println(businessId + " : " + productId + " : " + imageId);
+      this.imageService.deleteProductImage(Long.parseLong(imageId), Long.parseLong(businessId), Long.parseLong(productId));
+      return new ResponseEntity(HttpStatus.valueOf(200));
+    } catch (UserNotFoundException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(406));
+    } catch (BusinessNotFoundException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(406));
+    } catch (InsufficientPrivilegesException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(403));
+    } catch (ProductNotFoundException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(406));
+    } catch (ImageNotFoundException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(406));
+    }
   }
 
 }

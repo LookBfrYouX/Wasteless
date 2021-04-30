@@ -95,6 +95,11 @@ public class ImageDaoImpl implements ImageDao {
     return Files.readAllBytes(destination);
   }
 
+  public void deleteImage(Image image) {
+    Session currentSession = getSession();
+    currentSession.delete(image);
+  }
+
   /**
    * Get the entity manager session
    *

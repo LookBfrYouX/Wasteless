@@ -174,6 +174,7 @@ public class ImageServiceImpl implements ImageService {
     return new MockMultipartFile(fileName, baos.toByteArray());
   }
 
+  @Transactional
   public void deleteProductImage(long imageId, long businessId, long productId)
           throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException {
     if (!this.businessService.isBusinessAdmin(businessId) || !this.userService.isAdmin()){
@@ -184,6 +185,8 @@ public class ImageServiceImpl implements ImageService {
     String thumbPath = image.getThumbnailFilename();
     String imgPath = image.getFilename();
     product.deleteProductImage(imageId);
+    this.productService.saveProduct(product);
+    this.imageDao.deleteImage(image);
     System.out.println(thumbPath);
     System.out.println(imgPath);
     // get product

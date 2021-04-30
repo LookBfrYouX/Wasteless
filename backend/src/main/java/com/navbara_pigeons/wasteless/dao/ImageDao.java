@@ -17,4 +17,7 @@ public interface ImageDao {
   void saveProductImageToMachine(MultipartFile image, String filename) throws IOException;
 
   void saveProductImageToDb(Image image);
+
+  void deleteImage(Image image);
+
 }
