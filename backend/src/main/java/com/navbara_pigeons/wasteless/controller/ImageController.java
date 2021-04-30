@@ -1,6 +1,8 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.service.ImageService;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,28 +38,32 @@ public class ImageController {
   }
 
   /**
-   * Add image to business' product
+   * Add image to business's product
    *
    * @param businessId id of the business
    * @param productId  id of the product
    * @param image      image to be added
-   * @return url of the uploaded image
+   * @return The URI for the relative image location
    */
   @PostMapping("/businesses/{businessId}/products/{productId}/images")
   public ResponseEntity<String> uploadProductImage(@PathVariable long businessId,
       @PathVariable long productId, @RequestParam MultipartFile image) {
     try {
-      // TODO: create service
       String response = imageService.uploadProductImage(businessId, productId, image);
       log.info(
           "PRODUCT " + productId + " SUCCESSFULLY UPLOADED IMAGE " + image.getOriginalFilename() +
           " TO BUSINESS " + businessId);
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (UserNotFoundException exc) {
+      log.error("USER NOT FOUND ERROR: " + productId);
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The user does not exist");
+    }catch (BusinessNotFoundException exc) {
+      log.error("BUSINESS NOT FOUND ERROR: " + productId);
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The business does not exist");
+    }catch (ProductNotFoundException exc) {
       log.error("PRODUCT NOT FOUND ERROR: " + productId);
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, exc.getMessage());
     } catch (BadCredentialsException exc) {
-      // TODO: catch custom exc here
       log.error("INSUFFICIENT PRIVILEGES: " + productId);
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, exc.getMessage());
     } catch (Exception exc) {
@@ -95,6 +101,7 @@ public class ImageController {
 
   /**
    * Download the image for the specified user.
+   *
    * @param id The identifier of the user
    * @return The byte array of the users profile image
    */

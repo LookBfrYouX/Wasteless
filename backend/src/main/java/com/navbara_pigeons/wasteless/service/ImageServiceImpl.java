@@ -31,28 +31,38 @@ public class ImageServiceImpl implements ImageService {
 
   private final UserDao userDao;
   private final ImageDao imageDao;
+  private final BusinessService businessService;
+  private final ProductService productService;
   private final String userPrefix = "U";
 
   @Autowired
-  public ImageServiceImpl(UserDao userDao, ImageDao imageDao) {
+  public ImageServiceImpl(UserDao userDao, ImageDao imageDao, BusinessService businessService,
+      ProductService productService) {
     this.userDao = userDao;
     this.imageDao = imageDao;
+    this.businessService = businessService;
+    this.productService = productService;
   }
 
   /**
    * Upload an image to a businesses product
+   *
    * @param businessId The identifier of a business
    * @param productId The identifier of a product to add the image to
    * @param image The image to be uploaded
    * @return The URL of the image just uploaded
    * @throws UserNotFoundException The users credentials could not be found from the JSessionID
+   * @throws BusinessNotFoundException When no business is found with the given id
+   * @throws ProductNotFoundException When no product is found with the given id
    */
   @Transactional
   public String uploadProductImage(long businessId, long productId, MultipartFile image)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, IOException {
     if (!businessService.isBusinessAdmin(businessId)) {
-      throw new BadCredentialsException("You must be an administer of the business to upload a product image");
+      throw new BadCredentialsException(
+          "You must be an administer of the business to upload a product image");
     }
+    Product productEntity = productService.getProduct(productId);
 
     // Get the file extension of the given file
     String fileName = StringUtils.cleanPath(image.getOriginalFilename());

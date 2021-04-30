@@ -1,12 +1,12 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 
 /**
  * A Data Access Object utilising Hibernate to connect to the database and run basic queries to retrieve products.
@@ -33,6 +33,23 @@ public class ProductDaoHibernateImpl implements ProductDao {
     public void saveProduct(Product product) {
         Session currentSession = getSession();
         currentSession.saveOrUpdate(product);
+    }
+
+    /**
+     * This method returns a product from the database.
+     *
+     * @param productId The id of the product to be retreived.
+     * @return Product to be returned
+     * @throws ProductNotFoundException when no product is found
+     */
+    @Override
+    public Product getProduct(long productId) throws ProductNotFoundException {
+        Session currentSession = getSession();
+        Product product = currentSession.get(Product.class, productId);
+        if (product == null) {
+            throw new ProductNotFoundException(productId);
+        }
+        return product;
     }
 
     /**
