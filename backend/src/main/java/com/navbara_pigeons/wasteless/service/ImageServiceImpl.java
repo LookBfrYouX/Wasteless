@@ -199,7 +199,7 @@ public class ImageServiceImpl implements ImageService {
 
   @Transactional
   public void deleteProductImage(long imageId, long businessId, long productId)
-          throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException {
+          throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException, IOException {
     if (!this.businessService.isBusinessAdmin(businessId) || !this.userService.isAdmin()){
       throw new InsufficientPrivilegesException("You can not administer this business");
     }
@@ -210,6 +210,7 @@ public class ImageServiceImpl implements ImageService {
     product.deleteProductImage(imageId);
     this.productService.saveProduct(product);
     this.imageDao.deleteImage(image);
+    this.imageDao.deleteProductImageFromMachine(imgPath);
     // get product
     // get path
     // remove from database

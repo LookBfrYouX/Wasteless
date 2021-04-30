@@ -18,7 +18,8 @@ public interface ImageService {
   void changePrimaryImage(long businessId, long productId, long imageId)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException;
 
-  void deleteProductImage(long imageId, long businessId, long productId) throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException;
+  void deleteProductImage(long imageId, long businessId, long productId) throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException, IOException;
 
   void deleteUserImage(long userId);
+
 }

@@ -178,6 +178,9 @@ public class ImageController {
     } catch (ImageNotFoundException e) {
       e.printStackTrace();
       throw new ResponseStatusException(HttpStatus.valueOf(406));
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(500));
     }
   }
 
