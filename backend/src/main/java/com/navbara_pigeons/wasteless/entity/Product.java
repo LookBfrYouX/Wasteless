@@ -16,6 +16,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import lombok.Data;
 
 @Data
@@ -87,5 +89,22 @@ public class Product {
       }
     }
     throw new ProductNotFoundException();
+  }
+
+  public void deleteProductImage(long id) throws ImageNotFoundException {
+    Image imageToRemove = getImageById(id);
+    if (this.primaryProductImage == imageToRemove) {
+      this.primaryProductImage = null;
+    }
+    this.productImages.remove(getImageById(id));
+  }
+
+  public Image getImageById(long id) throws ImageNotFoundException {
+    for (Image image : this.productImages) {
+      if (image.getId() == id) {
+        return image;
+      }
+    }
+    throw new ImageNotFoundException("The image can't be found");
   }
 }

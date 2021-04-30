@@ -1,8 +1,6 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.service.ImageService;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -53,7 +46,7 @@ public class ImageController {
       String response = imageService.uploadProductImage(businessId, productId, image);
       log.info(
           "PRODUCT " + productId + " SUCCESSFULLY UPLOADED IMAGE " + image.getOriginalFilename() +
-              " TO BUSINESS " + businessId);
+          " TO BUSINESS " + businessId);
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + productId);
@@ -160,6 +153,31 @@ public class ImageController {
     } catch (Exception exc) {
       log.error("FAILED WHEN DOWNLOADING PROFILE IMAGE");
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
+    }
+  }
+
+  @DeleteMapping("/businesses/{businessId}/products/{productId}/images/{imageId}")
+  public ResponseEntity deleteProductImage(@PathVariable String businessId, @PathVariable String productId, @PathVariable String imageId) {
+    // TODO
+    try {
+      this.imageService.deleteProductImage(Long.parseLong(imageId), Long.parseLong(businessId), Long.parseLong(productId));
+      log.info("DELETED PRODUCT IMAGE - PRODUCT " + productId + " : IMAGE " + imageId);
+      return new ResponseEntity(HttpStatus.valueOf(200));
+    } catch (UserNotFoundException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(406));
+    } catch (BusinessNotFoundException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(406));
+    } catch (InsufficientPrivilegesException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(403));
+    } catch (ProductNotFoundException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(406));
+    } catch (ImageNotFoundException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.valueOf(406));
     }
   }
 
