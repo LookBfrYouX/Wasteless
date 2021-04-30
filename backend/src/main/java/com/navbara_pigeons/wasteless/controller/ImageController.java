@@ -123,29 +123,28 @@ public class ImageController {
 
   @DeleteMapping("/businesses/{businessId}/products/{productId}/images/{imageId}")
   public ResponseEntity deleteProductImage(@PathVariable String businessId, @PathVariable String productId, @PathVariable String imageId) {
-    // TODO
     try {
       this.imageService.deleteProductImage(Long.parseLong(imageId), Long.parseLong(businessId), Long.parseLong(productId));
       log.info("DELETED PRODUCT IMAGE - PRODUCT " + productId + " : IMAGE " + imageId);
       return new ResponseEntity(HttpStatus.valueOf(200));
     } catch (UserNotFoundException e) {
-      e.printStackTrace();
-      throw new ResponseStatusException(HttpStatus.valueOf(406));
+      log.error("NO USER LOGGED IN");
+      throw new ResponseStatusException(HttpStatus.valueOf(406), "The user was not found");
     } catch (BusinessNotFoundException e) {
-      e.printStackTrace();
-      throw new ResponseStatusException(HttpStatus.valueOf(406));
+      log.error("BUSINESS NOT FOUND ERROR: " + businessId);
+      throw new ResponseStatusException(HttpStatus.valueOf(406), "The business was not found");
     } catch (InsufficientPrivilegesException e) {
-      e.printStackTrace();
-      throw new ResponseStatusException(HttpStatus.valueOf(403));
+      log.error("INSUFFICIENT PRIVILEGES: " + businessId);
+      throw new ResponseStatusException(HttpStatus.valueOf(403), "You are not admin/business admin");
     } catch (ProductNotFoundException e) {
-      e.printStackTrace();
-      throw new ResponseStatusException(HttpStatus.valueOf(406));
+      log.error("PRODUCT NOT FOUND ERROR: " + productId);
+      throw new ResponseStatusException(HttpStatus.valueOf(406), "The product was not found");
     } catch (ImageNotFoundException e) {
-      e.printStackTrace();
-      throw new ResponseStatusException(HttpStatus.valueOf(406));
+      log.error("IMAGE NOT FOUND ERROR: " + imageId);
+      throw new ResponseStatusException(HttpStatus.valueOf(406), "The image was not found");
     } catch (IOException e) {
-      e.printStackTrace();
-      throw new ResponseStatusException(HttpStatus.valueOf(500));
+      log.error("UNABLE TO UNLINK IMAGE FILE FROM FILE SYSTEM");
+      throw new ResponseStatusException(HttpStatus.valueOf(500), "Could not delete image");
     }
   }
 
