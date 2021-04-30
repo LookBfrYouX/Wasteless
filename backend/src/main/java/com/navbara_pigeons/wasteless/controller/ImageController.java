@@ -51,7 +51,7 @@ public class ImageController {
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (UserNotFoundException exc) {
       log.error("PRODUCT NOT FOUND ERROR: " + productId);
-      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The product does not exist");
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, exc.getMessage());
     } catch (BadCredentialsException exc) {
       // TODO: catch custom exc here
       log.error("INSUFFICIENT PRIVILEGES: " + productId);
