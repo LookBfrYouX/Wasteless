@@ -82,7 +82,6 @@ public class Product {
       this.primaryProductImage = null;
     }
     this.productImages.remove(getImageById(id));
-    System.out.println("REMOVING IMAGE: " + id);
   }
 
   public Image getImageById(long id) throws ImageNotFoundException {

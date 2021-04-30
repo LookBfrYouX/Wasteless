@@ -187,8 +187,6 @@ public class ImageServiceImpl implements ImageService {
     product.deleteProductImage(imageId);
     this.productService.saveProduct(product);
     this.imageDao.deleteImage(image);
-    System.out.println(thumbPath);
-    System.out.println(imgPath);
     // get product
     // get path
     // remove from database

@@ -125,8 +125,8 @@ public class ImageController {
   public ResponseEntity deleteProductImage(@PathVariable String businessId, @PathVariable String productId, @PathVariable String imageId) {
     // TODO
     try {
-      System.out.println(businessId + " : " + productId + " : " + imageId);
       this.imageService.deleteProductImage(Long.parseLong(imageId), Long.parseLong(businessId), Long.parseLong(productId));
+      log.info("DELETED PRODUCT IMAGE - PRODUCT " + productId + " : IMAGE " + imageId);
       return new ResponseEntity(HttpStatus.valueOf(200));
     } catch (UserNotFoundException e) {
       e.printStackTrace();
