@@ -31,6 +31,44 @@ public class ImageController {
     this.imageService = imageService;
   }
 
+  /**
+   * Add image to business' product
+   *
+   * @param businessId id of the business
+   * @param productId  id of the product
+   * @param image      image to be added
+   * @return url of the uploaded image
+   */
+  @PostMapping("/businesses/{businessId}/products/{productId}/images")
+  public ResponseEntity<String> uploadProductImage(@PathVariable long businessId,
+      @PathVariable long productId, @RequestParam MultipartFile image) {
+    try {
+      // TODO: create service
+      String response = imageService.uploadProductImage(businessId, productId, image);
+      log.info(
+          "PRODUCT " + productId + " SUCCESSFULLY UPLOADED IMAGE " + image.getOriginalFilename() +
+          "TO BUSINESS" + businessId);
+      return new ResponseEntity<>(response, HttpStatus.CREATED);
+    } catch (UserNotFoundException exc) {
+      log.error("PRODUCT NOT FOUND ERROR: " + productId);
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The product does not exist");
+    } catch (BadCredentialsException exc) {
+      // TODO: catch custom exc here
+      log.error("INSUFFICIENT PRIVILEGES: " + productId);
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, exc.getMessage());
+    } catch (Exception exc) {
+      log.error("FAILED WHEN UPLOADING PRODUCT IMAGE");
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
+    }
+  }
+
+  /**
+   * Add image to users profile
+   *
+   * @param id id of the user
+   * @param image image to be added
+   * @return url of the uploaded image
+   */
   @PostMapping("/users/{id}/images")
   public ResponseEntity<String> uploadProfileImage(@PathVariable long id,
       @RequestParam MultipartFile image) {
@@ -51,6 +89,11 @@ public class ImageController {
     }
   }
 
+  /**
+   * Download the image for the specified user.
+   * @param id The identifier of the user
+   * @return The byte array of the users profile image
+   */
   @GetMapping(
       value = "/users/{id}/images",
       produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE}
