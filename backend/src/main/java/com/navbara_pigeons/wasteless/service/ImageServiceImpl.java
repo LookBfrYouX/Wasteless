@@ -77,9 +77,32 @@ public class ImageServiceImpl implements ImageService {
     }
     imageDao.saveProductImageToMachine(image, imageEntity.getFilename());
     imageDao.saveProductImageToDb(imageEntity);
+    System.out.println(productEntity.getPrimaryProductImage());
+    System.out.println(productEntity.getProductImages());
 
     // Return the URI for to download the image
     return "/images/product/" + imageEntity.getFilename();
+  }
+
+  /**
+   * Change primary image
+   *
+   * @param businessId The identifier of a business
+   * @param productId The identifier of a product to add the image to
+   * @param imageId The identifier of an image to be set as the primary image
+   */
+  public void changePrimaryImage(long businessId, long productId, long imageId)
+      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
+    if (!businessService.isBusinessAdmin(businessId)) {
+      throw new BadCredentialsException(
+          "You must be an administer of the business to upload a product image");
+    }
+    Product productEntity = productService.getProduct(productId);
+    Image newPrimaryImage = productEntity.getImageById(imageId);
+    productEntity.setPrimaryProductImage(newPrimaryImage);
+    //save change to db somehow
+    System.out.println(productEntity.getPrimaryProductImage());
+    System.out.println(productEntity.getProductImages());
   }
 
   /**

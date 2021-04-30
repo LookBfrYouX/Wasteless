@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,5 +73,19 @@ public class Product {
       this.productImages = new ArrayList<>();
     }
     this.productImages.add(image);
+  }
+
+  /**
+   * This is a helper method for getting a image by it's id.
+   *
+   * @param imageId The id of the image being searched for.
+   */
+  public Image getImageById (Long imageId) throws ProductNotFoundException {
+    for (Image image : this.productImages) {
+      if (image.getId() == imageId) {
+        return image;
+      }
+    }
+    throw new ProductNotFoundException();
   }
 }

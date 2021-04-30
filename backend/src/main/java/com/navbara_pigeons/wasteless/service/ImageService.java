@@ -15,4 +15,7 @@ public interface ImageService {
 
   String uploadProductImage(long businessId, long productId, MultipartFile image)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, IOException;
+
+  void changePrimaryImage(long businessId, long productId, long imageId)
+      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException;
 }

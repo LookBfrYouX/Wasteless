@@ -1,6 +1,8 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.Image;
+import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.entity.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,6 +10,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import javax.persistence.EntityManager;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
