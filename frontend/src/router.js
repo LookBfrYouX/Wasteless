@@ -66,6 +66,12 @@ export const router = new VueRouter({
       component: CreateProduct
     },
     {
+      name: "editProductImages",
+      path: "/editproductimages/:productId(\\d+)",
+      component: () => import("./components/EditProductImages.vue"),
+      props: route => ({ productId: parseInt(route.params.productId, 10)})
+    },
+    {
       name: "productCatalogue",
       path: "/productcatalogue",
       component: ProductCatalogue

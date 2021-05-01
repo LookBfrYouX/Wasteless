@@ -238,5 +238,20 @@ export default {
     }).catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {});
     });
+  },
+
+  uploadProductImage: (image, businessId, productId) => {
+    const formData = new FormData();
+    formData.append("image", image);
+    return instance.post(`/businesses/${businessId}/products/${productId}/images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        403: "You don't have permission to upload the images.",
+        406: "Could not upload the image."
+      });
+    });
   }
 }
