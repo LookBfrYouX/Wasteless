@@ -73,6 +73,9 @@ public class ImageServiceImpl implements ImageService {
     cropImageToSquare(image, fileExtension, fileName);
     Image imageEntity = new Image(fileExtension);
     productEntity.addProductImage(imageEntity);
+    if (productEntity.getPrimaryProductImage() == null) {
+      productEntity.setPrimaryProductImage(imageEntity);
+    }
     imageDao.saveProductImageToMachine(image, imageEntity.getFilename());
     imageDao.saveProductImageToDb(imageEntity);
 
@@ -95,7 +98,8 @@ public class ImageServiceImpl implements ImageService {
     }
     Product productEntity = productService.getProduct(productId);
     Image newPrimaryImage = productEntity.getImageById(imageId);
-    //changing primary product image to be first image in list
+    productEntity.setPrimaryProductImage(newPrimaryImage);
+    this.productService.saveProduct(productEntity);
   }
 
   /**
@@ -205,7 +209,7 @@ public class ImageServiceImpl implements ImageService {
   @Transactional
   public void deleteProductImage(long imageId, long businessId, long productId)
           throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException, IOException {
-    if (!this.businessService.isBusinessAdmin(businessId) || !this.userService.isAdmin()){
+    if (!this.businessService.isBusinessAdmin(businessId) && !this.userService.isAdmin()){
       throw new InsufficientPrivilegesException("You can not administer this business");
     }
     Product product = this.productService.getProduct(productId);

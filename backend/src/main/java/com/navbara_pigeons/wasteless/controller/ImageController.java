@@ -81,7 +81,7 @@ public class ImageController {
       imageService.changePrimaryImage(businessId, productId, imageId);
       log.info(
           "BUSINESS " + businessId + " SUCCESSFULLY UPDATED PRODUCT " + productId +
-              "'s PRIMARY IMAGE TO " + imageId);
+              "'s PRIMARY IMAGE TO IMAGE " + imageId);
       return new ResponseEntity<>(HttpStatus.CREATED);
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + productId);

@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
@@ -43,6 +45,10 @@ public class Product {
   @Column(name = "CREATED")
   private ZonedDateTime created;
 
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "PRIMARY_IMAGE_ID", referencedColumnName = "ID")
+  private Image primaryProductImage;
+
   @OneToMany(
       fetch = FetchType.LAZY,
       cascade = {
@@ -72,6 +78,10 @@ public class Product {
   }
 
   public void deleteProductImage(long id) throws ImageNotFoundException {
+    Image imageToRemove = getImageById(id);
+    if (this.primaryProductImage == imageToRemove) {
+      this.primaryProductImage = null;
+    }
     this.productImages.remove(getImageById(id));
   }
 
@@ -82,5 +92,13 @@ public class Product {
       }
     }
     throw new ImageNotFoundException("The image can't be found");
+  }
+
+  public List<Image> getImages() {
+    List<Image> images = this.getProductImages();
+    Image primaryImage = this.getPrimaryProductImage();
+    images.remove(primaryImage);
+    images.add(0, primaryImage);
+    return images;
   }
 }
