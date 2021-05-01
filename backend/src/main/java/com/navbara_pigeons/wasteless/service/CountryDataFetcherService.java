@@ -36,7 +36,7 @@ public class CountryDataFetcherService {
      * @param path path to JSON response
      * @throws IOException
      */
-    public void reloadCountryDataFromDisk(Path path) throws IOException
+    protected void reloadCountryDataFromDisk(Path path) throws IOException
     {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
