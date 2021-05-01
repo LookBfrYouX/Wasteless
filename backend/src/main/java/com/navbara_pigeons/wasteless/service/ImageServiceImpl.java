@@ -73,13 +73,8 @@ public class ImageServiceImpl implements ImageService {
     cropImageToSquare(image, fileExtension, fileName);
     Image imageEntity = new Image(fileExtension);
     productEntity.addProductImage(imageEntity);
-    if (productEntity.getPrimaryProductImage() == null) {
-      productEntity.setPrimaryProductImage(imageEntity);
-    }
     imageDao.saveProductImageToMachine(image, imageEntity.getFilename());
     imageDao.saveProductImageToDb(imageEntity);
-    System.out.println(productEntity.getPrimaryProductImage());
-    System.out.println(productEntity.getProductImages());
 
     // Return the URI for to download the image
     return "/images/product/" + imageEntity.getFilename();
@@ -93,17 +88,14 @@ public class ImageServiceImpl implements ImageService {
    * @param imageId The identifier of an image to be set as the primary image
    */
   public void changePrimaryImage(long businessId, long productId, long imageId)
-      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
+      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, ImageNotFoundException {
     if (!businessService.isBusinessAdmin(businessId)) {
       throw new BadCredentialsException(
           "You must be an administer of the business to upload a product image");
     }
     Product productEntity = productService.getProduct(productId);
     Image newPrimaryImage = productEntity.getImageById(imageId);
-    productEntity.setPrimaryProductImage(newPrimaryImage);
-    //save change to db somehow
-    System.out.println(productEntity.getPrimaryProductImage());
-    System.out.println(productEntity.getProductImages());
+    //changing primary product image to be first image in list
   }
 
   /**
