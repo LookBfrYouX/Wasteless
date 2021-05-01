@@ -80,7 +80,7 @@ export default {
   /* creates vue variables to be manipulates
      initilizes object with methods and data
   */
-  name: "Login Page",
+  name: "Login",
   components: {},
 
   data() {

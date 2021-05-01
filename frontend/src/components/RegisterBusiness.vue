@@ -88,7 +88,7 @@ const Api = require("../Api").default;
 const AddressForm = require("./AddressForm").default;
 
 export default {
-  name: "Register Business",
+  name: "RegisterBusiness",
 
   components: {
     "address-form": AddressForm,

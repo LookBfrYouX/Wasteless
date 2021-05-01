@@ -32,16 +32,16 @@ describe("numPages", () => {
 
   test("One page", () => {
     wrapper.setData({
-      results: Array(1).fill({})
+      results: Array(7).fill({})
     });
 
     wrapper.vm.setPages();
     expect(wrapper.vm.pages).toEqual([0]);
   });
 
-  test("10 pages", () => {
+  test("8 pages", () => {
     wrapper.setData({
-      results: Array(80).fill({})
+      results: Array(8).fill({})
     });
 
     wrapper.vm.setPages();

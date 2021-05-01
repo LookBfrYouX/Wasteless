@@ -97,7 +97,7 @@ import ErrorModal from "./Errors/ErrorModal.vue";
 const Api = require("./../Api").default;
 
 const ProductCatalogue = {
-  name: "Product Catalogue",
+  name: "ProductCatalogue",
   components: {ErrorModal},
   /*has a search prop from app.vue*/
   data: function () {

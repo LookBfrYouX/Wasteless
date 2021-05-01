@@ -99,7 +99,7 @@ import ErrorModal from "./Errors/ErrorModal.vue";
 const Api = require("./../Api").default;
 
 const SearchResults = {
-  name: "Search Results",
+  name: "SearchResults",
   components: {ErrorModal},
   /*has a search prop from app.vue*/
   props: ['search'],

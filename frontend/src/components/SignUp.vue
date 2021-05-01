@@ -234,7 +234,7 @@ const AddressForm = require("./AddressForm").default;
 import countryCodesJson from "./../assets/countryCodes.json";
 
 export default {
-  name: "Sign Up Page",
+  name: "SignUp",
 
   components: {
     "address-form": AddressForm

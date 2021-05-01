@@ -47,7 +47,7 @@
 const Api = require("./../Api").default;
 
 export default {
-  name: 'Business Profile',
+  name: 'BusinessProfile',
   components: {},
 
   data() {

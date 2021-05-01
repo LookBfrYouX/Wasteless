@@ -199,7 +199,7 @@ const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "Ju
 Object.freeze(MONTH_NAMES);
 
 export default {
-  name: 'ProfilePage',
+  name: 'Profile',
   components: {ErrorModal},
 
   data() {

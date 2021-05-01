@@ -29,7 +29,7 @@
             </li>
             <!-- Product catalog link -->
             <li class="navbar-item mr-lg-auto" v-if="isActingAsBusiness">
-              <a class="nav-link" v-on:click="pushOrGo('productCatalogue')">
+              <a class="nav-link" v-on:click="pushOrGo('Product Catalogue')">
                 Catalogue
               </a>
             </li>
