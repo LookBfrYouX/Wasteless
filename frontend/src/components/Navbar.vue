@@ -136,7 +136,7 @@
 
 
 <script>
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 import ErrorModal from "./Errors/ErrorModal";
 
 export default {

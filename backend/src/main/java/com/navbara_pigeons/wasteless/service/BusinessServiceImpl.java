@@ -114,7 +114,7 @@ public class BusinessServiceImpl implements BusinessService {
     response.put("created", business.getCreated());
 
     JSONObject address = new JSONObject();
-    response.put("homeAddress", address);
+    response.put("address", business.getAddress());
     response.put("primaryAdministratorId", business.getPrimaryAdministratorId());
 
     // Email of user that made the request

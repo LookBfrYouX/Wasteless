@@ -192,7 +192,7 @@
 import ErrorModal from './Errors/ErrorModal.vue';
 import {ApiRequestError} from "./../ApiRequestError";
 
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August",
   "September", "October", "November", "December"];

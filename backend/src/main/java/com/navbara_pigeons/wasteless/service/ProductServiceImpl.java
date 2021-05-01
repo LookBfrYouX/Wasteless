@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Currency;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
@@ -30,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     private final BusinessDao businessDao;
     private final ProductDao productDao;
     private final UserDao userDao;
+    private final CountryDataFetcherService countryDataFetcherService;
     private final UserService userService;
     private final BusinessService businessService;
 
@@ -38,14 +40,16 @@ public class ProductServiceImpl implements ProductService {
      * service for interacting with all business related services.
      *
      * @param businessDao The BusinessDataAccessObject.
+     * @param countryDataFetcherService
      */
      @Autowired
-     public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao, UserDao userDao, UserService userService, BusinessService businessService) {
+     public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao, UserDao userDao, UserService userService, BusinessService businessService, CountryDataFetcherService countryDataFetcherService) {
         this.businessDao = businessDao;
         this.productDao = productDao;
         this.userDao = userDao;
         this.userService = userService;
         this.businessService = businessService;
+        this.countryDataFetcherService = countryDataFetcherService;
     }
 
     /**
@@ -107,10 +111,15 @@ public class ProductServiceImpl implements ProductService {
       product.setName((jsonProduct.get("name") != null ? jsonProduct.get("name") : "").toString());
       product.setDescription((jsonProduct.get("description") != null ? jsonProduct.get("description") : "").toString());
       product.setRecommendedRetailPrice(Double.parseDouble(jsonProduct.getOrDefault("recommendedRetailPrice", 0.0).toString()));
-      // Product validation
+
+      Currency currency = countryDataFetcherService.getCurrencyForCountry(business.getAddress().getCountry());
+      if (currency == null) throw new ProductRegistrationException("Unknown country; cannot set currency");
+      product.setCurrency(currency.getCode());
+
       if (!ProductServiceValidation.requiredFieldsNotEmpty(product)) {
         throw new ProductRegistrationException();
       }
+
       product.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
       productDao.saveProduct(product);
 

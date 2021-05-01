@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Entity
 @Table(name = "ADDRESS")

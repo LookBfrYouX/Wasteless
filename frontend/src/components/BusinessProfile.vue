@@ -14,10 +14,10 @@
         <li class="row">
           <dt class="col-md label">Address:</dt>
           <dd class="col-md value"> {{
-              [businessInfo.homeAddress.streetNumber + " " +
-              businessInfo.homeAddress.streetName, businessInfo.homeAddress.city,
-                businessInfo.homeAddress.region, businessInfo.homeAddress.country,
-                businessInfo.homeAddress.postcode].join(", ")
+              [businessInfo.address.streetNumber + " " +
+              businessInfo.address.streetName, businessInfo.address.city,
+                businessInfo.address.region, businessInfo.address.country,
+                businessInfo.address.postcode].join(", ")
             }}
           </dd>
         </li>
@@ -32,6 +32,7 @@
         </div>
       </div>
       <button
+          v-if="this.$stateStore.getters.getActingAs() && this.$stateStore.getters.getActingAs().id == businessInfo.id"
           class="btn btn-white-bg-primary mx-1 d-flex"
           type="button"
           v-on:click="createProduct()"
@@ -44,7 +45,7 @@
 </template>
 
 <script>
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 
 export default {
   name: 'BusinessProfile',
@@ -55,7 +56,7 @@ export default {
       businessInfo: {
         name: "",
         description: "",
-        homeAddress: "",
+        address: {},
         businessType: "",
       },
       errorMessage: "",
@@ -93,7 +94,6 @@ export default {
     parseApiResponse: async function (apiCall) {
       try {
         const response = await apiCall;
-        console.log(response.data);
         this.businessInfo = response.data;
       } catch (err) {
         alert(

@@ -25,8 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class BusinessServiceImplTest extends ServiceTestProvider {
-
-
+  
   @Test
   void saveBusinessInvalidBusinessTypes() {
     // Test invalid businessType fields
@@ -66,14 +65,6 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
 
     Business testBusiness = makeBusiness();
     testBusiness.getAddress().setCountry("Fake Zealand");
-    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
-  }
-
-  @Test void saveBusinessNoCountryDataTest() {
-    loginWithCredentials();
-    countryDataFetcherService.resetCountryData();
-    Business testBusiness = makeBusiness();
-    testBusiness.getAddress().setCountry("New Zealand");
     assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 }

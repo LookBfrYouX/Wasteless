@@ -18,12 +18,9 @@ import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import net.minidev.json.JSONObject;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,13 +86,6 @@ class UserServiceImplTest extends ServiceTestProvider {
       actuallyDeleteUser(user);
       throw throwable;
     }
-  }
-
-  @BeforeEach
-  void loadCountryData() throws URISyntaxException, IOException {
-    if (!countryDataFetcherService.dataLoaded()) countryDataFetcherService.reloadCountryDataFromDisk(
-            Path.of(ClassLoader.getSystemClassLoader().getResource("countryDataFetcherService/standard.json").toURI())
-    );
   }
 
   @Test
@@ -165,14 +155,6 @@ class UserServiceImplTest extends ServiceTestProvider {
     user.getHomeAddress().setCountry("Fake Zealand");
     trySaveUserExpectError(user);
   }
-
-  @Test
-  @Transactional
-  void noCountryData() throws Throwable {
-    countryDataFetcherService.resetCountryData();
-    trySaveUserExpectError(makeUser(), UserRegistrationException.class);
-  }
-
 
   @Test
   @Transactional

@@ -41,7 +41,7 @@ const instance = axios.create({
   withCredentials: true
 });
 
-export default {
+export const Api = {
   /**
    * Sends login request
    * @param props object with 'email' and 'password'
@@ -185,24 +185,16 @@ export default {
     });
   },
 
-  getCurrencies: (country) => {
-    return fetch(`https://restcountries.eu/rest/v2/name/${country}`)
-        .then(res => res.json())
-        .catch(err => {
-        throw ApiRequestError.createFromMessageMap(err);
-      });
-    },
-
-    /**
-     * Calls Photon API to fetch address suggestions
-     * @param {*} query query string
-     * @returns {Promise<Object[]>} array of photon response objects, or error
-     */
-    addressSuggestions: async function(query) {
-      return fetch(`https://photon.komoot.io/api?q=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .catch(err => { throw ApiRequestError.createFromMessageMap(err) });
-    },
+  /**
+   * Calls Photon API to fetch address suggestions
+   * @param {*} query query string
+   * @returns {Promise<Object[]>} array of photon response objects, or error
+   */
+  addressSuggestions: async function(query) {
+    return fetch(`https://photon.komoot.io/api?q=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .catch(err => { throw ApiRequestError.createFromMessageMap(err) });
+  },
 
   /**
    * Logs the user out client-side and redirects to a logout page

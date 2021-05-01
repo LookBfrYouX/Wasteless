@@ -15,6 +15,7 @@ beforeEach(() => {
 
       });
     }), ...globalStateMocks()},
+    stubs: ["router-link"]
   });
 });
 

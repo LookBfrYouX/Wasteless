@@ -96,7 +96,7 @@
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
 
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 
 const SearchResults = {
   name: "SearchResults",

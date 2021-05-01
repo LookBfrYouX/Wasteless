@@ -78,7 +78,7 @@
 <script>
 import {store} from '../store';
 
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August",
   "September", "October", "November", "December"];

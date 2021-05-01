@@ -2,12 +2,13 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
-import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import net.minidev.json.JSONObject;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -46,21 +47,45 @@ public class ProductServiceImplTest extends ServiceTestProvider {
         }
     }
 
+    Product findProductWithName(long businessId, String productName) throws BusinessNotFoundException, UserNotFoundException, InsufficientPrivilegesException {
+        Product savedProduct = null;
+        for(Product product: productService.getProducts(String.valueOf(businessId))) {
+            if (product.getName() == productName) {
+                // Find product with the same name
+                savedProduct = product;
+                break;
+            }
+        }
+
+        assertNotNull(savedProduct, "Couldn't find saved product");
+        return savedProduct;
+    }
+
     @Test
     @Transactional
     @WithUserDetails(value="dnb36@uclive.ac.nz")
-    void createProductExpectOk() {
-        try {
-            JSONObject mockProduct = new JSONObject();
-            mockProduct.put("name", "Pizza");
-            Business mockBusiness = makeBusiness("testBusiness");
-            businessService.saveBusiness(mockBusiness);
-            assertDoesNotThrow(() -> productService.addProduct(mockBusiness.getId(), mockProduct));
-            // Fail test if any unexpected exceptions occur
-        } catch (Exception exc) {
-            exc.printStackTrace();
-            assertTrue(false);
-        }
+    void createProductExpectOk() throws UserNotFoundException, BusinessTypeException, BusinessRegistrationException, InsufficientPrivilegesException, BusinessNotFoundException {
+        JSONObject mockProduct = new JSONObject();
+        final String name = "Pizza";
+        final double price = 9.99;
+        final String description = "DESCRIPTION";
+        
+        Business mockBusiness = makeBusiness("testBusiness");
+        businessService.saveBusiness(mockBusiness);
+        
+        mockProduct.put("name", name);
+        mockProduct.put("recommendedRetailPrice", price);
+        mockProduct.put("description", description);
+
+        assertDoesNotThrow(() -> productService.addProduct(mockBusiness.getId(), mockProduct));
+
+        Product savedProduct = findProductWithName(mockBusiness.getId(), name);
+        assertEquals(name, savedProduct.getName());
+        assertEquals("NZD", savedProduct.getCurrency());
+        assertEquals(price, savedProduct.getRecommendedRetailPrice());
+        assertEquals(description, savedProduct.getDescription());
+        // Delta between date created and current time less than a second
+        assertTrue(Math.abs(savedProduct.getCreated().toInstant().toEpochMilli() - System.currentTimeMillis()) < 1000);
     }
 
     @Test
@@ -92,3 +117,4 @@ public class ProductServiceImplTest extends ServiceTestProvider {
         }
     }
 }
+
