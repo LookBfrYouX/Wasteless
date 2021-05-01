@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,4 +94,11 @@ public class Product {
     throw new ImageNotFoundException("The image can't be found");
   }
 
+  public List<Image> getImages() {
+    List<Image> images = this.getProductImages();
+    Image primaryImage = this.getPrimaryProductImage();
+    images.remove(primaryImage);
+    images.add(0, primaryImage);
+    return images;
+  }
 }

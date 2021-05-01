@@ -61,7 +61,42 @@ public class ImageController {
       log.error("INSUFFICIENT PRIVILEGES: " + productId);
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, exc.getMessage());
     } catch (Exception exc) {
-      log.error("FAILED WHEN UPLOADING PRODUCT IMAGE: " + exc);
+      log.error("FAILED WHEN UPLOADING PRODUCT IMAGE");
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
+    }
+  }
+
+  /**
+   * Add image to business's product
+   *
+   * @param businessId id of the business
+   * @param productId  id of the product
+   * @param imageId    id of the image to set as primary image
+   * @return The URI for the relative image location
+   */
+  @PutMapping("/businesses/{businessId}/products/{productId}/images/{imageId}/makeprimary")
+  public ResponseEntity<String> changePrimaryImage(@PathVariable long businessId,
+      @PathVariable long productId, @PathVariable long imageId) {
+    try {
+      imageService.changePrimaryImage(businessId, productId, imageId);
+      log.info(
+          "BUSINESS " + businessId + " SUCCESSFULLY UPDATED PRODUCT " + productId +
+              "'s PRIMARY IMAGE TO IMAGE " + imageId);
+      return new ResponseEntity<>(HttpStatus.CREATED);
+    } catch (UserNotFoundException exc) {
+      log.error("USER NOT FOUND ERROR: " + productId);
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The user does not exist");
+    }catch (BusinessNotFoundException exc) {
+      log.error("BUSINESS NOT FOUND ERROR: " + productId);
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The business does not exist");
+    }catch (ProductNotFoundException exc) {
+      log.error("PRODUCT NOT FOUND ERROR: " + productId);
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, exc.getMessage());
+    } catch (BadCredentialsException exc) {
+      log.error("INSUFFICIENT PRIVILEGES: " + productId);
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, exc.getMessage());
+    } catch (Exception exc) {
+      log.error("FAILED WHEN UPDATING PRIMARY PRODUCT IMAGE: " + exc);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
     }
   }

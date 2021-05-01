@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.Image;
+import com.navbara_pigeons.wasteless.entity.Product;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

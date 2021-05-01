@@ -84,6 +84,25 @@ public class ImageServiceImpl implements ImageService {
   }
 
   /**
+   * Change primary image
+   *
+   * @param businessId The identifier of a business
+   * @param productId The identifier of a product to add the image to
+   * @param imageId The identifier of an image to be set as the primary image
+   */
+  public void changePrimaryImage(long businessId, long productId, long imageId)
+      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, ImageNotFoundException {
+    if (!businessService.isBusinessAdmin(businessId)) {
+      throw new BadCredentialsException(
+          "You must be an administer of the business to upload a product image");
+    }
+    Product productEntity = productService.getProduct(productId);
+    Image newPrimaryImage = productEntity.getImageById(imageId);
+    productEntity.setPrimaryProductImage(newPrimaryImage);
+    this.productService.saveProduct(productEntity);
+  }
+
+  /**
    * Upload a given profile image to the machine and store the image name in the database.
    *
    * @param image The image file to be saved
@@ -174,24 +193,33 @@ public class ImageServiceImpl implements ImageService {
     return new MockMultipartFile(fileName, baos.toByteArray());
   }
 
+  /**
+   * This service method deletes the product image associated with the business/product if the user has the
+   * correct permissions.
+   * @param imageId The ID of the image that is to be deleted.
+   * @param businessId The ID of the business whose product image is being deleted. (Used to check for user permissions)
+   * @param productId The ID of the product whose image is being deleted.
+   * @throws UserNotFoundException Thrown if no user is logged in.
+   * @throws BusinessNotFoundException Thrown if the business that owns the product does not exist.
+   * @throws InsufficientPrivilegesException Thrown if the user is not admin or business admin
+   * @throws ProductNotFoundException Thrown if the product in question does not exist.
+   * @throws ImageNotFoundException Thrown if the image in question does not exist.
+   * @throws IOException Thrown if the system is unable to delete the actual file from persistent storage.
+   */
   @Transactional
   public void deleteProductImage(long imageId, long businessId, long productId)
           throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException, IOException {
-    if (!this.businessService.isBusinessAdmin(businessId) || !this.userService.isAdmin()){
+    if (!this.businessService.isBusinessAdmin(businessId) && !this.userService.isAdmin()){
       throw new InsufficientPrivilegesException("You can not administer this business");
     }
     Product product = this.productService.getProduct(productId);
     Image image = product.getImageById(imageId);
-    String thumbPath = image.getThumbnailFilename();
+    String thumbPath = image.getThumbnailFilename(); // TODO also unlink this when thumbnails start being stored on disk
     String imgPath = image.getFilename();
     product.deleteProductImage(imageId);
     this.productService.saveProduct(product);
     this.imageDao.deleteImage(image);
     this.imageDao.deleteProductImageFromMachine(imgPath);
-    // get product
-    // get path
-    // remove from database
-    // unlink image from fs
   }
 
   public void deleteUserImage(long userId) {
