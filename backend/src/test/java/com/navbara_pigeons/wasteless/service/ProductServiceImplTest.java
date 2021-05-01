@@ -64,7 +64,7 @@ public class ProductServiceImplTest extends ServiceTestProvider {
     @Test
     @Transactional
     @WithUserDetails(value="dnb36@uclive.ac.nz")
-    void createProductExpectOk() throws UserNotFoundException, BusinessTypeException, BusinessRegistrationException, InsufficientPrivilegesException, BusinessNotFoundException {
+    void createProductExpectOk() throws UserNotFoundException, BusinessTypeException, BusinessRegistrationException, InsufficientPrivilegesException, BusinessNotFoundException, AddressValidationException {
         JSONObject mockProduct = new JSONObject();
         final String name = "Pizza";
         final double price = 9.99;

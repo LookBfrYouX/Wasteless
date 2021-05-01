@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
@@ -48,7 +49,10 @@ public class BusinessController {
         } catch(BusinessRegistrationException exc) {
             log.error("COULD NOT REGISTER BUSINESS (" + exc.getMessage() + "): " + business.getName());
             throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad Request");
-        }catch (Exception exc) {
+        } catch (AddressValidationException exc) {
+            log.error("COULD NOT REGISTER BUSINESS (" + exc.getMessage() + "): " + business.getName());
+            throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad address given");
+        } catch (Exception exc) {
             log.error("CRITICAL BUSINESS REGISTRATION ERROR (" + exc.getMessage() + ")");
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
         }

@@ -7,6 +7,7 @@ import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
@@ -57,7 +58,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
 
     Business testBusiness = makeBusiness();
     testBusiness.getAddress().setCountry("");
-    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
+    assertThrows(AddressValidationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 
   @Test void saveBusinessInvalidCountryTest() {
@@ -65,6 +66,6 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
 
     Business testBusiness = makeBusiness();
     testBusiness.getAddress().setCountry("Fake Zealand");
-    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
+    assertThrows(AddressValidationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 }

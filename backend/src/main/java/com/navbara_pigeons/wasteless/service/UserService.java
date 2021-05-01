@@ -1,10 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
@@ -15,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 public interface UserService {
 
   JSONObject saveUser(User user)
-      throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException;
+          throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException;
 
   JSONObject login(UserCredentials userCredentials)
       throws AuthenticationException, UserNotFoundException;

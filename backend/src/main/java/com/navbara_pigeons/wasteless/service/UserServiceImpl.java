@@ -1,12 +1,10 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
-import com.navbara_pigeons.wasteless.validation.AddressValidator;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -36,9 +34,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-  private final AddressDao addressDao;
   private final UserDao userDao;
-  private final AddressValidator addressValidator;
+  private final AddressService addressService;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final BCryptPasswordEncoder encoder;
 
@@ -50,17 +47,15 @@ public class UserServiceImpl implements UserService {
    * for interacting with all user related services.
    *
    * @param userDao                      The UserDataAccessObject.
-   * @param addressDao                   The AddressDataAccessObject
-   * @param addressValidator             The address validator
+   * @param addressService             The address service
    * @param authenticationManagerBuilder The global AuthenticationManagerBuilder.
    * @param encoder                      Password encoder.
    */
   @Autowired
-  public UserServiceImpl(UserDao userDao, AddressDao addressDao, AddressValidator addressValidator,
-      AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder encoder) {
+  public UserServiceImpl(UserDao userDao, AddressService addressService,
+                         AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder encoder) {
     this.userDao = userDao;
-    this.addressDao = addressDao;
-    this.addressValidator = addressValidator;
+    this.addressService = addressService;
     this.authenticationManagerBuilder = authenticationManagerBuilder;
     this.encoder = encoder;
   }
@@ -77,7 +72,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public JSONObject saveUser(User user)
-      throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException {
+          throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException {
     // Email validation
     if (!UserServiceValidation.requiredFieldsNotEmpty(user)) {
       throw new UserRegistrationException("Required user fields cannot be null");
@@ -104,19 +99,6 @@ public class UserServiceImpl implements UserService {
       throw new UserRegistrationException("Password does not pass validation check");
     }
 
-    // Address validation
-    if (!addressValidator.requiredFieldsNotEmpty(user.getHomeAddress())) {
-      throw new UserRegistrationException("Required address fields cannot be null");
-    }
-
-    Boolean countryValid = addressValidator.isCountryValid(user.getHomeAddress().getCountry());
-    if (countryValid == null) {
-      // TODO change this to a 500 error instead
-      throw new UserRegistrationException("Could not fetch list of countries for validation");
-    } else if (!countryValid.booleanValue()) {
-      throw new UserRegistrationException("Country does not exist is is not known");
-    }
-
     // Set user credentials for logging in after registering
     UserCredentials userCredentials = new UserCredentials();
     userCredentials.setEmail(user.getEmail());
@@ -125,7 +107,8 @@ public class UserServiceImpl implements UserService {
     user.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     user.setPassword(encoder.encode(user.getPassword()));
     user.setRole("ROLE_USER");
-    this.addressDao.saveAddress(user.getHomeAddress());
+
+    this.addressService.saveAddress(user.getHomeAddress());
     this.userDao.saveUser(user);
 
     // Logging in the user and returning the id
