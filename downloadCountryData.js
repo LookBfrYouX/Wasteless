@@ -40,7 +40,7 @@ const downloadCountryData = (temporaryFilePath) => {
 }
 
 /*
- * filtering data recieved from rest countries to only include required fields
+ * filtering data received from rest countries to only include required fields
  * also checks for null fields
  */
 const filterData = data => data
@@ -75,7 +75,7 @@ const pipeline = () => {
     fs.rmSync(temporaryFilePath);
   }).catch(err => {
     console.error(err);
-    process.exit(1);
+    // process.exit(1);
   });
 }
 
