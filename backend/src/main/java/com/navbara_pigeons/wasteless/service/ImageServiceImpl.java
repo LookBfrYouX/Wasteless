@@ -189,6 +189,19 @@ public class ImageServiceImpl implements ImageService {
     return new MockMultipartFile(fileName, baos.toByteArray());
   }
 
+  /**
+   * This service method deletes the product image associated with the business/product if the user has the
+   * correct permissions.
+   * @param imageId The ID of the image that is to be deleted.
+   * @param businessId The ID of the business whose product image is being deleted. (Used to check for user permissions)
+   * @param productId The ID of the product whose image is being deleted.
+   * @throws UserNotFoundException Thrown if no user is logged in.
+   * @throws BusinessNotFoundException Thrown if the business that owns the product does not exist.
+   * @throws InsufficientPrivilegesException Thrown if the user is not admin or business admin
+   * @throws ProductNotFoundException Thrown if the product in question does not exist.
+   * @throws ImageNotFoundException Thrown if the image in question does not exist.
+   * @throws IOException Thrown if the system is unable to delete the actual file from persistent storage.
+   */
   @Transactional
   public void deleteProductImage(long imageId, long businessId, long productId)
           throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException, IOException {
@@ -197,16 +210,12 @@ public class ImageServiceImpl implements ImageService {
     }
     Product product = this.productService.getProduct(productId);
     Image image = product.getImageById(imageId);
-    String thumbPath = image.getThumbnailFilename();
+    String thumbPath = image.getThumbnailFilename(); // TODO also unlink this when thumbnails start being stored on disk
     String imgPath = image.getFilename();
     product.deleteProductImage(imageId);
     this.productService.saveProduct(product);
     this.imageDao.deleteImage(image);
     this.imageDao.deleteProductImageFromMachine(imgPath);
-    // get product
-    // get path
-    // remove from database
-    // unlink image from fs
   }
 
   public void deleteUserImage(long userId) {
