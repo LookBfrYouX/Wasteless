@@ -49,7 +49,7 @@ export default {
       // if function it will simply call this method
     },
     retry: {
-      type: Function
+      required: true
     }
   },
   watch: {
@@ -78,6 +78,12 @@ export default {
       if (this.retry) {
         this.retry(event);
       }
+    },
+
+    hideCallbackEvent: function(event) {
+      if (this.hideCallback) {
+        this.hideCallback(event);
+      }
     }
   },
 
@@ -85,11 +91,18 @@ export default {
     this.modal = new Modal(this.$refs.modal);
     // Not in data so Vue won't track updates to it that we don't care about
     this.updateModalVisibility();
-    this.$refs.modal.addEventListener("hidden.bs.modal", event => {
-      if (this.hideCallback) {
-        this.hideCallback(event);
-      }
-    });
+    this.$refs.modal.addEventListener("hidden.bs.modal", this.hideCallbackEvent);
+  },
+
+  /**
+   * Hide the modal if it is open
+   */
+  beforeDestroy() {
+    if (this.modal) this.modal.hide(); // If navigation occurs while modal open, modal disapears but body has
+    // the modal open class
+    this.$refs.modal.removeEventListener("hidden.bs.modal", this.hideCallbackEvent);
   }
+
+
 }
 </script>
