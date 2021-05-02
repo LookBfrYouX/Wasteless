@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-100 d-flex justify-content-center signup-container gradient-background pb-4"
+    class="w-100 d-flex justify-content-center product-page-container gradient-background pb-4"
   >
     <div class="container">
       <form
@@ -125,7 +125,6 @@ export default {
 
   created() {
     this.getCurrencies(this.$stateStore.getters.getActingAs().address.country);
-    console.log(this.getCurrencies(this.$stateStore.getters.getActingAs().address.country))
   },
 
   methods: {
@@ -176,7 +175,7 @@ export default {
 </script>
 
 <style scoped>
-.signup-container > div {
+.product-page-container > div {
   max-width: 50em;
 }
 </style>

@@ -29,7 +29,6 @@ The parent component must provide `address` prop. When the address is updated in
           maxlength="50"
           name="streetnumber"
           placeholder="Street number"
-          required
           type="text"
 
           v-bind:suggestions="[]"
@@ -41,10 +40,10 @@ The parent component must provide `address` prop. When the address is updated in
       />
       <!-- No suggestions for street number -->
     </div>
-    <div class="form-group col-12 col-md-9">
+    <div class="form-group required col-12 col-md-9">
       <label>Street name</label>
       <suggestions
-          autocomplete="address-line"
+          autocomplete="street-address"
           inputClasses="form-control"
           maxlength="200"
           name="streetName"
@@ -60,7 +59,7 @@ The parent component must provide `address` prop. When the address is updated in
           v-on:suggestion="suggestionSelected"
       />
     </div>
-    <div class="form-group col-12 col-md-6">
+    <div class="form-group required col-12 col-md-6">
       <label>City</label>
       <suggestions
           autocomplete="address-level2"
@@ -79,7 +78,7 @@ The parent component must provide `address` prop. When the address is updated in
           v-on:suggestion="suggestionSelected"
       />
     </div>
-    <div class="form-group col-12 col-md-6">
+    <div class="form-group required col-12 col-md-6">
       <label>Region</label>
       <suggestions
           autocomplete="address-level1"
@@ -99,7 +98,7 @@ The parent component must provide `address` prop. When the address is updated in
       />
     </div>
     
-    <div class="form-group col-12 col-md-6">
+    <div class="form-group required col-12 col-md-6">
       <label>Post code</label>
       <suggestions
           autocomplete="postal-code"
@@ -230,6 +229,8 @@ export default {
         postcode,
         countrycode,
         country,
+        type,
+        name
         // osm_id,
       } = properties;
    
@@ -243,9 +244,16 @@ export default {
         // Add OSM country name to cache
       }
 
+      let streetName = street;
+      if (type === "street") {
+        // For some reason, sometimes we get results where housenumber or street name is undefined,
+        // type is road and the name property is the name of the road. No idea why
+        streetName = name;
+      }
+
       const components = {
         streetNumber: housenumber,
-        streetName: street,
+        streetName: streetName,
         city: county,
         region: state,
         postcode: postcode,
@@ -338,6 +346,7 @@ export default {
      */
     generateComparisonString(osmAddress) {
       if (osmAddress.housenumber && osmAddress.street) osmAddress["streetaddress"] = osmAddress.housenumber + " " + osmAddress.street;
+      else if (osmAddress.street) osmAddress["streetaddress"] = osmAddress.street;
       const components = [
         "streetaddress",
         "district",
@@ -362,7 +371,7 @@ export default {
     generateAddressSuggestions: function () {
       const suggestionsDict = {};
       // Using dict instead of array to remove duplicates (e.g. shops in a mall will have different name but otherwise same address)
-      
+
       const originalString = this.generateAddressString().toLocaleLowerCase();
       for (const {type, properties} of this.addressSuggestionsRaw) {
         if (type != "Feature") {
