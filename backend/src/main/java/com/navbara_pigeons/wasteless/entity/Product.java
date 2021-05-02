@@ -45,7 +45,7 @@ public class Product {
   @Column(name = "CREATED")
   private ZonedDateTime created;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "PRIMARY_IMAGE_ID", referencedColumnName = "ID")
   private Image primaryProductImage;
 
