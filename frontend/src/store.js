@@ -68,6 +68,7 @@ export const store = {
     },
 
     setActingAs: (business) => {
+      if (business === undefined || business === null) return store.actions.deleteActingAs();
       state.actingAs = business;
       localStorage.setItem("actingAs", JSON.stringify(state.actingAs));
     },

@@ -23,8 +23,8 @@
           <div class="d-lg-flex">
             <!--Profile page link -->
             <li class="nav-item mr-lg-auto" v-if="isLoggedIn">
-              <a class="nav-link" v-on:click="pushOrGo('profile')">
-                Profile
+              <a class="nav-link" v-on:click="profileClicked">
+                {{currentActingAs? "Business ": ""}} Profile
               </a>
             </li>
             <!-- Product catalog link -->
@@ -249,6 +249,45 @@ export default {
       });
     },
 
+    /**
+     * Profile button page clicked
+     * If acting as business, goes to business profile. Otherwise, user profile.
+     * If already on own profile page, reloads the page
+     */
+    profileClicked: async function() {
+      let reload = false;
+      let args;
+
+      if (this.currentActingAs == null) {
+        args = {
+          name: "profile"
+        }
+
+        if (this.$route.name === args.name && this.$route.params.userId === undefined) {
+          reload = true;
+        }
+      } else {
+        const businessId = this.currentActingAs.id;
+        args = {
+          name: "businessProfile",
+          params: {
+            businessId
+          }
+        }
+        if (this.$route.name === "businessProfile" &&
+            this.$route.params.businessId === businessId) {
+          reload = true;
+        }
+      }
+
+      if (reload) await this.$router.go();
+      else await this.$router.push(args);
+    },
+
+    /**
+     * Switch acting as user
+     * @param {Object} business
+     */
     switchActingAs: function (business) {
       if (business === null) {
         this.$stateStore.actions.deleteActingAs();
