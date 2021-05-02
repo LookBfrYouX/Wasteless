@@ -13,10 +13,14 @@
           <img v-bind:src="img.thumbnailFilename" class="img-fluid" />
         </div>
         <div class="d-flex flex-wrap justify-content-center">
-          <button v-if="i !== 0" class="btn btn-sm btn-primary m-1">
+          <button v-if="i !== 0"
+                  v-on:click="setAsPrimary(img.id)"
+                  class="btn btn-sm btn-primary m-1">
             Set as primary
           </button>
-          <button class="btn btn-sm btn-danger m-1">Delete</button>
+<!--          Primary image is the first image in the array. -->
+          <button v-on:click="deleteImage(img.id)"
+                  class="btn btn-sm btn-danger m-1">Delete</button>
         </div>
       </div>
       <div
@@ -49,6 +53,15 @@
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
+    <error-modal
+        v-bind:title="imageApiErrorTitle"
+        v-bind:hideCallback="() => imageApiErrorMessage = null"
+        v-bind:refresh="true"
+        v-bind:retry="false"
+        v-bind:show="imageApiErrorMessage !== null"
+    >
+      <p>{{ imageApiErrorMessage }}</p>
+    </error-modal>
   </div>
 </template>
 <style scoped>
@@ -76,7 +89,8 @@ export default {
       name: "",
       images: [],
       apiErrorMessage: null,
-
+      imageApiErrorMessage: null,
+      imageApiErrorTitle: ""
     }
   },
   props: {
@@ -91,6 +105,9 @@ export default {
   },
 
   computed: {
+    /**
+     * Get a business object of current acting as entity.
+     */
     actingAs() {
       return this.$stateStore.getters.getActingAs();
     }
@@ -101,38 +118,16 @@ export default {
      * Calls the API and updates the component's data with the result
      */
     apiPipeline: function () {
-      this.parseApiResponse(this.callApi(this.productId));
+      return this.parseApiResponse(this.callApi());
     },
 
     /**
      * Calls the API to get profile information with the given user ID
      * Returns the promise, not the response
      */
-    callApi: function (productId) {
-      console.log(ApiRequestError);
-      console.log(productId);
-      return Promise.resolve({
-        name: "bla",
-        images: [
-          {
-            id: 1,
-            filename: "",
-            thumbnailFilename: "https://via.placeholder.com/200x200"
-          },{
-            id: 2,
-            filename: "",
-            thumbnailFilename: "https://via.placeholder.com/200x200"
-          },{
-            id: 3,
-            filename: "",
-            thumbnailFilename: "https://via.placeholder.com/200x200"
-          },{
-            id: 4,
-            filename: "",
-            thumbnailFilename: "https://via.placeholder.com/200x200"
-          }
-        ]}
-      );
+    callApi: async function () {
+      const response = await Api.getProducts(this.$stateStore.getters.getActingAs().id);
+      return response;
     },
 
     /**
@@ -140,19 +135,15 @@ export default {
      */
     parseApiResponse: async function (apiCall) {
       try {
-        const product = await apiCall;
-        console.log(product);
+        const products = (await apiCall).data;
+        const product = products.find(({id}) => id === this.productId);
+        // find the product the correct id
+        if (product === undefined) {
+          return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the corerct business`);
+        }
         this.name = product.name;
         this.images = product.images;
-
-
-        // const business = this.$stateStore.getters.getActingAs();
-
-        // this.userInfo = response.data;
-
-        // this.userInfo.imageURL = process.env.VUE_APP_SERVER_ADD + `/users/${this.userId}/images/`;
       } catch (err) {
-        console.log(err);
         if (await Api.handle401.call(this, err)) {
           return;
         }
@@ -160,24 +151,60 @@ export default {
       }
     },
 
+    /**
+     * Called when add image icon is clicked.
+     */
     onPickFile() {
       this.$refs.fileInput.click()
     },
 
+    /**
+     * Uploads image and call Api again to update images.
+     * @param event TODO Better comments
+     */
     onFilePicked(event) {
-      const files = event.target.files
-
+      const files = event.target.files;
+      console.log("files");
+      console.log(files);
       Api.uploadProductImage(files[0], this.actingAs.id, this.productId)
       .then(() => {
-        this.apiPipeline();
+        return this.apiPipeline();
       }).catch(err => {
         Api.handle401.call(this, err);
-        this.apiErrorMessage = err.userFacingErrorMessage;
-      })
+        this.imageApiErrorTitle = "Error uploading new product image";
+        this.imageApiErrorMessage = err.userFacingErrorMessage;
+      });
     },
 
+    /**
+     * Sets an clicked image as a primary image and call Api again to update images.
+     * @param imageId is an id property of image object.
+     */
+    setAsPrimary(imageId) {
+      Api.changePrimaryImage(this.actingAs.id, this.productId, imageId)
+      .then(() => {
+        return this.apiPipeline();
+      }).catch(err => {
+        Api.handle401.call(this, err);
+        this.imageApiErrorTitle = "Error setting a primary image";
+        this.imageApiErrorMessage = err.userFacingErrorMessage;
+      });
+    },
 
-
+    /**
+     * Delete an clicked image and call Api again to update images.
+     * @param imageId is an id property of image object.
+     */
+    deleteImage(imageId) {
+      Api.deleteProductImage(this.actingAs.id, this.productId, imageId)
+      .then(() => {
+        return this.apiPipeline();
+      }).catch(err => {
+        Api.handle401.call(this, err);
+        this.imageApiErrorTitle = "Error deleting the image";
+        this.imageApiErrorMessage = err.userFacingErrorMessage;
+      });
+    },
   }
 }
 </script>
