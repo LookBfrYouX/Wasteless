@@ -24,7 +24,7 @@ public class ImageController {
   private final ImageService imageService;
 
   /**
-   * The Constructor fot the imageContrller class
+   * Image controller constructor
    * @param imageService The Image service to be linked
    */
   public ImageController(@Autowired ImageService imageService) {
@@ -51,12 +51,15 @@ public class ImageController {
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + productId);
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The user does not exist");
-    }catch (BusinessNotFoundException exc) {
+    } catch (BusinessNotFoundException exc) {
       log.error("BUSINESS NOT FOUND ERROR: " + productId);
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The business does not exist");
-    }catch (ProductNotFoundException exc) {
+    } catch (ProductNotFoundException exc) {
       log.error("PRODUCT NOT FOUND ERROR: " + productId);
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, exc.getMessage());
+    } catch (ImageNotFoundException exc) {
+      log.error("NO IMAGE RECEIVED");
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "NO IMAGE RECEIVED");
     } catch (BadCredentialsException exc) {
       log.error("INSUFFICIENT PRIVILEGES: " + productId);
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, exc.getMessage());

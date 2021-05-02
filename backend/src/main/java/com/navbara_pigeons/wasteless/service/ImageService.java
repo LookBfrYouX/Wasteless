@@ -13,7 +13,7 @@ public interface ImageService {
   byte[] downloadProfileImage(long id) throws UserNotFoundException, IOException;
 
   String uploadProductImage(long businessId, long productId, MultipartFile image)
-      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, IOException;
+      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, IOException, ImageNotFoundException;
 
   void changePrimaryImage(long businessId, long productId, long imageId)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, ImageNotFoundException;
