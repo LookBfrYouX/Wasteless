@@ -32,18 +32,8 @@ Running on: http://localhost:9500/ by default
 
 Running on: http://localhost:9499/ by default
 
-## Todo (S1)
-
-- Add team name into `build.gradle` and `package.json`
-- Update this README title
-- Update this README contributors
-
 ## Todo (S2)
 
-- Update team name into `build.gradle` and `package.json`
-- Update this README title
-- Update this README contributors
-- Set up Gitlab CI server (refer to the student guide on learn)
 - Decide on a LICENSE
 
 ## Contributors
