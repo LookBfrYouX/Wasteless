@@ -1,4 +1,5 @@
--- ###############################  Users Setup  ###############################
+/* MAIN SCHEMA DEFINITION */
+
 DROP TABLE IF EXISTS inventory;
 DROP TABLE IF EXISTS product_image;
 DROP TABLE IF EXISTS catalogue;
@@ -32,11 +33,9 @@ CREATE TABLE user
     DATE_OF_BIRTH   DATE        NOT NULL,
     PHONE_NUMBER    VARCHAR(18),
     IMAGE_NAME      VARCHAR(30),
-
     CREATED         DATETIME    NOT NULL,
     ROLE            VARCHAR(30) NOT NULL,
     PASSWORD        CHAR(60)    NOT NULL,
-
     HOME_ADDRESS_ID INT         NOT NULL,
     CONSTRAINT user_address_fk FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES address (ID)
 );
@@ -48,7 +47,6 @@ CREATE TABLE business
     DESCRIPTION              VARCHAR(250),
     BUSINESS_TYPE            VARCHAR(50) NOT NULL,
     CREATED                  DATETIME    NOT NULL,
-
     PRIMARY_ADMINISTRATOR_ID INT         NOT NULL,
     ADDRESS_ID               INT         NOT NULL,
     CONSTRAINT business_address_fk FOREIGN KEY (ADDRESS_ID) REFERENCES address (ID)
@@ -128,7 +126,7 @@ CREATE TABLE inventory
 
 -- INSERTING TEST DATA BELOW
 
--- Inserting test address data
+-- Inserting address data
 
 INSERT INTO address(STREET_NUMBER,
                     STREET_NAME,
@@ -167,7 +165,7 @@ VALUES ('10',
         'Canterbury',
         'New Zealand');
 
--- Inserting test user data
+-- Inserting user data
 
 INSERT INTO user(FIRST_NAME,
                  LAST_NAME,
@@ -242,7 +240,7 @@ VALUES ('Fletcher',
         'ROLE_ADMIN',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi');
 
--- Inserting test business data
+-- Inserting business data
 
 INSERT INTO business(NAME,
                      PRIMARY_ADMINISTRATOR_ID,
@@ -269,7 +267,7 @@ VALUES ('TestName',
         'Retail Trade',
         '2020-07-14T14:32:00.000000');
 
--- Inserting test user-business data
+-- Inserting user-business data
 
 INSERT INTO user_business(USER_ID,
                           BUSINESS_ID)
@@ -315,7 +313,7 @@ VALUES ('Anchor Milk Standard Blue Top',
         4.70,
         '2020-07-14T14:32:00.000000');
 
--- Inserting the product to business relationship data
+-- Inserting catalogue data
 
 INSERT INTO catalogue (PRODUCT_ID, BUSINESS_ID)
 VALUES (1, 1),
