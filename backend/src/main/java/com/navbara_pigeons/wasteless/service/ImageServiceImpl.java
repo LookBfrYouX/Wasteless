@@ -76,7 +76,7 @@ public class ImageServiceImpl implements ImageService {
     ArrayList<String> items = new ArrayList<>();
     items.add("jpg");
     items.add("png");
-    if (!items.contains(fileExtension)) {
+    if (!items.contains(fileExtension.toLowerCase())) {
       throw new ImageNotFoundException();
     }
 
