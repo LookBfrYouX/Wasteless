@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container mt-3">
     <div class="row">
       <div class="col-12">
-        <label>Product Images</label>
+        <h1>{{ name }}</h1>
       </div>
       <div
           v-for="(img, i) in images"
@@ -10,7 +10,9 @@
           class="col-12 col-sm-6 col-md-4 col-lg-3 p-2"
       >
         <div class="d-flex justify-content-center">
-          <img v-bind:src="img.thumbnailFilename" class="img-fluid" />
+          <img v-bind:src="img.thumbnailFilename"
+               class="img-fluid"
+               alt="Product Image"/>
         </div>
         <div class="d-flex flex-wrap justify-content-center">
           <button v-if="i !== 0"
@@ -139,7 +141,7 @@ export default {
         const product = products.find(({id}) => id === this.productId);
         // find the product the correct id
         if (product === undefined) {
-          return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the corerct business`);
+          return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
         }
         this.name = product.name;
         this.images = product.images;
@@ -164,8 +166,6 @@ export default {
      */
     onFilePicked(event) {
       const files = event.target.files;
-      console.log("files");
-      console.log(files);
       Api.uploadProductImage(files[0], this.actingAs.id, this.productId)
       .then(() => {
         return this.apiPipeline();
