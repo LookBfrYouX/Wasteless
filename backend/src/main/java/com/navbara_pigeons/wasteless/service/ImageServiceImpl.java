@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,23 +56,34 @@ public class ImageServiceImpl implements ImageService {
    * @throws UserNotFoundException The users credentials could not be found from the JSessionID
    * @throws BusinessNotFoundException When no business is found with the given id
    * @throws ProductNotFoundException When no product is found with the given id
+   * @throws IOException When an IO error occurs (will return a 500 status error, this is intended)
+   * @throws ImageNotFoundException When a non image file or no file is received instead of an image
    */
   @Transactional
   public String uploadProductImage(long businessId, long productId, MultipartFile image)
-      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, IOException {
+      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, IOException,
+      ImageNotFoundException {
     if (!businessService.isBusinessAdmin(businessId)) {
       throw new BadCredentialsException(
           "You must be an administer of the business to upload a product image");
     }
-    Product productEntity = productService.getProduct(productId);
 
     // Get the file extension of the given file
     String fileName = StringUtils.cleanPath(image.getOriginalFilename());
     String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
+    // Check if "image" is actually an image (gif not accepted)
+    ArrayList<String> items = new ArrayList<>();
+    items.add("jpg");
+    items.add("png");
+    if (!items.contains(fileExtension)) {
+      throw new ImageNotFoundException();
+    }
+
     // Crop the image and then save it to the DB + Machine
     cropImageToSquare(image, fileExtension, fileName);
     Image imageEntity = new Image(fileExtension);
+    Product productEntity = productService.getProduct(productId);
     productEntity.addProductImage(imageEntity);
     if (productEntity.getPrimaryProductImage() == null) {
       productEntity.setPrimaryProductImage(imageEntity);
