@@ -70,18 +70,13 @@
             </a>
 
             <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
-              <!-- <div v-if="actingAsEntities.length !== 0"
-                    class="switch-acting-as-wrapper"> -->
-                <div class="h4 dropdown-header">Logged in as</div>
-                <div class="dropdown-item">
-                  {{ authUser.firstName }} {{ authUser.lastName }}
-                </div>
-                <div class="dropdown-divider"></div>
                 <div class="h4 dropdown-header">Act as</div>
-                <a v-if="currentActingAs != null"
-                    v-on:click="switchActingAs()"
+                <a v-on:click="switchActingAs()"
                     class="dropdown-item">
                   {{ authUser.firstName }} {{ authUser.lastName }}
+                  <span v-if="currentActingAs === null">
+                    &#10003;
+                  </span>
                 </a>
                 <a v-for="business in actingAsEntities" :key="business.id"
                         v-on:click="switchActingAs(business)"
@@ -92,7 +87,6 @@
                   </span>
                 </a>
                 <div class="dropdown-divider"></div>
-              <!-- </div> -->
               <a class="dropdown-item" v-on:click="logOut">Log out</a>
             </div>
           </li>

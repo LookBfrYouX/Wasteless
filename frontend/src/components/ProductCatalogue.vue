@@ -162,8 +162,6 @@ const ProductCatalogue = {
     setPages() {
       /* calculates number of pages which is reliant on resultsPerPage set in the data section*/
       let numOfPages = Math.ceil(this.results.length / this.resultsPerPage);
-      // console.log(this.results.length, 'length')
-      // console.log(this.results, 'array')
       this.pages = [];
       for (let i = 0; i < numOfPages; i++) {
         this.pages.push(i);
@@ -177,7 +175,6 @@ const ProductCatalogue = {
       let resultsPerPage = this.resultsPerPage;
       let from = page * resultsPerPage;
       let to = from + resultsPerPage;
-      // console.log(results.slice(from, to));
       return results.slice(from, to);
     },
 
@@ -190,7 +187,7 @@ const ProductCatalogue = {
       const product = products.find(({id}) => id === productId);
       if (product !== undefined && product.images[0] !== undefined) {
         console.log(product);
-        return BASE_PRODUCT_IMAGE_PATH + product.images[0].filename;
+        return product.images[0].filename;
       } else {
         return BASE_PRODUCT_IMAGE_PATH + "default-product-thumbnail.svg";
       }
@@ -225,7 +222,6 @@ const ProductCatalogue = {
     },
     // used for for loop in html
     displayedResults() {
-      // console.log('Displaying Results')
       return this.paginate(this.sortedResults);
     }
   }

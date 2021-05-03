@@ -11,7 +11,7 @@
       >
         <div class="d-flex justify-content-center">
           <img
-            v-bind:src="getImagePath(img.filename)"
+            v-bind:src="img.filename"
             class="img-fluid"
           />
           <!-- TODO change to thumbnailFilename -->
@@ -32,7 +32,7 @@
       >
         <button
             type="button"
-            class="btn"
+            class="bg-transparent border-0"
             @click="onPickFile"
         >
           <span class="material-icons add-product-icon py-4 mb-4 mt-2">
@@ -91,8 +91,6 @@
 import ErrorModal from './Errors/ErrorModal.vue';
 import {ApiRequestError} from "./../ApiRequestError";
 const Api = require("./../Api").default;
-
-const BASE_PRODUCT_IMAGE_PATH = "/user-content/images/products/";
 
 export default {
   name: 'editProductImages',
@@ -216,13 +214,6 @@ export default {
         this.imageApiErrorTitle = "Error deleting the image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
-    },
-
-    /**
-     * Given filename to the product image, return path
-     */
-    getImagePath(filename) {
-      return BASE_PRODUCT_IMAGE_PATH + filename;
     },
   }
 }

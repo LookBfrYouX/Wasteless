@@ -12,12 +12,12 @@
       <div class="mt-2">Description: {{ description }}</div>
       <div class="mt-2">RRP: {{ recommendedRetailPrice }}</div>
       <div class="mt-2">Created: {{ created }}</div>
-
+      <h4 class="mt-2">Product Images</h4>
       <div class="row my-2">
         <div v-for="image in productImages"
              v-bind:key="image.id"
              class="col-12 col-md-6 col-lg-4 p-2">
-          <img v-bind:src="getImagePath(image.filename)"
+          <img v-bind:src="image.filename"
                class="img-fluid"
                alt="Product Image">
         </div>
@@ -52,16 +52,13 @@
 
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
-import EditProductImages from "@/components/EditProductImages";
 import {ApiRequestError} from "@/ApiRequestError";
 const Api = require("./../Api").default;
-const BASE_PRODUCT_IMAGE_PATH = "/user-content/images/products/";
 
 export default {
   name: "productDetail",
   components: {
     ErrorModal,
-    EditProductImages
   },
 
   data() {
@@ -105,7 +102,6 @@ export default {
         if (product === undefined) {
           return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
         }
-        console.log(this.productId);
         this.name = product.name;
         this.description = product.description;
         this.recommendedRetailPrice = product.recommendedRetailPrice;
@@ -117,10 +113,6 @@ export default {
         }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
-    },
-
-    getImagePath(filename) {
-      return BASE_PRODUCT_IMAGE_PATH + filename;
     },
 
     editProductImages(productId) {
