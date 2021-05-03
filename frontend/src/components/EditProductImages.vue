@@ -1,9 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container mt-4">
     <div class="row">
       <div class="col-12">
-        <h2>Product Images</h2>
-        <h5>{{name}}</h5>
+        <h1>Images of {{name}}</h1>
       </div>
       <div
           v-for="(img, i) in images"
@@ -20,7 +19,7 @@
         <div class="d-flex flex-wrap justify-content-center">
           <button v-if="i !== 0"
                   v-on:click="setAsPrimary(img.id)"
-                  class="btn btn-sm btn-primary m-1">
+                  class="btn btn-sm btn-info m-1">
             Set as primary
           </button>
 <!--          Primary image is the first image in the array. -->
@@ -49,10 +48,13 @@
 
       </div>
     </div>
-    <button class="btn btn-success"
-            v-on:click="finishEditing(productId)">
-      Save changes
-    </button>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-success"
+              v-on:click="$router.go(-1)">
+        Save changes
+      </button>
+    </div>
+
     <error-modal
         title="Error fetching product information"
         v-bind:hideCallback="() => apiErrorMessage = null"

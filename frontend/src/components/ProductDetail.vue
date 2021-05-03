@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-primary mr-0"
+        <button class="btn btn-info mr-0"
                 v-on:click="editProductImages(productId)">
           Edit product images
         </button>
