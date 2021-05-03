@@ -19,10 +19,10 @@
         <li class="row">
           <dt class="col-md label">Address:</dt>
           <dd class="col-md value"> {{
-              [businessInfo.homeAddress.streetNumber + " " +
-              businessInfo.homeAddress.streetName, businessInfo.homeAddress.city,
-                businessInfo.homeAddress.region, businessInfo.homeAddress.country,
-                businessInfo.homeAddress.postcode].join(", ")
+              [businessInfo.address.streetNumber + " " +
+              businessInfo.address.streetName, businessInfo.address.city,
+                businessInfo.address.region, businessInfo.address.country,
+                businessInfo.address.postcode].join(", ")
             }}
           </dd>
         </li>
