@@ -182,6 +182,9 @@ const ProductCatalogue = {
       this.$router.push("createProduct");
     },
 
+    /**
+     * Retreive product primary image URL to show as a thumbnail
+     */
     getThumbnailImage(productId) {
       const products = this.results;
       const product = products.find(({id}) => id === productId);
@@ -193,6 +196,9 @@ const ProductCatalogue = {
       }
     },
 
+    /**
+     * Go to product detail page by passing the product id
+     */
     viewProduct(productId) {
       this.$router.push({
         name: "productDetail",

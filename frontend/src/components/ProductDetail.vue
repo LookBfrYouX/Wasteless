@@ -86,15 +86,25 @@ export default {
 
   methods: {
 
+    /**
+     * Calls the API and updates the component's data with the result
+     */
     apiPipeline: function() {
       return this.parseApiResponse(this.callApi());
     },
 
+    /**
+     * Calls the API to get profile information with the given user ID
+     * Returns the promise, not the response
+     */
     callApi: async function() {
       const response = await Api.getProducts(this.$stateStore.getters.getActingAs().id);
       return response;
     },
 
+    /**
+     * Parses the API response given a promise to the request.
+     */
     parseApiResponse: async function (apiCall) {
       try {
         const products = (await apiCall).data;
@@ -115,6 +125,10 @@ export default {
       }
     },
 
+    /**
+     * Go to product image editing page.
+     * @param productId is an id of product currently viewing
+     */
     editProductImages(productId) {
       this.$router.push({
         name: "editProductImages",
