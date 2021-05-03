@@ -1,10 +1,15 @@
 stages:
   - npm-dependencies
   - get-dependencies
+  - move-user-content
   - build
   - test
   - sonarqube
-  - deploy
+  - deploy-frontend
+  - restore-user-content
+  - deploy-backend
+# frontend has to be deployed before backend so that user content can be restored. Hence, user content directory will always exist when backend is deployed
+# If backend is deployed before frontend and an image is immediately uploaded, the backend will have to create the user-content/images folder or fail. If backend makes a folder, the `restore-user-content`  script will move the folder *inside* the newly-created user-content folder instead of making it the new user content folder (i.e. /dist/user-content/images/bla.jpg instead of /dist/user-content/staging-user-content/images/bla.jpg - this will increase after every deploy)
 
 tag_checker:
   stage: build
@@ -23,16 +28,17 @@ npm-install:
     - cd frontend
     - npm install
 
-country-data-download:
+download-country-data:
   stage: get-dependencies
   script:
-    - node downloadCountryData.js
+    node ./downloadCountryData.js
 
 junit:
   stage: test
   script:
     - cd backend
     - ./gradlew test
+
 
 # Run acceptance (cucumber) tests
 # Uncomment after ATDD workshop (at the latest)
@@ -98,26 +104,28 @@ branch-build:
     - master
     - dev
 
-deploy-staging-backend:
-  stage: deploy
+# Images need to be stored in staging-frontend/dist/user-content/images folder as they need to be served by frontend
+# But that folder is deleted on deploy, so move the contents to outside of the staging-frontend folder before the directory is deleted
+move-user-content-staging:
+  stage: move-user-content
   script:
-    - cd backend
-    - ./gradlew bootJar
-    - rm -rf /home/gitlab-runner/staging-backend/ || true
-    - mkdir /home/gitlab-runner/staging-backend/
-    - cp -r ./build/libs /home/gitlab-runner/staging-backend
-    - cp ../runner/staging-backend.sh /home/gitlab-runner/staging-backend.sh
-    - printenv | grep "DGAA_\|DB_" | sed "s/^/export /" > /home/gitlab-runner/env.txt
-    - chmod u+x /home/gitlab-runner/staging-backend.sh
-    - sudo systemctl restart seng302-staging-backend
-  artifacts:
-    paths:
-      - backend/build/libs
+    - mkdir -p /home/gitlab-runner/staging-frontend/dist/user-content/images/
+    - rm -rf /home/gitlab-runner/staging-user-content/
+    - mv /home/gitlab-runner/staging-frontend/dist/user-content/ /home/gitlab-runner/staging-user-content/
   only:
     - S2-dev
 
+move-user-content-production:
+  stage: move-user-content
+  script:
+    - mkdir -p /home/gitlab-runner/production-frontend/dist/user-content/images/
+    - rm -rf /home/gitlab-runner/production-user-content/
+    - mv /home/gitlab-runner/production-frontend/dist/user-content/ /home/gitlab-runner/production-user-content/
+  only:
+    - master
+
 deploy-staging-frontend:
-  stage: deploy
+  stage: deploy-frontend
   cache:
     key: node-modules
     paths:
@@ -138,27 +146,8 @@ deploy-staging-frontend:
   only:
     - S2-dev
 
-deploy-production-backend:
-  stage: deploy
-  script:
-    - cd backend
-    - ./gradlew bootJar
-    - rm -rf /home/gitlab-runner/production-backend/ || true
-    - mkdir /home/gitlab-runner/production-backend/
-    - cp -r ./build/libs /home/gitlab-runner/production-backend
-    - cp ../runner/production-backend.sh /home/gitlab-runner/production-backend.sh
-    - printenv | grep "DGAA_\|DB_" | sed "s/^/export /" > /home/gitlab-runner/env.txt
-    - chmod u+x /home/gitlab-runner/production-backend.sh
-    - sudo systemctl restart seng302-production-backend
-  artifacts:
-    paths:
-      - backend/build/libs
-  only:
-    - tags
-    - master
-
 deploy-production-frontend:
-  stage: deploy
+  stage: deploy-frontend
   cache:
     key: node-modules
     paths:
@@ -176,6 +165,66 @@ deploy-production-frontend:
   artifacts:
     paths:
       - frontend/dist
+  only:
+    - tags
+    - master
+
+
+# Once deployed, move the images folder back inside staging-frontend
+restore-user-content-staging:
+  stage: restore-user-content
+  script:
+    - mkdir -p /home/gitlab-runner/staging-frontend/dist
+    - rm -rf /home/gitlab-runner/staging-frontend/dist/user-content/
+    # if the directory already exists, the mv moves the folder inside rather than moving and renaming the folder
+    - mv /home/gitlab-runner/staging-user-content/ /home/gitlab-runner/staging-frontend/dist/user-content/
+  only:
+    - S2-dev
+
+restore-user-content-production:
+  stage: restore-user-content
+  script:
+    - mkdir -p /home/gitlab-runner/production-frontend/dist
+    - rm -rf /home/gitlab-runner/staging-frontend/dist/user-content/
+    - mv /home/gitlab-runner/production-user-content/ /home/gitlab-runner/production-frontend/dist/user-content
+  only:
+    - master
+
+
+deploy-staging-backend:
+  stage: deploy-backend
+  script:
+    - cd backend
+    - ./gradlew bootJar
+    - rm -rf /home/gitlab-runner/staging-backend/ || true
+    - mkdir /home/gitlab-runner/staging-backend/
+    - cp -r ./build/libs /home/gitlab-runner/staging-backend
+    - cp ../runner/staging-backend.sh /home/gitlab-runner/staging-backend.sh
+    - printenv | grep "DGAA_\|DB_" | sed "s/^/export /" > /home/gitlab-runner/env.txt
+    - chmod u+x /home/gitlab-runner/staging-backend.sh
+    - sudo systemctl restart seng302-staging-backend
+  artifacts:
+    paths:
+      - backend/build/libs
+  only:
+    - S2-dev
+
+
+deploy-production-backend:
+  stage: deploy-backend
+  script:
+    - cd backend
+    - ./gradlew bootJar
+    - rm -rf /home/gitlab-runner/production-backend/ || true
+    - mkdir /home/gitlab-runner/production-backend/
+    - cp -r ./build/libs /home/gitlab-runner/production-backend
+    - cp ../runner/production-backend.sh /home/gitlab-runner/production-backend.sh
+    - printenv | grep "DGAA_\|DB_" | sed "s/^/export /" > /home/gitlab-runner/env.txt
+    - chmod u+x /home/gitlab-runner/production-backend.sh
+    - sudo systemctl restart seng302-production-backend
+  artifacts:
+    paths:
+      - backend/build/libs
   only:
     - tags
     - master
