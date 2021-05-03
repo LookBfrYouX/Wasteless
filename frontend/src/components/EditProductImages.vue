@@ -2,7 +2,8 @@
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <label>Product Images</label>
+        <h2>Product Images</h2>
+        <h5>{{name}}</h5>
       </div>
       <div
           v-for="(img, i) in images"
@@ -10,7 +11,11 @@
           class="col-12 col-sm-6 col-md-4 col-lg-3 p-2"
       >
         <div class="d-flex justify-content-center">
-          <img v-bind:src="img.thumbnailFilename" class="img-fluid" />
+          <img
+            v-bind:src="getImagePath(img.filename)"
+            class="img-fluid"
+          />
+          <!-- TODO change to thumbnailFilename -->
         </div>
         <div class="d-flex flex-wrap justify-content-center">
           <button v-if="i !== 0"
@@ -80,6 +85,9 @@
 import ErrorModal from './Errors/ErrorModal.vue';
 import {ApiRequestError} from "./../ApiRequestError";
 const Api = require("./../Api").default;
+
+const BASE_PRODUCT_IMAGE_PATH = "/user-content/images/products/";
+
 export default {
   name: 'editProductImages',
   components: {ErrorModal},
@@ -142,7 +150,7 @@ export default {
           return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the corerct business`);
         }
         this.name = product.name;
-        this.images = product.images;
+        this.images = product.productImages; // TODO change to product.images
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -205,6 +213,13 @@ export default {
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
     },
+
+    /**
+     * Given filename to the product image, return path
+     */
+    getImagePath(filename) {
+      return BASE_PRODUCT_IMAGE_PATH + filename;
+    }
   }
 }
 </script>
