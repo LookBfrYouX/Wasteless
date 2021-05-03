@@ -67,7 +67,7 @@ export const store = {
     },
 
     isActingAsBusiness() {
-      return state.actingAs !== null;
+      return state.actingAsId !== null;
     },
 
 

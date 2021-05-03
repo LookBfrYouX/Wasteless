@@ -188,7 +188,7 @@ export default {
      * @return {Business[]} empty list if user not logged in or has no businesses
      */
     actingAsEntities() {
-      return this.authUser.businesses;
+      return this.authUser.businessesAdministered;
     },
 
     currentActingAs() {
