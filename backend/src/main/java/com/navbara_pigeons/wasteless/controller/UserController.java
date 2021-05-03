@@ -2,12 +2,12 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
-import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
-import com.navbara_pigeons.wasteless.service.BusinessService;
 import com.navbara_pigeons.wasteless.service.UserService;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
@@ -104,19 +104,18 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/users/{id}")
-  public ResponseEntity getUserById(@PathVariable long id) {
+  public ResponseEntity<Object> getUserById(@PathVariable long id) {
     try {
       log.info("GETTING USER BY ID: " + id);
       if (this.userService.isAdmin() || this.userService.isSelf(id)) {
-        return new ResponseEntity(new FullUserDto(this.userService.getUserById(id)), HttpStatus.valueOf(200));
+        return new ResponseEntity<>(new FullUserDto(this.userService.getUserById(id)), HttpStatus.valueOf(200));
       } else {
-        return new ResponseEntity(new BasicUserDto(this.userService.getUserById(id)), HttpStatus.valueOf(200));
+        return new ResponseEntity<>(new BasicUserDto(this.userService.getUserById(id)), HttpStatus.valueOf(200));
       }
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (UnhandledException exc) {
-      log.error(exc.getMessage());
+    } catch (Exception exc) {
       throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Server Error");
     }
   }
@@ -129,15 +128,17 @@ public class UserController {
    * @throws ResponseStatusException Unknown Error
    */
   @GetMapping("/users/search")
-  public ResponseEntity<List<User>> searchUsers(@RequestParam String searchQuery) {
-    List<User> results;
+  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery) {
     try {
-      results = userService.searchUsers(searchQuery);
+      List<BasicUserDto> results = new ArrayList<>();
+      for (User user : userService.searchUsers(searchQuery)) {
+        results.add(new BasicUserDto(user));
+      }
+      return new ResponseEntity<>(results, HttpStatus.valueOf(200));
     } catch (InvalidAttributeValueException e) {
       log.error("INVALID SEARCH QUERY: " + searchQuery);
       throw new ResponseStatusException(HttpStatus.valueOf(500), "Invalid Search Query");
     }
-    return new ResponseEntity<>(results, HttpStatus.valueOf(200));
   }
 
   /**
