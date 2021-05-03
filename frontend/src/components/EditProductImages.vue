@@ -222,15 +222,6 @@ export default {
     getImagePath(filename) {
       return BASE_PRODUCT_IMAGE_PATH + filename;
     },
-
-    finishEditing(productId) {
-      this.$router.push({
-        name: "productDetail",
-        params: {
-          productId
-        }
-      });
-    }
   }
 }
 </script>

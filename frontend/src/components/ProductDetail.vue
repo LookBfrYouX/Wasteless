@@ -1,28 +1,32 @@
 <template>
-  <div class="container">
+  <div class="container mt-4">
     <div class="list-group-item card">
-      <div class="d-flex flex-wrap justify-content-between">
-        <h4 class="card-title mb-0">{{ name }} (Id: {{ productId }})</h4>
+      <div class="d-flex flex-wrap justify-content-between mb-2">
+        <h2 class="card-title mb-0">{{ name }} (Id: {{ productId }})</h2>
       </div>
-      <div class="text-muted">Description: {{ description }}</div>
-      <div class="text-muted">RRP: {{ recommendedRetailPrice }}</div>
-      <div class="text-muted">Created: {{ created }}</div>
+      <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
+              v-on:click="$router.go(-1)">
+        <span class="material-icons mr-1">arrow_back</span>
+        Back to Product Catalogue
+      </button>
+      <div class="mt-2">Description: {{ description }}</div>
+      <div class="mt-2">RRP: {{ recommendedRetailPrice }}</div>
+      <div class="mt-2">Created: {{ created }}</div>
 
-      <div class="row">
-        <div v-if="!edittingImage"
-             class="image-list-wrapper">
-          <div v-for="image in productImages"
-               v-bind:key="image.id"
-               class="col-12 col-sm-6 col-md-4 col-lg-3 p-2">
-            <img v-bind:src="getImagePath(image.filename)"
-                 class="img-fluid"
-                 alt="Product Image">
-          </div>
-          <button class="btn btn-primary"
-                  v-on:click="editProductImages(productId)">
-            Edit product images
-          </button>
+      <div class="row my-2">
+        <div v-for="image in productImages"
+             v-bind:key="image.id"
+             class="col-12 col-md-6 col-lg-4 p-2">
+          <img v-bind:src="getImagePath(image.filename)"
+               class="img-fluid"
+               alt="Product Image">
         </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-primary mr-0"
+                v-on:click="editProductImages(productId)">
+          Edit product images
+        </button>
       </div>
     </div>
     <error-modal
@@ -67,7 +71,6 @@ export default {
       recommendedRetailPrice: "",
       created: "",
       productImages: [],
-      edittingImage: false,
       apiErrorMessage: null,
       imageApiErrorMessage: null,
       imageApiErrorTitle: ""

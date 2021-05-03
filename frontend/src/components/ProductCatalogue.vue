@@ -188,8 +188,9 @@ const ProductCatalogue = {
     getThumbnailImage(productId) {
       const products = this.results;
       const product = products.find(({id}) => id === productId);
-      if (!product == undefined && !product.images[0]) {
-        return BASE_PRODUCT_IMAGE_PATH + product.image[0].filename;
+      if (product !== undefined && product.images[0] !== undefined) {
+        console.log(product);
+        return BASE_PRODUCT_IMAGE_PATH + product.images[0].filename;
       } else {
         return BASE_PRODUCT_IMAGE_PATH + "default-product-thumbnail.svg";
       }
