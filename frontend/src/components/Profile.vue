@@ -93,7 +93,7 @@
     <div class="row">
       <div class="col-md-4 order-2 order-md-1 m-2 card">
         <h5 class="text-muted mt-3">Businesses</h5>
-        <div v-if="Array.isArray(userInfo.businesses) && userInfo.businesses.length !== 0">
+        <div v-if="Array.isArray(userInfo.businessesAdministered) && userInfo.businessesAdministered.length !== 0">
           <h1 class="title">Businesses</h1>
           <ul class="profile-business-info list-unstyled">
             <li
