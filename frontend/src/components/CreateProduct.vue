@@ -133,10 +133,7 @@ export default {
      */
     getCurrencies: async function (countryName) {
       const country = this.countryData.find(country => country.name == countryName);
-      const currency = country? country.currency: {
-        code: "NZD",
-        symbol: "$"
-      };
+      const currency = country? country.currency: this.$constants.CURRENCY.DEFAULT_CURRENCY;
 
       this.currency = currency.code;
       this.symbol = currency.symbol;

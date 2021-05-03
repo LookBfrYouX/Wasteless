@@ -149,29 +149,12 @@ const countryData = require("./../assets/countryData.json");
 
 const Suggestions = require("./Suggestions").default;
 
-// Fields in order of specifity
-// When updating this, ensure all address related functions and input properties are updated as well
+// Fields in order of specificity
+// When updating this, ensure all address related functions and input properties are updated as well!
 export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "city", "region", "postcode", "country"];
-
 Object.freeze(ADDRESS_SECTION_NAMES);
+// Can't move this to the constants file as it is too linked with HTML, props etc.
 
-/**
- * Edit distance divided by (modified) string length
- * Use ratio instead of raw measure to not favour longer strings
- */
-const EDIT_DISTANCE_WORST_RATIO = 2;
-
-/**
- * Delete/substitute costs are very high since suggestions are likely to be much longer than the input string
- * Typos are probably fairly rare so most of the time character should be inserted, not modified - that probably means
- * the Photon suggestion does not match input at all (e.g. 'name' property matches but we don't care about the name)
- */
-const EDIT_DISTANCE_INSERT_COST = 1;
-const EDIT_DISTANCE_DELETE_COST = 50;
-const EDIT_DISTANCE_SUBSTITUTE_COST = 50;
-
-const API_CALL_DEBOUNCE_TIME = 100;
-const API_MIN_QUERY_LENGTH = 3;
 export default {
   name: "address-form",
 
@@ -392,15 +375,15 @@ export default {
         const distance = EditDistance.calculate(
           originalString,
           resultString.toLocaleLowerCase(),
-          EDIT_DISTANCE_INSERT_COST,
-          EDIT_DISTANCE_DELETE_COST,
-          EDIT_DISTANCE_SUBSTITUTE_COST
+          this.$constants.ADDRESS_FORM.EDIT_DISTANCE.INSERT_COST,
+          this.$constants.ADDRESS_FORM.EDIT_DISTANCE.DELETE_COST,
+          this.$constants.ADDRESS_FORM.EDIT_DISTANCE.SUBSTITUTE_COST
         );
 
         const ratio = distance/Math.abs(resultString.length);
 
         // Use ratio to not favour longer suggestions
-        if (ratio > EDIT_DISTANCE_WORST_RATIO) {
+        if (ratio > this.$constants.ADDRESS_FORM.EDIT_DISTANCE_WORST_RATIO) {
           // Suggestion too bad
           continue;
         }
@@ -446,10 +429,10 @@ export default {
       window.clearTimeout(this.apiRequestTimeout);
       this.apiRequestTimeout = window.setTimeout(() => {
         this.apiRequestTimeout = null;
-        if (this.generateAddressString().length > API_MIN_QUERY_LENGTH) {
+        if (this.generateAddressString().length > this.$constants.ADDRESS_FORM.API_MIN_QUERY_LENGTH) {
           this.addressSuggestionsPipeline();
         }
-      }, API_CALL_DEBOUNCE_TIME);
+      }, this.$constants.ADDRESS_FORM.API_CALL_DEBOUNCE_TIME);
     },
 
     /**

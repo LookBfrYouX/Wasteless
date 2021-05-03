@@ -51,13 +51,14 @@
 
         <div class="row>">
           <div class="form-group col px-0">
-            <label>Description</label>
+            <label for="description">Description</label>
             <textarea
               v-model="description"
               class="form-control"
               maxlength="500"
               name="description"
               placeholder="Description"
+              id="description"
               rows="5"
               type="text"
             />
@@ -102,12 +103,7 @@ export default {
       description: "",
       type: "",
 
-      types: [
-        "Accommodation and Food Services",
-        "Retail Trade",
-        "Charitable organisation",
-        "Non-profit organisation",
-      ],
+      types: this.$constants.BUSINESSES.TYPES,
 
       typeRequired: false, // If phone entered but not country code
 

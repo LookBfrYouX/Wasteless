@@ -326,7 +326,7 @@ export default {
       if (currentDate == undefined) {
         currentDate = new Date(Date.now());
       }
-      const minAge = 13;
+      const minAge = this.$constants.SIGN_UP.MIN_AGE;
       const regexp = /(\d{4})-(\d{2})-(\d{2})/;
       const result = regexp.exec(dateOfBirth);
       if (result === null) {

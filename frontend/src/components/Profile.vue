@@ -185,10 +185,6 @@ import {ApiRequestError} from "./../ApiRequestError";
 
 const { Api } = require("./../Api.js");
 
-const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August",
-  "September", "October", "November", "December"];
-Object.freeze(MONTH_NAMES);
-
 export default {
   name: 'profile',
   components: {ErrorModal},
@@ -338,7 +334,7 @@ export default {
       if (!(date instanceof Date)) {
         date = new Date(date);
       }
-      return `${date.getDate()} ${MONTH_NAMES[date.getMonth()]}, ${date.getFullYear()}`;
+      return `${date.getDate()} ${this.$constants.MONTH_NAMES[date.getMonth()]}, ${date.getFullYear()}`;
     },
 
     /**

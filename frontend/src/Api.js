@@ -31,20 +31,19 @@
 
 import axios from 'axios';
 import {ApiRequestError} from "./ApiRequestError";
+import { constants } from "./constants";
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
-const TIMEOUT = 2500;
-const TIMEOUT_LONG = 10000;
 
 const instance = axios.create({
   baseURL: SERVER_URL,
-  timeout: TIMEOUT,
+  timeout: constants.API.TIMEOUT_SHORT,
   withCredentials: true
 });
 
 const instanceLongTimeouts = axios.create({
   baseURL: SERVER_URL,
-  timeout: TIMEOUT_LONG,
+  timeout: constants.API.TIMEOUT_LONG,
   withCredentials: true
 });
 
