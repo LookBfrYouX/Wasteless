@@ -118,7 +118,7 @@ export default {
     }, liInactiveClasses: {
       default: () => {
         return {
-          "slightly-transparent-white": true
+          "slightly-transparent-white-background": true
         }
       }
     },
