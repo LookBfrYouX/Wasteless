@@ -9,8 +9,14 @@ try {
   /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 } catch {}
 
+let authUser = null;
+try {
+  JSON.parse(localStorage.getItem("authUser"))
+  /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
+} catch {}
+
 const state = new Vue.observable({
-  authUser: JSON.parse(localStorage.getItem("authUser")),
+  authUser,
   actingAsId
 });
 
@@ -46,6 +52,10 @@ export const store = {
       return null;
     },
 
+    getActingAs:() => {
+      return state.actingAs;
+    },
+
     /**
      * Checks if a user is logged in or not
      */
@@ -59,6 +69,12 @@ export const store = {
     isAdmin() {
       return state.authUser && state.authUser.role === "ROLE_ADMIN";
     },
+
+    isActingAsBusiness() {
+      return state.actingAs !== null;
+    },
+
+
   },
   actions: {
     // Set the currently logged in user and sync with persistent storage

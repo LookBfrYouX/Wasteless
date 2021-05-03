@@ -16,7 +16,7 @@ Implementation:
 - This is sent to all autocomplete
 
 The parent component must provide `address` prop. When the address is updated in this component, an
-`addressupdate` event is emitted with the updated address as the argument. The object also has a 
+`addressupdate` event is emitted with the updated address as the argument. The object also has a
 `toString` method which returns the address as a string, components separated by commas (if the components are of non-zero length)
 
 -->
@@ -29,7 +29,6 @@ The parent component must provide `address` prop. When the address is updated in
           maxlength="50"
           name="streetnumber"
           placeholder="Street number"
-          required
           type="text"
 
           v-bind:suggestions="[]"
@@ -60,7 +59,7 @@ The parent component must provide `address` prop. When the address is updated in
           v-on:suggestion="suggestionSelected"
       />
     </div>
-    <div class="form-group col-12 col-md-6">
+    <div class="form-group required col-12 col-md-6">
       <label>City</label>
       <suggestions
           autocomplete="address-level2"
@@ -79,7 +78,7 @@ The parent component must provide `address` prop. When the address is updated in
           v-on:suggestion="suggestionSelected"
       />
     </div>
-    <div class="form-group col-12 col-md-6">
+    <div class="form-group required col-12 col-md-6">
       <label>Region</label>
       <suggestions
           autocomplete="address-level1"
@@ -99,7 +98,7 @@ The parent component must provide `address` prop. When the address is updated in
       />
     </div>
     
-    <div class="form-group col-12 col-md-6">
+    <div class="form-group required col-12 col-md-6">
       <label>Post code</label>
       <suggestions
           autocomplete="postal-code"
@@ -120,29 +119,33 @@ The parent component must provide `address` prop. When the address is updated in
     </div>
     <div class="form-group required col-12 col-md-6">
       <label>Country</label>
-      <suggestions
+      <select
           autocomplete="country-name"
-          inputClasses="form-control"
+          class="form-control"
           maxlength="50"
           name="country"
           placeholder="Country"
           required
-
-          type="text"
-
           v-bind:suggestions="addressSuggestions"
           v-bind:value="address.country"
           v-on:focus="activeAddressInputName = 'country'"
-
-          v-on:input="onAddressInput"
+          v-on:input="event => onAddressInput(event.target.value)"
           v-on:suggestion="suggestionSelected"
-      />
+      >
+      <!-- countryCodes is key-value map from code to name. Get array of codes, convert to {code, name} object array then sort by name -->
+        <option
+          v-for="country in countryData"
+          v-bind:key="country.code"
+          v-bind:value="country.name">{{country.name}}</option>
+      </select>
     </div>
   </div>
 </template>
 <script>
-const axios = require("axios");
+
+const { Api } = require("./../Api");
 const { EditDistance } = require("./../EditDistance");
+const countryData = require("./../assets/countryData.json");
 
 const Suggestions = require("./Suggestions").default;
 
@@ -186,6 +189,10 @@ export default {
         postcode: "",
         country: "",
       }
+    },
+    countryData: {
+      required: false,
+      default: () => countryData
     }
   },
 
@@ -194,6 +201,13 @@ export default {
       activeAddressInputName: null,
       addressSuggestionsRaw: [],
       addressSuggestions: [],
+
+      /**
+       * If country name is set and is different from the country used by OSM, Photon may not
+       * return results. Hence, before sending the query to Photon, convert the country name
+       * from the canonical name to that used by Photon if it is known - a previous query returned that country name
+       */
+      canonicalCountryNameToOsmCountryNameCache: {}
     }
   },
 
@@ -201,7 +215,9 @@ export default {
     /**
      * Map OSM properties object to address components used in the sign up page
      * @argument properties OSM properties object
-     * @return object. Components may be undefined
+     * @return object. Components may be undefined. Country may be undefined if OSM's 
+     * two character country code (`countrycode`) is not found in country codes list.
+     * 
      */
     mapOSMPropertiesToAddressComponents: function (properties) {
       const {
@@ -210,17 +226,37 @@ export default {
         county, // city
         state, // region
         postcode,
+        countrycode,
         country,
+        type,
+        name
         // osm_id,
       } = properties;
+   
+   
+      // Convert from OSM country name to restcountries name
+      const countryCanonical = this.countryCodeToNameDict[countrycode];
+
+      if (countryCanonical != undefined && country != undefined && 
+          this.canonicalCountryNameToOsmCountryNameCache[countryCanonical] == undefined) {
+        this.canonicalCountryNameToOsmCountryNameCache[countryCanonical] = country;
+        // Add OSM country name to cache
+      }
+
+      let streetName = street;
+      if (type === "street") {
+        // For some reason, sometimes we get results where housenumber or street name is undefined,
+        // type is road and the name property is the name of the road. No idea why
+        streetName = name;
+      }
 
       const components = {
         streetNumber: housenumber,
-        streetName: street,
+        streetName: streetName,
         city: county,
         region: state,
         postcode: postcode,
-        country: country
+        country: countryCanonical
       };
 
       return components;
@@ -229,12 +265,18 @@ export default {
     /**
      * Generates address string from current inputs
      * If any values are undefined, it is ignored
+     * @param convertCountryToOsmName if true, converts country name to country name used by OSM
      */
-    generateAddressString: function () {
+    generateAddressString: function (convertCountryToOsmName = false) {
       // Was getting strange errors where sometimes a component would be undefined
       // Think its to do with accessing properties via this['someString'] so this
       // is a workaround
       let {streetNumber, streetName, city, region, postcode, country} = this.address;
+
+      if (convertCountryToOsmName && this.canonicalCountryNameToOsmCountryNameCache[country] !== undefined) {
+        country = this.canonicalCountryNameToOsmCountryNameCache[country];
+      }
+
       let components = {
         streetNumber,
         streetName,
@@ -303,6 +345,7 @@ export default {
      */
     generateComparisonString(osmAddress) {
       if (osmAddress.housenumber && osmAddress.street) osmAddress["streetaddress"] = osmAddress.housenumber + " " + osmAddress.street;
+      else if (osmAddress.street) osmAddress["streetaddress"] = osmAddress.street;
       const components = [
         "streetaddress",
         "district",
@@ -327,16 +370,17 @@ export default {
     generateAddressSuggestions: function () {
       const suggestionsDict = {};
       // Using dict instead of array to remove duplicates (e.g. shops in a mall will have different name but otherwise same address)
-      
       const originalString = this.generateAddressString().toLocaleLowerCase();
       for (const {type, properties} of this.addressSuggestionsRaw) {
         if (type != "Feature") {
           continue;
         }
         const addressComponents = this.mapOSMPropertiesToAddressComponents(properties);
+        if (addressComponents.country == undefined) continue; // Unknown country
 
         const addressString = this.generateAddressStringFromAddressComponents(addressComponents,
             this.activeAddressInputName, true);
+
         if (addressString == undefined) {
           // Ignore any suggestions where the necessary components are not present
           continue;
@@ -380,17 +424,15 @@ export default {
      * Pipeline for getting suggestions from axios, filtering then and placing them into suggestions array
      */
     addressSuggestionsPipeline: async function () {
-      const url = `https://photon.komoot.io/api?q=${encodeURIComponent(
-          this.generateAddressString())}`;
-      let response;
+      let data;
       try {
-        response = await axios.get(url);
+        data = await Api.addressSuggestions(this.generateAddressString(true));
+        // Convert country name to that used by OSM
       } catch (_) {
         return;
         // If autocomplete does not work, just don't show a response
       }
 
-      const {data} = response;
       this.addressSuggestionsRaw = data.features;
       this.addressSuggestions = this.generateAddressSuggestions();
     },
@@ -466,6 +508,20 @@ export default {
      */
     address: function () {
       if (this.activeAddressInputName !== "streetNumber") this.addressChange();
+    }
+  },
+
+  computed: {
+    /**
+     * Converts countryData to { 2DigitCountryCode: countryName } dictionary
+     */
+    countryCodeToNameDict: function() {
+      const dict = {};
+      this.countryData.forEach(country => {
+        dict[country.code] = country.name;
+      });
+
+      return dict;
     }
   }
 }

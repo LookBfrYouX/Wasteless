@@ -56,7 +56,7 @@
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
 import { ApiRequestError } from "./../ApiRequestError";
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 
 export default {
   name: "businessProfile",
@@ -67,18 +67,12 @@ export default {
       businessInfo: {
         name: "",
         description: "",
-        address: "",
+        address: {},
         businessType: "",
       },
       apiErrorMessage: null,
     };
   },
-  // beforeRouteEnter(to, from, next) {
-  //   next(vm => {
-  //     vm.prevRoute = from
-  //   })
-  // },
-
   props: {
     businessId: {
       type: Number,
@@ -89,14 +83,11 @@ export default {
       required: false,
       default: false
     },
-    setDocumentTitle: {
-      required: true
-    }
   },
 
   beforeMount: function () {
     // gets user information from api
-    this.parseApiResponse(this.callApi(this.businessId));
+    this.parseApiResponse(this.callApi(this.businessId))
   },
 
   methods: {
@@ -113,6 +104,10 @@ export default {
       }
 
       return Api.businessProfile(businessId);
+    },
+
+    createProduct: function() {
+      this.$router.push({name: "createProduct"});
     },
 
     /**
@@ -139,7 +134,7 @@ export default {
     },
 
     businessInfo() {
-      if (this.businessInfo !== null) this.setDocumentTitle(`${this.businessInfo.name} | Business`);
+      if (this.businessInfo !== null) document.title = `${this.businessInfo.name} | Business`;
     }
   },
 };

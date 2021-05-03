@@ -16,7 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 public interface UserService {
 
   JSONObject saveUser(User user)
-      throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException;
+          throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException;
 
   JSONObject login(UserCredentials userCredentials)
       throws AuthenticationException, UserNotFoundException;
@@ -32,4 +32,7 @@ public interface UserService {
   List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException;
 
   void makeUserAdmin(long id) throws UserNotFoundException, BadCredentialsException;
+
+  boolean isAdmin();
+
 }

@@ -40,11 +40,9 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
 
   private final UserService userService;
-  private final BusinessService businessService;
 
-  public UserController(@Autowired UserService userService, BusinessService businessService) {
+  public UserController(@Autowired UserService userService) {
     this.userService = userService;
-    this.businessService = businessService;
   }
 
   /**
@@ -92,6 +90,9 @@ public class UserController {
     } catch (UserRegistrationException exc) {
       log.error("COULD NOT REGISTER USER (" + exc.getMessage() + "): " + user.getEmail());
       throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad Request");
+    } catch (AddressValidationException exc) {
+      log.error("COULD NOT REGISTER USER (" + exc.getMessage() + "): " + user.getEmail());
+      throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad address given");
     } catch (Exception exc) {
       log.error("CRITICAL REGISTER ERROR: " + exc);
       exc.printStackTrace();
@@ -185,48 +186,6 @@ public class UserController {
     } catch (BadCredentialsException exc) {
       log.error("INSUFFICIENT PRIVILEGES: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient privileges");
-    }
-  }
-
-  /**
-   * Endpoint allowing a user to register a business account Returns error with message if service
-   * business logic doesnt pass
-   *
-   * @param business The Business object that is sent from the front-end.
-   * @return Returns the newly created businesses id and 201 status code in a ResponseEntity
-   * @throws ResponseStatusException Unknown Error.
-   */
-  @PostMapping("/businesses")
-    public ResponseEntity<JSONObject> registerBusiness(@RequestBody Business business) {
-      try {
-        JSONObject response = businessService.saveBusiness(business);
-        return new ResponseEntity<>(response, HttpStatus.valueOf(201));
-      } catch (BusinessTypeException exc) {
-        log.error("Error with supplied data");
-        throw new ResponseStatusException(HttpStatus.valueOf(400), "Error with supplied data");
-      } catch (Exception exc) {
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-      }
-    }
-
-  /**
-   * Search for a specific business using the id field.
-   *
-   * @param id unique identifier of the business being searched for
-   * @return business entity matching the given id
-   * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
-   */
-  @GetMapping("/businesses/{id}")
-  public ResponseEntity<JSONObject> getBusinessById(@PathVariable long id) {
-    try {
-      log.info("GETTING BUSINESS BY ID: " + id);
-      return new ResponseEntity<>(businessService.getBusinessById(id, true),
-          HttpStatus.valueOf(200));
-    } catch (BusinessNotFoundException exc) {
-      log.error("BUSINESS NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), "Business not found");
-    } catch (Exception exc) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
     }
   }
 }

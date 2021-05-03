@@ -41,6 +41,8 @@ export const GLOBAL_STATE = {
   actingAs: null
 };
 
+
+}
 export const globalStateMocks = () => {
   const $stateStore = {
     getters: {
@@ -72,5 +74,3 @@ export const globalStateMocks = () => {
     $helper
   }
 }
-
-

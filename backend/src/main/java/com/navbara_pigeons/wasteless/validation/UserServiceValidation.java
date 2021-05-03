@@ -50,46 +50,22 @@ public class UserServiceValidation {
   }
 
   /**
-   * Checks if the given string is null, empty, or contains whitespace only
-   *
-   * @param str value string to check
-   * @return true if the given string is null, empty, or contains whitespace only
-   */
-  public static boolean isNullOrTrimmedEmpty(String str) {
-    return str == null || str.trim().isEmpty();
-  }
-
-  /**
    * Returns false if required sql fields are null/empty
    *
    * @param user User
    */
-  public static boolean isUserValid(User user) {
+  public static boolean requiredFieldsNotEmpty(User user) {
     // Checks user fields are not null/empty
     for (String val : new String[]{
         user.getFirstName(), user.getLastName(),
         user.getEmail(), user.getPassword(),
         user.getDateOfBirth()
     }) {
-      if (UserServiceValidation.isNullOrTrimmedEmpty(val)) {
+      if (ValidationHelper.isNullOrTrimmedEmpty(val)) {
         return false;
       }
     }
 
-    return true;
-  }
-
-  /**
-   * Returns false if required sql fields are null/empty
-   *
-   * @param user User
-   */
-  public static boolean isAddressValid(User user) {
-    // Checks user fields are not null/empty
-    Address address = user.getHomeAddress();
-    if (UserServiceValidation.isNullOrTrimmedEmpty(address.getCountry())) {
-      return false;
-    }
     return true;
   }
 }

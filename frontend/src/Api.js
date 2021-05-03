@@ -41,7 +41,7 @@ const instance = axios.create({
   withCredentials: true
 });
 
-export default {
+export const Api = {
   /**
    * Sends login request
    * @param props object with 'email' and 'password'
@@ -140,6 +140,30 @@ export default {
   },
 
   /**
+   *
+   * @param {*} id ID of business
+   * @param {object} props with properties:
+   * `name`, `id`, `description`, `recommendedRetailPrice`
+   * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  createProduct: (id, props) => {
+    return instance.post(`/businesses/${id}/products`, props).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {});
+    });
+  },
+
+  /**
+   * Sends a get products query
+   * @param id
+   * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
+   */
+  getProducts: (id) => {
+    return instance.get(`/businesses/${id}/products`).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error);
+    });
+  },
+
+  /**
    * Sends a search query
    * @param searchQuery
    * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
@@ -159,6 +183,17 @@ export default {
     return instance.get("/logout").catch(error => {
       throw ApiRequestError.createFromMessageMap(error);
     });
+  },
+
+  /**
+   * Calls Photon API to fetch address suggestions
+   * @param {*} query query string
+   * @returns {Promise<Object[]>} array of photon response objects, or error
+   */
+  addressSuggestions: async function(query) {
+    return fetch(`https://photon.komoot.io/api?q=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .catch(err => { throw ApiRequestError.createFromMessageMap(err) });
   },
 
   /**

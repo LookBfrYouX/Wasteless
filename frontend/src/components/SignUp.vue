@@ -152,7 +152,10 @@
           </div>
         </div>
 
-        <address-form v-bind:address="address" v-on:addressupdate="addressUpdate"/>
+        <address-form
+          v-bind:address="address"
+          v-on:addressupdate="addressUpdate"
+        />
 
         <div class="form-row">
           <div class="col-12 col-md-3 mb-3">
@@ -165,13 +168,14 @@
                 name="countryCode"
                 v-bind:class="{ 'is-invalid': countryCodeErrorMessage !== null }"
             >
-              <!---Add blank element to country code list so that user can choose not to enter phone-->
+              <!-- Blank option so that the user has option of not entering phone number -->
+              <option value=""></option>
               <option
-                  v-for="code in [{value: '', name: ''}, ...countryCodes]"
-                  :key="code.name"
-                  :value="code.value"
+                  v-for="country in countryData"
+                  v-bind:key="country.code"
+                  v-bind:value="country.phoneExtensionCode"
               >
-                {{ code.name }}
+                {{ country.name }} (+{{country.phoneExtensionCode }})
               </option>
             </select>
             <div class="invalid-feedback">{{ countryCodeErrorMessage }}</div>
@@ -231,13 +235,12 @@
 </style>
 
 <script>
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 const AddressForm = require("./AddressForm").default;
-
-import countryCodesJson from "./../assets/countryCodes.json";
+const countryData = require("./../assets/countryData.json");
 
 export default {
-  name: "signUpPage",
+  name: "SignUp",
 
   components: {
     "address-form": AddressForm
@@ -245,7 +248,6 @@ export default {
 
   data() {
     return {
-      countryCodes: countryCodesJson,
       emailErrorMessage: null, // If email address has already been registered
       confirmPasswordErrorMessage: null, // If password and confirm password fields different
       dateOfBirthErrorMessage: null, // too young etc.
@@ -283,6 +285,8 @@ export default {
       phoneNumber: "",
 
       bio: "",
+
+      countryData
     };
   },
   methods: {
@@ -350,6 +354,7 @@ export default {
 
       return "You must be 13 years or older to sign up";
     },
+
 
     /**
      * Function responsible for registration pipeline, from when register button is
@@ -430,7 +435,7 @@ export default {
       delete userData.password;
       userData.id = response.data.userId;
       await this.$stateStore.actions.setAuthUser(userData);
-      await this.$router.push({name: "home"});
+      await this.$router.push({name: "profile"});
     }
   }
 }

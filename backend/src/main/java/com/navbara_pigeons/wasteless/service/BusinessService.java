@@ -9,8 +9,10 @@ import net.minidev.json.JSONObject;
 
 public interface BusinessService {
 
-  JSONObject saveBusiness(Business business) throws BusinessTypeException, UserNotFoundException;
+  JSONObject saveBusiness(Business business) throws BusinessTypeException, UserNotFoundException, BusinessRegistrationException, AddressValidationException;
 
   JSONObject getBusinessById(long id, boolean includeAdmins) throws BusinessNotFoundException, UnhandledException;
+
+  boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException;
 
 }

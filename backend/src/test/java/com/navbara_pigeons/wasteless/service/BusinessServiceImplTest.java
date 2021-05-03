@@ -14,56 +14,31 @@ import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 @SpringBootTest
-public class BusinessServiceImplTest {
-
-  @Autowired
-  UserController userController;
-  @Autowired
-  BusinessDao businessDao;
-  @Autowired
-  AddressDao addressDao;
-  @Autowired
-  BusinessService businessService;
-  @Autowired
-  UserService userService;
-
+public class BusinessServiceImplTest extends ServiceTestProvider {
+  
   @Test
-  void saveInvalidBusiness() {
+  void saveBusinessInvalidBusinessTypes() {
     // Test invalid businessType fields
-    UserCredentials userCredentials = new UserCredentials();
-    userCredentials.setEmail("dnb36@uclive.ac.nz");
-    userCredentials.setPassword("fun123");
-    try {
-      userService.login(userCredentials);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
+    loginWithCredentials();
     String[] businessTypeTests = {"asd", "123", "Marketing", "Retail", "Service"};
     for (String businessTypeTest : businessTypeTests) {
       Business testBusiness = makeBusiness();
       testBusiness.setBusinessType(businessTypeTest);
-      assertThrows(Exception.class, () -> businessService.saveBusiness(testBusiness));
+      assertThrows(BusinessTypeException.class, () -> businessService.saveBusiness(testBusiness));
     }
   }
 
   @Test
-  void saveValidBusiness() {
+  void saveBusinessValidBusinessTypes() {
     // Test valid businessType fields
-    UserCredentials userCredentials = new UserCredentials();
-    userCredentials.setEmail("dnb36@uclive.ac.nz");
-    userCredentials.setPassword("fun123");
-    try {
-      userService.login(userCredentials);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    loginWithCredentials();
 
     String[] businessTypeTests = {"Accommodation and Food Services", "Retail Trade",
         "Charitable organisation", "Non-profit organisation"};
@@ -144,14 +119,17 @@ public class BusinessServiceImplTest {
     return address;
   }
 
-  Business makeBusiness() {
-    Business business = new Business();
-    business.setName("test")
-        .setCreated("2020-07-14T14:32:00Z")
-        .setBusinessType("Non-profit organisation")
-        .setAddress(makeAddress())
-        .setId(0)
-        .setDescription("some description");
-    return business;
+    Business testBusiness = makeBusiness();
+    testBusiness.getAddress().setCountry("");
+    assertThrows(AddressValidationException.class, () -> businessService.saveBusiness(testBusiness));
+  }
+
+  @Test
+  void saveBusinessInvalidCountryTest() {
+    loginWithCredentials();
+
+    Business testBusiness = makeBusiness();
+    testBusiness.getAddress().setCountry("Fake Zealand");
+    assertThrows(AddressValidationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 }

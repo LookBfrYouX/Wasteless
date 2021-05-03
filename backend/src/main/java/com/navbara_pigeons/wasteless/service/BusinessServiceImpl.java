@@ -12,8 +12,9 @@ import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -33,10 +34,14 @@ import org.springframework.stereotype.Service;
 public class BusinessServiceImpl implements BusinessService {
 
   private final BusinessDao businessDao;
-  private final AddressDao addressDao;
+
+  private final AddressService addressService;
+
   private final UserDao userDao;
   private final ObjectMapper objectMapper;
   private UserService userService;
+
+  private final UserService userService;
 
   /**
    * BusinessServiceImplementation constructor that takes autowired parameters and sets up the
@@ -45,13 +50,13 @@ public class BusinessServiceImpl implements BusinessService {
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, AddressDao addressDao, UserDao userDao,
+  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService, UserDao userDao,
       ObjectMapper objectMapper, @Lazy UserService userService) {
     // Using @Lazy to prevent Circular Dependencies
     this.businessDao = businessDao;
-    this.addressDao = addressDao;
     this.userDao = userDao;
     this.objectMapper = objectMapper;
+    this.addressService = addressService;
     this.userService = userService;
   }
 
@@ -65,16 +70,18 @@ public class BusinessServiceImpl implements BusinessService {
   @Override
   @Transactional
   public JSONObject saveBusiness(Business business)
-      throws BusinessTypeException, UserNotFoundException {
+          throws BusinessTypeException, UserNotFoundException, BusinessRegistrationException, AddressValidationException {
     if (!BusinessServiceValidation.isBusinessTypeValid(business.getBusinessType())) {
       throw new BusinessTypeException("Invalid BusinessType");
     }
+
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     User currentUser = this.userDao.getUserByEmail(authentication.getName());
     business.addAdministrator(currentUser);
-    business.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-    this.addressDao.saveAddress(business.getAddress());
+    business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
+
+    this.addressService.saveAddress(business.getAddress());
     this.businessDao.saveBusiness(business);
     JSONObject response = new JSONObject();
     response.put("businessId", business.getId());
@@ -128,4 +135,27 @@ public class BusinessServiceImpl implements BusinessService {
     }
     return response;
   }
+
+  /**
+   * This helper method tests if the currently logged in user is an administrator of the business with the given ID.
+   * @param businessId The business to test against.
+   * @return True if the current user is the primary admin or a regular admin
+   * @throws BusinessNotFoundException The business does not exist
+   * @throws UserNotFoundException The user does not exist
+   */
+  public boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException {
+    Business business = this.businessDao.getBusinessById(businessId);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    User authUser = this.userService.getUserByEmail(auth.getName());
+    if (business.getPrimaryAdministratorId() == authUser.getId()) {
+      return true;
+    }
+    for (User user : business.getAdministrators()) {
+      if (authUser.getId() == user.getId()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

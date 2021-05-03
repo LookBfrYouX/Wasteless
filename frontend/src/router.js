@@ -69,6 +69,16 @@ export const router = new VueRouter({
       component: () => import("./components/RegisterBusiness.vue"),
     },
     {
+      name: "createProduct",
+      path: "/createproduct",
+      component: CreateProduct
+    },
+    {
+      name: "productCatalogue",
+      path: "/productcatalogue",
+      component: ProductCatalogue
+    },
+    {
       name: "businessProfile",
       path: "/businessprofile/:businessId(\\d+)",
       meta: {title: "Business Profile | Wasteless"},

@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
- * A Data Access Object utilising Hibernate to connect to the database and run basic queries.
+ * A Data Access Object utilising Hibernate to connect to the database and run basic queries to retrieve users.
  */
 @Repository
 public class UserDaoHibernateImpl implements UserDao {

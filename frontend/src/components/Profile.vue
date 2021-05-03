@@ -211,7 +211,7 @@
 import ErrorModal from "./Errors/ErrorModal.vue";
 import { ApiRequestError } from "./../ApiRequestError";
 
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 
 const MONTH_NAMES = [
   "January",
@@ -230,8 +230,8 @@ const MONTH_NAMES = [
 Object.freeze(MONTH_NAMES);
 
 export default {
-  name: "profilePage",
-  components: { ErrorModal },
+  name: 'profile',
+  components: {ErrorModal},
 
   data() {
     return {

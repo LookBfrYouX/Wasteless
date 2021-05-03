@@ -74,13 +74,13 @@
 
 <script>
 // grabs mock api
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 
 export default {
   /* creates vue variables to be manipulates
      initilizes object with methods and data
   */
-  name: "loginPage",
+  name: "Login",
   components: {},
 
   data() {
@@ -116,7 +116,7 @@ export default {
       }
 
       this.errorMessage = "";
-      await this.$router.push({name: "home"});
+      await this.$router.push({name: "profile"});
     },
   },
 };

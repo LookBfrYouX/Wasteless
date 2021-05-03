@@ -2,9 +2,11 @@
 
 -- ###############################  Users Setup  ###############################
 DROP TABLE IF EXISTS USER_BUSINESS;
+DROP TABLE IF EXISTS PRODUCT_BUSINESS;
 DROP TABLE IF EXISTS BUSINESS;
 DROP TABLE IF EXISTS USER;
 DROP TABLE IF EXISTS ADDRESS;
+DROP TABLE IF EXISTS PRODUCT;
 
 CREATE TABLE ADDRESS
 (
@@ -28,11 +30,9 @@ CREATE TABLE USER
     EMAIL           VARCHAR(50) NOT NULL UNIQUE,
     DATE_OF_BIRTH   DATE        NOT NULL,
     PHONE_NUMBER    VARCHAR(18),
-
     CREATED         DATETIME    NOT NULL,
     ROLE            VARCHAR(30) NOT NULL,
     PASSWORD        CHAR(60)    NOT NULL,
-
     HOME_ADDRESS_ID INT         NOT NULL,
     CONSTRAINT USER_ADDRESS_FK FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES ADDRESS (ID)
 );
@@ -44,10 +44,20 @@ CREATE TABLE BUSINESS
     DESCRIPTION              VARCHAR(250),
     BUSINESS_TYPE            VARCHAR(50) NOT NULL,
     CREATED                  DATETIME    NOT NULL,
-
     PRIMARY_ADMINISTRATOR_ID INT         NOT NULL,
     ADDRESS_ID               INT         NOT NULL,
     CONSTRAINT BUSINESS_ADDRESS_FK FOREIGN KEY (ADDRESS_ID) REFERENCES ADDRESS (ID)
+);
+
+CREATE TABLE PRODUCT
+(
+    ID          INT AUTO_INCREMENT PRIMARY KEY,
+    NAME        VARCHAR(100) NOT NULL,
+    DESCRIPTION VARCHAR(500),
+    CURRENCY    VARCHAR(4),
+    MANUFACTURER VARCHAR(100),
+    RRP         DECIMAL(6, 2)
+    CREATED     DATETIME
 );
 
 CREATE TABLE USER_BUSINESS
@@ -59,8 +69,26 @@ CREATE TABLE USER_BUSINESS
     CONSTRAINT USER_BUSINESS_USER_FK
         FOREIGN KEY (USER_ID) REFERENCES USER (ID),
     CONSTRAINT USER_BUSINESS_BUSINESS_FK
-        FOREIGN KEY (BUSINESS_ID) references BUSINESS (ID)
+        FOREIGN KEY (BUSINESS_ID) REFERENCES BUSINESS (ID)
 );
+
+CREATE TABLE PRODUCT_BUSINESS
+(
+    PRODUCT_ID  INT NOT NULL,
+    BUSINESS_ID INT NOT NULL,
+    QUANTITY    INT NOT NULL,
+    CONSTRAINT product_business_pk
+        UNIQUE (PRODUCT_ID, BUSINESS_ID),
+    CONSTRAINT product_business_product_fk
+        FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT (ID),
+    CONSTRAINT product_business_business_fk
+        FOREIGN KEY (BUSINESS_ID) REFERENCES BUSINESS (ID)
+);
+
+
+-- INSERTING TEST DATA BELOW
+
+-- Inserting test address data
 
 INSERT INTO ADDRESS(ID,
                     STREET_NUMBER,
@@ -105,7 +133,7 @@ VALUES (1,
         'Canterbury',
         'New Zealand');
 
--- Inserting test user
+-- Inserting test user data
 
 INSERT INTO USER(FIRST_NAME,
                  LAST_NAME,
@@ -168,6 +196,8 @@ VALUES ('Fletcher',
         'ROLE_USER',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi');
 
+-- Inserting test business data
+
 INSERT INTO BUSINESS(NAME,
                      PRIMARY_ADMINISTRATOR_ID,
                      DESCRIPTION,
@@ -187,9 +217,54 @@ VALUES ('TestName',
         'Retail Trade',
         '2020-07-14T14:32:00Z');
 
+-- Inserting test user-business data
+
 INSERT INTO USER_BUSINESS(USER_ID,
                           BUSINESS_ID)
 VALUES (4,
         1),
        (4,
         2);
+
+-- Inserting product data
+
+INSERT INTO PRODUCT (NAME, DESCRIPTION, RRP, CREATED)
+VALUES ('Anchor Milk Standard Blue Top',
+        'Essential goodness for your family. Anchor blue top is the milk that new zealanders grow up on. Its brimming with important nutrients, and it delivers more energy than most types of milk. Enjoy a glassful of great nz tradition. Number shown on pack is a guide only and not indicative of what will be supplied.',
+        4.67,
+        '2020-07-14T14:32:00Z'),
+       ('Meadow Fresh Milk Standard Family Fresh Homogenised',
+        'At meadow fresh we believe the more goodness the better. That''s why our milk is less processed and permeate free for natural levels of protein and calcium.',
+        4.62,
+        '2020-07-14T14:32:00Z'),
+       ('Sanitarium So Good Almond Milk Unsweetened Long Life',
+        'So good almond milk unsweetened from sanitarium new zealand is a delicious plant-based milk made from almonds. So good almond unsweetened can be enjoyed by the glass, on cereal, or in your favourite recipe. It’s a good source of calcium and a source of vitamins e, b2 and b12. It''s low in fat and is also 100% lactose, gluten and dairy free. Plus it contains no added sugar!.',
+        3.00,
+        '2020-07-14T14:32:00Z'),
+       ('Lewis Road Creamery Milk Standard Homogenised Jersey Milk',
+        'Homogenised jersey milk is naturally better. High in protein, calcium and a2 beta casein with a full bodied flavour. Bottled in 100% recycled plastic, contains no permeate and no pke used to supplement feed.',
+        5.90,
+        '2020-07-14T14:32:00Z'),
+       ('Sanitarium So Good Oat Milk No Added Sugar',
+        'Made in Australia from at least 97% Australian ingredients.',
+        3.30,
+        '2020-07-14T14:32:00Z');
+
+-- Inserting the product to business relationship data
+
+INSERT INTO PRODUCT_BUSINESS (PRODUCT_ID, BUSINESS_ID, QUANTITY)
+VALUES (1,
+        1,
+        50),
+       (2,
+        2,
+        100),
+       (3,
+        1,
+        10),
+       (4,
+        2,
+        13),
+       (5,
+        1,
+        68);

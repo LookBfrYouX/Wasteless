@@ -15,110 +15,109 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
+      <!-- Overflow content -->
       <div id="navbarSupportedContent" class="collapse navbar-collapse">
-
-        <ul class="navbar-nav mr-auto">
-          <li>
-            <a v-if="isLoggedIn"
-               v-on:click="viewProfile"
-               class="nav-link">
-                  Profile
-            </a>
-          </li>
-        </ul>
-        <!--if logged in shows this section-->
-        <div v-if="isLoggedIn" class="d-flex">
-          <form class="input-group mt-2 navbar-center form-inline" v-on:submit.prevent="search">
-            <div class="input-group mb-3 navbar-search">
-              <div class="input-group-prepend h-100">
-                <span class="input-group-text"><span class="material-icons">search</span></span>
-              </div>
-              <input
-                  class=" form-control mr-sm-2 h-100"
-                  placeholder="Search"
-                  type="text"
-                  v-bind:value="query"
-                  v-on:input="event => $emit('input', event)"
-              />
-            </div>
-          </form>
-
-          <div id="navbar-list-4" class="collapse navbar-collapse">
-            <ul class="navbar-nav">
-              <li class="nav-item dropdown">
-                <a id="navbarDropdownMenuLink" aria-expanded="false"
-                   aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown"
-                   href="#" role="button">
-                  <!--Show user thumbnail if acting as an individual, business thumbnail when acting as a business-->
-                  <img v-if="currentActingAs == null"
-                       class="nav-picture rounded-circle"
-                       alt="User thumbnail"
-                       src="./../../assets/images/default-user-thumbnail.svg">
-                  <img v-else
-                       class="nav-picture rounded-circle"
-                       alt="Business thumbnail"
-                       src="./../../assets/images/default-business-thumbnail.svg">
-                  <div class="d-flex flex-column mx-1">
-                    <span class="m-0 p-0 text-dark">
-                      {{ printCurrentActingAs }}
-                    </span>
-                    <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
-                  </div>
-                </a>
-                <div aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-right">
-                  <!--.switch-acting-as-wrapper is only visible for user owing at least one business.-->
-                  <div v-if="actingAsEntities.length !== 0"
-                       class="switch-acting-as-wrapper">
-                    <!--Shows the name of user currenly logged in regardless of acting as a business or not.-->
-                    <h4 class="dropdown-header">Logged in as</h4>
-                    <a v-on:click="viewProfile"
-                       class="dropdown-item">
-                      {{ authUser.firstName }} {{ authUser.lastName }}
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <!--List of entities (user and businesses) to switch acting as state.-->
-                    <h4 class="dropdown-header">Act as</h4>
-                    <a v-if="currentActingAs != null"
-                       v-on:click="switchActingAs()"
-                       class="dropdown-item">
-                      {{ authUser.firstName }} {{ authUser.lastName }}
-                    </a>
-                    <a v-for="business in actingAsEntities" :key="business.id"
-                            v-on:click="switchActingAs(business)"
-                            class="dropdown-item">
-                      {{business.name}}
-                      <!--Checkmark on currently acting as business-->
-                      <span v-if="business === currentActingAs">
-                        &#10003;
-                      </span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                  </div> <!--Close of .switch-acting-as-wrapper-->
-                  <a class="dropdown-item" v-on:click="logOut">Log out</a>
-                </div>
-              </li>
-            </ul>
+        <!-- Left group -->
+        <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
+          <div class="d-lg-flex">
+            <!--Profile page link -->
+            <li class="nav-item mr-lg-auto" v-if="isLoggedIn">
+              <a class="nav-link" v-on:click="pushOrGo('Profile')">
+                Profile
+              </a>
+            </li>
+            <!-- Product catalog link -->
+            <li class="navbar-item mr-lg-auto" v-if="isActingAsBusiness">
+              <a class="nav-link" v-on:click="pushOrGo('Product Catalogue')">
+                Catalogue
+              </a>
+            </li>
           </div>
-        </div>
-        <!-- otherwise shows login button-->
-        <span v-else>
-          <a
-              v-if="this.$route.name != 'login'"
-              class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
-              type="button"
-              v-on:click="login"
-          >
-            Login
-          </a>
-          <a
-              v-if="this.$route.name != 'signUp'"
-              class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
-              type="button"
-              v-on:click="signUp"
-          >
-            Sign Up
-          </a>
-        </span>
+
+          <!-- Center group: search input and button -->
+          <li class="navbar-item d-flex search-container w-100" v-if="isLoggedIn">
+            <form class="input-group navbar-center form-inline" v-on:submit.prevent="search">
+              <div class="input-group w-100">
+                <div class="input-group-prepend h-100">
+                  <span class="input-group-text">
+                    <span class="material-icons">search</span>
+                  </span>
+                </div>
+                <input
+                    class=" form-control mr-sm-2 h-100"
+                    placeholder="Search"
+                    type="text"
+                    v-bind:value="query"
+                    v-on:input="event => $emit('input', event)"
+                />
+              </div>
+            </form>
+          </li>
+
+          <!-- Right group: User and acting as -->
+          <li v-if="isLoggedIn" class="nav-item dropdown">
+            <a id="navbarDropdownMenuLink" aria-expanded="false"
+                aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown"
+                href="#" role="button">
+              <img class="nav-picture rounded-circle" src="placeholder-profile.png">
+              <div class="d-flex flex-column mx-1">
+                <span class="m-0 p-0 text-dark">
+                  {{ printCurrentActingAs }}
+                </span>
+                <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
+              </div>
+            </a>
+
+            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
+              <!-- <div v-if="actingAsEntities.length !== 0"
+                    class="switch-acting-as-wrapper"> -->
+                <div class="h4 dropdown-header">Logged in as</div>
+                <div class="dropdown-item">
+                  {{ authUser.firstName }} {{ authUser.lastName }}
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="h4 dropdown-header">Act as</div>
+                <a v-if="currentActingAs != null"
+                    v-on:click="switchActingAs()"
+                    class="dropdown-item">
+                  {{ authUser.firstName }} {{ authUser.lastName }}
+                </a>
+                <a v-for="business in actingAsEntities" :key="business.id"
+                        v-on:click="switchActingAs(business)"
+                        class="dropdown-item">
+                  {{business.name}}
+                  <span v-if="business === currentActingAs">
+                    &#10003;
+                  </span>
+                </a>
+                <div class="dropdown-divider"></div>
+              <!-- </div> -->
+              <a class="dropdown-item" v-on:click="logOut">Log out</a>
+            </div>
+          </li>
+
+          <!-- Right group (if not logged in) -->
+          <div v-if="!isLoggedIn" class="d-lg-flex ml-lg-auto">
+            <li v-if="this.$route.name != 'login'" class="nav-item">
+              <a
+                class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
+                type="button"
+                v-on:click="pushOrGo('Login')"
+              >
+              Login
+              </a>
+            </li>
+            <li v-if="this.$route.name != 'Sign Up'" class="nav-item">
+              <a
+                  class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
+                  type="button"
+                  v-on:click="pushOrGo('Sign Up')"
+              >
+                Sign Up
+              </a>
+            </li>
+          </div>
+        </ul>
       </div>
     </nav>
     <error-modal
@@ -134,8 +133,10 @@
   </div>
 </template>
 
+
+
 <script>
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 import ErrorModal from "./Errors/ErrorModal";
 
 export default {
@@ -186,6 +187,14 @@ export default {
     },
 
     /**
+    * Checks if user is acting as a business
+    * @returns true if logged in and acting as business
+    */
+    isActingAsBusiness() {
+      return this.$stateStore.getters.isActingAsBusiness();
+    },
+
+    /**
      * True if admin, false if not OR IF NOT LOGGED IN
      */
     isAdmin() {
@@ -198,7 +207,7 @@ export default {
      */
     actingAsEntities() {
       return this.authUser != null? this.authUser.businessesAdministered: [];
-    }
+    },
   },
   methods: {
     /**
@@ -208,20 +217,6 @@ export default {
       this.$route.name === routeName ?
           this.$router.go() :
           this.$router.push({name: routeName});
-    },
-
-    /**
-     * Navigate to log in page
-     */
-    login: async function () {
-      return this.pushOrGo("login");
-    },
-
-    /**
-     * Navigate to sign up page
-     */
-    signUp: async function () {
-      return this.pushOrGo("signUp");
     },
 
     /**
@@ -238,7 +233,7 @@ export default {
         this.logOutErrorMessage = err.userFacingErrorMessage;
         return;
       }
-
+      
       await this.$stateStore.actions.deleteAuthUser();
       await this.pushOrGo("landing");
     },
@@ -262,7 +257,7 @@ export default {
      * Navigates to search page with current query, or reloads page if on search page and query has not changed
      */
     search: async function () {
-      const searchName = "search";
+      const searchName = "Search";
       let newQuery = this.$route.params.query;
 
       if (this.$route.name == searchName && newQuery == this.query) {
@@ -297,8 +292,8 @@ export default {
 
 <style scoped>
 
-a:hover {
-  cursor: pointer;
+.dropdown-menu {
+  z-index:900000;
 }
 
 .admin-text {
@@ -306,20 +301,8 @@ a:hover {
   font-size: 0.8em;
 }
 
-.navbar-search {
-  width: 100% !important;
+.search-container {
+  max-width: 30em;
+  flex-grow: 2;
 }
-
-.navbar-center {
-  position: absolute;
-  left: 50%;
-  transform: translatex(-50%);
-  height: 100%;
-  width: 30%;
-}
-
-.navbar {
-  height: 50px;
-}
-
 </style>

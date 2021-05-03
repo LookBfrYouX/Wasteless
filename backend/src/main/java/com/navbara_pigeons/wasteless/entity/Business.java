@@ -1,7 +1,11 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Data;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,9 +16,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.Data;
 
 @Data
 @Entity
@@ -43,10 +47,10 @@ public class Business {
   private String businessType;
 
   @Column(name = "CREATED")
-  private String created;
+  private ZonedDateTime created;
 
   @ManyToMany(
-      fetch = FetchType.EAGER,
+      fetch = FetchType.LAZY,
       cascade = {
           CascadeType.DETACH,
           CascadeType.MERGE,
@@ -61,9 +65,24 @@ public class Business {
   )
   private List<User> administrators;
 
+  @OneToMany(
+          fetch = FetchType.LAZY,
+          cascade = {
+                  CascadeType.DETACH,
+                  CascadeType.MERGE,
+                  CascadeType.PERSIST,
+                  CascadeType.REFRESH
+          }
+  )
+  @JoinTable(
+          name = "CATALOGUE",
+          joinColumns = @JoinColumn(name = "BUSINESS_ID"),
+          inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
+  )
+  private List<Product> productsCatalogue;
+
   /**
    * This is a helper method for adding a user to the business.
-   *
    * @param administrator The user to be added.
    */
   public void addAdministrator(User administrator) {
@@ -71,6 +90,17 @@ public class Business {
       this.administrators = new ArrayList<>();
     }
     this.administrators.add(administrator);
+  }
+
+  /**
+   * This is a helper method for adding a product to the business product catalogue.
+   * @param product The product to be added.
+   */
+  public void addCatalogueProduct(Product product) {
+    if (this.productsCatalogue == null) {
+      this.productsCatalogue = new ArrayList<>();
+    }
+    this.productsCatalogue.add(product);
   }
 
 }

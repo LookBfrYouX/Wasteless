@@ -1,0 +1,8 @@
+Feature: U5 Creating Business Accounts
+
+#  CRud: Business
+#  AC1: As a logged-in individual, I can create/register a Business Account.
+#  AC2: The business should have at least the following attributes: Name of business*, description, address*, and type of business*. The attributes with the asterisk are mandatory (have to always contain values); a business account cannot exist without the mandatory attributes filled in. You may add other attributes you deem are necessary.
+#  AC3: For now, the type of business can be one of: Accommodation and Food Services (e.g. cafes, clubs, restaurants, pubs), Retail Trade (e.g. Supermarkets, Grocery Stores), Charitable organisation, or Non-profit organisation. If needed in future, we can add more (e.g. from businessdescription.co.nz/browse/class).
+#  AC4: As with the individual account, the business account has a profile page. The attributes should be displayed on the profile page along with the date of registration (same as the individual page). In future, other information will be available on this page including products that are available.
+#  AC5: The individual who created the business is automatically given primary administrator status. This should be displayed on their individual profile with the name of the business; the name is a link to the business page.  The primary administrator of a business can grant business administrator status to other individual users or or revoke business administrator status from current business administrators of the business.  Primary administrators cannot withdraw their own administrator status.  The business profile page should have the names of the administrators (the names are links to the individual pages) on it.

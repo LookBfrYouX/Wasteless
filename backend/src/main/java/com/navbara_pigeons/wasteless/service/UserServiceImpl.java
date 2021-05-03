@@ -46,8 +46,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-  private final AddressDao addressDao;
   private final UserDao userDao;
+  private final AddressService addressService;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final BCryptPasswordEncoder encoder;
   private final ObjectMapper objectMapper;
@@ -61,16 +61,17 @@ public class UserServiceImpl implements UserService {
    * for interacting with all user related services.
    *
    * @param userDao                      The UserDataAccessObject.
+   * @param addressService             The address service
    * @param authenticationManagerBuilder The global AuthenticationManagerBuilder.
    * @param encoder                      Password encoder.
    * @param businessService
    */
   @Autowired
-  public UserServiceImpl(UserDao userDao, AddressDao addressDao,
+  public UserServiceImpl(UserDao userDao, AddressService addressService,
       AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder encoder,
       ObjectMapper objectMapper, BusinessService businessService) {
     this.userDao = userDao;
-    this.addressDao = addressDao;
+    this.addressService = addressService;
     this.authenticationManagerBuilder = authenticationManagerBuilder;
     this.encoder = encoder;
     this.objectMapper = objectMapper;
@@ -89,9 +90,9 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public JSONObject saveUser(User user)
-      throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException {
+          throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException {
     // Email validation
-    if (!UserServiceValidation.isUserValid(user)) {
+    if (!UserServiceValidation.requiredFieldsNotEmpty(user)) {
       throw new UserRegistrationException("Required user fields cannot be null");
     }
     if (!UserServiceValidation.isEmailValid(user.getEmail())) {
@@ -115,10 +116,6 @@ public class UserServiceImpl implements UserService {
     if (!UserServiceValidation.isPasswordValid(user.getPassword())) {
       throw new UserRegistrationException("Password does not pass validation check");
     }
-    // Address validation
-    if (!UserServiceValidation.isAddressValid(user)) {
-      throw new UserRegistrationException("Required address fields cannot be null");
-    }
 
     // Set user credentials for logging in after registering
     UserCredentials userCredentials = new UserCredentials();
@@ -128,7 +125,8 @@ public class UserServiceImpl implements UserService {
     user.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     user.setPassword(encoder.encode(user.getPassword()));
     user.setRole("ROLE_USER");
-    this.addressDao.saveAddress(user.getHomeAddress());
+
+    this.addressService.saveAddress(user.getHomeAddress());
     this.userDao.saveUser(user);
 
     // Logging in the user and returning the id
@@ -150,7 +148,9 @@ public class UserServiceImpl implements UserService {
       UnhandledException {
     User user = userDao.getUserById(id);
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
+
+    String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+    // Email of user that made the request
 
     // Convert user entity JSONObject (convert to String then to JSONObject)
     String jsonStringBusiness = null;
