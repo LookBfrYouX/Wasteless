@@ -36,7 +36,7 @@ public class BusinessServiceImpl implements BusinessService {
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService, UserService userService) {
+  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService, @Lazy UserService userService) {
     // Using @Lazy to prevent Circular Dependencies
     this.businessDao = businessDao;
     this.addressService = addressService;
