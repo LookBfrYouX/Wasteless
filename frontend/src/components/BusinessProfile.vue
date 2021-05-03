@@ -18,12 +18,7 @@
         </li>
         <li class="row">
           <dt class="col-md label">Address:</dt>
-          <dd class="col-md value"> {{
-              [businessInfo.address.streetNumber + " " +
-              businessInfo.address.streetName, businessInfo.address.city,
-                businessInfo.address.region, businessInfo.address.country,
-                businessInfo.address.postcode].join(", ")
-            }}
+          <dd class="col-md value"> {{ $helper.addressToString(businessInfo.address) }}
           </dd>
         </li>
         <li class="row">

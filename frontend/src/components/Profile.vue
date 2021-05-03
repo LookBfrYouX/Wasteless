@@ -154,15 +154,7 @@
             <tr v-if="userInfo.homeAddress" scope="row">
               <th style="white-space: nowrap;">Address:</th>
               <td class="col-md value">
-                <p>{{
-                    [userInfo.homeAddress.streetNumber + ' ' + userInfo.homeAddress.streetName,
-                      userInfo.homeAddress.city,
-                      userInfo.homeAddress.region,
-                      userInfo.homeAddress.postcode,
-                      userInfo.homeAddress.country
-                    ].filter(Boolean).join(', ')
-                  }}
-                </p>
+                <p>{{$helper.addressToString(userInfo.homeAddress)}}</p>
               </td>
             </tr>
             </tbody>
