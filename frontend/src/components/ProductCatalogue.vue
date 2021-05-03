@@ -39,9 +39,17 @@
             <ul class="list-unstyled list-group">
               <!--viewUser method uses router.push to display profile page-->
               <li v-for="(product, index) in displayedResults" v-bind:key="index"
-                  class="list-group-item card ">
-                <div class="d-flex flex-wrap justify-content-between">
-                  <h4 class="card-title mb-0">{{ product.name }} (Id: {{ product.id }})</h4>
+                  v-on:click="viewProduct(product.id)"
+                  class="list-group-item card">
+                <div class="row">
+                  <div class="col-3">
+                    <img v-bind:src="getThumbnailImage(product.id)" class="image-fluid w-100" alt="Product Image">
+                  </div>
+                  <div class="col-9">
+                    <div class="d-flex flex-wrap justify-content-between">
+                      <h4 class="card-title mb-0">{{ product.name }} (Id: {{ product.id }})</h4>
+                    </div>
+                  </div>
                 </div>
                 <div class="text-muted">Description: {{ product.description }}</div>
                 <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
@@ -91,8 +99,10 @@
 
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
+// import {ApiRequestError} from "@/ApiRequestError";
 
 const Api = require("./../Api").default;
+const BASE_PRODUCT_IMAGE_PATH = "/user-content/images/products/";
 
 const ProductCatalogue = {
   name: "ProductCatalogue",
@@ -136,7 +146,6 @@ const ProductCatalogue = {
       try {
         const {data} = await Api.getProducts(this.$stateStore.getters.getActingAs().id)
         this.results = this.parseSearchResults(data);
-        console.log(this.results)
         this.setPages();
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
@@ -153,8 +162,8 @@ const ProductCatalogue = {
     setPages() {
       /* calculates number of pages which is reliant on resultsPerPage set in the data section*/
       let numOfPages = Math.ceil(this.results.length / this.resultsPerPage);
-      console.log(this.results.length, 'length')
-      console.log(this.results, 'array')
+      // console.log(this.results.length, 'length')
+      // console.log(this.results, 'array')
       this.pages = [];
       for (let i = 0; i < numOfPages; i++) {
         this.pages.push(i);
@@ -168,12 +177,31 @@ const ProductCatalogue = {
       let resultsPerPage = this.resultsPerPage;
       let from = page * resultsPerPage;
       let to = from + resultsPerPage;
-      console.log(results.slice(from, to));
+      // console.log(results.slice(from, to));
       return results.slice(from, to);
     },
 
     createProduct() {
       this.$router.push("createProduct");
+    },
+
+    getThumbnailImage(productId) {
+      const products = this.results;
+      const product = products.find(({id}) => id === productId);
+      if (!product == undefined && !product.images[0]) {
+        return BASE_PRODUCT_IMAGE_PATH + product.image[0].filename;
+      } else {
+        return BASE_PRODUCT_IMAGE_PATH + "default-product-thumbnail.svg";
+      }
+    },
+
+    viewProduct(productId) {
+      this.$router.push({
+        name: "productDetail",
+        params: {
+          productId
+        }
+      });
     }
   },
   computed: {
@@ -196,7 +224,7 @@ const ProductCatalogue = {
     },
     // used for for loop in html
     displayedResults() {
-      console.log('Displaying Results')
+      // console.log('Displaying Results')
       return this.paginate(this.sortedResults);
     }
   }

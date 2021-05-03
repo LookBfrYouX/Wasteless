@@ -8,6 +8,7 @@ import RegisterBusiness from './components/RegisterBusiness'
 import Home from "./components/Home.vue"
 import CreateProduct from "./components/CreateProduct"
 import ProductCatalogue from './components/ProductCatalogue';
+import ProductDetail from './components/ProductDetail';
 
 export default []
 
@@ -75,6 +76,12 @@ export const router = new VueRouter({
       name: "productCatalogue",
       path: "/productcatalogue",
       component: ProductCatalogue
+    },
+    {
+      name: "productDetail",
+      path: "/productdetail/:productId(\\d+)",
+      component: ProductDetail,
+      props: route => ({ productId: parseInt(route.params.productId, 10)})
     },
     {
       name: "businessProfile",

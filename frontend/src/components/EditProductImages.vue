@@ -49,6 +49,10 @@
 
       </div>
     </div>
+    <button class="btn btn-success"
+            v-on:click="finishEditing(productId)">
+      Save changes
+    </button>
     <error-modal
         title="Error fetching product information"
         v-bind:hideCallback="() => apiErrorMessage = null"
@@ -147,7 +151,7 @@ export default {
         const product = products.find(({id}) => id === this.productId);
         // find the product the correct id
         if (product === undefined) {
-          return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the corerct business`);
+          return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
         }
         this.name = product.name;
         this.images = product.images;
@@ -168,7 +172,7 @@ export default {
 
     /**
      * Uploads image and call Api again to update images.
-     * @param event TODO Better comments
+     * @param event is a DOM event when the user picks a file.
      */
     onFilePicked(event) {
       const files = event.target.files;
@@ -217,6 +221,15 @@ export default {
      */
     getImagePath(filename) {
       return BASE_PRODUCT_IMAGE_PATH + filename;
+    },
+
+    finishEditing(productId) {
+      this.$router.push({
+        name: "productDetail",
+        params: {
+          productId
+        }
+      });
     }
   }
 }
