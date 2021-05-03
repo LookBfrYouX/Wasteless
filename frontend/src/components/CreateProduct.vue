@@ -35,7 +35,7 @@
             <label>Price</label>
             <input
                 v-model="price"
-                v-bind:placeholder="symbol + ' ' + currency"
+                v-bind:placeholder="symbol + ' (' + currency + ')'"
                 class="form-control"
                 step="0.10"
                 name="price"
