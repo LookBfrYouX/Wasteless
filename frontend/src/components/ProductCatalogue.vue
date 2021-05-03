@@ -189,7 +189,7 @@ const ProductCatalogue = {
       const products = this.results;
       const product = products.find(({id}) => id === productId);
       if (product && product.images && product.images[0]) {
-        return product.images[0].filename;
+        return product.images[0].thumbnailFilename;
       } else {
         return BASE_PRODUCT_IMAGE_PATH + "default-product-thumbnail.svg";
       }
