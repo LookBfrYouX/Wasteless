@@ -150,7 +150,7 @@ export default {
           return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the corerct business`);
         }
         this.name = product.name;
-        this.images = product.productImages; // TODO change to product.images
+        this.images = product.images;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -172,8 +172,6 @@ export default {
      */
     onFilePicked(event) {
       const files = event.target.files;
-      console.log("files");
-      console.log(files);
       Api.uploadProductImage(files[0], this.actingAs.id, this.productId)
       .then(() => {
         return this.apiPipeline();
