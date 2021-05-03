@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -66,12 +67,11 @@ public class BusinessController {
      * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
      */
     @GetMapping("/businesses/{id}")
-    public ResponseEntity<JSONObject> getBusinessById(@PathVariable String id) {
+    public ResponseEntity<Object> getBusinessById(@PathVariable String id) {
         try {
             log.info("GETTING BUSINESS BY ID: " + id);
-
-            return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id), true),
-                    HttpStatus.valueOf(200));
+            FullBusinessDto response = new FullBusinessDto(businessService.getBusinessById(Long.parseLong(id)));
+            return new ResponseEntity<>(response, HttpStatus.valueOf(200));
         } catch (BusinessNotFoundException exc) {
             log.error("BUSINESS NOT FOUND ERROR: " + id);
             throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
