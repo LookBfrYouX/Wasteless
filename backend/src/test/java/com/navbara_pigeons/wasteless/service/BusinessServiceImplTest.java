@@ -89,7 +89,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     // Getting new business for user "dnb36@uclive.ac.nz"
     JSONObject newBusiness = null;
     try {
-      newBusiness = businessService.getBusinessById(testBusiness.getId(), true);
+      newBusiness = businessService.getBusinessById(testBusiness.getId(), false);
     } catch (BusinessNotFoundException e) {
       assert(false);
     } catch (UnhandledException e) {

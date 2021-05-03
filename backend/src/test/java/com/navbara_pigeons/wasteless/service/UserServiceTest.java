@@ -8,6 +8,7 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
@@ -57,31 +58,31 @@ public class UserServiceTest extends MainTestProvider {
 
     @Test
     @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-    public void getUserById_self() throws UserNotFoundException {
+    public void getUserById_self() throws UserNotFoundException, UnhandledException {
         User user = makeUser(EMAIL_1, PASSWORD_1, false);
         user.setId(100);
         when(userDaoMock.getUserById(user.getId())).thenReturn(user);
-        JSONObject userJson = userService.getUserById(user.getId());
+        JSONObject userJson = userService.getUserById(user.getId(), true);
         assertUserWithJson(user, userJson, false);
     }
 
     @Test
     @WithMockUser()
-    public void getUserById_otherWhenNotAdmin() throws UserNotFoundException {
+    public void getUserById_otherWhenNotAdmin() throws UserNotFoundException, UnhandledException {
         User user = makeUser(EMAIL_1, PASSWORD_1, false);
         user.setId(100);
         when(userDaoMock.getUserById(user.getId())).thenReturn(user);
-        JSONObject userJson = userService.getUserById(user.getId());
+        JSONObject userJson = userService.getUserById(user.getId(), true);
         assertUserWithJson(user, userJson, true);
     }
 
     @Test
     @WithMockUser(authorities = { "ADMIN" })
-    public void getUserById_otherWhenAdmin() throws UserNotFoundException {
+    public void getUserById_otherWhenAdmin() throws UserNotFoundException, UnhandledException {
         User user = makeUser(EMAIL_1, PASSWORD_1, false);
         user.setId(100);
         when(userDaoMock.getUserById(user.getId())).thenReturn(user);
-        JSONObject userJson = userService.getUserById(user.getId());
+        JSONObject userJson = userService.getUserById(user.getId(), true);
         assertUserWithJson(user, userJson, false);
     }
 
@@ -89,13 +90,14 @@ public class UserServiceTest extends MainTestProvider {
     @WithMockUser()
     public void getUserById_notFound() throws UserNotFoundException {
         when(userDaoMock.getUserById(Mockito.anyLong())).thenThrow(UserNotFoundException.class);
-        assertThrows(UserNotFoundException.class, () -> userService.getUserById(1000));
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(1000, true));
     }
 
     @Test
     @Disabled
     @WithMockUser()
-    public void getUserById_isPrimaryBusinessAdmin() throws UserNotFoundException, BusinessNotFoundException {
+    public void getUserById_isPrimaryBusinessAdmin()
+        throws UserNotFoundException, BusinessNotFoundException, UnhandledException {
         User user1 = makeUser(EMAIL_1, PASSWORD_1, false);
         user1.setId(100);
         when(userDaoMock.getUserById(user1.getId())).thenReturn(user1);
@@ -106,7 +108,7 @@ public class UserServiceTest extends MainTestProvider {
 
         user1.addBusiness(business);
 
-        JSONObject userJson = userService.getUserById(user1.getId());
+        JSONObject userJson = userService.getUserById(user1.getId(), true);
 
         assertUserWithJson(user1, userJson, true);
         assertBusinessList(List.of(business), (JSONArray) userJson.get("businesses"));
@@ -116,7 +118,8 @@ public class UserServiceTest extends MainTestProvider {
     @Test
     @Disabled
     @WithMockUser()
-    public void getUserById_isBusinessAdmin() throws UserNotFoundException, BusinessNotFoundException {
+    public void getUserById_isBusinessAdmin()
+        throws UserNotFoundException, BusinessNotFoundException, UnhandledException {
         User user1 = makeUser(EMAIL_1, PASSWORD_1, false);
         user1.setId(100);
         when(userDaoMock.getUserById(user1.getId())).thenReturn(user1);
@@ -133,7 +136,7 @@ public class UserServiceTest extends MainTestProvider {
         user1.addBusiness(business);
         user2.addBusiness(business);
 
-        JSONObject userJson = userService.getUserById(user1.getId());
+        JSONObject userJson = userService.getUserById(user1.getId(), true);
 
         assertUserWithJson(user1, userJson, true);
         assertBusinessList(List.of(business), (JSONArray) userJson.get("businesses"));
