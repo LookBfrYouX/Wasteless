@@ -32,6 +32,7 @@
         </li>
       </ul>
       <button
+          v-if="this.$stateStore.getters.isAdmin() || (this.$stateStore.getters.getActingAs() !== null && this.$stateStore.getters.getActingAs().id === businessId)"
           class="btn btn-white-bg-primary mx-1 d-flex"
           type="button"
           v-on:click="createProduct()"
