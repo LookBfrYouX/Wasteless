@@ -1,3 +1,5 @@
+const { constants } = require("./constants");
+
 /**
  * Helper methods that may be used by multiple pages. It is added to the vue prototype so
  * the component does not need to explicitly import this class
@@ -24,5 +26,16 @@ export const helper = {
       address.postcode,
       address.country
     ].filter(component => typeof component == "string" && component.trim().length > 0).join(', ');
+  },
+
+  /**
+   * Given ISO string, returns human-readable date string
+   * @param {} dateString YYYY-MM-DDTHH:MM:SS.MSMSZ
+   * @returns date string in `dd MMM YYYY` format
+   */
+  isoToDateString(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDate() < 10? `0${date.getDate()}`: date.getDate().toString();
+    return `${day} ${constants.MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
   }
 }
