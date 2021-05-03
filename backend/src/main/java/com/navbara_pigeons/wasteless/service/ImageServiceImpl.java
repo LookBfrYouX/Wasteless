@@ -5,14 +5,21 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Image;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.*;
-
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -25,6 +32,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class ImageServiceImpl implements ImageService {
+
+  @Value("${image.products.prefix}")
+  private String imagePrefix;
 
   private final UserDao userDao;
   private final ImageDao imageDao;
@@ -69,18 +79,19 @@ public class ImageServiceImpl implements ImageService {
     String fileName = StringUtils.cleanPath(image.getOriginalFilename());
     String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-    // Check if "image" is actually an image (gif not accepted)
+    // Check if "image" is actually an image
     ArrayList<String> items = new ArrayList<>();
     items.add("jpg");
     items.add("jpeg");
     items.add("png");
+    items.add("gif");
     if (!items.contains(fileExtension.toLowerCase())) {
       throw new ImageNotFoundException();
     }
 
     // Crop the image and then save it to the DB + Machine
-    cropImageToSquare(image, fileExtension, fileName);
-    Image imageEntity = new Image(fileExtension);
+    image = cropImageToSquare(image, fileExtension, fileName);
+    Image imageEntity = new Image(imagePrefix, fileExtension);
     Product productEntity = productService.getProduct(productId);
     productEntity.addProductImage(imageEntity);
     if (productEntity.getPrimaryProductImage() == null) {

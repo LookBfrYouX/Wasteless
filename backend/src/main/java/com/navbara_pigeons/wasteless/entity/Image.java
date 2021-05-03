@@ -13,6 +13,7 @@ import lombok.Data;
 @Entity
 @Table(name = "IMAGE")
 public class Image {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ID")
@@ -29,10 +30,10 @@ public class Image {
    *
    * @param extension The Extension of the filename
    */
-  public Image(String extension) {
+  public Image(String imagePrefix, String extension) {
     String filename = "I" + UUID.randomUUID();
-    this.filename = filename + "." + extension;
-    this.thumbnailFilename = filename + "_thumbnail." + extension;
+    this.filename = imagePrefix + filename + "." + extension;
+    this.thumbnailFilename = imagePrefix + filename + "_thumbnail." + extension;
   }
 
   /**
