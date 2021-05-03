@@ -1,8 +1,8 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
-import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
+import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
@@ -53,7 +53,7 @@ public class BusinessServiceImpl implements BusinessService {
   @Override
   @Transactional
   public JSONObject saveBusiness(Business business)
-          throws BusinessTypeException, UserNotFoundException, BusinessRegistrationException, AddressValidationException {
+          throws BusinessTypeException, UserNotFoundException, AddressValidationException {
     if (!BusinessServiceValidation.isBusinessTypeValid(business.getBusinessType())) {
       throw new BusinessTypeException("Invalid BusinessType");
     }
@@ -77,12 +77,18 @@ public class BusinessServiceImpl implements BusinessService {
    * @param id the id of the business
    * @return the Business instance of the business
    * @throws BusinessNotFoundException when business with given id does not exist
-   * @throws UnhandledException thrown when converting business to JSONObject (internal error 500)
+   * @throws UserNotFoundException should never be thrown. If is thrown, return 500 status code
    */
   @Override
-  public Business getBusinessById(long id) throws BusinessNotFoundException {
+  @Transactional
+  public Object getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException {
     Business business = businessDao.getBusinessById(id);
-    return business;
+
+    if (isBusinessAdmin(id) || userService.isAdmin()) {
+      return new FullBusinessDto(business);
+    } else {
+      return new BasicBusinessDto(business);
+    }
   }
 
   /**
@@ -106,5 +112,4 @@ public class BusinessServiceImpl implements BusinessService {
     }
     return false;
   }
-
 }

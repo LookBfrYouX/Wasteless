@@ -70,8 +70,7 @@ public class BusinessController {
     public ResponseEntity<Object> getBusinessById(@PathVariable String id) {
         try {
             log.info("GETTING BUSINESS BY ID: " + id);
-            FullBusinessDto response = new FullBusinessDto(businessService.getBusinessById(Long.parseLong(id)));
-            return new ResponseEntity<>(response, HttpStatus.valueOf(200));
+            return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)), HttpStatus.valueOf(200));
         } catch (BusinessNotFoundException exc) {
             log.error("BUSINESS NOT FOUND ERROR: " + id);
             throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
@@ -82,5 +81,4 @@ public class BusinessController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
         }
     }
-
 }

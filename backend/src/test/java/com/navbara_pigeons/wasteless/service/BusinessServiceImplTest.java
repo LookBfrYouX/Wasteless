@@ -1,27 +1,20 @@
 package com.navbara_pigeons.wasteless.service;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.navbara_pigeons.wasteless.controller.UserController;
-import com.navbara_pigeons.wasteless.dao.AddressDao;
-import com.navbara_pigeons.wasteless.dao.BusinessDao;
-import com.navbara_pigeons.wasteless.entity.Address;
+import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
-import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 @SpringBootTest
 public class BusinessServiceImplTest extends ServiceTestProvider {
-  
+
   @Test
   void saveBusinessInvalidBusinessTypes() {
     // Test invalid businessType fields
@@ -53,24 +46,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
   void getBusinessByIdExpectOk() {
     Business testBusiness = makeBusiness();
     Assertions.assertDoesNotThrow(() -> businessService.saveBusiness(testBusiness));
-    Assertions.assertDoesNotThrow(() -> businessService.getBusinessById(testBusiness.getId(), true));
-  }
-
-  @Test
-  @WithUserDetails("amf133@uclive.ac.nz")
-  void getBusinessByIdExpectAdminsHidden() {
-    Business testBusiness = makeBusiness();
-    Assertions.assertDoesNotThrow(() -> businessService.saveBusiness(testBusiness));
-    JSONObject newBusiness = null;
-    try {
-      // includeAdmins set to false, assuming no admins are returned in response
-      newBusiness = businessService.getBusinessById(testBusiness.getId(), false);
-    } catch (BusinessNotFoundException e) {
-      assert(false);
-    } catch (UnhandledException e) {
-      assert(false);
-    }
-    assertFalse(newBusiness.containsKey("administrators"));
+    Assertions.assertDoesNotThrow(() -> businessService.getBusinessById(testBusiness.getId()));
   }
 
   @Test
@@ -86,26 +62,13 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     userCredentials.setPassword("fun123");
     Assertions.assertDoesNotThrow(() -> userService.login(userCredentials));
 
-    // Getting new business for user "dnb36@uclive.ac.nz"
-    JSONObject newBusiness = null;
+    // Getting new business for user "dnb36@uclive.ac.nz", asserting newBusiness is BasicBusinessDto
     try {
-      newBusiness = businessService.getBusinessById(testBusiness.getId(), false);
-    } catch (BusinessNotFoundException e) {
-      assert(false);
-    } catch (UnhandledException e) {
+      BasicBusinessDto newBusiness = (BasicBusinessDto) businessService.getBusinessById(testBusiness.getId());
+    } catch (BusinessNotFoundException | UserNotFoundException | ClassCastException e) {
       assert(false);
     }
-
-    // Administrators should only have one admin "amf133@uclive.ac.nz"
-    assertFalse(newBusiness.get("administrators").toString().contains("\"password\""));
-    assertFalse(newBusiness.get("administrators").toString().contains("\"email\""));
-    assertFalse(newBusiness.get("administrators").toString().contains("\"dateOfBirth\""));
-    assertFalse(newBusiness.get("administrators").toString().contains("\"phoneNumber\""));
-    assertFalse(newBusiness.get("administrators").toString().contains("\"streetNumber\""));
-    assertFalse(newBusiness.get("administrators").toString().contains("\"streetName\""));
-    assertFalse(newBusiness.get("administrators").toString().contains("\"postcode\""));
   }
-
 
   @Test void saveBusinessInvalidAddressTest() {
     loginWithCredentials();
