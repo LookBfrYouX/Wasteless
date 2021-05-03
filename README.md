@@ -32,10 +32,6 @@ Running on: http://localhost:9500/ by default
 
 Running on: http://localhost:9499/ by default
 
-## Todo (S2)
-
-- Decide on a LICENSE
-
 ## Contributors
 
 - Alec Fox (amf133)
