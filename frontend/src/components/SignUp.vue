@@ -23,6 +23,7 @@
                 class="form-control"
                 maxlength="30"
                 name="fname"
+                id="fname"
                 placeholder="First name"
                 required
                 type="text"
@@ -37,6 +38,7 @@
                 class="form-control"
                 maxlength="30"
                 name="mname"
+                id="mname"
                 placeholder="Middle name (optional)"
                 type="text"
             />
@@ -50,6 +52,7 @@
                 class="form-control"
                 maxlength="30"
                 name="lname"
+                id="lname"
                 placeholder="Last name"
                 required
                 type="text"
@@ -64,6 +67,7 @@
                 class="form-control"
                 maxlength="30"
                 name="nickname"
+                id="nickname"
                 placeholder="Nickname (optional)"
                 type="text"
             />
@@ -74,19 +78,21 @@
         <div class="row">
           <div class="col form-group required">
             <label ref="emailLabel" for="email">Email</label>
-            <!-- TODO: test email regex -->
             <input
                 v-model="email"
                 autocomplete="email"
                 class="form-control"
                 maxlength="50"
                 name="email"
-                pattern="^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"
+                id="email"
                 placeholder="Email"
                 required
                 type="email"
                 v-bind:class="{'is-invalid': emailErrorMessage !== null }"
+                pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"
+                title="You must enter a valid email address. Dotless domains are not supported"
             />
+            <!-- regexp from https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type%3Demail), but modified to disallow dot-less domains -->
             <div class="invalid-feedback">{{ emailErrorMessage }}</div>
           </div>
         </div>
@@ -101,6 +107,7 @@
                 maxlength="50"
                 minlength="8"
                 name="password"
+                id="password"
                 pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,}$"
                 placeholder="Password"
                 required
@@ -124,6 +131,7 @@
                 maxlength="50"
                 minlength="8"
                 name="confirmPassword"
+                id="confirmPassword"
                 placeholder="Confirm password"
                 required
                 type="password"
@@ -142,6 +150,7 @@
                 autocomplete="bday"
                 class="form-control"
                 name="dateOfBirth"
+                id="dateOfBirth"
                 placeholder="Date of birth"
                 required
                 type="date"
@@ -151,10 +160,7 @@
           </div>
         </div>
 
-        <address-form
-          v-bind:address="address"
-          v-on:addressupdate="addressUpdate"
-        />
+        <address-form v-bind:address="address" v-on:addressupdate="addressUpdate"/>
 
         <div class="form-row">
           <div class="col-12 col-md-3 mb-3">
@@ -165,9 +171,10 @@
                 autocomplete="tel-country-code"
                 class="form-control"
                 name="countryCode"
+                id="countryCode"
                 v-bind:class="{ 'is-invalid': countryCodeErrorMessage !== null }"
             >
-              <!-- Blank option so that the user has option of not entering phone number -->
+              <!---Add blank element to country code list so that user can choose not to enter phone-->
               <option value=""></option>
               <option
                   v-for="country in countryData"
@@ -185,6 +192,8 @@
                 v-model="phoneNumber"
                 autocomplete="tel-national"
                 class="form-control"
+                name="phoneNumber"
+                id="phoneNumber"
                 pattern='^\d{5,13}$'
                 placeholder="Phone number"
                 type="tel"
@@ -204,6 +213,7 @@
                 class="form-control"
                 maxlength="500"
                 name="bio"
+                id="bio"
                 placeholder="Bio"
                 rows="5"
                 type="text"
@@ -335,10 +345,10 @@ export default {
       }
 
       const yearDelta = currentDate.getFullYear() - year;
-      if (yearDelta > MIN_AGE) {
+      if (yearDelta > minAge) {
         return null;
       } // More than 13 years old
-      if (yearDelta == MIN_AGE) {
+      if (yearDelta == minAge) {
         const monthDelta = currentDate.getMonth() - monthIndex;
         if (monthDelta > 0) {
           return null;
@@ -351,9 +361,8 @@ export default {
         }
       }
 
-      return "You must be 13 years or older to sign up";
+      return `You must be ${minAge} years or older to sign up`;
     },
-
 
     /**
      * Function responsible for registration pipeline, from when register button is
