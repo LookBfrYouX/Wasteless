@@ -26,12 +26,7 @@ import org.springframework.stereotype.Service;
 public class BusinessServiceImpl implements BusinessService {
 
   private final BusinessDao businessDao;
-
   private final AddressService addressService;
-
-  private final UserDao userDao;
-  private final ObjectMapper objectMapper;
-
   private final UserService userService;
 
   /**
@@ -41,12 +36,9 @@ public class BusinessServiceImpl implements BusinessService {
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService, UserDao userDao,
-      ObjectMapper objectMapper, @Lazy UserService userService) {
+  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService, UserService userService) {
     // Using @Lazy to prevent Circular Dependencies
     this.businessDao = businessDao;
-    this.userDao = userDao;
-    this.objectMapper = objectMapper;
     this.addressService = addressService;
     this.userService = userService;
   }
@@ -68,7 +60,7 @@ public class BusinessServiceImpl implements BusinessService {
 
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
-    User currentUser = this.userDao.getUserByEmail(authentication.getName());
+    User currentUser = this.userService.getUserByEmail(authentication.getName());
     business.addAdministrator(currentUser);
     business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
@@ -83,7 +75,6 @@ public class BusinessServiceImpl implements BusinessService {
    * Calls the businessDao to get the specified business
    *
    * @param id the id of the business
-   * @param includeAdmins true if admins are to be included in the response
    * @return the Business instance of the business
    * @throws BusinessNotFoundException when business with given id does not exist
    * @throws UnhandledException thrown when converting business to JSONObject (internal error 500)

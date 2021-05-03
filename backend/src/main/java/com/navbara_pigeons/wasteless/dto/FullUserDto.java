@@ -28,7 +28,6 @@ public class FullUserDto {
 //    private String imageName;
     private ZonedDateTime created;
     private String role;
-//    private String password;
     @JsonProperty("businessesAdministered")
     private List<BasicBusinessDto> businesses;
 
