@@ -54,6 +54,7 @@
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.apiPipeline"
+        v-bind:goBack="false"
         v-bind:show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
@@ -63,6 +64,7 @@
         v-bind:hideCallback="() => imageApiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="false"
+        v-bind:goBack="false"
         v-bind:show="imageApiErrorMessage !== null"
     >
       <p>{{ imageApiErrorMessage }}</p>

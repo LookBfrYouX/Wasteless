@@ -126,6 +126,7 @@
         v-bind:refresh="false"
         v-bind:retry="this.logOut"
         v-bind:show="logOutErrorMessage !== null"
+        v-bind:goBack="false"
     >
       <p>{{ logOutErrorMessage }}</p>
     </error-modal>
