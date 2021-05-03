@@ -168,7 +168,7 @@ const SearchResults = {
 
     viewUser(userId) {
       this.$router.push({
-        name: "Profile",
+        name: "profile",
         params: {
           userId
         }
