@@ -206,11 +206,6 @@ export default ProductCatalogue;
 
 <style>
 
-#create-product-button {
-  top: 50px;
-  right: 15px;
-}
-
 button.page-link {
   display: inline-block;
 }
