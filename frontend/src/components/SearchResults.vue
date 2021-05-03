@@ -87,6 +87,7 @@
         v-bind:refresh="true"
         v-bind:retry="this.query"
         v-bind:show="apiErrorMessage !== null"
+        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
