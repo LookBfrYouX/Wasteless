@@ -74,12 +74,14 @@
         <div class="row">
           <div class="col form-group required">
             <label ref="emailLabel" for="email">Email</label>
+            <!-- TODO: test email regex -->
             <input
                 v-model="email"
                 autocomplete="email"
                 class="form-control"
                 maxlength="50"
                 name="email"
+                pattern="^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"
                 placeholder="Email"
                 required
                 type="email"
