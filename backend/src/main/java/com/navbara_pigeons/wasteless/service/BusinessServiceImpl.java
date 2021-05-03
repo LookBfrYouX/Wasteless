@@ -89,7 +89,7 @@ public class BusinessServiceImpl implements BusinessService {
    * @throws UnhandledException thrown when converting business to JSONObject (internal error 500)
    */
   @Override
-  public Business getBusinessById(long id, boolean includeAdmins) throws BusinessNotFoundException {
+  public Business getBusinessById(long id) throws BusinessNotFoundException {
     Business business = businessDao.getBusinessById(id);
     return business;
   }
