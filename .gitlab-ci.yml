@@ -80,7 +80,7 @@ dev-sonarqube:
     - ./gradlew jacocoTestReport
     - ./gradlew sonarqube
   only:
-    - S2-dev
+    - dev
 
 # builds all branches, except dev and master
 branch-build:
@@ -113,7 +113,7 @@ move-user-content-staging:
     - rm -rf /home/gitlab-runner/staging-user-content/
     - mv /home/gitlab-runner/staging-frontend/dist/user-content/ /home/gitlab-runner/staging-user-content/
   only:
-    - S2-dev
+    - dev
 
 move-user-content-production:
   stage: move-user-content
@@ -144,7 +144,7 @@ deploy-staging-frontend:
     paths:
       - frontend/dist
   only:
-    - S2-dev
+    - dev
 
 deploy-production-frontend:
   stage: deploy-frontend
@@ -179,7 +179,7 @@ restore-user-content-staging:
     # if the directory already exists, the mv moves the folder inside rather than moving and renaming the folder
     - mv /home/gitlab-runner/staging-user-content/ /home/gitlab-runner/staging-frontend/dist/user-content/
   only:
-    - S2-dev
+    - dev
 
 restore-user-content-production:
   stage: restore-user-content
@@ -207,7 +207,7 @@ deploy-staging-backend:
     paths:
       - backend/build/libs
   only:
-    - S2-dev
+    - dev
 
 
 deploy-production-backend:
