@@ -33,11 +33,18 @@ import axios from 'axios';
 import {ApiRequestError} from "./ApiRequestError";
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
-const TIMEOUT = 1000;
+const TIMEOUT = 2500;
+const TIMEOUT_LONG = 10000;
 
 const instance = axios.create({
   baseURL: SERVER_URL,
   timeout: TIMEOUT,
+  withCredentials: true
+});
+
+const instanceLongTimeouts = axios.create({
+  baseURL: SERVER_URL,
+  timeout: TIMEOUT_LONG,
   withCredentials: true
 });
 
@@ -250,7 +257,7 @@ export default {
   uploadProductImage: (image, businessId, productId) => {
     const formData = new FormData();
     formData.append("image", image);
-    return instance.post(`/businesses/${businessId}/products/${productId}/images`, formData, {
+    return instanceLongTimeouts.post(`/businesses/${businessId}/products/${productId}/images`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

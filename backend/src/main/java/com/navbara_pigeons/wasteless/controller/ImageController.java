@@ -43,11 +43,11 @@ public class ImageController {
   public ResponseEntity<String> uploadProductImage(@PathVariable long businessId,
       @PathVariable long productId, @RequestParam MultipartFile image) {
     try {
-      String response = imageService.uploadProductImage(businessId, productId, image);
+      imageService.uploadProductImage(businessId, productId, image);
       log.info(
           "PRODUCT " + productId + " SUCCESSFULLY UPLOADED IMAGE " + image.getOriginalFilename() +
           " TO BUSINESS " + businessId);
-      return new ResponseEntity<>(response, HttpStatus.CREATED);
+      return new ResponseEntity<>(HttpStatus.CREATED);
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + productId);
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The user does not exist");
