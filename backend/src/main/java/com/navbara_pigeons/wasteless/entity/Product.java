@@ -82,14 +82,15 @@ public class Product {
 
   public void deleteProductImage(long id) throws ImageNotFoundException {
     Image imageToRemove = getImageById(id);
-    if (this.primaryProductImage == imageToRemove) {
-      if (this.productImages.size() > 1) {
-        this.primaryProductImage = this.productImages.get(0);
-      } else {
-        this.primaryProductImage = null;
-      }
+    if (this.primaryProductImage == imageToRemove && this.productImages.size() > 1) {
+      this.productImages.remove(imageToRemove);
+      this.primaryProductImage = this.productImages.get(0);
+    } else if (this.primaryProductImage == imageToRemove && this.productImages.size() == 1) {
+      this.productImages.remove(imageToRemove);
+      this.primaryProductImage = null;
+    } else {
+      this.productImages.remove(imageToRemove);
     }
-    this.productImages.remove(imageToRemove);
   }
 
   public Image getImageById(long id) throws ImageNotFoundException {
