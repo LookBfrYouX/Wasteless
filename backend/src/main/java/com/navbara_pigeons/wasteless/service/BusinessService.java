@@ -8,7 +8,7 @@ public interface BusinessService {
 
   JSONObject saveBusiness(Business business) throws BusinessTypeException, UserNotFoundException, BusinessRegistrationException, AddressValidationException;
 
-  JSONObject getBusinessById(long id, boolean includeAdmins) throws BusinessNotFoundException, UnhandledException;
+  Business getBusinessById(long id, boolean includeAdmins) throws BusinessNotFoundException, UnhandledException;
 
   boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException;
 
