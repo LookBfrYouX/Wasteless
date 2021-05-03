@@ -38,6 +38,8 @@
                 v-bind:placeholder="symbol + ' (' + currency + ')'"
                 class="form-control"
                 step="0.10"
+                min="0"
+                max="9999.9"
                 name="price"
                 required
                 type="number"
