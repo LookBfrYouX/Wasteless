@@ -135,11 +135,10 @@ public class UserServiceImpl implements UserService {
    * number/name/post code are not returned
    *
    * @param id the id of the user
-   * @param includeBusinesses true if businesses are to be included in the response
    * @return the User instance of the user
    */
   @Override
-  public JSONObject getUserById(long id, boolean includeBusinesses) throws UserNotFoundException,
+  public User getUserById(long id) throws UserNotFoundException,
       UnhandledException {
     User user = userDao.getUserById(id);
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -148,46 +147,46 @@ public class UserServiceImpl implements UserService {
     // Email of user that made the request
 
     // Convert user entity JSONObject (convert to String then to JSONObject)
-    String jsonStringBusiness = null;
-    try {
-      jsonStringBusiness = objectMapper.writeValueAsString(user);
-    } catch (JsonProcessingException exc) {
-      throw new UnhandledException("JSON processing exception");
-    }
-    JSONObject response = null;
-    try {
-      response = (JSONObject) new JSONParser().parse(jsonStringBusiness);
-    } catch (ParseException exc) {
-      throw new UnhandledException("JSON parse exception");
-    }
-
-    // Remove sensitive information from response
-    response.remove("password");
-    if (!username.equals(user.getEmail()) && !isAdmin()) {
-      response.remove("email");
-      response.remove("dateOfBirth");
-      response.remove("phoneNumber");
-
-      ((JSONObject)(response.get("homeAddress"))).remove("streetNumber");
-      ((JSONObject)(response.get("homeAddress"))).remove("streetName");
-      ((JSONObject)(response.get("homeAddress"))).remove("postcode");
-    }
-
-    // Add administered business
-    if (includeBusinesses) {
-      ArrayList<JSONObject> businesses = new ArrayList<>();
-      if (user.getBusinesses() != null) {
-        for (Business business : user.getBusinesses()) {
-          try {
-            businesses.add(businessService.getBusinessById(business.getId(), false));
-          } catch (BusinessNotFoundException e) {
-            ; // If no businesses found, don't append any to list!
-          }
-        }
-      }
-      response.appendField("businessesAdministered", businesses);
-    }
-    return response;
+//    String jsonStringBusiness = null;
+//    try {
+//      jsonStringBusiness = objectMapper.writeValueAsString(user);
+//    } catch (JsonProcessingException exc) {
+//      throw new UnhandledException("JSON processing exception");
+//    }
+//    JSONObject response = null;
+//    try {
+//      response = (JSONObject) new JSONParser().parse(jsonStringBusiness);
+//    } catch (ParseException exc) {
+//      throw new UnhandledException("JSON parse exception");
+//    }
+//
+//    // Remove sensitive information from response
+//    response.remove("password");
+//    if (!username.equals(user.getEmail()) && !isAdmin()) {
+//      response.remove("email");
+//      response.remove("dateOfBirth");
+//      response.remove("phoneNumber");
+//
+//      ((JSONObject)(response.get("homeAddress"))).remove("streetNumber");
+//      ((JSONObject)(response.get("homeAddress"))).remove("streetName");
+//      ((JSONObject)(response.get("homeAddress"))).remove("postcode");
+//    }
+//
+//    // Add administered business
+//    if (includeBusinesses) {
+//      ArrayList<JSONObject> businesses = new ArrayList<>();
+//      if (user.getBusinesses() != null) {
+//        for (Business business : user.getBusinesses()) {
+//          try {
+//            businesses.add(businessService.getBusinessById(business.getId(), false));
+//          } catch (BusinessNotFoundException e) {
+//            ; // If no businesses found, don't append any to list!
+//          }
+//        }
+//      }
+//      response.appendField("businessesAdministered", businesses);
+//    }
+    return user;
   }
 
   /**
@@ -328,6 +327,15 @@ public class UserServiceImpl implements UserService {
       if (simpleGrantedAuthority.getAuthority().contains("ADMIN")) {
         return true;
       }
+    }
+    return false;
+  }
+
+  public boolean isSelf(long id) throws UserNotFoundException, UnhandledException {
+    User user = getUserById(id);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (user.getEmail().equals(auth.getName())) {
+      return true;
     }
     return false;
   }

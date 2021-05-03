@@ -17,7 +17,7 @@ public interface UserService {
   JSONObject login(UserCredentials userCredentials)
       throws AuthenticationException, UserNotFoundException;
 
-  JSONObject getUserById(long id, boolean includeBusinesses) throws UserNotFoundException, UnhandledException;
+  User getUserById(long id) throws UserNotFoundException, UnhandledException;
 
   User getUserByEmail(String email) throws UserNotFoundException;
 
@@ -30,5 +30,7 @@ public interface UserService {
   void makeUserAdmin(long id) throws UserNotFoundException, BadCredentialsException;
 
   boolean isAdmin();
+
+  boolean isSelf(long id) throws UserNotFoundException, UnhandledException;
 
 }

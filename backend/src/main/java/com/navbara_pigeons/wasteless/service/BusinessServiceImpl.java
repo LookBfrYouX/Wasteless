@@ -120,7 +120,7 @@ public class BusinessServiceImpl implements BusinessService {
           // Looks complicated but its just a lot of type casting
           long adminId = Long.parseLong((((JSONObject)((JSONArray) (response.get("administrators"))).get(0)).get("id").toString()));
           ((JSONArray) (response.get("administrators"))).remove(0);
-          JSONObject newAdmin = userService.getUserById(adminId, false);
+          User newAdmin = userService.getUserById(adminId);
           ((JSONArray) (response.get("administrators"))).appendElement(newAdmin);
         } catch (Exception exc) {
           throw new UnhandledException("User not found, server error!");

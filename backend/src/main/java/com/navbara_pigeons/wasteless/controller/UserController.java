@@ -1,5 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
@@ -102,10 +104,14 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/users/{id}")
-  public ResponseEntity<JSONObject> getUserById(@PathVariable long id) {
+  public ResponseEntity getUserById(@PathVariable long id) {
     try {
       log.info("GETTING USER BY ID: " + id);
-      return new ResponseEntity<>(userService.getUserById(id, true), HttpStatus.valueOf(200));
+      if (this.userService.isAdmin() || this.userService.isSelf(id)) {
+        return new ResponseEntity(new FullUserDto(this.userService.getUserById(id)), HttpStatus.valueOf(200));
+      } else {
+        return new ResponseEntity(new BasicUserDto(this.userService.getUserById(id)), HttpStatus.valueOf(200));
+      }
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
