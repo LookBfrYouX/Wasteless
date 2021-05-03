@@ -92,8 +92,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     // Crop the image and then save it to the DB + Machine
-    image = cropImageToSquare(image, fileExtension, fileName);
-    MultipartFile imageThumbnail = createImageThumbnail(image, fileExtension);
+    MultipartFile imageThumbnail = cropImageToSquare(image, fileExtension, fileName);
+    imageThumbnail = createImageThumbnail(imageThumbnail, fileExtension);
     Image imageEntity = new Image(imagePrefix, fileExtension);
     Product productEntity = productService.getProduct(productId);
     productEntity.addProductImage(imageEntity);
