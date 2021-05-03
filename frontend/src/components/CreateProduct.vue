@@ -156,14 +156,21 @@ export default {
         this.errorMessage = "Please enter a valid price";
       } else if (this.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
+      } else if (this.manufacturer.trim().length === 0) {
+        this.errorMessage = "Please enter a manufacturer for your product";
       } else {
-        await this.callApi({
-          name: this.name,
-          recommendedRetailPrice: this.price, // API stores the type as businessType not type
-          manufacturer: this.manufacturer,
-          description: this.description,
-        });
-        this.errorMessage = "";
+        try {
+          await this.callApi({
+            name: this.name,
+            recommendedRetailPrice: this.price, // API stores the type as businessType not type
+            manufacturer: this.manufacturer,
+            description: this.description,
+          });
+        } catch(err) {
+          if (await Api.handle401.call(this, err)) return;
+          this.errorMessage = err.userFacingErrorMessage;
+          return;
+        }
         await this.$router.push("productCatalogue");
       }
     },
