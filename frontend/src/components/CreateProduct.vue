@@ -32,7 +32,7 @@
         <!-- up for discussion about setting a step price -->
         <div class="row">
           <div class="form-group required col px-3">
-            <label>Price</label>
+            <label>Price {{symbol}} ({{currency}})</label>
             <input
                 v-model="price"
                 v-bind:placeholder="symbol + ' (' + currency + ')'"
@@ -114,12 +114,10 @@ export default {
     };
   },
 
-  props() {
-    return {
-      countryData: {
-        required: false,
-        default: countryData
-      }
+  props: {
+    countryData: {
+      required: false,
+      default: () => countryData
     }
   },
 
@@ -132,7 +130,7 @@ export default {
      * Find the currency associated with the country of the user
      */
     getCurrencies: async function (countryName) {
-      const country = countryData.find(country => country.name == countryName);
+      const country = this.countryData.find(country => country.name == countryName);
       const currency = country? country.currency: {
         code: "NZD",
         symbol: "$"
