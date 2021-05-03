@@ -278,8 +278,9 @@ export default {
             businessId
           }
         }
+        
         if (this.$route.name === "businessProfile" &&
-            this.$route.params.businessId === businessId) {
+            this.$route.params.businessId === businessId.toString()) {
           reload = true;
         }
       }
