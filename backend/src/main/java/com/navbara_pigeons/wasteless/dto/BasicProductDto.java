@@ -30,7 +30,7 @@ public class BasicProductDto {
         this.id = product.getId();
         this.name = product.getName();
         this.description = product.getDescription();
-        this.currency = product.getCurrency();
+//        this.currency = product.getCurrency();
         this.manufacturer = product.getManufacturer();
         this.recommendedRetailPrice = product.getRecommendedRetailPrice();
         this.created = product.getCreated();
