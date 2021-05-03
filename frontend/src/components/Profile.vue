@@ -112,6 +112,9 @@
             </li>
           </ul>
         </div>
+        <div v-else>
+          No businesses
+        </div>
       </div>
       <div class="col-md-7 order-1 order-md-2 m-2 card">
         <ul class="nav nav-tabs mt-2">
