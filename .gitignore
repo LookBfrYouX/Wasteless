@@ -39,3 +39,4 @@ bin/
 
 .log
 .DS_Store
+frontend/public/user-content/images/**/*.jpg

@@ -16,7 +16,7 @@ import org.hibernate.Session;
 
 public class HibernateCriteriaQueryBuilder {
 
-  public static CriteriaQuery parseUserSearchQuery(Session currentSession, String searchQuery)
+  public static CriteriaQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery)
       throws InvalidAttributeValueException {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
@@ -39,6 +39,7 @@ public class HibernateCriteriaQueryBuilder {
 
     for (int i = 0; i < tokens.size(); i++) {
       String currentToken = tokens.get(i);
+      System.out.println(currentToken);
       if (currentToken.toUpperCase().matches("AND")) {
         // AND is default join for predicates so this is empty
       } else if (currentToken.toUpperCase().matches("OR")) {
@@ -69,7 +70,7 @@ public class HibernateCriteriaQueryBuilder {
     return criteriaQuery;
   }
 
-  private static Predicate makePredicate(String token, CriteriaBuilder criteriaBuilder, Root root) {
+  private static Predicate makePredicate(String token, CriteriaBuilder criteriaBuilder, Root<User> root) {
     if (token.matches("\"\\S*.+?\"")) {
       String newToken = token.replace("\"", "");
       return buildNameFullMatchPredicate(newToken, criteriaBuilder, root);
@@ -79,7 +80,7 @@ public class HibernateCriteriaQueryBuilder {
   }
 
   private static Predicate buildNameFullMatchPredicate(String token,
-      CriteriaBuilder criteriaBuilder, Root root) {
+                                                       CriteriaBuilder criteriaBuilder, Root<User> root) {
     return criteriaBuilder.or(
         criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")), token.toLowerCase()),
         criteriaBuilder.like(criteriaBuilder.lower(root.get("nickname")), token.toLowerCase()),
@@ -89,7 +90,7 @@ public class HibernateCriteriaQueryBuilder {
   }
 
   private static Predicate buildNamePartialMatchPredicate(String token,
-      CriteriaBuilder criteriaBuilder, Root root) {
+                                                          CriteriaBuilder criteriaBuilder, Root<User> root) {
     return criteriaBuilder.or(
         criteriaBuilder
             .like(criteriaBuilder.lower(root.get("firstName")), "%" + token.toLowerCase() + "%"),

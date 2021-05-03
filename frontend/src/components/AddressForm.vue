@@ -40,10 +40,10 @@ The parent component must provide `address` prop. When the address is updated in
       />
       <!-- No suggestions for street number -->
     </div>
-    <div class="form-group col-12 col-md-9">
+    <div class="form-group required col-12 col-md-9">
       <label>Street name</label>
       <suggestions
-          autocomplete="address-line"
+          autocomplete="street-address"
           inputClasses="form-control"
           maxlength="200"
           name="streetName"
@@ -152,6 +152,7 @@ const Suggestions = require("./Suggestions").default;
 // Fields in order of specifity
 // When updating this, ensure all address related functions and input properties are updated as well
 export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "city", "region", "postcode", "country"];
+
 Object.freeze(ADDRESS_SECTION_NAMES);
 
 /**
@@ -370,6 +371,7 @@ export default {
     generateAddressSuggestions: function () {
       const suggestionsDict = {};
       // Using dict instead of array to remove duplicates (e.g. shops in a mall will have different name but otherwise same address)
+
       const originalString = this.generateAddressString().toLocaleLowerCase();
       for (const {type, properties} of this.addressSuggestionsRaw) {
         if (type != "Feature") {

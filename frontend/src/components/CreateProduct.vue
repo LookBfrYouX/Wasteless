@@ -157,18 +157,18 @@ export default {
     createProduct: async function () {
       if (this.price < 0 || this.price == "") {
         this.errorMessage = "Please enter a valid price";
-        } else if (this.name == "") {
-          this.errorMessage = "Please enter a name for your product";
-        } else {
-          await this.callApi({
-            name: this.name,
-            recommendedRetailPrice: this.price, // API stores the type as businessType not type
-            manufacturer: this.manufacturer,
-            description: this.description,
-          });
-          this.errorMessage = "";
-          this.$router.push("Product Catalogue");
-        }
+      } else if (this.name.trim().length === 0) {
+        this.errorMessage = "Please enter a name for your product";
+      } else {
+        await this.callApi({
+          name: this.name,
+          recommendedRetailPrice: this.price, // API stores the type as businessType not type
+          manufacturer: this.manufacturer,
+          description: this.description,
+        });
+        this.errorMessage = "";
+        await this.$router.push("productCatalogue");
+      }
     },
   },
 };

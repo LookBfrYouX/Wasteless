@@ -11,8 +11,7 @@ window.alert = jest.fn();
 beforeEach(() => {
   wrapper = shallowMount(Profile, {
     propsData: {
-      userId: 20,
-      setDocumentTitle: jest.fn()
+      userId: 20
     },
     mocks: {
       callApi: jest.fn(() => Promise.resolve({

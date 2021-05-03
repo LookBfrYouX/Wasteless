@@ -10,15 +10,12 @@
         <div class="modal-body">
           <slot></slot>
         </div>
-        <div class="modal-footer" v-if="retry || refresh || goBack">
+        <div class="modal-footer">
           <button v-if="retry" class="btn btn-primary" type="button" v-on:click="retryClicked">
             Retry
           </button>
           <button v-if="refresh" class="btn btn-primary" type="button" v-on:click="refreshClicked">
             Refresh Page
-          </button>
-          <button v-if="goBack" class="btn btn-primary" type="button" v-on:click="goBackClicked">
-            Go back
           </button>
         </div>
       </div>
@@ -36,45 +33,23 @@ export default {
     title: {
       type: String
     },
-    /**
-     * Determines if error modal is being shown or not; state is owned by callee
-     */
     show: {
       type: Boolean,
       required: true
     },
-    /**
-     * Called when error modal hidden or any  of the buttons clicked.
-     * Event passed as argument
-     */
     hideCallback: {
+      // Called when hidden, or any of the buttons clicked
       type: Function,
       required: true
     },
-    /**
-     * Boolean or function
-     * If boolean, will determine if shown or not and use default refresh handler
-     * Otherwise, the function will be called with the event passed as an argument
-     */
     refresh: {
-      required: true
+      // Boolean or function
+      // if false will not be shown
+      // If true will show refresh button and refresh
+      // if function it will simply call this method
     },
-
-    /**
-     * If false or not given, retry button will not be shown
-     * Otherwise, the function will be called with the event passed as an argument
-     */
     retry: {
-      required: false
-    },
-
-    /**
-     * Boolean or function
-     * If boolean, will determine if shown or not and use default back handler
-     * Otherwise, the function will be called with the event passed as an argument
-     */
-    goBack: {
-      required: true,
+      required: true
     }
   },
   watch: {
@@ -84,16 +59,10 @@ export default {
   },
 
   methods: {
-    /**
-     * Synchronizes modal visibility with state
-     */
     updateModalVisibility: function () {
       this.show ? this.modal.show() : this.modal.hide();
     },
 
-    /**
-     * Refresh button clicked; send modal hidden callback and refresh
-     */
     refreshClicked: function (event) {
       this.hideCallback();
       if (this.refresh === true) {
@@ -104,9 +73,6 @@ export default {
       }
     },
 
-    /**
-     * Retry button clicked; send modal hidden and retry callbacks
-     */
     retryClicked: function (event) {
       this.hideCallback();
       if (this.retry) {
@@ -114,15 +80,9 @@ export default {
       }
     },
 
-    /**
-     * Go back button clicked; send modal hidden and go back
-     */
-    goBackClicked: function (event) {
-      this.hideCallback();
-      if (this.goBack == true) {
-        this.$router.go(-1);
-      } else {
-        this.goBack(event);
+    hideCallbackEvent: function(event) {
+      if (this.hideCallback) {
+        this.hideCallback(event);
       }
     }
   },
@@ -131,11 +91,18 @@ export default {
     this.modal = new Modal(this.$refs.modal);
     // Not in data so Vue won't track updates to it that we don't care about
     this.updateModalVisibility();
-    this.$refs.modal.addEventListener("hidden.bs.modal", event => {
-      if (this.hideCallback) {
-        this.hideCallback(event);
-      }
-    });
+    this.$refs.modal.addEventListener("hidden.bs.modal", this.hideCallbackEvent);
+  },
+
+  /**
+   * Hide the modal if it is open
+   */
+  beforeDestroy() {
+    if (this.modal) this.modal.hide(); // If navigation occurs while modal open, modal disapears but body has
+    // the modal open class
+    this.$refs.modal.removeEventListener("hidden.bs.modal", this.hideCallbackEvent);
   }
+
+
 }
 </script>

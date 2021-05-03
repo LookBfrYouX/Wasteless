@@ -1,7 +1,5 @@
 package com.navbara_pigeons.wasteless.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.navbara_pigeons.wasteless.controller.UserController;
@@ -18,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithUserDetails;
 
 @SpringBootTest
 public class BusinessServiceImplTest extends ServiceTestProvider {
@@ -122,6 +119,12 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     Business testBusiness = makeBusiness();
     testBusiness.getAddress().setCountry("");
     assertThrows(AddressValidationException.class, () -> businessService.saveBusiness(testBusiness));
+  @Test void saveBusinessInvalidAddressTest() {
+    loginWithCredentials();
+
+    Business testBusiness = makeBusiness();
+    testBusiness.getAddress().setCountry("");
+    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 
   @Test
@@ -131,5 +134,15 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     Business testBusiness = makeBusiness();
     testBusiness.getAddress().setCountry("Fake Zealand");
     assertThrows(AddressValidationException.class, () -> businessService.saveBusiness(testBusiness));
+    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
+  }
+
+  @Test
+  void saveBusinessNoCountryDataTest() {
+    loginWithCredentials();
+    countryDataFetcherService.resetCountryData();
+    Business testBusiness = makeBusiness();
+    testBusiness.getAddress().setCountry("New Zealand");
+    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 }

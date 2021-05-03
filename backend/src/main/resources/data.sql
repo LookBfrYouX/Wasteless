@@ -1,7 +1,10 @@
--- ###############################  Users Setup  ###############################
+/* MAIN SCHEMA DEFINITION */
+
 DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS product_image;
 DROP TABLE IF EXISTS catalogue;
 DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS image;
 DROP TABLE IF EXISTS user_business;
 DROP TABLE IF EXISTS business;
 DROP TABLE IF EXISTS user;
@@ -29,11 +32,10 @@ CREATE TABLE user
     EMAIL           VARCHAR(50) NOT NULL UNIQUE,
     DATE_OF_BIRTH   DATE        NOT NULL,
     PHONE_NUMBER    VARCHAR(18),
-
+    IMAGE_NAME      VARCHAR(30),
     CREATED         DATETIME    NOT NULL,
     ROLE            VARCHAR(30) NOT NULL,
     PASSWORD        CHAR(60)    NOT NULL,
-
     HOME_ADDRESS_ID INT         NOT NULL,
     CONSTRAINT user_address_fk FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES address (ID)
 );
@@ -45,10 +47,16 @@ CREATE TABLE business
     DESCRIPTION              VARCHAR(250),
     BUSINESS_TYPE            VARCHAR(50) NOT NULL,
     CREATED                  DATETIME    NOT NULL,
-
     PRIMARY_ADMINISTRATOR_ID INT         NOT NULL,
     ADDRESS_ID               INT         NOT NULL,
     CONSTRAINT business_address_fk FOREIGN KEY (ADDRESS_ID) REFERENCES address (ID)
+);
+
+CREATE TABLE image
+(
+    ID                 INT AUTO_INCREMENT PRIMARY KEY,
+    FILENAME           VARCHAR(50) NOT NULL,
+    THUMBNAIL_FILENAME VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE product
@@ -58,8 +66,22 @@ CREATE TABLE product
     DESCRIPTION VARCHAR(500),
     CURRENCY    VARCHAR(4),
     MANUFACTURER VARCHAR(100),
-    RRP         DECIMAL(6, 2),
-    CREATED     DATETIME
+    RRP          DECIMAL(6, 2),
+    CREATED      DATETIME,
+    PRIMARY_IMAGE_ID INT,
+    CONSTRAINT product_image_fk FOREIGN KEY (PRIMARY_IMAGE_ID) REFERENCES image (ID)
+);
+
+CREATE TABLE product_image
+(
+    PRODUCT_ID  INT NOT NULL,
+    IMAGE_ID    INT NOT NULL,
+    CONSTRAINT product_image_pk
+        UNIQUE (PRODUCT_ID, IMAGE_ID),
+    CONSTRAINT product_fk
+        FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
+    CONSTRAINT image_fk
+        FOREIGN KEY (IMAGE_ID) REFERENCES image (ID)
 );
 
 CREATE TABLE user_business
@@ -88,11 +110,11 @@ CREATE TABLE catalogue
 
 CREATE TABLE inventory
 (
-    PRODUCT_ID INT NOT NULL,
-    BUSINESS_ID INT NOT NULL,
-    QUANTITY INT NOT NULL,
-    PRICE DECIMAL(6, 2) NOT NULL,
-    EXPIRY DATETIME NOT NULL,
+    PRODUCT_ID  INT           NOT NULL,
+    BUSINESS_ID INT           NOT NULL,
+    QUANTITY    INT           NOT NULL,
+    PRICE       DECIMAL(6, 2) NOT NULL,
+    EXPIRY      DATETIME      NOT NULL,
     CONSTRAINT inventory_pk
         UNIQUE (PRODUCT_ID, BUSINESS_ID),
     CONSTRAINT inventory_product_fk
@@ -105,7 +127,7 @@ CREATE TABLE inventory
 
 -- INSERTING TEST DATA BELOW
 
--- Inserting test address data
+-- Inserting address data
 
 INSERT INTO address(STREET_NUMBER,
                     STREET_NAME,
@@ -144,7 +166,7 @@ VALUES ('10',
         'Canterbury',
         'New Zealand');
 
--- Inserting test user data
+-- Inserting user data
 
 INSERT INTO user(FIRST_NAME,
                  LAST_NAME,
@@ -219,7 +241,7 @@ VALUES ('Fletcher',
         'ROLE_ADMIN',
         '$2y$12$WfyxRpooIc6QjYxvPPH7leapKY.tKFSMZdT/W1oWcTro/FutOzqQi');
 
--- Inserting test business data
+-- Inserting business data
 
 INSERT INTO business(NAME,
                      PRIMARY_ADMINISTRATOR_ID,
@@ -246,7 +268,7 @@ VALUES ('TestName',
         'Retail Trade',
         '2020-07-14T14:32:00.000000');
 
--- Inserting test user-business data
+-- Inserting user-business data
 
 INSERT INTO user_business(USER_ID,
                           BUSINESS_ID)
@@ -256,13 +278,11 @@ VALUES (4, 1),
 
 -- Inserting product data
 
-INSERT INTO product (
-                     NAME,
+INSERT INTO product (NAME,
                      DESCRIPTION,
                      MANUFACTURER,
                      RRP,
-                     CREATED
-                     )
+                     CREATED)
 VALUES ('Anchor Milk Standard Blue Top',
         'Essential goodness for your family. Anchor blue top is the milk that new zealanders grow up on. Its brimming with important nutrients, and it delivers more energy than most types of milk. Enjoy a glassful of great nz tradition. Number shown on pack is a guide only and not indicative of what will be supplied.',
         'North Korean Milk GmbH',
@@ -294,7 +314,7 @@ VALUES ('Anchor Milk Standard Blue Top',
         4.70,
         '2020-07-14T14:32:00.000000');
 
--- Inserting the product to business relationship data
+-- Inserting catalogue data
 
 INSERT INTO catalogue (PRODUCT_ID, BUSINESS_ID)
 VALUES (1, 1),

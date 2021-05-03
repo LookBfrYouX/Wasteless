@@ -44,8 +44,10 @@
                     }}</span>
                 </div>
                 <div class="text-muted">{{ user.email }}</div>
-                <div v-if="user.homeAddress" class="text-muted"> {{[user.homeAddress.city, user.homeAddress.region,
-                    user.homeAddress.country].filter(Boolean).join(", ")}}
+                <div v-if="user.homeAddress" class="text-muted">{{ user.homeAddress.streetNumber }}
+                  {{ user.homeAddress.streetName }}, {{ user.homeAddress.city }},
+                  {{ user.homeAddress.region }}, {{ user.homeAddress.country }}
+                  {{ user.homeAddress.postcode }}
                 </div>
                 <div v-else class="text-muted">Address unknown</div>
               </li>
@@ -84,7 +86,6 @@
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.query"
-        v-bind:goBack="false"
         v-bind:show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>

@@ -54,6 +54,9 @@ const mountWithData = (data, otherOptions = undefined) => {
 let wrapper;
 
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
+window.localStorage = {
+  push: jest.fn()
+};
 
 afterEach(() => wrapper.destroy());
 

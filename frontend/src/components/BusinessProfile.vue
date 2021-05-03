@@ -10,35 +10,35 @@
       <ul class="bprofile-info list-unstyled">
         <li class="row">
           <dt class="col-md label">Business Title:</dt>
-          <dd class="col-md value">{{ businessInfo.name }}</dd>
+          <dd class="col-md value"> {{ businessInfo.name }}</dd>
         </li>
         <li class="row">
           <dt class="col-md label">Description:</dt>
-          <dd class="col-md value">{{ businessInfo.description }}</dd>
+          <dd class="col-md value"> {{ businessInfo.description }}</dd>
         </li>
         <li class="row">
           <dt class="col-md label">Address:</dt>
-          <dd class="col-md value">
-            {{
-              [
-                businessInfo.address.streetNumber +
-                " " +
-                businessInfo.address.streetName,
-                businessInfo.address.city,
-                businessInfo.address.region,
-                businessInfo.address.postcode,
-                businessInfo.address.country,
-              ]
-              .filter(Boolean)
-              .join(", ")
+          <dd class="col-md value"> {{
+              [businessInfo.homeAddress.streetNumber + " " +
+              businessInfo.homeAddress.streetName, businessInfo.homeAddress.city,
+                businessInfo.homeAddress.region, businessInfo.homeAddress.country,
+                businessInfo.homeAddress.postcode].join(", ")
             }}
           </dd>
         </li>
         <li class="row">
           <dt class="col-md label">Business Type:</dt>
-          <dd class="col-md value">{{ businessInfo.businessType }}</dd>
+          <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
         </li>
       </ul>
+      <button
+          class="btn btn-white-bg-primary mx-1 d-flex"
+          type="button"
+          v-on:click="createProduct()"
+      >
+        <span class="material-icons mr-1">person</span>
+        Add Product To Catalogue
+      </button>
       <error-modal
         title="Error fetching business details"
         v-bind:hideCallback="() => (apiErrorMessage = null)"
@@ -59,7 +59,7 @@ import { ApiRequestError } from "./../ApiRequestError";
 const { Api } = require("./../Api.js");
 
 export default {
-  name: "businessProfile",
+  name: 'businessProfile',
   components: { ErrorModal },
 
   data() {
@@ -96,7 +96,7 @@ export default {
      * Returns the promise, not the response
      */
     callApi: function (businessId) {
-      if (!Number.isInteger(businessId)) {
+       if (!Number.isInteger(businessId)) {
         const err = new ApiRequestError(
           "Cannot load business profile page - business ID not given"
         );
@@ -137,7 +137,7 @@ export default {
       if (this.businessInfo !== null) document.title = `${this.businessInfo.name} | Business`;
     }
   },
-};
+}
 </script>
 
 <style scoped>
@@ -161,4 +161,5 @@ export default {
   justify-content: center;
   padding: 30px;
 }
+
 </style>

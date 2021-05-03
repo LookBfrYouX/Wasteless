@@ -1,7 +1,7 @@
 <template>
   <div id="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a v-on:click="viewHome" class="navbar-brand">App Logo</a>
+      <a v-on:click="pushOrGo('home')" class="navbar-brand">App Logo</a>
 
       <button
           aria-controls="navbarSupportedContent"
@@ -22,13 +22,13 @@
           <div class="d-lg-flex">
             <!--Profile page link -->
             <li class="nav-item mr-lg-auto" v-if="isLoggedIn">
-              <a class="nav-link" v-on:click="pushOrGo('Profile')">
-                Profile
+              <a class="nav-link" v-on:click="profileClicked">
+                {{currentActingAs? "Business ": ""}} Profile
               </a>
             </li>
             <!-- Product catalog link -->
             <li class="navbar-item mr-lg-auto" v-if="isActingAsBusiness">
-              <a class="nav-link" v-on:click="pushOrGo('Product Catalogue')">
+              <a class="nav-link" v-on:click="pushOrGo('productCatalogue')">
                 Catalogue
               </a>
             </li>
@@ -59,7 +59,7 @@
             <a id="navbarDropdownMenuLink" aria-expanded="false"
                 aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown"
                 href="#" role="button">
-              <img class="nav-picture rounded-circle" src="placeholder-profile.png">
+              <img class="nav-picture rounded-circle" :src="authUser.imageURL">
               <div class="d-flex flex-column mx-1">
                 <span class="m-0 p-0 text-dark">
                   {{ printCurrentActingAs }}
@@ -102,7 +102,7 @@
               <a
                 class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
                 type="button"
-                v-on:click="pushOrGo('Login')"
+                v-on:click="pushOrGo('login')"
               >
               Login
               </a>
@@ -111,7 +111,7 @@
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
                   type="button"
-                  v-on:click="pushOrGo('Sign Up')"
+                  v-on:click="pushOrGo('signUp')"
               >
                 Sign Up
               </a>
@@ -125,7 +125,6 @@
         v-bind:hideCallback="() => logOutErrorMessage = null"
         v-bind:refresh="false"
         v-bind:retry="this.logOut"
-        v-bind:goBack="false"
         v-bind:show="logOutErrorMessage !== null"
     >
       <p>{{ logOutErrorMessage }}</p>
@@ -162,24 +161,6 @@ export default {
     },
 
     /**
-     * Returns null when the user is currently acting as individual, the whole business object otherwise
-     */
-    currentActingAs() {
-      return this.$stateStore.getters.getActingAs();
-    },
-
-    /**
-     * Return formatted string of name of user or business which currently acting as
-     */
-    printCurrentActingAs() {
-      if (this.currentActingAs != null) {
-        return this.currentActingAs.name;
-      } else {
-        return `${this.authUser.firstName} ${this.authUser.lastName}`;
-      }
-    },
-
-    /**
      * Checks if a user is logged in or not
      */
     isLoggedIn() {
@@ -206,8 +187,20 @@ export default {
      * @return {Business[]} empty list if user not logged in or has no businesses
      */
     actingAsEntities() {
-      return this.authUser != null? this.authUser.businessesAdministered: [];
+      return this.authUser.businesses;
     },
+
+    currentActingAs() {
+      return this.$stateStore.getters.getActingAs();
+    },
+
+    printCurrentActingAs() {
+      if (this.currentActingAs != null) {
+        return this.currentActingAs.name;
+      } else {
+        return `${this.authUser.firstName} ${this.authUser.lastName}`;
+      }
+    }
   },
   methods: {
     /**
@@ -235,21 +228,7 @@ export default {
       }
       
       await this.$stateStore.actions.deleteAuthUser();
-      await this.pushOrGo("landing");
-    },
-
-    /**
-     * Navigate to profile page
-     */
-    viewProfile: async function () {
-      return this.pushOrGo("profile");
-    },
-
-    /**
-     * Navigate to home page
-     */
-    viewHome: async function () {
-      return this.pushOrGo("home");
+      await this.pushOrGo("home");
     },
 
     /**
@@ -271,6 +250,41 @@ export default {
           query: this.query,
         },
       });
+    },
+
+    /**
+     * Profile button page clicked
+     * If acting as business, goes to business profile. Otherwise, user profile.
+     * If already on own profile page, reloads the page
+     */
+    profileClicked: async function() {
+      let reload = false;
+      let args;
+
+      if (this.currentActingAs == null) {
+        args = {
+          name: "profile"
+        }
+
+        if (this.$route.name === args.name && this.$route.params.userId === undefined) {
+          reload = true;
+        }
+      } else {
+        const businessId = this.currentActingAs.id;
+        args = {
+          name: "businessProfile",
+          params: {
+            businessId
+          }
+        }
+        if (this.$route.name === "businessProfile" &&
+            this.$route.params.businessId === businessId) {
+          reload = true;
+        }
+      }
+
+      if (reload) await this.$router.go();
+      else await this.$router.push(args);
     },
 
     /**

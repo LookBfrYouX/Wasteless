@@ -95,7 +95,7 @@ export default {
   methods: {
     signUp() {
       // redirects user to to the signup page
-      this.$router.push({name: "signUp"});
+      this.$router.push({name: "signup"});
     },
     login: async function () {
       // uses mock API to determine whether to allow user to login or be rejected
@@ -107,8 +107,12 @@ export default {
         const userId = response.data.userId;
         // Get and set the current logged in user information
 
+        console.warn(
+            "TODO SIGN IN SHOULD RETURN FULL USER PROFILE; USE THIS TO SET AUTHUSER INSTEAD OF CALLING API.PROFILE");
         response = await Api.profile(userId);
         const authUser = response.data;
+        // Adding the image URL (the GET request to backend) to the User object
+        authUser.imageURL = process.env.VUE_APP_SERVER_ADD + `/users/${userId}/images/`;
         this.$stateStore.actions.setAuthUser(authUser);
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;

@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
@@ -15,7 +16,6 @@ import java.time.ZonedDateTime;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -127,5 +127,15 @@ public class ProductServiceImpl implements ProductService {
       business.addCatalogueProduct(product);
       businessDao.saveBusiness(business);
     }
+
+  @Override
+  public Product getProduct(long productId) throws ProductNotFoundException {
+    return productDao.getProduct(productId);
+  }
+
+  @Transactional
+  public void saveProduct(Product product) {
+        this.productDao.saveProduct(product);
+  }
 
 }

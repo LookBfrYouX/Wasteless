@@ -34,10 +34,17 @@ import {ApiRequestError} from "./ApiRequestError";
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
 const TIMEOUT = 2500;
+const TIMEOUT_LONG = 10000;
 
 const instance = axios.create({
   baseURL: SERVER_URL,
   timeout: TIMEOUT,
+  withCredentials: true
+});
+
+const instanceLongTimeouts = axios.create({
+  baseURL: SERVER_URL,
+  timeout: TIMEOUT_LONG,
   withCredentials: true
 });
 
@@ -219,5 +226,72 @@ export const Api = {
     }
 
     return false;
+  },
+  uploadProfileImage: (image, id) => {
+    const formData = new FormData();
+    formData.append("image", image);
+    return instance.post(`/users/${id}/images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {});
+    });
+  },
+
+  /**
+   * Uploads an product image and sends post request to ImageController
+   * @param image is a file object with a name property that contains original file name
+   * @param businessId is an id of business
+   * @param productId is an id of product
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  uploadProductImage: (image, businessId, productId) => {
+    const formData = new FormData();
+    formData.append("image", image);
+    return instanceLongTimeouts.post(`/businesses/${businessId}/products/${productId}/images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        403: "You don't have permission to upload the images.",
+        406: "Could not upload the image."
+      });
+    });
+  },
+
+  /**
+   * Deletes product image and sends delete request to ImageController
+   * @param businessId is an id of business
+   * @param productId is an id of product
+   * @param imageId is an id of image
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  deleteProductImage: (businessId, productId, imageId) => {
+    return instance.delete(`/businesses/${businessId}/products/${productId}/images/${imageId}`)
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        403: "You don't have permission to delete the image.",
+        406: "Could not delete the image."
+      });
+    });
+  },
+
+  /**
+   * Changes primary image of product images of given business and product
+   * @param businessId is an id of business
+   * @param productId is an id of product
+   * @param imageId is an id of image
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  changePrimaryImage: (businessId, productId, imageId) => {
+    return instance.put(`/businesses/${businessId}/products/${productId}/images/${imageId}/makeprimary`)
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        403: "You don't have permission to set primary image.",
+        406: "Could not set primary image."
+      });
+    });
   }
 }
