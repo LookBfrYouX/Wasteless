@@ -11,7 +11,7 @@ try {
 
 let authUser = null;
 try {
-  JSON.parse(localStorage.getItem("authUser"))
+  authUser = JSON.parse(localStorage.getItem("authUser"));
   /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 } catch {}
 
