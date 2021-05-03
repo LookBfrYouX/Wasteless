@@ -1,4 +1,6 @@
 import { helper } from "./../helper";
+import { constants } from "./../constants";
+import { store } from "./../store";
 
 export const GLOBAL_STATE = {
   authUser: {
@@ -33,44 +35,36 @@ export const GLOBAL_STATE = {
           streetNumber: "53"
         },
         id: 1,
-        name: "TestName",
+        name: "TestBusinessName",
         primaryAdministratorId: 4
       }
     ]
   },
-  actingAs: null
 };
 
 
-}
 export const globalStateMocks = () => {
-  const $stateStore = {
-    getters: {
-      isAdmin: jest.fn(() => GLOBAL_STATE.authUser.role == "ROLE_ADMIN"),
-      isLoggedIn: jest.fn(() => true),
-      getAuthUser: jest.fn(() => GLOBAL_STATE.authUser),
-      getActingAs: jest.fn(() => GLOBAL_STATE.actingAs)
-    },
-    actions: {
-      makeAdmin: jest.fn(),
-      revokeAdmin: jest.fn(),
-      setAuthUser: jest.fn(),
-      deleteAuthUser: jest.fn(),
-      setActingAs: jest.fn(business => GLOBAL_STATE.actingAs = business),
-      deleteActingAs: jest.fn(() => GLOBAL_STATE.actingAs = null)
-    }
-  }
+  store.actions.setAuthUser(GLOBAL_STATE.authUser);
+  store.actions.setActingAs(GLOBAL_STATE.authUser.businessesAdministered[0]);
 
   const $router = {
     push: jest.fn(),
     go: jest.fn()
   }
 
+  const $route = {
+    name: "TEST_ROUTE",
+    params: {}
+  };
+
   const $helper = helper;
+  const $constants = constants;
 
   return {
-    $stateStore,
+    $stateStore: store,
     $router,
-    $helper
+    $route,
+    $helper,
+    $constants
   }
 }

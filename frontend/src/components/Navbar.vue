@@ -78,13 +78,14 @@
                 <div class="dropdown-divider"></div>
                 <div class="h4 dropdown-header">Act as</div>
                 <a v-if="currentActingAs != null"
-                    v-on:click="switchActingAs()"
+                    v-on:click="$stateStore.actions.setActingAs()"
                     class="dropdown-item">
                   {{ authUser.firstName }} {{ authUser.lastName }}
                 </a>
-                <a v-for="business in actingAsEntities" :key="business.id"
-                        v-on:click="switchActingAs(business)"
-                        class="dropdown-item">
+                <a v-for="business in actingAsEntities"
+                    :key="business.id"
+                    v-on:click="$stateStore.actions.setActingAs(business)"
+                    class="dropdown-item">
                   {{business.name}}
                   <span v-if="business === currentActingAs">
                     &#10003;
@@ -155,9 +156,6 @@ export default {
     authUser: {
       get: function () {
         return this.$stateStore.getters.getAuthUser();
-      },
-      set: function (val) {
-        this.$stateStore.actions.setAuthUser(val);
       }
     },
 
@@ -240,6 +238,7 @@ export default {
       const searchName = "search";
       let newQuery = this.$route.params.query;
 
+      // If already on search with same query, refresh instead of reloading
       if (this.$route.name == searchName && newQuery == this.query) {
         await this.$router.go();
         return;
@@ -287,21 +286,7 @@ export default {
 
       if (reload) await this.$router.go();
       else await this.$router.push(args);
-    },
-
-    /**
-     * Updates acting as state of user.
-     * If no business are passed or null is passed, switches back to acting as individual by deleting acting as.
-     * Else, sets business as currently acting as.
-     * @param business A whole business object which is an item of list authUser.businessesAdministered
-     */
-    switchActingAs: function (business) {
-      if (business === null || business === undefined) {
-        this.$stateStore.actions.deleteActingAs();
-      } else {
-        this.$stateStore.actions.setActingAs(business);
-      }
-    },
+    }
   },
 };
 </script>

@@ -63,6 +63,7 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
+    "setupTestFrameworkScriptFile": "./src/test/localStorage.mock.js",
     "testResultsProcessor": "jest-sonar-reporter"
   },
   "jestSonar": {

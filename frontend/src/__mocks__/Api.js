@@ -19,4 +19,5 @@ let _Api = {
   _setMethod: (name, method) => _Api[name] = method
 };
 
+_Api["handle401"] = () => {};
 export let Api = _Api;
