@@ -107,11 +107,7 @@ public class UserController {
   public ResponseEntity<Object> getUserById(@PathVariable long id) {
     try {
       log.info("GETTING USER BY ID: " + id);
-      if (this.userService.isAdmin() || this.userService.isSelf(id)) {
-        return new ResponseEntity<>(new FullUserDto(this.userService.getUserById(id)), HttpStatus.valueOf(200));
-      } else {
-        return new ResponseEntity<>(new BasicUserDto(this.userService.getUserById(id)), HttpStatus.valueOf(200));
-      }
+      return new ResponseEntity<>(this.userService.getUserById(id), HttpStatus.valueOf(200));
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());

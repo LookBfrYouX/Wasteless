@@ -17,13 +17,11 @@ public interface UserService {
   JSONObject login(UserCredentials userCredentials)
       throws AuthenticationException, UserNotFoundException;
 
-  User getUserById(long id) throws UserNotFoundException, UnhandledException;
+  Object getUserById(long id) throws UserNotFoundException, UnhandledException;
 
   User getUserByEmail(String email) throws UserNotFoundException;
 
   void revokeAdmin(long id) throws UserNotFoundException, NotAcceptableException;
-
-  List<User> getAllUsers();
 
   List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException;
 
@@ -31,6 +29,6 @@ public interface UserService {
 
   boolean isAdmin();
 
-  boolean isSelf(long id) throws UserNotFoundException, UnhandledException;
+  boolean isSelf(String userEmail);
 
 }

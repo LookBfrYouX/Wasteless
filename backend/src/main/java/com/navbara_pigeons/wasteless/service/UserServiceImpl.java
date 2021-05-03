@@ -1,10 +1,9 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
-import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
@@ -14,13 +13,10 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -135,58 +131,18 @@ public class UserServiceImpl implements UserService {
    * number/name/post code are not returned
    *
    * @param id the id of the user
-   * @return the User instance of the user
+   * @return the User DTO instance of the user
    */
   @Override
-  public User getUserById(long id) throws UserNotFoundException,
-      UnhandledException {
+  @Transactional
+  public Object getUserById(long id) throws UserNotFoundException {
     User user = userDao.getUserById(id);
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-    // Email of user that made the request
-
-    // Convert user entity JSONObject (convert to String then to JSONObject)
-//    String jsonStringBusiness = null;
-//    try {
-//      jsonStringBusiness = objectMapper.writeValueAsString(user);
-//    } catch (JsonProcessingException exc) {
-//      throw new UnhandledException("JSON processing exception");
-//    }
-//    JSONObject response = null;
-//    try {
-//      response = (JSONObject) new JSONParser().parse(jsonStringBusiness);
-//    } catch (ParseException exc) {
-//      throw new UnhandledException("JSON parse exception");
-//    }
-//
-//    // Remove sensitive information from response
-//    response.remove("password");
-//    if (!username.equals(user.getEmail()) && !isAdmin()) {
-//      response.remove("email");
-//      response.remove("dateOfBirth");
-//      response.remove("phoneNumber");
-//
-//      ((JSONObject)(response.get("homeAddress"))).remove("streetNumber");
-//      ((JSONObject)(response.get("homeAddress"))).remove("streetName");
-//      ((JSONObject)(response.get("homeAddress"))).remove("postcode");
-//    }
-//
-//    // Add administered business
-//    if (includeBusinesses) {
-//      ArrayList<JSONObject> businesses = new ArrayList<>();
-//      if (user.getBusinesses() != null) {
-//        for (Business business : user.getBusinesses()) {
-//          try {
-//            businesses.add(businessService.getBusinessById(business.getId(), false));
-//          } catch (BusinessNotFoundException e) {
-//            ; // If no businesses found, don't append any to list!
-//          }
-//        }
-//      }
-//      response.appendField("businessesAdministered", businesses);
-//    }
-    return user;
+    if (isAdmin() || isSelf(user.getEmail())) {
+      return new FullUserDto(user);
+    } else {
+      return new BasicUserDto(user);
+    }
   }
 
   /**
@@ -231,17 +187,6 @@ public class UserServiceImpl implements UserService {
   @Override
   public User getUserByEmail(String email) throws UserNotFoundException {
     return userDao.getUserByEmail(email);
-  }
-
-  /**
-   * This method is used to get a list of all users (use with care as it may impact performace
-   * significantly.
-   *
-   * @return Returns a list of all users.
-   */
-  @Override
-  public List<User> getAllUsers() {
-    return null;
   }
 
   /**
@@ -331,10 +276,15 @@ public class UserServiceImpl implements UserService {
     return false;
   }
 
-  public boolean isSelf(long id) throws UserNotFoundException, UnhandledException {
-    User user = getUserById(id);
+  /**
+   * Checks if given email is logged in users email
+   *
+   * @param userEmail User to check against
+   * @return true if logged in user is the referenced user
+   */
+  public boolean isSelf(String userEmail) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    if (user.getEmail().equals(auth.getName())) {
+    if (userEmail.equals(auth.getName())) {
       return true;
     }
     return false;
