@@ -59,12 +59,19 @@
     "last 2 versions"
   ],
   "jest": {
-    "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
-    "setupTestFrameworkScriptFile": "./src/test/localStorage.mock.js",
-    "testResultsProcessor": "jest-sonar-reporter"
+    "testResultsProcessor": "jest-sonar-reporter",
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      ".*\\.(vue)$": "vue-jest",
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
+    }
   },
   "jestSonar": {
     "reportPath": "coverage",

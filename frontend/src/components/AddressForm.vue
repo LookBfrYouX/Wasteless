@@ -97,7 +97,7 @@ The parent component must provide `address` prop. When the address is updated in
           v-on:suggestion="suggestionSelected"
       />
     </div>
-    
+
     <div class="form-group required col-12 col-md-6">
       <label>Post code</label>
       <suggestions
@@ -199,9 +199,9 @@ export default {
     /**
      * Map OSM properties object to address components used in the sign up page
      * @argument properties OSM properties object
-     * @return object. Components may be undefined. Country may be undefined if OSM's 
+     * @return object. Components may be undefined. Country may be undefined if OSM's
      * two character country code (`countrycode`) is not found in country codes list.
-     * 
+     *
      */
     mapOSMPropertiesToAddressComponents: function (properties) {
       const {
@@ -216,12 +216,12 @@ export default {
         name
         // osm_id,
       } = properties;
-   
-   
+
+
       // Convert from OSM country name to restcountries name
       const countryCanonical = this.countryCodeToNameDict[countrycode];
 
-      if (countryCanonical != undefined && country != undefined && 
+      if (countryCanonical != undefined && country != undefined &&
           this.canonicalCountryNameToOsmCountryNameCache[countryCanonical] == undefined) {
         this.canonicalCountryNameToOsmCountryNameCache[countryCanonical] = country;
         // Add OSM country name to cache
@@ -478,7 +478,7 @@ export default {
   watch: {
     /**
      * Update address suggestions text when the active input address field changes,
-     * unless it is focused on the street number 
+     * unless it is focused on the street number
      */
     activeAddressInputName: function () {
       // Couldn't make addressSuggestions a computed property for some reason: would never update
