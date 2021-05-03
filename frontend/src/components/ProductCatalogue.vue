@@ -47,7 +47,7 @@
                 <div class="text-muted">Description: {{ product.description }}</div>
                 <div class="text-muted">RRP: {{product.recommendedRetailPrice }}</div>
 
-                <div class="text-muted">Created: {{ product.created.split("T")[0] }} (YYY-MM-DD)</div>
+                <div class="text-muted">Created: {{ $helper.isoToDateString(product.created) }}</div>
               </li>
             </ul>
             <div aria-label="table-nav" class="mt-2">

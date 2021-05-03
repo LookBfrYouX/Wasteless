@@ -51,7 +51,7 @@ export const constants = {
   ],
 
   SEARCH_RESULTS: {
-    RESULTS_PER_PAGE: 2
+    RESULTS_PER_PAGE: 10
   },
 
   PRODUCT_CATALOG: {
