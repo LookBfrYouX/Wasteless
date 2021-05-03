@@ -159,8 +159,8 @@ export const Api = {
   },
 
   /**
-   * Sends a get products query
-   * @param id
+   * Gets all products given in a business catalog
+   * @param id ID of business
    * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
   getProducts: (id) => {

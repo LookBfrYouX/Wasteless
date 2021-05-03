@@ -65,6 +65,7 @@
                 >
                   <button class="page-link" name="button" type="button"
                           v-on:click="pageNum = pageNumber">{{ pageNumber + 1 }}
+                  </button>
                 </li>
                 <li>
                   <button v-if="pageNum < pages.length - 1" class="page-link" name="button"
@@ -129,7 +130,7 @@ const ProductCatalogue = {
     sortByClicked(newSortBy) {
       if (this.sortBy == newSortBy) {
         this.reversed = !this.reversed;
-      }
+      } 
       this.sortBy = newSortBy;
     },
 

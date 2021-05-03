@@ -10,13 +10,16 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Products DTO which returns all product information except `currency` and `primaryProductImage` (returned as the first element in the image list)
+ */
 @Data
 public class BasicProductDto {
 
     private long id;
     private String name;
     private String description;
-    private String currency;
+//    private String currency;
     private String manufacturer;
     private Double recommendedRetailPrice;
     private ZonedDateTime created;
@@ -31,11 +34,11 @@ public class BasicProductDto {
         this.manufacturer = product.getManufacturer();
         this.recommendedRetailPrice = product.getRecommendedRetailPrice();
         this.created = product.getCreated();
-        if (product.getPrimaryProductImage() != null) {
-            this.primaryProductImage = new BasicImageDto(product.getPrimaryProductImage());
-        }
+//        if (product.getPrimaryProductImage() != null) {
+//            this.primaryProductImage = new BasicImageDto(product.getPrimaryProductImage());
+//        }
         if (product.getProductImages() != null) {
-            this.productImages = makeImageDtos(product.getProductImages());
+            this.productImages = makeImageDtos(product.getImages()); // First image is primary image
         }
     }
 

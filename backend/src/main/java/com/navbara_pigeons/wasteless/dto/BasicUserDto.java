@@ -13,6 +13,9 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * User DTO which does not return coarse address, email, date of birth and phone number
+ */
 @Data
 public class BasicUserDto {
 

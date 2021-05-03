@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * Image DTO which returns all image details
+ */
 @Data
 public class BasicImageDto {
 

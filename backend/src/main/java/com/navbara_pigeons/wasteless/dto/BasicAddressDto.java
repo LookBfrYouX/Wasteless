@@ -3,6 +3,9 @@ package com.navbara_pigeons.wasteless.dto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import lombok.Data;
 
+/**
+ * Address DTO which only returns some coarse address properties like city, region and country
+ */
 @Data
 public class BasicAddressDto {
 

@@ -9,6 +9,9 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * User DTO which returns all user information except password
+ */
 @Data
 public class FullUserDto {
 

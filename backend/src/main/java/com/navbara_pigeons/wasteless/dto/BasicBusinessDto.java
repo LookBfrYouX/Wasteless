@@ -11,6 +11,9 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Business DTO which returns all user details except catalog and administrators list
+ */
 @Data
 public class BasicBusinessDto {
 
@@ -40,21 +43,21 @@ public class BasicBusinessDto {
 //        }
     }
 
-    private List<BasicUserDto> makeUserDto(List<User> users) {
-        ArrayList<BasicUserDto> userlistDto = new ArrayList<>();
-        for (User user : users) {
-            user.setBusinesses(null);
-            userlistDto.add(new BasicUserDto(user));
-        }
-        return userlistDto;
-    }
-
-    private List<BasicProductDto> makeProductDto(List<Product> products) {
-        ArrayList<BasicProductDto> productsDto = new ArrayList<BasicProductDto>();
-        for (Product product : products) {
-            productsDto.add(new BasicProductDto(product));
-        }
-        return productsDto;
-    }
+//    private List<BasicUserDto> makeUserDto(List<User> users) {
+//        ArrayList<BasicUserDto> userlistDto = new ArrayList<>();
+//        for (User user : users) {
+//            user.setBusinesses(null);
+//            userlistDto.add(new BasicUserDto(user));
+//        }
+//        return userlistDto;
+//    }
+//
+//    private List<BasicProductDto> makeProductDto(List<Product> products) {
+//        ArrayList<BasicProductDto> productsDto = new ArrayList<BasicProductDto>();
+//        for (Product product : products) {
+//            productsDto.add(new BasicProductDto(product));
+//        }
+//        return productsDto;
+//    }
 
 }

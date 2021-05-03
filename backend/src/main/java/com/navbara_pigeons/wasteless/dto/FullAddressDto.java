@@ -3,6 +3,9 @@ package com.navbara_pigeons.wasteless.dto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import lombok.Data;
 
+/**
+ * Address DTO which all properties except ID
+ */
 @Data
 public class FullAddressDto {
 
