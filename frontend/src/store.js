@@ -76,11 +76,18 @@ export const store = {
     // Set the currently logged in user and sync with persistent storage
     setAuthUser: (authUser) => {
       state.authUser = authUser;
+      const previousId = state.authUser ? state.authUser.id : null;
       localStorage.setItem("authUser", JSON.stringify(authUser));
-      store.actions.setActingAs(null);
+
+      if (!(previousId != null && authUser != null && authUser.id
+          === previousId)) {
+        // If same user id as before, don't reset setActingAs - they will still probably
+        // have the same businesses so don't need to reset business ID
+        store.actions.setActingAs(null);
+      }
     },
 
-    /**
+      /**
      * Delete authenticated user (and actingAs) from state and local storage
      */
     deleteAuthUser: () => {

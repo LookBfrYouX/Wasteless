@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-100 d-flex justify-content-center signup-container gradient-background pb-4"
+    class="w-100 d-flex justify-content-center register-business-container gradient-background pb-4"
   >
     <div class="container">
       <form
@@ -143,7 +143,7 @@ export default {
      */
     register: async function () {
       const user = this.$stateStore.getters.getAuthUser();
-      var response = await this.callApi({
+      let business = {
         primaryAdministratorId: user.id,
         name: this.name,
         description: this.description,
@@ -156,13 +156,24 @@ export default {
           country: this.address.country,
         },
         businessType: this.type, // API stores the type as businessType not type
-      });
-      this.$stateStore.actions.setActingAs(response.data.businessId);
-      const businessId = this.$stateStore.getters.getBusinessId();
+      }
+
+      var response = await this.callApi(business);
+
+      // When setting acting as, business ID is stored and it gets the business from
+      // the authUser object. Hence the new business must be inserted into the authUser.
+      // Need to set id and created - guess the latter as it will be updated later when
+      // going to the business profile page
+      business.id = response.data.businessId;
+      business.created = new Date().toISOString(); // temporary created value
+
+      user.businessesAdministered.push(business);
+      this.$stateStore.actions.setAuthUser(user); // Add business to state store
+      this.$stateStore.actions.setActingAs(business.id);
       await this.$router.push({
         name: "businessProfile",
         params: {
-          businessId,
+          businessId: business.id
         },
       });
     },
@@ -171,7 +182,7 @@ export default {
 </script>
 
 <style scoped>
-.signup-container > div {
+.register-business-container > div {
   max-width: 50em;
 }
 </style>

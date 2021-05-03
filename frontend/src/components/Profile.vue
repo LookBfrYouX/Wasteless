@@ -112,27 +112,6 @@
             </li>
           </ul>
         </div>
-        <div class="card my-2">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the
-              bulk of the card's content.</p>
-            <a class="card-link" href="/profile">Card link</a>
-            <a class="card-link" href="/profile">Another link</a>
-          </div>
-        </div>
-        <div class="card my-2">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the
-              bulk of the card's content.</p>
-            <a class="card-link" href="/profile">Card link</a>
-            <a class="card-link" href="/profile">Another link</a>
-          </div>
-        </div>
-
       </div>
       <div class="col-md-7 order-1 order-md-2 m-2 card">
         <ul class="nav nav-tabs mt-2">

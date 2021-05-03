@@ -112,9 +112,12 @@ export default {
     },
 
     /**
-     * Parses the API response given a promise to the request
+     * Parses the API response given a promise to the request,
+     * setting the businessInfo object, handling errors if necessary,
+     *  updating statestore's authUser if they are an admin of the business
      */
     parseApiResponse: async function (apiCall) {
+      let failed = false; // don't bother updating state if api call fails
       try {
         const response = await apiCall;
         this.businessInfo = response.data;
@@ -122,10 +125,29 @@ export default {
         if (await Api.handle401.call(this, err)) {
           return;
         }
+        failed = true;
         this.apiErrorMessage = err.userFacingErrorMessage;
+      }
+
+      const currentUser = this.$stateStore.getters.getAuthUser();
+      if (failed || this.businessInfo === null || currentUser === null) return;
+      if (this.businessInfo.primaryAdministratorId == currentUser.id ||
+          this.businessInfo.administrators.find(admin => admin.id == currentUser.id) !== undefined
+      ) {
+        // Update the user with new info
+        // Deep copy user/business
+        const userCopy = JSON.parse(JSON.stringify(currentUser));
+        let businessCopy = JSON.parse(JSON.stringify(this.businessInfo));
+        delete businessCopy.administrators; // userInfo's businesses don't contain administrators list (otherwise recursion)
+        const index = userCopy.businessesAdministered.findIndex(business => business.id == businessCopy.id);
+        if (index === -1) userCopy.businessesAdministered.push(businessCopy); // Business was just created
+        else userCopy.businessesAdministered[index] = businessCopy;
+
+        this.$stateStore.actions.setAuthUser(userCopy);
       }
     },
   },
+
 
   computed: {},
 
