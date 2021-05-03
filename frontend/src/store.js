@@ -6,6 +6,9 @@ import Vue from 'vue';
 let actingAsId = null; // ID of business that an user is currently acting as
 try {
   actingAsId = parseInt(localStorage.getItem("actingAsId"), 10);
+  if (isNaN(actingAsId)) {
+    actingAsId = null;
+  }
   /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 } catch {}
 
@@ -67,7 +70,7 @@ export const store = {
     },
 
     isActingAsBusiness() {
-      return state.actingAsId !== null;
+      return this.getActingAs() !== null;
     },
 
 
