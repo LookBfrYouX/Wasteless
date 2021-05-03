@@ -71,12 +71,12 @@ export const router = new VueRouter({
     {
       name: "createProduct",
       path: "/createproduct",
-      component: CreateProduct
+      component: () => import("./components/CreateProduct.vue"),
     },
     {
       name: "productCatalogue",
       path: "/productcatalogue",
-      component: ProductCatalogue
+      component: () => import("./components/ProductCatalogue.vue"),
     },
     {
       name: "businessProfile",

@@ -2,13 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
-import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
-import com.navbara_pigeons.wasteless.exception.UnhandledException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import com.navbara_pigeons.wasteless.service.UserService;

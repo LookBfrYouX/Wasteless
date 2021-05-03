@@ -7,10 +7,7 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
-import com.navbara_pigeons.wasteless.exception.UnhandledException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
 
 import java.time.ZoneOffset;
@@ -39,7 +36,6 @@ public class BusinessServiceImpl implements BusinessService {
 
   private final UserDao userDao;
   private final ObjectMapper objectMapper;
-  private UserService userService;
 
   private final UserService userService;
 

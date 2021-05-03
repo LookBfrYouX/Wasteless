@@ -69,7 +69,7 @@ public class BusinessController {
     public ResponseEntity<JSONObject> getBusinessById(@PathVariable String id) {
         try {
             log.info("GETTING BUSINESS BY ID: " + id);
-            return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)),
+            return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id), true),
                     HttpStatus.valueOf(200));
         } catch (BusinessNotFoundException exc) {
             log.error("BUSINESS NOT FOUND ERROR: " + id);

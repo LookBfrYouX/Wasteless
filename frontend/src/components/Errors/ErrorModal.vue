@@ -120,6 +120,7 @@ export default {
       } else {
         this.goBack(event);
       }
+    },
 
     hideCallbackEvent: function(event) {
       if (this.hideCallback) {

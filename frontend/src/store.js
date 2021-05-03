@@ -52,10 +52,6 @@ export const store = {
       return null;
     },
 
-    getActingAs:() => {
-      return state.actingAs;
-    },
-
     /**
      * Checks if a user is logged in or not
      */

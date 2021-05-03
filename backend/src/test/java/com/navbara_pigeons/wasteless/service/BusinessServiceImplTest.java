@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.navbara_pigeons.wasteless.controller.UserController;
@@ -7,15 +8,16 @@ import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UnhandledException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
+import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 @SpringBootTest
 public class BusinessServiceImplTest extends ServiceTestProvider {
@@ -104,27 +106,13 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     assertFalse(newBusiness.get("administrators").toString().contains("\"postcode\""));
   }
 
-  Address makeAddress() {
-    Address address = new Address();
-    address.setStreetNumber("3/24")
-        .setStreetName("Ilam Road")
-        .setPostcode("90210")
-        .setCity("Christchurch")
-        .setRegion("Canterbury")
-        .setCountry("New Zealand");
-    addressDao.saveAddress(address);
-    return address;
-  }
 
-    Business testBusiness = makeBusiness();
-    testBusiness.getAddress().setCountry("");
-    assertThrows(AddressValidationException.class, () -> businessService.saveBusiness(testBusiness));
   @Test void saveBusinessInvalidAddressTest() {
     loginWithCredentials();
 
     Business testBusiness = makeBusiness();
     testBusiness.getAddress().setCountry("");
-    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
+    assertThrows(AddressValidationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 
   @Test
@@ -134,15 +122,5 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     Business testBusiness = makeBusiness();
     testBusiness.getAddress().setCountry("Fake Zealand");
     assertThrows(AddressValidationException.class, () -> businessService.saveBusiness(testBusiness));
-    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
-  }
-
-  @Test
-  void saveBusinessNoCountryDataTest() {
-    loginWithCredentials();
-    countryDataFetcherService.resetCountryData();
-    Business testBusiness = makeBusiness();
-    testBusiness.getAddress().setCountry("New Zealand");
-    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(testBusiness));
   }
 }
