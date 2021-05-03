@@ -41,11 +41,11 @@ public class BusinessController {
      * @throws ResponseStatusException Unknown Error.
      */
     @PostMapping("/businesses")
-    public ResponseEntity<String> registerBusiness(@RequestBody Business business) {
+    public ResponseEntity<JSONObject> registerBusiness(@RequestBody Business business) {
         try {
-            businessService.saveBusiness(business);
+            JSONObject businessId = businessService.saveBusiness(business);
             log.info("BUSINESS CREATED SUCCESSFULLY: " + business.getId());
-            return new ResponseEntity<>("Business account successfully created", HttpStatus.valueOf(201));
+            return new ResponseEntity<JSONObject>(businessId, HttpStatus.valueOf(201));
         } catch(BusinessRegistrationException exc) {
             log.error("COULD NOT REGISTER BUSINESS (" + exc.getMessage() + "): " + business.getName());
             throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad Request");
