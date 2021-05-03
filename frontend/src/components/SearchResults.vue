@@ -44,10 +44,8 @@
                     }}</span>
                 </div>
                 <div class="text-muted">{{ user.email }}</div>
-                <div v-if="user.homeAddress" class="text-muted">{{ user.homeAddress.streetNumber }}
-                  {{ user.homeAddress.streetName }}, {{ user.homeAddress.city }},
-                  {{ user.homeAddress.region }}, {{ user.homeAddress.country }}
-                  {{ user.homeAddress.postcode }}
+                <div v-if="user.homeAddress" class="text-muted">
+                  {{$helper.addressToString(user.homeAddress)}}
                 </div>
                 <div v-else class="text-muted">Address unknown</div>
               </li>
@@ -150,10 +148,6 @@ const SearchResults = {
     },
 
     parseSearchResults: function (results) {
-      for (let i = 0; i <= length(results); i++) {
-        let actualAddress = this.$helper.addressToString(results[i].address);
-        results[i].address = actualAddress;
-      }
       return results;
     },
 
