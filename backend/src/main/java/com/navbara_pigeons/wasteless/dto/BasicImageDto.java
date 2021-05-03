@@ -11,17 +11,17 @@ import javax.persistence.Id;
 /**
  * Image DTO which returns all image details
  */
-@Data
-public class BasicImageDto {
-
-    private int id;
-    private String filename;
-    private String thumbnailFilename;
-
-    public BasicImageDto(Image image) {
-        this.id = image.getId();
-        this.filename = image.getFilename();
-        this.thumbnailFilename = image.getThumbnailFilename();
-    }
-
-}
+//@Data
+//public class BasicImageDto {
+//
+//    private int id;
+//    private String filename;
+//    private String thumbnailFilename;
+//
+//    public BasicImageDto(Image image) {
+//        this.id = image.getId();
+//        this.filename = image.getFilename();
+//        this.thumbnailFilename = image.getThumbnailFilename();
+//    }
+//
+//}

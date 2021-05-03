@@ -310,7 +310,7 @@ export default {
       try {
         const response = await apiCall;
         const authUser = this.$stateStore.getters.getAuthUser();
-        
+
         this.userInfo = response.data;
 
         if (authUser && authUser.id == this.userInfo.id) {

@@ -140,6 +140,7 @@ const SearchResults = {
       try {
         const {data} = await Api.search(this.search);
         this.results = this.parseSearchResults(data);
+
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -149,6 +150,10 @@ const SearchResults = {
     },
 
     parseSearchResults: function (results) {
+      for (let i = 0; i <= length(results); i++) {
+        let actualAddress = this.$helper.addressToString(results[i].address);
+        results[i].address = actualAddress;
+      }
       return results;
     },
 
