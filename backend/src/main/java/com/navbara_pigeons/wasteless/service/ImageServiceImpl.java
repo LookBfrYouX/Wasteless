@@ -5,14 +5,21 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Image;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.*;
-
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -25,6 +32,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class ImageServiceImpl implements ImageService {
+
+  @Value("${image.products.prefix}")
+  private String imagePrefix;
 
   private final UserDao userDao;
   private final ImageDao imageDao;
@@ -47,13 +57,15 @@ public class ImageServiceImpl implements ImageService {
    * Upload an image to a businesses product
    *
    * @param businessId The identifier of a business
-   * @param productId The identifier of a product to add the image to
-   * @param image The image to be uploaded
-   * @throws UserNotFoundException The users credentials could not be found from the JSessionID
+   * @param productId  The identifier of a product to add the image to
+   * @param image      The image to be uploaded
+   * @throws UserNotFoundException     The users credentials could not be found from the JSessionID
    * @throws BusinessNotFoundException When no business is found with the given id
-   * @throws ProductNotFoundException When no product is found with the given id
-   * @throws IOException When an IO error occurs (will return a 500 status error, this is intended)
-   * @throws ImageNotFoundException When a non image file or no file is received instead of an image
+   * @throws ProductNotFoundException  When no product is found with the given id
+   * @throws IOException               When an IO error occurs (will return a 500 status error, this
+   *                                   is intended)
+   * @throws ImageNotFoundException    When a non image file or no file is received instead of an
+   *                                   image
    */
   @Transactional
   @Override
@@ -69,24 +81,27 @@ public class ImageServiceImpl implements ImageService {
     String fileName = StringUtils.cleanPath(image.getOriginalFilename());
     String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-    // Check if "image" is actually an image (gif not accepted)
+    // Check if "image" is actually an image
     ArrayList<String> items = new ArrayList<>();
     items.add("jpg");
     items.add("jpeg");
     items.add("png");
+    items.add("gif");
     if (!items.contains(fileExtension.toLowerCase())) {
       throw new ImageNotFoundException();
     }
 
     // Crop the image and then save it to the DB + Machine
-    cropImageToSquare(image, fileExtension, fileName);
-    Image imageEntity = new Image(fileExtension);
+    image = cropImageToSquare(image, fileExtension, fileName);
+    MultipartFile imageThumbnail = createImageThumbnail(image, fileExtension);
+    Image imageEntity = new Image(imagePrefix, fileExtension);
     Product productEntity = productService.getProduct(productId);
     productEntity.addProductImage(imageEntity);
     if (productEntity.getPrimaryProductImage() == null) {
       productEntity.setPrimaryProductImage(imageEntity);
     }
     imageDao.saveProductImageToMachine(image, imageEntity.getFilename());
+    imageDao.saveProductImageToMachine(imageThumbnail, imageEntity.getThumbnailFilename());
     imageDao.saveProductImageToDb(imageEntity);
   }
 
@@ -94,8 +109,8 @@ public class ImageServiceImpl implements ImageService {
    * Change primary image
    *
    * @param businessId The identifier of a business
-   * @param productId The identifier of a product to add the image to
-   * @param imageId The identifier of an image to be set as the primary image
+   * @param productId  The identifier of a product to add the image to
+   * @param imageId    The identifier of an image to be set as the primary image
    */
   public void changePrimaryImage(long businessId, long productId, long imageId)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, ImageNotFoundException {
@@ -169,6 +184,26 @@ public class ImageServiceImpl implements ImageService {
     return imageDao.getProfileImageOnMachine(usersImageToDownload.getImageName());
   }
 
+  private MultipartFile createImageThumbnail(MultipartFile image, String extension)
+      throws IOException {
+    InputStream in = new ByteArrayInputStream(image.getBytes());
+    BufferedImage imageToResize = ImageIO.read(in);
+
+    int targetWidth = 100;
+    int targetHeight = targetWidth;
+
+    java.awt.Image resultingImage = imageToResize.getScaledInstance(targetWidth, targetHeight,
+        java.awt.Image.SCALE_DEFAULT);
+    BufferedImage outputImage = new BufferedImage(targetWidth, targetHeight,
+        BufferedImage.TYPE_INT_RGB);
+    outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ImageIO.write(outputImage, extension, baos);
+
+    return new MockMultipartFile("image", baos.toByteArray());
+  }
+
   private MultipartFile cropImageToSquare(MultipartFile image, String extension, String fileName)
       throws IOException {
     InputStream in = new ByteArrayInputStream(image.getBytes());
@@ -201,32 +236,35 @@ public class ImageServiceImpl implements ImageService {
   }
 
   /**
-   * This service method deletes the product image associated with the business/product if the user has the
-   * correct permissions.
-   * @param imageId The ID of the image that is to be deleted.
-   * @param businessId The ID of the business whose product image is being deleted. (Used to check for user permissions)
-   * @param productId The ID of the product whose image is being deleted.
-   * @throws UserNotFoundException Thrown if no user is logged in.
-   * @throws BusinessNotFoundException Thrown if the business that owns the product does not exist.
+   * This service method deletes the product image associated with the business/product if the user
+   * has the correct permissions.
+   *
+   * @param imageId    The ID of the image that is to be deleted.
+   * @param businessId The ID of the business whose product image is being deleted. (Used to check
+   *                   for user permissions)
+   * @param productId  The ID of the product whose image is being deleted.
+   * @throws UserNotFoundException           Thrown if no user is logged in.
+   * @throws BusinessNotFoundException       Thrown if the business that owns the product does not
+   *                                         exist.
    * @throws InsufficientPrivilegesException Thrown if the user is not admin or business admin
-   * @throws ProductNotFoundException Thrown if the product in question does not exist.
-   * @throws ImageNotFoundException Thrown if the image in question does not exist.
-   * @throws IOException Thrown if the system is unable to delete the actual file from persistent storage.
+   * @throws ProductNotFoundException        Thrown if the product in question does not exist.
+   * @throws ImageNotFoundException          Thrown if the image in question does not exist.
+   * @throws IOException                     Thrown if the system is unable to delete the actual
+   *                                         file from persistent storage.
    */
   @Transactional
   public void deleteProductImage(long imageId, long businessId, long productId)
-          throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException, IOException {
-    if (!this.businessService.isBusinessAdmin(businessId) && !this.userService.isAdmin()){
+      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException, IOException {
+    if (!this.businessService.isBusinessAdmin(businessId) && !this.userService.isAdmin()) {
       throw new InsufficientPrivilegesException("You can not administer this business");
     }
     Product product = this.productService.getProduct(productId);
     Image image = product.getImageById(imageId);
-    String thumbPath = image.getThumbnailFilename(); // TODO also unlink this when thumbnails start being stored on disk
-    String imgPath = image.getFilename();
     product.deleteProductImage(imageId);
     this.productService.saveProduct(product);
     this.imageDao.deleteImage(image);
-    this.imageDao.deleteProductImageFromMachine(imgPath);
+    this.imageDao.deleteProductImageFromMachine(image.getFilename());
+    this.imageDao.deleteProductImageFromMachine(image.getThumbnailFilename());
   }
 
   public void deleteUserImage(long userId) {
