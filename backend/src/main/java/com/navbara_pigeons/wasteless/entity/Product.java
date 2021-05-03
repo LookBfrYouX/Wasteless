@@ -1,6 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
-import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import lombok.Data;
 
@@ -45,10 +46,12 @@ public class Product {
   @Column(name = "CREATED")
   private ZonedDateTime created;
 
+  @JsonIgnore
   @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "PRIMARY_IMAGE_ID", referencedColumnName = "ID")
   private Image primaryProductImage;
 
+  @JsonIgnore
   @OneToMany(
       fetch = FetchType.LAZY,
       cascade = {
@@ -79,10 +82,15 @@ public class Product {
 
   public void deleteProductImage(long id) throws ImageNotFoundException {
     Image imageToRemove = getImageById(id);
-    if (this.primaryProductImage == imageToRemove) {
+    if (this.primaryProductImage == imageToRemove && this.productImages.size() > 1) {
+      this.productImages.remove(imageToRemove);
+      this.primaryProductImage = this.productImages.get(0);
+    } else if (this.primaryProductImage == imageToRemove && this.productImages.size() == 1) {
+      this.productImages.remove(imageToRemove);
       this.primaryProductImage = null;
+    } else {
+      this.productImages.remove(imageToRemove);
     }
-    this.productImages.remove(getImageById(id));
   }
 
   public Image getImageById(long id) throws ImageNotFoundException {
@@ -94,11 +102,17 @@ public class Product {
     throw new ImageNotFoundException("The image can't be found");
   }
 
+  /**
+   * get method for productImages used by json.
+   * @return the list of product images with the primary image as the first item of the list
+   */
   public List<Image> getImages() {
-    List<Image> images = this.getProductImages();
+    List<Image> images = this.productImages;
     Image primaryImage = this.getPrimaryProductImage();
-    images.remove(primaryImage);
-    images.add(0, primaryImage);
+    if (primaryImage != null) {
+      images.remove(primaryImage);
+      images.add(0, primaryImage);
+    }
     return images;
   }
 }

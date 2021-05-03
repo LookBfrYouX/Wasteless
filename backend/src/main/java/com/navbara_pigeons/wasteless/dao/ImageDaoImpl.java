@@ -2,6 +2,8 @@ package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.Image;
 import com.navbara_pigeons.wasteless.entity.Product;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import javax.persistence.EntityManager;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,8 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Repository
 public class ImageDaoImpl implements ImageDao {
 
-  private final String storagePath = "./src/main/resources/images/";
+  @Value("${user_generated_images_directory}")
+  private String storagePath;
+
   private final String defaultUserPath = "user/default-user.png";
+  public final String productsDirectory = "products"; // products stored in storagePath/products/
   private final String defaultBusinessPath = "business/default-business.png";
   private final EntityManager entityManager;
 
@@ -40,6 +46,16 @@ public class ImageDaoImpl implements ImageDao {
   }
 
   /**
+   * Given filename of product, returns path to file
+   * @param filename name of product image file
+   * @return normalized path
+   */
+  public Path getPathToProduct(String filename) {
+    Path destination = Paths.get(storagePath, productsDirectory, filename);
+    return destination.normalize();
+  }
+
+  /**
    * Save a product image to the machines local storage
    * @param image The image to be saved
    * @param filename The filename to save the image under
@@ -47,12 +63,12 @@ public class ImageDaoImpl implements ImageDao {
    */
   @Override
   public void saveProductImageToMachine(MultipartFile image, String filename) throws IOException {
-    Path destination = Paths.get(storagePath + "product/" + filename);
+    Path destination = getPathToProduct(filename);
     Files.copy(image.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
   }
 
   public void deleteProductImageFromMachine(String filename) throws IOException {
-    Path imagePath = Paths.get(storagePath + "product/" + filename);
+    Path imagePath = getPathToProduct(filename);
     Files.delete(imagePath);
   }
 

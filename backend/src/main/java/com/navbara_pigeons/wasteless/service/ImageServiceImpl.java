@@ -8,10 +8,7 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
@@ -52,7 +49,6 @@ public class ImageServiceImpl implements ImageService {
    * @param businessId The identifier of a business
    * @param productId The identifier of a product to add the image to
    * @param image The image to be uploaded
-   * @return The URL of the image just uploaded
    * @throws UserNotFoundException The users credentials could not be found from the JSessionID
    * @throws BusinessNotFoundException When no business is found with the given id
    * @throws ProductNotFoundException When no product is found with the given id
@@ -60,7 +56,8 @@ public class ImageServiceImpl implements ImageService {
    * @throws ImageNotFoundException When a non image file or no file is received instead of an image
    */
   @Transactional
-  public String uploadProductImage(long businessId, long productId, MultipartFile image)
+  @Override
+  public void uploadProductImage(long businessId, long productId, MultipartFile image)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, IOException,
       ImageNotFoundException {
     if (!businessService.isBusinessAdmin(businessId)) {
@@ -75,8 +72,9 @@ public class ImageServiceImpl implements ImageService {
     // Check if "image" is actually an image (gif not accepted)
     ArrayList<String> items = new ArrayList<>();
     items.add("jpg");
+    items.add("jpeg");
     items.add("png");
-    if (!items.contains(fileExtension)) {
+    if (!items.contains(fileExtension.toLowerCase())) {
       throw new ImageNotFoundException();
     }
 
@@ -90,9 +88,6 @@ public class ImageServiceImpl implements ImageService {
     }
     imageDao.saveProductImageToMachine(image, imageEntity.getFilename());
     imageDao.saveProductImageToDb(imageEntity);
-
-    // Return the URI for to download the image
-    return "/images/product/" + imageEntity.getFilename();
   }
 
   /**

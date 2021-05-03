@@ -37,3 +37,4 @@ out/
 .settings/
 bin/
 rest-countries-country-info.json
+frontend/public/user-content/images/**/*.jpg
