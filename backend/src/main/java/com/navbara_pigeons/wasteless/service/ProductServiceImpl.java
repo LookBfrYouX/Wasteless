@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,10 +62,14 @@ public class ProductServiceImpl implements ProductService {
      * @throws BusinessNotFoundException If the business is not listed in the database.
      */
     @Override
-    public List<Product> getProducts(String businessId) throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
+    public List<BasicProductDto> getProducts(String businessId) throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
         if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(Long.parseLong(businessId))) {
             Business business = businessDao.getBusinessById(Long.parseLong(businessId));
-            return business.getProductsCatalogue();
+            ArrayList<BasicProductDto> products = new ArrayList<>();
+            for (Product product : business.getProductsCatalogue()) {
+                products.add(new BasicProductDto(product));
+            }
+            return products;
         } else {
             throw new InsufficientPrivilegesException("You are not permitted to modify this business");
         }
@@ -89,12 +95,10 @@ public class ProductServiceImpl implements ProductService {
       try {
         user = userDao.getUserByEmail(username);
         business = businessDao.getBusinessById(businessId);
-      } catch (UserNotFoundException exc) {
-        throw new ProductRegistrationException();
-      } catch (BusinessNotFoundException exc) {
+      } catch (UserNotFoundException | BusinessNotFoundException exc) {
         throw new ProductRegistrationException();
       }
-      boolean businessAdmin = false;
+        boolean businessAdmin = false;
       if (business.getPrimaryAdministratorId() == user.getId()) {
         businessAdmin = true;
       }

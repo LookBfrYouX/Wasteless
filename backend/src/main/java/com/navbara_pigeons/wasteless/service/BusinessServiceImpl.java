@@ -1,8 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -13,10 +11,7 @@ import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import javax.transaction.Transactional;
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
@@ -31,12 +26,7 @@ import org.springframework.stereotype.Service;
 public class BusinessServiceImpl implements BusinessService {
 
   private final BusinessDao businessDao;
-
   private final AddressService addressService;
-
-  private final UserDao userDao;
-  private final ObjectMapper objectMapper;
-
   private final UserService userService;
 
   /**
@@ -46,12 +36,9 @@ public class BusinessServiceImpl implements BusinessService {
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService, UserDao userDao,
-      ObjectMapper objectMapper, @Lazy UserService userService) {
+  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService, @Lazy UserService userService) {
     // Using @Lazy to prevent Circular Dependencies
     this.businessDao = businessDao;
-    this.userDao = userDao;
-    this.objectMapper = objectMapper;
     this.addressService = addressService;
     this.userService = userService;
   }
@@ -73,7 +60,7 @@ public class BusinessServiceImpl implements BusinessService {
 
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
-    User currentUser = this.userDao.getUserByEmail(authentication.getName());
+    User currentUser = this.userService.getUserByEmail(authentication.getName());
     business.addAdministrator(currentUser);
     business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
@@ -88,48 +75,14 @@ public class BusinessServiceImpl implements BusinessService {
    * Calls the businessDao to get the specified business
    *
    * @param id the id of the business
-   * @param includeAdmins true if admins are to be included in the response
    * @return the Business instance of the business
    * @throws BusinessNotFoundException when business with given id does not exist
    * @throws UnhandledException thrown when converting business to JSONObject (internal error 500)
    */
   @Override
-  public JSONObject getBusinessById(long id, boolean includeAdmins) throws BusinessNotFoundException, UnhandledException {
+  public Business getBusinessById(long id) throws BusinessNotFoundException {
     Business business = businessDao.getBusinessById(id);
-
-    // Convert business entity JSONObject (convert to String then to JSONObject)
-    String jsonStringBusiness;
-    try {
-      jsonStringBusiness = objectMapper.writeValueAsString(business);
-    } catch (JsonProcessingException exc) {
-      throw new UnhandledException("JSON processing exception");
-    }
-    JSONObject response = null;
-    try {
-      response = (JSONObject) new JSONParser().parse(jsonStringBusiness);
-    } catch (ParseException exc) {
-      throw new UnhandledException("JSON parse exception");
-    }
-
-    // If business admins need to be part of the response
-    if (includeAdmins) {
-      // Remove sensitive information from response by calling userService
-      for (int i = 0; i < ((JSONArray) response.get("administrators")).size(); i++) {
-        try {
-          // Using index 0 as new admins are being added to the back of the array
-          // Looks complicated but its just a lot of type casting
-          long adminId = Long.parseLong((((JSONObject)((JSONArray) (response.get("administrators"))).get(0)).get("id").toString()));
-          ((JSONArray) (response.get("administrators"))).remove(0);
-          User newAdmin = userService.getUserById(adminId);
-          ((JSONArray) (response.get("administrators"))).appendElement(newAdmin);
-        } catch (Exception exc) {
-          throw new UnhandledException("User not found, server error!");
-        }
-      }
-    } else {
-      response.remove("administrators");
-    }
-    return response;
+    return business;
   }
 
   /**

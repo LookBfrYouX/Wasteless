@@ -1,7 +1,10 @@
-import {mount, shallowMount} from '@vue/test-utils';
-import {globalStateMocks} from "./testHelper";
+import { shallowMount} from '@vue/test-utils';
+import {GLOBAL_STATE, globalStateMocks} from "./testHelper";
 import Navbar from "../components/Navbar";
+import { ApiRequestError } from '../ApiRequestError';
 
+jest.mock("./../Api.js");
+const { Api } = require("./../Api.js");
 
 let wrapper;
 
@@ -22,36 +25,16 @@ describe("State of acting as entity", () => {
 
   test("Show business name on Navbar", () => {
     const mocks = globalStateMocks();
-    let authUser = mocks.$stateStore.getters.getAuthUser();
-    mocks.$stateStore.actions.setActingAs(authUser.businessesAdministered[0]);
+    const business = GLOBAL_STATE.authUser.businessesAdministered[0];
+    mocks.$stateStore.getters.getActingAs = jest.fn(() => business);
+    mocks.$stateStore.actions.setActingAs();
     wrapper = shallowMount(Navbar, {
       mocks,
     });
-    expect(wrapper.vm.printCurrentActingAs).toEqual("TestName");
+
+    expect(wrapper.vm.printCurrentActingAs).toEqual(business.name);
   });
-
-  test("Switch from individual to business", () => {
-    const mocks = globalStateMocks();
-    let authUser = mocks.$stateStore.getters.getAuthUser();
-    let business = authUser.businessesAdministered[0]
-    wrapper = shallowMount(Navbar, {
-      mocks,
-    });
-    wrapper.vm.switchActingAs(business);
-    expect(mocks.$stateStore.getters.getActingAs()).toEqual(business);
-  })
-
-  test("Switch from business to individual", () => {
-    const mocks = globalStateMocks();
-    let authUser = mocks.$stateStore.getters.getAuthUser();
-    mocks.$stateStore.actions.setActingAs(authUser.businessesAdministered[0]);
-    wrapper = shallowMount(Navbar, {
-      mocks,
-    });
-    wrapper.vm.switchActingAs();
-    expect(mocks.$stateStore.getters.getActingAs()).toEqual(null);
-  });
-
+  
   test("Return a list of businesses", () => {
     const mocks = globalStateMocks();
     let authUser = mocks.$stateStore.getters.getAuthUser();
@@ -62,3 +45,25 @@ describe("State of acting as entity", () => {
     expect(wrapper.vm.actingAsEntities).toEqual(businessesAdministered);
   });
 });
+
+describe("logout", () => {
+  test("logout called", async () => {
+    wrapper = shallowMount(Navbar, {
+      mocks: globalStateMocks()
+    });
+    const logOut = jest.fn(() => Promise.resolve());
+    Api._setMethod("logOut", logOut);
+    await wrapper.vm.logOut();
+    expect(logOut.mock.calls.length).toBe(1);
+  });
+
+  test("logout called", async () => {
+    wrapper = shallowMount(Navbar, {
+      mocks: globalStateMocks()
+    });
+    const logOut = jest.fn(() => Promise.reject(new ApiRequestError("MSG")));
+    Api._setMethod("logOut", logOut);
+    await wrapper.vm.logOut();
+    expect(wrapper.vm.logOutErrorMessage).toBe("MSG");
+  });
+})
