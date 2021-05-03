@@ -5,7 +5,7 @@ This is a modification of btn-outline since it is hard to read with the gradient
 @mixin button-white-bg-variant($color, $color-hover: color-yiq($color), $active-background: $color, $active-border: $color) {
   color: $color;
   border-color: $color;
-  background-color: $slightly-transparent-background; // <-- this is what was modified
+  background-color: $slightly-transparent-white; // <-- this is what was modified
 
   @include hover() {
     color: $color-hover;
@@ -21,7 +21,7 @@ This is a modification of btn-outline since it is hard to read with the gradient
   &.disabled,
   &:disabled {
     color: $color;
-    background-color: transparent;
+    background-color: $slightly-transparent-light-grey;
   }
 
   &:not(:disabled):not(.disabled):active,
@@ -44,7 +44,7 @@ This is a modification of btn-outline since it is hard to read with the gradient
 
 // @mixin button-white-bg-variant($color, $color-hover: #fff) {
 //   color: red; //$color;
-//   background-color: $slightly-transparent-background;
+//   background-color: $slightly-transparent-white;
 //   background-image: none;
 //   border-color: $color;
 
