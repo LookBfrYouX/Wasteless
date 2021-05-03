@@ -237,7 +237,7 @@ export default {
      * Navigates to search page with current query, or reloads page if on search page and query has not changed
      */
     search: async function () {
-      const searchName = "Search";
+      const searchName = "search";
       let newQuery = this.$route.params.query;
 
       if (this.$route.name == searchName && newQuery == this.query) {
