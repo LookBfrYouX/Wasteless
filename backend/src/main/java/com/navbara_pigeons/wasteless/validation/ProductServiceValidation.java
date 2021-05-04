@@ -12,13 +12,15 @@ public class ProductServiceValidation {
    * @return true if the product is valid
    */
   public static boolean requiredFieldsNotEmpty(Product product) {
-    for(String el: List.of(product.getName(), product.getManufacturer())) {
+    for(String el: new String[]{product.getName(), product.getManufacturer()}) {
 //      System.out.println(el);
 //      System.out.println(ValidationHelper.isNullOrTrimmedEmpty(el));
       if (ValidationHelper.isNullOrTrimmedEmpty(el)) {
         return false;
       }
     }
+
+//    if (product.getRecommendedRetailPrice().isNaN())
 
     return true;
   }
@@ -28,7 +30,7 @@ public class ProductServiceValidation {
    * @param price price to check
    * @return true if valid
    */
-  public static boolean priceIsValid(double price) {
-    return price > 0 && price < 10000;
+  public static boolean priceIsValid(Double price) {
+    return !price.isNaN() && price > 0 && price < 10000;
   }
 }

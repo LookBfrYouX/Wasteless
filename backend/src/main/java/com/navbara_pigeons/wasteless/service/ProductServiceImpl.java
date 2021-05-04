@@ -98,6 +98,12 @@ public class ProductServiceImpl implements ProductService {
       } catch (UserNotFoundException | BusinessNotFoundException exc) {
         throw new ProductRegistrationException("User or business not found");
       }
+
+      if (!ProductServiceValidation.priceIsValid(basicProduct.getRecommendedRetailPrice())) {
+        // Needs to be here as basicProduct stores Double; product stores double
+        throw new ProductRegistrationException("Invalid price; must be a number between 0 and 10,000 exclusive");
+      }
+
       Product product = new Product();
 
       product.setName(basicProduct.getName());
@@ -111,10 +117,6 @@ public class ProductServiceImpl implements ProductService {
 
       if (!ProductServiceValidation.requiredFieldsNotEmpty(product)) {
         throw new ProductRegistrationException("Required fields not given or were empty");
-      }
-
-      if (!ProductServiceValidation.priceIsValid(product.getRecommendedRetailPrice())) {
-          throw new ProductRegistrationException("Invalid price; must be less than 10,000");
       }
 
       product.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
