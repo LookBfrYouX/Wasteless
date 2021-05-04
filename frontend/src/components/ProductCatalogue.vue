@@ -82,7 +82,7 @@
       </div>
     </div>
     <error-modal
-        title="Error making search request"
+        title="Error viewing business catalog"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.query"

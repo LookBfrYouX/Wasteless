@@ -154,7 +154,9 @@ export const Api = {
    */
   createProduct: (id, props) => {
     return instance.post(`/businesses/${id}/products`, props).catch(error => {
-      throw ApiRequestError.createFromMessageMap(error, {});
+      throw ApiRequestError.createFromMessageMap(error, {
+        403: "You don't have permission to add products to this business"
+      });
     });
   },
 
@@ -204,7 +206,7 @@ export const Api = {
 
   /**
    * Logs the user out client-side and redirects to a logout page
-   * Call using `Api.handle401.call(this, err) from the vue component
+   * Call using `Api.handle401.call(this, err)` from the vue component
    * If `this.$stateStore` and `this.$router`  are not defined, likely because
    * `.call` has not been used, or because the jest test has not mocked these, an error message will
    * be printed and the method will return false.

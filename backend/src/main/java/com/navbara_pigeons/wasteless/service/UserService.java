@@ -31,4 +31,7 @@ public interface UserService {
 
   boolean isSelf(String userEmail);
 
+  String getLoggedInUserEmail();
+
+  User getLoggedInUser() throws UserNotFoundException;
 }

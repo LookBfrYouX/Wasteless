@@ -37,9 +37,9 @@
                 v-model="price"
                 v-bind:placeholder="symbol + ' (' + currency + ')'"
                 class="form-control"
-                step="0.10"
-                min="0"
-                max="9999.9"
+                step="0.01"
+                min="0.00"
+                max="9999.99"
                 name="price"
                 required
                 type="number"
@@ -152,18 +152,25 @@ export default {
      * @returns {Promise<void>} a promise
      */
     createProduct: async function () {
-      if (this.price < 0 || this.price == "") {
+      if (this.price <= 0 || this.price == "") {
         this.errorMessage = "Please enter a valid price";
       } else if (this.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
+      } else if (this.manufacturer.trim().length === 0) {
+        this.errorMessage = "Please enter a manufacturer for your product";
       } else {
-        await this.callApi({
-          name: this.name,
-          recommendedRetailPrice: this.price, // API stores the type as businessType not type
-          manufacturer: this.manufacturer,
-          description: this.description,
-        });
-        this.errorMessage = "";
+        try {
+          await this.callApi({
+            name: this.name,
+            recommendedRetailPrice: this.price,
+            manufacturer: this.manufacturer,
+            description: this.description,
+          });
+        } catch(err) {
+          if (await Api.handle401.call(this, err)) return;
+          this.errorMessage = err.userFacingErrorMessage;
+          return;
+        }
         await this.$router.push("productCatalogue");
       }
     },

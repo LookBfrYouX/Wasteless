@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 
+import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.*;
@@ -10,9 +11,9 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<BasicProductDto> getProducts(String businessId) throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException;
+    List<BasicProductDto> getProducts(long businessId) throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException;
 
-    void addProduct(long id, JSONObject product) throws ProductRegistrationException,
+    void addProduct(long id, BasicProductCreationDto product) throws ProductRegistrationException,
         ProductForbiddenException;
 
     Product getProduct(long productId) throws ProductNotFoundException;

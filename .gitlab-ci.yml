@@ -176,7 +176,9 @@ restore-user-content-staging:
   script:
     - mkdir -p /home/gitlab-runner/staging-frontend/dist
     - rm -rf /home/gitlab-runner/staging-frontend/dist/user-content/
-    # if the directory already exists, the mv moves the folder inside rather than moving and renaming the folder
+    # if the directory already exists, the mv moves the folder inside rather than moving and renaming the folder. Hence, must ensure it does not exist
+    - mkdir -p /home/gitlab-runner/staging-user-content/images/products
+    # backend relies on /images/product folder existing
     - mv /home/gitlab-runner/staging-user-content/ /home/gitlab-runner/staging-frontend/dist/user-content/
   only:
     - dev
