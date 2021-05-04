@@ -5,7 +5,7 @@
       <button class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3" type="button"
               v-if="showBackButton" v-on:click="$router.go(-1)">
         <span class="material-icons mr-1">arrow_back</span>
-        Profile
+        Go back
       </button>
       <ul class="bprofile-info list-unstyled">
         <li class="row">
@@ -27,7 +27,7 @@
         </li>
       </ul>
       <button
-          v-if="this.$stateStore.getters.isAdmin() || (this.$stateStore.getters.getActingAs() !== null && this.$stateStore.getters.getActingAs().id === businessId)"
+          v-if="(this.$stateStore.getters.getActingAs() !== null && this.$stateStore.getters.getActingAs().id === businessId)"
           class="btn btn-white-bg-primary mx-1 d-flex"
           type="button"
           v-on:click="createProduct()"

@@ -138,9 +138,9 @@ export default {
       const business = this.$stateStore.getters.getActingAs();
       return business? business.address.country: null;
     },
-    businesssId() {
+    businessId() {
       const business = this.$stateStore.getters.getActingAs();
-      return business? business.id: null;
+      return business != null? business.id: null;
     }
   },
 
@@ -163,7 +163,7 @@ export default {
      * Wrapper which simply calls the sign up method of the api
      */
     callApi: function (data) {
-      if (this.businesssId == null) throw new ApiRequestError("Must be logged in as a business before making the request");
+      if (this.businessId == null) throw new ApiRequestError("Must be logged in as a business before making the request");
       return Api.createProduct(this.businessId, data);
     },
 
@@ -173,8 +173,15 @@ export default {
      * @returns {Promise<void>} a promise
      */
     createProduct: async function () {
-      if (this.price <= 0 || this.price == "") {
+      let price;
+      try {
+        price = parseFloat(this.price);
+      } catch(err) {
         this.errorMessage = "Please enter a valid price";
+      }
+
+      if (price <= 0 || price >= this.$constants.PRODUCTS.MAX_PRICE) {
+        this.errorMessage = "Please enter a valid price between 0 and `${this.$constants.PRODUCTS.MAX_PRICE}";
       } else if (this.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
       } else if (this.manufacturer.trim().length === 0) {
