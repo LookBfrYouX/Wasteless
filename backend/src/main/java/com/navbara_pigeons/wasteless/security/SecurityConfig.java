@@ -76,8 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.GET, "/users/{id}/images").permitAll()
         .anyRequest().authenticated()
         .and()
-        // .httpBasic() // comment out to prevent login prompts appearing on API calls when logged out
-        // .and()
+         .httpBasic() // comment out to prevent login prompts appearing on API calls when logged out
+         .and()
         .cors()
         .and()
         .logout(logout -> logout // This prevents redirects on logout
