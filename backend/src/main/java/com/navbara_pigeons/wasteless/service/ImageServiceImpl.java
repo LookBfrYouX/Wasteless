@@ -228,8 +228,8 @@ public class ImageServiceImpl implements ImageService {
       imageToCrop = imageToCrop.getSubimage(
           xc - (squareSize / 2), // x coordinate of the upper-left corner
           yc - (squareSize / 2), // y coordinate of the upper-left corner
-          squareSize,            // widht
-          squareSize             // height
+          squareSize,               // width
+          squareSize                // height
       );
     }
     ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -6,9 +6,8 @@
         <!--Upload image button overlay-->
         <button
             v-if="isLoggedIn && authUser.id === userInfo.id"
-            class="image-upload-button btn btn-lg btn-primary"
+            class="image-upload-button btn btn-lg btn-primary disabled"
             type="button"
-            @click="onPickFile"
         >
           <span class="material-icons">file_upload</span>
         </button>
@@ -19,7 +18,8 @@
             type="file"
             @change="onFilePicked"/>
         <!--User profile image-->
-        <img alt="Users profile image" class="my-3 rounded-circle border border-light" src="./../../assets/images/default-user-thumbnail.svg">
+        <img alt="Users profile image" class="my-3 rounded-circle"
+             src="./../../assets/images/default-user-thumbnail.svg">
       </div>
       <div class="col-md-7 m-2 card">
         <div class="m-3">
@@ -93,21 +93,21 @@
     <div class="row">
       <div class="col-md-4 order-2 order-md-1 m-2 card">
         <h5 class="text-muted mt-3">Businesses</h5>
-        <div v-if="Array.isArray(userInfo.businessesAdministered) && userInfo.businessesAdministered.length !== 0">
-          <h1 class="title">Businesses</h1>
+        <div
+            v-if="Array.isArray(userInfo.businessesAdministered) && userInfo.businessesAdministered.length !== 0">
           <ul class="profile-business-info list-unstyled">
             <li
-              v-for="(business, index) in userInfo.businessesAdministered"
-              v-bind:key="index"
-              class="list-group-item card text-wrap"
+                v-for="(business, index) in userInfo.businessesAdministered"
+                v-bind:key="index"
+                class="list-group-item card text-wrap my-3"
             >
               <h5 class="card-title">{{ business.name }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">
                 {{ business.businessType }}
               </h6>
               <p class="card-text">{{ business.description }}</p>
-              <a class="card-link" v-on:click="viewBusiness(business.id)"
-                >More info</a
+              <a class="card-link" href="javascript:;" v-on:click="viewBusiness(business.id)"
+              >More info</a
               >
             </li>
           </ul>
@@ -157,7 +157,7 @@
             <tr v-if="userInfo.homeAddress" scope="row">
               <th style="white-space: nowrap;">Address:</th>
               <td class="col-md value">
-                <p>{{$helper.addressToString(userInfo.homeAddress)}}</p>
+                <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
               </td>
             </tr>
             </tbody>
@@ -183,7 +183,7 @@
 import ErrorModal from './Errors/ErrorModal.vue';
 import {ApiRequestError} from "./../ApiRequestError";
 
-const { Api } = require("./../Api.js");
+const {Api} = require("./../Api.js");
 
 export default {
   name: 'profile',
@@ -220,8 +220,9 @@ export default {
 
       const promise = Api.uploadProfileImage(files[0], this.userId);
       const prevImage = this.authUser.imageURL;
-      this.authUser.imageURL = "default-user-thumbnail.svg";
-      this.profileURL = "default-user-thumbnail.svg";
+      this.authUser.imageURL = process.env.VUE_APP_SERVER_ADD
+          + `/user-content/images/user/default-user-thumbnail.svg`;
+      this.profileURL = this.authUser.imageURL;
 
       promise.then(result => {
         if (result.status === 201) {
@@ -317,7 +318,6 @@ export default {
           this.$stateStore.actions.setAuthUser(this.userInfo);
         }
 
-        this.userInfo.imageURL = process.env.VUE_APP_SERVER_ADD + `/users/${this.userId}/images/`;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -423,7 +423,10 @@ export default {
       this.apiPipeline();
     },
     userInfo() {
-      if (this.userInfo !== null) document.title = `${this.userInfo.firstName} ${this.userInfo.firstName} | Profile`;
+      if (this.userInfo
+          !== null) {
+        document.title = `${this.userInfo.firstName} ${this.userInfo.firstName} | Profile`;
+      }
       // If switch user profile and request fails will be stuck with old title
     }
   }

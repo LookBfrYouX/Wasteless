@@ -2,8 +2,19 @@
   <div class="container mt-4">
     <div class="row">
       <div class="col-12">
-        <h1>Images of {{name}}</h1>
+        <h1>Images of {{ name }}</h1>
       </div>
+    </div>
+    <div class="row">
+      <div class="ml-3 d-flex justify-content-end">
+        <button class="btn btn-success"
+                v-on:click="$router.go(-1)">
+          Go Back
+        </button>
+      </div>
+    </div>
+    <div class="row">
+
       <div
           v-for="(img, i) in images"
           v-bind:key="img.id"
@@ -11,8 +22,8 @@
       >
         <div class="d-flex justify-content-center">
           <img
-            v-bind:src="img.filename"
-            class="img-fluid"
+              v-bind:src="img.filename"
+              class="img-fluid"
           />
           <!-- TODO change to thumbnailFilename -->
         </div>
@@ -47,12 +58,6 @@
             @change="onFilePicked"/>
 
       </div>
-    </div>
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-success"
-              v-on:click="$router.go(-1)">
-        Go Back
-      </button>
     </div>
 
     <error-modal
@@ -94,6 +99,7 @@
 <script>
 import ErrorModal from './Errors/ErrorModal.vue';
 import {ApiRequestError} from "./../ApiRequestError";
+
 const {Api} = require("./../Api");
 
 export default {

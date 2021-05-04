@@ -112,7 +112,7 @@ export default {
      */
     apiPipeline: async function() {
       try{
-        return this.parseApiResponse(this.callApi());
+        return await this.parseApiResponse(this.callApi());
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;

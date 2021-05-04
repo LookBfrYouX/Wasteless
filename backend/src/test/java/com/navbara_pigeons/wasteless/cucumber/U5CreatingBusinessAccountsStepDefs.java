@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.navbara_pigeons.wasteless.dto.CreateUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
@@ -34,7 +36,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider{
       newUser.setLastName(columns.get("lastName"));
       newUser.setNickname(columns.get("nickName"));
       newUser.setPassword(columns.get("password"));
-      Assertions.assertDoesNotThrow(() -> userController.registerUser(newUser));
+      Assertions.assertDoesNotThrow(() -> userController.registerUser(new CreateUserDto(newUser)));
     }
   }
 

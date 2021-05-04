@@ -1,5 +1,7 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
+import com.navbara_pigeons.wasteless.dto.CreateUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import io.cucumber.datatable.DataTable;
@@ -43,7 +45,7 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
             newUser.setNickname(columns.get("nickName"));
             newUser.setPassword(columns.get("password"));
             System.out.println("CREATED NEW USER: " + newUser.toString());
-            Assertions.assertDoesNotThrow(() -> userController.registerUser(newUser));
+            Assertions.assertDoesNotThrow(() -> userController.registerUser(new CreateUserDto(newUser)));
         }
     }
 
