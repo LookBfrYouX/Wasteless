@@ -63,7 +63,7 @@ public class Business {
       joinColumns = @JoinColumn(name = "BUSINESS_ID"),
       inverseJoinColumns = @JoinColumn(name = "USER_ID")
   )
-  private List<User> administrators;
+  private List<User> administrators = new ArrayList<>();
 
   @OneToMany(
           fetch = FetchType.LAZY,
@@ -79,7 +79,7 @@ public class Business {
           joinColumns = @JoinColumn(name = "BUSINESS_ID"),
           inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
   )
-  private List<Product> productsCatalogue;
+  private List<Product> productsCatalogue = new ArrayList<>();
 
   /**
    * This is a helper method for adding a user to the business.

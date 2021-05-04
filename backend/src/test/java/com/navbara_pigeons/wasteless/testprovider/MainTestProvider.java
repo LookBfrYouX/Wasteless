@@ -33,6 +33,11 @@ import java.nio.file.Path;
 @AutoConfigureMockMvc
 public class MainTestProvider {
 
+    protected final String EMAIL_1 = "example@example.com";
+    protected final String EMAIL_2 = "example2@example.com";
+    protected final String BUSINESS_1_NAME = "BUSINESS";
+    protected final String PASSWORD_1 = "ABCabc123!@#";
+
     @Autowired
     protected MockMvc mockMvc;
 
@@ -97,14 +102,6 @@ public class MainTestProvider {
      */
     protected User makeUser(String email, String password, Boolean isAdmin) {
         User testUser = new User();
-        Address address = new Address()
-                .setStreetNumber("3/24")
-                .setStreetName("Ilam Road")
-                .setPostcode("90210")
-                .setCity("Christchurch")
-                .setRegion("Canterbury")
-                .setCountry("New Zealand");
-
         // Create test user
         testUser.setId(0)
                 .setFirstName("Tony")
@@ -114,7 +111,7 @@ public class MainTestProvider {
                 .setEmail(email)
                 .setPhoneNumber("+6412345678")
                 .setDateOfBirth("2000-03-10")
-                .setHomeAddress(address)
+                .setHomeAddress(makeAddress())
                 .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
                 .setRole(isAdmin ? "ROLE_ADMIN" : "ROLE_USER")
                 .setPassword(encodePass(password));

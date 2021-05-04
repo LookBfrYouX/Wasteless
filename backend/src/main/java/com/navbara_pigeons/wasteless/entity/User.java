@@ -96,7 +96,7 @@ public class User {
    */
   public void addBusiness(Business business) {
     if (this.businesses == null) {
-      this.businesses = new ArrayList<Business>();
+      this.businesses = new ArrayList<>();
     }
     this.businesses.add(business);
   }
