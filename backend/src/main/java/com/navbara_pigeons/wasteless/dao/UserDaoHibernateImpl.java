@@ -87,7 +87,7 @@ public class UserDaoHibernateImpl implements UserDao {
     try {
       user = query.getResultList();
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new RuntimeException("Unable to retrieve data from database");
     }
     if (user.size() == 0) {
       throw new UserNotFoundException("No user found with email: " + email);
