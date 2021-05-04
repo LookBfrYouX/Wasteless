@@ -44,7 +44,18 @@
                   class="list-group-item card">
                 <div class="row">
                   <div class="col-3">
-                    <img v-bind:src="getThumbnailImage(product.id)" class="image-fluid w-100 rounded-circle" alt="Product Image">
+                    <img
+                      v-if="getThumbnailImage(product.id) != null"
+                      v-bind:src="getThumbnailImage(product.id)"
+                      class="image-fluid w-100 rounded-circle"
+                      alt="Product Image"
+                    >
+                    <img
+                      v-else
+                      src="./../../assets/images/default-product-thumbnail.svg"
+                      class="image-fluid w-100 rounded-circle"
+                      alt="Product Image"
+                    >
                   </div>
                   <div class="col-9">
                     <div class="d-flex flex-wrap justify-content-between">
@@ -196,15 +207,15 @@ const ProductCatalogue = {
 
     /**
      * Retreive product primary image URL to show as a thumbnail
+     * If no thumbnail image returns null
      */
     getThumbnailImage(productId) {
       const products = this.results;
       const product = products.find(({id}) => id === productId);
       if (product && product.images && product.images[0]) {
         return product.images[0].thumbnailFilename;
-      } else {
-        return this.$constants.PRODUCTS.DEFAULT_THUMBNAIL_IMAGE;
       }
+      return null;
     },
 
     /**
