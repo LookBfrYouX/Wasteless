@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Products DTO which returns all product information except `currency` and `primaryProductImage` (returned as the first element in the image list)
+ * Product DTO which returns all product information except `currency` and `primaryProductImage` (returned as the first element in the image list)
  */
 @Data
 public class BasicProductDto {

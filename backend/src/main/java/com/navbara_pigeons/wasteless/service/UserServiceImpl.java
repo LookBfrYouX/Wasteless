@@ -189,6 +189,7 @@ public class UserServiceImpl implements UserService {
     return userDao.getUserByEmail(email);
   }
 
+
   /**
    * Calls the userDao to search for users using the given username
    *
@@ -257,11 +258,13 @@ public class UserServiceImpl implements UserService {
     }
   }
 
+
   /**
    * This helper method tests whether the current user has the ADMIN role
    *
    * @return true if user is admin, false if not admin or not authenticated
    */
+  @Override
   public boolean isAdmin() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -277,11 +280,12 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * Checks if given email is logged in users email
+   * Checks if user with the given email is the user making this request
    *
    * @param userEmail User to check against
    * @return true if logged in user is the referenced user
    */
+  @Override
   public boolean isSelf(String userEmail) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (userEmail.equals(auth.getName())) {
@@ -289,4 +293,25 @@ public class UserServiceImpl implements UserService {
     }
     return false;
   }
+
+  /**
+   * Gets currently logged in user email
+   * @return user email, or null if not authenticated
+   */
+  @Override
+  public String getLoggedInUserEmail() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return ((UserDetails) authentication.getPrincipal()).getUsername();
+  }
+
+  /**
+   * Gets currently logged in user
+   * @return logged in user
+   * @throws UserNotFoundException
+   */
+  @Override
+  public User getLoggedInUser() throws UserNotFoundException {
+    return userDao.getUserByEmail(getLoggedInUserEmail());
+  }
+
 }

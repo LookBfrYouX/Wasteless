@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.service.ProductService;
@@ -40,15 +41,18 @@ public class ProductController {
      * @return response A JSONObject containing the product information of all products listed for the business.
      */
     @GetMapping("/businesses/{id}/products")
-    public ResponseEntity<Object> showBusinessCatalogue(@PathVariable String id) {
+    public ResponseEntity<Object> showBusinessCatalogue(@PathVariable long id) {
         try {
             log.info("RETRIEVED PRODUCTS FOR BUSINESS: " + id);
             return new ResponseEntity<>(this.productService.getProducts(id), HttpStatus.valueOf(200));
         } catch (InsufficientPrivilegesException exc) {
+            log.info("INSUFFICIENT PRIVILEGES GETTING BUSINESS WITH ID " + id + " " + exc.getMessage());
             throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient Privileges");
         } catch (BusinessNotFoundException | UserNotFoundException exc) {
+            log.info("USER OR BUSINESS NOT FOUND: " + id + " " + exc.getMessage());
             throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
         } catch (Exception exc) {
+            log.info("EXCEPTION GETTING PRODUCT CATALOG + " + exc.getMessage());
             throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
         }
     }
@@ -59,15 +63,19 @@ public class ProductController {
      * @param product The product to be added
      */
     @PostMapping("/businesses/{id}/products")
-    public ResponseEntity<String> addToCatalogue(@PathVariable String id, @RequestBody JSONObject product) {
+    public ResponseEntity<String> addToCatalogue(@PathVariable long id, @RequestBody BasicProductCreationDto product) {
         try {
-            productService.addProduct(Long.parseLong(id), product);
+            productService.addProduct(id, product);
+            log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());
             return new ResponseEntity<>("Product created successfully", HttpStatus.valueOf(201));
         } catch (ProductRegistrationException exc) {
+            log.info("ADDING NEW PRODUCT, BUSINESS ID " + id + " BAD INFO " + exc.getMessage());
             throw new ResponseStatusException(HttpStatus.valueOf(400), "There was some error with the data supplied by the user");
         } catch (ProductForbiddenException exc) {
+            log.info("ADDING NEW PRODUCT, BUSINESS ID " + id + " FORBIDDEN " + exc.getMessage());
             throw new ResponseStatusException(HttpStatus.valueOf(403), "Forbidden");
         } catch (Exception exc) {
+            log.info("ADDING NEW PRODUCT, BUSINESS ID " + id + " ERROR " + exc.getMessage());
             throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
         }
     }

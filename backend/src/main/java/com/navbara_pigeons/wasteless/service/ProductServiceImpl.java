@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
@@ -62,9 +63,9 @@ public class ProductServiceImpl implements ProductService {
      * @throws BusinessNotFoundException If the business is not listed in the database.
      */
     @Override
-    public List<BasicProductDto> getProducts(String businessId) throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
-        if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(Long.parseLong(businessId))) {
-            Business business = businessDao.getBusinessById(Long.parseLong(businessId));
+    public List<BasicProductDto> getProducts(long businessId) throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
+        if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
+            Business business = businessDao.getBusinessById(businessId);
             ArrayList<BasicProductDto> products = new ArrayList<>();
             for (Product product : business.getProductsCatalogue()) {
                 products.add(new BasicProductDto(product));
@@ -79,49 +80,41 @@ public class ProductServiceImpl implements ProductService {
    * This method adds a new product to a specific business catalogue
    *
    * @param businessId The ID of the business.
-   * @param jsonProduct JSONObject of the product to be added.
+   * @param basicProduct basic product details for the product to be added.
    * @throws ProductRegistrationException If data supplied is not expected (bad request)
    * @throws ProductForbiddenException If user if not an admin of the business (forbidden)
    */
     @Override
     @Transactional
-    public void addProduct(long businessId, JSONObject jsonProduct) throws ProductRegistrationException,
+    public void addProduct(long businessId, BasicProductCreationDto basicProduct) throws ProductRegistrationException,
         ProductForbiddenException {
       // Throw 400 if bad request, 403 if user is not business admin
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
-      User user;
       Business business;
       try {
-        user = userDao.getUserByEmail(username);
         business = businessDao.getBusinessById(businessId);
-      } catch (UserNotFoundException | BusinessNotFoundException exc) {
-        throw new ProductRegistrationException();
-      }
-        boolean businessAdmin = false;
-      if (business.getPrimaryAdministratorId() == user.getId()) {
-        businessAdmin = true;
-      }
-      for (User admin : business.getAdministrators()) {
-        if (admin.getId() == user.getId()) {
-          businessAdmin = true;
+        if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
+          throw new ProductForbiddenException("User does not have permission to add a product to the business");
         }
+      } catch (UserNotFoundException | BusinessNotFoundException exc) {
+        throw new ProductRegistrationException("User or business not found");
       }
-      if (!businessAdmin) {
-        throw new ProductForbiddenException();
-      }
-      // Convert jsonProduct to Product, cant be done in controller as we need to accept id in POST
       Product product = new Product();
-      product.setName((jsonProduct.get("name") != null ? jsonProduct.get("name") : "").toString());
-      product.setDescription((jsonProduct.get("description") != null ? jsonProduct.get("description") : "").toString());
-      product.setRecommendedRetailPrice(Double.parseDouble(jsonProduct.getOrDefault("recommendedRetailPrice", 0.0).toString()));
+
+      product.setName(basicProduct.getName());
+      product.setDescription(basicProduct.getDescription());
+      product.setRecommendedRetailPrice(basicProduct.getRecommendedRetailPrice());
+      product.setManufacturer(basicProduct.getManufacturer());
 
       Currency currency = countryDataFetcherService.getCurrencyForCountry(business.getAddress().getCountry());
       if (currency == null) throw new ProductRegistrationException("Unknown country; cannot set currency");
       product.setCurrency(currency.getCode());
 
       if (!ProductServiceValidation.requiredFieldsNotEmpty(product)) {
-        throw new ProductRegistrationException();
+        throw new ProductRegistrationException("Required fields not given or were empty");
+      }
+
+      if (!ProductServiceValidation.priceIsValid(product.getRecommendedRetailPrice())) {
+          throw new ProductRegistrationException("Invalid price; must be less than 10,000");
       }
 
       product.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
