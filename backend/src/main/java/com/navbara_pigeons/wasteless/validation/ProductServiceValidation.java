@@ -1,9 +1,7 @@
 package com.navbara_pigeons.wasteless.validation;
 
-import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Product;
 
-import java.util.List;
 
 public class ProductServiceValidation {
   /**

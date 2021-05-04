@@ -1,13 +1,8 @@
 package com.navbara_pigeons.wasteless.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import lombok.Data;
 
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * User DTO which returns all user information except password

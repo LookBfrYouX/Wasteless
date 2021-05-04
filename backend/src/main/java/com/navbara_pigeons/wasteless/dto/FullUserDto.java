@@ -25,7 +25,6 @@ public class FullUserDto {
     private String dateOfBirth;
     private String phoneNumber;
     private FullAddressDto homeAddress;
-//    private String imageName;
     private ZonedDateTime created;
     private String role;
     @JsonProperty("businessesAdministered")
@@ -41,7 +40,6 @@ public class FullUserDto {
         this.email = user.getEmail();
         this.dateOfBirth = user.getDateOfBirth();
         this.phoneNumber = user.getPhoneNumber();
-//        this.imageName = user.getImageName();
         this.created = user.getCreated();
         this.role = user.getRole();
         this.homeAddress = new FullAddressDto(user.getHomeAddress());
