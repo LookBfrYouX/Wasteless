@@ -16,6 +16,10 @@ import org.hibernate.Session;
 
 public class HibernateCriteriaQueryBuilder {
 
+  private HibernateCriteriaQueryBuilder() {
+
+  }
+
   public static CriteriaQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery)
       throws InvalidAttributeValueException {
     // Setup
