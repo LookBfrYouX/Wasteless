@@ -104,7 +104,7 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/users/{id}")
-  public ResponseEntity<Object> getUserById(@PathVariable long id) {
+  public ResponseEntity<Object> getUserById(@PathVariable String id) {
     try {
       log.info("GETTING USER BY ID: " + id);
       return new ResponseEntity<>(this.userService.getUserById(id), HttpStatus.valueOf(200));

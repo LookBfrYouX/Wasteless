@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -31,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
 
   private MvcResult mvcResult;
+  private User user;
 
   @Given("a user with name {string} exists and already administers a business called {string} that sells a product {string}")
   public void aUserWithNameIsLoggedInAndAdministersABusinessCalled(String userName, String businessName, String productName) throws Exception {
@@ -52,17 +54,16 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
     JSONObject credentials = new JSONObject();
     credentials.put("email", userEmail);
     credentials.put("password", password);
-    System.out.println(credentials.toString());
-
-    mockMvc.perform(
+    MvcResult mvcResult = (MvcResult) mockMvc.perform(
             post("/login")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(credentials.toString())
                     .accept(MediaType.ALL))
             .andExpect(status().is(200));
-
-
+    String userId = mvcResult.getResponse().getContentAsString().replaceAll("[^0-9]", "");
+    this.user = userController.getUserById(userId);
   };
+
 
   @Then("The product {string} is displayed")
   public void theProductIsDisplayed(String arg0) {
