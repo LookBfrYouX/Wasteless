@@ -14,16 +14,16 @@
       </div>
     </div>
     <div class="row">
-
       <div
           v-for="(img, i) in images"
           v-bind:key="img.id"
-          class="col-12 col-sm-6 col-md-4 col-lg-3 p-2"
+          class="col-12 col-sm-6 col-md-4 col-lg-3 p-2 d-flex flex-column justify-content-end"
       >
+      <!-- align buttons on the bottom -->
         <div class="d-flex justify-content-center">
           <img
               v-bind:src="img.filename"
-              class="img-fluid"
+              class="img-fluid w-100"
           />
           <!-- TODO change to thumbnailFilename -->
         </div>

@@ -34,7 +34,9 @@ export const helper = {
    * @returns date string in `dd MMM YYYY` format
    */
   isoToDateString(dateString) {
-    const date = new Date(dateString);
+    const timestamp = Date.parse(dateString);
+    if (isNaN(timestamp)) return null;
+    const date = new Date(timestamp);
     const day = date.getDate() < 10? `0${date.getDate()}`: date.getDate().toString();
     return `${day} ${constants.MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
   },

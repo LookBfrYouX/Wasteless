@@ -118,6 +118,12 @@ export default {
       addressAsString: "",
     };
   },
+  computed: {
+    authUser() {
+      return this.$stateStore.getters.getAuthUser();
+    }
+  },
+
   methods: {
     addressUpdate: function (newAddress) {
       const { toString, ...addressObject } = newAddress;
@@ -138,7 +144,12 @@ export default {
      * Returns a promise, not a response
      */
     register: async function () {
-      const user = this.$stateStore.getters.getAuthUser();
+      const user = this.authUser;
+      if (user == null) {
+        this.errorMessage = "You must be logged in to create a business";
+        return;
+      }
+
       let business = {
         primaryAdministratorId: user.id,
         name: this.name,
@@ -154,7 +165,14 @@ export default {
         businessType: this.type, // API stores the type as businessType not type
       }
 
-      var response = await this.callApi(business);
+      var response;
+      try {
+        response = await this.callApi(business);
+      } catch(err) {
+        if (await Api.handle401.call(this, err)) return;
+        this.errorMessage = err.userFacingErrorMessage;
+        return;
+      }
 
       // When setting acting as, business ID is stored and it gets the business from
       // the authUser object. Hence the new business must be inserted into the authUser.

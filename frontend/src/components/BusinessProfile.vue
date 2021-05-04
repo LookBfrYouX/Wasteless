@@ -5,7 +5,7 @@
       <button class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3" type="button"
               v-if="showBackButton" v-on:click="$router.go(-1)">
         <span class="material-icons mr-1">arrow_back</span>
-        Back to Profile
+        Profile
       </button>
       <ul class="bprofile-info list-unstyled">
         <li class="row">

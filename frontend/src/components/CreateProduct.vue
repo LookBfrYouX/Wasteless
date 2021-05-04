@@ -86,24 +86,31 @@
           </div>
         </div>
 
-        <div v-if="errorMessage.length > 0" class="row mt-2">
+        <div v-if="errorMessage != null" class="row mt-2">
           <div class="col">
             <p class="alert alert-warning">{{ errorMessage }}</p>
           </div>
         </div>
       </form>
     </div>
+    <not-acting-as-business/>
   </div>
 </template>
 
 <script>
+import { ApiRequestError } from '../ApiRequestError';
 const { Api } = require("./../Api.js");
 const countryData = require("./../assets/countryData.json");
+import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 
 export default {
+  components: {
+    NotActingAsBusiness
+  },
+
   data() {
     return {
-      errorMessage: "",
+      errorMessage: null,
 
       name: "",
       description: "",
@@ -123,8 +130,22 @@ export default {
     }
   },
 
+  computed: {
+    /**
+     * Name of country. If acting as null, returns null
+     */
+    businessCountry() {
+      const business = this.$stateStore.getters.getActingAs();
+      return business? business.address.country: null;
+    },
+    businesssId() {
+      const business = this.$stateStore.getters.getActingAs();
+      return business? business.id: null;
+    }
+  },
+
   created() {
-    this.getCurrencies(this.$stateStore.getters.getActingAs().address.country);
+    this.getCurrencies(this.businessCountry);
   },
 
   methods: {
@@ -142,8 +163,8 @@ export default {
      * Wrapper which simply calls the sign up method of the api
      */
     callApi: function (data) {
-      const businessId = this.$stateStore.getters.getActingAs().id;
-      return Api.createProduct(businessId, data);
+      if (this.businesssId == null) throw new ApiRequestError("Must be logged in as a business before making the request");
+      return Api.createProduct(this.businessId, data);
     },
 
     /**

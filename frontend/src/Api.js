@@ -257,7 +257,8 @@ export const Api = {
     }).catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
         403: "You don't have permission to upload the images.",
-        406: "Could not upload the image."
+        406: "Could not upload the image.",
+        413: "The image you uploaded was too large. Please upload a smaller image"
       });
     });
   },
