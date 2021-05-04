@@ -25,10 +25,14 @@ public class CountryDataFetcherService {
     private HashMap<String, Currency> currencyHashMap;
 
     public CountryDataFetcherService() throws URISyntaxException, IOException {
-        this.reloadCountryDataFromDisk(
-            Path.of(ClassLoader.getSystemClassLoader().
-                    getResource(resourcePath).toURI())
-        );
+        var a = ClassLoader.getSystemClassLoader().getResource(resourcePath);
+        System.out.println(a);
+        var b  = a.toURI();
+        System.out.println(b);
+        var c = Path.of(b);
+        System.out.println(c);
+        System.out.println(c.toFile().exists());
+        this.reloadCountryDataFromDisk(c);
     }
 
     /**
@@ -39,6 +43,7 @@ public class CountryDataFetcherService {
     protected void reloadCountryDataFromDisk(Path path) throws IOException
     {
         ObjectMapper mapper = new ObjectMapper();
+        System.out.println(mapper);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         // JSON has lots of unnecessary properties that we can ignore
         Country[] countries = mapper.readValue(path.toFile(), Country[].class);
