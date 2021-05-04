@@ -9,7 +9,7 @@ Feature: U3 Searching for Users using Name
     |michael@dm.com |Michael |Scott    |Bossman
 
   Scenario: AC1 successfully search for user based on name or nickname
-    Given A user "Jim" is logged in.
+    Given A user "bob@fri.com" is logged in.
 
       When A search is performed for another user named "Dwight"
       Then A user record for user "Dwight" is returned.
