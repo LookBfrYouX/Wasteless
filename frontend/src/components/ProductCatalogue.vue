@@ -10,6 +10,7 @@
           <span>Create Product</span>
         </button>
       </div>
+      <div v-if="isVisible" class="overlay w-100 d-md-none" v-on:click="toggleSidebar()"></div>
       <div v-if="results.length" class="p-relative w-100 d-flex align-items-stretch">
         <div v-if="isVisible" class="sort-results bg-light">
           <div class="p-3">
@@ -289,7 +290,7 @@ button.page-link {
   position: fixed;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 910;
 }
 
 .sort-results {
