@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.navbara_pigeons.wasteless.dto.CreateUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
 import io.cucumber.datatable.DataTable;
@@ -33,7 +35,7 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
       newUser.setLastName(columns.get("lastName"));
       newUser.setNickname(columns.get("nickname"));
       System.out.println("CREATED NEW USER: " + newUser.toString());
-      Assertions.assertDoesNotThrow(() -> userController.registerUser(newUser));
+      Assertions.assertDoesNotThrow(() -> userController.registerUser(new CreateUserDto(newUser)));
     }
   }
 

@@ -1,6 +1,10 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.ImageService;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +14,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -64,6 +74,9 @@ public class ImageController {
       log.error("INSUFFICIENT PRIVILEGES: " + productId);
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, exc.getMessage());
     } catch (Exception exc) {
+      for(StackTraceElement trc: exc.getStackTrace()) {
+        log.error(trc.toString());
+      }
       log.error("FAILED WHEN UPLOADING PRODUCT IMAGE" + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
     }

@@ -28,6 +28,7 @@ const mockProduct = () => {
   });
 }
 
+Api._setMethod("getProducts", () => Promise.resolve(mockProduct()));
 window.alert = jest.fn();
 
 afterEach(() => wrapper.destroy());
