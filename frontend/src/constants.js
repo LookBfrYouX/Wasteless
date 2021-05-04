@@ -78,5 +78,9 @@ export const constants = {
   API: {
     TIMEOUT_SHORT: 2500,
     TIMEOUT_LONG: 10000
+  },
+
+  PRODUCTS: {
+    DEFAULT_THUMBNAIL_IMAGE: "/default-product-thumbnail.svg"
   }
 };
