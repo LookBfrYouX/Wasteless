@@ -86,13 +86,36 @@ export default {
     this.apiPipeline();
   },
 
+  computed: {
+    /**
+     * Get a business object of current acting as entity.
+     */
+    actingAs() {
+      return this.$stateStore.getters.getActingAs();
+    },
+
+    businessId() {
+      if (this.actingAs === null) {
+        return null;
+      }
+      return this.actingAs.id;
+    }
+  },
+
   methods: {
 
     /**
      * Calls the API and updates the component's data with the result
      */
-    apiPipeline: function() {
-      return this.parseApiResponse(this.callApi());
+    apiPipeline: async function() {
+      try{
+        return this.parseApiResponse(this.callApi());
+      } catch (err) {
+        if (await Api.handle.call(this, err)) {
+          return;
+        }
+        this.apiErrorMessage = err.userFacingErrorMessage;
+      }
     },
 
     /**
@@ -100,27 +123,20 @@ export default {
      * Returns the promise, not the response
      */
     callApi: async function() {
-      console.log(this.$stateStore.getters.getActingAs().id);
-      const response = await Api.getProducts(this.$stateStore.getters.getActingAs().id);
-      return response;
+      if (this.businessId === null) {
+        throw new ApiRequestError("You must be acting as a business to view the product.")
+      }
+      return await Api.getProducts(this.businessId);
     },
 
     /**
      * Parses the API response given a promise to the request.
      */
     parseApiResponse: async function (apiCall) {
-      let products;
-      try {
-        products = (await apiCall).data;
-      } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
-        this.apiErrorMessage = err.userFacingErrorMessage;
-      }
+      const products = (await apiCall).data;
       const product = products.find(({id}) => id === this.productId);
       if (product === undefined) {
-        return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
+        throw new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
       }
       this.name = product.name;
       this.description = product.description;
@@ -142,6 +158,12 @@ export default {
       });
     }
   },
+
+  watch: {
+    businessId() {
+      this.$helper.goToProfile.bind(this)();
+    }
+  }
 }
 
 </script>
