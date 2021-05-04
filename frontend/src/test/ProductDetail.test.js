@@ -5,7 +5,7 @@ import {ApiRequestError} from "../ApiRequestError";
 
 
 jest.mock("./../Api.js");
-// const { Api } = require("./../Api.js");
+const { Api } = require("./../Api.js");
 
 let wrapper;
 
@@ -28,6 +28,7 @@ const mockProduct = () => {
   });
 }
 
+Api._setMethod("getProducts", () => Promise.resolve(mockProduct()));
 window.alert = jest.fn();
 
 afterEach(() => wrapper.destroy());
