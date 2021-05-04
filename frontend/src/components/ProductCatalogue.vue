@@ -54,11 +54,15 @@
                     </div>
                   </div>
                 </div>
-                <div class="text-muted">Manufacturer: {{product.manufacturer }}</div>
-                <div class="text-muted">Description: {{ product.description }}</div>
-                <div class="text-muted">RRP: {{product.recommendedRetailPrice }}</div>
+                  <div class="text-muted">Manufacturer: {{ product.manufacturer }}</div>
+                  <div class="text-muted">Description: {{ product.description }}</div>
+                  <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
 
-                <div class="text-muted">Created: {{ $helper.isoToDateString(product.created) }}</div>
+                  <div class="text-muted">Created: {{
+                      $helper.isoToDateString(product.created)
+                    }}
+                  </div>
+                </div>
               </li>
             </ul>
             <div aria-label="table-nav" class="mt-2">
