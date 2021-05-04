@@ -40,7 +40,7 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
     user.setPassword(password);
     user.setFirstName(userName);
     Assertions.assertDoesNotThrow(() -> userController.registerUser(user));
-    Assertions.assertDoesNotThrow(() -> businessController.registerBusiness(new FullBusinessDto(business)));
+    Assertions.assertDoesNotThrow(() -> businessController.registerBusiness(new FullBusinessDto(business, "/")));
   }
 
   @When("{string} requests his product catalogue")

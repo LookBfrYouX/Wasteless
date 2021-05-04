@@ -39,9 +39,10 @@ public class Image {
   }
 
   public Image(BasicImageDto image) {
+    // TODO publicPathPrefix gets added which will break it if the publicPathPrefix is not /
     this.id = image.getId();
-    this.filename = image.getFilename();
-    this.thumbnailFilename = image.getThumbnailFilename();
+    this.path = image.getFilename();
+    this.thumbnailPath = image.getThumbnailFilename();
   }
 
   /**
