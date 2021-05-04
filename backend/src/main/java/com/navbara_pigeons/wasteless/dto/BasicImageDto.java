@@ -2,11 +2,9 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Image;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.nio.file.Path;
 
 /**
  * Image DTO which returns all image details
@@ -18,10 +16,13 @@ public class BasicImageDto {
     private String filename;
     private String thumbnailFilename;
 
-    public BasicImageDto(Image image) {
+    public BasicImageDto(String publicPathPrefix, Image image) {
         this.id = image.getId();
-        this.filename = image.getFilename();
-        this.thumbnailFilename = image.getThumbnailFilename();
+        // TODO get rid of double slash in a better way
+        // Path.of doesn't work on windows
+        this.filename = publicPathPrefix + image.getPath().substring(1);
+        System.out.println(this.filename);
+        this.thumbnailFilename = publicPathPrefix + image.getThumbnailPath().substring(1);
     }
 
 }

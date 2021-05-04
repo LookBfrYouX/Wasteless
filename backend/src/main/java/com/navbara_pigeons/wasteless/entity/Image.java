@@ -20,20 +20,20 @@ public class Image {
   private int id;
 
   @Column(name = "FILENAME")
-  private String filename;
+  private String path;
 
   @Column(name = "THUMBNAIL_FILENAME")
-  private String thumbnailFilename;
+  private String thumbnailPath;
 
   /**
    * Constructor for the image entity
    *
    * @param extension The Extension of the filename
    */
-  public Image(String imagePrefix, String extension) {
+  public Image(String imageDirectory, String extension) {
     String filename = "I" + UUID.randomUUID();
-    this.filename = imagePrefix + filename + "." + extension;
-    this.thumbnailFilename = imagePrefix + filename + "_thumbnail." + extension;
+    this.path = imageDirectory + filename + "." + extension;
+    this.thumbnailPath = imageDirectory + filename + "_thumbnail." + extension;
   }
 
   /**
