@@ -35,7 +35,7 @@ plugins {
 }
 
 group = 'Team 300'
-version = '0.0.2-SNAPSHOT'
+version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
