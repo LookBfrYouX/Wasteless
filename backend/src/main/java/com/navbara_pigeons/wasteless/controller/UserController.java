@@ -93,7 +93,6 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad address given");
     } catch (Exception exc) {
       log.error("CRITICAL REGISTER ERROR: " + exc);
-      exc.printStackTrace();
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
     }
   }
@@ -109,7 +108,7 @@ public class UserController {
   public ResponseEntity<Object> getUserById(@PathVariable String id) {
     try {
       log.info("GETTING USER BY ID: " + id);
-      return new ResponseEntity<>(this.userService.getUserById(id), HttpStatus.valueOf(200));
+      return new ResponseEntity<>(this.userService.getUserById(Long.parseLong(id)), HttpStatus.valueOf(200));
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
