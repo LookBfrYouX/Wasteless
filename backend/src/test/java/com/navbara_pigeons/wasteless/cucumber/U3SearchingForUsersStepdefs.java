@@ -1,16 +1,19 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
@@ -29,9 +32,12 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
         }
     }
 
-    @Given("A user {string} is logged in.")
-    public void aUserIsLoggedIn(String email) {
-
+    @Given("A user {string} with password {string} is logged in.")
+    public void aUserWithPasswordIsLoggedIn(String email, String password) throws Exception {
+        UserCredentials userCredentials = new UserCredentials();
+        userCredentials.setEmail(email);
+        userCredentials.setPassword(password);
+        mockMvc.perform(post("/login").content("{ email: " + email + ", password: " + password + " }"));
     }
 
     @When("A search is performed for another user named {string}")
@@ -53,4 +59,5 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
     @Then("No user records are returned")
     public void noUserRecordsAreReturned() {
     }
+
 }

@@ -2,14 +2,14 @@ Feature: U3 Searching for Users using Name
 
   Background:
     Given these users exist
-    |emailAddress |firstName |lastName |nickName
-    |bob@fri.com  |Bob       |Vance    |Fridgeman
-    |beet@dm.com  |Dwight    |Shrute   |Bear
-    |bo@ring.com  |Andrew    |Tuna     |Randyandy
-    |michael@dm.com |Michael |Scott    |Bossman
+    |emailAddress |password |firstName |lastName |nickName
+    |bob@fri.com  |Test@1234 |Bob       |Vance    |Fridgeman
+    |beet@dm.com  |Test@1234 |Dwight    |Shrute   |Bear
+    |bo@ring.com  |Test@1234 |Andrew    |Tuna     |Randyandy
+    |michael@dm.com |Test@1234 |Michael |Scott    |Bossman
 
   Scenario: AC1 successfully search for user based on name or nickname
-    Given A user "bob@fri.com" is logged in.
+    Given A user "bob@fri.com" with password "Test@1234" is logged in.
 
       When A search is performed for another user named "Dwight"
       Then A user record for user "Dwight" is returned.
