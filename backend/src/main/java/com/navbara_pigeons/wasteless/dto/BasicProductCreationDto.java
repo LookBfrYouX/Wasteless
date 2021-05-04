@@ -24,7 +24,9 @@ public class BasicProductCreationDto {
 //    private BasicImageDto primaryProductImage;
 //    private List<BasicImageDto> productImages;
 
-    public BasicProductCreationDto() {}
+    public BasicProductCreationDto() {
+
+    }
 
     public BasicProductCreationDto(Product product) {
 //        this.id = product.getId();

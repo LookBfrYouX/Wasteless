@@ -26,4 +26,8 @@ public class FullAddressDto {
         this.country = address.getCountry();
     }
 
+    public FullAddressDto() {
+
+    }
+
 }

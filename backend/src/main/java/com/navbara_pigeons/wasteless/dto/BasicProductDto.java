@@ -42,6 +42,10 @@ public class BasicProductDto {
         }
     }
 
+    public BasicProductDto() {
+
+    }
+
     private List<BasicImageDto> makeImageDtos(List<Image> images) {
         ArrayList<BasicImageDto> imageDtos = new ArrayList<BasicImageDto>();
         for (Image image : images) {

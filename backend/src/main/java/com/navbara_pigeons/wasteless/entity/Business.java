@@ -108,6 +108,14 @@ public class Business {
     this.created = business.getCreated();
   }
 
+  public Business(CreateBusinessDto business) {
+    this.primaryAdministratorId = business.getPrimaryAdministratorId();
+    this.name = business.getName();
+    this.description = business.getDescription();
+    this.address = new Address(business.getAddress());
+    this.businessType = business.getBusinessType();
+  }
+
   public Business() {
   }
 

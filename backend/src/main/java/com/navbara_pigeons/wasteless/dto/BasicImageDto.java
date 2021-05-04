@@ -24,4 +24,8 @@ public class BasicImageDto {
         this.thumbnailFilename = image.getThumbnailFilename();
     }
 
+    public BasicImageDto() {
+
+    }
+
 }
