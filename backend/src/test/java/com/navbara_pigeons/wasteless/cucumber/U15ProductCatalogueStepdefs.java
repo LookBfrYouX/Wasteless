@@ -5,6 +5,8 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,33 +37,41 @@ public class U15ProductCatalogueStepdefs {
     user.setFirstName(userName);
     Business business = this.makeBusiness(businessName, user);
     Product product = this.makeProduct(productName);
-
   }
-  @Given("{string} is signed in and administers a business {string} with a product {string}")
-  public void is_signed_in_and_administers_a_business_with_a_product(String string, String string2, String string3) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
 
+  @Given("{string} is signed in and administers a business {string} with a product {string}")
+  public void isSignedInAndAdministersABusinessWithAProduct(String arg0, String arg1, String arg2) {
   }
 
   @When("{string} requests his product catalogue")
-  public void requests_his_product_catalogue(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
+  public void requestsHisProductCatalogue(String arg0) {
   }
+
   @Then("The product {string} is displayed")
-  public void the_product_is_displayed(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
+  public void theProductIsDisplayed(String arg0) {
   }
+
   @When("{string} tries to access another business called {string} product {string}")
-  public void tries_to_access_another_business_called_product(String string, String string2, String string3) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
+  public void triesToAccessAnotherBusinessCalledProduct(String arg0, String arg1, String arg2) {
   }
+
   @Then("the product {string} is not displayed")
-  public void the_product_is_not_displayed(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
+  public void theProductIsNotDisplayed(String arg0) {
+  }
+
+  @Given("a user with name {string} has a {string} business {string} in {string}")
+  public void aUserWithNameHasABusinessIn(String arg0, String arg1, String arg2, String arg3) {
+  }
+
+  @When("{string} creates a product {string} to sell at business {string}")
+  public void createsAProductToSellAtBusiness(String arg0, String arg1, String arg2) {
+  }
+
+  @When("{string} creates a product {string} made by {string} with RRP {string}")
+  public void createsAProductMadeByWithRRP(String arg0, String arg1, String arg2, String arg3) {
+  }
+
+  @Then("the ID, date created is set automatically and the currency is set to {string}")
+  public void theIDDateCreatedIsSetAutomaticallyAndTheCurrencyIsSetTo(String arg0) {
   }
 }
