@@ -1,10 +1,12 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Currency;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
@@ -19,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +33,7 @@ public class ProductServiceImpl implements ProductService {
     private final BusinessDao businessDao;
     private final ProductDao productDao;
     private final UserDao userDao;
+    private final CountryDataFetcherService countryDataFetcherService;
     private final UserService userService;
     private final BusinessService businessService;
 
@@ -38,14 +42,16 @@ public class ProductServiceImpl implements ProductService {
      * service for interacting with all business related services.
      *
      * @param businessDao The BusinessDataAccessObject.
+     * @param countryDataFetcherService
      */
      @Autowired
-     public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao, UserDao userDao, UserService userService, BusinessService businessService) {
+     public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao, UserDao userDao, UserService userService, BusinessService businessService, CountryDataFetcherService countryDataFetcherService) {
         this.businessDao = businessDao;
         this.productDao = productDao;
         this.userDao = userDao;
         this.userService = userService;
         this.businessService = businessService;
+        this.countryDataFetcherService = countryDataFetcherService;
     }
 
     /**
@@ -56,10 +62,14 @@ public class ProductServiceImpl implements ProductService {
      * @throws BusinessNotFoundException If the business is not listed in the database.
      */
     @Override
-    public List<Product> getProducts(String businessId) throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
+    public List<BasicProductDto> getProducts(String businessId) throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
         if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(Long.parseLong(businessId))) {
             Business business = businessDao.getBusinessById(Long.parseLong(businessId));
-            return business.getProductsCatalogue();
+            ArrayList<BasicProductDto> products = new ArrayList<>();
+            for (Product product : business.getProductsCatalogue()) {
+                products.add(new BasicProductDto(product));
+            }
+            return products;
         } else {
             throw new InsufficientPrivilegesException("You are not permitted to modify this business");
         }
@@ -85,12 +95,10 @@ public class ProductServiceImpl implements ProductService {
       try {
         user = userDao.getUserByEmail(username);
         business = businessDao.getBusinessById(businessId);
-      } catch (UserNotFoundException exc) {
-        throw new ProductRegistrationException();
-      } catch (BusinessNotFoundException exc) {
+      } catch (UserNotFoundException | BusinessNotFoundException exc) {
         throw new ProductRegistrationException();
       }
-      boolean businessAdmin = false;
+        boolean businessAdmin = false;
       if (business.getPrimaryAdministratorId() == user.getId()) {
         businessAdmin = true;
       }
@@ -107,10 +115,15 @@ public class ProductServiceImpl implements ProductService {
       product.setName((jsonProduct.get("name") != null ? jsonProduct.get("name") : "").toString());
       product.setDescription((jsonProduct.get("description") != null ? jsonProduct.get("description") : "").toString());
       product.setRecommendedRetailPrice(Double.parseDouble(jsonProduct.getOrDefault("recommendedRetailPrice", 0.0).toString()));
-      // Product validation
+
+      Currency currency = countryDataFetcherService.getCurrencyForCountry(business.getAddress().getCountry());
+      if (currency == null) throw new ProductRegistrationException("Unknown country; cannot set currency");
+      product.setCurrency(currency.getCode());
+
       if (!ProductServiceValidation.requiredFieldsNotEmpty(product)) {
         throw new ProductRegistrationException();
       }
+
       product.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
       productDao.saveProduct(product);
 

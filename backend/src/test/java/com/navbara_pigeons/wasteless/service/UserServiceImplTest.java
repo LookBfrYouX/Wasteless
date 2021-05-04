@@ -9,27 +9,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.navbara_pigeons.wasteless.controller.UserController;
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
+import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import net.minidev.json.JSONObject;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("ALL")
@@ -89,13 +85,6 @@ class UserServiceImplTest extends ServiceTestProvider {
       actuallyDeleteUser(user);
       throw throwable;
     }
-  }
-
-  @BeforeEach
-  void loadCountryData() throws URISyntaxException, IOException {
-    if (!countryDataFetcherService.dataLoaded()) countryDataFetcherService.reloadCountryDataFromDisk(
-            Path.of(ClassLoader.getSystemClassLoader().getResource("countryDataFetcherService/standard.json").toURI())
-    );
   }
 
   @Test
@@ -167,33 +156,39 @@ class UserServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  @Transactional
-  void noCountryData() throws Throwable {
-    countryDataFetcherService.resetCountryData();
-    trySaveUserExpectError(makeUser(), UserRegistrationException.class);
-  }
+  @WithUserDetails("amf133@uclive.ac.nz")
+  public void getUserSelfCheckFullDetails() throws UserNotFoundException, UnhandledException {
+    // Check all fields are returned to the user
+    User testUser = makeUser("getUserSelfCheckFullDetails@uclive.ac.nz", "fun123", true);
+    Assertions.assertDoesNotThrow(() -> userService.saveUser(testUser));
 
-
-  @Test
-  @Transactional
-  public void getUserSelf() throws UserNotFoundException {
-    User user = makeUser(email, password, false);
-    actuallySaveUser(user);
-    assertUserWithJson(user, getUserAsUser(user.getEmail(), password, user.getId()), false);
-    actuallyDeleteUser(user);
+    // Will fail test if cannot cast to FullUserDto (this happend when BasicUserDto is returned)
+    try {
+      FullUserDto newUser = (FullUserDto) userService.getUserById(testUser.getId());
+    } catch (ClassCastException e) {
+      assert(false);
+    }
   }
 
   @Test
-  @Transactional
-  public void getUserOther() throws UserNotFoundException {
-    User user = makeUser(email, password, false);
-    actuallySaveUser(user);
-    User userCheck = makeUser("testEmail@user.co.nz", password, false);
-    actuallySaveUser(userCheck);
-    assertUserWithJson(userCheck, getUserAsUser(user.getEmail(), password, userCheck.getId()),
-        true);
-    actuallyDeleteUser(user);
-    actuallyDeleteUser(userCheck);
+  @WithUserDetails("amf133@uclive.ac.nz")
+  public void getUserOtherCheckbasicDetails() throws UserNotFoundException, UnhandledException {
+    // Check private fields are hidden from other users
+    User testUser = makeUser("getUserOtherCheckbasicDetails@uclive.ac.nz", "fun123", true);
+    Assertions.assertDoesNotThrow(() -> userService.saveUser(testUser));
+
+    // Logging in as "dnb36@uclive.ac.nz"
+    UserCredentials userCredentials = new UserCredentials();
+    userCredentials.setEmail("dnb36@uclive.ac.nz");
+    userCredentials.setPassword("fun123");
+    Assertions.assertDoesNotThrow(() -> userService.login(userCredentials));
+
+    // Will fail test if cannot cast to BasicUserDto (this happend when FullUserDto is returned)
+    try {
+      BasicUserDto newUser = (BasicUserDto) userService.getUserById(testUser.getId());
+    } catch (ClassCastException e) {
+      assert(false);
+    }
   }
 
   /**
@@ -205,8 +200,8 @@ class UserServiceImplTest extends ServiceTestProvider {
    * @return user with id `id` as JSONObject
    * @throws UserNotFoundException
    */
-  private JSONObject getUserAsUser(String email, String password, long id)
-      throws UserNotFoundException {
+  private Object getUserAsUser(String email, String password, long id)
+      throws UserNotFoundException, UnhandledException {
     UserCredentials userCredentials = new UserCredentials();
     userCredentials.setEmail(email);
     userCredentials.setPassword(password);
@@ -326,7 +321,7 @@ class UserServiceImplTest extends ServiceTestProvider {
       userController.login(userCredentials);
 
       // Test for green flow
-      assertDoesNotThrow(() -> userController.revokeAdminPermissions(Long.toString(toBeAdminId)));
+      assertDoesNotThrow(() -> userController.revokeAdminPermissions(toBeAdminId));
     } catch (UserNotFoundException e) {
       System.out.println("EXPECTED ERROR");
     } finally {
@@ -380,7 +375,7 @@ class UserServiceImplTest extends ServiceTestProvider {
       // Test for permission denied (as revokee is no longer admin)
       long revokerId = revokerUser.getId();
       assertThrows(Exception.class,
-          () -> userController.revokeAdminPermissions(Long.toString(revokerId)));
+          () -> userController.revokeAdminPermissions(revokerId));
 
     } catch (UserNotFoundException e) {
       Assertions.fail();

@@ -23,6 +23,7 @@
                 class="form-control"
                 maxlength="30"
                 name="fname"
+                id="fname"
                 placeholder="First name"
                 required
                 type="text"
@@ -37,6 +38,7 @@
                 class="form-control"
                 maxlength="30"
                 name="mname"
+                id="mname"
                 placeholder="Middle name (optional)"
                 type="text"
             />
@@ -50,6 +52,7 @@
                 class="form-control"
                 maxlength="30"
                 name="lname"
+                id="lname"
                 placeholder="Last name"
                 required
                 type="text"
@@ -64,6 +67,7 @@
                 class="form-control"
                 maxlength="30"
                 name="nickname"
+                id="nickname"
                 placeholder="Nickname (optional)"
                 type="text"
             />
@@ -80,11 +84,15 @@
                 class="form-control"
                 maxlength="50"
                 name="email"
+                id="email"
                 placeholder="Email"
                 required
                 type="email"
                 v-bind:class="{'is-invalid': emailErrorMessage !== null }"
+                pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"
+                title="You must enter a valid email address. Dotless domains are not supported"
             />
+            <!-- regexp from https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type%3Demail), but modified to disallow dot-less domains -->
             <div class="invalid-feedback">{{ emailErrorMessage }}</div>
           </div>
         </div>
@@ -99,6 +107,7 @@
                 maxlength="50"
                 minlength="8"
                 name="password"
+                id="password"
                 pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,}$"
                 placeholder="Password"
                 required
@@ -122,6 +131,7 @@
                 maxlength="50"
                 minlength="8"
                 name="confirmPassword"
+                id="confirmPassword"
                 placeholder="Confirm password"
                 required
                 type="password"
@@ -140,6 +150,7 @@
                 autocomplete="bday"
                 class="form-control"
                 name="dateOfBirth"
+                id="dateOfBirth"
                 placeholder="Date of birth"
                 required
                 type="date"
@@ -160,15 +171,17 @@
                 autocomplete="tel-country-code"
                 class="form-control"
                 name="countryCode"
+                id="countryCode"
                 v-bind:class="{ 'is-invalid': countryCodeErrorMessage !== null }"
             >
               <!---Add blank element to country code list so that user can choose not to enter phone-->
+              <option value=""></option>
               <option
-                  v-for="code in [{value: '', name: ''}, ...countryCodes]"
-                  :key="code.name"
-                  :value="code.value"
+                  v-for="country in countryData"
+                  v-bind:key="country.code"
+                  v-bind:value="country.phoneExtensionCode"
               >
-                {{ code.name }}
+                {{ country.name }} (+{{country.phoneExtensionCode }})
               </option>
             </select>
             <div class="invalid-feedback">{{ countryCodeErrorMessage }}</div>
@@ -179,6 +192,8 @@
                 v-model="phoneNumber"
                 autocomplete="tel-national"
                 class="form-control"
+                name="phoneNumber"
+                id="phoneNumber"
                 pattern='^\d{5,13}$'
                 placeholder="Phone number"
                 type="tel"
@@ -198,6 +213,7 @@
                 class="form-control"
                 maxlength="500"
                 name="bio"
+                id="bio"
                 placeholder="Bio"
                 rows="5"
                 type="text"
@@ -228,13 +244,12 @@
 </style>
 
 <script>
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 const AddressForm = require("./AddressForm").default;
-
-import countryCodesJson from "./../assets/countryCodes.json";
+const countryData = require("./../assets/countryData.json");
 
 export default {
-  name: "signUpPage",
+  name: "SignUp",
 
   components: {
     "address-form": AddressForm
@@ -242,7 +257,6 @@ export default {
 
   data() {
     return {
-      countryCodes: countryCodesJson,
       emailErrorMessage: null, // If email address has already been registered
       confirmPasswordErrorMessage: null, // If password and confirm password fields different
       dateOfBirthErrorMessage: null, // too young etc.
@@ -280,6 +294,8 @@ export default {
       phoneNumber: "",
 
       bio: "",
+
+      countryData
     };
   },
   methods: {
@@ -310,7 +326,7 @@ export default {
       if (currentDate == undefined) {
         currentDate = new Date(Date.now());
       }
-      const MIN_AGE = 13;
+      const minAge = this.$constants.SIGN_UP.MIN_AGE;
       const regexp = /(\d{4})-(\d{2})-(\d{2})/;
       const result = regexp.exec(dateOfBirth);
       if (result === null) {
@@ -329,10 +345,10 @@ export default {
       }
 
       const yearDelta = currentDate.getFullYear() - year;
-      if (yearDelta > MIN_AGE) {
+      if (yearDelta > minAge) {
         return null;
       } // More than 13 years old
-      if (yearDelta == MIN_AGE) {
+      if (yearDelta == minAge) {
         const monthDelta = currentDate.getMonth() - monthIndex;
         if (monthDelta > 0) {
           return null;
@@ -345,7 +361,7 @@ export default {
         }
       }
 
-      return "You must be 13 years or older to sign up";
+      return `You must be ${minAge} years or older to sign up`;
     },
 
     /**

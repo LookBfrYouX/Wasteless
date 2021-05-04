@@ -115,10 +115,10 @@ public class ImageController {
   public ResponseEntity<String> uploadProfileImage(@PathVariable long id,
       @RequestParam MultipartFile image) {
     try {
-      String response = imageService.uploadProfileImage(id, image);
+      imageService.uploadProfileImage(id, image);
       log.info(
           "USER " + id + " SUCCESSFULLY UPLOADED PROFILE IMAGE " + image.getOriginalFilename());
-      return new ResponseEntity<>(response, HttpStatus.CREATED);
+      return new ResponseEntity<>(HttpStatus.CREATED);
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The user does not exist");

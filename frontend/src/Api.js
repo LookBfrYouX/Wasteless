@@ -31,24 +31,23 @@
 
 import axios from 'axios';
 import {ApiRequestError} from "./ApiRequestError";
+import { constants } from "./constants";
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
-const TIMEOUT = 2500;
-const TIMEOUT_LONG = 10000;
 
 const instance = axios.create({
   baseURL: SERVER_URL,
-  timeout: TIMEOUT,
+  timeout: constants.API.TIMEOUT_SHORT,
   withCredentials: true
 });
 
 const instanceLongTimeouts = axios.create({
   baseURL: SERVER_URL,
-  timeout: TIMEOUT_LONG,
+  timeout: constants.API.TIMEOUT_LONG,
   withCredentials: true
 });
 
-export default {
+export const Api = {
   /**
    * Sends login request
    * @param props object with 'email' and 'password'
@@ -160,8 +159,8 @@ export default {
   },
 
   /**
-   * Sends a get products query
-   * @param id
+   * Gets all products given in a business catalog
+   * @param id ID of business
    * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
   getProducts: (id) => {
@@ -192,28 +191,20 @@ export default {
     });
   },
 
-  getCurrencies: (country) => {
-    return fetch(`https://restcountries.eu/rest/v2/name/${country}`)
-        .then(res => res.json())
-        .catch(err => {
-        throw ApiRequestError.createFromMessageMap(err);
-      });
-    },
-
-    /**
-     * Calls Photon API to fetch address suggestions
-     * @param {*} query query string
-     * @returns {Promise<Object[]>} array of photon response objects, or error
-     */
-    addressSuggestions: async function(query) {
-      return fetch(`https://photon.komoot.io/api?q=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .catch(err => { throw ApiRequestError.createFromMessageMap(err) });
-    },
+  /**
+   * Calls Photon API to fetch address suggestions
+   * @param {*} query query string
+   * @returns {Promise<Object[]>} array of photon response objects, or error
+   */
+  addressSuggestions: async function(query) {
+    return fetch(`https://photon.komoot.io/api?q=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .catch(err => { throw ApiRequestError.createFromMessageMap(err) });
+  },
 
   /**
    * Logs the user out client-side and redirects to a logout page
-   * Call using `Api.handle401.call(this, err) from the vue component
+   * Call using `Api.handle401.call(this, err)` from the vue component
    * If `this.$stateStore` and `this.$router`  are not defined, likely because
    * `.call` has not been used, or because the jest test has not mocked these, an error message will
    * be printed and the method will return false.

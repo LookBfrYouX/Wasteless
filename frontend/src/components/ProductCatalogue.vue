@@ -15,12 +15,12 @@
           <div class="p-3">
             <h3 class="d-inline">Sort by</h3>
             <button class="float-right btn btn-light" type="button" v-on:click="toggleSidebar()">
-              <span>Go</span>
+              <span>&larr;</span>
             </button>
             <ul id="search-headers" class="list-unstyled"
                 v-bind:class='{"table-reversed": reversed}'>
               <li
-                  v-for="[key, value] in Object.entries({name: 'Name', id: 'ID', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
+                  v-for="[key, value] in Object.entries({name: 'Name', manufacturer: 'Manufacturer', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
                   v-bind:key="key"
                   class="mb-1"
                   v-bind:class='{"current-sort": sortBy==key}'
@@ -33,12 +33,15 @@
         <div v-if="isVisible" class="overlay w-100 d-md-none" v-on:click="toggleSidebar()"></div>
         <div class="results-content container d-flex justify-content-end justify-content-md-center">
           <div class="results-wrapper col-12 col-md-8 mt-5">
-            Displaying {{ 10 * this.pageNum + 1 }} -
-            {{ Math.min(results.length, 10 * (this.pageNum + 1)) }}
+            Displaying {{ this.resultsPerPage * this.pageNum + 1 }} -
+            {{ Math.min(results.length, this.resultsPerPage * (this.pageNum + 1)) }}
             out of {{ results.length }}
             <ul class="list-unstyled list-group">
               <!--viewUser method uses router.push to display profile page-->
               <li v-for="(product, index) in displayedResults" v-bind:key="index"
+                  class="list-group-item card ">
+                <div class="d-flex flex-wrap justify-content-between">
+                  <h4 class="card-title mb-0">{{ product.name }}</h4>
                   v-on:click="viewProduct(product.id)"
                   class="list-group-item card">
                 <div class="row">
@@ -51,9 +54,11 @@
                     </div>
                   </div>
                 </div>
+                <div class="text-muted">Manufacturer: {{product.manufacturer }}</div>
                 <div class="text-muted">Description: {{ product.description }}</div>
-                <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
-                <div class="text-muted">Created: {{ product.created }}</div>
+                <div class="text-muted">RRP: {{product.recommendedRetailPrice }}</div>
+
+                <div class="text-muted">Created: {{ $helper.isoToDateString(product.created) }}</div>
               </li>
             </ul>
             <div aria-label="table-nav" class="mt-2">
@@ -66,9 +71,11 @@
                 <!--number of buttons scale to amount of pages-->
                 <li v-for="pageNumber in pages.slice(Math.max(0, pageNum - 1), pageNum + 5)"
                     :key="pageNumber"
-                    class="page-item">
+                    class="page-item"
+                    v-bind:class="{'active': pageNum == pageNumber}"
+                >
                   <button class="page-link" name="button" type="button"
-                          v-on:click="pageNum=pageNumber">{{ pageNumber + 1 }}
+                          v-on:click="pageNum = pageNumber">{{ pageNumber + 1 }}
                   </button>
                 </li>
                 <li>
@@ -91,6 +98,7 @@
         v-bind:refresh="true"
         v-bind:retry="this.query"
         v-bind:show="apiErrorMessage !== null"
+        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -99,9 +107,8 @@
 
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
-// import {ApiRequestError} from "@/ApiRequestError";
 
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 const BASE_PRODUCT_IMAGE_PATH = "/user-content/images/products/";
 
 const ProductCatalogue = {
@@ -113,7 +120,7 @@ const ProductCatalogue = {
     return {
       results: [],
       pageNum: 0, // Page number starts from 0 but it will shown as 1 on UI
-      resultsPerPage: 10,
+      resultsPerPage:  this.$constants.PRODUCT_CATALOG.RESULTS_PER_PAGE,
       highlightedItem: null,
       pages: [],
       sortBy: null,
@@ -131,6 +138,7 @@ const ProductCatalogue = {
     toggleSidebar() {
       this.isVisible = !this.isVisible;
     },
+
     sortByClicked(newSortBy) {
       if (this.sortBy == newSortBy) {
         this.reversed = !this.reversed;
@@ -218,7 +226,7 @@ const ProductCatalogue = {
         if (product[this.sortBy] == null) {
           return "";
         }
-        return product[this.sortBy].toLowerCase();
+        return product[this.sortBy];
       }
 
       return this.results.sort((a, b) => { // sort using this.orderBy

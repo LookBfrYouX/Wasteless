@@ -1,3 +1,7 @@
+import { helper } from "./../helper";
+import { constants } from "./../constants";
+import { store } from "./../store";
+
 export const GLOBAL_STATE = {
   authUser: {
     firstName: "firstName",
@@ -18,55 +22,49 @@ export const GLOBAL_STATE = {
     phoneNumber: "phoneNumber",
     bio: "bio",
     businessesAdministered: [
-  {
-    id: 100,
-    administrators: [
-      "string"
-    ],
-    primaryAdministratorId: 20,
-    name: "Lumbridge General Store",
-    description: "A one-stop shop for all your adventuring needs",
-    address: {
-      streetNumber: "3/24",
-      streetName: "Ilam Road",
-      city: "Christchurch",
-      region: "Canterbury",
-      country: "New Zealand",
-      postcode: "90210"
-    },
-    businessType: "Accommodation and Food Services",
-    created: "2020-07-14T14:52:00Z"
-  }]
-},
-  actingAs: null,
+      {
+        businessType: "Retail Trade",
+        created: "2020-07-14 14:32:00.0",
+        description: "A Good business",
+        homeAddress: {
+          city: "Christchurch",
+          country: "New Zealand",
+          postcode: "8041",
+          region: "Canterbury",
+          streetName: "Ilam Road",
+          streetNumber: "53"
+        },
+        id: 1,
+        name: "TestBusinessName",
+        primaryAdministratorId: 4
+      }
+    ]
+  },
+};
 
 
-}
 export const globalStateMocks = () => {
-  const $stateStore = {
-    getters: {
-      isAdmin: jest.fn(() => GLOBAL_STATE.authUser.role == "ROLE_ADMIN"),
-      isLoggedIn: jest.fn(() => true),
-      getAuthUser: jest.fn(() => GLOBAL_STATE.authUser),
-      getActingAs: jest.fn(() => GLOBAL_STATE.actingAs)
-
-    },
-    actions: {
-      makeAdmin: jest.fn(),
-      revokeAdmin: jest.fn(),
-      setAuthUser: jest.fn(),
-      setActingAs: jest.fn((business) => GLOBAL_STATE.actingAs == business),
-      deleteAuthUser: jest.fn()
-    }
-  }
+  store.actions.setAuthUser(GLOBAL_STATE.authUser);
+  store.actions.setActingAs(GLOBAL_STATE.authUser.businessesAdministered[0]);
 
   const $router = {
     push: jest.fn(),
     go: jest.fn()
   }
 
+  const $route = {
+    name: "TEST_ROUTE",
+    params: {}
+  };
+
+  const $helper = helper;
+  const $constants = constants;
+
   return {
-    $stateStore,
-    $router
+    $stateStore: store,
+    $router,
+    $route,
+    $helper,
+    $constants
   }
 }

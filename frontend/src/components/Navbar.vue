@@ -28,7 +28,7 @@
               </a>
             </li>
             <!-- Product catalog link -->
-            <li class="navbar-item" v-if="isActingAsBusiness">
+            <li class="navbar-item mr-lg-auto" v-if="isActingAsBusiness">
               <a class="nav-link" v-on:click="pushOrGo('productCatalogue')">
                 Catalogue
               </a>
@@ -71,16 +71,17 @@
 
             <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
                 <div class="h4 dropdown-header">Act as</div>
-                <a v-on:click="switchActingAs()"
+              <a v-on:click="$stateStore.actions.setActingAs()"
+                 class="dropdown-item">
+                {{ authUser.firstName }} {{ authUser.lastName }}
+                <span v-if="currentActingAs === null">
+                  &#10003;
+                </span>
+              </a>
+                <a v-for="business in actingAsEntities"
+                    :key="business.id"
+                    v-on:click="$stateStore.actions.setActingAs(business)"
                     class="dropdown-item">
-                  {{ authUser.firstName }} {{ authUser.lastName }}
-                  <span v-if="currentActingAs === null">
-                    &#10003;
-                  </span>
-                </a>
-                <a v-for="business in actingAsEntities" :key="business.id"
-                        v-on:click="switchActingAs(business)"
-                        class="dropdown-item">
                   {{business.name}}
                   <span v-if="business === currentActingAs">
                     &#10003;
@@ -102,7 +103,7 @@
               Login
               </a>
             </li>
-            <li v-if="this.$route.name != 'signUp'" class="nav-item">
+            <li v-if="this.$route.name != 'Sign Up'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
                   type="button"
@@ -121,6 +122,7 @@
         v-bind:refresh="false"
         v-bind:retry="this.logOut"
         v-bind:show="logOutErrorMessage !== null"
+        v-bind:goBack="false"
     >
       <p>{{ logOutErrorMessage }}</p>
     </error-modal>
@@ -130,7 +132,7 @@
 
 
 <script>
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 import ErrorModal from "./Errors/ErrorModal";
 
 export default {
@@ -149,9 +151,6 @@ export default {
     authUser: {
       get: function () {
         return this.$stateStore.getters.getAuthUser();
-      },
-      set: function (val) {
-        this.$stateStore.actions.setAuthUser(val);
       }
     },
 
@@ -167,7 +166,7 @@ export default {
     * @returns true if logged in and acting as business
     */
     isActingAsBusiness() {
-      return this.currentActingAs != null;
+      return this.$stateStore.getters.isActingAsBusiness();
     },
 
     /**
@@ -177,8 +176,12 @@ export default {
       return this.$stateStore.getters.isAdmin();
     },
 
+    /**
+     * Returns a list of business
+     * @return {Business[]} empty list if user not logged in or has no businesses
+     */
     actingAsEntities() {
-      return this.authUser.businesses;
+      return this.authUser.businessesAdministered;
     },
 
     currentActingAs() {
@@ -230,6 +233,7 @@ export default {
       const searchName = "search";
       let newQuery = this.$route.params.query;
 
+      // If already on search with same query, refresh instead of reloading
       if (this.$route.name == searchName && newQuery == this.query) {
         await this.$router.go();
         return;
@@ -268,32 +272,25 @@ export default {
             businessId
           }
         }
+
         if (this.$route.name === "businessProfile" &&
-            this.$route.params.businessId === businessId) {
+            this.$route.params.businessId === businessId.toString()) {
           reload = true;
         }
       }
 
       if (reload) await this.$router.go();
       else await this.$router.push(args);
-    },
-
-    /**
-     * Switch acting as user
-     * @param {Object} business
-     */
-    switchActingAs: function (business) {
-      if (business === null) {
-        this.$stateStore.actions.deleteActingAs();
-      } else {
-        this.$stateStore.actions.setActingAs(business);
-      }
-    },
+    }
   },
 };
 </script>
 
 <style scoped>
+
+.dropdown-menu {
+  z-index:900000;
+}
 
 .admin-text {
   margin: -0.5em 0 0;

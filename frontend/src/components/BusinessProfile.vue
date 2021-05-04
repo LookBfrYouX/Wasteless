@@ -2,6 +2,11 @@
   <div class="bprofile-card card container">
     <div>
       <h1 class="title">Business Information</h1>
+      <button class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3" type="button"
+              v-if="showBackButton" v-on:click="$router.go(-1)">
+        <span class="material-icons mr-1">arrow_back</span>
+        Back to Profile
+      </button>
       <ul class="bprofile-info list-unstyled">
         <li class="row">
           <dt class="col-md label">Business Title:</dt>
@@ -13,12 +18,7 @@
         </li>
         <li class="row">
           <dt class="col-md label">Address:</dt>
-          <dd class="col-md value"> {{
-              [businessInfo.homeAddress.streetNumber + " " +
-              businessInfo.homeAddress.streetName, businessInfo.homeAddress.city,
-                businessInfo.homeAddress.region, businessInfo.homeAddress.country,
-                businessInfo.homeAddress.postcode].join(", ")
-            }}
+          <dd class="col-md value"> {{ $helper.addressToString(businessInfo.address) }}
           </dd>
         </li>
         <li class="row">
@@ -26,12 +26,8 @@
           <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
         </li>
       </ul>
-      <div v-if="errorMessage.length > 0" class="row mt-2">
-        <div class="col">
-          <p class="alert alert-warning">{{ errorMessage }}</p>
-        </div>
-      </div>
       <button
+          v-if="this.$stateStore.getters.isAdmin() || (this.$stateStore.getters.getActingAs() !== null && this.$stateStore.getters.getActingAs().id === businessId)"
           class="btn btn-white-bg-primary mx-1 d-flex"
           type="button"
           v-on:click="createProduct()"
@@ -39,34 +35,50 @@
         <span class="material-icons mr-1">person</span>
         Add Product To Catalogue
       </button>
+      <error-modal
+        title="Error fetching business details"
+        v-bind:hideCallback="() => (apiErrorMessage = null)"
+        v-bind:refresh="false"
+        v-bind:retry="false"
+        v-bind:goBack="true"
+        v-bind:show="apiErrorMessage !== null"
+      >
+        <p>{{ apiErrorMessage }}</p>
+    </error-modal>
     </div>
   </div>
 </template>
 
 <script>
-const Api = require("./../Api").default;
+import ErrorModal from "./Errors/ErrorModal.vue";
+import { ApiRequestError } from "./../ApiRequestError";
+const { Api } = require("./../Api.js");
 
 export default {
   name: 'businessProfile',
-  components: {},
+  components: { ErrorModal },
 
   data() {
     return {
       businessInfo: {
         name: "",
         description: "",
-        homeAddress: "",
+        address: {},
         businessType: "",
       },
-      errorMessage: "",
-    }
+      apiErrorMessage: null,
+    };
   },
-
   props: {
     businessId: {
       type: Number,
       required: true
-    }
+    },
+    showBackButton: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
   },
 
   beforeMount: function () {
@@ -80,6 +92,13 @@ export default {
      * Returns the promise, not the response
      */
     callApi: function (businessId) {
+       if (!Number.isInteger(businessId)) {
+        const err = new ApiRequestError(
+          "Cannot load business profile page - business ID not given"
+        );
+        return Promise.reject(err);
+      }
+
       return Api.businessProfile(businessId);
     },
 
@@ -88,19 +107,42 @@ export default {
     },
 
     /**
-     * Parses the API response given a promise to the request
+     * Parses the API response given a promise to the request,
+     * setting the businessInfo object, handling errors if necessary,
+     *  updating statestore's authUser if they are an admin of the business
      */
     parseApiResponse: async function (apiCall) {
+      let failed = false; // don't bother updating state if api call fails
       try {
         const response = await apiCall;
-        console.log(response.data);
         this.businessInfo = response.data;
       } catch (err) {
-        alert(
-            err.userFacingErrorMessage == undefined ? err.toString() : err.userFacingErrorMessage);
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
+        failed = true;
+        this.apiErrorMessage = err.userFacingErrorMessage;
+      }
+
+      const currentUser = this.$stateStore.getters.getAuthUser();
+      if (failed || this.businessInfo === null || currentUser === null) return;
+      if (this.businessInfo.primaryAdministratorId == currentUser.id ||
+          this.businessInfo.administrators.find(admin => admin.id == currentUser.id) !== undefined
+      ) {
+        // Update the user with new info
+        // Deep copy user/business
+        const userCopy = JSON.parse(JSON.stringify(currentUser));
+        let businessCopy = JSON.parse(JSON.stringify(this.businessInfo));
+        delete businessCopy.administrators; // userInfo's businesses don't contain administrators list (otherwise recursion)
+        const index = userCopy.businessesAdministered.findIndex(business => business.id == businessCopy.id);
+        if (index === -1) userCopy.businessesAdministered.push(businessCopy); // Business was just created
+        else userCopy.businessesAdministered[index] = businessCopy;
+
+        this.$stateStore.actions.setAuthUser(userCopy);
       }
     },
   },
+
 
   computed: {},
 
@@ -108,6 +150,10 @@ export default {
     businessId: function () {
       this.parseApiResponse(this.callApi(this.businessId))
     },
+
+    businessInfo() {
+      if (this.businessInfo !== null) document.title = `${this.businessInfo.name} | Business`;
+    }
   },
 }
 </script>

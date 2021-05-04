@@ -1,15 +1,13 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
-import com.navbara_pigeons.wasteless.service.BusinessService;
 import com.navbara_pigeons.wasteless.service.UserService;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
@@ -88,6 +86,9 @@ public class UserController {
     } catch (UserRegistrationException exc) {
       log.error("COULD NOT REGISTER USER (" + exc.getMessage() + "): " + user.getEmail());
       throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad Request");
+    } catch (AddressValidationException exc) {
+      log.error("COULD NOT REGISTER USER (" + exc.getMessage() + "): " + user.getEmail());
+      throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad address given");
     } catch (Exception exc) {
       log.error("CRITICAL REGISTER ERROR: " + exc);
       exc.printStackTrace();
@@ -103,20 +104,15 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/users/{id}")
-  public ResponseEntity<JSONObject> getUserById(@PathVariable String id) {
+  public ResponseEntity<Object> getUserById(@PathVariable long id) {
     try {
       log.info("GETTING USER BY ID: " + id);
-      return new ResponseEntity<>(userService.getUserById(Long.parseLong(id)),
-          HttpStatus.valueOf(200));
+      return new ResponseEntity<>(this.userService.getUserById(id), HttpStatus.valueOf(200));
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (AuthenticationException exc) {
-      log.error("AUTHENTICATION ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(401), "Something went wrong");
-    } catch (NumberFormatException exc) {
-      log.error("INVALID ID FORMAT ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(401), "ID format not valid");
+    } catch (Exception exc) {
+      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Server Error");
     }
   }
 
@@ -128,15 +124,17 @@ public class UserController {
    * @throws ResponseStatusException Unknown Error
    */
   @GetMapping("/users/search")
-  public ResponseEntity<List<User>> searchUsers(@RequestParam String searchQuery) {
-    List<User> results;
+  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery) {
     try {
-      results = userService.searchUsers(searchQuery);
+      List<BasicUserDto> results = new ArrayList<>();
+      for (User user : userService.searchUsers(searchQuery)) {
+        results.add(new BasicUserDto(user));
+      }
+      return new ResponseEntity<>(results, HttpStatus.valueOf(200));
     } catch (InvalidAttributeValueException e) {
       log.error("INVALID SEARCH QUERY: " + searchQuery);
       throw new ResponseStatusException(HttpStatus.valueOf(500), "Invalid Search Query");
     }
-    return new ResponseEntity<>(results, HttpStatus.valueOf(200));
   }
 
   /**
@@ -170,15 +168,11 @@ public class UserController {
    * @return HttpStatus 406 for Invalid ID format or User Doesn't Exist exception.
    */
   @PutMapping("/users/{id}/revokeAdmin")
-  public ResponseEntity<String> revokeAdminPermissions(@PathVariable String id) {
+  public ResponseEntity<String> revokeAdminPermissions(@PathVariable long id) {
     try {
-      long userId = Long.parseLong(id);
-      userService.revokeAdmin(userId);
+      userService.revokeAdmin(id);
       log.info("ADMIN PRIVILEGES REVOKED FROM: " + id);
       return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));
-    } catch (NumberFormatException exc) {
-      log.error("INVALID ID FORMAT ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), "Invalid ID format");
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), "The user does not exist.");

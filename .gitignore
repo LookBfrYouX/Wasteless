@@ -36,5 +36,7 @@ out/
 .vscode/
 .settings/
 bin/
-rest-countries-country-info.json
+
+.log
+.DS_Store
 frontend/public/user-content/images/**/*.jpg

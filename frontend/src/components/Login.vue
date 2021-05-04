@@ -74,13 +74,13 @@
 
 <script>
 // grabs mock api
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 
 export default {
   /* creates vue variables to be manipulates
      initilizes object with methods and data
   */
-  name: "loginPage",
+  name: "Login",
   components: {},
 
   data() {
@@ -107,8 +107,6 @@ export default {
         const userId = response.data.userId;
         // Get and set the current logged in user information
 
-        console.warn(
-            "TODO SIGN IN SHOULD RETURN FULL USER PROFILE; USE THIS TO SET AUTHUSER INSTEAD OF CALLING API.PROFILE");
         response = await Api.profile(userId);
         const authUser = response.data;
         // Adding the image URL (the GET request to backend) to the User object

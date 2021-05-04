@@ -5,7 +5,7 @@
  * and `Api._setMethod()` to set the response for a given method.
  *
  * e.g. `Api.setMethod("signUp", () => return Promise.resolve({data: {userId: 10}})`
- *
+ * 
  * See AddressForm.jest.js, commit `90b637ffd357f9ead0a84ff4fe0b26c47938d84f` for example of use
  */
 
@@ -19,4 +19,5 @@ let _Api = {
   _setMethod: (name, method) => _Api[name] = method
 };
 
+_Api["handle401"] = () => {};
 export let Api = _Api;

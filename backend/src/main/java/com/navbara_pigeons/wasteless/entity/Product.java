@@ -37,6 +37,9 @@ public class Product {
   @Column(name = "DESCRIPTION")
   private String description;
 
+  @Column(name = "CURRENCY")
+  private String currency;
+  
   @Column(name = "MANUFACTURER")
   private String manufacturer;
 

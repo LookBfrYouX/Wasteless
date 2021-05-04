@@ -1,7 +1,3 @@
-<style lang="scss">
-@import "./styles/custom.scss";
-</style>
-
 <template>
   <div id="app">
     <navbar
@@ -41,14 +37,6 @@ export default {
       // to App, which will then input Navbar props
       this.query = query;
     }
-  },
-  watch: {
-    $route: {
-      immediate: true,
-      handler(to) {
-        document.title = to.name || 'Wasteless';
-      }
-    },
   }
 }
 </script>

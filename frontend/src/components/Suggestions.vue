@@ -118,12 +118,12 @@ export default {
     }, liInactiveClasses: {
       default: () => {
         return {
-          "slightly-transparent-background": true
+          "slightly-transparent-white-background": true
         }
       }
     },
     blurDelay: {
-      default: 100
+      default: 150 // found 100 to be a bit short on my PC when I had a lot of apps open
     }
   },
 
@@ -131,13 +131,17 @@ export default {
     return {
       showSuggestions: false,
       index: -1,
-      blurTimeout: null
+      blurTimeout: null,
     }
   },
 
   methods: {
+    /**
+     * Handles arrow and enter events, and lets other events pass straight through.
+     * Arrow up/down omdifies the selected suggestions, enter triggers suggestion event
+     * and hides the suggestion list. If the user types again the suggestions become visible again
+     */
     keydown: function (event) {
-      // If user clicked enter on suggestion, suggestions are hidden, so if they start typing again show suggestions
       this.showSuggestions = true;
       switch (event.code) {
         case "ArrowDown":
@@ -162,17 +166,21 @@ export default {
       }
     },
 
+    /**
+     * If there is a blur and focus in event within the blurDelay, suggestions will be shown
+     * but then hidden once the timeout occurs. This resets the timeout so that this does not occur
+     */
     focus: function (event) {
-      // If there is a blur and focus in event within the blurDelay, suggestions will be
-      // shown and immediately hidden again. This prevents this
       window.clearTimeout(this.blurTimeout);
       this.showSuggestions = true;
       this.$emit('focus', event);
     },
 
+    /**
+     * Delays the blur event by a little bit so that the suggestion click event comes through;
+     * without it, the suggestions become hidden so the click event does not occur.
+     */
     blur: function (event) {
-      // Without this, when user clicks the suggestion blur is called before click,
-      // causing li to become hidden
       this.blurTimeout = window.setTimeout(() => {
         this.showSuggestions = false;
         this.$emit('blur', event);
@@ -205,7 +213,6 @@ export default {
         const suggestion = this.suggestions[this.index];
         this.$emit("input", suggestion.toString());
         this.$emit("suggestion", suggestion);
-
       }
     }
   },

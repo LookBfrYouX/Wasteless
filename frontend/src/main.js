@@ -32,8 +32,10 @@ import Vue from 'vue';
 import App from './App';
 import {router} from './router';
 import {store} from './store';
+import {helper} from './helper';
+import {constants} from "./constants";
 import "bootstrap";
-import "./styles/custom.scss";
+import "./styles/main.scss";
 import VueLogger from 'vuejs-logger';
 
 Vue.config.productionTip = false
@@ -52,6 +54,8 @@ Vue.use(VueLogger, options);
 
 // Set the state storage as a global variable - accessed through this.$stateStorage in components
 Vue.prototype.$stateStore = store;
+Vue.prototype.$helper = helper;
+Vue.prototype.$constants = constants;
 
 /* eslint-disable no-new */
 new Vue({

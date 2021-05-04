@@ -40,16 +40,13 @@ public class ProductController {
      * @return response A JSONObject containing the product information of all products listed for the business.
      */
     @GetMapping("/businesses/{id}/products")
-    public ResponseEntity<List> showBusinessCatalogue(@PathVariable String id) {
+    public ResponseEntity<Object> showBusinessCatalogue(@PathVariable String id) {
         try {
-            List<Product> response = productService.getProducts(id);
             log.info("RETRIEVED PRODUCTS FOR BUSINESS: " + id);
-            return new ResponseEntity<>(response, HttpStatus.valueOf(200));
+            return new ResponseEntity<>(this.productService.getProducts(id), HttpStatus.valueOf(200));
         } catch (InsufficientPrivilegesException exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient Privileges");
-        } catch (BusinessNotFoundException exc) {
-            throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-        } catch (UserNotFoundException exc) {
+        } catch (BusinessNotFoundException | UserNotFoundException exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
         } catch (Exception exc) {
             throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");

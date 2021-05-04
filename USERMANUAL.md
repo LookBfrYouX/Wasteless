@@ -56,3 +56,4 @@ Once the user is acting as the business there will be a new link available in th
 - If you come across this error `Caused by: java.sql.SQLNonTransientConnectionException: Socket fail to connect to host:localhost, port:3306. Connection refused: no further information`,
 make sure to comment out the MairaDB section of application.properties and uncomment the H2 section (or just connect to the database)
 - We (team 300) are the best team
+- We have a scheduler running that checks if the DGAA exists every 15 seconds

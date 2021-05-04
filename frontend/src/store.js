@@ -2,27 +2,57 @@ import Vue from 'vue';
 
 // This is the state object. It is reactive and can not be accessed directly by components.
 // Use getters and actions to modify this object.
+
+let actingAsId = null; // ID of business that an user is currently acting as
+try {
+  actingAsId = parseInt(localStorage.getItem("actingAsId"), 10);
+  if (isNaN(actingAsId)) {
+    actingAsId = null;
+  }
+  /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
+} catch {}
+
+let authUser = null;
+try {
+  authUser = JSON.parse(localStorage.getItem("authUser"));
+  /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
+} catch {}
+
 const state = new Vue.observable({
-  authUser: JSON.parse(localStorage.getItem("authUser")),
-  welcomeMessage: "HERE WE GOOO",
-  actingAs: JSON.parse(localStorage.getItem("actingAs"))
+  authUser,
+  actingAsId
 });
 
 // This is the globally accessible store. It allows the state to be read and modified.
 // Currently, vue has been set up to give access to this object using this.$stateStore within components.
 export const store = {
   getters: {
-    // Get the authenticated user
+    /**
+     * Get the authenticated user
+     * @returns {any}
+     */
     getAuthUser: () => {
       return state.authUser;
     },
-    // Get the current welcome message (example)
-    getWelcomeMessage: () => {
-      return state.welcomeMessage;
+    /**
+     * Get businessId for a select business
+     * @returns {null}
+     */
+    getBusinessId: () => {
+      return state.businessId;
     },
-
-    getActingAs:() => {
-      return state.actingAs;
+    
+    /**
+     * Get the business the user is acting as
+     * @returns null or the business the user is acting as. Returns the same object as those found in authUser
+     */
+    getActingAs: () => {
+      if (state.authUser == null) return null;
+      if (!Number.isInteger(state.actingAsId)) return null;
+    
+      const business = state.authUser.businessesAdministered.find(business => business.id == state.actingAsId);
+      if (business != undefined) return business;
+      return null;
     },
 
     /**
@@ -38,23 +68,35 @@ export const store = {
     isAdmin() {
       return state.authUser && state.authUser.role === "ROLE_ADMIN";
     },
+
+    isActingAsBusiness() {
+      return this.getActingAs() !== null;
+    },
+
+
   },
   actions: {
-    // Set the current welcome message (example)
-    setWelcomeMessage: (message) => {
-      state.welcomeMessage = message;
-    },
     // Set the currently logged in user and sync with persistent storage
     setAuthUser: (authUser) => {
       state.authUser = authUser;
+      const previousId = state.authUser ? state.authUser.id : null;
       localStorage.setItem("authUser", JSON.stringify(authUser));
-      localStorage.setItem("userId", state.authUser.id);
+
+      if (!(previousId != null && authUser != null && authUser.id
+          === previousId)) {
+        // If same user id as before, don't reset setActingAs - they will still probably
+        // have the same businesses so don't need to reset business ID
+        store.actions.setActingAs(null);
+      }
     },
-    // log the user out and sync with local storage
+
+      /**
+     * Delete authenticated user (and actingAs) from state and local storage
+     */
     deleteAuthUser: () => {
       state.authUser = null;
       localStorage.removeItem("authUser");
-      localStorage.removeItem("userId");
+      store.actions.setActingAs(null);
     },
     // Make the currently logged in user admin
     makeAdmin: () => {
@@ -66,16 +108,31 @@ export const store = {
       state.authUser.role = "ROLE_USER";
       localStorage.setItem("authUser", JSON.stringify(state.authUser));
     },
-
+    
+    /**
+     * Sets the business the user is acting as.
+     * When `getActingAs` is called, it returns the business in `authUser` with the same ID. Hence, if the business with the given ID does not exist in `authUser`'s businesses array, `getActingAs` will return null.
+     * This ensures that there is will not be multiple copies of the business object that may go out of sync
+     * @param {*} business ID of business, the business the user is acting as (or object with `id`), or null to remove
+     * @throws error if business ID not in the list of user businesses ()
+     */
     setActingAs: (business) => {
-      if (business === undefined || business === null) return store.actions.deleteActingAs();
-      state.actingAs = business;
-      localStorage.setItem("actingAs", JSON.stringify(state.actingAs));
+      if (business == null) {
+        state.actingAsId = null;
+        localStorage.removeItem("actingAsId");
+      } else {
+        const id = Number.isInteger(business)? business: business.id;
+        if (
+          state.authUser == null || 
+          state.authUser.businessesAdministered.find(business => business.id == id) == undefined
+        ) throw new Error("Tried to set acting as business, but business ID not found in authUser's businesses");
+        state.actingAsId = id;
+        localStorage.setItem("actingAsId", id);
+      }
     },
-
+    // Delete business of user acting as when user switch back to individual
     deleteActingAs: () => {
-      state.actingAs = null;
-      localStorage.setItem("actingAs", JSON.stringify(state.actingAs));
+      store.actions.setActingAs(null);
     }
   },
 };

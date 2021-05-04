@@ -1,6 +1,8 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
@@ -40,15 +42,18 @@ public class BusinessController {
      * @throws ResponseStatusException Unknown Error.
      */
     @PostMapping("/businesses")
-    public ResponseEntity<String> registerBusiness(@RequestBody Business business) {
+    public ResponseEntity<JSONObject> registerBusiness(@RequestBody Business business) {
         try {
-            businessService.saveBusiness(business);
+            JSONObject businessId = businessService.saveBusiness(business);
             log.info("BUSINESS CREATED SUCCESSFULLY: " + business.getId());
-            return new ResponseEntity<>("Business account successfully created", HttpStatus.valueOf(201));
+            return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));
         } catch(BusinessRegistrationException exc) {
             log.error("COULD NOT REGISTER BUSINESS (" + exc.getMessage() + "): " + business.getName());
             throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad Request");
-        }catch (Exception exc) {
+        } catch (AddressValidationException exc) {
+            log.error("COULD NOT REGISTER BUSINESS (" + exc.getMessage() + "): " + business.getName());
+            throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad address given");
+        } catch (Exception exc) {
             log.error("CRITICAL BUSINESS REGISTRATION ERROR (" + exc.getMessage() + ")");
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
         }
@@ -62,11 +67,10 @@ public class BusinessController {
      * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
      */
     @GetMapping("/businesses/{id}")
-    public ResponseEntity<JSONObject> getBusinessById(@PathVariable String id) {
+    public ResponseEntity<Object> getBusinessById(@PathVariable String id) {
         try {
             log.info("GETTING BUSINESS BY ID: " + id);
-            return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)),
-                    HttpStatus.valueOf(200));
+            return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)), HttpStatus.valueOf(200));
         } catch (BusinessNotFoundException exc) {
             log.error("BUSINESS NOT FOUND ERROR: " + id);
             throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
@@ -77,5 +81,4 @@ public class BusinessController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
         }
     }
-
 }

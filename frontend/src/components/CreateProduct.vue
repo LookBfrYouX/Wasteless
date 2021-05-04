@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-100 d-flex justify-content-center signup-container gradient-background pb-4"
+    class="w-100 d-flex justify-content-center product-page-container gradient-background pb-4"
   >
     <div class="container">
       <form
@@ -32,12 +32,14 @@
         <!-- up for discussion about setting a step price -->
         <div class="row">
           <div class="form-group required col px-3">
-            <label>Price</label>
+            <label>Price {{symbol}} ({{currency}})</label>
             <input
                 v-model="price"
-                v-bind:placeholder="symbol + ' ' + currency"
+                v-bind:placeholder="symbol + ' (' + currency + ')'"
                 class="form-control"
                 step="0.10"
+                min="0"
+                max="9999.9"
                 name="price"
                 required
                 type="number"
@@ -95,7 +97,8 @@
 </template>
 
 <script>
-const Api = require("../Api").default;
+const { Api } = require("./../Api.js");
+const countryData = require("./../assets/countryData.json");
 
 export default {
   data() {
@@ -113,20 +116,27 @@ export default {
     };
   },
 
+  props: {
+    countryData: {
+      required: false,
+      default: () => countryData
+    }
+  },
+
   created() {
     this.getCurrencies(this.$stateStore.getters.getActingAs().address.country);
-    console.log(this.getCurrencies(this.$stateStore.getters.getActingAs().address.country))
   },
 
   methods: {
     /**
      * Find the currency associated with the country of the user
      */
-    getCurrencies: async function (country) {
-      let response = await Api.getCurrencies(country);
-      this.currency = response[0].currencies[0].code;
-      this.symbol = response[0].currencies[0].symbol;
+    getCurrencies: async function (countryName) {
+      const country = this.countryData.find(country => country.name == countryName);
+      const currency = country? country.currency: this.$constants.CURRENCY.DEFAULT_CURRENCY;
 
+      this.currency = currency.code;
+      this.symbol = currency.symbol;
     },
     /**
      * Wrapper which simply calls the sign up method of the api
@@ -146,14 +156,21 @@ export default {
         this.errorMessage = "Please enter a valid price";
       } else if (this.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
+      } else if (this.manufacturer.trim().length === 0) {
+        this.errorMessage = "Please enter a manufacturer for your product";
       } else {
-        await this.callApi({
-          name: this.name,
-          recommendedRetailPrice: this.price, // API stores the type as businessType not type
-          manufacturer: this.manufacturer,
-          description: this.description,
-        });
-        this.errorMessage = "";
+        try {
+          await this.callApi({
+            name: this.name,
+            recommendedRetailPrice: this.price, // API stores the type as businessType not type
+            manufacturer: this.manufacturer,
+            description: this.description,
+          });
+        } catch(err) {
+          if (await Api.handle401.call(this, err)) return;
+          this.errorMessage = err.userFacingErrorMessage;
+          return;
+        }
         await this.$router.push("productCatalogue");
       }
     },
@@ -162,7 +179,7 @@ export default {
 </script>
 
 <style scoped>
-.signup-container > div {
+.product-page-container > div {
   max-width: 50em;
 }
 </style>

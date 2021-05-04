@@ -1,13 +1,11 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
-import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
+import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
-import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
-import com.navbara_pigeons.wasteless.validation.AddressValidator;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
 
 import java.time.ZoneOffset;
@@ -15,8 +13,8 @@ import java.time.ZonedDateTime;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,14 +26,9 @@ import org.springframework.stereotype.Service;
 public class BusinessServiceImpl implements BusinessService {
 
   private final BusinessDao businessDao;
-
-  private final AddressDao addressDao;
-
-  private final UserDao userDao;
-
+  private final AddressService addressService;
   private final UserService userService;
 
-  private final AddressValidator addressValidator;
   /**
    * BusinessServiceImplementation constructor that takes autowired parameters and sets up the
    * service for interacting with all business related services.
@@ -43,11 +36,10 @@ public class BusinessServiceImpl implements BusinessService {
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, AddressDao addressDao, UserDao userDao, AddressValidator addressValidator, UserService userService) {
+  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService, @Lazy UserService userService) {
+    // Using @Lazy to prevent Circular Dependencies
     this.businessDao = businessDao;
-    this.addressDao = addressDao;
-    this.userDao = userDao;
-    this.addressValidator = addressValidator;
+    this.addressService = addressService;
     this.userService = userService;
   }
 
@@ -61,31 +53,18 @@ public class BusinessServiceImpl implements BusinessService {
   @Override
   @Transactional
   public JSONObject saveBusiness(Business business)
-          throws BusinessTypeException, UserNotFoundException, BusinessRegistrationException {
+          throws BusinessTypeException, UserNotFoundException, AddressValidationException {
     if (!BusinessServiceValidation.isBusinessTypeValid(business.getBusinessType())) {
       throw new BusinessTypeException("Invalid BusinessType");
     }
 
-    // Address validation
-    if (!addressValidator.requiredFieldsNotEmpty(business.getAddress())) {
-      throw new BusinessRegistrationException("Required address fields cannot be null");
-    }
-
-    Boolean countryValid = addressValidator.isCountryValid(business.getAddress().getCountry());
-    if (countryValid == null) {
-      // TODO change this to a 500 error instead
-      throw new BusinessRegistrationException("Could not fetch list of countries for validation");
-    } else if (!countryValid.booleanValue()) {
-      throw new BusinessRegistrationException("Country does not exist is is not known");
-    }
-
-
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
-    User currentUser = this.userDao.getUserByEmail(authentication.getName());
+    User currentUser = this.userService.getUserByEmail(authentication.getName());
     business.addAdministrator(currentUser);
     business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
-    this.addressDao.saveAddress(business.getAddress());
+
+    this.addressService.saveAddress(business.getAddress());
     this.businessDao.saveBusiness(business);
     JSONObject response = new JSONObject();
     response.put("businessId", business.getId());
@@ -97,51 +76,19 @@ public class BusinessServiceImpl implements BusinessService {
    *
    * @param id the id of the business
    * @return the Business instance of the business
+   * @throws BusinessNotFoundException when business with given id does not exist
+   * @throws UserNotFoundException should never be thrown. If is thrown, return 500 status code
    */
   @Override
-  public JSONObject getBusinessById(long id)
-      throws BusinessNotFoundException, UserNotFoundException {
-    Business business = this.businessDao.getBusinessById(id);
+  @Transactional
+  public Object getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException {
+    Business business = businessDao.getBusinessById(id);
 
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    Authentication authentication = securityContext.getAuthentication();
-    User user = this.userDao.getUserByEmail(authentication.getName());
-    JSONObject response = new JSONObject();
-    response.put("id", id);
-    response.put("name", business.getName());
-    response.put("description", business.getDescription());
-    response.put("businessType", business.getBusinessType());
-    response.put("created", business.getCreated());
-
-    JSONObject address = new JSONObject();
-    response.put("homeAddress", address);
-    response.put("primaryAdministratorId", business.getPrimaryAdministratorId());
-
-    // Email of user that made the request
-    String username = ((BasicUserDetails) authentication.getPrincipal()).getUsername();
-    boolean isAdmin = false;
-    for (GrantedAuthority simpleGrantedAuthority : authentication.getAuthorities()) {
-      if (simpleGrantedAuthority.getAuthority().contains("ADMIN")) {
-        isAdmin = true;
-      }
+    if (isBusinessAdmin(id) || userService.isAdmin()) {
+      return new FullBusinessDto(business);
+    } else {
+      return new BasicBusinessDto(business);
     }
-    boolean isAdministrator = false;
-    for (User administrator : business.getAdministrators()) {
-      if (administrator.getEmail() == username) {
-        isAdministrator = true;
-      }
-    }
-    // sensitive details (e.g. email, postcode) are not returned
-    if (business.getPrimaryAdministratorId() == user.getId() || isAdministrator || isAdmin) {
-      address.put("streetNumber", user.getHomeAddress().getStreetNumber());
-      address.put("streetName", user.getHomeAddress().getStreetName());
-      address.put("postcode", user.getHomeAddress().getPostcode());
-    }
-
-    address.put("city", user.getHomeAddress().getCity());
-    address.put("region", user.getHomeAddress().getRegion());
-    address.put("country", user.getHomeAddress().getCountry());
-    return response;
   }
 
   /**
@@ -165,5 +112,4 @@ public class BusinessServiceImpl implements BusinessService {
     }
     return false;
   }
-
 }

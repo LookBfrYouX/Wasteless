@@ -19,8 +19,7 @@
             type="file"
             @change="onFilePicked"/>
         <!--User profile image-->
-        <img :src="profileURL" alt="Users profile image"
-             class="profile-image my-3 rounded-circle">
+        <img alt="Users profile image" class="my-3 rounded-circle border border-light" src="./../../assets/images/default-user-thumbnail.svg">
       </div>
       <div class="col-md-7 m-2 card">
         <div class="m-3">
@@ -94,40 +93,28 @@
     <div class="row">
       <div class="col-md-4 order-2 order-md-1 m-2 card">
         <h5 class="text-muted mt-3">Businesses</h5>
-        <div v-if="Array.isArray(userInfo.businesses) && userInfo.businesses.length !== 0">
+        <div v-if="Array.isArray(userInfo.businessesAdministered) && userInfo.businessesAdministered.length !== 0">
           <h1 class="title">Businesses</h1>
           <ul class="profile-business-info list-unstyled">
-            <li v-for="(business, index) in userInfo.businesses"
-                v-bind:key="index" class="list-group-item card text-wrap">
-              <dt class="col-md label">Business Name:</dt>
-              <dd class="col-md value" v-on:click="viewBusiness(business.id)"> {{
-                  business.name
-                }}
-              </dd>
+            <li
+              v-for="(business, index) in userInfo.businessesAdministered"
+              v-bind:key="index"
+              class="list-group-item card text-wrap"
+            >
+              <h5 class="card-title">{{ business.name }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                {{ business.businessType }}
+              </h6>
+              <p class="card-text">{{ business.description }}</p>
+              <a class="card-link" v-on:click="viewBusiness(business.id)"
+                >More info</a
+              >
             </li>
           </ul>
         </div>
-        <div class="card my-2">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the
-              bulk of the card's content.</p>
-            <a class="card-link" href="/profile">Card link</a>
-            <a class="card-link" href="/profile">Another link</a>
-          </div>
+        <div v-else>
+          No businesses
         </div>
-        <div class="card my-2">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the
-              bulk of the card's content.</p>
-            <a class="card-link" href="/profile">Card link</a>
-            <a class="card-link" href="/profile">Another link</a>
-          </div>
-        </div>
-
       </div>
       <div class="col-md-7 order-1 order-md-2 m-2 card">
         <ul class="nav nav-tabs mt-2">
@@ -170,15 +157,7 @@
             <tr v-if="userInfo.homeAddress" scope="row">
               <th style="white-space: nowrap;">Address:</th>
               <td class="col-md value">
-                <p>{{
-                    [userInfo.homeAddress.streetNumber + ' ' + userInfo.homeAddress.streetName,
-                      userInfo.homeAddress.city,
-                      userInfo.homeAddress.region,
-                      userInfo.homeAddress.postcode,
-                      userInfo.homeAddress.country
-                    ].filter(Boolean).join(', ')
-                  }}
-                </p>
+                <p>{{$helper.addressToString(userInfo.homeAddress)}}</p>
               </td>
             </tr>
             </tbody>
@@ -192,6 +171,7 @@
         v-bind:refresh="true"
         v-bind:retry="this.apiPipeline"
         v-bind:show="apiErrorMessage !== null"
+        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -203,14 +183,10 @@
 import ErrorModal from './Errors/ErrorModal.vue';
 import {ApiRequestError} from "./../ApiRequestError";
 
-const Api = require("./../Api").default;
-
-const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August",
-  "September", "October", "November", "December"];
-Object.freeze(MONTH_NAMES);
+const { Api } = require("./../Api.js");
 
 export default {
-  name: 'profilePage',
+  name: 'profile',
   components: {ErrorModal},
 
   data() {
@@ -334,7 +310,7 @@ export default {
       try {
         const response = await apiCall;
         const authUser = this.$stateStore.getters.getAuthUser();
-        
+
         this.userInfo = response.data;
 
         if (authUser && authUser.id == this.userInfo.id) {
@@ -358,7 +334,7 @@ export default {
       if (!(date instanceof Date)) {
         date = new Date(date);
       }
-      return `${date.getDate()} ${MONTH_NAMES[date.getMonth()]}, ${date.getFullYear()}`;
+      return `${date.getDate()} ${this.$constants.MONTH_NAMES[date.getMonth()]}, ${date.getFullYear()}`;
     },
 
     /**
@@ -393,8 +369,9 @@ export default {
       this.$router.push({
         name: "businessProfile",
         params: {
-          businessId
-        }
+          businessId,
+          showBackButton: true
+        },
       });
     }
   },
@@ -446,7 +423,8 @@ export default {
       this.apiPipeline();
     },
     userInfo() {
-
+      if (this.userInfo !== null) document.title = `${this.userInfo.firstName} ${this.userInfo.firstName} | Profile`;
+      // If switch user profile and request fails will be stuck with old title
     }
   }
 }

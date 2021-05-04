@@ -1,12 +1,13 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.navbara_pigeons.wasteless.dao.AddressDao;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dao.UserDao;
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
-import com.navbara_pigeons.wasteless.validation.AddressValidator;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -36,11 +37,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-  private final AddressDao addressDao;
   private final UserDao userDao;
-  private final AddressValidator addressValidator;
+  private final AddressService addressService;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final BCryptPasswordEncoder encoder;
+  private final ObjectMapper objectMapper;
+  private final BusinessService businessService;
 
   @Value("${dgaa.user.email}")
   private String dgaaEmail;
@@ -50,19 +52,21 @@ public class UserServiceImpl implements UserService {
    * for interacting with all user related services.
    *
    * @param userDao                      The UserDataAccessObject.
-   * @param addressDao                   The AddressDataAccessObject
-   * @param addressValidator             The address validator
+   * @param addressService             The address service
    * @param authenticationManagerBuilder The global AuthenticationManagerBuilder.
    * @param encoder                      Password encoder.
+   * @param businessService
    */
   @Autowired
-  public UserServiceImpl(UserDao userDao, AddressDao addressDao, AddressValidator addressValidator,
-      AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder encoder) {
+  public UserServiceImpl(UserDao userDao, AddressService addressService,
+      AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder encoder,
+      ObjectMapper objectMapper, BusinessService businessService) {
     this.userDao = userDao;
-    this.addressDao = addressDao;
-    this.addressValidator = addressValidator;
+    this.addressService = addressService;
     this.authenticationManagerBuilder = authenticationManagerBuilder;
     this.encoder = encoder;
+    this.objectMapper = objectMapper;
+    this.businessService = businessService;
   }
 
   /**
@@ -77,7 +81,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public JSONObject saveUser(User user)
-      throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException {
+          throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException {
     // Email validation
     if (!UserServiceValidation.requiredFieldsNotEmpty(user)) {
       throw new UserRegistrationException("Required user fields cannot be null");
@@ -104,19 +108,6 @@ public class UserServiceImpl implements UserService {
       throw new UserRegistrationException("Password does not pass validation check");
     }
 
-    // Address validation
-    if (!addressValidator.requiredFieldsNotEmpty(user.getHomeAddress())) {
-      throw new UserRegistrationException("Required address fields cannot be null");
-    }
-
-    Boolean countryValid = addressValidator.isCountryValid(user.getHomeAddress().getCountry());
-    if (countryValid == null) {
-      // TODO change this to a 500 error instead
-      throw new UserRegistrationException("Could not fetch list of countries for validation");
-    } else if (!countryValid.booleanValue()) {
-      throw new UserRegistrationException("Country does not exist is is not known");
-    }
-
     // Set user credentials for logging in after registering
     UserCredentials userCredentials = new UserCredentials();
     userCredentials.setEmail(user.getEmail());
@@ -125,7 +116,8 @@ public class UserServiceImpl implements UserService {
     user.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     user.setPassword(encoder.encode(user.getPassword()));
     user.setRole("ROLE_USER");
-    this.addressDao.saveAddress(user.getHomeAddress());
+
+    this.addressService.saveAddress(user.getHomeAddress());
     this.userDao.saveUser(user);
 
     // Logging in the user and returning the id
@@ -139,46 +131,18 @@ public class UserServiceImpl implements UserService {
    * number/name/post code are not returned
    *
    * @param id the id of the user
-   * @return the User instance of the user
+   * @return the User DTO instance of the user
    */
   @Override
-  public JSONObject getUserById(long id) throws UserNotFoundException {
-    User user = this.userDao.getUserById(id);
-    JSONObject response = new JSONObject();
-    response.put("id", id);
-    response.put("firstName", user.getFirstName());
-    response.put("lastName", user.getLastName());
-    response.put("middleName", user.getMiddleName());
-    response.put("nickname", user.getNickname());
-    response.put("bio", user.getBio());
-    response.put("created", user.getCreated());
-    response.put("role", user.getRole());
+  @Transactional
+  public Object getUserById(long id) throws UserNotFoundException {
+    User user = userDao.getUserById(id);
 
-    JSONObject address = new JSONObject();
-    response.put("homeAddress", address);
-    response.put("businesses", user.getBusinesses());
-
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-
-    String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-    // Email of user that made the request
-
-    // sensitive details (e.g. email, postcode) are not returned
-    if (username.equals(user.getEmail()) || isAdmin()) {
-      response.put("email", user.getEmail());
-      response.put("dateOfBirth", user.getDateOfBirth());
-      response.put("phoneNumber", user.getPhoneNumber());
-
-      address.put("streetNumber", user.getHomeAddress().getStreetNumber());
-      address.put("streetName", user.getHomeAddress().getStreetName());
-      address.put("postcode", user.getHomeAddress().getPostcode());
+    if (isAdmin() || isSelf(user.getEmail())) {
+      return new FullUserDto(user);
+    } else {
+      return new BasicUserDto(user);
     }
-
-    address.put("city", user.getHomeAddress().getCity());
-    address.put("region", user.getHomeAddress().getRegion());
-    address.put("country", user.getHomeAddress().getCountry());
-    return response;
   }
 
   /**
@@ -223,17 +187,6 @@ public class UserServiceImpl implements UserService {
   @Override
   public User getUserByEmail(String email) throws UserNotFoundException {
     return userDao.getUserByEmail(email);
-  }
-
-  /**
-   * This method is used to get a list of all users (use with care as it may impact performace
-   * significantly.
-   *
-   * @return Returns a list of all users.
-   */
-  @Override
-  public List<User> getAllUsers() {
-    return null;
   }
 
   /**
@@ -319,6 +272,20 @@ public class UserServiceImpl implements UserService {
       if (simpleGrantedAuthority.getAuthority().contains("ADMIN")) {
         return true;
       }
+    }
+    return false;
+  }
+
+  /**
+   * Checks if given email is logged in users email
+   *
+   * @param userEmail User to check against
+   * @return true if logged in user is the referenced user
+   */
+  public boolean isSelf(String userEmail) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (userEmail.equals(auth.getName())) {
+      return true;
     }
     return false;
   }

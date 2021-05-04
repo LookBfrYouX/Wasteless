@@ -29,8 +29,8 @@
         <div v-if="isVisible" class="overlay w-100 d-md-none" v-on:click="toggleSidebar()"></div>
         <div class="results-content container d-flex justify-content-end justify-content-md-center">
           <div class="results-wrapper col-12 col-md-8 mt-5">
-            Displaying results {{ 10 * this.pageNum + 1 }} -
-            {{ Math.min(results.length, 10 * (this.pageNum + 1)) }}
+            Displaying results {{ this.resultsPerPage * this.pageNum + 1 }} -
+            {{ Math.min(results.length, this.resultsPerPage * (this.pageNum + 1)) }}
             out of {{ results.length }}
             <ul class="list-unstyled list-group">
               <!--viewUser method uses router.push to display profile page-->
@@ -44,10 +44,8 @@
                     }}</span>
                 </div>
                 <div class="text-muted">{{ user.email }}</div>
-                <div v-if="user.homeAddress" class="text-muted">{{ user.homeAddress.streetNumber }}
-                  {{ user.homeAddress.streetName }}, {{ user.homeAddress.city }},
-                  {{ user.homeAddress.region }}, {{ user.homeAddress.country }}
-                  {{ user.homeAddress.postcode }}
+                <div v-if="user.homeAddress" class="text-muted">
+                  {{$helper.addressToString(user.homeAddress)}}
                 </div>
                 <div v-else class="text-muted">Address unknown</div>
               </li>
@@ -62,9 +60,11 @@
                 <!--number of buttons scale to amount of pages-->
                 <li v-for="pageNumber in pages.slice(Math.max(0, pageNum - 1), pageNum + 5)"
                     :key="pageNumber"
-                    class="page-item">
+                    class="page-item"
+                    v-bind:class="{'active': pageNum == pageNumber}"
+                >
                   <button class="page-link" name="button" type="button"
-                          v-on:click="pageNum=pageNumber">{{ pageNumber + 1 }}
+                          v-on:click="pageNum = pageNumber">{{ pageNumber + 1 }}
                   </button>
                 </li>
                 <li>
@@ -87,6 +87,7 @@
         v-bind:refresh="true"
         v-bind:retry="this.query"
         v-bind:show="apiErrorMessage !== null"
+        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -96,19 +97,20 @@
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
 
-const Api = require("./../Api").default;
+const { Api } = require("./../Api.js");
 
 const SearchResults = {
   name: "SearchResults",
   components: {ErrorModal},
   /*has a search prop from app.vue*/
   props: ['search'],
+
   data: function () {
     /* setting intial state */
     return {
       results: [],
       pageNum: 0, // Page number starts from 0 but it will shown as 1 on UI
-      resultsPerPage: 10,
+      resultsPerPage: this.$constants.SEARCH_RESULTS.RESULTS_PER_PAGE,
       highlightedItem: null,
       pages: [],
       sortBy: null,
@@ -136,6 +138,7 @@ const SearchResults = {
       try {
         const {data} = await Api.search(this.search);
         this.results = this.parseSearchResults(data);
+
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
