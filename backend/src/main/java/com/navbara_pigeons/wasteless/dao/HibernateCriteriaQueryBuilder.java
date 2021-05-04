@@ -47,7 +47,7 @@ public class HibernateCriteriaQueryBuilder {
         // AND is default join for predicates so this is empty
       } else if (currentToken.toUpperCase().matches("OR")) {
         // Check it is in a legit place
-        if (i > 0 && (i + 1) < tokens.size() && predicates.size() > 0) {
+        if (i > 0 && (i + 1) < tokens.size() && !predicates.isEmpty()) {
           Predicate lastPredicate = predicates.remove(predicates.size() - 1);
           Predicate newPredicate = criteriaBuilder
               .or(lastPredicate, makePredicate(tokens.get(i + 1), criteriaBuilder, root));
