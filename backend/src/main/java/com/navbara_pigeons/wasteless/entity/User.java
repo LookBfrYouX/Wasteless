@@ -87,7 +87,7 @@ public class User {
       joinColumns = @JoinColumn(name = "USER_ID"),
       inverseJoinColumns = @JoinColumn(name = "BUSINESS_ID")
   )
-  private List<Business> businesses;
+  private List<Business> businesses = new ArrayList<>();
 
   /**
    * This is a helper method to add a business to the user.

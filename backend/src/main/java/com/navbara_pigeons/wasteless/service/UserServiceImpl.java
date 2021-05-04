@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
     user.setPassword(encoder.encode(user.getPassword()));
     user.setRole("ROLE_USER");
 
-    this.addressService.saveAddress(user.getHomeAddress());
+    this.addressService.saveAddress(user.getHomeAddress()); // May fail if country invalid
     this.userDao.saveUser(user);
 
     // Logging in the user and returning the id
