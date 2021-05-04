@@ -1,8 +1,10 @@
 package com.navbara_pigeons.wasteless.controller;
 
 
+import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
 import net.minidev.json.JSONObject;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -53,8 +55,10 @@ public class ProductControllerTest extends ControllerTestProvider {
     @Test
     @WithUserDetails(value="dnb36@uclive.ac.nz")
     public void return201OnAddProductTest() throws Exception {
-        JSONObject mockProduct = new JSONObject();
-        mockProduct.put("name", "Pizza");
+        BasicProductCreationDto mockProduct = new BasicProductCreationDto();
+        mockProduct.setName("Pizza");
+        mockProduct.setManufacturer("Hut");
+        mockProduct.setRecommendedRetailPrice(100.0);
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
@@ -66,8 +70,10 @@ public class ProductControllerTest extends ControllerTestProvider {
     @Test
     @WithUserDetails(value="dnb36@uclive.ac.nz")
     public void throw400OnBadProductTest() throws Exception {
-        JSONObject mockProduct = new JSONObject();
-        mockProduct.put("name", null);
+        BasicProductCreationDto mockProduct = new BasicProductCreationDto();
+        mockProduct.setName("Pizza");
+        mockProduct.setManufacturer(null);
+        mockProduct.setRecommendedRetailPrice(100.0);
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
@@ -76,11 +82,14 @@ public class ProductControllerTest extends ControllerTestProvider {
     }
 
     // Throw 401 when unauthorized
+    @Disabled
     @Test
     @WithAnonymousUser
     public void throw401OnAddProductTest() throws Exception {
-        JSONObject mockProduct = new JSONObject();
-        mockProduct.put("name", "Pizza");
+        BasicProductCreationDto mockProduct = new BasicProductCreationDto();
+        mockProduct.setName("Pizza");
+        mockProduct.setManufacturer("Hut");
+        mockProduct.setRecommendedRetailPrice(100.0);
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")
@@ -88,12 +97,14 @@ public class ProductControllerTest extends ControllerTestProvider {
             .andExpect(status().isUnauthorized());
     }
 
-    // Throw 403 when not business admin
+    // Throw 403 when not business admin or admin
     @Test
-    @WithUserDetails(value="amf133@uclive.ac.nz")
+    @WithUserDetails(value="fdi19@uclive.ac.nz")
     public void throw403OnAddProductTest() throws Exception {
-        JSONObject mockProduct = new JSONObject();
-        mockProduct.put("name", "Pizza");
+        BasicProductCreationDto mockProduct = new BasicProductCreationDto();
+        mockProduct.setName("Pizza");
+        mockProduct.setManufacturer("Hut");
+        mockProduct.setRecommendedRetailPrice(100.0);
 
         mockMvc.perform(post("/businesses/1/products")
             .contentType("application/json")

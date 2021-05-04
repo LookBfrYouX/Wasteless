@@ -13,6 +13,8 @@ public class ProductServiceValidation {
    */
   public static boolean requiredFieldsNotEmpty(Product product) {
     for(String el: List.of(product.getName(), product.getManufacturer())) {
+//      System.out.println(el);
+//      System.out.println(ValidationHelper.isNullOrTrimmedEmpty(el));
       if (ValidationHelper.isNullOrTrimmedEmpty(el)) {
         return false;
       }
