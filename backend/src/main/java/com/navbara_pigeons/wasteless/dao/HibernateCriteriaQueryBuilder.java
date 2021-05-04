@@ -16,6 +16,10 @@ import org.hibernate.Session;
 
 public class HibernateCriteriaQueryBuilder {
 
+  private HibernateCriteriaQueryBuilder() {
+
+  }
+
   public static CriteriaQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery)
       throws InvalidAttributeValueException {
     // Setup
@@ -32,7 +36,7 @@ public class HibernateCriteriaQueryBuilder {
     // -- currently just using spaces
 
     List<String> tokens = new ArrayList<>();
-    Matcher matcher = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(searchQuery);
+    Matcher matcher = Pattern.compile("([^\"]\\S*|\"[^>]++\")\\s*").matcher(searchQuery);
     while (matcher.find()) {
       tokens.add(matcher.group(1));
     }

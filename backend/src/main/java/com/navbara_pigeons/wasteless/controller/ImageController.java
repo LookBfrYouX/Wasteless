@@ -173,11 +173,11 @@ public class ImageController {
   }
 
   @DeleteMapping("/businesses/{businessId}/products/{productId}/images/{imageId}")
-  public ResponseEntity deleteProductImage(@PathVariable String businessId, @PathVariable String productId, @PathVariable String imageId) {
+  public ResponseEntity<Object> deleteProductImage(@PathVariable String businessId, @PathVariable String productId, @PathVariable String imageId) {
     try {
       this.imageService.deleteProductImage(Long.parseLong(imageId), Long.parseLong(businessId), Long.parseLong(productId));
       log.info("DELETED PRODUCT IMAGE - PRODUCT " + productId + " : IMAGE " + imageId);
-      return new ResponseEntity(HttpStatus.valueOf(200));
+      return new ResponseEntity<>(HttpStatus.valueOf(200));
     } catch (UserNotFoundException e) {
       log.error("NO USER LOGGED IN");
       throw new ResponseStatusException(HttpStatus.valueOf(406), "The user was not found");
