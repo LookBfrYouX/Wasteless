@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 public class FullAddressDto {
 
-//    private long id;
     private String streetNumber;
     private String streetName;
     private String postcode;

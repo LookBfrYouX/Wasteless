@@ -28,7 +28,8 @@
 <script>
 // When there's an unrecoverable error, but not a 404
 
-import {Modal} from "bootstrap";
+// import {Modal} from "bootstrap";
+const $ = require("jquery");
 
 export default {
   name: "errorModal",
@@ -84,7 +85,7 @@ export default {
      * Synchronizes modal visibility with state
      */
     updateModalVisibility: function () {
-      this.show ? this.modal.show() : this.modal.hide();
+      this.show ? this.modal.modal("show"): this.modal.modal("hide");
     },
 
     /**
@@ -130,19 +131,23 @@ export default {
   },
 
   mounted() {
-    this.modal = new Modal(this.$refs.modal);
+    this.modal = $(this.$refs.modal).modal({
+      show: this.show
+    });
     // Not in data so Vue won't track updates to it that we don't care about
     this.updateModalVisibility();
-    this.$refs.modal.addEventListener("hidden.bs.modal", this.hideCallbackEvent);
+    this.modal.on("hidden.bs.modal", this.hideCallbackEvent);
   },
 
   /**
    * Hide the modal if it is open
    */
   beforeDestroy() {
-    if (this.modal) this.modal.hide(); // If navigation occurs while modal open, modal disapears but body has
-    // the modal open class
-    this.$refs.modal.removeEventListener("hidden.bs.modal", this.hideCallbackEvent);
+    if (this.modal) {
+      this.modal.modal("hide"); // If navigation occurs while modal open, modal disapears but body has the modal open class
+      // Wait for modal to completely disapear, then hide modal
+      this.modal.on("hidden.bs.modal", () => this.modal.modal("dispose"));
+    }
   }
 
 

@@ -1,8 +1,6 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
-import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
@@ -93,7 +91,6 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad address given");
     } catch (Exception exc) {
       log.error("CRITICAL REGISTER ERROR: " + exc);
-      exc.printStackTrace();
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
     }
   }
@@ -106,10 +103,10 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/users/{id}")
-  public ResponseEntity<Object> getUserById(@PathVariable long id) {
+  public ResponseEntity<Object> getUserById(@PathVariable String id) {
     try {
       log.info("GETTING USER BY ID: " + id);
-      return new ResponseEntity<>(this.userService.getUserById(id), HttpStatus.valueOf(200));
+      return new ResponseEntity<>(this.userService.getUserById(Long.parseLong(id)), HttpStatus.valueOf(200));
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());

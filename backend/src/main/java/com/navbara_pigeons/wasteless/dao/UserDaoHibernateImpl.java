@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -87,7 +86,7 @@ public class UserDaoHibernateImpl implements UserDao {
     try {
       user = query.getResultList();
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new RuntimeException("Unable to retrieve data from database");
     }
     if (user.size() == 0) {
       throw new UserNotFoundException("No user found with email: " + email);

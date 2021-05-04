@@ -2,21 +2,12 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Currency;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.*;
 import java.util.HashMap;
 
 @Service

@@ -1,12 +1,17 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.Image;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import javax.persistence.EntityManager;
+
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
  * A Data Access Object so handle Images on the machine.
  */
 @Repository
+@Slf4j
 public class ImageDaoImpl implements ImageDao {
 
   @Value("${user_generated_images_directory}")
@@ -49,6 +55,17 @@ public class ImageDaoImpl implements ImageDao {
    */
   public Path getPathToProduct(String filename) {
     Path destination = Paths.get(storagePath, filename);
+    for(String path: new String[]{"./", "./../", "./../staging-frontend", "./../../staging-frontend"}) {
+      File file = new File(path);
+      log.error(path);
+      log.error(file.exists()? "exists": "not exist");
+      if (file.exists()) {
+        Arrays.stream(file.listFiles()).distinct().forEach(file2 -> {
+          log.error(file2.toURI().toString());
+        });
+      }
+      log.error("\n");
+    }
     return destination.normalize();
   }
 
