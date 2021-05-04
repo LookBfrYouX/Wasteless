@@ -42,9 +42,9 @@ public class BusinessController {
      * @throws ResponseStatusException Unknown Error.
      */
     @PostMapping("/businesses")
-    public ResponseEntity<JSONObject> registerBusiness(@RequestBody Business business) {
+    public ResponseEntity<JSONObject> registerBusiness(@RequestBody FullBusinessDto business) {
         try {
-            JSONObject businessId = businessService.saveBusiness(business);
+            JSONObject businessId = businessService.saveBusiness(new Business(business));
             log.info("BUSINESS CREATED SUCCESSFULLY: " + business.getId());
             return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));
         } catch(BusinessRegistrationException exc) {

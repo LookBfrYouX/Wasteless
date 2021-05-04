@@ -69,6 +69,7 @@ public class BusinessServiceImpl implements BusinessService {
     User currentUser = this.userService.getUserByEmail(authentication.getName());
     business.addAdministrator(currentUser);
     business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
+    business.setPrimaryAdministratorId(currentUser.getId());
 
     this.addressService.saveAddress(business.getAddress());
     this.businessDao.saveBusiness(business);

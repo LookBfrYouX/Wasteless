@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.navbara_pigeons.wasteless.dto.*;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
@@ -80,6 +81,35 @@ public class Business {
           inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
   )
   private List<Product> productsCatalogue = new ArrayList<>();
+
+  public Business(FullBusinessDto business) {
+    this.id = business.getId();
+    this.primaryAdministratorId = business.getPrimaryAdministratorId();
+    this.name = business.getName();
+    this.description = business.getDescription();
+    this.address = new Address(business.getAddress());
+    this.businessType = business.getBusinessType();
+    this.created = business.getCreated();
+    for (BasicUserDto userDto : business.getAdministrators()) {
+      this.administrators.add(new User(userDto));
+    }
+    for (BasicProductDto productDto : business.getProductsCatalogue()) {
+      this.productsCatalogue.add(new Product(productDto));
+    }
+  }
+
+  public Business(BasicBusinessDto business) {
+    this.id = business.getId();
+    this.primaryAdministratorId = business.getPrimaryAdministratorId();
+    this.name = business.getName();
+    this.description = business.getDescription();
+    this.address = new Address(business.getAddress());
+    this.businessType = business.getBusinessType();
+    this.created = business.getCreated();
+  }
+
+  public Business() {
+  }
 
   /**
    * This is a helper method for adding a user to the business.
