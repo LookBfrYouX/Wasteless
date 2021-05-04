@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.navbara_pigeons.wasteless.dto.BasicImageDto;
 import lombok.Data;
 
 @Data
@@ -34,6 +36,12 @@ public class Image {
     String filename = "I" + UUID.randomUUID();
     this.filename = imagePrefix + filename + "." + extension;
     this.thumbnailFilename = imagePrefix + filename + "_thumbnail." + extension;
+  }
+
+  public Image(BasicImageDto image) {
+    this.id = image.getId();
+    this.filename = image.getFilename();
+    this.thumbnailFilename = image.getThumbnailFilename();
   }
 
   /**

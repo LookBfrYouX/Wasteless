@@ -48,13 +48,6 @@ public class UserServiceImplTest extends ServiceTestProvider {
   UserServiceImpl userService;
 
 
-
-  final String EMAIL_1 = "example@example.com";
-  final String EMAIL_2 = "example@example.com";
-  final String BUSINESS_1_NAME = "BUS";
-  final String PASSWORD_1 = "ABCabc123!@#";
-
-
   @Test
   @WithMockUser(username=EMAIL_1, password=PASSWORD_1)
   public void saveUser_normal() throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException {

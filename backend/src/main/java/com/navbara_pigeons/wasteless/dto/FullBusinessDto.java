@@ -45,7 +45,7 @@ public class FullBusinessDto {
         ArrayList<BasicUserDto> userlistDto = new ArrayList<>();
         for (User user : users) {
             BasicUserDto userDto = new BasicUserDto(user);
-            userDto.setBusinesses(null);
+            userDto.setBusinesses(new ArrayList<>());
             userlistDto.add(userDto);
         }
         return userlistDto;

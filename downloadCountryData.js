@@ -69,7 +69,8 @@ const pipeline = () => {
     console.log("Country data downloaded");
     const data = JSON.parse(fs.readFileSync(temporaryFilePath, { encoding: "utf8"}));
     const filteredData = filterData(data);
-    console.log(`Filtering data. ${filterData.length} countries found`);
+    console.log(filteredData);
+    console.log(`Filtering data. ${filteredData.length} countries found`);
     // saves to frontend
     console.log(`Saving to ${frontEndPath}`);
     fs.writeFileSync(frontEndPath, JSON.stringify(filteredData));

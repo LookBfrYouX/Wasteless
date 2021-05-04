@@ -16,6 +16,7 @@ public class FullAddressDto {
     private String city;
     private String region;
     private String country;
+
     public FullAddressDto(Address address) {
         this.streetNumber = address.getStreetNumber();
         this.streetName = address.getStreetName();

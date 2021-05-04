@@ -7,6 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.navbara_pigeons.wasteless.dto.BasicAddressDto;
+import com.navbara_pigeons.wasteless.dto.FullAddressDto;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -39,4 +42,24 @@ public class Address {
 
   @Column(name = "COUNTRY")
   private String country;
+
+  public Address(BasicAddressDto address) {
+    this.city = address.getCity();
+    this.region = address.getRegion();
+    this.country = address.getCountry();
+  }
+
+  public Address(FullAddressDto address) {
+    this.streetNumber = address.getStreetNumber();
+    this.streetName = address.getStreetName();
+    this.postcode = address.getPostcode();
+    this.city = address.getCity();
+    this.region = address.getRegion();
+    this.country = address.getCountry();
+  }
+
+  public Address() {
+
+  }
+
 }
