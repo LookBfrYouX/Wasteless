@@ -5,3 +5,5 @@ Feature: U2 Cities, States/Regions, Countries
 #  AC1: As I type into a textbox that could be prefilled using the API, an autocomplete functionality gives me the best options to choose from to save me from typing the rest of the word(s). E.g. typing “Las” might give me Las Vegas, Las Pinas, Las Palmas de Gran Canaria. It might be possible to make the autocomplete cleverer (e.g. by choosing the order in which the address is filled in (e.g. the team might decide on this order country → region → city → street …), but this is for the team to decide. It should not be difficult for the user to enter their address.
 #  AC2: The user should be able to override the autocomplete suggestions.
 #  AC3: The team should choose when the autocomplete mechanism starts (e.g. after the user enters the third letter). The system should provide the best user experience even for users on lower powered devices with slower internet speeds.
+
+    Scenario Outline:

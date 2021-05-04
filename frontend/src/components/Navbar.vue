@@ -1,8 +1,9 @@
 <template>
   <div id="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a v-on:click="pushOrGo('home')" class="navbar-brand">App Logo</a>
-
+      <!-- Title -->
+      <a class="navbar-brand" v-on:click="pushOrGo('home')">Navbara Pigeon</a>
+      <!-- Hamburger button -->
       <button
           aria-controls="navbarSupportedContent"
           aria-expanded="false"
@@ -53,7 +54,7 @@
               </div>
             </form>
           </li>
-
+          
           <!-- Right group: User and acting as -->
           <li v-if="isLoggedIn" class="nav-item dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
@@ -69,19 +70,14 @@
             </a>
 
             <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
-              <!-- <div v-if="actingAsEntities.length !== 0"
-                    class="switch-acting-as-wrapper"> -->
-                <div class="h4 dropdown-header">Logged in as</div>
-                <div class="dropdown-item">
-                  {{ authUser.firstName }} {{ authUser.lastName }}
-                </div>
-                <div class="dropdown-divider"></div>
                 <div class="h4 dropdown-header">Act as</div>
-                <a v-if="currentActingAs != null"
-                    v-on:click="$stateStore.actions.setActingAs()"
-                    class="dropdown-item">
-                  {{ authUser.firstName }} {{ authUser.lastName }}
-                </a>
+              <a v-on:click="$stateStore.actions.setActingAs()"
+                 class="dropdown-item">
+                {{ authUser.firstName }} {{ authUser.lastName }}
+                <span v-if="currentActingAs === null">
+                  &#10003;
+                </span>
+              </a>
                 <a v-for="business in actingAsEntities"
                     :key="business.id"
                     v-on:click="$stateStore.actions.setActingAs(business)"
@@ -92,7 +88,6 @@
                   </span>
                 </a>
                 <div class="dropdown-divider"></div>
-              <!-- </div> -->
               <a class="dropdown-item" v-on:click="logOut">Log out</a>
             </div>
           </li>
@@ -225,7 +220,7 @@ export default {
         this.logOutErrorMessage = err.userFacingErrorMessage;
         return;
       }
-      
+
       await this.$stateStore.actions.deleteAuthUser();
       await this.pushOrGo("home");
     },
@@ -258,34 +253,7 @@ export default {
      * If already on own profile page, reloads the page
      */
     profileClicked: async function() {
-      let reload = false;
-      let args;
-
-      if (this.currentActingAs == null) {
-        args = {
-          name: "profile"
-        }
-
-        if (this.$route.name === args.name && this.$route.params.userId === undefined) {
-          reload = true;
-        }
-      } else {
-        const businessId = this.currentActingAs.id;
-        args = {
-          name: "businessProfile",
-          params: {
-            businessId
-          }
-        }
-        
-        if (this.$route.name === "businessProfile" &&
-            this.$route.params.businessId === businessId.toString()) {
-          reload = true;
-        }
-      }
-
-      if (reload) await this.$router.go();
-      else await this.$router.push(args);
+      this.$helper.goToProfile.bind(this)();
     }
   },
 };

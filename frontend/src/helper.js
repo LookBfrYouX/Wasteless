@@ -37,5 +37,41 @@ export const helper = {
     const date = new Date(dateString);
     const day = date.getDate() < 10? `0${date.getDate()}`: date.getDate().toString();
     return `${day} ${constants.MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
+  },
+
+  /**
+   * Navigates to profile page. Call using `goToProfile.bind(this)()`
+   * If acting as business, goes to business profile. Otherwise, user profile.
+   * If already on own profile page, reloads the page
+   */
+  goToProfile: async function() {
+    let reload = false;
+    let args;
+
+    if (this.$stateStore.getters.getActingAs() == null) {
+      args = {
+        name: "profile"
+      }
+
+      if (this.$route.name === args.name && this.$route.params.userId === undefined) {
+        reload = true;
+      }
+    } else {
+      const businessId = this.$stateStore.getters.getActingAs().id;
+      args = {
+        name: "businessProfile",
+        params: {
+          businessId
+        }
+      }
+
+      if (this.$route.name === "businessProfile" &&
+          this.$route.params.businessId === businessId.toString()) {
+        reload = true;
+      }
+    }
+
+    if (reload) await this.$router.go();
+    else await this.$router.push(args);
   }
 }
