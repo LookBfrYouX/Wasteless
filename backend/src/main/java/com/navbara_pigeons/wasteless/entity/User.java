@@ -125,6 +125,19 @@ public class User {
     }
   }
 
+  public User(CreateUserDto user) {
+    this.firstName = user.getFirstName();
+    this.lastName = user.getLastName();
+    this.middleName = user.getMiddleName();
+    this.nickname = user.getNickname();
+    this.bio = user.getBio();
+    this.email = user.getEmail();
+    this.dateOfBirth = user.getDateOfBirth();
+    this.phoneNumber = user.getPhoneNumber();
+    this.password = user.getPassword();
+    this.homeAddress = new Address(user.getHomeAddress());
+  }
+
   public User() {
 
   }
