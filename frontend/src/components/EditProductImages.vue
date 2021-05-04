@@ -112,7 +112,7 @@ export default {
       images: [],
       apiErrorMessage: null,
       imageApiErrorMessage: null,
-      imageApiErrorTitle: ""
+      imageApiErrorTitle: "",
     }
   },
   props: {
@@ -226,14 +226,21 @@ export default {
      * @param imageId is an id property of image object.
      */
     deleteImage(imageId) {
+      // If the user double clicks delete the server 500s
+      // Remove the image immediately so that they can't do this
+      // Regardless of if the request suceeds or fails, refresh the pipeline
+      const index = this.images.findIndex(img => img.id == imageId);
+      if (index == -1) return;
+      this.images.splice(index);
+
       Api.deleteProductImage(this.actingAs.id, this.productId, imageId)
-      .then(() => {
-        return this.apiPipeline();
-      }).catch(async (err) => {
+      .catch(async (err) => {
         if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error deleting the image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
-      });
+      }).finally(() => {
+        return this.apiPipeline();
+      })
     },
   },
 

@@ -26,7 +26,7 @@ export const GLOBAL_STATE = {
         businessType: "Retail Trade",
         created: "2020-07-14 14:32:00.0",
         description: "A Good business",
-        homeAddress: {
+        address: {
           city: "Christchurch",
           country: "New Zealand",
           postcode: "8041",
