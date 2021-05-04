@@ -116,7 +116,7 @@ public class UserDaoHibernateImpl implements UserDao {
   @Override
   public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
     Session currentSession = getSession();
-    CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+    // CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<User> criteriaQuery = HibernateCriteriaQueryBuilder
         .parseUserSearchQuery(currentSession, searchQuery);
 
