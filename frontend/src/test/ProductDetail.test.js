@@ -5,7 +5,7 @@ import {ApiRequestError} from "../ApiRequestError";
 
 
 jest.mock("./../Api.js");
-// const { Api } = require("./../Api.js");
+const { Api } = require("./../Api.js");
 
 let wrapper;
 
@@ -57,4 +57,24 @@ describe("Retrieving business id", () => {
     expect(wrapper.vm.businessId).toEqual(1);
   });
 });
+
+describe("Parsing API response to get product images", () => {
+
+  test("Acting as a business", async () => {
+    const mocks = globalStateMocks();
+    wrapper = shallowMount(ProductDetail, {
+      businessId: 1,
+      propsData: {
+        productId: 1,
+      },
+      mocks
+    });
+    const getProducts = jest.fn(() => Promise.resolve());
+    Api._setMethod("getProducts", getProducts);
+    await wrapper.vm.callApi();
+    expect(getProducts.mock.calls.length).toBe(1);
+  });
+});
+
+
 
