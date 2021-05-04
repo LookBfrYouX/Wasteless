@@ -114,61 +114,6 @@ public class ImageController {
     }
   }
 
-  /**
-   * Add image to users profile
-   *
-   * @param id id of the user
-   * @param image image to be added
-   * @return url of the uploaded image
-   */
-  @PostMapping("/users/{id}/images")
-  public ResponseEntity<String> uploadProfileImage(@PathVariable long id,
-      @RequestParam MultipartFile image) {
-    try {
-      imageService.uploadProfileImage(id, image);
-      log.info(
-          "USER " + id + " SUCCESSFULLY UPLOADED PROFILE IMAGE " + image.getOriginalFilename());
-      return new ResponseEntity<>(HttpStatus.CREATED);
-    } catch (UserNotFoundException exc) {
-      log.error("USER NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The user does not exist");
-    } catch (BadCredentialsException exc) {
-      log.error("INSUFFICIENT PRIVILEGES: " + id);
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, exc.getMessage());
-    } catch (Exception exc) {
-      log.error("FAILED WHEN UPLOADING PROFILE IMAGE");
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
-    }
-  }
-
-  /**
-   * Download the image for the specified user.
-   *
-   * @param id The identifier of the user
-   * @return The byte array of the users profile image
-   */
-  @GetMapping(
-      value = "/users/{id}/images",
-      produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE}
-  )
-  public @ResponseBody
-  ResponseEntity<byte[]> downloadProfileImage(@PathVariable long id) {
-    try {
-      byte[] response = imageService.downloadProfileImage(id);
-      log.info("SUCCESSFULLY DOWNLOADED USER " + id + "'s PROFILE IMAGE");
-      return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (UserNotFoundException exc) {
-      log.error("USER NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The user does not exist");
-    } catch (IOException exc) {
-      log.error("USER DOES NOT HAVE AN IMAGE");
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, exc.getMessage());
-    } catch (Exception exc) {
-      log.error("FAILED WHEN DOWNLOADING PROFILE IMAGE");
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
-    }
-  }
-
   @DeleteMapping("/businesses/{businessId}/products/{productId}/images/{imageId}")
   public ResponseEntity<Object> deleteProductImage(@PathVariable String businessId, @PathVariable String productId, @PathVariable String imageId) {
     try {

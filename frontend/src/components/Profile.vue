@@ -3,21 +3,7 @@
     <div class="row mt-2">
       <!--User profile image card-->
       <div class="col-md-4 m-2 card">
-        <!--Upload image button overlay-->
-        <button
-            v-if="isLoggedIn && authUser.id === userInfo.id"
-            class="image-upload-button btn btn-lg btn-primary disabled"
-            type="button"
-        >
-          <span class="material-icons">file_upload</span>
-        </button>
-        <input
-            ref="fileInput"
-            accept="image/*"
-            class="d-none"
-            type="file"
-            @change="onFilePicked"/>
-        <!--User profile image-->
+        
         <img alt="Users profile image" class="my-3 rounded-circle"
              src="./../../assets/images/default-user-thumbnail.svg">
       </div>
@@ -212,27 +198,6 @@ export default {
   },
 
   methods: {
-    onPickFile() {
-      this.$refs.fileInput.click()
-    },
-    onFilePicked(event) {
-      const files = event.target.files
-
-      const promise = Api.uploadProfileImage(files[0], this.userId);
-      const prevImage = this.authUser.imageURL;
-      this.authUser.imageURL = process.env.VUE_APP_SERVER_ADD
-          + `/user-content/images/user/default-user-thumbnail.svg`;
-      this.profileURL = this.authUser.imageURL;
-
-      promise.then(result => {
-        if (result.status === 201) {
-          this.authUser.imageURL = result.data;
-          this.profileURL = result.data;
-        } else {
-          this.authUser.imageURL = prevImage;
-        }
-      });
-    },
     /**
      * Calls to the API to from the profile view with a given user ID to make requested user an Administrator
      * Returns a message to user to indicate whether or not the user has been updated to the Administrator role.

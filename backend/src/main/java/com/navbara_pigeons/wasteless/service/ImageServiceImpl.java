@@ -40,8 +40,8 @@ public class ImageServiceImpl implements ImageService {
   private final ImageDao imageDao;
   private final BusinessService businessService;
   private final ProductService productService;
-  private final String userPrefix = "U";
   private final UserService userService;
+  private final int THUMBNAIL_DIMENSIONS = 300;
 
   @Autowired
   public ImageServiceImpl(UserDao userDao, ImageDao imageDao, BusinessService businessService,
@@ -126,72 +126,12 @@ public class ImageServiceImpl implements ImageService {
     this.productService.saveProduct(productEntity);
   }
 
-  /**
-   * Upload a given profile image to the machine and store the image name in the database.
-   *
-   * @param image The image file to be saved
-   * @return The URI to access the saved image
-   * @throws UserNotFoundException The user could not be found from the Session
-   * @throws IOException           The new filename could not be created
-   */
-  @Transactional
-  public String uploadProfileImage(Long userId, MultipartFile image)
-      throws UserNotFoundException, IOException {
-    // Get the User object so we can use their ID
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    Authentication authentication = securityContext.getAuthentication();
-    User loggedInUser = this.userDao.getUserByEmail(authentication.getName());
-
-    // Get the user by passed id
-    User userToEdit = userDao.getUserById(userId);
-
-    if (loggedInUser.getId() != userToEdit.getId()) {
-      throw new BadCredentialsException("You cannot edit another users Profile Image");
-    }
-
-    // Delete the existing image if it exists
-    if (loggedInUser.getImageName() != null) {
-      imageDao.deleteProfileImageOnMachine(loggedInUser.getImageName());
-    }
-
-    // Get the file extension of the given file
-    String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-    String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
-
-    // Generate a new filename prefixed with 'U{userId}_'
-    String newFileName = userPrefix + loggedInUser.getId() + "_image." + fileExtension;
-
-    // Crop the image
-    image = cropImageToSquare(image, fileExtension, newFileName);
-
-    // Save the image in the images/user/ directory then save image name in DB
-    imageDao.saveProfileImageToMachine(image, newFileName);
-    loggedInUser.setImageName(newFileName);
-
-    // Return the URI for to download the image
-    return ServletUriComponentsBuilder
-        .fromCurrentContextPath()
-        .path("/users/")
-        .path(Long.toString(loggedInUser.getId()))
-        .path("/images/")
-        .toUriString();
-  }
-
-  public byte[] downloadProfileImage(long userId) throws UserNotFoundException, IOException {
-    // Get the user by passed id
-    User usersImageToDownload = userDao.getUserById(userId);
-    if (usersImageToDownload.getImageName() == null) {
-      return imageDao.getDefaultProfileImage();
-    }
-    return imageDao.getProfileImageOnMachine(usersImageToDownload.getImageName());
-  }
-
   private MultipartFile createImageThumbnail(MultipartFile image, String extension)
       throws IOException {
     InputStream in = new ByteArrayInputStream(image.getBytes());
     BufferedImage imageToResize = ImageIO.read(in);
 
-    int targetWidth = 100;
+    int targetWidth = THUMBNAIL_DIMENSIONS;
     int targetHeight = targetWidth;
 
     java.awt.Image resultingImage = imageToResize.getScaledInstance(targetWidth, targetHeight,
@@ -268,11 +208,4 @@ public class ImageServiceImpl implements ImageService {
     this.imageDao.deleteProductImageFromMachine(image.getPath());
     this.imageDao.deleteProductImageFromMachine(image.getThumbnailPath());
   }
-
-  public void deleteUserImage(long userId) {
-    // get path
-    // remove from database
-    // unlink image from fs
-  }
-
 }
