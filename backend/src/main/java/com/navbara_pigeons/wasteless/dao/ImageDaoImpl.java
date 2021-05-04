@@ -55,10 +55,17 @@ public class ImageDaoImpl implements ImageDao {
    */
   public Path getPathToProduct(String filename) {
     Path destination = Paths.get(storagePath, filename);
-    File parent = destination.getParent().toFile();
-    log.error(parent.toString());
-    log.error(parent.exists()? "exists": "not exist");
-    log.error(destination.toString());
+    for(String path: new String[]{"./", "./../", "./../staging-frontend", "./../../staging-frontend"}) {
+      File file = new File(path);
+      log.error(path);
+      log.error(file.exists()? "exists": "not exist");
+      if (file.exists()) {
+        Arrays.stream(file.listFiles()).distinct().forEach(file2 -> {
+          log.error(file2.toURI().toString());
+        });
+      }
+      log.error("\n");
+    }
     return destination.normalize();
   }
 
