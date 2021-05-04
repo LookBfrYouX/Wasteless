@@ -1,34 +1,36 @@
 Feature: U1
+
   Background:
+
+# AC1: Assuming I am not already logged in, the application gives me the ability to either log in or register (create) a new account. When registering, the mandatory attributes are clearly marked.
+  Scenario: AC1 successfully register and log into user accounts
     Given this user exist
-      |emailAddress |password  |firstName |lastName |nickname
-      |tst@usr.com  |Test12345 |Test      |User     |testt
+    |emailAddress |password  |firstName |lastName |nickname |
+    |tst@usr.com  |Test12345 |Test      |User     |testt    |
 
-  Scenario: I log in with a valid username and password
-    When I log in with username "tst@usr.com" and password "Test12345"
-    Then I am logged in
-    And I am taken to my profile page
+      When I log in with valid email "tst@usr.com" and valid password "Test12345"
+      Then I am logged in as user "tst@usr.com"
 
-#  Scenario: I log in with an invalid credentials
-#    When I submit my credentials
-#    Then I am shown an error that my username or password is not valid
-#
-#  Scenario: I log in with no username
-#    When I submit my credentials
-#    Then I am prompted to enter and username
-#
-#  Scenario: I log in with no password
-#    When I submit my credentials
-#    Then I am prompted to enter a password
-#
-#  Scenario: The network is unavailable
-#    When I submit my credentials
-#    Then A message displays instructing me to try again later
+      When I log in with invalid email "tst@usr.com" and password "asd" combination
+      Then I am shown an error that my email or password is not valid
+
+      When I register an account with the valid email "newusr@cucumber.com" and password "Password123"
+      Then user "newusr@cucumber.com" is added to the db
+      And I am logged in as user "newusr@cucumber.com"
+
+      When I register an account with the invalid email "a" and password "Password123"
+      Then I am shown an error that my request is invalid
+
+      When I register an account with the taken email "tst@usr.com" and password "Password123"
+      Then I am shown an error that my email is taken
+
+      When I register an account with an invalid address
+      Then I am shown an error that my address is invalid
+
 
 #  U1 Registering and logging into an individual account
 #  CRud: Individual (i.e. this story is for create and read)
 #  As a user, I want to have an individual account with at least my full name*, nickname, bio, email address*, date of birth*, phone number, and home address* (a textarea will do for this story). The attributes with the asterisk are mandatory (have to always contain values); an individual account cannot exist without the mandatory attributes filled in. You may add other attributes you deem are necessary.
-#  AC1: Assuming I am not already logged in, the application gives me the ability to either log in or register (create) a new account. When registering, the mandatory attributes are clearly marked.
 #  AC2: The username I use to log in should be my email address that I have previously registered in the system. If I try to register an account with an email address that is already registered, the system should not create the account but let me know. Similarly, if I try to log in with an email address that has not been registered, the system should let me know.
 #  AC3: If when logging in, my details are incorrect (username/password), the system should generate an error message letting me know.
 #  AC4: Appropriate validation is carried out and errors are clearly conveyed.

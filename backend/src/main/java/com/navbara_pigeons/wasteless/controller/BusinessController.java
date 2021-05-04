@@ -1,5 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
+import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
@@ -42,10 +44,10 @@ public class BusinessController {
      * @throws ResponseStatusException Unknown Error.
      */
     @PostMapping("/businesses")
-    public ResponseEntity<JSONObject> registerBusiness(@RequestBody FullBusinessDto business) {
+    public ResponseEntity<JSONObject> registerBusiness(@RequestBody CreateBusinessDto business) {
         try {
             JSONObject businessId = businessService.saveBusiness(new Business(business));
-            log.info("BUSINESS CREATED SUCCESSFULLY: " + business.getId());
+            log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
             return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));
         } catch(BusinessRegistrationException exc) {
             log.error("COULD NOT REGISTER BUSINESS (" + exc.getMessage() + "): " + business.getName());
