@@ -81,6 +81,7 @@ export const constants = {
   },
 
   PRODUCTS: {
-    DEFAULT_THUMBNAIL_IMAGE: "/default-product-thumbnail.svg"
+    DEFAULT_THUMBNAIL_IMAGE: "/default-product-thumbnail.svg",
+    MAX_PRICE: 10000
   }
 };
