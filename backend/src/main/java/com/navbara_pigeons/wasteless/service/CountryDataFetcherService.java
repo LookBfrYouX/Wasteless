@@ -5,15 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Currency;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
@@ -25,28 +25,30 @@ public class CountryDataFetcherService {
     private HashMap<String, Currency> currencyHashMap;
 
     public CountryDataFetcherService() throws URISyntaxException, IOException {
-        var a = ClassLoader.getSystemClassLoader().getResource(resourcePath);
-        System.out.println(a);
-        var b  = a.toURI();
-        System.out.println(b);
-        var c = Path.of(b);
-        System.out.println(c);
-        System.out.println(c.toFile().exists());
-        this.reloadCountryDataFromDisk(c);
+        loadCountryData();
+    }
+
+    /**
+     * Reads a file containing an API response from resources folder and generates the country hash map
+     * @throws IOException
+     */
+    protected void loadCountryData() throws IOException
+    {
+        InputStream stream = this.getClass().getClassLoader().getResource("countryData.json").openStream();
+        reloadCountryDataFromDisk(stream);
     }
 
     /**
      * Reads a file containing an API response from disk and generates the country hash map
-     * @param path path to JSON response
+     * @param file file containing to JSON response
      * @throws IOException
      */
-    protected void reloadCountryDataFromDisk(Path path) throws IOException
+    protected void reloadCountryDataFromDisk(InputStream file) throws IOException
     {
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         // JSON has lots of unnecessary properties that we can ignore
-        Country[] countries = mapper.readValue(path.toFile(), Country[].class);
+        Country[] countries = mapper.readValue(file, Country[].class);
         currencyHashMap = generateCurrencyHashMap(countries);
     }
 
