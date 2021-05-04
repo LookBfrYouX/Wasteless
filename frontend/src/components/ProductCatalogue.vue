@@ -43,7 +43,7 @@
                   class="list-group-item card">
                 <div class="row">
                   <div class="col-3">
-                    <img v-bind:src="getThumbnailImage(product.id)" class="image-fluid w-100" alt="Product Image">
+                    <img v-bind:src="getThumbnailImage(product.id)" class="image-fluid w-100 rounded-circle" alt="Product Image">
                   </div>
                   <div class="col-9">
                     <div class="d-flex flex-wrap justify-content-between">
@@ -235,6 +235,32 @@ const ProductCatalogue = {
     // used for for loop in html
     displayedResults() {
       return this.paginate(this.sortedResults);
+    },
+
+    /**
+     * Get a business object of current acting as entity.
+     */
+    actingAs() {
+      return this.$stateStore.getters.getActingAs();
+    },
+
+    /**
+     * Get business id if current acting as a business
+     */
+    businessId() {
+      if (this.actingAs === null) {
+        return null;
+      }
+      return this.actingAs.id;
+    }
+  },
+
+  watch: {
+    /**
+     * Watch acting as is switched by clicking navbar dropdown
+     */
+    businessId() {
+      this.$helper.goToProfile.bind(this)();
     }
   }
 };
