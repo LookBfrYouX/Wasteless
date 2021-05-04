@@ -15,8 +15,7 @@ Feature: U1
       Then I am shown an error that my email or password is not valid
 
       When I register an account with the valid email "newusr@cucumber.com" and password "Password123"
-      Then user "newusr@cucumber.com" is added to the db
-      And I am logged in as user "newusr@cucumber.com"
+      Then I am logged in as user "newusr@cucumber.com"
 
       When I register an account with the invalid email "a" and password "Password123"
       Then I am shown an error that my request is invalid

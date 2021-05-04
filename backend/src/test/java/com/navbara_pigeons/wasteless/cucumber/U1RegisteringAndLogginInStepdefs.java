@@ -95,10 +95,6 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
         .andReturn();
   }
 
-  @Then("user {string} is added to the db")
-  public void userIsAddedToTheDb(String email) {
-  }
-
   @When("I register an account with the invalid email {string} and password {string}")
   public void iRegisterAnAccountWithTheInvalidEmailAndPassword(String email, String password)
       throws Exception {
