@@ -4,12 +4,13 @@ import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
+import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.service.UserService;
-
-import java.util.ArrayList;
-import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -86,7 +87,6 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.valueOf(409), "Email address already in use");
     } catch (UserRegistrationException exc) {
       log.error("COULD NOT REGISTER USER (" + exc.getMessage() + "): " + user.getEmail());
-      exc.printStackTrace();
       throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad Request");
     } catch (AddressValidationException exc) {
       log.error("COULD NOT REGISTER USER (" + exc.getMessage() + "): " + user.getEmail());
