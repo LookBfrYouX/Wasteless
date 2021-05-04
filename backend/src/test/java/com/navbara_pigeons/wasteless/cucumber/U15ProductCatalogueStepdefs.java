@@ -13,38 +13,27 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 
-public class U15ProductCatalogueStepdefs {
+public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
   @Autowired
   private WebApplicationContext wac;
   @Autowired
   public MockMvc mockMvc;
-
-
-  @Before
-  public void setup() {
-    DefaultMockMvcBuilder builder = MockMvcBuilders
-            .webAppContextSetup(this.wac)
-            .apply(SecurityMockMvcConfigurers.springSecurity())
-            .dispatchOptions(true);
-    this.mockMvc = builder.build();
-  }
 
   @Given("a user with name {string} is logged in and administers a business called {string} that sells a product {string}")
   public void aUserWithNameIsLoggedInAndAdministersABusinessCalled(String userName, String businessName, String productName) {
     // TODO: figure out how to properly do cucumber tests
     User user = this.makeUser(userName + "@example.com", "password123", true);
     user.setFirstName(userName);
-    Business business = this.makeBusiness(businessName, user);
+    Business business = makeBusiness(businessName, user);
     Product product = this.makeProduct(productName);
-  }
 
-  @Given("{string} is signed in and administers a business {string} with a product {string}")
-  public void isSignedInAndAdministersABusinessWithAProduct(String arg0, String arg1, String arg2) {
   }
 
   @When("{string} requests his product catalogue")
   public void requestsHisProductCatalogue(String arg0) {
+    
   }
 
   @Then("The product {string} is displayed")

@@ -30,7 +30,8 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
     }
 
     @Given("A user {string} is logged in.")
-    public void aUserIsLoggedIn(String arg0) {
+    public void aUserIsLoggedIn(String email) {
+
     }
 
     @When("A search is performed for another user named {string}")
@@ -52,5 +53,4 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
     @Then("No user records are returned")
     public void noUserRecordsAreReturned() {
     }
-
 }
