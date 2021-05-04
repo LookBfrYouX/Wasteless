@@ -12,11 +12,6 @@ const temporaryFilePath = "./tmp.json";
 const frontEndPath = "./frontend/src/assets/countryData.json";
 const backEndPath = "./backend/src/main/resources/countryData.json";
 
-for(dir of ["./", "./backend/src", "./backend/src/main/resources"]) {
-  console.log("\n" + dir);
-  fs.readdirSync(dir).forEach(path => console.log(path));
-}
-
 /*
  * saves data to temp file for filtering
  */

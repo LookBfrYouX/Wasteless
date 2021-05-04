@@ -126,11 +126,7 @@ public class UserController {
   @GetMapping("/users/search")
   public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery) {
     try {
-      List<BasicUserDto> results = new ArrayList<>();
-      for (User user : userService.searchUsers(searchQuery)) {
-        results.add(new BasicUserDto(user));
-      }
-      return new ResponseEntity<>(results, HttpStatus.valueOf(200));
+      return new ResponseEntity<>(this.userService.searchUsers(searchQuery), HttpStatus.valueOf(200));
     } catch (InvalidAttributeValueException e) {
       log.error("INVALID SEARCH QUERY: " + searchQuery);
       throw new ResponseStatusException(HttpStatus.valueOf(500), "Invalid Search Query");

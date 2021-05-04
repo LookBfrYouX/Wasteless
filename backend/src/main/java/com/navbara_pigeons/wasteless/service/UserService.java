@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
@@ -23,7 +24,7 @@ public interface UserService {
 
   void revokeAdmin(long id) throws UserNotFoundException, NotAcceptableException;
 
-  List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException;
+  List<BasicUserDto> searchUsers(String searchQuery) throws InvalidAttributeValueException;
 
   void makeUserAdmin(long id) throws UserNotFoundException, BadCredentialsException;
 

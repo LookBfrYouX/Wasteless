@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import javax.transaction.Transactional;
@@ -196,8 +197,13 @@ public class UserServiceImpl implements UserService {
    * @return A list containing all the users whose names/nickname match the username
    */
   @Override
-  public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
-    return userDao.searchUsers(searchQuery);
+  @Transactional
+  public List<BasicUserDto> searchUsers(String searchQuery) throws InvalidAttributeValueException {
+    List<BasicUserDto> results = new ArrayList<>();
+    for (User user : userDao.searchUsers(searchQuery)) {
+      results.add(new BasicUserDto(user));
+    }
+    return results;
   }
 
   /**

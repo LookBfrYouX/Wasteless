@@ -8,6 +8,9 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +24,7 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
     @Given("these users exist")
     public void theseUsersExist(DataTable dataTable) {
         List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
-        String password = "Test12345";
+        String password = "Test@1234";
         for (Map<String, String> columns : rows) {
             User newUser = makeUser(columns.get("emailAddress"), password, false);
             newUser.setFirstName(columns.get("firstName"));
@@ -33,11 +36,20 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
     }
 
     @Given("A user {string} with password {string} is logged in.")
+    @WithUserDetails(value = "bob@fri.com")
     public void aUserWithPasswordIsLoggedIn(String email, String password) throws Exception {
-        UserCredentials userCredentials = new UserCredentials();
-        userCredentials.setEmail(email);
-        userCredentials.setPassword(password);
-        mockMvc.perform(post("/login").content("{ email: " + email + ", password: " + password + " }"));
+        System.out.println(userController.searchUsers("").toString());
+//        userController.login(userCredentials);
+//        JSONObject credentials = new JSONObject();
+//        credentials.put("email", email);
+//        credentials.put("password", "Test12345");
+//        System.out.println(credentials.toString());
+//        mockMvc.perform(
+//                post("/login")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(credentials.toString())
+//                        .accept(MediaType.ALL))
+//        .andExpect(status().is(200));
     }
 
     @When("A search is performed for another user named {string}")
