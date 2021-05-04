@@ -17,7 +17,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.navbara_pigeons.wasteless.dto.*;
 import lombok.Data;
 import lombok.ToString;

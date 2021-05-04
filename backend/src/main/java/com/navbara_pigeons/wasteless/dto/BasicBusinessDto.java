@@ -1,15 +1,8 @@
 package com.navbara_pigeons.wasteless.dto;
 
-import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
 import lombok.Data;
-
-import javax.persistence.*;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Business DTO which returns all user details except catalog, administrators list and image list

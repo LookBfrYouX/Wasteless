@@ -12,7 +12,6 @@ import com.navbara_pigeons.wasteless.dto.BasicAddressDto;
 import com.navbara_pigeons.wasteless.dto.FullAddressDto;
 import lombok.Data;
 
-import java.io.Serializable;
 
 @Data
 @Entity

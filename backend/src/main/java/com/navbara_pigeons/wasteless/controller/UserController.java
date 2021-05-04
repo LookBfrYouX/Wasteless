@@ -1,8 +1,6 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
-import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
