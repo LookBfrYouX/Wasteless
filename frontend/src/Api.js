@@ -154,7 +154,9 @@ export const Api = {
    */
   createProduct: (id, props) => {
     return instance.post(`/businesses/${id}/products`, props).catch(error => {
-      throw ApiRequestError.createFromMessageMap(error, {});
+      throw ApiRequestError.createFromMessageMap(error, {
+        403: "You don't have permission to add products to this business"
+      });
     });
   },
 
