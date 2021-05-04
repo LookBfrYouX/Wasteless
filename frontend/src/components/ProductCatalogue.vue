@@ -167,9 +167,7 @@ const ProductCatalogue = {
         if (this.businessId == null) throw new ApiRequestError("You must be logged in as a business before viewing a catalog");
         data = (await Api.getProducts(this.businessId)).data;
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
         return;
       }

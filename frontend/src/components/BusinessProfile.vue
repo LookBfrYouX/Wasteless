@@ -117,9 +117,7 @@ export default {
         const response = await apiCall;
         this.businessInfo = response.data;
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         failed = true;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }

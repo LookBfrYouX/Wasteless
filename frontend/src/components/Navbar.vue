@@ -218,9 +218,7 @@ export default {
       try {
         await Api.logOut();
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.logOutErrorMessage = err.userFacingErrorMessage;
         return;
       }

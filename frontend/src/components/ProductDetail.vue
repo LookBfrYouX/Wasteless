@@ -114,9 +114,7 @@ export default {
       try{
         return await this.parseApiResponse(this.callApi());
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },

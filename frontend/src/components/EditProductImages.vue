@@ -153,9 +153,7 @@ export default {
       try {
         return await this.parseApiResponse(this.callApi());
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
@@ -202,9 +200,7 @@ export default {
       .then(() => {
         return this.apiPipeline();
       }).catch(async(err) => {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error uploading new product image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
@@ -218,8 +214,8 @@ export default {
       Api.changePrimaryImage(this.actingAs.id, this.productId, imageId)
       .then(() => {
         return this.apiPipeline();
-      }).catch(err => {
-        Api.handle401.call(this, err);
+      }).catch(async(err) => {
+        if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error setting a primary image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
@@ -233,8 +229,8 @@ export default {
       Api.deleteProductImage(this.actingAs.id, this.productId, imageId)
       .then(() => {
         return this.apiPipeline();
-      }).catch(err => {
-        Api.handle401.call(this, err);
+      }).catch(async (err) => {
+        if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error deleting the image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
