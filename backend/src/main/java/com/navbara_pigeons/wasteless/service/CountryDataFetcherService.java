@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Currency;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -20,18 +21,19 @@ import java.nio.file.*;
 import java.util.HashMap;
 
 @Service
+@Slf4j
 public class CountryDataFetcherService {
     private final String resourcePath = "countryData.json";
     private HashMap<String, Currency> currencyHashMap;
 
     public CountryDataFetcherService() throws URISyntaxException, IOException {
         var a = ClassLoader.getSystemClassLoader().getResource(resourcePath);
-        System.out.println(a);
+        log.info(a.toString());
         var b  = a.toURI();
-        System.out.println(b);
+        log.info(b.toString());
         var c = Path.of(b);
-        System.out.println(c);
-        System.out.println(c.toFile().exists());
+        log.info(c.toString());
+        log.info(c.toFile().exists()? "true": "false");
         this.reloadCountryDataFromDisk(c);
     }
 
@@ -43,7 +45,7 @@ public class CountryDataFetcherService {
     protected void reloadCountryDataFromDisk(Path path) throws IOException
     {
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper);
+        log.info(mapper.toString());
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         // JSON has lots of unnecessary properties that we can ignore
         Country[] countries = mapper.readValue(path.toFile(), Country[].class);
