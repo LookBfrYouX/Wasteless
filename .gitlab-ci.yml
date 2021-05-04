@@ -79,6 +79,9 @@ dev-sonarqube:
     - cd ../backend
     - ./gradlew jacocoTestReport
     - ./gradlew sonarqube
+  artifacts:
+    paths:
+      - backend/build/jacoco
   only:
     - dev
 
