@@ -17,8 +17,8 @@ public class UserServiceValidation {
    * @param password Users password
    */
   public static boolean isPasswordValid(String password) {
-    String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+).{8,}";
-    return Pattern.matches(passwordRegex, password);
+    String authRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+).{8,}";
+    return Pattern.matches(authRegex, password);
   }
 
   /**

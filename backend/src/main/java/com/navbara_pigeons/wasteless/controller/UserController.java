@@ -1,5 +1,8 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.CreateUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
@@ -74,9 +77,9 @@ public class UserController {
    * @throws ResponseStatusException HTTP 400, 409 exceptions.
    */
   @PostMapping("/users")
-  public ResponseEntity<JSONObject> registerUser(@RequestBody User user) {
+  public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user) {
     try {
-      JSONObject createdUserId = userService.saveUser(user);
+      JSONObject createdUserId = userService.saveUser(new User(user));
       log.info("ACCOUNT CREATED SUCCESSFULLY: " + user.getEmail());
       return new ResponseEntity<>(createdUserId, HttpStatus.valueOf(201));
     } catch (UserAlreadyExistsException exc) {
