@@ -17,6 +17,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,11 @@ public class ProductServiceImpl implements ProductService {
     private final UserService userService;
     private final BusinessService businessService;
 
-    /**
+
+    @Value("${public_path_prefix}")
+    private String publicPathPrefix;
+
+  /**
      * ProductImplementation constructor that takes autowired parameters and sets up the
      * service for interacting with all business related services.
      *
@@ -68,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
             Business business = businessDao.getBusinessById(businessId);
             ArrayList<BasicProductDto> products = new ArrayList<>();
             for (Product product : business.getProductsCatalogue()) {
-                products.add(new BasicProductDto(product));
+                products.add(new BasicProductDto(product, publicPathPrefix));
             }
             return products;
         } else {

@@ -98,8 +98,8 @@ public class ImageServiceImpl implements ImageService {
     Product productEntity = productService.getProduct(productId);
     productEntity.addProductImage(imageEntity);
 
-    imageDao.saveProductImageToMachine(image, imageEntity.getFilename());
-    imageDao.saveProductImageToMachine(imageThumbnail, imageEntity.getThumbnailFilename());
+    imageDao.saveProductImageToMachine(image, imageEntity.getPath());
+    imageDao.saveProductImageToMachine(imageThumbnail, imageEntity.getThumbnailPath());
     imageDao.saveProductImageToDb(imageEntity);
 
     if (productEntity.getPrimaryProductImage() == null) {
@@ -265,8 +265,8 @@ public class ImageServiceImpl implements ImageService {
     product.deleteProductImage(imageId);
     this.productService.saveProduct(product);
     this.imageDao.deleteImage(image);
-    this.imageDao.deleteProductImageFromMachine(image.getFilename());
-    this.imageDao.deleteProductImageFromMachine(image.getThumbnailFilename());
+    this.imageDao.deleteProductImageFromMachine(image.getPath());
+    this.imageDao.deleteProductImageFromMachine(image.getThumbnailPath());
   }
 
   public void deleteUserImage(long userId) {

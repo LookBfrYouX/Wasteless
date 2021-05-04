@@ -13,6 +13,7 @@ import java.time.ZonedDateTime;
 import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -28,6 +29,11 @@ public class BusinessServiceImpl implements BusinessService {
   private final BusinessDao businessDao;
   private final AddressService addressService;
   private final UserService userService;
+
+
+  @Value("${public_path_prefix}")
+  private String publicPathPrefix;
+
 
   /**
    * BusinessServiceImplementation constructor that takes autowired parameters and sets up the
@@ -86,7 +92,7 @@ public class BusinessServiceImpl implements BusinessService {
     Business business = businessDao.getBusinessById(id);
 
     if (isBusinessAdmin(id) || userService.isAdmin()) {
-      return new FullBusinessDto(business);
+      return new FullBusinessDto(business, publicPathPrefix);
     } else {
       return new BasicBusinessDto(business);
     }

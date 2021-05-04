@@ -26,7 +26,7 @@ public class BasicProductDto {
     private BasicImageDto primaryProductImage;
     private List<BasicImageDto> images;
 
-    public BasicProductDto(Product product) {
+    public BasicProductDto(Product product, String publicPathPrefix) {
         this.id = product.getId();
         this.name = product.getName();
         this.description = product.getDescription();
@@ -38,18 +38,14 @@ public class BasicProductDto {
 //            this.primaryProductImage = new BasicImageDto(product.getPrimaryProductImage());
 //        }
         if (product.getProductImages() != null) {
-            this.images = makeImageDtos(product.getImages()); // First image is primary image
+            this.images = makeImageDtos(publicPathPrefix, product.getImages()); // First image is primary image
         }
     }
 
-    public BasicProductDto() {
-
-    }
-
-    private List<BasicImageDto> makeImageDtos(List<Image> images) {
+    private List<BasicImageDto> makeImageDtos(String publicPathPrefix, List<Image> images) {
         ArrayList<BasicImageDto> imageDtos = new ArrayList<BasicImageDto>();
         for (Image image : images) {
-            imageDtos.add(new BasicImageDto(image));
+            imageDtos.add(new BasicImageDto(publicPathPrefix, image));
         }
         return imageDtos;
     }

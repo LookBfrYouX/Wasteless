@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Business DTO which returns all user details except catalog and administrators list
+ * Business DTO which returns all user details except catalog, administrators list and image list
  */
 @Data
 public class BasicBusinessDto {

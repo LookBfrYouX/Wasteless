@@ -25,7 +25,7 @@ public class FullBusinessDto {
     private List<BasicUserDto> administrators;
     private List<BasicProductDto> productsCatalogue;
 
-    public FullBusinessDto(Business business) {
+    public FullBusinessDto(Business business, String publicPathPrefix) {
         this.id = business.getId();
         this.primaryAdministratorId = business.getPrimaryAdministratorId();
         this.name = business.getName();
@@ -37,7 +37,7 @@ public class FullBusinessDto {
             this.administrators = makeUserDto(business.getAdministrators());
         }
         if (business.getProductsCatalogue() != null) {
-            this.productsCatalogue = makeProductDto(business.getProductsCatalogue());
+            this.productsCatalogue = makeProductDto(business.getProductsCatalogue(), publicPathPrefix);
         }
     }
 
@@ -55,10 +55,10 @@ public class FullBusinessDto {
         return userlistDto;
     }
 
-    private List<BasicProductDto> makeProductDto(List<Product> products) {
+    private List<BasicProductDto> makeProductDto(List<Product> products, String publicPathPrefix) {
         ArrayList<BasicProductDto> productsDto = new ArrayList<BasicProductDto>();
         for (Product product : products) {
-            productsDto.add(new BasicProductDto(product));
+            productsDto.add(new BasicProductDto(product, publicPathPrefix));
         }
         return productsDto;
     }
