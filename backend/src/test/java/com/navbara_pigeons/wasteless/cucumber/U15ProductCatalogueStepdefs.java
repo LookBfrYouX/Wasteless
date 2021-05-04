@@ -60,20 +60,21 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
     JSONObject credentials = new JSONObject();
     credentials.put("email", userEmail);
     credentials.put("password", password);
-    MvcResult mvcResult = (MvcResult) mockMvc.perform(
+    MvcResult mvcResult = mockMvc.perform(
             post("/login")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(credentials.toString())
                     .accept(MediaType.ALL))
-            .andExpect(status().is(200));
+            .andExpect(status().is(200)).andReturn();
     String userId = mvcResult.getResponse().getContentAsString().replaceAll("[^0-9]", "");
-    User user = (User) mockMvc.perform(
+    MvcResult user = mockMvc.perform(
             get("/user/" + userId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.ALL))
-            .andExpect(status().is(200));
+            .andExpect(status().is(200)).andReturn();
+    System.out.println(user);
     Business business = user.getBusinesses().get(0);
-    Long id = business.getId();
+    long id = business.getId();
     ResultActions product = mockMvc.perform(
             get("/businesses/" + id + "/products")
                     .contentType(MediaType.APPLICATION_JSON)
