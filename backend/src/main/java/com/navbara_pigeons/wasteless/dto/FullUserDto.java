@@ -24,7 +24,7 @@ public class FullUserDto {
     private String email;
     private String dateOfBirth;
     private String phoneNumber;
-    private BasicAddressDto homeAddress;
+    private FullAddressDto homeAddress;
 //    private String imageName;
     private ZonedDateTime created;
     private String role;
@@ -44,7 +44,7 @@ public class FullUserDto {
 //        this.imageName = user.getImageName();
         this.created = user.getCreated();
         this.role = user.getRole();
-        this.homeAddress = new BasicAddressDto(user.getHomeAddress());
+        this.homeAddress = new FullAddressDto(user.getHomeAddress());
         if (user.getBusinesses() != null) {
             this.businesses = makeBusinessDto(user.getBusinesses());
         }
