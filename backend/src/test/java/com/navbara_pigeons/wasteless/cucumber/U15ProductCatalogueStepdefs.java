@@ -11,6 +11,7 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -38,16 +39,15 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
     Business business = makeBusiness(businessName, user);
     user.setPassword(password);
     user.setFirstName(userName);
-    userController.registerUser(user);
-    businessController.registerBusiness(new FullBusinessDto(business));
-
+    Assertions.assertDoesNotThrow(() -> userController.registerUser(user));
+    Assertions.assertDoesNotThrow(() -> businessController.registerBusiness(business));
   }
 
   @When("{string} requests his product catalogue")
-  public void requestsHisProductCatalogue(String arg0) {
+  public void requestsHisProductCatalogue(String userName) {
+    String email = userName + "@example.com";
 
-    mockMvc.perform(
-            get("/businesses" + this.business.getId() + "/productsCatalogue"));
+
 
 
 
