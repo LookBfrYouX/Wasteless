@@ -1,25 +1,29 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.server.ResponseStatusException;
 
 public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
 
+  private MvcResult mvcResult;
+
   @Given("this user exist")
   public void thisUserExists(DataTable dataTable) {
-    //called before each scenario so need to not always create user?
     List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
     for (Map<String, String> columns : rows) {
       User newUser = makeUser(columns.get("emailAddress"), "temp", false);
@@ -27,49 +31,128 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
       newUser.setPassword(columns.get("password"));
       newUser.setFirstName(columns.get("firstName"));
       newUser.setLastName(columns.get("lastName"));
-      //the last value in the table always seems to be null
       newUser.setNickname(columns.get("nickname"));
       System.out.println("CREATED NEW USER: " + newUser.toString());
       Assertions.assertDoesNotThrow(() -> userController.registerUser(newUser));
     }
   }
 
-  @When("I log in with username {string} and password {string}")
-  public void iLogInWithValidUsernameAndPassword(String username, String password) {
-    UserCredentials login = new UserCredentials();
-    login.setEmail(username);
-    login.setPassword(password);
-    System.out.println("LOGGED IN TO USER : " + login.getEmail());
-    Assertions.assertDoesNotThrow(() -> userController.login(login));
+  @When("I log in with valid email {string} and valid password {string}")
+  public void iLogInWithValidUsernameAndPassword(String email, String password)
+      throws Exception {
+    JSONObject credentials = new JSONObject();
+    credentials.put("email", email);
+    credentials.put("password", password);
+    System.out.println(credentials.toString());
+    this.mvcResult = mockMvc.perform(
+        post("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(credentials.toString())
+            .accept(MediaType.ALL))
+        .andExpect(status().is(200))
+        .andReturn();
   }
 
-  @Then("I am logged in")
-  public void iAmLoggedIn() {
-    //would need to somehow check the token returned previously
+  @Then("I am logged in as user {string}")
+  public void iAmLoggedInAsUser(String email) {
+    //TODO figure out how to get and check cookies
   }
 
-  @And("I am taken to my profile page")
-  public void iAmTakenToMyProfilePage() {
-    //does cucumber even handle frontend?
+  @When("I log in with invalid email {string} and password {string} combination")
+  public void iLogInWithInvalidUsernameAndPasswordCombination(String email, String password)
+      throws Exception {
+    JSONObject credentials = new JSONObject();
+    credentials.put("email", email);
+    credentials.put("password", password);
+    System.out.println(credentials.toString());
+    this.mvcResult = mockMvc.perform(
+        post("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(credentials.toString())
+            .accept(MediaType.ALL))
+        .andExpect(status().is(400))
+        .andReturn();
   }
 
-  @Then("I am shown an error that my username or password is not valid")
+  @Then("I am shown an error that my email or password is not valid")
   public void iAmShownAnErrorThatMyUsernameOrPasswordIsNotValid() {
+    assertEquals("Failed login attempt, email or password incorrect", this.mvcResult.getResponse().getErrorMessage());
   }
 
-  @Then("I am prompted to enter and username")
-  public void iAmPromptedToEnterAndUsername() {
+  @When("I register an account with the valid email {string} and password {string}")
+  public void iRegisterAnAccountWithValidEmailAndPassword(String email, String password)
+      throws Exception {
+    User newUser = makeUser(email, password, false);
+    newUser.setPassword(password);
+    this.mvcResult = mockMvc.perform(
+        post("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(newUser))
+            .accept(MediaType.ALL))
+        .andExpect(status().is(201))
+        .andReturn();
   }
 
-  @Then("I am prompted to enter a password")
-  public void iAmPromptedToEnterAPassword() {
+  @Then("user {string} is added to the db")
+  public void userIsAddedToTheDb(String email) {
   }
 
-  @Then("A message displays instructing me to try again later")
-  public void aMessageDisplaysInstructingMeToTryAgainLater() {
+  @When("I register an account with the invalid email {string} and password {string}")
+  public void iRegisterAnAccountWithTheInvalidEmailAndPassword(String email, String password)
+      throws Exception {
+    User newUser = makeUser(email, password, false);
+    newUser.setPassword(password);
+    this.mvcResult = mockMvc.perform(
+        post("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(newUser))
+            .accept(MediaType.ALL))
+        .andExpect(status().is(400))
+        .andReturn();
   }
 
-  @When("I submit my credentials")
-  public void iSubmitMyCredentials() {
+  @Then("I am shown an error that my request is invalid")
+  public void iAmShownAnErrorThatMyRequestIsInvalid() {
+    assertEquals("Bad Request", this.mvcResult.getResponse().getErrorMessage());
+  }
+
+  @When("I register an account with the taken email {string} and password {string}")
+  public void iRegisterAnAccountWithTheTakenEmailAndPassword(String email, String password)
+      throws Exception {
+    User newUser = makeUser(email, password, false);
+    newUser.setPassword(password);
+    this.mvcResult = mockMvc.perform(
+        post("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(newUser))
+            .accept(MediaType.ALL))
+        .andExpect(status().is(409))
+        .andReturn();
+  }
+
+  @Then("I am shown an error that my email is taken")
+  public void iAmShownAnErrorThatMyEmailIsTaken() {
+    assertEquals("Email address already in use", this.mvcResult.getResponse().getErrorMessage());
+  }
+
+  @When("I register an account with an invalid address")
+  public void iRegisterAnAccountWithAnInvalidAddress() throws Exception {
+    Address newAddress = makeAddress();
+    newAddress.setCountry("asdasdasd");
+    User newUser = makeUser("email@tmpusr.com", "password", false);
+    newUser.setPassword("TempPassword1234");
+    newUser.setHomeAddress(newAddress);
+    this.mvcResult = mockMvc.perform(
+        post("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(newUser))
+            .accept(MediaType.ALL))
+        .andExpect(status().is(400))
+        .andReturn();
+  }
+
+  @Then("I am shown an error that my address is invalid")
+  public void iAmShownAnErrorThatMyAddressIsInvalid() {
+    assertEquals("Bad address given", this.mvcResult.getResponse().getErrorMessage());
   }
 }

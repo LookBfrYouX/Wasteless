@@ -11,7 +11,7 @@
       </button>
       <div class="mt-2">Description: {{ description }}</div>
       <div class="mt-2">RRP: {{ recommendedRetailPrice }}</div>
-      <div class="mt-2">Created: {{ created }}</div>
+      <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>
       <h4 class="mt-2">Product Images</h4>
       <div class="row my-2">
         <div v-for="image in productImages"
@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-info mr-0"
+        <button class="btn btn-primary mr-0"
                 v-on:click="editProductImages(productId)">
           Edit product images
         </button>
@@ -54,7 +54,7 @@
 
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
-import {ApiRequestError} from "@/ApiRequestError";
+import {ApiRequestError} from "../ApiRequestError";
 const { Api } = require("./../Api");
 
 export default {
