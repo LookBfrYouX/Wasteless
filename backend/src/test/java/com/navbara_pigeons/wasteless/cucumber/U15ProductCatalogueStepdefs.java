@@ -41,48 +41,14 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
 
   @Given("a user with name {string} exists and already administers a business called {string} that sells a product {string}")
   public void aUserWithNameIsLoggedInAndAdministersABusinessCalled(String userName, String businessName, String productName) throws Exception {
-    String email = userName + "@example.com";
-    String password = "password123";
-    User user = this.makeUser(email, password, true);
-    Business business = makeBusiness(businessName, user);
-    user.setPassword(password);
-    user.setFirstName(userName);
 
-    UserCredentials credentials = new UserCredentials();
-    credentials.setEmail(email);
-    credentials.setPassword(password);
-    Assertions.assertDoesNotThrow(() -> userController.registerUser(new CreateUserDto(user)));
-    Assertions.assertDoesNotThrow(() -> businessController.registerBusiness(new CreateBusinessDto(business)));
   }
 
   @When("the user with email address {string} and password {string} logs in and requests his product catalogue with business id {string}")
   public void requestsHisProductCatalogue(String userEmail, String password, String Businessid) throws Exception {
-    JSONObject credentials = new JSONObject();
-    credentials.put("email", userEmail);
-    credentials.put("password", password);
-    MvcResult mvcResult = mockMvc.perform(
-            post("/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(credentials.toString())
-                    .accept(MediaType.ALL))
-            .andExpect(status().is(200)).andReturn();
-    String userId = mvcResult.getResponse().getContentAsString().replaceAll("[^0-9]", "");
-    MvcResult user = mockMvc.perform(
-            get("/user/" + userId)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.ALL))
-            .andExpect(status().is(200)).andReturn();
-    System.out.println(user);
-    Business business = user.getBusinesses().get(0);
-    long id = business.getId();
-    ResultActions product = mockMvc.perform(
-            get("/businesses/" + id + "/products")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.ALL))
-            .andExpect(status().is(200));
-  };
 
 
+  }
   @Then("The product {string} is displayed")
   public void theProductIsDisplayed(String arg0) {
 
