@@ -1,0 +1,1 @@
+Directory gets nuked on the pipeline; will work locally but not in staging/prod if images get placed here

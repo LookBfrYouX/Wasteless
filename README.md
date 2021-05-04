@@ -1,4 +1,4 @@
-# Seng302 Example Project
+# Navbar Pigeons
 
 Basic project template using `gradle`, `npm`, `Spring Boot`, `Vue.js` and `Gitlab CI`.
 
@@ -32,23 +32,16 @@ Running on: http://localhost:9500/ by default
 
 Running on: http://localhost:9499/ by default
 
-## Todo (S1)
-
-- Add team name into `build.gradle` and `package.json`
-- Update this README title
-- Update this README contributors
-
-## Todo (S2)
-
-- Update team name into `build.gradle` and `package.json`
-- Update this README title
-- Update this README contributors
-- Set up Gitlab CI server (refer to the student guide on learn)
-- Decide on a LICENSE
-
 ## Contributors
 
-- SENG302 teaching team
+- Alec Fox (amf133)
+- Fletcher Dick (fdi19)
+- Haruka Ichinose (hic21)
+- Jordan Pyott (jpy19)
+- Maximilian Birzer (mbi47)
+- Niko Tainui (nbt25)
+- Rio Ogino (rog19)
+- Dawson Berry (dnb36)
 
 ## References
 

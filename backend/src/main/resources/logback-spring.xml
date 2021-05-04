@@ -13,7 +13,6 @@
     </layout>
   </appender>
 
-  <!-- One appender for each output stream -->
   <appender class="ch.qos.logback.core.FileAppender"
     name="ErrorAppender">
     <encoder
@@ -29,6 +28,7 @@
     </filter>
   </appender>
 
+  <!-- One appender for each output stream -->
   <appender class="ch.qos.logback.core.FileAppender"
     name="EventAppender">
     <encoder
@@ -44,15 +44,13 @@
     </filter>
   </appender>
 
-  <logger additivity="false" level="info" name="com.pigeon.wasteless">
+  <logger additivity="false" level="info" name="com.navbara_pigeons.wasteless">
+    <appender-ref ref="Console"/>
     <appender-ref ref="EventAppender"/>
     <appender-ref ref="ErrorAppender"/>
   </logger>
 
-  <!-- LOG everything at INFO level with the console appender -->
-  <property name="LOGS" value="./logs"/>
-
-  <!-- LOG "com.pigeon.wasteless*" at INFO level with event/error appender -->
+  <!-- LOG "com.navbar_pigeons.wasteless*" at INFO level with event/error appender -->
   <root level="info">
     <appender-ref ref="Console"/>
   </root>

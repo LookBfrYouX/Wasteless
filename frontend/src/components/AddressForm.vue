@@ -16,164 +16,167 @@ Implementation:
 - This is sent to all autocomplete
 
 The parent component must provide `address` prop. When the address is updated in this component, an
-`addressupdate` event is emitted with the updated address as the argument. The object also has a 
+`addressupdate` event is emitted with the updated address as the argument. The object also has a
 `toString` method which returns the address as a string, components separated by commas (if the components are of non-zero length)
 
 -->
 <template>
   <div class="row">
-    <div class="form-group required col-12">
-      <label for="addressLine1">Address Line 1</label>
+    <div class="form-group col-12 col-md-3">
+      <label>Street number</label>
       <suggestions
-        type="text"
-        name="addressLine1"
-        placeholder="Address line 1"
-        maxlength="200"
-        autocomplete="address-line1"
-        required
+          inputClasses="form-control"
+          maxlength="50"
+          name="streetnumber"
+          placeholder="Street number"
+          type="text"
 
-        inputClasses="form-control"
-        
-        v-on:focus="activeAddressInputName = 'addressLine1'"
-        v-on:input="onAddressInput"
-        v-on:suggestion="suggestionSelected"
+          v-bind:suggestions="[]"
+          v-bind:value="address.streetNumber"
+          v-on:focus="activeAddressInputName = 'streetNumber'"
 
-        v-bind:value="address.addressLine1"
-        v-bind:suggestions="addressSuggestions"
+          v-on:input="onAddressInput"
+          v-on:suggestion="suggestionSelected"
+      />
+      <!-- No suggestions for street number -->
+    </div>
+    <div class="form-group required col-12 col-md-9">
+      <label>Street name</label>
+      <suggestions
+          autocomplete="street-address"
+          inputClasses="form-control"
+          maxlength="200"
+          name="streetName"
+          placeholder="Street name"
+          required
+          type="text"
+
+          v-bind:suggestions="addressSuggestions"
+          v-bind:value="address.streetName"
+          v-on:focus="activeAddressInputName = 'streetName'"
+
+          v-on:input="onAddressInput"
+          v-on:suggestion="suggestionSelected"
       />
     </div>
-    <div class="form-group col-12">
-      <label for="addressLine2">Address Line 2</label>
+    <div class="form-group required col-12 col-md-6">
+      <label>City</label>
       <suggestions
-        type="text"
-        name="addressLine2"
-        placeholder="Address line 2 (optional)"
-        maxlength="200"
-        autocomplete="address-line2"
+          autocomplete="address-level2"
+          inputClasses="form-control"
+          maxlength="100"
+          name="city"
+          placeholder="City"
+          required
+          type="text"
 
-        inputClasses="form-control"
-        
-        v-on:focus="activeAddressInputName = 'addressLine2'"
-        v-on:input="onAddressInput"
-        v-on:suggestion="suggestionSelected"
+          v-bind:suggestions="addressSuggestions"
+          v-bind:value="address.city"
+          v-on:focus="activeAddressInputName = 'city'"
 
-        v-bind:value="address.addressLine2"
-        v-bind:suggestions="addressSuggestions"
+          v-on:input="onAddressInput"
+          v-on:suggestion="suggestionSelected"
+      />
+    </div>
+    <div class="form-group required col-12 col-md-6">
+      <label>Region</label>
+      <suggestions
+          autocomplete="address-level1"
+          inputClasses="form-control"
+          maxlength="100"
+          name="region"
+          placeholder="Region"
+          required
+          type="text"
+
+          v-bind:suggestions="addressSuggestions"
+          v-bind:value="address.region"
+          v-on:focus="activeAddressInputName = 'region'"
+
+          v-on:input="onAddressInput"
+          v-on:suggestion="suggestionSelected"
       />
     </div>
 
     <div class="form-group required col-12 col-md-6">
-      <label for="postcode">Post code</label>
+      <label>Post code</label>
       <suggestions
-        type="text"
-        name="postcode"
-        placeholder="Post code"
-        maxlength="10"
-        autocomplete="postal-code"
-        required
+          autocomplete="postal-code"
+          inputClasses="form-control"
+          maxlength="10"
+          name="postcode"
+          placeholder="Post code"
+          required
+          type="text"
 
-        inputClasses="form-control"
-        
-        v-on:focus="activeAddressInputName = 'postcode'"
-        v-on:input="onAddressInput"
-        v-on:suggestion="suggestionSelected"
+          v-bind:suggestions="addressSuggestions"
+          v-bind:value="address.postcode"
+          v-on:focus="activeAddressInputName = 'postcode'"
 
-        v-bind:value="address.postcode"
-        v-bind:suggestions="addressSuggestions"
+          v-on:input="onAddressInput"
+          v-on:suggestion="suggestionSelected"
       />
     </div>
     <div class="form-group required col-12 col-md-6">
-      <label for="city">City</label>
-      <suggestions
-        type="text"
-        name="city"
-        placeholder="City"
-        maxlength="100"
-        autocomplete="address-level2"
-        required
-
-        inputClasses="form-control"
-        
-        v-on:focus="activeAddressInputName = 'city'"
-        v-on:input="onAddressInput"
-        v-on:suggestion="suggestionSelected"
-
-        v-bind:value="address.city"
-        v-bind:suggestions="addressSuggestions"
-      />
-    </div>
-    <div class="form-group col-12 col-md-6">
-      <label for="state">Region/state</label>
-      <suggestions
-        type="text"
-        name="state"
-        placeholder="Region/state (optional)"
-        maxlength="100"
-        autocomplete="address-level1"
-        required
-
-        inputClasses="form-control"
-
-        v-on:focus="activeAddressInputName = 'state'"
-        v-on:input="onAddressInput"
-        v-on:suggestion="suggestionSelected"
-
-        v-bind:value="address.state"
-        v-bind:suggestions="addressSuggestions"
-      />
-    </div>
-    <div class="form-group required col-12 col-md-6">
-      <label for="country">Country</label>
-      <suggestions
-        type="text"
-        name="country"
-        placeholder="Country"
-        maxlength="50"
-        autocomplete="country-name"
-        required
-
-        inputClasses="form-control"
-
-        v-on:focus="activeAddressInputName = 'country'"
-        v-on:input="onAddressInput"
-        v-on:suggestion="suggestionSelected"
-
-        v-bind:value="address.country"
-        v-bind:suggestions="addressSuggestions"
-      />
+      <label>Country</label>
+      <select
+          autocomplete="country-name"
+          class="form-control"
+          maxlength="50"
+          name="country"
+          placeholder="Country"
+          required
+          v-bind:suggestions="addressSuggestions"
+          v-bind:value="address.country"
+          v-on:focus="activeAddressInputName = 'country'"
+          v-on:input="event => onAddressInput(event.target.value)"
+          v-on:suggestion="suggestionSelected"
+      >
+      <!-- countryCodes is key-value map from code to name. Get array of codes, convert to {code, name} object array then sort by name -->
+        <option
+          v-for="country in countryData"
+          v-bind:key="country.code"
+          v-bind:value="country.name">{{country.name}}</option>
+      </select>
     </div>
   </div>
 </template>
 <script>
 
-const axios = require("axios");
+const { Api } = require("./../Api");
+const { EditDistance } = require("./../EditDistance");
+const countryData = require("./../assets/countryData.json");
+
 const Suggestions = require("./Suggestions").default;
 
-// Fields in order of specifity
-// When updating this, ensure all address related functions and input properties are updated as well
-export const ADDRESS_SECTION_NAMES = ["addressLine1", "addressLine2", "postcode", "city", "state",  "country"];
+// Fields in order of specificity
+// When updating this, ensure all address related functions and input properties are updated as well!
+export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "city", "region", "postcode", "country"];
 Object.freeze(ADDRESS_SECTION_NAMES);
+// Can't move this to the constants file as it is too linked with HTML, props etc.
 
-const API_CALL_DEBOUNCE_TIME = 100;
-const API_MIN_QUERY_LENGTH = 3;
 export default {
   name: "address-form",
 
   components: {
     "suggestions": Suggestions
   },
-  
+
   props: {
     address: {
       required: true,
       default: {
-        addressLine1: "",
-        addressLine2: "",
-        postcode: "",
+        streetNumber: "",
+        streetName: "",
         city: "",
-        state: "",
+        region: "",
+        postcode: "",
         country: "",
       }
+    },
+    countryData: {
+      required: false,
+      default: () => countryData
     }
   },
 
@@ -182,6 +185,13 @@ export default {
       activeAddressInputName: null,
       addressSuggestionsRaw: [],
       addressSuggestions: [],
+
+      /**
+       * If country name is set and is different from the country used by OSM, Photon may not
+       * return results. Hence, before sending the query to Photon, convert the country name
+       * from the canonical name to that used by Photon if it is known - a previous query returned that country name
+       */
+      canonicalCountryNameToOsmCountryNameCache: {}
     }
   },
 
@@ -189,169 +199,261 @@ export default {
     /**
      * Map OSM properties object to address components used in the sign up page
      * @argument properties OSM properties object
-     * @return object. Components may be undefined
+     * @return object. Components may be undefined. Country may be undefined if OSM's
+     * two character country code (`countrycode`) is not found in country codes list.
+     *
      */
-    mapOSMPropertiesToAddressComponents: function(properties) {
+    mapOSMPropertiesToAddressComponents: function (properties) {
       const {
-        housenumber, street, //addressLine1
-        district, // addressLine2
-        postcode,
+        housenumber, // streetNumber
+        street, // streetName
         county, // city
-        state, // state
+        state, // region
+        postcode,
+        countrycode,
         country,
+        type,
+        name
         // osm_id,
       } = properties;
-  
+
+
+      // Convert from OSM country name to restcountries name
+      const countryCanonical = this.countryCodeToNameDict[countrycode];
+
+      if (countryCanonical != undefined && country != undefined &&
+          this.canonicalCountryNameToOsmCountryNameCache[countryCanonical] == undefined) {
+        this.canonicalCountryNameToOsmCountryNameCache[countryCanonical] = country;
+        // Add OSM country name to cache
+      }
+
+      let streetName = street;
+      if (type === "street") {
+        // For some reason, sometimes we get results where housenumber or street name is undefined,
+        // type is road and the name property is the name of the road. No idea why
+        streetName = name;
+      }
+
       const components = {
-        addressLine1: street,
-        addressLine2: district,
-        postcode: postcode,
+        streetNumber: housenumber,
+        streetName: streetName,
         city: county,
-        state: state,
-        country: country
+        region: state,
+        postcode: postcode,
+        country: countryCanonical
       };
 
-       if (street != undefined && housenumber != undefined) {
-        components.addressLine1 = `${housenumber} ${street}`;
-       }
-       // If street is undefined but housenumber isn't, leave addressline1 undefined
-
-       return components;
+      return components;
     },
 
-    
     /**
      * Generates address string from current inputs
      * If any values are undefined, it is ignored
+     * @param convertCountryToOsmName if true, converts country name to country name used by OSM
      */
-    generateAddressString: function() {
+    generateAddressString: function (convertCountryToOsmName = false) {
       // Was getting strange errors where sometimes a component would be undefined
-      // Think its to do with accessing properties via this['someString'] so this 
+      // Think its to do with accessing properties via this['someString'] so this
       // is a workaround
-      let { addressLine1, addressLine2, city, state, postcode, country } = this.address;
+      let {streetNumber, streetName, city, region, postcode, country} = this.address;
+
+      if (convertCountryToOsmName && this.canonicalCountryNameToOsmCountryNameCache[country] !== undefined) {
+        country = this.canonicalCountryNameToOsmCountryNameCache[country];
+      }
+
       let components = {
-        addressLine1,
-        addressLine2,
-        postcode,
+        streetNumber,
+        streetName,
         city,
-        state,
+        region,
+        postcode,
         country
       };
       return this.generateAddressStringFromAddressComponents(components);
     },
 
     /**
-     * Generates address string
+     * Generates address string in display order
      * @param addressComponents object containing components of address
      * @param mostSpecificComponentName name most specific address component present in the returned string
      * If invalid, returns all components (default behaviour)
      * @param failOnUndef if true, will return undefined if any components are undefined. If false, will simply ignore. If any are present but are empty strings (or all whitespace), they will be ignored
      * @return undefined if failOnUndef is true and component is undefined, a string otherwise
      */
-    generateAddressStringFromAddressComponents: function(addressComponents, mostSpecificComponentName = null, failOnUndef = false) {
+    generateAddressStringFromAddressComponents: function (addressComponents,
+        mostSpecificComponentName = null, failOnUndef = false) {
       let address = "";
-      for(let name of this.getAddressComponentNamesLessSpecificThan(mostSpecificComponentName)) {
+      for (let name of this.getAddressComponentNamesLessSpecificThan(mostSpecificComponentName)) {
         const component = addressComponents[name];
         if (component == undefined) {
-          if (failOnUndef) return;
+          if (failOnUndef) {
+            return;
+          }
           continue;
         }
         const trimmed = component.trim();
-        if (trimmed.length == 0) continue;
-        if (address.length != 0) address += ", ";
+        if (trimmed.length == 0) {
+          if (name == "streetName") address = "";
+          // If street name is blank then get rid of street number too
+          continue;
+        }
+        if (address.length != 0) {
+          if (name === "streetName") address += " ";
+          // No comma between street number and street name; just a space
+          else address += ", ";
+        }
         address += trimmed
       }
       return address.trim();
     },
 
-
     /**
      * Returns an ordered list of sections that are less specific than the given component
-     * e.g. if city is given, city, state, postcode, country are returned
+     * e.g. if city is given, city, region, postcode, country are returned
      * If componentName is not valid, it will return all section names
      */
     getAddressComponentNamesLessSpecificThan(componentName) {
       let startIndex = ADDRESS_SECTION_NAMES.findIndex(el => el == componentName);
-      if (startIndex == -1) startIndex = 0;
+      if (startIndex == -1) {
+        startIndex = 0;
+      }
 
       return ADDRESS_SECTION_NAMES.slice(startIndex);
     },
 
     /**
+     * Generates address string from OSM object for string comparison with edit distance
+     * Includes properties not used in the rest of the component such as district, locality
+     * @param {object} osmAddress OSM object
+     * @return {string} OSM address with several relevant fields concatanated together with commas and spaces
+     */
+    generateComparisonString(osmAddress) {
+      if (osmAddress.housenumber && osmAddress.street) osmAddress["streetaddress"] = osmAddress.housenumber + " " + osmAddress.street;
+      else if (osmAddress.street) osmAddress["streetaddress"] = osmAddress.street;
+      const components = [
+        "streetaddress",
+        "district",
+        "locality",
+        "city",
+        "county",
+        "state",
+        "postcode",
+        "country"
+      ];
+
+      // Concatenate with comma and space
+      // housenumber/street could be undefined so streetaddress could be undefined as well. Hence, filter
+      const result = components.filter(name => osmAddress[name]).reduce((prev, curr) => prev + osmAddress[curr] + ", ", "");
+      if (result.length) return result.slice(0, -2); // Remove comma and space from end
+      return result;
+    },
+
+    /**
      * Filters raw address suggestions and formats them in a way suitable for the autofill component
      */
-    generateAddressSuggestions: function() {
+    generateAddressSuggestions: function () {
       const suggestionsDict = {};
       // Using dict instead of array to remove duplicates (e.g. shops in a mall will have different name but otherwise same address)
 
-      for (const { type, properties } of this.addressSuggestionsRaw) {
-        if (type != "Feature") continue;
+      const originalString = this.generateAddressString().toLocaleLowerCase();
+      for (const {type, properties} of this.addressSuggestionsRaw) {
+        if (type != "Feature") {
+          continue;
+        }
         const addressComponents = this.mapOSMPropertiesToAddressComponents(properties);
-        
-        const addressString = this.generateAddressStringFromAddressComponents(addressComponents, this.activeAddressInputName, true);
-        if (addressString == undefined) continue;
-        // Ignore any suggestions where the necessary components are not present
+        if (addressComponents.country == undefined) continue; // Unknown country
+
+        const addressString = this.generateAddressStringFromAddressComponents(addressComponents,
+            this.activeAddressInputName, true);
+
+        if (addressString == undefined) {
+          // Ignore any suggestions where the necessary components are not present
+          continue;
+        }
+
+        const resultString = this.generateComparisonString(properties);
+        const distance = EditDistance.calculate(
+          originalString,
+          resultString.toLocaleLowerCase(),
+          this.$constants.ADDRESS_FORM.EDIT_DISTANCE.INSERT_COST,
+          this.$constants.ADDRESS_FORM.EDIT_DISTANCE.DELETE_COST,
+          this.$constants.ADDRESS_FORM.EDIT_DISTANCE.SUBSTITUTE_COST
+        );
+
+        const ratio = distance/Math.abs(resultString.length);
+
+        // Use ratio to not favour longer suggestions
+        if (ratio > this.$constants.ADDRESS_FORM.EDIT_DISTANCE_WORST_RATIO) {
+          // Suggestion too bad
+          continue;
+        }
 
         suggestionsDict[addressString] = {
           ...addressComponents,
+          score: ratio,
           toString: () => addressString
         }
       }
 
-      return Array.from(Object.values(suggestionsDict));
+      const sorted = Array.from(Object.values(suggestionsDict));
+      sorted.sort((a, b) => a.score - b.score);
+      // Highest score at the top
+      return sorted.map(el => {
+        // eslint-disable-next-line no-unused-vars
+        const {score, ...withoutScore} = el;
+        return withoutScore;
+      });
     },
 
     /**
      * Pipeline for getting suggestions from axios, filtering then and placing them into suggestions array
      */
-    addressSuggestionsPipeline: async function() {
-      const url = `https://photon.komoot.io/api?q=${encodeURIComponent(this.generateAddressString())}`;
-      let response;
+    addressSuggestionsPipeline: async function () {
+      let data;
       try {
-        response = await axios.get(url);
-      } catch(_) {
+        data = await Api.addressSuggestions(this.generateAddressString(true));
+        // Convert country name to that used by OSM
+      } catch (_) {
         return;
         // If autocomplete does not work, just don't show a response
       }
 
-      const { data } = response;
       this.addressSuggestionsRaw = data.features;
       this.addressSuggestions = this.generateAddressSuggestions();
     },
-        
+
     /**
      * Method which runs on address change, calling the photon API when required
      */
-    addressChange: function() {
+    addressChange: function () {
       window.clearTimeout(this.apiRequestTimeout);
       this.apiRequestTimeout = window.setTimeout(() => {
         this.apiRequestTimeout = null;
-        if (this.generateAddressString().length > API_MIN_QUERY_LENGTH) {
+        if (this.generateAddressString().length > this.$constants.ADDRESS_FORM.API_MIN_QUERY_LENGTH) {
           this.addressSuggestionsPipeline();
         }
-      }, API_CALL_DEBOUNCE_TIME);
+      }, this.$constants.ADDRESS_FORM.API_CALL_DEBOUNCE_TIME);
     },
-
 
     /**
      * Updates the address values in the model when there is an input event
+     * unless it is the street number input
      * Also notifies the parent
      */
-    onAddressInput: function(value) {
+    onAddressInput: function (value) {
       this.$set(this.address, this.activeAddressInputName, value);
       // Think Vue might have issues reacting to updates when set via object['key'] syntax?
       // this[this.activeAddressInputName] = value;
-      this.addressChange();
+      if (this.activeAddressInputName !== "streetNumber") this.addressChange();
       this.sendAddressUpdateEvent();
     },
-
 
     /**
      * When a selection is suggested, it should autofill text in the current input field,
      * plus all those below (which should be less specific)
      */
-    suggestionSelected: function(suggestion) {
-      for(let name of this.getAddressComponentNamesLessSpecificThan(this.activeAddressInputName)) {
+    suggestionSelected: function (suggestion) {
+      for (let name of this.getAddressComponentNamesLessSpecificThan(this.activeAddressInputName)) {
         this.$set(this.address, name, suggestion[name]);
         // Vue can't track changes made when using this[propName] (or this.someArray[index])
         // so this alternative syntax is required
@@ -363,7 +465,7 @@ export default {
     /**
      * Alerts the parent component that the address was updated
      */
-    sendAddressUpdateEvent: function() {
+    sendAddressUpdateEvent: function () {
       this.$emit("addressupdate", {
         ...this.address,
         toString: () => {
@@ -374,15 +476,37 @@ export default {
   },
 
   watch: {
-    activeAddressInputName: function() {
+    /**
+     * Update address suggestions text when the active input address field changes,
+     * unless it is focused on the street number
+     */
+    activeAddressInputName: function () {
       // Couldn't make addressSuggestions a computed property for some reason: would never update
       // Hence, when active address input changes the address suggestions array has to be updated
       // (toString value changes)
+      if (this.activeAddressInputName !== "streetNumber") this.addressChange();
       this.addressSuggestions = this.generateAddressSuggestions();
     },
 
-    address: function() {
-      this.addressChange();
+    /**
+     * When callee updates address, need to trigger API again
+     */
+    address: function () {
+      if (this.activeAddressInputName !== "streetNumber") this.addressChange();
+    }
+  },
+
+  computed: {
+    /**
+     * Converts countryData to { 2DigitCountryCode: countryName } dictionary
+     */
+    countryCodeToNameDict: function() {
+      const dict = {};
+      this.countryData.forEach(country => {
+        dict[country.code] = country.name;
+      });
+
+      return dict;
     }
   }
 }

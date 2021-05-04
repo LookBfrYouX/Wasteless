@@ -6,7 +6,9 @@ build/
 !**/src/test/**
 dist/
 node_modules/
-
+frontend/coverage/
+backend/logs/
+frontend/.scannerwork/
 ### STS ###
 .apt_generated
 .classpath
@@ -34,3 +36,7 @@ out/
 .vscode/
 .settings/
 bin/
+
+.log
+.DS_Store
+frontend/public/user-content/images/**/*.jpg

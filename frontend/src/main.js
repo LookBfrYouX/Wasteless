@@ -28,26 +28,34 @@
 /**
  * Main entry point for your Vue app
  */
-import Vue from 'vue'
-import App from './App'
-import { router } from './router' 
+import Vue from 'vue';
+import App from './App';
+import {router} from './router';
+import {store} from './store';
+import {helper} from './helper';
+import {constants} from "./constants";
+import "bootstrap";
+import "./styles/main.scss";
+import VueLogger from 'vuejs-logger';
 
 Vue.config.productionTip = false
 
-import VueLogger from 'vuejs-logger';
-
 const options = {
   isEnabled: true,
-  logLevel : 'debug',
-  stringifyArguments : false,
-  showLogLevel : true,
-  showMethodName : false,
+  logLevel: 'debug',
+  stringifyArguments: false,
+  showLogLevel: true,
+  showMethodName: false,
   separator: '|',
   showConsoleColors: true
 };
 
-
 Vue.use(VueLogger, options);
+
+// Set the state storage as a global variable - accessed through this.$stateStorage in components
+Vue.prototype.$stateStore = store;
+Vue.prototype.$helper = helper;
+Vue.prototype.$constants = constants;
 
 /* eslint-disable no-new */
 new Vue({

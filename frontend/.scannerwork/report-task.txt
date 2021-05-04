@@ -1,0 +1,6 @@
+projectKey=team-300-client
+serverUrl=https://csse-s302g3.canterbury.ac.nz/sonarqube
+serverVersion=8.6.0.39681
+dashboardUrl=https://csse-s302g3.canterbury.ac.nz/sonarqube/dashboard?id=team-300-client
+ceTaskId=AXjDE6rJW_pxLYVT62N2
+ceTaskUrl=https://csse-s302g3.canterbury.ac.nz/sonarqube/api/ce/task?id=AXjDE6rJW_pxLYVT62N2
