@@ -18,6 +18,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.navbara_pigeons.wasteless.dto.BasicImageDto;
+import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import lombok.Data;
 
@@ -70,6 +72,23 @@ public class Product {
       inverseJoinColumns = @JoinColumn(name = "IMAGE_ID")
   )
   private List<Image> productImages;
+
+  public Product(BasicProductDto product) {
+    this.id = product.getId();
+    this.name = product.getName();
+    this.description = product.getDescription();
+    this.manufacturer = product.getManufacturer();
+    this.recommendedRetailPrice = product.getRecommendedRetailPrice();
+    this.created = product.getCreated();
+    this.primaryProductImage = new Image(product.getPrimaryProductImage());
+    for (BasicImageDto image : product.getImages()) {
+      this.productImages.add(new Image(image));
+    }
+  }
+
+  public Product() {
+
+  }
 
   /**
    * This is a helper method for adding a image to the product.

@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
+import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
@@ -38,7 +39,7 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
     user.setPassword(password);
     user.setFirstName(userName);
     userController.registerUser(user);
-    businessController.registerBusiness(business);
+    businessController.registerBusiness(new FullBusinessDto(business));
 
   }
 

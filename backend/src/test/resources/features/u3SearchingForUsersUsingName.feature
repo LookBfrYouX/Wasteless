@@ -22,8 +22,8 @@ Feature: U3 Searching for Users using Name
       Then No user records are returned
 
 #  AC2: I can enter a user’s full name or one or more of their names/nickname into the text box. Clicking on a search button/icon displays results in a tabular form (or something similar that can fulfil the other ACs while being user friendly).
-  Scenario: AC2 successfully find users using one or more of their name/nickname
-    Given A user "michael@dm.com" with password "Test@1234" is logged in.
+#  Scenario: AC2 successfully find users using one or more of their name/nickname
+#    Given A user "michael@dm.com" with password "Test@1234" is logged in.
 
 #  See the notes on “Search” in the section at the beginning of this document.
 #  Future stories will allow searches based on other criteria.

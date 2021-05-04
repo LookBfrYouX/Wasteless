@@ -16,6 +16,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.navbara_pigeons.wasteless.dto.*;
 import lombok.Data;
 import lombok.ToString;
 
@@ -88,6 +91,43 @@ public class User {
       inverseJoinColumns = @JoinColumn(name = "BUSINESS_ID")
   )
   private List<Business> businesses = new ArrayList<>();
+
+  public User(BasicUserDto user) {
+    this.id = user.getId();
+    this.firstName = user.getFirstName();
+    this.lastName = user.getLastName();
+    this.middleName = user.getMiddleName();
+    this.nickname = user.getNickname();
+    this.bio = user.getBio();
+    this.homeAddress = new Address(user.getHomeAddress());
+    this.created = user.getCreated();
+    this.role = user.getRole();
+    for (BasicBusinessDto business : user.getBusinesses()) {
+      this.businesses.add(new Business(business));
+    }
+  }
+
+  public User(FullUserDto user) {
+    this.id = user.getId();
+    this.firstName = user.getFirstName();
+    this.lastName = user.getLastName();
+    this.middleName = user.getMiddleName();
+    this.nickname = user.getNickname();
+    this.bio = user.getBio();
+    this.email = user.getEmail();
+    this.dateOfBirth = user.getDateOfBirth();
+    this.phoneNumber = user.getPhoneNumber();
+    this.homeAddress = new Address(user.getHomeAddress());
+    this.created = user.getCreated();
+    this.role = user.getRole();
+    for (BasicBusinessDto business : user.getBusinesses()) {
+      this.businesses.add(new Business(business));
+    }
+  }
+
+  public User() {
+
+  }
 
   /**
    * This is a helper method to add a business to the user.
