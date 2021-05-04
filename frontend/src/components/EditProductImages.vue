@@ -128,6 +128,9 @@ export default {
       return this.$stateStore.getters.getActingAs();
     },
 
+    /**
+     * Get business id if current acting as a business
+     */
     businessId() {
       if (this.actingAs === null) {
         return null;
@@ -233,6 +236,9 @@ export default {
   },
 
   watch: {
+    /**
+     * Watch acting as is switched by clicking navbar dropdown
+     */
     businessId() {
       this.$helper.goToProfile.bind(this)();
     }

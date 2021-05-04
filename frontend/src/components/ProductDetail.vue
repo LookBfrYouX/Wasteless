@@ -94,6 +94,9 @@ export default {
       return this.$stateStore.getters.getActingAs();
     },
 
+    /**
+     * Get business id if current acting as a business
+     */
     businessId() {
       if (this.actingAs === null) {
         return null;
@@ -111,7 +114,7 @@ export default {
       try{
         return this.parseApiResponse(this.callApi());
       } catch (err) {
-        if (await Api.handle.call(this, err)) {
+        if (await Api.handle401.call(this, err)) {
           return;
         }
         this.apiErrorMessage = err.userFacingErrorMessage;
@@ -160,6 +163,9 @@ export default {
   },
 
   watch: {
+    /**
+     * Watch acting as is switched by clicking navbar dropdown
+     */
     businessId() {
       this.$helper.goToProfile.bind(this)();
     }
