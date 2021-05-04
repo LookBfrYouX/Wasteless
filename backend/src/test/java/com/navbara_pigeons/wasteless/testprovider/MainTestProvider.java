@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.testprovider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -28,6 +30,13 @@ import java.nio.file.Path;
  */
 @SpringBootTest
 public class MainTestProvider {
+
+    @Autowired
+    protected MockMvc mockMvc;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
+
     protected Product makeProduct(String productName) {
         Product product = new Product();
         product.setName(productName)
