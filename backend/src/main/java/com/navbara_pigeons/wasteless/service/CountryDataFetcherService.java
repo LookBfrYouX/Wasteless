@@ -13,35 +13,39 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.util.HashMap;
 
 @Service
-@Slf4j
 public class CountryDataFetcherService {
     private final String resourcePath = "countryData.json";
     private HashMap<String, Currency> currencyHashMap;
 
     public CountryDataFetcherService() throws URISyntaxException, IOException {
+        loadCountryData();
+    }
+
+    /**
+     * Reads a file containing an API response from resources folder and generates the country hash map
+     * @throws IOException
+     */
+    protected void loadCountryData() throws IOException
+    {
         File file = ResourceUtils.getFile("classpath:countryData.json");
-        this.reloadCountryDataFromDisk(file);
+        reloadCountryDataFromDisk(new FileInputStream(file));
     }
 
     /**
      * Reads a file containing an API response from disk and generates the country hash map
-     * @param file file containing JSON response
+     * @param file file containing to JSON response
      * @throws IOException
      */
-    protected void reloadCountryDataFromDisk(File file) throws IOException
+    protected void reloadCountryDataFromDisk(InputStream file) throws IOException
     {
         ObjectMapper mapper = new ObjectMapper();
-        log.info(mapper.toString());
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         // JSON has lots of unnecessary properties that we can ignore
         Country[] countries = mapper.readValue(file, Country[].class);
