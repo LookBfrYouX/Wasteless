@@ -31,7 +31,7 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
 
   private MvcResult mvcResult;
 
-  @Given("a user with name {string} is logged in and administers a business called {string} that sells a product {string}")
+  @Given("a user with name {string} exists and already administers a business called {string} that sells a product {string}")
   public void aUserWithNameIsLoggedInAndAdministersABusinessCalled(String userName, String businessName, String productName) throws Exception {
     String email = userName + "@example.com";
     String password = "password123";
@@ -39,19 +39,30 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
     Business business = makeBusiness(businessName, user);
     user.setPassword(password);
     user.setFirstName(userName);
+    UserCredentials credentials = new UserCredentials();
+    credentials.setEmail(email);
+    credentials.setPassword(password);
     Assertions.assertDoesNotThrow(() -> userController.registerUser(user));
+    Assertions.assertDoesNotThrow(() -> userController.login(credentials));
     Assertions.assertDoesNotThrow(() -> businessController.registerBusiness(new FullBusinessDto(business)));
   }
 
-  @When("{string} requests his product catalogue")
-  public void requestsHisProductCatalogue(String userName) {
-    String email = userName + "@example.com";
+  @When("the user with email address {string} and password {string} requests his product catalogue")
+  public void requestsHisProductCatalogue(String userEmail, String password) throws Exception {
+    JSONObject credentials = new JSONObject();
+    credentials.put("email", userEmail);
+    credentials.put("password", password);
+    System.out.println(credentials.toString());
+
+    mockMvc.perform(
+            post("/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(credentials.toString())
+                    .accept(MediaType.ALL))
+            .andExpect(status().is(200));
 
 
-
-
-
-  }
+  };
 
   @Then("The product {string} is displayed")
   public void theProductIsDisplayed(String arg0) {
