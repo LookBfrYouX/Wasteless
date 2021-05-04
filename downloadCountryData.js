@@ -1,5 +1,5 @@
 // this file is for saving country data from rest countries in both front end and back end for correct matching of currencies and country validation
-// needs to be in pipeline before java gets compiled. So that we gurantee that the backend always has country data available
+// needs to be in pipeline before java gets compiled. So that we guarantee that the backend always has country data available
 
 
 const https = require("https");
@@ -11,6 +11,11 @@ const temporaryFilePath = "./tmp.json";
 // need to save copy in both frontend and backend for matching
 const frontEndPath = "./frontend/src/assets/countryData.json";
 const backEndPath = "./backend/src/main/resources/countryData.json";
+
+for(dir of ["./", "./backend/src", "./backend/src/main/resources"]) {
+  console.log("\n" + dir);
+  fs.readdirSync(dir).forEach(path => console.log(path));
+}
 
 /*
  * saves data to temp file for filtering
@@ -63,13 +68,18 @@ const filterData = data => data
  * pipeline runs individual methods together
  */
 const pipeline = () => {
+  console.log("Downloading country data");
   downloadCountryData(temporaryFilePath)
   .then(() => {
+    console.log("Country data downloaded");
     const data = JSON.parse(fs.readFileSync(temporaryFilePath, { encoding: "utf8"}));
     const filteredData = filterData(data);
+    console.log(`Filtering data. ${filterData.length} countries found`);
     // saves to frontend
+    console.log(`Saving to ${frontEndPath}`);
     fs.writeFileSync(frontEndPath, JSON.stringify(filteredData));
     // saves to backend
+    console.log(`Saving to ${backEndPath}`);
     fs.writeFileSync(backEndPath, JSON.stringify(filteredData));
     // deletes temp file
     fs.rmSync(temporaryFilePath);
