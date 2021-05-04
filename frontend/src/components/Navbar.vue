@@ -2,7 +2,7 @@
   <div id="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <!-- Title -->
-      <a class="navbar-brand" v-on:click="pushOrGo('home')">Navbara Pigeon</a>
+      <a class="navbar-brand" href="javascript:;" v-on:click="pushOrGo('home')">Navbara Pigeon</a>
       <!-- Hamburger button -->
       <button
           aria-controls="navbarSupportedContent"
@@ -23,13 +23,13 @@
           <div class="d-lg-flex">
             <!--Profile page link -->
             <li class="nav-item mr-lg-auto" v-if="isLoggedIn">
-              <a class="nav-link" v-on:click="profileClicked">
-                {{currentActingAs? "Business ": ""}} Profile
+              <a class="nav-link" href="javascript:;" v-on:click="profileClicked">
+                {{ currentActingAs ? "Business " : "" }} Profile
               </a>
             </li>
             <!-- Product catalog link -->
             <li class="navbar-item mr-lg-auto" v-if="isActingAsBusiness">
-              <a class="nav-link" v-on:click="pushOrGo('productCatalogue')">
+              <a class="nav-link" href="javascript:;" v-on:click="pushOrGo('productCatalogue')">
                 Catalogue
               </a>
             </li>
@@ -58,9 +58,13 @@
           <!-- Right group: User and acting as -->
           <li v-if="isLoggedIn" class="nav-item dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
-                aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown"
-                href="#" role="button">
-              <img class="nav-picture rounded-circle" :src="authUser.imageURL">
+               aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
+               data-toggle="dropdown"
+               href="javascript:;" role="button">
+              <img v-if="isActingAsBusiness" class="nav-picture rounded-circle"
+                   src="./../../assets/images/default-business-thumbnail.svg">
+              <img v-else class="nav-picture rounded-circle"
+                   src="./../../assets/images/default-user-thumbnail.svg">
               <div class="d-flex flex-column mx-1">
                 <span class="m-0 p-0 text-dark">
                   {{ printCurrentActingAs }}
@@ -71,24 +75,24 @@
 
             <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
                 <div class="h4 dropdown-header">Act as</div>
-              <a v-on:click="$stateStore.actions.setActingAs()"
+              <a href="javascript:;" v-on:click="$stateStore.actions.setActingAs()"
                  class="dropdown-item">
                 {{ authUser.firstName }} {{ authUser.lastName }}
                 <span v-if="currentActingAs === null">
                   &#10003;
                 </span>
               </a>
-                <a v-for="business in actingAsEntities"
-                    :key="business.id"
-                    v-on:click="$stateStore.actions.setActingAs(business)"
-                    class="dropdown-item">
-                  {{business.name}}
-                  <span v-if="business === currentActingAs">
+              <a v-for="business in actingAsEntities" href="javascript:;"
+                 :key="business.id"
+                 v-on:click="$stateStore.actions.setActingAs(business)"
+                 class="dropdown-item">
+                {{ business.name }}
+                <span v-if="business === currentActingAs">
                     &#10003;
                   </span>
-                </a>
+              </a>
                 <div class="dropdown-divider"></div>
-              <a class="dropdown-item" v-on:click="logOut">Log out</a>
+              <a class="dropdown-item" href="javascript:;" v-on:click="logOut">Log out</a>
             </div>
           </li>
 

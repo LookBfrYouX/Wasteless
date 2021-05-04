@@ -110,7 +110,9 @@ export default {
         response = await Api.profile(userId);
         const authUser = response.data;
         // Adding the image URL (the GET request to backend) to the User object
-        authUser.imageURL = process.env.VUE_APP_SERVER_ADD + `/users/${userId}/images/`;
+        // authUser.imageURL = process.env.VUE_APP_SERVER_ADD + `/users/${userId}/images/`;
+        // authUser.imageURL = process.env.VUE_APP_SERVER_ADD
+        //     + `/user-content/images/user/default-user-thumbnail.svg`;
         this.$stateStore.actions.setAuthUser(authUser);
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
