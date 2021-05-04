@@ -1,8 +1,8 @@
 <template>
   <div class="w-100">
     <div class="w-100">
-      <div v-if="!isVisible" class="button-expand-sidebar-wrapper mt-2 mx-2">
-        <button class="btn btn-info" type="button" v-on:click="toggleSidebar()">
+      <div class="button-expand-sidebar-wrapper mt-2 mx-2">
+        <button v-if="results.length && !isVisible" class="btn btn-info" type="button" v-on:click="toggleSidebar()">
           <span>Sort results</span>
         </button>
         <!-- create product button doesn't really belong here, but want it aligned with the sort results button -->
@@ -10,7 +10,7 @@
           <span>Create Product</span>
         </button>
       </div>
-      <div class="p-relative w-100 d-flex align-items-stretch">
+      <div v-if="results.length" class="p-relative w-100 d-flex align-items-stretch">
         <div v-if="isVisible" class="sort-results bg-light">
           <div class="p-3">
             <h3 class="d-inline">Sort by</h3>
@@ -39,15 +39,25 @@
             <ul class="list-unstyled list-group">
               <!--viewUser method uses router.push to display profile page-->
               <li v-for="(product, index) in displayedResults" v-bind:key="index"
-                  class="list-group-item card ">
-                <div class="d-flex flex-wrap justify-content-between">
-                  <h4 class="card-title mb-0">{{ product.name }}</h4>
+                  v-on:click="viewProduct(product.id)"
+                  class="list-group-item card">
+                <div class="row">
+                  <div class="col-3">
+                    <img v-bind:src="getThumbnailImage(product.id)" class="image-fluid w-100" alt="Product Image">
+                  </div>
+                  <div class="col-9">
+                    <div class="d-flex flex-wrap justify-content-between">
+                      <h4 class="card-title mb-0">{{ product.name }} (Id: {{ product.id }})</h4>
+                    </div>
+                  </div>
                 </div>
-                <div class="text-muted">Manufacturer: {{product.manufacturer }}</div>
+                <div class="text-muted">Manufacturer: {{ product.manufacturer }}</div>
                 <div class="text-muted">Description: {{ product.description }}</div>
-                <div class="text-muted">RRP: {{product.recommendedRetailPrice }}</div>
-
-                <div class="text-muted">Created: {{ $helper.isoToDateString(product.created) }}</div>
+                <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
+                <div class="text-muted">Created: {{
+                    $helper.isoToDateString(product.created)
+                  }}
+                </div>
               </li>
             </ul>
             <div aria-label="table-nav" class="mt-2">
@@ -98,6 +108,7 @@
 import ErrorModal from "./Errors/ErrorModal.vue";
 
 const { Api } = require("./../Api.js");
+const BASE_PRODUCT_IMAGE_PATH = "/user-content/images/products/";
 
 const ProductCatalogue = {
   name: "ProductCatalogue",
@@ -130,7 +141,7 @@ const ProductCatalogue = {
     sortByClicked(newSortBy) {
       if (this.sortBy == newSortBy) {
         this.reversed = !this.reversed;
-      } 
+      }
       this.sortBy = newSortBy;
     },
 
@@ -176,6 +187,31 @@ const ProductCatalogue = {
 
     createProduct() {
       this.$router.push("createProduct");
+    },
+
+    /**
+     * Retreive product primary image URL to show as a thumbnail
+     */
+    getThumbnailImage(productId) {
+      const products = this.results;
+      const product = products.find(({id}) => id === productId);
+      if (product && product.images && product.images[0]) {
+        return product.images[0].thumbnailFilename;
+      } else {
+        return BASE_PRODUCT_IMAGE_PATH + "default-product-thumbnail.svg";
+      }
+    },
+
+    /**
+     * Go to product detail page by passing the product id
+     */
+    viewProduct(productId) {
+      this.$router.push({
+        name: "productDetail",
+        params: {
+          productId
+        }
+      });
     }
   },
   computed: {
@@ -208,6 +244,11 @@ export default ProductCatalogue;
 
 <style>
 
+#create-product-button {
+  top: 50px;
+  right: 15px;
+}
+
 button.page-link {
   display: inline-block;
 }
@@ -216,11 +257,6 @@ button.page-link {
   font-size: 20px;
   color: #29b3ed;
   font-weight: 500;
-}
-
-.offset {
-  width: 500px !important;
-  margin: 20px auto;
 }
 
 .button-expand-sidebar-wrapper {

@@ -1,9 +1,6 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.Image;
-import com.navbara_pigeons.wasteless.entity.Product;
-
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,7 +48,7 @@ public class ImageDaoImpl implements ImageDao {
    * @return normalized path
    */
   public Path getPathToProduct(String filename) {
-    Path destination = Paths.get(storagePath, productsDirectory, filename);
+    Path destination = Paths.get(storagePath, filename);
     return destination.normalize();
   }
 

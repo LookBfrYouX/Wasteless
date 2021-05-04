@@ -79,6 +79,18 @@ export const router = new VueRouter({
       component: () => import("./components/ProductCatalogue.vue"),
     },
     {
+      name: "productDetail",
+      path: "/productdetail/:productId(\\d+)",
+      component: () => import("./components/ProductDetail.vue"),
+      props: route => ({ productId: parseInt(route.params.productId, 10)})
+    },
+    {
+      name: "editProductImages",
+      path: "/editproductimages/:productId(\\d+)",
+      component: () => import("./components/EditProductImages.vue"),
+      props: route => ({ productId: parseInt(route.params.productId, 10)})
+    },
+    {
       name: "businessProfile",
       path: "/businessprofile/:businessId(\\d+)",
       meta: {title: "Business Profile | Wasteless"},
