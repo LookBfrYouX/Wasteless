@@ -51,13 +51,15 @@
     <div class="d-flex justify-content-end">
       <button class="btn btn-success"
               v-on:click="$router.go(-1)">
-        Save changes
+        Go Back
       </button>
     </div>
 
     <error-modal
         title="Error fetching product information"
-        v-bind:hideCallback="() => apiErrorMessage = null"
+        v-bind:hideCallback="() => {
+          apiErrorMessage = null;
+        }"
         v-bind:refresh="true"
         v-bind:retry="this.apiPipeline"
         v-bind:goBack="false"
@@ -92,7 +94,7 @@
 <script>
 import ErrorModal from './Errors/ErrorModal.vue';
 import {ApiRequestError} from "./../ApiRequestError";
-const Api = require("./../Api").default;
+const {Api} = require("./../Api");
 
 export default {
   name: 'editProductImages',
@@ -124,6 +126,13 @@ export default {
      */
     actingAs() {
       return this.$stateStore.getters.getActingAs();
+    },
+
+    businessId() {
+      if (this.actingAs === null) {
+        return null;
+      }
+      return this.actingAs.id;
     }
   },
 
@@ -131,8 +140,15 @@ export default {
     /**
      * Calls the API and updates the component's data with the result
      */
-    apiPipeline: function () {
-      return this.parseApiResponse(this.callApi());
+    apiPipeline: async function () {
+      try {
+        return await this.parseApiResponse(this.callApi());
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
+        this.apiErrorMessage = err.userFacingErrorMessage;
+      }
     },
 
     /**
@@ -140,29 +156,24 @@ export default {
      * Returns the promise, not the response
      */
     callApi: async function () {
-      const response = await Api.getProducts(this.$stateStore.getters.getActingAs().id);
-      return response;
+      if (this.businessId === null) {
+        throw new ApiRequestError("You must be acting as a business to edit the product.")
+      }
+      return await Api.getProducts(this.businessId);
     },
 
     /**
      * Parses the API response given a promise to the request
      */
     parseApiResponse: async function (apiCall) {
-      try {
-        const products = (await apiCall).data;
-        const product = products.find(({id}) => id === this.productId);
-        // find the product the correct id
-        if (product === undefined) {
-          return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
-        }
-        this.name = product.name;
-        this.images = product.images;
-      } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
-        this.apiErrorMessage = err.userFacingErrorMessage;
+      const products = (await apiCall).data;
+      const product = products.find(({id}) => id === this.productId);
+      // find the product the correct id
+      if (product === undefined) {
+        throw new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
       }
+      this.name = product.name;
+      this.images = product.images;
     },
 
     /**
@@ -181,8 +192,10 @@ export default {
       Api.uploadProductImage(files[0], this.actingAs.id, this.productId)
       .then(() => {
         return this.apiPipeline();
-      }).catch(err => {
-        Api.handle401.call(this, err);
+      }).catch(async(err) => {
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.imageApiErrorTitle = "Error uploading new product image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
@@ -217,6 +230,12 @@ export default {
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
     },
+  },
+
+  watch: {
+    businessId() {
+      this.$helper.goToProfile.bind(this)();
+    }
   }
 }
 </script>

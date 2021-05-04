@@ -39,9 +39,6 @@
             <ul class="list-unstyled list-group">
               <!--viewUser method uses router.push to display profile page-->
               <li v-for="(product, index) in displayedResults" v-bind:key="index"
-                  class="list-group-item card ">
-                <div class="d-flex flex-wrap justify-content-between">
-                  <h4 class="card-title mb-0">{{ product.name }}</h4>
                   v-on:click="viewProduct(product.id)"
                   class="list-group-item card">
                 <div class="row">
@@ -54,14 +51,12 @@
                     </div>
                   </div>
                 </div>
-                  <div class="text-muted">Manufacturer: {{ product.manufacturer }}</div>
-                  <div class="text-muted">Description: {{ product.description }}</div>
-                  <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
-
-                  <div class="text-muted">Created: {{
-                      $helper.isoToDateString(product.created)
-                    }}
-                  </div>
+                <div class="text-muted">Manufacturer: {{ product.manufacturer }}</div>
+                <div class="text-muted">Description: {{ product.description }}</div>
+                <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
+                <div class="text-muted">Created: {{
+                    $helper.isoToDateString(product.created)
+                  }}
                 </div>
               </li>
             </ul>
@@ -262,11 +257,6 @@ button.page-link {
   font-size: 20px;
   color: #29b3ed;
   font-weight: 500;
-}
-
-.offset {
-  width: 500px !important;
-  margin: 20px auto;
 }
 
 .button-expand-sidebar-wrapper {

@@ -35,6 +35,7 @@
         v-bind:refresh="true"
         v-bind:retry="this.apiPipeline"
         v-bind:show="apiErrorMessage !== null"
+        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -44,6 +45,7 @@
         v-bind:refresh="true"
         v-bind:retry="false"
         v-bind:show="imageApiErrorMessage !== null"
+        v-bind:goBack="false"
     >
       <p>{{ imageApiErrorMessage }}</p>
     </error-modal>
@@ -53,7 +55,7 @@
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
 import {ApiRequestError} from "@/ApiRequestError";
-const Api = require("./../Api").default;
+const { Api } = require("./../Api");
 
 export default {
   name: "productDetail",
@@ -98,6 +100,7 @@ export default {
      * Returns the promise, not the response
      */
     callApi: async function() {
+      console.log(this.$stateStore.getters.getActingAs().id);
       const response = await Api.getProducts(this.$stateStore.getters.getActingAs().id);
       return response;
     },
@@ -106,23 +109,24 @@ export default {
      * Parses the API response given a promise to the request.
      */
     parseApiResponse: async function (apiCall) {
+      let products;
       try {
-        const products = (await apiCall).data;
-        const product = products.find(({id}) => id === this.productId);
-        if (product === undefined) {
-          return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
-        }
-        this.name = product.name;
-        this.description = product.description;
-        this.recommendedRetailPrice = product.recommendedRetailPrice;
-        this.created = product.created;
-        this.productImages = product.images;
+        products = (await apiCall).data;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
         }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
+      const product = products.find(({id}) => id === this.productId);
+      if (product === undefined) {
+        return new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
+      }
+      this.name = product.name;
+      this.description = product.description;
+      this.recommendedRetailPrice = product.recommendedRetailPrice;
+      this.created = product.created;
+      this.productImages = product.images;
     },
 
     /**

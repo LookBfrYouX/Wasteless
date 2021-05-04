@@ -253,34 +253,7 @@ export default {
      * If already on own profile page, reloads the page
      */
     profileClicked: async function() {
-      let reload = false;
-      let args;
-
-      if (this.currentActingAs == null) {
-        args = {
-          name: "profile"
-        }
-
-        if (this.$route.name === args.name && this.$route.params.userId === undefined) {
-          reload = true;
-        }
-      } else {
-        const businessId = this.currentActingAs.id;
-        args = {
-          name: "businessProfile",
-          params: {
-            businessId
-          }
-        }
-
-        if (this.$route.name === "businessProfile" &&
-            this.$route.params.businessId === businessId.toString()) {
-          reload = true;
-        }
-      }
-
-      if (reload) await this.$router.go();
-      else await this.$router.push(args);
+      this.$helper.goToProfile.bind(this)();
     }
   },
 };

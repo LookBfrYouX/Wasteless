@@ -24,7 +24,7 @@ public class BasicProductDto {
     private Double recommendedRetailPrice;
     private ZonedDateTime created;
     private BasicImageDto primaryProductImage;
-    private List<BasicImageDto> productImages;
+    private List<BasicImageDto> images;
 
     public BasicProductDto(Product product) {
         this.id = product.getId();
@@ -38,7 +38,7 @@ public class BasicProductDto {
 //            this.primaryProductImage = new BasicImageDto(product.getPrimaryProductImage());
 //        }
         if (product.getProductImages() != null) {
-            this.productImages = makeImageDtos(product.getImages()); // First image is primary image
+            this.images = makeImageDtos(product.getImages()); // First image is primary image
         }
     }
 
