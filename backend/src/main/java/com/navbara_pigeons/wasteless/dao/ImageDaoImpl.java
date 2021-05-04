@@ -22,9 +22,7 @@ public class ImageDaoImpl implements ImageDao {
   @Value("${user_generated_images_directory}")
   private String storagePath;
 
-  private final String defaultUserPath = "user/default-user.png";
   public final String productsDirectory = "products"; // products stored in storagePath/products/
-  private final String defaultBusinessPath = "business/default-business.png";
   private final EntityManager entityManager;
 
   public ImageDaoImpl(@Autowired EntityManager entityManager) {
@@ -67,51 +65,6 @@ public class ImageDaoImpl implements ImageDao {
   public void deleteProductImageFromMachine(String filename) throws IOException {
     Path imagePath = getPathToProduct(filename);
     Files.delete(imagePath);
-  }
-
-  /**
-   * Save the Users Profile image to the local storage
-   * @param image The byte data of the image
-   * @param imageName The image name of the file to be saved
-   * @throws IOException Exception if saving to the machine fails
-   */
-  public void saveProfileImageToMachine(MultipartFile image, String imageName) throws IOException {
-    Path destination = Paths.get(storagePath + "user/" + imageName);
-    Files.copy(image.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-  }
-
-  /**
-   * Delete the Users profile image from the machine
-   * @param imageName the name of the image to delete
-   * @throws IOException Exception if deleting the image has failed
-   */
-  public void deleteProfileImageOnMachine(String imageName) throws IOException {
-    Path destination = Paths.get(storagePath + "user/" + imageName);
-    Files.delete(destination);
-  }
-
-  /**
-   * Get the Profile image from the local storage
-   * @param imageName The name of the image to get and return
-   * @return the byte data of the image
-   * @throws IOException Exception if retrieving the image has failed
-   */
-  public byte[] getProfileImageOnMachine(String imageName) throws IOException {
-    Path destination = Paths.get(storagePath + "user/" + imageName);
-    if (!Files.exists(destination)) {
-      throw new IOException("User does not have an image uploaded");
-    }
-    return Files.readAllBytes(destination);
-  }
-
-  /**
-   * Get the default User Profile image
-   * @return The byte data of the image
-   * @throws IOException Exception if accessing the machine fails
-   */
-  public byte[] getDefaultProfileImage() throws IOException {
-    Path destination = Paths.get(storagePath + defaultUserPath);
-    return Files.readAllBytes(destination);
   }
 
   public void deleteImage(Image image) {

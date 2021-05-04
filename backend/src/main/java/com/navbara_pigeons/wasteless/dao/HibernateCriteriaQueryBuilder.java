@@ -16,6 +16,10 @@ import org.hibernate.Session;
 
 public class HibernateCriteriaQueryBuilder {
 
+  private HibernateCriteriaQueryBuilder() {
+
+  }
+
   public static CriteriaQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery)
       throws InvalidAttributeValueException {
     // Setup
@@ -32,7 +36,7 @@ public class HibernateCriteriaQueryBuilder {
     // -- currently just using spaces
 
     List<String> tokens = new ArrayList<>();
-    Matcher matcher = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(searchQuery);
+    Matcher matcher = Pattern.compile("([^\"]\\S*|\"[^>]++\")\\s*").matcher(searchQuery);
     while (matcher.find()) {
       tokens.add(matcher.group(1));
     }
@@ -43,7 +47,7 @@ public class HibernateCriteriaQueryBuilder {
         // AND is default join for predicates so this is empty
       } else if (currentToken.toUpperCase().matches("OR")) {
         // Check it is in a legit place
-        if (i > 0 && (i + 1) < tokens.size() && predicates.size() > 0) {
+        if (i > 0 && (i + 1) < tokens.size() && !predicates.isEmpty()) {
           Predicate lastPredicate = predicates.remove(predicates.size() - 1);
           Predicate newPredicate = criteriaBuilder
               .or(lastPredicate, makePredicate(tokens.get(i + 1), criteriaBuilder, root));

@@ -7,7 +7,7 @@
       <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
               v-on:click="$router.go(-1)">
         <span class="material-icons mr-1">arrow_back</span>
-        Back to Product Catalogue
+        Back
       </button>
       <div class="mt-2">Description: {{ description }}</div>
       <div class="mt-2">RRP: {{ recommendedRetailPrice }}</div>
@@ -114,9 +114,7 @@ export default {
       try{
         return await this.parseApiResponse(this.callApi());
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },

@@ -153,7 +153,7 @@ export const Api = {
    * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
   createProduct: (id, props) => {
-    return instance.post(`/businesses/${id}/products`, props).catch(error => {
+    return instance.  post(`/businesses/${id}/products`, props).catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
         403: "You don't have permission to add products to this business"
       });
@@ -228,18 +228,7 @@ export const Api = {
 
     return false;
   },
-  uploadProfileImage: (image, id) => {
-    const formData = new FormData();
-    formData.append("image", image);
-    return instance.post(`/users/${id}/images`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).catch(error => {
-      throw ApiRequestError.createFromMessageMap(error, {});
-    });
-  },
-
+  
   /**
    * Uploads an product image and sends post request to ImageController
    * @param image is a file object with a name property that contains original file name
@@ -257,7 +246,8 @@ export const Api = {
     }).catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
         403: "You don't have permission to upload the images.",
-        406: "Could not upload the image."
+        406: "Could not upload the image.",
+        413: "The image you uploaded was too large. Please upload a smaller image"
       });
     });
   },

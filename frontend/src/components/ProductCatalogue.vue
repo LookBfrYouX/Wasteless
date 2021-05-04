@@ -44,7 +44,18 @@
                   class="list-group-item card">
                 <div class="row">
                   <div class="col-3">
-                    <img v-bind:src="getThumbnailImage(product.id)" class="image-fluid w-100 rounded-circle" alt="Product Image">
+                    <img
+                      v-if="getThumbnailImage(product.id) != null"
+                      v-bind:src="getThumbnailImage(product.id)"
+                      class="image-fluid w-100 rounded-circle"
+                      alt="Product Image"
+                    >
+                    <img
+                      v-else
+                      src="./../../assets/images/default-product-thumbnail.svg"
+                      class="image-fluid w-100 rounded-circle"
+                      alt="Product Image"
+                    >
                   </div>
                   <div class="col-9">
                     <div class="d-flex flex-wrap justify-content-between">
@@ -106,10 +117,10 @@
 </template>
 
 <script>
+import { ApiRequestError } from "../ApiRequestError";
 import ErrorModal from "./Errors/ErrorModal.vue";
 
 const { Api } = require("./../Api.js");
-const BASE_PRODUCT_IMAGE_PATH = "/user-content/images/products/";
 
 const ProductCatalogue = {
   name: "ProductCatalogue",
@@ -151,16 +162,18 @@ const ProductCatalogue = {
      */
     query: async function () {
       /* makes a query to the api to search for the prop value from the app.vue main page*/
+      let data;
       try {
-        const {data} = await Api.getProducts(this.$stateStore.getters.getActingAs().id)
-        this.results = this.parseSearchResults(data);
-        this.setPages();
+        if (this.businessId == null) throw new ApiRequestError("You must be logged in as a business before viewing a catalog");
+        data = (await Api.getProducts(this.businessId)).data;
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
+        return;
       }
+
+      this.results = this.parseSearchResults(data);
+      this.setPages();
     },
 
     parseSearchResults: function (results) {
@@ -192,15 +205,15 @@ const ProductCatalogue = {
 
     /**
      * Retreive product primary image URL to show as a thumbnail
+     * If no thumbnail image returns null
      */
     getThumbnailImage(productId) {
       const products = this.results;
       const product = products.find(({id}) => id === productId);
       if (product && product.images && product.images[0]) {
         return product.images[0].thumbnailFilename;
-      } else {
-        return BASE_PRODUCT_IMAGE_PATH + "default-product-thumbnail.svg";
       }
+      return null;
     },
 
     /**

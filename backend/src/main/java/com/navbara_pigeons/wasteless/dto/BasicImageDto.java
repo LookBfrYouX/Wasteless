@@ -2,9 +2,7 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Image;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 
-import java.nio.file.Path;
 
 /**
  * Image DTO which returns all image details

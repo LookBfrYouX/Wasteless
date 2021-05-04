@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.dto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import lombok.Data;
 
-import java.time.ZonedDateTime;
 
 /**
  * Business DTO which returns all user details except catalog and administrators list

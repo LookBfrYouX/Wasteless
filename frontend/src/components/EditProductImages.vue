@@ -14,16 +14,16 @@
       </div>
     </div>
     <div class="row">
-
       <div
           v-for="(img, i) in images"
           v-bind:key="img.id"
-          class="col-12 col-sm-6 col-md-4 col-lg-3 p-2"
+          class="col-12 col-sm-6 col-md-4 col-lg-3 p-2 d-flex flex-column justify-content-end"
       >
+      <!-- align buttons on the bottom -->
         <div class="d-flex justify-content-center">
           <img
               v-bind:src="img.filename"
-              class="img-fluid"
+              class="img-fluid w-100"
           />
           <!-- TODO change to thumbnailFilename -->
         </div>
@@ -153,9 +153,7 @@ export default {
       try {
         return await this.parseApiResponse(this.callApi());
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
@@ -202,9 +200,7 @@ export default {
       .then(() => {
         return this.apiPipeline();
       }).catch(async(err) => {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error uploading new product image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
@@ -218,8 +214,8 @@ export default {
       Api.changePrimaryImage(this.actingAs.id, this.productId, imageId)
       .then(() => {
         return this.apiPipeline();
-      }).catch(err => {
-        Api.handle401.call(this, err);
+      }).catch(async(err) => {
+        if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error setting a primary image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
@@ -233,8 +229,8 @@ export default {
       Api.deleteProductImage(this.actingAs.id, this.productId, imageId)
       .then(() => {
         return this.apiPipeline();
-      }).catch(err => {
-        Api.handle401.call(this, err);
+      }).catch(async (err) => {
+        if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error deleting the image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });

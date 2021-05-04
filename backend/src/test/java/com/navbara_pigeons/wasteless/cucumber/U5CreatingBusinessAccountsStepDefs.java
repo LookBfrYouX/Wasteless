@@ -159,4 +159,8 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider{
       Assert.fail("Business not found");
     }
   }
+
+    @Given("{string} is signed in and administers a business {string} with a product {string}")
+    public void isSignedInAndAdministersABusinessWithAProduct(String arg0, String arg1, String arg2) {
+    }
 }

@@ -22,13 +22,13 @@
         <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
           <div class="d-lg-flex">
             <!--Profile page link -->
-            <li class="nav-item mr-lg-auto" v-if="isLoggedIn">
+            <li class="nav-item mr-lg-auto d-flex align-items-center text-center" v-if="isLoggedIn">
               <a class="nav-link" href="javascript:;" v-on:click="profileClicked">
                 {{ currentActingAs ? "Business " : "" }} Profile
               </a>
             </li>
             <!-- Product catalog link -->
-            <li class="navbar-item mr-lg-auto" v-if="isActingAsBusiness">
+            <li class="navbar-item mr-lg-auto d-flex align-items-center" v-if="isActingAsBusiness">
               <a class="nav-link" href="javascript:;" v-on:click="pushOrGo('productCatalogue')">
                 Catalogue
               </a>
@@ -218,9 +218,7 @@ export default {
       try {
         await Api.logOut();
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.logOutErrorMessage = err.userFacingErrorMessage;
         return;
       }

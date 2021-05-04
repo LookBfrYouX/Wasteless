@@ -140,9 +140,7 @@ const SearchResults = {
         this.results = this.parseSearchResults(data);
 
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },

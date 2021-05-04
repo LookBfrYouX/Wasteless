@@ -9,17 +9,12 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Currency;
 import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
-import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.validation.ProductServiceValidation;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
