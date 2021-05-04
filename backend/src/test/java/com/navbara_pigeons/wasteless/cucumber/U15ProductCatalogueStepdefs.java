@@ -20,10 +20,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -61,7 +64,18 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
                     .accept(MediaType.ALL))
             .andExpect(status().is(200));
     String userId = mvcResult.getResponse().getContentAsString().replaceAll("[^0-9]", "");
-    this.user = userController.getUserById(userId);
+    User user = (User) mockMvc.perform(
+            get("/user/" + userId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.ALL))
+            .andExpect(status().is(200));
+    Business business = user.getBusinesses().get(0);
+    Long id = business.getId();
+    ResultActions product = mockMvc.perform(
+            get("/businesses/" + id + "/products")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.ALL))
+            .andExpect(status().is(200));
   };
 
 
