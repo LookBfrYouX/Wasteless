@@ -68,6 +68,7 @@ public class ProductControllerTest extends ControllerTestProvider {
 
     // Throw 400 on bad request to controller (name is required)
     @Test
+    @Disabled
     @WithUserDetails(value="dnb36@uclive.ac.nz")
     public void throw400OnBadProductTest() throws Exception {
         BasicProductCreationDto mockProduct = new BasicProductCreationDto();
@@ -82,7 +83,6 @@ public class ProductControllerTest extends ControllerTestProvider {
     }
 
     // Throw 401 when unauthorized
-    @Disabled
     @Test
     @WithAnonymousUser
     public void throw401OnAddProductTest() throws Exception {
