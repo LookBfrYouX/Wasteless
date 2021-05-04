@@ -47,8 +47,8 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
     Assertions.assertDoesNotThrow(() -> businessController.registerBusiness(new CreateBusinessDto(business)));
   }
 
-  @When("the user with email address {string} and password {string} requests his product catalogue")
-  public void requestsHisProductCatalogue(String userEmail, String password) throws Exception {
+  @When("the user with email address {string} and password {string} logs in and requests his product catalogue with business id {string}")
+  public void requestsHisProductCatalogue(String userEmail, String password, String Businessid) throws Exception {
     JSONObject credentials = new JSONObject();
     credentials.put("email", userEmail);
     credentials.put("password", password);
