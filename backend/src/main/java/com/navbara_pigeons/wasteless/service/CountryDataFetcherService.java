@@ -34,8 +34,8 @@ public class CountryDataFetcherService {
      */
     protected void loadCountryData() throws IOException
     {
-        File file = ResourceUtils.getFile("classpath:countryData.json");
-        reloadCountryDataFromDisk(new FileInputStream(file));
+        InputStream stream = this.getClass().getClassLoader().getResource("countryData.json").openStream();
+        reloadCountryDataFromDisk(stream);
     }
 
     /**
