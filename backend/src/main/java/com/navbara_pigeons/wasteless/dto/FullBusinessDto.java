@@ -22,7 +22,7 @@ public class FullBusinessDto {
     private FullAddressDto address;
     private String businessType;
     private ZonedDateTime created;
-    private List<FullUserDto> administrators;
+    private List<BasicUserDto> administrators;
     private List<BasicProductDto> productsCatalogue;
 
     public FullBusinessDto(Business business) {
@@ -41,11 +41,12 @@ public class FullBusinessDto {
         }
     }
 
-    private List<FullUserDto> makeUserDto(List<User> users) {
-        ArrayList<FullUserDto> userlistDto = new ArrayList<>();
+    private List<BasicUserDto> makeUserDto(List<User> users) {
+        ArrayList<BasicUserDto> userlistDto = new ArrayList<>();
         for (User user : users) {
-            user.setBusinesses(null);
-            userlistDto.add(new FullUserDto(user));
+            BasicUserDto userDto = new BasicUserDto(user);
+            userDto.setBusinesses(null);
+            userlistDto.add(userDto);
         }
         return userlistDto;
     }

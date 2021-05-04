@@ -137,7 +137,6 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public Object getUserById(long id) throws UserNotFoundException {
     User user = userDao.getUserById(id);
-
     if (isAdmin() || isSelf(user.getEmail())) {
       return new FullUserDto(user);
     } else {
