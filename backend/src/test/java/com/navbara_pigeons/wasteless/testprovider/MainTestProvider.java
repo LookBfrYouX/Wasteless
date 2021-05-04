@@ -31,9 +31,9 @@ public class MainTestProvider {
     protected Product makeProduct(String productName) {
         Product product = new Product();
         product.setName(productName)
-                .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
-                .setDescription("A test product.")
-                .setRecommendedRetailPrice(20.25);
+               .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
+               .setDescription("A test product.")
+               .setRecommendedRetailPrice(20.25);
         return product;
     }
 
