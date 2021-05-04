@@ -46,6 +46,10 @@ public class BasicUserDto {
         }
     }
 
+    public BasicUserDto() {
+
+    }
+
     private List<BasicBusinessDto> makeBusinessDto(List<Business> businesses) {
         ArrayList<BasicBusinessDto> businessDtos = new ArrayList<BasicBusinessDto>();
         for (Business business : businesses) {

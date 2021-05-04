@@ -25,4 +25,8 @@ public class BasicImageDto {
         this.thumbnailFilename = publicPathPrefix + image.getThumbnailPath().substring(1);
     }
 
+    public BasicImageDto() {
+
+    }
+
 }

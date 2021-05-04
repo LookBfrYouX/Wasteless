@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
+import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
@@ -40,7 +41,7 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
     user.setPassword(password);
     user.setFirstName(userName);
     Assertions.assertDoesNotThrow(() -> userController.registerUser(user));
-    Assertions.assertDoesNotThrow(() -> businessController.registerBusiness(new FullBusinessDto(business, "/")));
+    Assertions.assertDoesNotThrow(() -> businessController.registerBusiness(new CreateBusinessDto(business)));
   }
 
   @When("{string} requests his product catalogue")
