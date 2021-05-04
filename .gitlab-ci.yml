@@ -190,7 +190,8 @@ restore-user-content-production:
   stage: restore-user-content
   script:
     - mkdir -p /home/gitlab-runner/production-frontend/dist
-    - rm -rf /home/gitlab-runner/staging-frontend/dist/user-content/
+    - rm -rf /home/gitlab-runner/production-frontend/dist/user-content/
+    - mkdir -p /home/gitlab-runner/production-user-content/images/products
     - mv /home/gitlab-runner/production-user-content/ /home/gitlab-runner/production-frontend/dist/user-content
   only:
     - master

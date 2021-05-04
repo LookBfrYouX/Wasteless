@@ -97,12 +97,14 @@ public class ImageServiceImpl implements ImageService {
     Image imageEntity = new Image(imagePrefix, fileExtension);
     Product productEntity = productService.getProduct(productId);
     productEntity.addProductImage(imageEntity);
-    if (productEntity.getPrimaryProductImage() == null) {
-      productEntity.setPrimaryProductImage(imageEntity);
-    }
+
     imageDao.saveProductImageToMachine(image, imageEntity.getFilename());
     imageDao.saveProductImageToMachine(imageThumbnail, imageEntity.getThumbnailFilename());
     imageDao.saveProductImageToDb(imageEntity);
+
+    if (productEntity.getPrimaryProductImage() == null) {
+      productEntity.setPrimaryProductImage(imageEntity);
+    }
   }
 
   /**

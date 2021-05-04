@@ -64,7 +64,7 @@ public class ImageController {
       log.error("INSUFFICIENT PRIVILEGES: " + productId);
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, exc.getMessage());
     } catch (Exception exc) {
-      log.error("FAILED WHEN UPLOADING PRODUCT IMAGE");
+      log.error("FAILED WHEN UPLOADING PRODUCT IMAGE" + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
     }
   }

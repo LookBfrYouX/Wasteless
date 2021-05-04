@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,7 @@ public class ServiceTestProvider extends MainTestProvider {
 
     @Autowired
     protected ProductService productService;
+
 
     /**
      * Logs in with a default set of credentials
@@ -134,29 +136,20 @@ public class ServiceTestProvider extends MainTestProvider {
      * @param businessDtos
      */
     protected void assertBusinessList(List<Business> businesses, List<?> businessDtos) {
-        HashSet<Long> businessesNotFoundYet = new HashSet<>();
-        businesses.forEach(business -> businessesNotFoundYet.add(business.getId()));
+        businesses.sort(Comparator.comparing(bus -> bus.getId()));
 
-        for (Object businessObject : businessDtos) {
-            long id = -1;
-            if (businessObject instanceof FullBusinessDto) {
-                id = ((FullBusinessDto) businessObject).getId();
-            } else if (businessObject instanceof BasicBusinessDto) {
-                id = ((BasicBusinessDto) businessObject).getId();
-            } else fail("Not business DTO object");
+        businessDtos.sort(Comparator.comparing(bus -> {
+            if (bus instanceof FullBusinessDto) return ((FullBusinessDto) bus).getId();
+            else return ((BasicBusinessDto) bus).getId();
+        }));
 
-            long finalId = id;
-            Optional<Business> expectedBusinessOptional = businesses.stream().filter(business -> business.getId() == finalId).findFirst();
-            if (expectedBusinessOptional.isEmpty()) fail("Received business with id " + id + "; not in original list");
-            Business expectedBusiness = expectedBusinessOptional.get();
+        assertEquals(businesses.size(), businessDtos.size(), "business and business DTOs list different length");
 
-            if (businessObject instanceof FullBusinessDto) assertBusinessEquals(
-                expectedBusiness, (FullBusinessDto) businessObject);
-            else assertBusinessEquals(expectedBusiness, (BasicBusinessDto) businessObject);
-            businessesNotFoundYet.remove(expectedBusiness.getId());
+        for(int i = 0; i < businesses.size(); i++) {
+            if (businessDtos.get(i) instanceof FullBusinessDto) assertBusinessEquals(
+                businesses.get(i), (FullBusinessDto) businessDtos.get(i));
+            else assertBusinessEquals(businesses.get(i), (BasicBusinessDto) businessDtos.get(i));
         }
-
-        if (businessesNotFoundYet.size() > 0) fail("Businesses that were in original list not found");
     }
 
     /**
@@ -201,7 +194,6 @@ public class ServiceTestProvider extends MainTestProvider {
         assertEquals(user.getRole(), userDto.getRole());
 
         assertAddressEquals(user.getHomeAddress(), userDto.getHomeAddress());
-
         assertBusinessList(user.getBusinesses(), userDto.getBusinesses());
     }
 
@@ -230,4 +222,26 @@ public class ServiceTestProvider extends MainTestProvider {
         assertEquals(address.getCountry(), addressDto.getCountry());
     }
 
+    protected void assertProductEquals(Product product, BasicProductDto productDto) {
+        assertEquals(product.getCreated(), productDto.getCreated());
+        assertEquals(product.getName(), productDto.getName());
+        assertEquals(product.getId(), productDto.getId());
+        assertEquals(product.getManufacturer(), productDto.getManufacturer());
+        assertEquals(product.getRecommendedRetailPrice(), productDto.getRecommendedRetailPrice());
+    }
+
+    /**
+     * Checks that products lists are equal
+     * @param products
+     * @param productDtos
+     */
+    protected void assertProductListsEqual(List<Product> products, List<BasicProductDto> productDtos) {
+        products.sort(Comparator.comparing(prod -> prod.getId()));
+        productDtos.sort(Comparator.comparing(prod -> prod.getId()));
+
+        assertEquals(products.size(), productDtos.size(), "product and product DTOs list different length");
+        for(int i = 0; i < products.size(); i++) {
+            assertProductEquals(products.get(i), productDtos.get(i));
+        }
+    }
 }
