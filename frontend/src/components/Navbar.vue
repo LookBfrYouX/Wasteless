@@ -82,7 +82,7 @@
             <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
               <div class="h4 dropdown-header">Act as</div>
               <a class="dropdown-item" href="javascript:"
-                 v-on:click="$stateStore.actions.setActingAs()">
+                 v-on:click="switchActingAs(null)">
                 {{ authUser.firstName }} {{ authUser.lastName }}
                 <span v-if="currentActingAs === null">
                   &#10003;
@@ -91,7 +91,7 @@
               <a v-for="business in actingAsEntities" :key="business.id"
                  class="dropdown-item"
                  href="javascript:"
-                 v-on:click="$stateStore.actions.setActingAs(business)">
+                 v-on:click="switchActingAs(business)">
                 {{ business.name }}
                 <span v-if="business === currentActingAs">
                     &#10003;
@@ -206,6 +206,17 @@ export default {
     },
   },
   methods: {
+    /**
+     * Switch acting as wrapper
+     * Redirects to profile page
+     */
+    switchActingAs: async function(business) {
+      this.$helper.goToProfile(business, this.$router, this.$route);
+      this.$stateStore.actions.setActingAs(business);
+      // Must set business after redirecting as some pages do not like it if a 
+      // user accesses a business page they are not an admin of
+    },
+
     /**
      * Go (refresh page) if already on the same page, or pushes if it is a different page. Does not support params
      */

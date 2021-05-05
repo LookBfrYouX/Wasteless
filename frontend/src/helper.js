@@ -55,25 +55,39 @@ export const helper = {
   },
 
   /**
-   * Navigates to profile page. Call using `goToProfile.bind(this)()`
+   * Navigates to profile page. Call using `goToProfile.bind(this)()` or `goToProfile(actingAsBusiness, router, route)`
    * If acting as business, goes to business profile. Otherwise, user profile.
    * If already on own profile page, reloads the page
+   * @param {*} actingAsBusiness business you want to act as. Use null if acting as self
+   * @param {*} $router router
+   * @param {*} $route  route
+   * @returns 
    */
-  goToProfile: async function () {
+  goToProfile: async function (actingAsBusiness = undefined, $router = undefined, $route = undefined) {
+    if ($route == undefined && this.$route === undefined) {
+      console.warn(
+          "[helper.js, goToProfile]: this needs to be passed using `.call(this)` or passed as argument");
+      return false;
+    }
+
+    if (actingAsBusiness === undefined) actingAsBusiness = this.$stateStore.getters.getActingAs();
+    if ($router === undefined) $router = this.$router;
+    if ($route  === undefined) $route  = this.$route;
+    
     let reload = false;
     let args;
 
-    if (this.$stateStore.getters.getActingAs() == null) {
+    if (actingAsBusiness == null) {
       args = {
         name: "profile"
       }
 
-      if (this.$route.name === args.name && this.$route.params.userId
+      if ($route.name === args.name && $route.params.userId
           === undefined) {
         reload = true;
       }
     } else {
-      const businessId = this.$stateStore.getters.getActingAs().id;
+      const businessId = actingAsBusiness.id;
       args = {
         name: "businessProfile",
         params: {
@@ -81,16 +95,16 @@ export const helper = {
         }
       }
 
-      if (this.$route.name === "businessProfile" &&
-          this.$route.params.businessId === businessId.toString()) {
+      if ($route.name === "businessProfile" &&
+          $route.params.businessId == businessId) {
         reload = true;
       }
     }
 
     if (reload) {
-      await this.$router.go();
+      await $router.go();
     } else {
-      await this.$router.push(args);
+      await $router.push(args);
     }
   },
 

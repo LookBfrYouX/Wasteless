@@ -199,15 +199,6 @@ export default {
         }
       });
     }
-  },
-
-  watch: {
-    /**
-     * Watch acting as is switched by clicking navbar dropdown
-     */
-    businessId() {
-      this.$helper.goToProfile.bind(this)();
-    }
   }
 }
 
