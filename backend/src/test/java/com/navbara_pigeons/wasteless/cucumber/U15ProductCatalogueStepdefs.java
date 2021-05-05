@@ -51,4 +51,8 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
   @Then("the ID, date created is set automatically and the currency is set to {string}")
   public void theIDDateCreatedIsSetAutomaticallyAndTheCurrencyIsSetTo(String arg0) {
   }
+
+  @When("{string} requests his product catalogue")
+  public void requestsHisProductCatalogue(String arg0) {
+  }
 }
