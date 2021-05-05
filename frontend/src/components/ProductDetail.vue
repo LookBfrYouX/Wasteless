@@ -17,9 +17,9 @@
         <div v-for="image in productImages"
              v-bind:key="image.id"
              class="col-12 col-md-6 col-lg-4 p-2">
-          <img v-bind:src="image.filename"
+          <img alt="Product Image"
                class="img-fluid"
-               alt="Product Image">
+               v-bind:src="image.filename">
         </div>
       </div>
       <div class="d-flex justify-content-end">
@@ -32,21 +32,21 @@
     <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error fetching product information"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.apiPipeline"
         v-bind:show="apiErrorMessage !== null"
-        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
     <error-modal
-        v-bind:title="imageApiErrorTitle"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => imageApiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="false"
         v-bind:show="imageApiErrorMessage !== null"
-        v-bind:goBack="false"
+        v-bind:title="imageApiErrorTitle"
     >
       <p>{{ imageApiErrorMessage }}</p>
     </error-modal>
@@ -58,8 +58,8 @@ import ErrorModal from "./Errors/ErrorModal.vue";
 import NotActingAsBusiness from "./Errors/NotActingAsBusiness";
 
 import {ApiRequestError} from "../ApiRequestError";
-const { Api } = require("./../Api");
 
+const {Api} = require("./../Api");
 
 export default {
   name: "productDetail",
@@ -95,19 +95,22 @@ export default {
     this.apiPipeline();
   },
 
-
   methods: {
 
     /**
      * Calls the API and updates the component's data with the result
      * Does not run pipeline if user should not be able to edit business
      */
-    apiPipeline: async function() {
-      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) return;
+    apiPipeline: async function () {
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+        return;
+      }
       try {
         return await this.parseApiResponse(this.callApi());
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
@@ -116,7 +119,7 @@ export default {
      * Calls the API to get profile information with the given user ID
      * Returns the promise, not the response
      */
-    callApi: async function() {
+    callApi: async function () {
       if (this.businessId === null) {
         throw new ApiRequestError("You must be acting as a business to view the product.")
       }
@@ -130,7 +133,8 @@ export default {
       const products = (await apiCall).data;
       const product = products.find(({id}) => id === this.productId);
       if (product === undefined) {
-        throw new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
+        throw new ApiRequestError(
+            `Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
       }
       this.name = product.name;
       this.description = product.description;

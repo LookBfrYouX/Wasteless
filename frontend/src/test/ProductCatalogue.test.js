@@ -16,7 +16,7 @@ const mockProduct = (id = 1) => {
 
 const mockProducts = (count) => {
   const products = [];
-  for(let i = 1; i <= count; i++) {
+  for (let i = 1; i <= count; i++) {
     products.push(mockProduct(i));
   }
   return products;
@@ -29,12 +29,14 @@ beforeEach(() => {
     propsData: {
       businessId: 1
     },
-    mocks: {callApi: jest.fn(() => {
-      return Promise.resolve({
-        //whatever business Data
+    mocks: {
+      callApi: jest.fn(() => {
+        return Promise.resolve({
+          //whatever business Data
 
-      });
-    }), ...globalStateMocks()},
+        });
+      }), ...globalStateMocks()
+    },
     stubs: ["router-link", "not-acting-as-business"]
   });
 });
@@ -115,7 +117,7 @@ describe("sortedResults", () => {
     });
 
     expect(wrapper.vm.sortedResults).toEqual(
-      results
+        results
     );
   });
 
@@ -129,7 +131,7 @@ describe("sortedResults", () => {
     });
 
     expect(wrapper.vm.sortedResults).toEqual(
-      results.reverse()
+        results.reverse()
     );
   });
   test("Sorting name", () => {
@@ -145,7 +147,7 @@ describe("sortedResults", () => {
     });
 
     expect(wrapper.vm.sortedResults).toEqual(
-      results
+        results
     );
   });
 
@@ -162,7 +164,7 @@ describe("sortedResults", () => {
     });
 
     expect(wrapper.vm.sortedResults).toEqual(
-      results.reverse()
+        results.reverse()
     );
   });
   test("Sorting description", () => {
@@ -178,7 +180,7 @@ describe("sortedResults", () => {
     });
 
     expect(wrapper.vm.sortedResults).toEqual(
-      results
+        results
     );
   });
 
@@ -195,7 +197,7 @@ describe("sortedResults", () => {
     });
 
     expect(wrapper.vm.sortedResults).toEqual(
-      results.reverse()
+        results.reverse()
     );
   });
 
@@ -212,7 +214,7 @@ describe("sortedResults", () => {
     });
 
     expect(wrapper.vm.sortedResults).toEqual(
-      results
+        results
     );
   });
 
@@ -229,7 +231,7 @@ describe("sortedResults", () => {
     });
 
     expect(wrapper.vm.sortedResults).toEqual(
-      results.reverse()
+        results.reverse()
     );
   });
 

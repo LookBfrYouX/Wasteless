@@ -1,4 +1,4 @@
-const { constants } = require("./constants");
+const {constants} = require("./constants");
 
 /**
  * Helper methods that may be used by multiple pages. It is added to the vue prototype so
@@ -7,25 +7,33 @@ const { constants } = require("./constants");
 export const helper = {
   /**
    * Given address object, convert it to string, stripping out undefined components
-   * @param {object} address 
-   * @returns 
+   * @param {object} address
+   * @returns
    */
   addressToString(address) {
-    const numberUndef = address.streetNumber == undefined || address.streetNumber.trim().length == 0;
-    const nameUndef = address.streetName == undefined || address.streetName.trim().length == 0;
+    const numberUndef = address.streetNumber == undefined
+        || address.streetNumber.trim().length == 0;
+    const nameUndef = address.streetName == undefined
+        || address.streetName.trim().length == 0;
 
     let street = undefined;
-    if (numberUndef && !nameUndef) street = address.streetNumber;
-    // if street number defined but street name not, don't show either
-    else if (!numberUndef && !nameUndef) street = `${address.streetNumber} ${address.streetName}`;
-    
+    if (numberUndef && !nameUndef) {
+      street = address.streetNumber;
+    }// if street number defined but street name not, don't show either
+    else if (!numberUndef
+        && !nameUndef) {
+      street = `${address.streetNumber} ${address.streetName}`;
+    }
+
     return [
       street,
       address.city,
       address.region,
       address.postcode,
       address.country
-    ].filter(component => typeof component == "string" && component.trim().length > 0).join(', ');
+    ].filter(
+        component => typeof component == "string" && component.trim().length
+            > 0).join(', ');
   },
 
   /**
@@ -35,9 +43,12 @@ export const helper = {
    */
   isoToDateString(dateString) {
     const timestamp = Date.parse(dateString);
-    if (isNaN(timestamp)) return null;
+    if (isNaN(timestamp)) {
+      return null;
+    }
     const date = new Date(timestamp);
-    const day = date.getDate() < 10? `0${date.getDate()}`: date.getDate().toString();
+    const day = date.getDate() < 10 ? `0${date.getDate()}`
+        : date.getDate().toString();
     return `${day} ${constants.MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
   },
 
@@ -46,7 +57,7 @@ export const helper = {
    * If acting as business, goes to business profile. Otherwise, user profile.
    * If already on own profile page, reloads the page
    */
-  goToProfile: async function() {
+  goToProfile: async function () {
     let reload = false;
     let args;
 
@@ -55,7 +66,8 @@ export const helper = {
         name: "profile"
       }
 
-      if (this.$route.name === args.name && this.$route.params.userId === undefined) {
+      if (this.$route.name === args.name && this.$route.params.userId
+          === undefined) {
         reload = true;
       }
     } else {
@@ -73,7 +85,10 @@ export const helper = {
       }
     }
 
-    if (reload) await this.$router.go();
-    else await this.$router.push(args);
+    if (reload) {
+      await this.$router.go();
+    } else {
+      await this.$router.push(args);
+    }
   }
 }

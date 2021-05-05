@@ -85,7 +85,7 @@ export default {
      * Synchronizes modal visibility with state
      */
     updateModalVisibility: function () {
-      this.show ? this.modal.modal("show"): this.modal.modal("hide");
+      this.show ? this.modal.modal("show") : this.modal.modal("hide");
     },
 
     /**
@@ -110,7 +110,7 @@ export default {
         this.retry(event);
       }
     },
-    
+
     /**
      * Go back button clicked; send modal hidden and go back
      */
@@ -123,7 +123,7 @@ export default {
       }
     },
 
-    hideCallbackEvent: function(event) {
+    hideCallbackEvent: function (event) {
       if (this.hideCallback) {
         this.hideCallback(event);
       }
@@ -149,7 +149,6 @@ export default {
       this.modal.on("hidden.bs.modal", () => this.modal.modal("dispose"));
     }
   }
-
 
 }
 </script>

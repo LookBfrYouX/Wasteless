@@ -2,11 +2,13 @@
   <div class="w-100">
     <div class="w-100">
       <div class="button-expand-sidebar-wrapper mt-2 mx-2">
-        <button v-if="results.length && !isVisible" class="btn btn-info" type="button" v-on:click="toggleSidebar()">
+        <button v-if="results.length && !isVisible" class="btn btn-info" type="button"
+                v-on:click="toggleSidebar()">
           <span>Sort results</span>
         </button>
         <!-- create product button doesn't really belong here, but want it aligned with the sort results button -->
-        <button v-on:click="createProduct" id="create-product-button" class="btn btn-info float-right" type="button">
+        <button id="create-product-button" class="btn btn-info float-right"
+                type="button" v-on:click="createProduct">
           <span>Create Product</span>
         </button>
       </div>
@@ -40,21 +42,21 @@
             <ul class="list-unstyled list-group">
               <!--viewUser method uses router.push to display profile page-->
               <li v-for="(product, index) in displayedResults" v-bind:key="index"
-                  v-on:click="viewProduct(product.id)"
-                  class="list-group-item card">
+                  class="list-group-item card"
+                  v-on:click="viewProduct(product.id)">
                 <div class="row">
                   <div class="col-3">
                     <img
-                      v-if="getThumbnailImage(product.id) != null"
-                      v-bind:src="getThumbnailImage(product.id)"
-                      class="image-fluid w-100 rounded-circle"
-                      alt="Product Image"
+                        v-if="getThumbnailImage(product.id) != null"
+                        alt="Product Image"
+                        class="image-fluid w-100 rounded-circle"
+                        v-bind:src="getThumbnailImage(product.id)"
                     >
                     <img
-                      v-else
-                      src="./../../assets/images/default-product-thumbnail.svg"
-                      class="image-fluid w-100 rounded-circle"
-                      alt="Product Image"
+                        v-else
+                        alt="Product Image"
+                        class="image-fluid w-100 rounded-circle"
+                        src="./../../assets/images/default-product-thumbnail.svg"
                     >
                   </div>
                   <div class="col-9">
@@ -106,11 +108,11 @@
     <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error viewing business catalog"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.query"
         v-bind:show="apiErrorMessage !== null"
-        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -121,7 +123,7 @@
 import ErrorModal from "./Errors/ErrorModal.vue";
 import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 
-const { Api } = require("./../Api.js");
+const {Api} = require("./../Api.js");
 
 const ProductCatalogue = {
   name: "ProductCatalogue",
@@ -136,7 +138,7 @@ const ProductCatalogue = {
     return {
       results: [],
       pageNum: 0, // Page number starts from 0 but it will shown as 1 on UI
-      resultsPerPage:  this.$constants.PRODUCT_CATALOG.RESULTS_PER_PAGE,
+      resultsPerPage: this.$constants.PRODUCT_CATALOG.RESULTS_PER_PAGE,
       highlightedItem: null,
       pages: [],
       sortBy: null,
@@ -153,7 +155,7 @@ const ProductCatalogue = {
     },
   },
 
-  beforeMount: function() {
+  beforeMount: function () {
     this.query();
   },
 
@@ -182,7 +184,9 @@ const ProductCatalogue = {
       try {
         data = (await Api.getProducts(this.businessId)).data;
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
         return;
       }

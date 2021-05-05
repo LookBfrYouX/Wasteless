@@ -4,13 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
 import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +54,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  @WithMockUser(username=EMAIL_1, password=PASSWORD_1)
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   void getBusinessByIdExpectOk()
       throws BusinessNotFoundException, UserNotFoundException, AddressValidationException, BusinessTypeException {
     // Checking that the FullBusinessDto is returned
@@ -58,11 +62,13 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     businessService.saveBusiness(business);
     Object businessDto = businessService.getBusinessById(business.getId());
 
-    assertThrows(ClassCastException.class, () -> {BasicBusinessDto basicBusinessDto = (BasicBusinessDto) businessDto;});
+    assertThrows(ClassCastException.class, () -> {
+      BasicBusinessDto basicBusinessDto = (BasicBusinessDto) businessDto;
+    });
   }
 
   @Test
-  @WithMockUser(username=EMAIL_1, password=PASSWORD_1)
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   void getBusiness_twoAdmins()
       throws BusinessNotFoundException, UserNotFoundException, AddressValidationException, BusinessTypeException {
     // Business should have 2 admins, one as primary admin, other in the list of business admins
@@ -80,7 +86,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  @WithMockUser(username=EMAIL_1, password=PASSWORD_1)
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   void saveBusinessInvalidBusinessTypes() {
     // Checking saveBusiness throws errors with bad business types
     String[] testValues = {"asd", "123", "Marketing", "Retail", "Service"};
@@ -92,7 +98,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  @WithMockUser(username=EMAIL_1, password=PASSWORD_1)
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   void saveBusinessValidBusinessTypes() {
     // Checking saveBusiness does not throw errors with good business types
     String[] testValues = {"Accommodation and Food Services", "Retail Trade",

@@ -1,9 +1,9 @@
 import {shallowMount} from "@vue/test-utils";
 import AddressForm from "../components/AddressForm";
-import { globalStateMocks } from "./testHelper";
+import {globalStateMocks} from "./testHelper";
 
 jest.mock("./../Api");
-const { Api } = require("./../Api");
+const {Api} = require("./../Api");
 
 let wrapper;
 
@@ -82,7 +82,7 @@ describe("Full pipeline", () => {
 
     expect(wrapper.vm.addressSuggestions.length).toBe(1);
     // eslint-disable-next-line no-unused-vars
-    const { toString, ...response } = wrapper.vm.addressSuggestions[0];
+    const {toString, ...response} = wrapper.vm.addressSuggestions[0];
     expect(response).toEqual(standardAddress());
   });
 });

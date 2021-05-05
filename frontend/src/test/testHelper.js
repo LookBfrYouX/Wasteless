@@ -1,6 +1,6 @@
-import { helper } from "./../helper";
-import { constants } from "./../constants";
-import { store } from "./../store";
+import {helper} from "./../helper";
+import {constants} from "./../constants";
+import {store} from "./../store";
 
 export const GLOBAL_STATE = {
   authUser: {
@@ -41,7 +41,6 @@ export const GLOBAL_STATE = {
     ]
   },
 };
-
 
 export const globalStateMocks = () => {
   store.actions.setAuthUser(GLOBAL_STATE.authUser);

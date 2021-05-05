@@ -3,7 +3,7 @@
     <div class="row mt-2">
       <!--User profile image card-->
       <div class="col-md-4 m-2 card">
-        
+
         <img alt="Users profile image" class="my-3 rounded-circle"
              src="./../../assets/images/default-user-thumbnail.svg">
       </div>
@@ -153,11 +153,11 @@
     </div>
     <error-modal
         title="Error fetching user details"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.apiPipeline"
         v-bind:show="apiErrorMessage !== null"
-        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -169,6 +169,7 @@
   cursor: pointer;
   color: #1ec996;
 }
+
 th {
   white-space: nowrap;
 }
@@ -218,11 +219,13 @@ export default {
         }
         this.userInfo.role = "ROLE_ADMIN";
         this.statusMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
-        return;
+
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.statusMessage = err.userFacingErrorMessage;
-        return;
+
       }
     },
 
@@ -238,11 +241,13 @@ export default {
           this.$stateStore.actions.revokeAdmin();
         }
         this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
-        return;
+
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.statusMessage = err.userFacingErrorMessage;
-        return;
+
       }
     },
 
@@ -288,7 +293,9 @@ export default {
         }
 
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },

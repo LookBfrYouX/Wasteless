@@ -74,7 +74,7 @@
 
 <script>
 // grabs mock api
-const { Api } = require("./../Api.js");
+const {Api} = require("./../Api.js");
 
 export default {
   /* creates vue variables to be manipulates

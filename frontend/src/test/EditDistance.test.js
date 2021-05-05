@@ -1,4 +1,4 @@
-import { EditDistance } from "./../EditDistance";
+import {EditDistance} from "./../EditDistance";
 
 describe("Edit distance", () => {
   test("Equal", () => {
@@ -42,7 +42,8 @@ describe("Edit distance", () => {
   });
 
   test("Insertion, deletion and substitution", () => {
-    expect(EditDistance.calculate("ABBCDEGHIJKZMN", "ABCDEFGHIJKLMN", 7, 13, 17)).toEqual(7 + 13 + 17);
+    expect(EditDistance.calculate("ABBCDEGHIJKZMN", "ABCDEFGHIJKLMN", 7, 13,
+        17)).toEqual(7 + 13 + 17);
   });
 });
 

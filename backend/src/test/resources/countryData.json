@@ -1,6 +1,10 @@
 [
   {
     "name": "New Zealand",
-    "currency": { "code": "NZD", "name": "New Zealand dollar", "symbol": "$" }
+    "currency": {
+      "code": "NZD",
+      "name": "New Zealand dollar",
+      "symbol": "$"
+    }
   }
 ]

@@ -132,26 +132,28 @@ The parent component must provide `address` prop. When the address is updated in
           v-on:input="event => onAddressInput(event.target.value)"
           v-on:suggestion="suggestionSelected"
       >
-      <!-- countryCodes is key-value map from code to name. Get array of codes, convert to {code, name} object array then sort by name -->
+        <!-- countryCodes is key-value map from code to name. Get array of codes, convert to {code, name} object array then sort by name -->
         <option
-          v-for="country in countryData"
-          v-bind:key="country.code"
-          v-bind:value="country.name">{{country.name}}</option>
+            v-for="country in countryData"
+            v-bind:key="country.code"
+            v-bind:value="country.name">{{ country.name }}
+        </option>
       </select>
     </div>
   </div>
 </template>
 <script>
 
-const { Api } = require("./../Api");
-const { EditDistance } = require("./../EditDistance");
+const {Api} = require("./../Api");
+const {EditDistance} = require("./../EditDistance");
 const countryData = require("./../assets/countryData.json");
 
 const Suggestions = require("./Suggestions").default;
 
 // Fields in order of specificity
 // When updating this, ensure all address related functions and input properties are updated as well!
-export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "city", "region", "postcode", "country"];
+export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "city", "region", "postcode",
+  "country"];
 Object.freeze(ADDRESS_SECTION_NAMES);
 // Can't move this to the constants file as it is too linked with HTML, props etc.
 
@@ -217,7 +219,6 @@ export default {
         // osm_id,
       } = properties;
 
-
       // Convert from OSM country name to restcountries name
       const countryCanonical = this.countryCodeToNameDict[countrycode];
 
@@ -257,7 +258,8 @@ export default {
       // is a workaround
       let {streetNumber, streetName, city, region, postcode, country} = this.address;
 
-      if (convertCountryToOsmName && this.canonicalCountryNameToOsmCountryNameCache[country] !== undefined) {
+      if (convertCountryToOsmName && this.canonicalCountryNameToOsmCountryNameCache[country]
+          !== undefined) {
         country = this.canonicalCountryNameToOsmCountryNameCache[country];
       }
 
@@ -293,14 +295,19 @@ export default {
         }
         const trimmed = component.trim();
         if (trimmed.length == 0) {
-          if (name == "streetName") address = "";
+          if (name == "streetName") {
+            address = "";
+          }
           // If street name is blank then get rid of street number too
           continue;
         }
         if (address.length != 0) {
-          if (name === "streetName") address += " ";
-          // No comma between street number and street name; just a space
-          else address += ", ";
+          if (name === "streetName") {
+            address += " ";
+          }// No comma between street number and street name; just a space
+          else {
+            address += ", ";
+          }
         }
         address += trimmed
       }
@@ -328,8 +335,13 @@ export default {
      * @return {string} OSM address with several relevant fields concatanated together with commas and spaces
      */
     generateComparisonString(osmAddress) {
-      if (osmAddress.housenumber && osmAddress.street) osmAddress["streetaddress"] = osmAddress.housenumber + " " + osmAddress.street;
-      else if (osmAddress.street) osmAddress["streetaddress"] = osmAddress.street;
+      if (osmAddress.housenumber
+          && osmAddress.street) {
+        osmAddress["streetaddress"] = osmAddress.housenumber + " "
+            + osmAddress.street;
+      } else if (osmAddress.street) {
+        osmAddress["streetaddress"] = osmAddress.street;
+      }
       const components = [
         "streetaddress",
         "district",
@@ -343,8 +355,11 @@ export default {
 
       // Concatenate with comma and space
       // housenumber/street could be undefined so streetaddress could be undefined as well. Hence, filter
-      const result = components.filter(name => osmAddress[name]).reduce((prev, curr) => prev + osmAddress[curr] + ", ", "");
-      if (result.length) return result.slice(0, -2); // Remove comma and space from end
+      const result = components.filter(name => osmAddress[name]).reduce(
+          (prev, curr) => prev + osmAddress[curr] + ", ", "");
+      if (result.length) {
+        return result.slice(0, -2);
+      } // Remove comma and space from end
       return result;
     },
 
@@ -361,7 +376,9 @@ export default {
           continue;
         }
         const addressComponents = this.mapOSMPropertiesToAddressComponents(properties);
-        if (addressComponents.country == undefined) continue; // Unknown country
+        if (addressComponents.country == undefined) {
+          continue;
+        } // Unknown country
 
         const addressString = this.generateAddressStringFromAddressComponents(addressComponents,
             this.activeAddressInputName, true);
@@ -373,14 +390,14 @@ export default {
 
         const resultString = this.generateComparisonString(properties);
         const distance = EditDistance.calculate(
-          originalString,
-          resultString.toLocaleLowerCase(),
-          this.$constants.ADDRESS_FORM.EDIT_DISTANCE.INSERT_COST,
-          this.$constants.ADDRESS_FORM.EDIT_DISTANCE.DELETE_COST,
-          this.$constants.ADDRESS_FORM.EDIT_DISTANCE.SUBSTITUTE_COST
+            originalString,
+            resultString.toLocaleLowerCase(),
+            this.$constants.ADDRESS_FORM.EDIT_DISTANCE.INSERT_COST,
+            this.$constants.ADDRESS_FORM.EDIT_DISTANCE.DELETE_COST,
+            this.$constants.ADDRESS_FORM.EDIT_DISTANCE.SUBSTITUTE_COST
         );
 
-        const ratio = distance/Math.abs(resultString.length);
+        const ratio = distance / Math.abs(resultString.length);
 
         // Use ratio to not favour longer suggestions
         if (ratio > this.$constants.ADDRESS_FORM.EDIT_DISTANCE_WORST_RATIO) {
@@ -429,7 +446,8 @@ export default {
       window.clearTimeout(this.apiRequestTimeout);
       this.apiRequestTimeout = window.setTimeout(() => {
         this.apiRequestTimeout = null;
-        if (this.generateAddressString().length > this.$constants.ADDRESS_FORM.API_MIN_QUERY_LENGTH) {
+        if (this.generateAddressString().length
+            > this.$constants.ADDRESS_FORM.API_MIN_QUERY_LENGTH) {
           this.addressSuggestionsPipeline();
         }
       }, this.$constants.ADDRESS_FORM.API_CALL_DEBOUNCE_TIME);
@@ -444,7 +462,9 @@ export default {
       this.$set(this.address, this.activeAddressInputName, value);
       // Think Vue might have issues reacting to updates when set via object['key'] syntax?
       // this[this.activeAddressInputName] = value;
-      if (this.activeAddressInputName !== "streetNumber") this.addressChange();
+      if (this.activeAddressInputName !== "streetNumber") {
+        this.addressChange();
+      }
       this.sendAddressUpdateEvent();
     },
 
@@ -484,7 +504,9 @@ export default {
       // Couldn't make addressSuggestions a computed property for some reason: would never update
       // Hence, when active address input changes the address suggestions array has to be updated
       // (toString value changes)
-      if (this.activeAddressInputName !== "streetNumber") this.addressChange();
+      if (this.activeAddressInputName !== "streetNumber") {
+        this.addressChange();
+      }
       this.addressSuggestions = this.generateAddressSuggestions();
     },
 
@@ -492,7 +514,9 @@ export default {
      * When callee updates address, need to trigger API again
      */
     address: function () {
-      if (this.activeAddressInputName !== "streetNumber") this.addressChange();
+      if (this.activeAddressInputName !== "streetNumber") {
+        this.addressChange();
+      }
     }
   },
 
@@ -500,7 +524,7 @@ export default {
     /**
      * Converts countryData to { 2DigitCountryCode: countryName } dictionary
      */
-    countryCodeToNameDict: function() {
+    countryCodeToNameDict: function () {
       const dict = {};
       this.countryData.forEach(country => {
         dict[country.code] = country.name;

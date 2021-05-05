@@ -6,10 +6,10 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 
 public class ImageControllerTest extends ControllerTestProvider {
 
-    @Test
-    @WithAnonymousUser
-    void deleteImage_withAnonymousUser_rejectedWith401() {
-        String endpointUrl = "";
-    }
+  @Test
+  @WithAnonymousUser
+  void deleteImage_withAnonymousUser_rejectedWith401() {
+    String endpointUrl = "";
+  }
 
 }

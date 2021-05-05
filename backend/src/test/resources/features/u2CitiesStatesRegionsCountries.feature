@@ -6,4 +6,4 @@ Feature: U2 Cities, States/Regions, Countries
 #  AC2: The user should be able to override the autocomplete suggestions.
 #  AC3: The team should choose when the autocomplete mechanism starts (e.g. after the user enters the third letter). The system should provide the best user experience even for users on lower powered devices with slower internet speeds.
 
-    Scenario Outline:
+  Scenario Outline:

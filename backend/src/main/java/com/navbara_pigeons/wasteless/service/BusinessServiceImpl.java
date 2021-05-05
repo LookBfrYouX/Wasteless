@@ -5,9 +5,11 @@ import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
 import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
-
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import javax.transaction.Transactional;
@@ -42,7 +44,8 @@ public class BusinessServiceImpl implements BusinessService {
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService, @Lazy UserService userService) {
+  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService,
+      @Lazy UserService userService) {
     // Using @Lazy to prevent Circular Dependencies
     this.businessDao = businessDao;
     this.addressService = addressService;
@@ -59,7 +62,7 @@ public class BusinessServiceImpl implements BusinessService {
   @Override
   @Transactional
   public JSONObject saveBusiness(Business business)
-          throws BusinessTypeException, UserNotFoundException, AddressValidationException {
+      throws BusinessTypeException, UserNotFoundException, AddressValidationException {
     if (!BusinessServiceValidation.isBusinessTypeValid(business.getBusinessType())) {
       throw new BusinessTypeException("Invalid BusinessType");
     }
@@ -83,7 +86,7 @@ public class BusinessServiceImpl implements BusinessService {
    * @param id the id of the business
    * @return a business DTO
    * @throws BusinessNotFoundException when business with given id does not exist
-   * @throws UserNotFoundException should never be thrown. If is thrown, return 500 status code
+   * @throws UserNotFoundException     should never be thrown. If is thrown, return 500 status code
    */
   @Override
   @Transactional
@@ -98,13 +101,16 @@ public class BusinessServiceImpl implements BusinessService {
   }
 
   /**
-   * This helper method tests if the currently logged in user is an administrator of the business with the given ID
+   * This helper method tests if the currently logged in user is an administrator of the business
+   * with the given ID
+   *
    * @param businessId The business to test against.
    * @return True if the current user is the primary admin or a regular admin
    * @throws BusinessNotFoundException The business does not exist
-   * @throws UserNotFoundException The user does not exist
+   * @throws UserNotFoundException     The user does not exist
    */
-  public boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException {
+  public boolean isBusinessAdmin(long businessId)
+      throws BusinessNotFoundException, UserNotFoundException {
     Business business = this.businessDao.getBusinessById(businessId);
     User authUser = this.userService.getLoggedInUser();
 

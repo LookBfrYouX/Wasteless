@@ -19,11 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Repository
 public class ImageDaoImpl implements ImageDao {
 
-  @Value("${user_generated_images_directory}")
-  private String storagePath;
-
   public final String productsDirectory = "products"; // products stored in storagePath/products/
   private final EntityManager entityManager;
+  @Value("${user_generated_images_directory}")
+  private String storagePath;
 
   public ImageDaoImpl(@Autowired EntityManager entityManager) {
     this.entityManager = entityManager;
@@ -31,6 +30,7 @@ public class ImageDaoImpl implements ImageDao {
 
   /**
    * Save a product image name to the Db
+   *
    * @param image The image to be saved
    * @throws IOException Exception if saving to the machine fails
    */
@@ -42,6 +42,7 @@ public class ImageDaoImpl implements ImageDao {
 
   /**
    * Given filename of product, returns path to file
+   *
    * @param filename name of product image file
    * @return normalized path
    */
@@ -52,7 +53,8 @@ public class ImageDaoImpl implements ImageDao {
 
   /**
    * Save a product image to the machines local storage
-   * @param image The image to be saved
+   *
+   * @param image    The image to be saved
    * @param filename The filename to save the image under
    * @throws IOException Exception if saving to the machine fails
    */

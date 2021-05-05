@@ -6,7 +6,7 @@ import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 
 public interface ProductDao {
 
-    void saveProduct(Product product);
+  void saveProduct(Product product);
 
-    Product getProduct(long productId) throws ProductNotFoundException;
+  Product getProduct(long productId) throws ProductNotFoundException;
 }

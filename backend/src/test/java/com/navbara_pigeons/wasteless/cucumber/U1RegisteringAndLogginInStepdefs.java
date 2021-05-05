@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
@@ -85,7 +86,8 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
 
   @Then("I am shown an error that my email or password is not valid")
   public void iAmShownAnErrorThatMyUsernameOrPasswordIsNotValid() {
-    assertEquals("Failed login attempt, email or password incorrect", this.mvcResult.getResponse().getErrorMessage());
+    assertEquals("Failed login attempt, email or password incorrect",
+        this.mvcResult.getResponse().getErrorMessage());
   }
 
   @When("I register an account with the valid email {string} and password {string}")
