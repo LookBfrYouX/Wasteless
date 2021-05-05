@@ -32,15 +32,28 @@
               v-on:click="viewAdmin(admin.id)"> {{ admin.firstName }} {{ admin.lastName }}</dd>
         </dl>
       </ul>
-      <button
-          v-if="(this.$stateStore.getters.getActingAs() !== null && this.$stateStore.getters.getActingAs().id === businessId)"
-          class="btn btn-white-bg-primary mx-1 d-flex"
-          type="button"
-          v-on:click="createProduct()"
+      <div
+        class="d-flex flex-wrap justify-content-space"
+        v-if="$stateStore.getters.canEditBusiness(businessId)"
       >
-        <span class="material-icons mr-1">person</span>
-        Add Product To Catalogue
-      </button>
+        <button
+            class="btn btn-white-bg-primary m-1 d-flex"
+            type="button"
+            v-on:click="createProduct()"
+        >
+          <span class="material-icons mr-1">person</span>
+          Add Product To Catalogue
+        </button>
+        <button
+            v-if="$stateStore.getters.canEditBusiness(businessId)"
+            class="btn btn-white-bg-primary m-1 d-flex"
+            type="button"
+            v-on:click="viewCatalogue()"
+        >
+          <span class="material-icons mr-1">person</span>
+          View Catalog
+        </button>
+      </div>
       <error-modal
         title="Error fetching business details"
         v-bind:hideCallback="() => (apiErrorMessage = null)"
@@ -110,7 +123,21 @@ export default {
     },
 
     createProduct: function() {
-      this.$router.push({name: "createProduct"});
+      this.$router.push({
+        name: "createProduct",
+        params: {
+          businessId: this.businessId
+        }
+      });
+    },
+
+    viewCatalogue: function() {
+      this.$router.push({
+        name: "productCatalogue",
+        params: {
+          businessId: this.businessId
+        }
+      });
     },
 
     /**

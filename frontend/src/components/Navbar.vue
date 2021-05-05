@@ -29,7 +29,7 @@
             </li>
             <!-- Product catalog link -->
             <li class="navbar-item mr-lg-auto d-flex align-items-center" v-if="isActingAsBusiness">
-              <a class="nav-link" href="javascript:;" v-on:click="pushOrGo('productCatalogue')">
+              <a class="nav-link" href="javascript:;" v-on:click="productCatalogClicked">
                 Catalogue
               </a>
             </li>
@@ -198,7 +198,7 @@ export default {
       } else {
         return `${this.authUser.firstName} ${this.authUser.lastName}`;
       }
-    }
+    },
   },
   methods: {
     /**
@@ -218,13 +218,13 @@ export default {
       try {
         await Api.logOut();
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        // if (await Api.handle401.call(this, err)) return;
         this.logOutErrorMessage = err.userFacingErrorMessage;
         return;
       }
 
       await this.$stateStore.actions.deleteAuthUser();
-      await this.pushOrGo("home");
+      await this.pushOrGo("landing");
     },
 
     /**
@@ -256,6 +256,25 @@ export default {
      */
     profileClicked: async function() {
       this.$helper.goToProfile.bind(this)();
+    },
+
+    /**
+     * Link to product catalog page clicked
+     */
+    productCatalogClicked: async function() {
+      const business = this.$stateStore.getters.getActingAs();
+      if (business == null) return;
+      const params = {
+        name: "productCatalogue",
+        params: {
+          businessId: business.id
+        }
+      };
+      if (this.$route.name == 'productCatalogue' && this.$route.params.businessId == business.id) {
+        await this.$router.go();
+      } else {
+        await this.$router.push(params);
+      }
     }
   },
 };

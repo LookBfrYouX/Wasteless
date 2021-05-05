@@ -29,6 +29,7 @@
         </button>
       </div>
     </div>
+    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error fetching product information"
         v-bind:hideCallback="() => apiErrorMessage = null"
@@ -54,13 +55,17 @@
 
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
+import NotActingAsBusiness from "./Errors/NotActingAsBusiness";
+
 import {ApiRequestError} from "../ApiRequestError";
 const { Api } = require("./../Api");
+
 
 export default {
   name: "productDetail",
   components: {
     ErrorModal,
+    NotActingAsBusiness
   },
 
   data() {
@@ -76,6 +81,10 @@ export default {
     }
   },
   props: {
+    businessId: {
+      required: true,
+      type: Number
+    },
     productId: {
       required: true,
       type: Number,
@@ -86,32 +95,16 @@ export default {
     this.apiPipeline();
   },
 
-  computed: {
-    /**
-     * Get a business object of current acting as entity.
-     */
-    actingAs() {
-      return this.$stateStore.getters.getActingAs();
-    },
-
-    /**
-     * Get business id if current acting as a business
-     */
-    businessId() {
-      if (this.actingAs === null) {
-        return null;
-      }
-      return this.actingAs.id;
-    }
-  },
 
   methods: {
 
     /**
      * Calls the API and updates the component's data with the result
+     * Does not run pipeline if user should not be able to edit business
      */
     apiPipeline: async function() {
-      try{
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) return;
+      try {
         return await this.parseApiResponse(this.callApi());
       } catch (err) {
         if (await Api.handle401.call(this, err)) return;
@@ -154,6 +147,7 @@ export default {
       this.$router.push({
         name: "editProductImages",
         params: {
+          businessId: this.businessId,
           productId
         }
       });

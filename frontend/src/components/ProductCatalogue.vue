@@ -21,7 +21,7 @@
             <ul id="search-headers" class="list-unstyled"
                 v-bind:class='{"table-reversed": reversed}'>
               <li
-                  v-for="[key, value] in Object.entries({name: 'Name', manufacturer: 'Manufacturer', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
+                  v-for="[key, value] in Object.entries({id: 'Product Code', name: 'Name', manufacturer: 'Manufacturer', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
                   v-bind:key="key"
                   class="mb-1"
                   v-bind:class='{"current-sort": sortBy==key}'
@@ -103,6 +103,7 @@
         <h4>No results found</h4>
       </div>
     </div>
+    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error viewing business catalog"
         v-bind:hideCallback="() => apiErrorMessage = null"
@@ -117,14 +118,18 @@
 </template>
 
 <script>
-import { ApiRequestError } from "../ApiRequestError";
 import ErrorModal from "./Errors/ErrorModal.vue";
+import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 
 const { Api } = require("./../Api.js");
 
 const ProductCatalogue = {
   name: "ProductCatalogue",
-  components: {ErrorModal},
+  components: {
+    ErrorModal,
+    NotActingAsBusiness
+  },
+
   /*has a search prop from app.vue*/
   data: function () {
     /* setting intial state */
@@ -141,7 +146,14 @@ const ProductCatalogue = {
     }
   },
 
-  created: function() {
+  props: {
+    businessId: {
+      required: true,
+      type: Number
+    },
+  },
+
+  beforeMount: function() {
     this.query();
   },
 
@@ -158,13 +170,16 @@ const ProductCatalogue = {
     },
 
     /**
-     * Sends API request and sets results variable, needs to run first which is why its called in the created hook
+     * Sends API request and sets results variable
+     * If they are not admin or acting as the business just returns
      */
     query: async function () {
-      /* makes a query to the api to search for the prop value from the app.vue main page*/
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+        return false;
+      }
+
       let data;
       try {
-        if (this.businessId == null) throw new ApiRequestError("You must be logged in as a business before viewing a catalog");
         data = (await Api.getProducts(this.businessId)).data;
       } catch (err) {
         if (await Api.handle401.call(this, err)) return;
@@ -223,6 +238,7 @@ const ProductCatalogue = {
       this.$router.push({
         name: "productDetail",
         params: {
+          businessId: this.businessId,
           productId
         }
       });
@@ -250,32 +266,15 @@ const ProductCatalogue = {
     displayedResults() {
       return this.paginate(this.sortedResults);
     },
-
-    /**
-     * Get a business object of current acting as entity.
-     */
-    actingAs() {
-      return this.$stateStore.getters.getActingAs();
-    },
-
-    /**
-     * Get business id if current acting as a business
-     */
-    businessId() {
-      if (this.actingAs === null) {
-        return null;
-      }
-      return this.actingAs.id;
-    }
   },
 
   watch: {
-    /**
-     * Watch acting as is switched by clicking navbar dropdown
-     */
-    businessId() {
-      this.$helper.goToProfile.bind(this)();
-    }
+    // /**
+    //  * Watch acting as is switched by clicking navbar dropdown
+    //  */
+    // businessId() {
+    //   this.$helper.goToProfile.bind(this)();
+    // }
   }
 };
 

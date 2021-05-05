@@ -70,29 +70,37 @@ export const router = new VueRouter({
     },
     {
       name: "createProduct",
-      path: "/createproduct",
+      path: "/business/:businessId(\\d+)/createproduct",
       component: () => import("./components/CreateProduct.vue"),
+      props: route => ({ businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "productCatalogue",
-      path: "/productcatalogue",
+      path: "/business/:businessId(\\d+)/catalog",
       component: () => import("./components/ProductCatalogue.vue"),
+      props: route => ({ businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "productDetail",
-      path: "/productdetail/:productId(\\d+)",
+      path: "/business/:businessId(\\d+)/product/:productId(\\d+)",
       component: () => import("./components/ProductDetail.vue"),
-      props: route => ({ productId: parseInt(route.params.productId, 10)})
+      props: route => ({
+        productId: parseInt(route.params.productId, 10),
+        businessId: parseInt(route.params.businessId, 10)
+      })
     },
     {
       name: "editProductImages",
-      path: "/editproductimages/:productId(\\d+)",
+      path: "/business/:businessId(\\d+)/products/:productId(\\d+)/images",
       component: () => import("./components/EditProductImages.vue"),
-      props: route => ({ productId: parseInt(route.params.productId, 10)})
+      props: route => ({
+        productId: parseInt(route.params.productId, 10),
+        businessId: parseInt(route.params.businessId, 10)
+      })
     },
     {
       name: "businessProfile",
-      path: "/businessprofile/:businessId(\\d+)",
+      path: "/business/:businessId(\\d+)",
       meta: {title: "Business Profile | Wasteless"},
       component: () => import("./components/BusinessProfile.vue"),
       props: route => {
