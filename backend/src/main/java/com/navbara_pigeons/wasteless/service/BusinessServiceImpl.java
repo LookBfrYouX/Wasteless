@@ -67,7 +67,6 @@ public class BusinessServiceImpl implements BusinessService {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     User currentUser = this.userService.getUserByEmail(authentication.getName());
-    business.addAdministrator(currentUser);
     business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     business.setPrimaryAdministratorId(currentUser.getId());
 
