@@ -2,8 +2,8 @@ Feature: U5 Creating Business Accounts
 
   Scenario: Before all
     Given this user exists
-      |emailAddress |password |firstName |lastName |nickName |
-      |testUser1111111@wasteless.com  |t3stUser |Test       |User    |TestyBoi |
+      | emailAddress                  | password | firstName | lastName | nickName |
+      | testUser1111111@wasteless.com | t3stUser | Test      | User     | TestyBoi |
 
   Scenario: AC1 - Registering a business
     When I am logged in with email "testUser1111111@wasteless.com" and password "t3stUser"

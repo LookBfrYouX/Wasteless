@@ -1,12 +1,13 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
+import com.navbara_pigeons.wasteless.dto.BasicProductDto;
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
+import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.navbara_pigeons.wasteless.dto.*;
-import lombok.Data;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.Data;
 
 @Data
 @Entity
@@ -67,18 +69,18 @@ public class Business {
   private List<User> administrators = new ArrayList<>();
 
   @OneToMany(
-          fetch = FetchType.LAZY,
-          cascade = {
-                  CascadeType.DETACH,
-                  CascadeType.MERGE,
-                  CascadeType.PERSIST,
-                  CascadeType.REFRESH
-          }
+      fetch = FetchType.LAZY,
+      cascade = {
+          CascadeType.DETACH,
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.REFRESH
+      }
   )
   @JoinTable(
-          name = "CATALOGUE",
-          joinColumns = @JoinColumn(name = "BUSINESS_ID"),
-          inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
+      name = "CATALOGUE",
+      joinColumns = @JoinColumn(name = "BUSINESS_ID"),
+      inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
   )
   private List<Product> productsCatalogue = new ArrayList<>();
 
@@ -121,6 +123,7 @@ public class Business {
 
   /**
    * This is a helper method for adding a user to the business.
+   *
    * @param administrator The user to be added.
    */
   public void addAdministrator(User administrator) {
@@ -132,6 +135,7 @@ public class Business {
 
   /**
    * This is a helper method for adding a product to the business product catalogue.
+   *
    * @param product The product to be added.
    */
   public void addCatalogueProduct(Product product) {

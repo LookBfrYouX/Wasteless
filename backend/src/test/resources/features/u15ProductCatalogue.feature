@@ -1,4 +1,3 @@
-
 Feature: U15 Product Catalogue
 
   Scenario: AC1 - Accessing the catalogue.

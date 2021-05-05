@@ -45,7 +45,7 @@
                 </div>
                 <div class="text-muted">{{ user.email }}</div>
                 <div v-if="user.homeAddress" class="text-muted">
-                  {{$helper.addressToString(user.homeAddress)}}
+                  {{ $helper.addressToString(user.homeAddress) }}
                 </div>
                 <div v-else class="text-muted">Address unknown</div>
               </li>
@@ -83,11 +83,11 @@
     </div>
     <error-modal
         title="Error making search request"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.query"
         v-bind:show="apiErrorMessage !== null"
-        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -97,7 +97,7 @@
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
 
-const { Api } = require("./../Api.js");
+const {Api} = require("./../Api.js");
 
 const SearchResults = {
   name: "SearchResults",
@@ -140,7 +140,9 @@ const SearchResults = {
         this.results = this.parseSearchResults(data);
 
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
@@ -221,11 +223,9 @@ export default SearchResults
 </script>
 
 <style>
-button.page-link {
-  display: inline-block;
-}
 
 button.page-link {
+  display: inline-block;
   font-size: 20px;
   color: #29b3ed;
   font-weight: 500;

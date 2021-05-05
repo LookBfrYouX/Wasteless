@@ -1,6 +1,10 @@
 package com.navbara_pigeons.wasteless.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.CreateUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +20,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.navbara_pigeons.wasteless.dto.*;
 import lombok.Data;
 import lombok.ToString;
 

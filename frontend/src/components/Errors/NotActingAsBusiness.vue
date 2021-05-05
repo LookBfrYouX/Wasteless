@@ -2,13 +2,13 @@
   <div class="p-absolute">
     <error-modal
         title="Not acting as a business"
+        v-bind:goBack="true"
         v-bind:hideCallback="() => message = null"
         v-bind:refresh="false"
         v-bind:retry="false"
         v-bind:show="message != null"
-        v-bind:goBack="true"
     >
-    <p>{{message}}</p>
+      <p>{{ message }}</p>
     </error-modal>
   </div>
 </template>
@@ -30,7 +30,6 @@ export default {
     }
   },
 
-
   data() {
     return {
       message: null
@@ -42,11 +41,14 @@ export default {
       return this.$stateStore.getters.canEditBusiness(this.businessId);
     }
   },
-  
+
   methods: {
     updateMessage() {
-      if (this.canEditBusiness) this.message = null;
-      else this.message = "You must be acting as the business or be acting as an admin as your self";
+      if (this.canEditBusiness) {
+        this.message = null;
+      } else {
+        this.message = "You must be acting as the business or be acting as an admin as your self";
+      }
     }
   },
 
@@ -59,7 +61,7 @@ export default {
   beforeMount() {
     this.updateMessage();
   }
-  
+
 }
 
 </script>

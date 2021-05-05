@@ -10,13 +10,15 @@ try {
     actingAsId = null;
   }
   /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
-} catch {}
+} catch {
+}
 
 let authUser = null;
 try {
   authUser = JSON.parse(localStorage.getItem("authUser"));
   /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
-} catch {}
+} catch {
+}
 
 const state = new Vue.observable({
   authUser,
@@ -41,17 +43,24 @@ export const store = {
     getBusinessId: () => {
       return state.businessId;
     },
-    
+
     /**
      * Get the business the user is acting as
      * @returns null or the business the user is acting as. Returns the same object as those found in authUser
      */
     getActingAs: () => {
-      if (state.authUser == null) return null;
-      if (!Number.isInteger(state.actingAsId)) return null;
-    
-      const business = state.authUser.businessesAdministered.find(business => business.id == state.actingAsId);
-      if (business != undefined) return business;
+      if (state.authUser == null) {
+        return null;
+      }
+      if (!Number.isInteger(state.actingAsId)) {
+        return null;
+      }
+
+      const business = state.authUser.businessesAdministered.find(
+          business => business.id == state.actingAsId);
+      if (business != undefined) {
+        return business;
+      }
       return null;
     },
 
@@ -73,7 +82,6 @@ export const store = {
       return this.getActingAs() !== null;
     },
 
-
     /**
      * Checks if a user should be able to edit the business
      * If they are acting as the business they can
@@ -82,16 +90,21 @@ export const store = {
      * @returns {boolean} true if they should be able to edit the business
      */
     canEditBusiness(businessId) {
-      if (!store.getters.isLoggedIn()) return false;
+      if (!store.getters.isLoggedIn()) {
+        return false;
+      }
       const business = store.getters.getActingAs();
-      if (business != null && business.id == businessId) return true;
+      if (business != null && business.id == businessId) {
+        return true;
+      }
       if (store.getters.isAdmin()) {
-        if (business == null) return true; // If acting as themselves, admin can edit
+        if (business == null) {
+          return true;
+        } // If acting as themselves, admin can edit
       }
 
       return false;
     }
-
 
   },
   actions: {
@@ -109,7 +122,7 @@ export const store = {
       }
     },
 
-      /**
+    /**
      * Delete authenticated user (and actingAs) from state and local storage
      */
     deleteAuthUser: () => {
@@ -127,7 +140,7 @@ export const store = {
       state.authUser.role = "ROLE_USER";
       localStorage.setItem("authUser", JSON.stringify(state.authUser));
     },
-    
+
     /**
      * Sets the business the user is acting as.
      * When `getActingAs` is called, it returns the business in `authUser` with the same ID. Hence, if the business with the given ID does not exist in `authUser`'s businesses array, `getActingAs` will return null.
@@ -140,11 +153,15 @@ export const store = {
         state.actingAsId = null;
         localStorage.removeItem("actingAsId");
       } else {
-        const id = Number.isInteger(business)? business: business.id;
+        const id = Number.isInteger(business) ? business : business.id;
         if (
-          state.authUser == null || 
-          state.authUser.businessesAdministered.find(business => business.id == id) == undefined
-        ) throw new Error("Tried to set acting as business, but business ID not found in authUser's businesses");
+            state.authUser == null ||
+            state.authUser.businessesAdministered.find(
+                businessEl => businessEl.id == id) == undefined
+        ) {
+          throw new Error(
+              "Tried to set acting as business, but business ID not found in authUser's businesses");
+        }
         state.actingAsId = id;
         localStorage.setItem("actingAsId", id);
       }

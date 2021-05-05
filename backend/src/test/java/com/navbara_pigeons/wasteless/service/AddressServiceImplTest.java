@@ -1,5 +1,8 @@
 package com.navbara_pigeons.wasteless.service;
 
+import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.when;
+
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
@@ -8,11 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.mockito.Mockito.when;
-
 public class AddressServiceImplTest extends ServiceTestProvider {
+
   @Mock
   CountryDataFetcherService countryDataFetcherService;
 

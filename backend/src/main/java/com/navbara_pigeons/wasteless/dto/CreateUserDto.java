@@ -10,32 +10,32 @@ import lombok.Data;
 @Data
 public class CreateUserDto {
 
-    private String firstName;
-    private String lastName;
-    private String middleName;
-    private String nickname;
-    private String bio;
-    private String email;
-    private String dateOfBirth;
-    private String phoneNumber;
-    private String password;
-    private FullAddressDto homeAddress;
+  private String firstName;
+  private String lastName;
+  private String middleName;
+  private String nickname;
+  private String bio;
+  private String email;
+  private String dateOfBirth;
+  private String phoneNumber;
+  private String password;
+  private FullAddressDto homeAddress;
 
-    public CreateUserDto(User user) {
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.middleName = user.getMiddleName();
-        this.nickname = user.getNickname();
-        this.bio = user.getBio();
-        this.email = user.getEmail();
-        this.dateOfBirth = user.getDateOfBirth();
-        this.phoneNumber = user.getPhoneNumber();
-        this.password = user.getPassword();
-        this.homeAddress = new FullAddressDto(user.getHomeAddress());
-    }
+  public CreateUserDto(User user) {
+    this.firstName = user.getFirstName();
+    this.lastName = user.getLastName();
+    this.middleName = user.getMiddleName();
+    this.nickname = user.getNickname();
+    this.bio = user.getBio();
+    this.email = user.getEmail();
+    this.dateOfBirth = user.getDateOfBirth();
+    this.phoneNumber = user.getPhoneNumber();
+    this.password = user.getPassword();
+    this.homeAddress = new FullAddressDto(user.getHomeAddress());
+  }
 
-    public CreateUserDto() {
+  public CreateUserDto() {
 
-    }
+  }
 
 }

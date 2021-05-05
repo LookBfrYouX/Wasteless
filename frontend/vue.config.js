@@ -27,7 +27,6 @@
 
 // See https://cli.vuejs.org/config/#vue-config-js
 
-
 module.exports = {
   // allows to define reusable templates instead of simple views
   // see https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only

@@ -10,17 +10,14 @@ import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,6 +32,7 @@ public class ImageController {
 
   /**
    * Image controller constructor
+   *
    * @param imageService The Image service to be linked
    */
   public ImageController(@Autowired ImageService imageService) {
@@ -56,7 +54,7 @@ public class ImageController {
       imageService.uploadProductImage(businessId, productId, image);
       log.info(
           "PRODUCT " + productId + " SUCCESSFULLY UPLOADED IMAGE " + image.getOriginalFilename() +
-          " TO BUSINESS " + businessId);
+              " TO BUSINESS " + businessId);
       return new ResponseEntity<>(HttpStatus.CREATED);
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + productId);
@@ -99,10 +97,10 @@ public class ImageController {
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + productId);
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The user does not exist");
-    }catch (BusinessNotFoundException exc) {
+    } catch (BusinessNotFoundException exc) {
       log.error("BUSINESS NOT FOUND ERROR: " + productId);
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The business does not exist");
-    }catch (ProductNotFoundException exc) {
+    } catch (ProductNotFoundException exc) {
       log.error("PRODUCT NOT FOUND ERROR: " + productId);
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, exc.getMessage());
     } catch (BadCredentialsException exc) {
@@ -115,9 +113,11 @@ public class ImageController {
   }
 
   @DeleteMapping("/businesses/{businessId}/products/{productId}/images/{imageId}")
-  public ResponseEntity<Object> deleteProductImage(@PathVariable String businessId, @PathVariable String productId, @PathVariable String imageId) {
+  public ResponseEntity<Object> deleteProductImage(@PathVariable String businessId,
+      @PathVariable String productId, @PathVariable String imageId) {
     try {
-      this.imageService.deleteProductImage(Long.parseLong(imageId), Long.parseLong(businessId), Long.parseLong(productId));
+      this.imageService.deleteProductImage(Long.parseLong(imageId), Long.parseLong(businessId),
+          Long.parseLong(productId));
       log.info("DELETED PRODUCT IMAGE - PRODUCT " + productId + " : IMAGE " + imageId);
       return new ResponseEntity<>(HttpStatus.valueOf(200));
     } catch (UserNotFoundException e) {
@@ -128,7 +128,8 @@ public class ImageController {
       throw new ResponseStatusException(HttpStatus.valueOf(406), "The business was not found");
     } catch (InsufficientPrivilegesException e) {
       log.error("INSUFFICIENT PRIVILEGES: " + businessId);
-      throw new ResponseStatusException(HttpStatus.valueOf(403), "You are not admin/business admin");
+      throw new ResponseStatusException(HttpStatus.valueOf(403),
+          "You are not admin/business admin");
     } catch (ProductNotFoundException e) {
       log.error("PRODUCT NOT FOUND ERROR: " + productId);
       throw new ResponseStatusException(HttpStatus.valueOf(406), "The product was not found");

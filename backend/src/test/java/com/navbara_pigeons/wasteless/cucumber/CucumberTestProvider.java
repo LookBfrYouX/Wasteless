@@ -10,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 @CucumberContextConfiguration
 public class CucumberTestProvider extends MainTestProvider {
 
-    @Autowired
-    protected UserController userController;
+  @Autowired
+  protected UserController userController;
 
-    @Autowired
-    protected BusinessController businessController;
+  @Autowired
+  protected BusinessController businessController;
 
-    @Autowired
-    protected ProductController productController;
+  @Autowired
+  protected ProductController productController;
 
 }

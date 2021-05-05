@@ -1,6 +1,9 @@
 package com.navbara_pigeons.wasteless.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.navbara_pigeons.wasteless.dto.BasicImageDto;
+import com.navbara_pigeons.wasteless.dto.BasicProductDto;
+import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +19,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.navbara_pigeons.wasteless.dto.BasicImageDto;
-import com.navbara_pigeons.wasteless.dto.BasicProductDto;
-import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import lombok.Data;
 
 @Data
@@ -40,7 +39,7 @@ public class Product {
 
   @Column(name = "CURRENCY")
   private String currency;
-  
+
   @Column(name = "MANUFACTURER")
   private String manufacturer;
 
@@ -94,7 +93,7 @@ public class Product {
    *
    * @param image The product to be added.
    */
-  public void addProductImage (Image image) {
+  public void addProductImage(Image image) {
     if (this.productImages == null) {
       this.productImages = new ArrayList<>();
     }
@@ -125,6 +124,7 @@ public class Product {
 
   /**
    * get method for productImages used by json.
+   *
    * @return the list of product images with the primary image as the first item of the list
    */
   public List<Image> getImages() {
