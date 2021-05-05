@@ -1,100 +1,103 @@
 <template>
-  <div
-    class="w-100 d-flex justify-content-center product-page-container gradient-background pb-4"
-  >
-    <div class="container">
-      <form
-        class="slightly-transparent-inputs"
-        method="POST"
-        v-on:submit.prevent="createProduct"
-      >
-        <div class="row">
-          <div class="col">
-            <h1>Add product to Catalogue</h1>
+  <div class="w-100">
+    <div
+      class="w-100 d-flex justify-content-center product-page-container gradient-background pb-4"
+    >
+      <div class="container">
+        <form
+          class="slightly-transparent-inputs"
+          method="POST"
+          v-on:submit.prevent="createProduct"
+        >
+          <div class="row">
+            <div class="col">
+              <h1>Add product to Catalogue</h1>
+            </div>
           </div>
-        </div>
 
-        <div class="row">
-          <div class="form-group required col px-3">
-            <label>Name</label>
-            <input
-              v-model="name"
-              class="form-control"
-              maxlength="30"
-              name="name"
-              placeholder="Name"
-              required
-              type="text"
-            />
-          </div>
-        </div>
-
-        <!-- up for discussion about setting a step price -->
-        <div class="row">
-          <div class="form-group required col px-3">
-            <label>Price {{symbol}} ({{currency}})</label>
-            <input
-                v-model="price"
-                v-bind:placeholder="symbol + ' (' + currency + ')'"
+          <div class="row">
+            <div class="form-group required col px-3">
+              <label>Name</label>
+              <input
+                v-model="name"
                 class="form-control"
-                step="0.01"
-                min="0.00"
-                max="9999.99"
-                name="price"
-                required
-                type="number"
-            />
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="form-group required col px-3">
-            <label>Manufacturer</label>
-            <input
-                v-model="manufacturer"
-                placeholder="Manufacturer"
-                class="form-control"
-                name="manufacturer"
+                maxlength="30"
+                name="name"
+                placeholder="Name"
                 required
                 type="text"
-            />
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="row>">
-          <div class="form-group col px-0">
-            <label>Description</label>
-            <textarea
-              v-model="description"
-              class="form-control"
-              maxlength="500"
-              name="description"
-              placeholder="Description"
-              rows="5"
-              type="text"
-            />
+          <!-- up for discussion about setting a step price -->
+          <div class="row">
+            <div class="form-group required col px-3">
+              <label>Price {{currencyText}}</label>
+              <input
+                  v-model="price"
+                  v-bind:placeholder="currencyText"
+                  class="form-control"
+                  step="0.01"
+                  min="0.00"
+                  max="9999.99"
+                  name="price"
+                  required
+                  type="number"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="row">
-          <div class="col">
-            <input
-                class="btn btn-block btn-primary"
-                type="submit"
-                value="Add Product"
-            /> <!-- v-on to be used for testing -->
+          <div class="row">
+            <div class="form-group required col px-3">
+              <label>Manufacturer</label>
+              <input
+                  v-model="manufacturer"
+                  placeholder="Manufacturer"
+                  class="form-control"
+                  name="manufacturer"
+                  required
+                  type="text"
+              />
+            </div>
           </div>
-        </div>
 
-        <div v-if="errorMessage != null" class="row mt-2">
-          <div class="col">
-            <p class="alert alert-warning">{{ errorMessage }}</p>
+          <div class="row>">
+            <div class="form-group col px-0">
+              <label>Description</label>
+              <textarea
+                v-model="description"
+                class="form-control"
+                maxlength="500"
+                name="description"
+                placeholder="Description"
+                rows="5"
+                type="text"
+              />
+            </div>
           </div>
-        </div>
-      </form>
+
+          <div class="row">
+            <div class="col">
+              <input
+                  class="btn btn-block btn-primary"
+                  type="submit"
+                  value="Add Product"
+              /> <!-- v-on to be used for testing -->
+            </div>
+          </div>
+
+          <div v-if="errorMessage != null" class="row mt-2">
+            <div class="col">
+              <p class="alert alert-warning">{{ errorMessage }}</p>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
     <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
+        class="p-absolute w-100"
         title="Could not retrieve business data"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="false"
@@ -110,7 +113,6 @@
 <script>
 import { ApiRequestError } from '../ApiRequestError';
 const { Api } = require("./../Api.js");
-const countryData = require("./../assets/countryData.json");
 import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 import ErrorModal from "./Errors/ErrorModal";
 
@@ -129,8 +131,7 @@ export default {
       description: "",
       manufacturer: "",
       price: "",
-      symbol: "",
-      currency: "",
+      currency: null,
 
       typeRequired: false, // If phone entered but not country code
     };
@@ -140,10 +141,6 @@ export default {
     businessId: {
       required: true,
       type: Number
-    },
-    countryData: {
-      required: false,
-      default: () => countryData
     }
   },
 
@@ -151,39 +148,27 @@ export default {
     return this.currencyPipeline();
   },
 
+  computed: {
+    currencyText() {
+      if (this.currency == null) return "(Unknown currency)";
+      return `${this.currency.symbol} (${this.currency.code})`;
+    }
+  },
+
   methods: {
-    currencyPipeline: async function() {
-      let country;
-      const actingAsBusiness = this.$stateStore.getters.getActingAs();
-      if (actingAsBusiness == null) {
-        // Acting as admin so don't know country
-        try {
-          const { data } = await Api.businessProfile(this.businessId);
-          country = data.address.country;
-        } catch(err) {
-          if (await Api.handle401.call(this, err)) return;
-          this.apiErrorMessage = err.userFacingErrorMessage;
-          return;
-        }
-      } else {
-        country = actingAsBusiness.address.country;
-      }
-      
-      return this.setCurrency(country);
-    },
-
-
     /**
-     * Find the currency associated with the country of the user
+     * Pipeline that sets currency data
      */
-    setCurrency: async function (countryName) {
-      const country = this.countryData.find(countryEl => countryEl.name == countryName);
-      const currency = country? country.currency: this.$constants.CURRENCY.DEFAULT_CURRENCY;
-
-      this.currency = currency.code;
-      this.symbol = currency.symbol;
+    currencyPipeline: async function() {
+      try {
+        const currency = await this.$helper.getCurrencyForBusiness(this.businessId, this.$stateStore);
+        this.currency = currency;
+      } catch(err) {
+        if (await Api.handle401.call(this, err)) return;
+        this.apiErrorMessage = err.userFacingErrorMessage;
+        return;
+      }
     },
-
 
     /**
      * Wrapper which simply calls the sign up method of the api

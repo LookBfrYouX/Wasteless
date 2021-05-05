@@ -1,3 +1,5 @@
+const { Api } = require("./Api.js");
+const countryData = require("./assets/countryData.json");
 const { constants } = require("./constants");
 
 /**
@@ -75,5 +77,40 @@ export const helper = {
 
     if (reload) await this.$router.go();
     else await this.$router.push(args);
+  },
+
+  /**
+   * Gets country given business ID and state store.
+   * Does a API request if necessary. Caller must catch
+   * @param {*} businessId
+   * @param {*} stateStore 
+   * @returns 
+   */
+  getBusinessCountry: async function(businessId, stateStore) {
+    const actingAsBusiness = stateStore.getters.getActingAs();
+    if (actingAsBusiness == null) {
+      // const user = stateStore.getters.getAuthUser();
+      // if (user.businessesAdmistered)
+      // If acting as admin, can view page and don't know country information
+      const { data } = await Api.businessProfile(businessId);
+      return data.address.country;
+    }
+
+    return actingAsBusiness.address.country;
+  },
+
+  /**
+   * Given business Id and state store, returns currency
+   * May throw error
+   * @param {*} businessId 
+   * @param {*} stateStore 
+   * @returns currency, or null is not found
+   */
+  getCurrencyForBusiness: async function(businessId, stateStore) {
+    const countryName = await this.getBusinessCountry(businessId, stateStore);
+
+    const country = countryData.find(countryEl => countryEl.name == countryName);
+    if (country) return country.currency;
+    return null;
   }
 }

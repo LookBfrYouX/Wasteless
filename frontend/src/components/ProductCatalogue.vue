@@ -65,7 +65,7 @@
                 </div>
                 <div class="text-muted">Manufacturer: {{ product.manufacturer }}</div>
                 <div class="text-muted">Description: {{ product.description }}</div>
-                <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
+                <div class="text-muted">RRP: {{ makeCurrencyString(product.recommendedRetailPrice) }}</div>
                 <div class="text-muted">Created: {{
                     $helper.isoToDateString(product.created)
                   }}
@@ -143,6 +143,7 @@ const ProductCatalogue = {
       reversed: false,
       isVisible: false,
       apiErrorMessage: null,
+      currency: null
     }
   },
 
@@ -153,8 +154,9 @@ const ProductCatalogue = {
     },
   },
 
-  beforeMount: function() {
-    this.query();
+  beforeMount: async function() {
+    const success = await this.query();
+    if (success) await this.loadCurrencies();
   },
 
   methods: {
@@ -170,8 +172,35 @@ const ProductCatalogue = {
     },
 
     /**
+     * Loads currency info
+     * @return true on success
+     */
+    loadCurrencies: async function() {
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+        return false;
+      }
+
+      try {
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId, this.$stateStore);
+      } catch(err) {
+        if (await Api.handle401.call(this, err)) return;
+        this.apiErrorMessage = err.userFacingErrorMessage;
+        return false;
+      }
+      return true;
+    },
+
+    makeCurrencyString(price) {
+      if (this.currency == null) return `${price} (unknown currency)`;
+      let str = `${this.currency.symbol}${price}`;
+      if (this.currency.code != null) str += " " + this.currency.code;
+      return str;
+    },
+
+    /**
      * Sends API request and sets results variable
      * If they are not admin or acting as the business just returns
+     * @return true on success
      */
     query: async function () {
       if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
@@ -184,11 +213,13 @@ const ProductCatalogue = {
       } catch (err) {
         if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
-        return;
+        return false;
       }
 
       this.results = this.parseSearchResults(data);
       this.setPages();
+
+      return true;
     },
 
     parseSearchResults: function (results) {
