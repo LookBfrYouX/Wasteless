@@ -19,32 +19,31 @@
           v-bind:key="img.id"
           class="col-12 col-sm-6 col-md-4 col-lg-3 p-2 d-flex flex-column justify-content-end"
       >
-        <!-- align buttons on the bottom -->
+      <!-- align buttons on the bottom -->
         <div class="d-flex justify-content-center">
           <img
-              class="img-fluid w-100"
               v-bind:src="img.filename"
+              class="img-fluid w-100"
+              v-bind:alt="`Product image ${i + 1}`"
           />
-          <!-- TODO change to thumbnailFilename -->
         </div>
         <div class="d-flex flex-wrap justify-content-center">
           <button v-if="i !== 0"
-                  class="btn btn-sm btn-info m-1"
-                  v-on:click="setAsPrimary(img.id)">
+                  v-on:click="setAsPrimary(img.id)"
+                  class="btn btn-sm btn-info m-1">
             Set as primary
           </button>
-          <!--          Primary image is the first image in the array. -->
-          <button class="btn btn-sm btn-danger m-1"
-                  v-on:click="deleteImage(img.id)">Delete
-          </button>
+<!--          Primary image is the first image in the array. -->
+          <button v-on:click="deleteImage(img.id)"
+                  class="btn btn-sm btn-danger m-1">Delete</button>
         </div>
       </div>
       <div
           class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center justify-content-center product-image-width"
       >
         <button
-            class="bg-transparent border-0"
             type="button"
+            class="bg-transparent border-0"
             @click="onPickFile"
         >
           <span class="material-icons add-product-icon py-4 mb-4 mt-2">
@@ -63,23 +62,23 @@
     <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error fetching product information"
-        v-bind:goBack="false"
         v-bind:hideCallback="() => {
           apiErrorMessage = null;
         }"
         v-bind:refresh="true"
         v-bind:retry="this.apiPipeline"
+        v-bind:goBack="false"
         v-bind:show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
     <error-modal
-        v-bind:goBack="false"
+        v-bind:title="imageApiErrorTitle"
         v-bind:hideCallback="() => imageApiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="false"
+        v-bind:goBack="false"
         v-bind:show="imageApiErrorMessage !== null"
-        v-bind:title="imageApiErrorTitle"
     >
       <p>{{ imageApiErrorMessage }}</p>
     </error-modal>
@@ -141,16 +140,12 @@ export default {
      * If user is not (acting as business or is admin acting as self) simply returns
      */
     apiPipeline: async function () {
-      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
-        return false;
-      }
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) return false;
 
       try {
         return await this.parseApiResponse(this.callApi());
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
@@ -174,8 +169,7 @@ export default {
       const product = products.find(({id}) => id === this.productId);
       // find the product the correct id
       if (product === undefined) {
-        throw new ApiRequestError(
-            `Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
+        throw new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
       }
       this.name = product.name;
       this.images = product.images;
@@ -197,10 +191,8 @@ export default {
       Api.uploadProductImage(files[0], this.businessId, this.productId)
       .then(() => {
         return this.apiPipeline();
-      }).catch(async (err) => {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+      }).catch(async(err) => {
+        if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error uploading new product image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
@@ -214,10 +206,8 @@ export default {
       Api.changePrimaryImage(this.businessId, this.productId, imageId)
       .then(() => {
         return this.apiPipeline();
-      }).catch(async (err) => {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+      }).catch(async(err) => {
+        if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error setting a primary image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       });
@@ -232,16 +222,12 @@ export default {
       // Remove the image immediately so that they can't do this
       // Regardless of if the request suceeds or fails, refresh the pipeline
       const index = this.images.findIndex(img => img.id == imageId);
-      if (index == -1) {
-        return;
-      }
+      if (index == -1) return;
       this.images.splice(index);
 
       Api.deleteProductImage(this.businessId, this.productId, imageId)
       .catch(async (err) => {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error deleting the image";
         this.imageApiErrorMessage = err.userFacingErrorMessage;
       }).finally(() => {

@@ -2,13 +2,11 @@
   <div class="w-100">
     <div class="w-100">
       <div class="button-expand-sidebar-wrapper mt-2 mx-2">
-        <button v-if="results.length && !isVisible" class="btn btn-info" type="button"
-                v-on:click="toggleSidebar()">
+        <button v-if="results.length && !isVisible" class="btn btn-info" type="button" v-on:click="toggleSidebar()">
           <span>Sort results</span>
         </button>
         <!-- create product button doesn't really belong here, but want it aligned with the sort results button -->
-        <button id="create-product-button" class="btn btn-info float-right"
-                type="button" v-on:click="createProduct">
+        <button v-on:click="createProduct" class="btn btn-info float-right" type="button">
           <span>Create Product</span>
         </button>
       </div>
@@ -42,21 +40,21 @@
             <ul class="list-unstyled list-group">
               <!--viewUser method uses router.push to display profile page-->
               <li v-for="(product, index) in displayedResults" v-bind:key="index"
-                  class="list-group-item card"
-                  v-on:click="viewProduct(product.id)">
+                  v-on:click="viewProduct(product.id)"
+                  class="list-group-item card">
                 <div class="row">
                   <div class="col-3">
                     <img
-                        v-if="getThumbnailImage(product.id) != null"
-                        alt="Product Image"
-                        class="image-fluid w-100 rounded-circle"
-                        v-bind:src="getThumbnailImage(product.id)"
+                      v-if="getThumbnailImage(product.id) != null"
+                      v-bind:src="getThumbnailImage(product.id)"
+                      class="image-fluid w-100 rounded-circle"
+                      alt="Product Image"
                     >
                     <img
-                        v-else
-                        alt="Product Image"
-                        class="image-fluid w-100 rounded-circle"
-                        src="./../../assets/images/default-product-thumbnail.svg"
+                      v-else
+                      src="./../../assets/images/default-product-thumbnail.svg"
+                      class="image-fluid w-100 rounded-circle"
+                      alt="Product Image"
                     >
                   </div>
                   <div class="col-9">
@@ -67,7 +65,7 @@
                 </div>
                 <div class="text-muted">Manufacturer: {{ product.manufacturer }}</div>
                 <div class="text-muted">Description: {{ product.description }}</div>
-                <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
+                <div class="text-muted">RRP: {{ makeCurrencyString(product.recommendedRetailPrice) }}</div>
                 <div class="text-muted">Created: {{
                     $helper.isoToDateString(product.created)
                   }}
@@ -108,11 +106,11 @@
     <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error viewing business catalog"
-        v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.query"
         v-bind:show="apiErrorMessage !== null"
+        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -123,7 +121,7 @@
 import ErrorModal from "./Errors/ErrorModal.vue";
 import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 
-const {Api} = require("./../Api.js");
+const { Api } = require("./../Api.js");
 
 const ProductCatalogue = {
   name: "ProductCatalogue",
@@ -138,13 +136,14 @@ const ProductCatalogue = {
     return {
       results: [],
       pageNum: 0, // Page number starts from 0 but it will shown as 1 on UI
-      resultsPerPage: this.$constants.PRODUCT_CATALOG.RESULTS_PER_PAGE,
+      resultsPerPage:  this.$constants.PRODUCT_CATALOG.RESULTS_PER_PAGE,
       highlightedItem: null,
       pages: [],
       sortBy: null,
       reversed: false,
       isVisible: false,
       apiErrorMessage: null,
+      currency: null
     }
   },
 
@@ -155,8 +154,9 @@ const ProductCatalogue = {
     },
   },
 
-  beforeMount: function () {
-    this.query();
+  beforeMount: async function() {
+    const success = await this.query();
+    if (success) await this.loadCurrencies();
   },
 
   methods: {
@@ -172,8 +172,35 @@ const ProductCatalogue = {
     },
 
     /**
+     * Loads currency info
+     * @return true on success
+     */
+    loadCurrencies: async function() {
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+        return false;
+      }
+
+      try {
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId, this.$stateStore);
+      } catch(err) {
+        if (await Api.handle401.call(this, err)) return;
+        this.apiErrorMessage = err.userFacingErrorMessage;
+        return false;
+      }
+      return true;
+    },
+
+    makeCurrencyString(price) {
+      if (this.currency == null) return `${price} (unknown currency)`;
+      let str = `${this.currency.symbol}${price}`;
+      if (this.currency.code != null) str += " " + this.currency.code;
+      return str;
+    },
+
+    /**
      * Sends API request and sets results variable
      * If they are not admin or acting as the business just returns
+     * @return true on success
      */
     query: async function () {
       if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
@@ -184,15 +211,15 @@ const ProductCatalogue = {
       try {
         data = (await Api.getProducts(this.businessId)).data;
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
-        return;
+        return false;
       }
 
       this.results = this.parseSearchResults(data);
       this.setPages();
+
+      return true;
     },
 
     parseSearchResults: function (results) {
@@ -287,16 +314,8 @@ export default ProductCatalogue;
 
 <style>
 
-#create-product-button {
-  top: 50px;
-  right: 15px;
-}
-
 button.page-link {
   display: inline-block;
-}
-
-button.page-link {
   font-size: 20px;
   color: #29b3ed;
   font-weight: 500;

@@ -1,23 +1,24 @@
 <template>
-  <div
+  <div class="w-100">
+    <div
       class="w-100 d-flex justify-content-center product-page-container gradient-background pb-4"
-  >
-    <div class="container">
-      <form
+    >
+      <div class="container">
+        <form
           class="slightly-transparent-inputs"
           method="POST"
           v-on:submit.prevent="createProduct"
-      >
-        <div class="row">
-          <div class="col">
-            <h1>Add product to Catalogue</h1>
+        >
+          <div class="row">
+            <div class="col">
+              <h1>Add product to Catalogue</h1>
+            </div>
           </div>
-        </div>
 
-        <div class="row">
-          <div class="form-group required col px-3">
-            <label>Name</label>
-            <input
+          <div class="row">
+            <div class="form-group required col px-3">
+              <label>Name</label>
+              <input
                 v-model="name"
                 class="form-control"
                 maxlength="30"
@@ -25,46 +26,46 @@
                 placeholder="Name"
                 required
                 type="text"
-            />
+              />
+            </div>
           </div>
-        </div>
 
-        <!-- up for discussion about setting a step price -->
-        <div class="row">
-          <div class="form-group required col px-3">
-            <label>Price {{ symbol }} ({{ currency }})</label>
-            <input
-                v-model="price"
-                class="form-control"
-                max="9999.99"
-                min="0.00"
-                name="price"
-                required
-                step="0.01"
-                type="number"
-                v-bind:placeholder="symbol + ' (' + currency + ')'"
-            />
+          <!-- up for discussion about setting a step price -->
+          <div class="row">
+            <div class="form-group required col px-3">
+              <label>Price {{currencyText}}</label>
+              <input
+                  v-model="price"
+                  v-bind:placeholder="currencyText"
+                  class="form-control"
+                  step="0.01"
+                  min="0.00"
+                  max="9999.99"
+                  name="price"
+                  required
+                  type="number"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="row">
-          <div class="form-group required col px-3">
-            <label>Manufacturer</label>
-            <input
-                v-model="manufacturer"
-                class="form-control"
-                name="manufacturer"
-                placeholder="Manufacturer"
-                required
-                type="text"
-            />
+          <div class="row">
+            <div class="form-group required col px-3">
+              <label>Manufacturer</label>
+              <input
+                  v-model="manufacturer"
+                  placeholder="Manufacturer"
+                  class="form-control"
+                  name="manufacturer"
+                  required
+                  type="text"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="row>">
-          <div class="form-group col px-0">
-            <label>Description</label>
-            <textarea
+          <div class="row>">
+            <div class="form-group col px-0">
+              <label>Description</label>
+              <textarea
                 v-model="description"
                 class="form-control"
                 maxlength="500"
@@ -72,48 +73,48 @@
                 placeholder="Description"
                 rows="5"
                 type="text"
-            />
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="row">
-          <div class="col">
-            <input
-                class="btn btn-block btn-primary"
-                type="submit"
-                value="Add Product"
-            /> <!-- v-on to be used for testing -->
+          <div class="row">
+            <div class="col">
+              <input
+                  class="btn btn-block btn-primary"
+                  type="submit"
+                  value="Add Product"
+              /> <!-- v-on to be used for testing -->
+            </div>
           </div>
-        </div>
 
-        <div v-if="errorMessage != null" class="row mt-2">
-          <div class="col">
-            <p class="alert alert-warning">{{ errorMessage }}</p>
+          <div v-if="errorMessage != null" class="row mt-2">
+            <div class="col">
+              <p class="alert alert-warning">{{ errorMessage }}</p>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
     <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
+        class="p-absolute w-100"
         title="Could not retrieve business data"
-        v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="false"
         v-bind:retry="currencyPipeline"
         v-bind:show="apiErrorMessage != null"
+        v-bind:goBack="false"
     >
-      <p>{{ apiErrorMessage }}</p>
+      <p>{{apiErrorMessage}}</p>
     </error-modal>
   </div>
 </template>
 
 <script>
-import {ApiRequestError} from '../ApiRequestError';
+import { ApiRequestError } from '../ApiRequestError';
+const { Api } = require("./../Api.js");
 import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 import ErrorModal from "./Errors/ErrorModal";
-
-const {Api} = require("./../Api.js");
-const countryData = require("./../assets/countryData.json");
 
 export default {
   components: {
@@ -130,8 +131,7 @@ export default {
       description: "",
       manufacturer: "",
       price: "",
-      symbol: "",
-      currency: "",
+      currency: null,
 
       typeRequired: false, // If phone entered but not country code
     };
@@ -141,10 +141,6 @@ export default {
     businessId: {
       required: true,
       type: Number
-    },
-    countryData: {
-      required: false,
-      default: () => countryData
     }
   },
 
@@ -152,48 +148,33 @@ export default {
     return this.currencyPipeline();
   },
 
+  computed: {
+    currencyText() {
+      if (this.currency == null) return "(Unknown currency)";
+      return `${this.currency.symbol} (${this.currency.code})`;
+    }
+  },
+
   methods: {
-    currencyPipeline: async function () {
-      let country;
-      const actingAsBusiness = this.$stateStore.getters.getActingAs();
-      if (actingAsBusiness == null) {
-        // Acting as admin so don't know country
-        try {
-          const {data} = await Api.businessProfile(this.businessId);
-          country = data.address.country;
-        } catch (err) {
-          if (await Api.handle401.call(this, err)) {
-            return;
-          }
-          this.apiErrorMessage = err.userFacingErrorMessage;
-          return;
-        }
-      } else {
-        country = actingAsBusiness.address.country;
-      }
-
-      return this.setCurrency(country);
-    },
-
     /**
-     * Find the currency associated with the country of the user
+     * Pipeline that sets currency data
      */
-    setCurrency: async function (countryName) {
-      const country = this.countryData.find(country => country.name == countryName);
-      const currency = country ? country.currency : this.$constants.CURRENCY.DEFAULT_CURRENCY;
-
-      this.currency = currency.code;
-      this.symbol = currency.symbol;
+    currencyPipeline: async function() {
+      try {
+        const currency = await this.$helper.getCurrencyForBusiness(this.businessId, this.$stateStore);
+        this.currency = currency;
+      } catch(err) {
+        if (await Api.handle401.call(this, err)) return;
+        this.apiErrorMessage = err.userFacingErrorMessage;
+        return;
+      }
     },
 
     /**
      * Wrapper which simply calls the sign up method of the api
      */
     callApi: function (data) {
-      if (this.businessId == null) {
-        throw new ApiRequestError(
-            "Must be logged in as a business before making the request");
-      }
+      if (this.businessId == null) throw new ApiRequestError("Must be logged in as a business before making the request");
       return Api.createProduct(this.businessId, data);
     },
 
@@ -206,7 +187,7 @@ export default {
       let price;
       try {
         price = parseFloat(this.price);
-      } catch (err) {
+      } catch(err) {
         this.errorMessage = "Please enter a valid price";
       }
 
@@ -224,10 +205,8 @@ export default {
             manufacturer: this.manufacturer,
             description: this.description,
           });
-        } catch (err) {
-          if (await Api.handle401.call(this, err)) {
-            return;
-          }
+        } catch(err) {
+          if (await Api.handle401.call(this, err)) return;
           this.errorMessage = err.userFacingErrorMessage;
           return;
         }

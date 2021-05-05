@@ -113,6 +113,7 @@
         </ul>
         <div class="m-4">
           <table class="table table-hover">
+            <caption>User information</caption>
             <tbody>
             <tr>
               <td colspan="2"><h5 class="text-muted">User Details</h5></td>
