@@ -113,35 +113,36 @@
         </ul>
         <div class="m-4">
           <table class="table table-hover">
+            <caption>User information</caption>
             <tbody>
             <tr>
               <td colspan="2"><h5 class="text-muted">User Details</h5></td>
             </tr>
             <tr v-if="userInfo.nickname" scope="row">
-              <th style="white-space: nowrap;">Nickname:</th>
+              <th id="user-">Nickname:</th>
               <td class="col-md value"><p>{{ userInfo.nickname }}</p></td>
             </tr>
             <tr v-if="memberSinceText" scope="row">
-              <th style="white-space: nowrap;">Member since:</th>
+              <th id="user-">Member since:</th>
               <td class="col-md value"><p>{{ memberSinceText }}</p></td>
             </tr>
             <tr v-if="dateOfBirthText" scope="row">
-              <th style="white-space: nowrap;">Date of Birth:</th>
+              <th id="user-">Date of Birth:</th>
               <td class="col-md value"><p>{{ dateOfBirthText }}</p></td>
             </tr>
             <tr>
               <td colspan="2"><h5 class="text-muted">Contact Information</h5></td>
             </tr>
             <tr v-if="userInfo.email" scope="row">
-              <th style="white-space: nowrap;">Email Address:</th>
+              <th id="user-">Email Address:</th>
               <td class="col-md value"><p>{{ userInfo.email }}</p></td>
             </tr>
             <tr v-if="userInfo.phoneNumber" scope="row">
-              <th style="white-space: nowrap;">Phone Number:</th>
+              <th id="user-">Phone Number:</th>
               <td class="col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
             </tr>
             <tr v-if="userInfo.homeAddress" scope="row">
-              <th style="white-space: nowrap;">Address:</th>
+              <th id="user-">Address:</th>
               <td class="col-md value">
                 <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
               </td>
@@ -163,8 +164,11 @@
     </error-modal>
   </div>
 </template>
-
-
+<style scoped>
+th {
+  white-space: nowrap;
+}
+</style>
 <script>
 import ErrorModal from './Errors/ErrorModal.vue';
 import {ApiRequestError} from "./../ApiRequestError";

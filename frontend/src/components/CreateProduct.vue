@@ -177,7 +177,7 @@ export default {
      * Find the currency associated with the country of the user
      */
     setCurrency: async function (countryName) {
-      const country = this.countryData.find(country => country.name == countryName);
+      const country = this.countryData.find(countryEl => countryEl.name == countryName);
       const currency = country? country.currency: this.$constants.CURRENCY.DEFAULT_CURRENCY;
 
       this.currency = currency.code;

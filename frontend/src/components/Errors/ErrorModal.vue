@@ -130,7 +130,7 @@ export default {
     }
   },
 
-  mounted() {
+  beforeMount() {
     this.modal = $(this.$refs.modal).modal({
       show: this.show
     });

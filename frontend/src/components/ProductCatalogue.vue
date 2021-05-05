@@ -6,7 +6,7 @@
           <span>Sort results</span>
         </button>
         <!-- create product button doesn't really belong here, but want it aligned with the sort results button -->
-        <button v-on:click="createProduct" id="create-product-button" class="btn btn-info float-right" type="button">
+        <button v-on:click="createProduct" class="btn btn-info float-right" type="button">
           <span>Create Product</span>
         </button>
       </div>
@@ -283,16 +283,8 @@ export default ProductCatalogue;
 
 <style>
 
-#create-product-button {
-  top: 50px;
-  right: 15px;
-}
-
 button.page-link {
   display: inline-block;
-}
-
-button.page-link {
   font-size: 20px;
   color: #29b3ed;
   font-weight: 500;

@@ -143,7 +143,7 @@ export const store = {
         const id = Number.isInteger(business)? business: business.id;
         if (
           state.authUser == null || 
-          state.authUser.businessesAdministered.find(business => business.id == id) == undefined
+          state.authUser.businessesAdministered.find(businessEl => businessEl.id == id) == undefined
         ) throw new Error("Tried to set acting as business, but business ID not found in authUser's businesses");
         state.actingAsId = id;
         localStorage.setItem("actingAsId", id);

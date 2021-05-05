@@ -61,10 +61,16 @@
                aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
                data-toggle="dropdown"
                href="javascript:;" role="button">
-              <img v-if="isActingAsBusiness" class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-business-thumbnail.svg">
-              <img v-else class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-user-thumbnail.svg">
+              <img v-if="isActingAsBusiness"
+                   class="nav-picture rounded-circle"
+                   src="./../../assets/images/default-business-thumbnail.svg"
+                   alt="User is acting as business"
+              >
+              <img v-else
+                   class="nav-picture rounded-circle"
+                   src="./../../assets/images/default-user-thumbnail.svg"
+                   alt="User is acting as self"
+                >
               <div class="d-flex flex-column mx-1">
                 <span class="m-0 p-0 text-dark">
                   {{ printCurrentActingAs }}
@@ -215,6 +221,7 @@ export default {
      * or error page if log out fails
      */
     logOut: async function () {
+      this.logOutErrorMessage = null;
       try {
         await Api.logOut();
       } catch (err) {
@@ -222,9 +229,10 @@ export default {
         this.logOutErrorMessage = err.userFacingErrorMessage;
         return;
       }
-
-      await this.$stateStore.actions.deleteAuthUser();
       await this.pushOrGo("landing");
+      await this.$stateStore.actions.deleteAuthUser();
+      // Some pages react badly if there is no auth user, so delete after navigating to landing page
+      // For some reason error modal doesn't get disposed of properly
     },
 
     /**

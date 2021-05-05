@@ -24,8 +24,8 @@
           <img
               v-bind:src="img.filename"
               class="img-fluid w-100"
+              v-bind:alt="`Product image ${i + 1}`"
           />
-          <!-- TODO change to thumbnailFilename -->
         </div>
         <div class="d-flex flex-wrap justify-content-center">
           <button v-if="i !== 0"
