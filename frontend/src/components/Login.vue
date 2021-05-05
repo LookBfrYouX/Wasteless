@@ -95,7 +95,7 @@ export default {
   methods: {
     signUp() {
       // redirects user to to the signup page
-      this.$router.push({name: "signup"});
+      this.$router.push({name: "signUp"});
     },
     login: async function () {
       // uses mock API to determine whether to allow user to login or be rejected
