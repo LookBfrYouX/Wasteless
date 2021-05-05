@@ -107,7 +107,6 @@
             <li v-if="this.$route.name != 'login'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
-                  type="button"
                   v-on:click="pushOrGo('login')"
               >
                 Login
@@ -116,7 +115,6 @@
             <li v-if="this.$route.name != 'Sign Up'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
-                  type="button"
                   v-on:click="pushOrGo('signUp')"
               >
                 Sign Up
