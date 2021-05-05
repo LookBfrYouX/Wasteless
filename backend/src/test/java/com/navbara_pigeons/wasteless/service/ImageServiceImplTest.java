@@ -1,7 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -11,14 +10,12 @@ import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
-import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import java.io.FileInputStream;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
@@ -55,6 +52,7 @@ class ImageServiceImplTest extends ServiceTestProvider {
     user.addBusiness(testBusiness);
     // Create the test product (Milk) and save the business
     testProduct = makeProduct("2L Full Cream Milk");
+    testProduct.setId(1);
     testBusiness.addCatalogueProduct(testProduct);
     businessService.saveBusiness(testBusiness);
   }
@@ -81,22 +79,5 @@ class ImageServiceImplTest extends ServiceTestProvider {
     assertThrows(ProductNotFoundException.class, () -> {
       imageService.uploadProductImage(testBusiness.getId(), 0, testImage);
     });
-  }
-
-  @Test
-  @Disabled
-  void changePrimaryImage()
-      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
-    assertDoesNotThrow(() -> {
-      imageService.uploadProductImage(testBusiness.getId(), testProduct.getId(), testImage);
-      imageService.uploadProductImage(testBusiness.getId(), testProduct.getId(), testImage2);
-    });
-//    imageService.changePrimaryImage(testBusiness.getId(), testProduct.getId(), 1);
-    assertEquals("", productService.getProducts(testBusiness.getId()));
-  }
-
-  @Disabled
-  @Test
-  void deleteProductImage() {
   }
 }
