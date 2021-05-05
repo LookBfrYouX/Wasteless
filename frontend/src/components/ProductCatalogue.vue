@@ -67,7 +67,7 @@
                 <div class="text-muted">Manufacturer: {{ product.manufacturer }}</div>
                 <div class="text-muted">Description: {{ product.description }}</div>
                 <div class="text-muted">RRP: {{
-                    makeCurrencyString(product.recommendedRetailPrice)
+                    $helper.makeCurrencyString(product.recommendedRetailPrice, currency)
                   }}
                 </div>
                 <div class="text-muted">Created: {{
@@ -160,9 +160,7 @@ const ProductCatalogue = {
 
   beforeMount: async function () {
     const success = await this.query();
-    if (success) {
-      await this.loadCurrencies();
-    }
+    if (success) await this.loadCurrencies();
   },
 
   methods: {
@@ -193,21 +191,11 @@ const ProductCatalogue = {
         if (await Api.handle401.call(this, err)) {
           return;
         }
-        this.apiErrorMessage = err.userFacingErrorMessage;
+        // If can't get currency not that big of a deal
+        // this.apiErrorMessage = err.userFacingErrorMessage;
         return false;
       }
       return true;
-    },
-
-    makeCurrencyString(price) {
-      if (this.currency == null) {
-        return `${price} (unknown currency)`;
-      }
-      let str = `${this.currency.symbol}${price}`;
-      if (this.currency.code != null) {
-        str += " " + this.currency.code;
-      }
-      return str;
     },
 
     /**

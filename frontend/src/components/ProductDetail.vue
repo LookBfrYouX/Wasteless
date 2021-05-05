@@ -12,8 +12,8 @@
             Back
           </button>
           <div class="mt-2">Description: {{ description }}</div>
-          <div class="mt-2">RRP: {{ recommendedRetailPrice }}</div>
           <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>
+          <div class="mt-2">RRP: {{ $helper.makeCurrencyString(recommendedRetailPrice, currency) }}</div>
         </div>
         <div class="col-md-6">
           <div class="primary-image-wrapper">
@@ -94,7 +94,8 @@ export default {
       productImages: [],
       apiErrorMessage: null,
       imageApiErrorMessage: null,
-      imageApiErrorTitle: ""
+      imageApiErrorTitle: "",
+      currency: null
     }
   },
   props: {
@@ -108,11 +109,35 @@ export default {
     }
   },
 
-  beforeMount: function () {
-    this.apiPipeline();
+ 
+  beforeMount: async function () {
+    const success = await this.apiPipeline();
+    if (success) await this.loadCurrencies();
   },
 
   methods: {
+
+    /**
+     * Loads currency info
+     * @return true on success
+     */
+    loadCurrencies: async function () {
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+        return false;
+      }
+
+      try {
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId, this.$stateStore);
+      } catch (err) {
+        // If can't get currency not that big of a deal
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
+        return false;
+      }
+      return true;
+    },
+
 
     /**
      * Calls the API and updates the component's data with the result
@@ -120,16 +145,17 @@ export default {
      */
     apiPipeline: async function () {
       if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
-        return;
+        return false;
       }
       try {
-        return await this.parseApiResponse(this.callApi());
+        await this.parseApiResponse(this.callApi());
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
+        return false;
       }
+
+      return true;
     },
 
     /**

@@ -102,6 +102,7 @@ export const helper = {
    * @returns
    */
   getBusinessCountry: async function (businessId, stateStore) {
+    if (isNaN(businessId)) console.warn("Business ID not given; getBusinessCountry");
     const actingAsBusiness = stateStore.getters.getActingAs();
     if (actingAsBusiness == null) {
       // const user = stateStore.getters.getAuthUser();
@@ -110,7 +111,7 @@ export const helper = {
       const {data} = await Api.businessProfile(businessId);
       return data.address.country;
     }
-
+    
     return actingAsBusiness.address.country;
   },
 
@@ -123,12 +124,27 @@ export const helper = {
    */
   getCurrencyForBusiness: async function (businessId, stateStore) {
     const countryName = await this.getBusinessCountry(businessId, stateStore);
-
-    const country = countryData.find(
-        countryEl => countryEl.name == countryName);
+    const country = countryData.find(countryEl => countryEl.name == countryName);
     if (country) {
       return country.currency;
     }
     return null;
-  }
+  },
+
+  
+  /**
+   * Given price and currency, return price with currency
+   * @param {*} price 
+   * @returns string in form SYMBOL PRICE (CODE)
+   */
+  makeCurrencyString(price, currency) {
+    if (currency == null || currency == undefined) {
+      return `${price} (unknown currency)`;
+    }
+    let str = `${currency.symbol}${price}`;
+    if (currency.code != null) {
+      str += " " + currency.code;
+    }
+    return str;
+  },
 }
