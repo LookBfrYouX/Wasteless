@@ -17,8 +17,10 @@
         </div>
         <div class="col-md-6">
           <div class="primary-image-wrapper">
-            <img v-bind:src="productImages[0].filename"
+            <img v-if="productImages.length !== 0" v-bind:src="productImages[0].filename"
                  alt="Primary images">
+            <img v-else src="./../../assets/images/default-product-thumbnail.svg"
+                 alt="Default product image">
           </div>
         </div>
       </div>
@@ -66,6 +68,7 @@
 <style>
 .primary-image-wrapper img {
   width: 100%;
+  border: #1ec996 solid 2px;
 }
 </style>
 <script>
