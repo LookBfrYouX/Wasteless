@@ -6,5 +6,7 @@ public class ProductForbiddenException extends Exception {
     super();
   }
 
-  public ProductForbiddenException(String message) { super(message); }
+  public ProductForbiddenException(String message) {
+    super(message);
+  }
 }

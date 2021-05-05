@@ -1,22 +1,34 @@
 <template>
   <div class="container mt-4">
     <div class="list-group-item card">
-      <div class="d-flex flex-wrap justify-content-between mb-2">
-        <h2 class="card-title mb-0">{{ name }} (Id: {{ productId }})</h2>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="d-flex flex-wrap justify-content-between mb-2">
+            <h2 class="card-title mb-0">{{ name }} (Id: {{ productId }})</h2>
+          </div>
+          <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
+                  v-on:click="$router.go(-1)">
+            <span class="material-icons mr-1">arrow_back</span>
+            Back
+          </button>
+          <div class="mt-2">Description: {{ description }}</div>
+          <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>
+          <div class="mt-2">RRP: {{ $helper.makeCurrencyString(recommendedRetailPrice, currency) }}</div>
+        </div>
+        <div class="col-md-6">
+          <div class="primary-image-wrapper">
+            <img v-if="productImages.length !== 0" v-bind:src="productImages[0].filename"
+                 alt="Primary images">
+            <img v-else src="./../../assets/images/default-product-thumbnail.svg"
+                 alt="Default product image">
+          </div>
+        </div>
       </div>
-      <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
-              v-on:click="$router.go(-1)">
-        <span class="material-icons mr-1">arrow_back</span>
-        Back
-      </button>
-      <div class="mt-2">Description: {{ description }}</div>
-      <div class="mt-2">RRP: {{ recommendedRetailPrice }}</div>
-      <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>
-      <h4 class="mt-2">Product Images</h4>
       <div class="row my-2">
-        <div v-for="image in productImages"
+        <div v-for="(image, index) in productImages"
              v-bind:key="image.id"
-             class="col-12 col-md-6 col-lg-4 p-2">
+             class="col-12 col-md-6 col-lg-4 p-2"
+             :class="{ 'd-none': index === 0}">
           <img v-bind:src="image.filename"
                class="img-fluid"
                alt="Product Image">
@@ -29,31 +41,40 @@
         </button>
       </div>
     </div>
+    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error fetching product information"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.apiPipeline"
         v-bind:show="apiErrorMessage !== null"
-        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
     <error-modal
-        v-bind:title="imageApiErrorTitle"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => imageApiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="false"
         v-bind:show="imageApiErrorMessage !== null"
-        v-bind:goBack="false"
+        v-bind:title="imageApiErrorTitle"
     >
       <p>{{ imageApiErrorMessage }}</p>
     </error-modal>
   </div>
 </template>
 
+<style>
+.primary-image-wrapper img {
+  width: 100%;
+  border: #1ec996 solid 2px;
+}
+</style>
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
+import NotActingAsBusiness from "./Errors/NotActingAsBusiness";
+
 import {ApiRequestError} from "../ApiRequestError";
 const { Api } = require("./../Api");
 
@@ -61,6 +82,7 @@ export default {
   name: "productDetail",
   components: {
     ErrorModal,
+    NotActingAsBusiness
   },
 
   data() {
@@ -72,58 +94,75 @@ export default {
       productImages: [],
       apiErrorMessage: null,
       imageApiErrorMessage: null,
-      imageApiErrorTitle: ""
+      imageApiErrorTitle: "",
+      currency: null
     }
   },
   props: {
+    businessId: {
+      required: true,
+      type: Number
+    },
     productId: {
       required: true,
       type: Number,
     }
   },
 
-  beforeMount: function () {
-    this.apiPipeline();
-  },
-
-  computed: {
-    /**
-     * Get a business object of current acting as entity.
-     */
-    actingAs() {
-      return this.$stateStore.getters.getActingAs();
-    },
-
-    /**
-     * Get business id if current acting as a business
-     */
-    businessId() {
-      if (this.actingAs === null) {
-        return null;
-      }
-      return this.actingAs.id;
-    }
+ 
+  beforeMount: async function () {
+    const success = await this.apiPipeline();
+    if (success) await this.loadCurrencies();
   },
 
   methods: {
 
     /**
-     * Calls the API and updates the component's data with the result
+     * Loads currency info
+     * @return true on success
      */
-    apiPipeline: async function() {
-      try{
-        return await this.parseApiResponse(this.callApi());
+    loadCurrencies: async function () {
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+        return false;
+      }
+
+      try {
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId, this.$stateStore);
+      } catch (err) {
+        // If can't get currency not that big of a deal
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
+        return false;
+      }
+      return true;
+    },
+
+
+    /**
+     * Calls the API and updates the component's data with the result
+     * Does not run pipeline if user should not be able to edit business
+     */
+    apiPipeline: async function () {
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+        return false;
+      }
+      try {
+        await this.parseApiResponse(this.callApi());
       } catch (err) {
         if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
+        return false;
       }
+
+      return true;
     },
 
     /**
      * Calls the API to get profile information with the given user ID
      * Returns the promise, not the response
      */
-    callApi: async function() {
+    callApi: async function () {
       if (this.businessId === null) {
         throw new ApiRequestError("You must be acting as a business to view the product.")
       }
@@ -137,7 +176,8 @@ export default {
       const products = (await apiCall).data;
       const product = products.find(({id}) => id === this.productId);
       if (product === undefined) {
-        throw new ApiRequestError(`Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
+        throw new ApiRequestError(
+            `Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
       }
       this.name = product.name;
       this.description = product.description;
@@ -154,18 +194,10 @@ export default {
       this.$router.push({
         name: "editProductImages",
         params: {
+          businessId: this.businessId,
           productId
         }
       });
-    }
-  },
-
-  watch: {
-    /**
-     * Watch acting as is switched by clicking navbar dropdown
-     */
-    businessId() {
-      this.$helper.goToProfile.bind(this)();
     }
   }
 }

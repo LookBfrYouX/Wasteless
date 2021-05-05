@@ -74,7 +74,7 @@
 
 <script>
 // grabs mock api
-const { Api } = require("./../Api.js");
+const {Api} = require("./../Api.js");
 
 export default {
   /* creates vue variables to be manipulates
@@ -120,7 +120,7 @@ export default {
       }
 
       this.errorMessage = "";
-      await this.$router.push({name: "profile"});
+      await this.$router.push({name: "home"});
     },
   },
 };

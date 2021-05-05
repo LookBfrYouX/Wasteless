@@ -3,29 +3,28 @@ Feature: U1
   Background:
 
 # AC1: Assuming I am not already logged in, the application gives me the ability to either log in or register (create) a new account. When registering, the mandatory attributes are clearly marked.
-  Scenario: AC1 successfully register and log into user accounts
+  Scenario: AC1 - Successfully register and log into user accounts
     Given this user exist
-    |emailAddress |password  |firstName |lastName |nickname |
-    |tst@usr.com  |Test12345 |Test      |User     |testt    |
+      | emailAddress | password  | firstName | lastName | nickname |
+      | tst@usr.com  | Test12345 | Test      | User     | testt    |
 
-      When I log in with valid email "tst@usr.com" and valid password "Test12345"
-      Then I am logged in as user "tst@usr.com"
+    When I log in with valid email "tst@usr.com" and valid password "Test12345"
+    Then I am logged in as user "tst@usr.com"
 
-      When I log in with invalid email "tst@usr.com" and password "asd" combination
-      Then I am shown an error that my email or password is not valid
+    When I log in with invalid email "tst@usr.com" and password "asd" combination
+    Then I am shown an error that my email or password is not valid
 
-      When I register an account with the valid email "newusr@cucumber.com" and password "Password123"
-      Then user "newusr@cucumber.com" is added to the db
-      And I am logged in as user "newusr@cucumber.com"
+    When I register an account with the valid email "newusr@cucumber.com" and password "Password123"
+    Then I am logged in as user "newusr@cucumber.com"
 
-      When I register an account with the invalid email "a" and password "Password123"
-      Then I am shown an error that my request is invalid
+    When I register an account with the invalid email "a" and password "Password123"
+    Then I am shown an error that my request is invalid
 
-      When I register an account with the taken email "tst@usr.com" and password "Password123"
-      Then I am shown an error that my email is taken
+    When I register an account with the taken email "tst@usr.com" and password "Password123"
+    Then I am shown an error that my email is taken
 
-      When I register an account with an invalid address
-      Then I am shown an error that my address is invalid
+    When I register an account with an invalid address
+    Then I am shown an error that my address is invalid
 
 
 #  U1 Registering and logging into an individual account

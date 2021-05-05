@@ -9,18 +9,18 @@ import lombok.Data;
 @Data
 public class BasicAddressDto {
 
-    private String city;
-    private String region;
-    private String country;
+  private String city;
+  private String region;
+  private String country;
 
-    public BasicAddressDto(Address address) {
-        this.city = address.getCity();
-        this.region = address.getRegion();
-        this.country = address.getCountry();
-    }
+  public BasicAddressDto(Address address) {
+    this.city = address.getCity();
+    this.region = address.getRegion();
+    this.country = address.getCountry();
+  }
 
-    public BasicAddressDto() {
+  public BasicAddressDto() {
 
-    }
+  }
 
 }

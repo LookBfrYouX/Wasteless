@@ -1,11 +1,9 @@
 import {shallowMount} from "@vue/test-utils";
 import {globalStateMocks} from "./testHelper";
 import ProductDetail from "../components/ProductDetail";
-import {ApiRequestError} from "../ApiRequestError";
-
 
 jest.mock("./../Api.js");
-const { Api } = require("./../Api.js");
+const {Api} = require("./../Api.js");
 
 let wrapper;
 
@@ -33,40 +31,14 @@ window.alert = jest.fn();
 
 afterEach(() => wrapper.destroy());
 
-describe("Retrieving business id", () => {
-  test("Not acting as business", () => {
-    const mocks = globalStateMocks();
-    mocks.$stateStore.actions.setActingAs(null);
-    wrapper = shallowMount(ProductDetail, {
-      propsData: {
-        productId: 1,
-      },
-      mocks,
-    });
-    expect(wrapper.vm.businessId).toEqual(null);
-  });
-
-  test("Acting as business", () => {
-    const mocks = globalStateMocks();
-    mocks.$stateStore.actions.setActingAs(1);
-    wrapper = shallowMount(ProductDetail, {
-      propsData: {
-        productId: 1,
-      },
-      mocks,
-    });
-    expect(wrapper.vm.businessId).toEqual(1);
-  });
-});
-
 describe("Parsing API response to get product images", () => {
 
   test("Acting as a business", async () => {
     const mocks = globalStateMocks();
     wrapper = shallowMount(ProductDetail, {
-      businessId: 1,
       propsData: {
         productId: 1,
+        businessId: 1
       },
       mocks
     });

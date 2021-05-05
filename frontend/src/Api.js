@@ -31,7 +31,7 @@
 
 import axios from 'axios';
 import {ApiRequestError} from "./ApiRequestError";
-import { constants } from "./constants";
+import {constants} from "./constants";
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;
 
@@ -153,7 +153,7 @@ export const Api = {
    * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
   createProduct: (id, props) => {
-    return instance.  post(`/businesses/${id}/products`, props).catch(error => {
+    return instance.post(`/businesses/${id}/products`, props).catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
         403: "You don't have permission to add products to this business"
       });
@@ -198,10 +198,12 @@ export const Api = {
    * @param {*} query query string
    * @returns {Promise<Object[]>} array of photon response objects, or error
    */
-  addressSuggestions: async function(query) {
+  addressSuggestions: async function (query) {
     return fetch(`https://photon.komoot.io/api?q=${encodeURIComponent(query)}`)
-      .then(res => res.json())
-      .catch(err => { throw ApiRequestError.createFromMessageMap(err) });
+    .then(res => res.json())
+    .catch(err => {
+      throw ApiRequestError.createFromMessageMap(err)
+    });
   },
 
   /**
@@ -228,7 +230,7 @@ export const Api = {
 
     return false;
   },
-  
+
   /**
    * Uploads an product image and sends post request to ImageController
    * @param image is a file object with a name property that contains original file name
@@ -239,11 +241,12 @@ export const Api = {
   uploadProductImage: (image, businessId, productId) => {
     const formData = new FormData();
     formData.append("image", image);
-    return instanceLongTimeouts.post(`/businesses/${businessId}/products/${productId}/images`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).catch(error => {
+    return instanceLongTimeouts.post(
+        `/businesses/${businessId}/products/${productId}/images`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
         403: "You don't have permission to upload the images.",
         406: "Could not upload the image.",
@@ -260,7 +263,8 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any>>}
    */
   deleteProductImage: (businessId, productId, imageId) => {
-    return instance.delete(`/businesses/${businessId}/products/${productId}/images/${imageId}`)
+    return instance.delete(
+        `/businesses/${businessId}/products/${productId}/images/${imageId}`)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
         403: "You don't have permission to delete the image.",
@@ -277,7 +281,8 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any>>}
    */
   changePrimaryImage: (businessId, productId, imageId) => {
-    return instance.put(`/businesses/${businessId}/products/${productId}/images/${imageId}/makeprimary`)
+    return instance.put(
+        `/businesses/${businessId}/products/${productId}/images/${imageId}/makeprimary`)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
         403: "You don't have permission to set primary image.",

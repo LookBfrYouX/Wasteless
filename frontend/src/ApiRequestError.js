@@ -10,6 +10,7 @@ export class ApiRequestError extends Error {
   static DEFAULT_MESSAGES_MAP = {
     401: "You must be logged in to access this page",
     403: "You don't have permission to access this page",
+    404: "404 not found; there may have a bad ID",
     502: "Bad gateway: the backend server may have been misconfigured. Please wait a few minutes while the administrators correct the issue",
     [this.NO_RESPONSE_KEY]: "Could not connect to server. Try again in a few minutes",
     [this.DEFAULT_KEY]: err => `An unknown error (${err.response.status}) occurred\n${err}`

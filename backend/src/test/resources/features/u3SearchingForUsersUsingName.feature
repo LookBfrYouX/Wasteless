@@ -2,24 +2,24 @@ Feature: U3 Searching for Users using Name
 
   Background:
     Given these users exist
-    |emailAddress |password |firstName |lastName |nickName |
-    |bob@fri.com  |Test@1234 |Bob       |Vance    |Fridgeman |
-    |beet@dm.com  |Test@1234 |Dwight    |Shrute   |Bear      |
-    |bo@ring.com  |Test@1234 |Andrew    |Tuna     |Randyandy |
-    |michael@dm.com |Test@1234 |Michael |Scott    |Bossman   |
+      | emailAddress   | password  | firstName | lastName | nickName  |
+      | bob@fri.com    | Test@1234 | Bob       | Vance    | Fridgeman |
+      | beet@dm.com    | Test@1234 | Dwight    | Shrute   | Bear      |
+      | bo@ring.com    | Test@1234 | Andrew    | Tuna     | Randyandy |
+      | michael@dm.com | Test@1234 | Michael   | Scott    | Bossman   |
 
 #  AC1: As a logged-in individual user, I can access a search facility containing one textbox to search for users based on their name or nickname.
   Scenario: AC1 successfully search for user based on name or nickname
     Given A user "bob@fri.com" with password "Test@1234" is logged in.
 
-      When A search is performed for another user named "Dwight"
-      Then A user record for user "Dwight" is returned.
+    When A search is performed for another user named "Dwight"
+    Then A user record for user "Dwight" is returned.
 
-      When A search is performed for another user with nickname "Bossman"
-      Then A user record for user "Michael" is returned.
+    When A search is performed for another user with nickname "Bossman"
+    Then A user record for user "Michael" is returned.
 
-      When A search is performed for a non existent user "Donald"
-      Then No user records are returned
+    When A search is performed for a non existent user "Donald"
+    Then No user records are returned
 
 #  AC2: I can enter a user’s full name or one or more of their names/nickname into the text box. Clicking on a search button/icon displays results in a tabular form (or something similar that can fulfil the other ACs while being user friendly).
 #  Scenario: AC2 successfully find users using one or more of their name/nickname

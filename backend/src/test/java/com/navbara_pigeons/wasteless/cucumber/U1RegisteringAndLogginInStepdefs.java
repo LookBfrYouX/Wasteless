@@ -1,11 +1,11 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
-import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
 import io.cucumber.datatable.DataTable;
@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.server.ResponseStatusException;
 
 public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
 
@@ -56,8 +55,17 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
   }
 
   @Then("I am logged in as user {string}")
-  public void iAmLoggedInAsUser(String email) {
+  public void iAmLoggedInAsUser(String email) throws Exception {
     //TODO figure out how to get and check cookies
+    JSONObject userId = new JSONObject(this.mvcResult.getResponse().getContentAsString());
+    System.out.println(userId.get("userId"));
+    String id = userId.get("userId").toString();
+    this.mvcResult = mockMvc.perform(get("/users/{id}", id)
+        .content(id))
+        .andExpect(status().isOk()).andReturn();
+
+    JSONObject result = new JSONObject(this.mvcResult.getResponse().getContentAsString());
+    assertEquals(result.get("email"), email);
   }
 
   @When("I log in with invalid email {string} and password {string} combination")
@@ -78,7 +86,8 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
 
   @Then("I am shown an error that my email or password is not valid")
   public void iAmShownAnErrorThatMyUsernameOrPasswordIsNotValid() {
-    assertEquals("Failed login attempt, email or password incorrect", this.mvcResult.getResponse().getErrorMessage());
+    assertEquals("Failed login attempt, email or password incorrect",
+        this.mvcResult.getResponse().getErrorMessage());
   }
 
   @When("I register an account with the valid email {string} and password {string}")
@@ -93,10 +102,6 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
             .accept(MediaType.ALL))
         .andExpect(status().is(201))
         .andReturn();
-  }
-
-  @Then("user {string} is added to the db")
-  public void userIsAddedToTheDb(String email) {
   }
 
   @When("I register an account with the invalid email {string} and password {string}")

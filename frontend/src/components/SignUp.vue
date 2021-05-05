@@ -18,12 +18,12 @@
           <div class="form-group required col-12 col-md-6">
             <label for="fname">First Name</label>
             <input
+                id="fname"
                 v-model="firstName"
                 autocomplete="given-name"
                 class="form-control"
                 maxlength="30"
                 name="fname"
-                id="fname"
                 placeholder="First name"
                 required
                 type="text"
@@ -33,12 +33,12 @@
           <div class="form-group col-12 col-md-6">
             <label for="mname">Middle Name</label>
             <input
+                id="mname"
                 v-model="middleName"
                 autocomplete="additional-name"
                 class="form-control"
                 maxlength="30"
                 name="mname"
-                id="mname"
                 placeholder="Middle name (optional)"
                 type="text"
             />
@@ -47,12 +47,12 @@
           <div class="form-group required col-12 col-md-6">
             <label for="lname">Last Name</label>
             <input
+                id="lname"
                 v-model="lastName"
                 autocomplete="family-name"
                 class="form-control"
                 maxlength="30"
                 name="lname"
-                id="lname"
                 placeholder="Last name"
                 required
                 type="text"
@@ -62,12 +62,12 @@
           <div class="form-group col-12 col-md-6">
             <label for="nickname">Nickname</label>
             <input
+                id="nickname"
                 v-model="nickname"
                 autocomplete="nickname"
                 class="form-control"
                 maxlength="30"
                 name="nickname"
-                id="nickname"
                 placeholder="Nickname (optional)"
                 type="text"
             />
@@ -79,18 +79,18 @@
           <div class="col form-group required">
             <label ref="emailLabel" for="email">Email</label>
             <input
+                id="email"
                 v-model="email"
                 autocomplete="email"
                 class="form-control"
                 maxlength="50"
                 name="email"
-                id="email"
+                pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"
                 placeholder="Email"
                 required
+                title="You must enter a valid email address. Dotless domains are not supported"
                 type="email"
                 v-bind:class="{'is-invalid': emailErrorMessage !== null }"
-                pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"
-                title="You must enter a valid email address. Dotless domains are not supported"
             />
             <!-- regexp from https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type%3Demail), but modified to disallow dot-less domains -->
             <div class="invalid-feedback">{{ emailErrorMessage }}</div>
@@ -101,13 +101,13 @@
           <div class="form-group required col-12 col-md-6 mb-0">
             <label ref="passwordLabel" for="password">Password</label>
             <input
+                id="password"
                 v-model="password"
                 autocomplete="new-password"
                 class="form-control"
                 maxlength="50"
                 minlength="8"
                 name="password"
-                id="password"
                 pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,}$"
                 placeholder="Password"
                 required
@@ -125,13 +125,13 @@
           <div class="form-group required col-12 col-md-6 mb-md-0">
             <label for="confirmPassword">Confirm Password</label>
             <input
+                id="confirmPassword"
                 v-model="confirmPassword"
                 autocomplete="new-password"
                 class="form-control"
                 maxlength="50"
                 minlength="8"
                 name="confirmPassword"
-                id="confirmPassword"
                 placeholder="Confirm password"
                 required
                 type="password"
@@ -146,11 +146,11 @@
           <div class="form-group required col-12">
             <label ref="dateOfBirthLabel" for="dateOfBirth">Date of Birth</label>
             <input
+                id="dateOfBirth"
                 v-model="dateOfBirth"
                 autocomplete="bday"
                 class="form-control"
                 name="dateOfBirth"
-                id="dateOfBirth"
                 placeholder="Date of birth"
                 required
                 type="date"
@@ -167,11 +167,11 @@
             <label ref="countryCodeLabel" for="countryCode">Phone Country Code</label>
             <!-- Data list taken from https://github.com/etjossem/country-codes-html/blob/master/_country_codes.html (formatted to json) -->
             <select
+                id="countryCode"
                 v-model="countryCode"
                 autocomplete="tel-country-code"
                 class="form-control"
                 name="countryCode"
-                id="countryCode"
                 v-bind:class="{ 'is-invalid': countryCodeErrorMessage !== null }"
             >
               <!---Add blank element to country code list so that user can choose not to enter phone-->
@@ -181,7 +181,7 @@
                   v-bind:key="country.code"
                   v-bind:value="country.phoneExtensionCode"
               >
-                {{ country.name }} (+{{country.phoneExtensionCode }})
+                {{ country.name }} (+{{ country.phoneExtensionCode }})
               </option>
             </select>
             <div class="invalid-feedback">{{ countryCodeErrorMessage }}</div>
@@ -189,11 +189,11 @@
           <div class="col-12 col-md-9 mb-3">
             <label for="phoneNumber">Phone Number</label>
             <input
+                id="phoneNumber"
                 v-model="phoneNumber"
                 autocomplete="tel-national"
                 class="form-control"
                 name="phoneNumber"
-                id="phoneNumber"
                 pattern='^\d{5,13}$'
                 placeholder="Phone number"
                 type="tel"
@@ -208,12 +208,12 @@
           <div class="form-group col px-0">
             <label for="bio">Bio</label>
             <textarea
+                id="bio"
                 v-model="bio"
                 autocomplete="off"
                 class="form-control"
                 maxlength="500"
                 name="bio"
-                id="bio"
                 placeholder="Bio"
                 rows="5"
                 type="text"
@@ -244,7 +244,7 @@
 </style>
 
 <script>
-const { Api } = require("./../Api.js");
+const {Api} = require("./../Api.js");
 const AddressForm = require("./AddressForm").default;
 const countryData = require("./../assets/countryData.json");
 

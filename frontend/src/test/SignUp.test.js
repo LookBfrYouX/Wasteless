@@ -43,8 +43,10 @@ const mountWithData = (data = undefined, otherOptions = undefined) => {
     otherOptions = {};
   }
 
-  let { mocks, ...otherOptions2 } = otherOptions;
-  if (mocks == undefined) mocks = {};
+  let {mocks, ...otherOptions2} = otherOptions;
+  if (mocks == undefined) {
+    mocks = {};
+  }
 
   return mount(SignUp, {
     data: () => ({

@@ -2,11 +2,12 @@
   <div class="w-100">
     <div class="w-100">
       <div class="button-expand-sidebar-wrapper mt-2 mx-2">
-        <button v-if="results.length && !isVisible" class="btn btn-info" type="button" v-on:click="toggleSidebar()">
+        <button v-if="results.length && !isVisible" class="btn btn-info" type="button"
+                v-on:click="toggleSidebar()">
           <span>Sort results</span>
         </button>
         <!-- create product button doesn't really belong here, but want it aligned with the sort results button -->
-        <button v-on:click="createProduct" id="create-product-button" class="btn btn-info float-right" type="button">
+        <button class="btn btn-info float-right" type="button" v-on:click="createProduct">
           <span>Create Product</span>
         </button>
       </div>
@@ -21,7 +22,7 @@
             <ul id="search-headers" class="list-unstyled"
                 v-bind:class='{"table-reversed": reversed}'>
               <li
-                  v-for="[key, value] in Object.entries({name: 'Name', manufacturer: 'Manufacturer', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
+                  v-for="[key, value] in Object.entries({id: 'Product Code', name: 'Name', manufacturer: 'Manufacturer', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
                   v-bind:key="key"
                   class="mb-1"
                   v-bind:class='{"current-sort": sortBy==key}'
@@ -40,21 +41,21 @@
             <ul class="list-unstyled list-group">
               <!--viewUser method uses router.push to display profile page-->
               <li v-for="(product, index) in displayedResults" v-bind:key="index"
-                  v-on:click="viewProduct(product.id)"
-                  class="list-group-item card">
+                  class="list-group-item card"
+                  v-on:click="viewProduct(product.id)">
                 <div class="row">
                   <div class="col-3">
                     <img
-                      v-if="getThumbnailImage(product.id) != null"
-                      v-bind:src="getThumbnailImage(product.id)"
-                      class="image-fluid w-100 rounded-circle"
-                      alt="Product Image"
+                        v-if="getThumbnailImage(product.id) != null"
+                        alt="Product Image"
+                        class="image-fluid w-100 rounded-circle"
+                        v-bind:src="getThumbnailImage(product.id)"
                     >
                     <img
-                      v-else
-                      src="./../../assets/images/default-product-thumbnail.svg"
-                      class="image-fluid w-100 rounded-circle"
-                      alt="Product Image"
+                        v-else
+                        alt="Product Image"
+                        class="image-fluid w-100 rounded-circle"
+                        src="./../../assets/images/default-product-thumbnail.svg"
                     >
                   </div>
                   <div class="col-9">
@@ -65,7 +66,10 @@
                 </div>
                 <div class="text-muted">Manufacturer: {{ product.manufacturer }}</div>
                 <div class="text-muted">Description: {{ product.description }}</div>
-                <div class="text-muted">RRP: {{ product.recommendedRetailPrice }}</div>
+                <div class="text-muted">RRP: {{
+                    $helper.makeCurrencyString(product.recommendedRetailPrice, currency)
+                  }}
+                </div>
                 <div class="text-muted">Created: {{
                     $helper.isoToDateString(product.created)
                   }}
@@ -103,13 +107,14 @@
         <h4>No results found</h4>
       </div>
     </div>
+    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error viewing business catalog"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.query"
         v-bind:show="apiErrorMessage !== null"
-        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -117,32 +122,45 @@
 </template>
 
 <script>
-import { ApiRequestError } from "../ApiRequestError";
 import ErrorModal from "./Errors/ErrorModal.vue";
+import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 
-const { Api } = require("./../Api.js");
+const {Api} = require("./../Api.js");
 
 const ProductCatalogue = {
   name: "ProductCatalogue",
-  components: {ErrorModal},
+  components: {
+    ErrorModal,
+    NotActingAsBusiness
+  },
+
   /*has a search prop from app.vue*/
   data: function () {
     /* setting intial state */
     return {
       results: [],
       pageNum: 0, // Page number starts from 0 but it will shown as 1 on UI
-      resultsPerPage:  this.$constants.PRODUCT_CATALOG.RESULTS_PER_PAGE,
+      resultsPerPage: this.$constants.PRODUCT_CATALOG.RESULTS_PER_PAGE,
       highlightedItem: null,
       pages: [],
       sortBy: null,
       reversed: false,
       isVisible: false,
       apiErrorMessage: null,
+      currency: null
     }
   },
 
-  created: function() {
-    this.query();
+  props: {
+    businessId: {
+      required: true,
+      type: Number
+    },
+  },
+
+  beforeMount: async function () {
+    const success = await this.query();
+    if (success) await this.loadCurrencies();
   },
 
   methods: {
@@ -158,22 +176,53 @@ const ProductCatalogue = {
     },
 
     /**
-     * Sends API request and sets results variable, needs to run first which is why its called in the created hook
+     * Loads currency info
+     * @return true on success
+     */
+    loadCurrencies: async function () {
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+        return false;
+      }
+
+      try {
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+            this.$stateStore);
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
+        // If can't get currency not that big of a deal
+        // this.apiErrorMessage = err.userFacingErrorMessage;
+        return false;
+      }
+      return true;
+    },
+
+    /**
+     * Sends API request and sets results variable
+     * If they are not admin or acting as the business just returns
+     * @return true on success
      */
     query: async function () {
-      /* makes a query to the api to search for the prop value from the app.vue main page*/
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+        return false;
+      }
+
       let data;
       try {
-        if (this.businessId == null) throw new ApiRequestError("You must be logged in as a business before viewing a catalog");
         data = (await Api.getProducts(this.businessId)).data;
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
-        return;
+        return false;
       }
 
       this.results = this.parseSearchResults(data);
       this.setPages();
+
+      return true;
     },
 
     parseSearchResults: function (results) {
@@ -223,6 +272,7 @@ const ProductCatalogue = {
       this.$router.push({
         name: "productDetail",
         params: {
+          businessId: this.businessId,
           productId
         }
       });
@@ -250,32 +300,15 @@ const ProductCatalogue = {
     displayedResults() {
       return this.paginate(this.sortedResults);
     },
-
-    /**
-     * Get a business object of current acting as entity.
-     */
-    actingAs() {
-      return this.$stateStore.getters.getActingAs();
-    },
-
-    /**
-     * Get business id if current acting as a business
-     */
-    businessId() {
-      if (this.actingAs === null) {
-        return null;
-      }
-      return this.actingAs.id;
-    }
   },
 
   watch: {
-    /**
-     * Watch acting as is switched by clicking navbar dropdown
-     */
-    businessId() {
-      this.$helper.goToProfile.bind(this)();
-    }
+    // /**
+    //  * Watch acting as is switched by clicking navbar dropdown
+    //  */
+    // businessId() {
+    //   this.$helper.goToProfile.bind(this)();
+    // }
   }
 };
 
@@ -284,16 +317,8 @@ export default ProductCatalogue;
 
 <style>
 
-#create-product-button {
-  top: 50px;
-  right: 15px;
-}
-
 button.page-link {
   display: inline-block;
-}
-
-button.page-link {
   font-size: 20px;
   color: #29b3ed;
   font-weight: 500;

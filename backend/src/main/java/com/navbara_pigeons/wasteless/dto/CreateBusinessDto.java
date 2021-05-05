@@ -10,22 +10,22 @@ import lombok.Data;
 @Data
 public class CreateBusinessDto {
 
-    private long primaryAdministratorId;
-    private String name;
-    private String description;
-    private FullAddressDto address;
-    private String businessType;
+  private long primaryAdministratorId;
+  private String name;
+  private String description;
+  private FullAddressDto address;
+  private String businessType;
 
-    public CreateBusinessDto(Business business) {
-        this.primaryAdministratorId = business.getPrimaryAdministratorId();
-        this.name = business.getName();
-        this.description = business.getDescription();
-        this.address = new FullAddressDto(business.getAddress());
-        this.businessType = business.getBusinessType();
-    }
+  public CreateBusinessDto(Business business) {
+    this.primaryAdministratorId = business.getPrimaryAdministratorId();
+    this.name = business.getName();
+    this.description = business.getDescription();
+    this.address = new FullAddressDto(business.getAddress());
+    this.businessType = business.getBusinessType();
+  }
 
-    public CreateBusinessDto() {
+  public CreateBusinessDto() {
 
-    }
+  }
 
 }

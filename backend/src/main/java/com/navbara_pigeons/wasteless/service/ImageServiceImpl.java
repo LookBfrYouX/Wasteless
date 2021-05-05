@@ -4,7 +4,6 @@ import com.navbara_pigeons.wasteless.dao.ImageDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Image;
 import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -22,19 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class ImageServiceImpl implements ImageService {
-
-  @Value("${image.products.prefix}")
-  private String imagePrefix;
 
   private final UserDao userDao;
   private final ImageDao imageDao;
@@ -42,6 +34,8 @@ public class ImageServiceImpl implements ImageService {
   private final ProductService productService;
   private final UserService userService;
   private final int THUMBNAIL_DIMENSIONS = 300;
+  @Value("${image.products.prefix}")
+  private String imagePrefix;
 
   @Autowired
   public ImageServiceImpl(UserDao userDao, ImageDao imageDao, BusinessService businessService,
@@ -72,9 +66,9 @@ public class ImageServiceImpl implements ImageService {
   public void uploadProductImage(long businessId, long productId, MultipartFile image)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, IOException,
       ImageNotFoundException {
-    if (!businessService.isBusinessAdmin(businessId)) {
+    if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
       throw new BadCredentialsException(
-          "You must be an administer of the business to upload a product image");
+          "You must be an administrator of the business or a GAA to upload a product image");
     }
 
     // Get the file extension of the given file
@@ -116,10 +110,11 @@ public class ImageServiceImpl implements ImageService {
    */
   public void changePrimaryImage(long businessId, long productId, long imageId)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, ImageNotFoundException {
-    if (!businessService.isBusinessAdmin(businessId)) {
+    if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
       throw new BadCredentialsException(
-          "You must be an administer of the business to upload a product image");
+          "You must be an administrator of the business or a GAA to change the primary image");
     }
+
     Product productEntity = productService.getProduct(productId);
     Image newPrimaryImage = productEntity.getImageById(imageId);
     productEntity.setPrimaryProductImage(newPrimaryImage);
@@ -197,9 +192,11 @@ public class ImageServiceImpl implements ImageService {
   @Transactional
   public void deleteProductImage(long imageId, long businessId, long productId)
       throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ProductNotFoundException, ImageNotFoundException, IOException {
-    if (!this.businessService.isBusinessAdmin(businessId) && !this.userService.isAdmin()) {
-      throw new InsufficientPrivilegesException("You can not administer this business");
+    if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
+      throw new BadCredentialsException(
+          "You must be an administrator of the business or a GAA to delete this image");
     }
+
     Product product = this.productService.getProduct(productId);
     Image image = product.getImageById(imageId);
     product.deleteProductImage(imageId);

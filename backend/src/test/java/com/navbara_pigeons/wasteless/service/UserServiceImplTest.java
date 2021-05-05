@@ -1,34 +1,37 @@
 package com.navbara_pigeons.wasteless.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
-import com.navbara_pigeons.wasteless.dto.*;
-import com.navbara_pigeons.wasteless.entity.Address;
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.*;
-import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UnhandledException;
+import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.AbstractSecurityBuilder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 public class UserServiceImplTest extends ServiceTestProvider {
+
   @Mock
   UserDao userDaoMock;
 
@@ -49,13 +52,14 @@ public class UserServiceImplTest extends ServiceTestProvider {
 
 
   @Test
-  @WithMockUser(username=EMAIL_1, password=PASSWORD_1)
-  public void saveUser_normal() throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException {
-      User user = makeUser(EMAIL_1, PASSWORD_1, false);
-      loginAuthenticationMock();
-      when(encoder.encode(ArgumentMatchers.anyString())).thenReturn("HASH");
-      when(userDaoMock.getUserByEmail(EMAIL_1)).thenReturn(user);
-      userService.saveUser(user);
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
+  public void saveUser_normal()
+      throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException {
+    User user = makeUser(EMAIL_1, PASSWORD_1, false);
+    loginAuthenticationMock();
+    when(encoder.encode(ArgumentMatchers.anyString())).thenReturn("HASH");
+    when(userDaoMock.getUserByEmail(EMAIL_1)).thenReturn(user);
+    userService.saveUser(user);
   }
 
 
@@ -63,7 +67,7 @@ public class UserServiceImplTest extends ServiceTestProvider {
   public void saveUser_invalidDoB() {
     String[] testValues = {"31-Dec-2000", "dfs", "2020/10/05", "20/1/1"};
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    for(String testValue: testValues) {
+    for (String testValue : testValues) {
       user.setDateOfBirth(testValue);
       assertThrows(UserRegistrationException.class, () -> userService.saveUser(user));
     }
@@ -74,7 +78,7 @@ public class UserServiceImplTest extends ServiceTestProvider {
     String[] testValues = {"alec", "alec@", "alec@.", "alec@gmail", "alec@gmail.", "@", "@gmail",
         "@gmail.com"};
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    for(String testValue: testValues) {
+    for (String testValue : testValues) {
       user.setEmail(testValue);
       assertThrows(UserRegistrationException.class, () -> userService.saveUser(user));
     }
@@ -86,7 +90,7 @@ public class UserServiceImplTest extends ServiceTestProvider {
         "passw rd", "pasWrd", "passwoRd", "passwo8d",
         "PASSW8RD"};
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    for(String testValue: testValues) {
+    for (String testValue : testValues) {
       user.setPassword(testValue);
       assertThrows(UserRegistrationException.class, () -> userService.saveUser(user));
     }
@@ -183,7 +187,8 @@ public class UserServiceImplTest extends ServiceTestProvider {
   void loginAuthenticationMock() {
     when(authenticationManagerBuilder.getOrBuild()).thenReturn(new AuthenticationManager() {
       @Override
-      public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+      public Authentication authenticate(Authentication authentication)
+          throws AuthenticationException {
         return new Authentication() {
           @Override
           public Collection<? extends GrantedAuthority> getAuthorities() {

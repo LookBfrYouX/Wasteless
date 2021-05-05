@@ -1,17 +1,16 @@
-import { shallowMount} from '@vue/test-utils';
+import {shallowMount} from '@vue/test-utils';
 import {GLOBAL_STATE, globalStateMocks} from "./testHelper";
 import Navbar from "../components/Navbar";
-import { ApiRequestError } from '../ApiRequestError';
+import {ApiRequestError} from '../ApiRequestError';
 
 jest.mock("./../Api.js");
-const { Api } = require("./../Api.js");
+const {Api} = require("./../Api.js");
 
 let wrapper;
 
 afterEach(() => {
   wrapper.destroy();
 });
-
 
 describe("State of acting as entity", () => {
   test("Show user name on Navbar", () => {
@@ -34,7 +33,7 @@ describe("State of acting as entity", () => {
 
     expect(wrapper.vm.printCurrentActingAs).toEqual(business.name);
   });
-  
+
   test("Return a list of businesses", () => {
     const mocks = globalStateMocks();
     let authUser = mocks.$stateStore.getters.getAuthUser();

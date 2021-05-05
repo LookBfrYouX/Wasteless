@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
-import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
@@ -22,7 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
-public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider{
+public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
 
   private MvcResult response;
   private String userId;
@@ -160,7 +159,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider{
     }
   }
 
-    @Given("{string} is signed in and administers a business {string} with a product {string}")
-    public void isSignedInAndAdministersABusinessWithAProduct(String arg0, String arg1, String arg2) {
-    }
+  @Given("{string} is signed in and administers a business {string} with a product {string}")
+  public void isSignedInAndAdministersABusinessWithAProduct(String arg0, String arg1, String arg2) {
+  }
 }

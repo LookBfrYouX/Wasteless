@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from "./components/Home.vue"
 import Landing from "./components/Landing.vue"
-import { store } from "./store"
+import {store} from "./store"
 
 export default [];
 
@@ -27,8 +27,9 @@ export const router = new VueRouter({
           // This is magic! It somehow uses the same instance of store that is used
           // by the rest of the
           next()
+        } else {
+          next({name: 'landing'});
         }
-        else next({name:'landing'});
       },
       meta: {title: "Home | Wasteless"}
     },
@@ -49,10 +50,14 @@ export const router = new VueRouter({
       path: "/profile/:userId(\\d+)?",
       component: () => import("./components/Profile.vue"),
       props: route => {
-        let userId = route.params.userId? parseInt(route.params.userId, 10): NaN;
+        let userId = route.params.userId ? parseInt(route.params.userId, 10)
+            : NaN;
         // Using \d so parseInt should never fail
-        if (isNaN(userId) && store.getters.isLoggedIn()) userId = store.getters.getAuthUser().id;
-        return { userId };
+        if (isNaN(userId)
+            && store.getters.isLoggedIn()) {
+          userId = store.getters.getAuthUser().id;
+        }
+        return {userId};
       }
     },
     {
@@ -70,36 +75,44 @@ export const router = new VueRouter({
     },
     {
       name: "createProduct",
-      path: "/createproduct",
+      path: "/business/:businessId(\\d+)/createproduct",
       component: () => import("./components/CreateProduct.vue"),
+      props: route => ({businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "productCatalogue",
-      path: "/productcatalogue",
+      path: "/business/:businessId(\\d+)/catalog",
       component: () => import("./components/ProductCatalogue.vue"),
+      props: route => ({businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "productDetail",
-      path: "/productdetail/:productId(\\d+)",
+      path: "/business/:businessId(\\d+)/product/:productId(\\d+)",
       component: () => import("./components/ProductDetail.vue"),
-      props: route => ({ productId: parseInt(route.params.productId, 10)})
+      props: route => ({
+        productId: parseInt(route.params.productId, 10),
+        businessId: parseInt(route.params.businessId, 10)
+      })
     },
     {
       name: "editProductImages",
-      path: "/editproductimages/:productId(\\d+)",
+      path: "/business/:businessId(\\d+)/products/:productId(\\d+)/images",
       component: () => import("./components/EditProductImages.vue"),
-      props: route => ({ productId: parseInt(route.params.productId, 10)})
+      props: route => ({
+        productId: parseInt(route.params.productId, 10),
+        businessId: parseInt(route.params.businessId, 10)
+      })
     },
     {
       name: "businessProfile",
-      path: "/businessprofile/:businessId(\\d+)",
+      path: "/business/:businessId(\\d+)",
       meta: {title: "Business Profile | Wasteless"},
       component: () => import("./components/BusinessProfile.vue"),
       props: route => {
         // If business ID is optional, user can switch back to acting as user in navbar, causing page to fail
         let businessId = parseInt(route.params.businessId, 10);
         const showBackButton = route.params.showBackButton; // Optional
-        return { businessId, showBackButton };
+        return {businessId, showBackButton};
       }
     },
     {
@@ -133,8 +146,11 @@ export const router = new VueRouter({
 router.afterEach((to) => {
   Vue.nextTick(() => {
     let title = "Wasteless";
-    if (typeof to.meta.title == "string") title = to.meta.title;
-    else if (typeof to.meta.title == "function") title = to.meta.title(to);
+    if (typeof to.meta.title == "string") {
+      title = to.meta.title;
+    } else if (typeof to.meta.title == "function") {
+      title = to.meta.title(to);
+    }
     document.title = title;
   });
 })

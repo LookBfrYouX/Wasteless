@@ -3,7 +3,7 @@
     <div class="row mt-2">
       <!--User profile image card-->
       <div class="col-md-4 m-2 card">
-        
+
         <img alt="Users profile image" class="my-3 rounded-circle"
              src="./../../assets/images/default-user-thumbnail.svg">
       </div>
@@ -87,14 +87,14 @@
                 v-bind:key="index"
                 class="list-group-item card text-wrap my-3"
             >
-              <h5 class="card-title">{{ business.name }}</h5>
+              <h5 class="business-name card-title card-link"
+                  href="javascript:;"
+                  v-on:click="viewBusiness(business.id)"
+              >{{ business.name }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">
                 {{ business.businessType }}
               </h6>
               <p class="card-text">{{ business.description }}</p>
-              <a class="card-link" href="javascript:;" v-on:click="viewBusiness(business.id)"
-              >More info</a
-              >
             </li>
           </ul>
         </div>
@@ -118,30 +118,30 @@
               <td colspan="2"><h5 class="text-muted">User Details</h5></td>
             </tr>
             <tr v-if="userInfo.nickname" scope="row">
-              <th style="white-space: nowrap;">Nickname:</th>
+              <th>Nickname:</th>
               <td class="col-md value"><p>{{ userInfo.nickname }}</p></td>
             </tr>
             <tr v-if="memberSinceText" scope="row">
-              <th style="white-space: nowrap;">Member since:</th>
+              <th>Member since:</th>
               <td class="col-md value"><p>{{ memberSinceText }}</p></td>
             </tr>
             <tr v-if="dateOfBirthText" scope="row">
-              <th style="white-space: nowrap;">Date of Birth:</th>
+              <th>Date of Birth:</th>
               <td class="col-md value"><p>{{ dateOfBirthText }}</p></td>
             </tr>
             <tr>
               <td colspan="2"><h5 class="text-muted">Contact Information</h5></td>
             </tr>
             <tr v-if="userInfo.email" scope="row">
-              <th style="white-space: nowrap;">Email Address:</th>
+              <th>Email Address:</th>
               <td class="col-md value"><p>{{ userInfo.email }}</p></td>
             </tr>
             <tr v-if="userInfo.phoneNumber" scope="row">
-              <th style="white-space: nowrap;">Phone Number:</th>
+              <th>Phone Number:</th>
               <td class="col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
             </tr>
             <tr v-if="userInfo.homeAddress" scope="row">
-              <th style="white-space: nowrap;">Address:</th>
+              <th>Address:</th>
               <td class="col-md value">
                 <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
               </td>
@@ -153,18 +153,27 @@
     </div>
     <error-modal
         title="Error fetching user details"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
         v-bind:retry="this.apiPipeline"
         v-bind:show="apiErrorMessage !== null"
-        v-bind:goBack="false"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
   </div>
 </template>
 
+<style>
+.business-name:hover {
+  cursor: pointer;
+  color: #1ec996;
+}
 
+th {
+  white-space: nowrap;
+}
+</style>
 <script>
 import ErrorModal from './Errors/ErrorModal.vue';
 import {ApiRequestError} from "./../ApiRequestError";
@@ -210,11 +219,13 @@ export default {
         }
         this.userInfo.role = "ROLE_ADMIN";
         this.statusMessage = `Successfully made ${this.userInfo.firstName} ${this.userInfo.lastName} an admininstrator`;
-        return;
+
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.statusMessage = err.userFacingErrorMessage;
-        return;
+
       }
     },
 
@@ -230,11 +241,13 @@ export default {
           this.$stateStore.actions.revokeAdmin();
         }
         this.statusMessage = `Successfully revoked ${this.userInfo.firstName} ${this.userInfo.lastName}'s administrator privileges`;
-        return;
+
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.statusMessage = err.userFacingErrorMessage;
-        return;
+
       }
     },
 
@@ -280,7 +293,9 @@ export default {
         }
 
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },

@@ -2,61 +2,83 @@
   <div class="bprofile-card card container">
     <div>
       <h1 class="title">Business Information</h1>
-      <button class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3" type="button"
-              v-if="showBackButton" v-on:click="$router.go(-1)">
+      <button v-if="showBackButton"
+              class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3"
+              type="button" v-on:click="$router.go(-1)">
         <span class="material-icons mr-1">arrow_back</span>
         Go back
       </button>
       <ul class="bprofile-info list-unstyled">
-        <li class="row">
+        <dl class="row">
           <dt class="col-md label">Business Title:</dt>
           <dd class="col-md value"> {{ businessInfo.name }}</dd>
-        </li>
-        <li class="row">
+        </dl>
+        <dl class="row">
           <dt class="col-md label">Description:</dt>
           <dd class="col-md value"> {{ businessInfo.description }}</dd>
-        </li>
-        <li class="row">
+        </dl>
+        <dl class="row">
           <dt class="col-md label">Address:</dt>
           <dd class="col-md value"> {{ $helper.addressToString(businessInfo.address) }}
           </dd>
-        </li>
-        <li class="row">
+        </dl>
+        <dl class="row">
           <dt class="col-md label">Business Type:</dt>
           <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
-        </li>
+        </dl>
+        <dl class="row">
+          <dt class="col-md label">Administrator:</dt>
+          <dd v-for="admin in businessInfo.administrators" v-bind:key="admin.id"
+              class="col-md value admin-link"
+              v-on:click="viewAdmin(admin.id)"> {{ admin.firstName }} {{ admin.lastName }}
+          </dd>
+        </dl>
       </ul>
-      <button
-          v-if="(this.$stateStore.getters.getActingAs() !== null && this.$stateStore.getters.getActingAs().id === businessId)"
-          class="btn btn-white-bg-primary mx-1 d-flex"
-          type="button"
-          v-on:click="createProduct()"
+      <div
+          v-if="$stateStore.getters.canEditBusiness(businessId)"
+          class="d-flex flex-wrap justify-content-space"
       >
-        <span class="material-icons mr-1">person</span>
-        Add Product To Catalogue
-      </button>
+        <button
+            class="btn btn-white-bg-primary m-1 d-flex"
+            type="button"
+            v-on:click="createProduct()"
+        >
+          <span class="material-icons mr-1">person</span>
+          Add Product To Catalogue
+        </button>
+        <button
+            v-if="$stateStore.getters.canEditBusiness(businessId)"
+            class="btn btn-white-bg-primary m-1 d-flex"
+            type="button"
+            v-on:click="viewCatalogue()"
+        >
+          <span class="material-icons mr-1">person</span>
+          View Catalog
+        </button>
+      </div>
       <error-modal
-        title="Error fetching business details"
-        v-bind:hideCallback="() => (apiErrorMessage = null)"
-        v-bind:refresh="false"
-        v-bind:retry="false"
-        v-bind:goBack="true"
-        v-bind:show="apiErrorMessage !== null"
+          title="Error fetching business details"
+          v-bind:goBack="true"
+          v-bind:hideCallback="() => (apiErrorMessage = null)"
+          v-bind:refresh="false"
+          v-bind:retry="false"
+          v-bind:show="apiErrorMessage !== null"
       >
         <p>{{ apiErrorMessage }}</p>
-    </error-modal>
+      </error-modal>
     </div>
   </div>
 </template>
 
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
-import { ApiRequestError } from "./../ApiRequestError";
-const { Api } = require("./../Api.js");
+import {ApiRequestError} from "./../ApiRequestError";
+
+const {Api} = require("./../Api.js");
 
 export default {
   name: 'businessProfile',
-  components: { ErrorModal },
+  components: {ErrorModal},
 
   data() {
     return {
@@ -65,6 +87,7 @@ export default {
         description: "",
         address: {},
         businessType: "",
+        administrators: [],
       },
       apiErrorMessage: null,
     };
@@ -92,9 +115,9 @@ export default {
      * Returns the promise, not the response
      */
     callApi: function (businessId) {
-       if (!Number.isInteger(businessId)) {
+      if (!Number.isInteger(businessId)) {
         const err = new ApiRequestError(
-          "Cannot load business profile page - business ID not given"
+            "Cannot load business profile page - business ID not given"
         );
         return Promise.reject(err);
       }
@@ -102,8 +125,22 @@ export default {
       return Api.businessProfile(businessId);
     },
 
-    createProduct: function() {
-      this.$router.push({name: "createProduct"});
+    createProduct: function () {
+      this.$router.push({
+        name: "createProduct",
+        params: {
+          businessId: this.businessId
+        }
+      });
+    },
+
+    viewCatalogue: function () {
+      this.$router.push({
+        name: "productCatalogue",
+        params: {
+          businessId: this.businessId
+        }
+      });
     },
 
     /**
@@ -117,13 +154,17 @@ export default {
         const response = await apiCall;
         this.businessInfo = response.data;
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         failed = true;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
 
       const currentUser = this.$stateStore.getters.getAuthUser();
-      if (failed || this.businessInfo === null || currentUser === null) return;
+      if (failed || this.businessInfo === null || currentUser === null) {
+        return;
+      }
       if (this.businessInfo.primaryAdministratorId == currentUser.id ||
           this.businessInfo.administrators.find(admin => admin.id == currentUser.id) !== undefined
       ) {
@@ -132,15 +173,32 @@ export default {
         const userCopy = JSON.parse(JSON.stringify(currentUser));
         let businessCopy = JSON.parse(JSON.stringify(this.businessInfo));
         delete businessCopy.administrators; // userInfo's businesses don't contain administrators list (otherwise recursion)
-        const index = userCopy.businessesAdministered.findIndex(business => business.id == businessCopy.id);
-        if (index === -1) userCopy.businessesAdministered.push(businessCopy); // Business was just created
-        else userCopy.businessesAdministered[index] = businessCopy;
+        const index = userCopy.businessesAdministered.findIndex(
+            business => business.id == businessCopy.id);
+        if (index === -1) {
+          userCopy.businessesAdministered.push(businessCopy);
+        }// Business was just created
+        else {
+          userCopy.businessesAdministered[index] = businessCopy;
+        }
 
         this.$stateStore.actions.setAuthUser(userCopy);
       }
     },
-  },
 
+    /**
+     * View profile of the business administrator
+     * @param userId Passed as admin id but it is the same as user id.
+     */
+    viewAdmin(userId) {
+      this.$router.push({
+        name: "profile",
+        params: {
+          userId
+        }
+      });
+    }
+  },
 
   computed: {},
 
@@ -150,7 +208,9 @@ export default {
     },
 
     businessInfo() {
-      if (this.businessInfo !== null) document.title = `${this.businessInfo.name} | Business`;
+      if (this.businessInfo !== null) {
+        document.title = `${this.businessInfo.name} | Business`;
+      }
     }
   },
 }
@@ -176,6 +236,11 @@ export default {
   display: flex;
   justify-content: center;
   padding: 30px;
+}
+
+.admin-link:hover {
+  cursor: pointer;
+  color: #1ec996;
 }
 
 </style>

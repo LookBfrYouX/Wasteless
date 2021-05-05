@@ -5,7 +5,11 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
+import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
@@ -53,7 +57,7 @@ public class UserServiceImpl implements UserService {
    * for interacting with all user related services.
    *
    * @param userDao                      The UserDataAccessObject.
-   * @param addressService             The address service
+   * @param addressService               The address service
    * @param authenticationManagerBuilder The global AuthenticationManagerBuilder.
    * @param encoder                      Password encoder.
    * @param businessService
@@ -82,7 +86,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public JSONObject saveUser(User user)
-          throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException {
+      throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException {
     // Email validation
     if (!UserServiceValidation.requiredFieldsNotEmpty(user)) {
       throw new UserRegistrationException("Required user fields cannot be null");
@@ -301,6 +305,7 @@ public class UserServiceImpl implements UserService {
 
   /**
    * Gets currently logged in user email
+   *
    * @return user email, or null if not authenticated
    */
   @Override
@@ -311,6 +316,7 @@ public class UserServiceImpl implements UserService {
 
   /**
    * Gets currently logged in user
+   *
    * @return logged in user
    * @throws UserNotFoundException
    */

@@ -106,7 +106,8 @@ public class UserController {
   public ResponseEntity<Object> getUserById(@PathVariable String id) {
     try {
       log.info("GETTING USER BY ID: " + id);
-      return new ResponseEntity<>(this.userService.getUserById(Long.parseLong(id)), HttpStatus.valueOf(200));
+      return new ResponseEntity<>(this.userService.getUserById(Long.parseLong(id)),
+          HttpStatus.valueOf(200));
     } catch (UserNotFoundException exc) {
       log.error("USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
@@ -125,7 +126,8 @@ public class UserController {
   @GetMapping("/users/search")
   public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery) {
     try {
-      return new ResponseEntity<>(this.userService.searchUsers(searchQuery), HttpStatus.valueOf(200));
+      return new ResponseEntity<>(this.userService.searchUsers(searchQuery),
+          HttpStatus.valueOf(200));
     } catch (InvalidAttributeValueException e) {
       log.error("INVALID SEARCH QUERY: " + searchQuery);
       throw new ResponseStatusException(HttpStatus.valueOf(500), "Invalid Search Query");
