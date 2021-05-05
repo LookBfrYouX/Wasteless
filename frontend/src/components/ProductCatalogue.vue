@@ -21,7 +21,7 @@
             <ul id="search-headers" class="list-unstyled"
                 v-bind:class='{"table-reversed": reversed}'>
               <li
-                  v-for="[key, value] in Object.entries({name: 'Name', manufacturer: 'Manufacturer', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
+                  v-for="[key, value] in Object.entries({id: 'Product Code', name: 'Name', manufacturer: 'Manufacturer', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
                   v-bind:key="key"
                   class="mb-1"
                   v-bind:class='{"current-sort": sortBy==key}'

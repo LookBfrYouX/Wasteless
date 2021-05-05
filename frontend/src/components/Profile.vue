@@ -87,14 +87,14 @@
                 v-bind:key="index"
                 class="list-group-item card text-wrap my-3"
             >
-              <h5 class="card-title">{{ business.name }}</h5>
+              <h5 class="business-name card-title card-link"
+                  href="javascript:;"
+                  v-on:click="viewBusiness(business.id)"
+              >{{ business.name }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">
                 {{ business.businessType }}
               </h6>
               <p class="card-text">{{ business.description }}</p>
-              <a class="card-link" href="javascript:;" v-on:click="viewBusiness(business.id)"
-              >More info</a
-              >
             </li>
           </ul>
         </div>
@@ -119,30 +119,30 @@
               <td colspan="2"><h5 class="text-muted">User Details</h5></td>
             </tr>
             <tr v-if="userInfo.nickname" scope="row">
-              <th id="user-">Nickname:</th>
+              <th>Nickname:</th>
               <td class="col-md value"><p>{{ userInfo.nickname }}</p></td>
             </tr>
             <tr v-if="memberSinceText" scope="row">
-              <th id="user-">Member since:</th>
+              <th>Member since:</th>
               <td class="col-md value"><p>{{ memberSinceText }}</p></td>
             </tr>
             <tr v-if="dateOfBirthText" scope="row">
-              <th id="user-">Date of Birth:</th>
+              <th>Date of Birth:</th>
               <td class="col-md value"><p>{{ dateOfBirthText }}</p></td>
             </tr>
             <tr>
               <td colspan="2"><h5 class="text-muted">Contact Information</h5></td>
             </tr>
             <tr v-if="userInfo.email" scope="row">
-              <th id="user-">Email Address:</th>
+              <th>Email Address:</th>
               <td class="col-md value"><p>{{ userInfo.email }}</p></td>
             </tr>
             <tr v-if="userInfo.phoneNumber" scope="row">
-              <th id="user-">Phone Number:</th>
+              <th>Phone Number:</th>
               <td class="col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
             </tr>
             <tr v-if="userInfo.homeAddress" scope="row">
-              <th id="user-">Address:</th>
+              <th>Address:</th>
               <td class="col-md value">
                 <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
               </td>
@@ -164,7 +164,12 @@
     </error-modal>
   </div>
 </template>
-<style scoped>
+
+<style>
+.business-name:hover {
+  cursor: pointer;
+  color: #1ec996;
+}
 th {
   white-space: nowrap;
 }
