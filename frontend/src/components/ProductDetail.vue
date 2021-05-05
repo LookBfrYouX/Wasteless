@@ -1,25 +1,37 @@
 <template>
   <div class="container mt-4">
     <div class="list-group-item card">
-      <div class="d-flex flex-wrap justify-content-between mb-2">
-        <h2 class="card-title mb-0">{{ name }} (Id: {{ productId }})</h2>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="d-flex flex-wrap justify-content-between mb-2">
+            <h2 class="card-title mb-0">{{ name }} (Id: {{ productId }})</h2>
+          </div>
+          <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
+                  v-on:click="$router.go(-1)">
+            <span class="material-icons mr-1">arrow_back</span>
+            Back
+          </button>
+          <div class="mt-2">Description: {{ description }}</div>
+          <div class="mt-2">RRP: {{ recommendedRetailPrice }}</div>
+          <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>
+        </div>
+        <div class="col-md-6">
+          <div class="primary-image-wrapper">
+            <img v-if="productImages.length !== 0" v-bind:src="productImages[0].filename"
+                 alt="Primary images">
+            <img v-else src="./../../assets/images/default-product-thumbnail.svg"
+                 alt="Default product image">
+          </div>
+        </div>
       </div>
-      <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
-              v-on:click="$router.go(-1)">
-        <span class="material-icons mr-1">arrow_back</span>
-        Back
-      </button>
-      <div class="mt-2">Description: {{ description }}</div>
-      <div class="mt-2">RRP: {{ recommendedRetailPrice }}</div>
-      <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>
-      <h4 class="mt-2">Product Images</h4>
       <div class="row my-2">
-        <div v-for="image in productImages"
+        <div v-for="(image, index) in productImages"
              v-bind:key="image.id"
-             class="col-12 col-md-6 col-lg-4 p-2">
-          <img alt="Product Image"
+             class="col-12 col-md-6 col-lg-4 p-2"
+             :class="{ 'd-none': index === 0}">
+          <img v-bind:src="image.filename"
                class="img-fluid"
-               v-bind:src="image.filename">
+               alt="Product Image">
         </div>
       </div>
       <div class="d-flex justify-content-end">
@@ -53,13 +65,18 @@
   </div>
 </template>
 
+<style>
+.primary-image-wrapper img {
+  width: 100%;
+  border: #1ec996 solid 2px;
+}
+</style>
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
 import NotActingAsBusiness from "./Errors/NotActingAsBusiness";
 
 import {ApiRequestError} from "../ApiRequestError";
-
-const {Api} = require("./../Api");
+const { Api } = require("./../Api");
 
 export default {
   name: "productDetail",
