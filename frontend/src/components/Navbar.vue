@@ -2,7 +2,7 @@
   <div id="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <!-- Title -->
-      <a class="navbar-brand" href="javascript:;" v-on:click="pushOrGo('home')">Navbara Pigeon</a>
+      <a class="navbar-brand" href="javascript:" v-on:click="pushOrGo('home')">Navbara Pigeon</a>
       <!-- Hamburger button -->
       <button
           aria-controls="navbarSupportedContent"
@@ -22,21 +22,21 @@
         <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
           <div class="d-lg-flex">
             <!--Profile page link -->
-            <li class="nav-item mr-lg-auto d-flex align-items-center text-center" v-if="isLoggedIn">
-              <a class="nav-link" href="javascript:;" v-on:click="profileClicked">
+            <li v-if="isLoggedIn" class="nav-item mr-lg-auto d-flex align-items-center text-center">
+              <a class="nav-link" href="javascript:" v-on:click="profileClicked">
                 {{ currentActingAs ? "Business " : "" }} Profile
               </a>
             </li>
             <!-- Product catalog link -->
-            <li class="navbar-item mr-lg-auto d-flex align-items-center" v-if="isActingAsBusiness">
-              <a class="nav-link" href="javascript:;" v-on:click="productCatalogClicked">
+            <li v-if="isActingAsBusiness" class="navbar-item mr-lg-auto d-flex align-items-center">
+              <a class="nav-link" href="javascript:" v-on:click="productCatalogClicked">
                 Catalogue
               </a>
             </li>
           </div>
 
           <!-- Center group: search input and button -->
-          <li class="navbar-item d-flex search-container w-100" v-if="isLoggedIn">
+          <li v-if="isLoggedIn" class="navbar-item d-flex search-container w-100">
             <form class="input-group navbar-center form-inline" v-on:submit.prevent="search">
               <div class="input-group w-100">
                 <div class="input-group-prepend h-100">
@@ -54,23 +54,23 @@
               </div>
             </form>
           </li>
-          
+
           <!-- Right group: User and acting as -->
           <li v-if="isLoggedIn" class="nav-item dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
                aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
                data-toggle="dropdown"
-               href="javascript:;" role="button">
+               href="javascript:" role="button">
               <img v-if="isActingAsBusiness"
+                   alt="User is acting as business"
                    class="nav-picture rounded-circle"
                    src="./../../assets/images/default-business-thumbnail.svg"
-                   alt="User is acting as business"
               >
               <img v-else
+                   alt="User is acting as self"
                    class="nav-picture rounded-circle"
                    src="./../../assets/images/default-user-thumbnail.svg"
-                   alt="User is acting as self"
-                >
+              >
               <div class="d-flex flex-column mx-1">
                 <span class="m-0 p-0 text-dark">
                   {{ printCurrentActingAs }}
@@ -80,25 +80,25 @@
             </a>
 
             <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
-                <div class="h4 dropdown-header">Act as</div>
-              <a href="javascript:;" v-on:click="$stateStore.actions.setActingAs()"
-                 class="dropdown-item">
+              <div class="h4 dropdown-header">Act as</div>
+              <a class="dropdown-item" href="javascript:"
+                 v-on:click="$stateStore.actions.setActingAs()">
                 {{ authUser.firstName }} {{ authUser.lastName }}
                 <span v-if="currentActingAs === null">
                   &#10003;
                 </span>
               </a>
-              <a v-for="business in actingAsEntities" href="javascript:;"
-                 :key="business.id"
-                 v-on:click="$stateStore.actions.setActingAs(business)"
-                 class="dropdown-item">
+              <a v-for="business in actingAsEntities" :key="business.id"
+                 class="dropdown-item"
+                 href="javascript:"
+                 v-on:click="$stateStore.actions.setActingAs(business)">
                 {{ business.name }}
                 <span v-if="business === currentActingAs">
                     &#10003;
                   </span>
               </a>
-                <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="javascript:;" v-on:click="logOut">Log out</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="javascript:" v-on:click="logOut">Log out</a>
             </div>
           </li>
 
@@ -106,11 +106,11 @@
           <div v-if="!isLoggedIn" class="d-lg-flex ml-lg-auto">
             <li v-if="this.$route.name != 'login'" class="nav-item">
               <a
-                class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
-                type="button"
-                v-on:click="pushOrGo('login')"
+                  class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
+                  type="button"
+                  v-on:click="pushOrGo('login')"
               >
-              Login
+                Login
               </a>
             </li>
             <li v-if="this.$route.name != 'Sign Up'" class="nav-item">
@@ -128,11 +128,11 @@
     </nav>
     <error-modal
         title="Couldn't log you out"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => logOutErrorMessage = null"
         v-bind:refresh="false"
         v-bind:retry="this.logOut"
         v-bind:show="logOutErrorMessage !== null"
-        v-bind:goBack="false"
     >
       <p>{{ logOutErrorMessage }}</p>
     </error-modal>
@@ -140,9 +140,8 @@
 </template>
 
 
-
 <script>
-const { Api } = require("./../Api.js");
+const {Api} = require("./../Api.js");
 import ErrorModal from "./Errors/ErrorModal";
 
 export default {
@@ -172,9 +171,9 @@ export default {
     },
 
     /**
-    * Checks if user is acting as a business
-    * @returns true if logged in and acting as business
-    */
+     * Checks if user is acting as a business
+     * @returns true if logged in and acting as business
+     */
     isActingAsBusiness() {
       return this.$stateStore.getters.isActingAsBusiness();
     },
@@ -262,16 +261,18 @@ export default {
      * If acting as business, goes to business profile. Otherwise, user profile.
      * If already on own profile page, reloads the page
      */
-    profileClicked: async function() {
+    profileClicked: async function () {
       this.$helper.goToProfile.bind(this)();
     },
 
     /**
      * Link to product catalog page clicked
      */
-    productCatalogClicked: async function() {
+    productCatalogClicked: async function () {
       const business = this.$stateStore.getters.getActingAs();
-      if (business == null) return;
+      if (business == null) {
+        return;
+      }
       const params = {
         name: "productCatalogue",
         params: {
@@ -291,7 +292,7 @@ export default {
 <style scoped>
 
 .dropdown-menu {
-  z-index:900000;
+  z-index: 900000;
 }
 
 .admin-text {

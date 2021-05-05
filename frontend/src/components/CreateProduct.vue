@@ -1,13 +1,13 @@
 <template>
   <div class="w-100">
     <div
-      class="w-100 d-flex justify-content-center product-page-container gradient-background pb-4"
+        class="w-100 d-flex justify-content-center product-page-container gradient-background pb-4"
     >
       <div class="container">
         <form
-          class="slightly-transparent-inputs"
-          method="POST"
-          v-on:submit.prevent="createProduct"
+            class="slightly-transparent-inputs"
+            method="POST"
+            v-on:submit.prevent="createProduct"
         >
           <div class="row">
             <div class="col">
@@ -19,13 +19,13 @@
             <div class="form-group required col px-3">
               <label>Name</label>
               <input
-                v-model="name"
-                class="form-control"
-                maxlength="30"
-                name="name"
-                placeholder="Name"
-                required
-                type="text"
+                  v-model="name"
+                  class="form-control"
+                  maxlength="30"
+                  name="name"
+                  placeholder="Name"
+                  required
+                  type="text"
               />
             </div>
           </div>
@@ -33,17 +33,17 @@
           <!-- up for discussion about setting a step price -->
           <div class="row">
             <div class="form-group required col px-3">
-              <label>Price {{currencyText}}</label>
+              <label>Price {{ currencyText }}</label>
               <input
                   v-model="price"
-                  v-bind:placeholder="currencyText"
                   class="form-control"
-                  step="0.01"
-                  min="0.00"
                   max="9999.99"
+                  min="0.00"
                   name="price"
                   required
+                  step="0.01"
                   type="number"
+                  v-bind:placeholder="currencyText"
               />
             </div>
           </div>
@@ -53,9 +53,9 @@
               <label>Manufacturer</label>
               <input
                   v-model="manufacturer"
-                  placeholder="Manufacturer"
                   class="form-control"
                   name="manufacturer"
+                  placeholder="Manufacturer"
                   required
                   type="text"
               />
@@ -66,13 +66,13 @@
             <div class="form-group col px-0">
               <label>Description</label>
               <textarea
-                v-model="description"
-                class="form-control"
-                maxlength="500"
-                name="description"
-                placeholder="Description"
-                rows="5"
-                type="text"
+                  v-model="description"
+                  class="form-control"
+                  maxlength="500"
+                  name="description"
+                  placeholder="Description"
+                  rows="5"
+                  type="text"
               />
             </div>
           </div>
@@ -99,22 +99,23 @@
     <error-modal
         class="p-absolute w-100"
         title="Could not retrieve business data"
+        v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="false"
         v-bind:retry="currencyPipeline"
         v-bind:show="apiErrorMessage != null"
-        v-bind:goBack="false"
     >
-      <p>{{apiErrorMessage}}</p>
+      <p>{{ apiErrorMessage }}</p>
     </error-modal>
   </div>
 </template>
 
 <script>
-import { ApiRequestError } from '../ApiRequestError';
-const { Api } = require("./../Api.js");
+import {ApiRequestError} from '../ApiRequestError';
 import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 import ErrorModal from "./Errors/ErrorModal";
+
+const {Api} = require("./../Api.js");
 
 export default {
   components: {
@@ -150,7 +151,9 @@ export default {
 
   computed: {
     currencyText() {
-      if (this.currency == null) return "(Unknown currency)";
+      if (this.currency == null) {
+        return "(Unknown currency)";
+      }
       return `${this.currency.symbol} (${this.currency.code})`;
     }
   },
@@ -159,14 +162,17 @@ export default {
     /**
      * Pipeline that sets currency data
      */
-    currencyPipeline: async function() {
+    currencyPipeline: async function () {
       try {
-        const currency = await this.$helper.getCurrencyForBusiness(this.businessId, this.$stateStore);
+        const currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+            this.$stateStore);
         this.currency = currency;
-      } catch(err) {
-        if (await Api.handle401.call(this, err)) return;
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
-        return;
+
       }
     },
 
@@ -174,7 +180,10 @@ export default {
      * Wrapper which simply calls the sign up method of the api
      */
     callApi: function (data) {
-      if (this.businessId == null) throw new ApiRequestError("Must be logged in as a business before making the request");
+      if (this.businessId == null) {
+        throw new ApiRequestError(
+            "Must be logged in as a business before making the request");
+      }
       return Api.createProduct(this.businessId, data);
     },
 
@@ -187,7 +196,7 @@ export default {
       let price;
       try {
         price = parseFloat(this.price);
-      } catch(err) {
+      } catch (err) {
         this.errorMessage = "Please enter a valid price";
       }
 
@@ -205,8 +214,10 @@ export default {
             manufacturer: this.manufacturer,
             description: this.description,
           });
-        } catch(err) {
-          if (await Api.handle401.call(this, err)) return;
+        } catch (err) {
+          if (await Api.handle401.call(this, err)) {
+            return;
+          }
           this.errorMessage = err.userFacingErrorMessage;
           return;
         }
