@@ -167,6 +167,7 @@
 <style>
 .business-name:hover {
   cursor: pointer;
+  color: #1ec996;
 }
 th {
   white-space: nowrap;
