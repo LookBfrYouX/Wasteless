@@ -74,6 +74,25 @@ export const store = {
     },
 
 
+    /**
+     * Checks if a user should be able to edit the business
+     * If they are acting as the business they can
+     * If they are an admin and not acting as a business, they can
+     * @param businessId id of business
+     * @returns {boolean} true if they should be able to edit the business
+     */
+    canEditBusiness(businessId) {
+      if (!store.getters.isLoggedIn()) return false;
+      const business = store.getters.getActingAs();
+      if (business != null && business.id == businessId) return true;
+      if (store.getters.isAdmin()) {
+        if (business == null) return true; // If acting as themselves, admin can edit
+      }
+
+      return false;
+    }
+
+
   },
   actions: {
     // Set the currently logged in user and sync with persistent storage

@@ -2,7 +2,7 @@
   <div class="container mt-4">
     <div class="row">
       <div class="col-12">
-        <h1>Images of {{ name }}</h1>
+        <h1>Images for '{{ name }}'</h1>
       </div>
     </div>
     <div class="row">
@@ -59,7 +59,7 @@
 
       </div>
     </div>
-
+    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error fetching product information"
         v-bind:hideCallback="() => {
@@ -98,17 +98,21 @@
 </style>
 <script>
 import ErrorModal from './Errors/ErrorModal.vue';
+import NotActingAsBusiness from "./Errors/NotActingAsBusiness";
 import {ApiRequestError} from "./../ApiRequestError";
 
 const {Api} = require("./../Api");
 
 export default {
   name: 'editProductImages',
-  components: {ErrorModal},
+  components: {
+    ErrorModal,
+    NotActingAsBusiness
+  },
 
   data() {
     return {
-      name: "",
+      name: "No product found",
       images: [],
       apiErrorMessage: null,
       imageApiErrorMessage: null,
@@ -119,37 +123,25 @@ export default {
     productId: {
       required: true,
       type: Number,
-    }
+    },
+    businessId: {
+      required: true,
+      type: Number,
+    },
   },
 
   beforeMount: function () {
     this.apiPipeline();
   },
 
-  computed: {
-    /**
-     * Get a business object of current acting as entity.
-     */
-    actingAs() {
-      return this.$stateStore.getters.getActingAs();
-    },
-
-    /**
-     * Get business id if current acting as a business
-     */
-    businessId() {
-      if (this.actingAs === null) {
-        return null;
-      }
-      return this.actingAs.id;
-    }
-  },
-
   methods: {
     /**
-     * Calls the API and updates the component's data with the result
+     * Calls the API and updates the component's data with the result.
+     * If user is not (acting as business or is admin acting as self) simply returns
      */
     apiPipeline: async function () {
+      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) return false;
+
       try {
         return await this.parseApiResponse(this.callApi());
       } catch (err) {
@@ -196,7 +188,7 @@ export default {
      */
     onFilePicked(event) {
       const files = event.target.files;
-      Api.uploadProductImage(files[0], this.actingAs.id, this.productId)
+      Api.uploadProductImage(files[0], this.businessId, this.productId)
       .then(() => {
         return this.apiPipeline();
       }).catch(async(err) => {
@@ -211,7 +203,7 @@ export default {
      * @param imageId is an id property of image object.
      */
     setAsPrimary(imageId) {
-      Api.changePrimaryImage(this.actingAs.id, this.productId, imageId)
+      Api.changePrimaryImage(this.businessId, this.productId, imageId)
       .then(() => {
         return this.apiPipeline();
       }).catch(async(err) => {
@@ -233,7 +225,7 @@ export default {
       if (index == -1) return;
       this.images.splice(index);
 
-      Api.deleteProductImage(this.actingAs.id, this.productId, imageId)
+      Api.deleteProductImage(this.businessId, this.productId, imageId)
       .catch(async (err) => {
         if (await Api.handle401.call(this, err)) return;
         this.imageApiErrorTitle = "Error deleting the image";

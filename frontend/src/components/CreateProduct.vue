@@ -93,7 +93,17 @@
         </div>
       </form>
     </div>
-    <not-acting-as-business/>
+    <not-acting-as-business v-bind:businessId="businessId"/>
+    <error-modal
+        title="Could not retrieve business data"
+        v-bind:hideCallback="() => apiErrorMessage = null"
+        v-bind:refresh="false"
+        v-bind:retry="currencyPipeline"
+        v-bind:show="apiErrorMessage != null"
+        v-bind:goBack="false"
+    >
+      <p>{{apiErrorMessage}}</p>
+    </error-modal>
   </div>
 </template>
 
@@ -102,14 +112,17 @@ import { ApiRequestError } from '../ApiRequestError';
 const { Api } = require("./../Api.js");
 const countryData = require("./../assets/countryData.json");
 import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
+import ErrorModal from "./Errors/ErrorModal";
 
 export default {
   components: {
-    NotActingAsBusiness
+    NotActingAsBusiness,
+    ErrorModal
   },
 
   data() {
     return {
+      apiErrorMessage: null, // if admin and getting currency nifo fails
       errorMessage: null,
 
       name: "",
@@ -124,41 +137,54 @@ export default {
   },
 
   props: {
+    businessId: {
+      required: true,
+      type: Number
+    },
     countryData: {
       required: false,
       default: () => countryData
     }
   },
 
-  computed: {
-    /**
-     * Name of country. If acting as null, returns null
-     */
-    businessCountry() {
-      const business = this.$stateStore.getters.getActingAs();
-      return business? business.address.country: null;
-    },
-    businessId() {
-      const business = this.$stateStore.getters.getActingAs();
-      return business != null? business.id: null;
-    }
-  },
-
   created() {
-    this.getCurrencies(this.businessCountry);
+    return this.currencyPipeline();
   },
 
   methods: {
+    currencyPipeline: async function() {
+      let country;
+      const actingAsBusiness = this.$stateStore.getters.getActingAs();
+      if (actingAsBusiness == null) {
+        // Acting as admin so don't know country
+        try {
+          const { data } = await Api.businessProfile(this.businessId);
+          country = data.address.country;
+        } catch(err) {
+          if (await Api.handle401.call(this, err)) return;
+          this.apiErrorMessage = err.userFacingErrorMessage;
+          return;
+        }
+      } else {
+        country = actingAsBusiness.address.country;
+      }
+      
+      return this.setCurrency(country);
+    },
+
+
     /**
      * Find the currency associated with the country of the user
      */
-    getCurrencies: async function (countryName) {
+    setCurrency: async function (countryName) {
       const country = this.countryData.find(country => country.name == countryName);
       const currency = country? country.currency: this.$constants.CURRENCY.DEFAULT_CURRENCY;
 
       this.currency = currency.code;
       this.symbol = currency.symbol;
     },
+
+
     /**
      * Wrapper which simply calls the sign up method of the api
      */
@@ -199,7 +225,12 @@ export default {
           this.errorMessage = err.userFacingErrorMessage;
           return;
         }
-        await this.$router.push("productCatalogue");
+        await this.$router.push({
+          name: "productCatalogue",
+          params: {
+            businessId: this.businessId
+          }
+        });
       }
     },
   },
