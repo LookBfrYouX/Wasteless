@@ -8,23 +8,29 @@
         Go back
       </button>
       <ul class="bprofile-info list-unstyled">
-        <li class="row">
+        <dl class="row">
           <dt class="col-md label">Business Title:</dt>
           <dd class="col-md value"> {{ businessInfo.name }}</dd>
-        </li>
-        <li class="row">
+        </dl>
+        <dl class="row">
           <dt class="col-md label">Description:</dt>
           <dd class="col-md value"> {{ businessInfo.description }}</dd>
-        </li>
-        <li class="row">
+        </dl>
+        <dl class="row">
           <dt class="col-md label">Address:</dt>
           <dd class="col-md value"> {{ $helper.addressToString(businessInfo.address) }}
           </dd>
-        </li>
-        <li class="row">
+        </dl>
+        <dl class="row">
           <dt class="col-md label">Business Type:</dt>
           <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
-        </li>
+        </dl>
+        <dl class="row">
+          <dt class="col-md label">Administrator:</dt>
+          <dd v-for="admin in businessInfo.administrators" v-bind:key="admin.id"
+              class="col-md value admin-link"
+              v-on:click="viewAdmin(admin.id)"> {{ admin.firstName }} {{ admin.lastName }}</dd>
+        </dl>
       </ul>
       <div
         class="d-flex flex-wrap justify-content-space"
@@ -78,6 +84,7 @@ export default {
         description: "",
         address: {},
         businessType: "",
+        administrators: [],
       },
       apiErrorMessage: null,
     };
@@ -166,6 +173,19 @@ export default {
         this.$stateStore.actions.setAuthUser(userCopy);
       }
     },
+
+    /**
+     * View profile of the business administrator
+     * @param userId Passed as admin id but it is the same as user id.
+     */
+    viewAdmin(userId) {
+      this.$router.push({
+        name: "profile",
+        params: {
+          userId
+        }
+      });
+    }
   },
 
 
@@ -203,6 +223,11 @@ export default {
   display: flex;
   justify-content: center;
   padding: 30px;
+}
+
+.admin-link:hover {
+  cursor: pointer;
+  color: #1ec996;
 }
 
 </style>

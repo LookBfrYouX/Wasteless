@@ -120,7 +120,7 @@ export default {
       }
 
       this.errorMessage = "";
-      await this.$router.push({name: "profile"});
+      await this.$router.push({name: "home"});
     },
   },
 };
