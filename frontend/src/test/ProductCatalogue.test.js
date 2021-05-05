@@ -26,14 +26,16 @@ window.alert = jest.fn();
 
 beforeEach(() => {
   wrapper = shallowMount(ProductCatalogue, {
-
+    propsData: {
+      businessId: 1
+    },
     mocks: {callApi: jest.fn(() => {
       return Promise.resolve({
         //whatever business Data
 
       });
     }), ...globalStateMocks()},
-    stubs: ["router-link"]
+    stubs: ["router-link", "not-acting-as-business"]
   });
 });
 
