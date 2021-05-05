@@ -3,8 +3,7 @@
   xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient gradientUnits="userSpaceOnUse" id="linearGradient901" x1="120.31" x2="115.46"
-      y1="186.83"
-      y2="108.4">
+      y1="186.83" y2="108.4">
       <stop offset="0" stop-color="#b7c7d9"/>
       <stop offset="1" stop-color="#b7c1c9"/>
     </linearGradient>
