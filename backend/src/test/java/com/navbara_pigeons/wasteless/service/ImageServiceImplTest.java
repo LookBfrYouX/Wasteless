@@ -52,7 +52,6 @@ class ImageServiceImplTest extends ServiceTestProvider {
     user.addBusiness(testBusiness);
     // Create the test product (Milk) and save the business
     testProduct = makeProduct("2L Full Cream Milk");
-    testProduct.setId(1);
     testBusiness.addCatalogueProduct(testProduct);
     businessService.saveBusiness(testBusiness);
   }
