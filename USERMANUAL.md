@@ -50,6 +50,10 @@ Not just anyone can view a businesses' product catalogue, the user trying to vie
 For a business admin to view their catalogue they must first act as the business, this can be done by selecting the business in the dropdown on the far right side of the navbar  
 Once the user is acting as the business there will be a new link available in the navbar "catalogue", clicking this will take the user to the businesses' catalogue page!
 
+## DGAA
+
+When you have signed in as a DGAA or GAA you can bypass all barriers given to the normal users. In order to do this as a DGAA or GAA you cannot be acting as a business you're the admin of.
+You first will need to be acting as your self.
 
 ## Notes
 
