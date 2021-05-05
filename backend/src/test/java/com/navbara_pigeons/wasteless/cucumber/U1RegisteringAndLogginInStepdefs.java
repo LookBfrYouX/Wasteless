@@ -1,11 +1,10 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
-import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
 import io.cucumber.datatable.DataTable;
@@ -18,7 +17,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.server.ResponseStatusException;
 
 public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
 
@@ -56,8 +54,17 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
   }
 
   @Then("I am logged in as user {string}")
-  public void iAmLoggedInAsUser(String email) {
+  public void iAmLoggedInAsUser(String email) throws Exception {
     //TODO figure out how to get and check cookies
+    JSONObject userId = new JSONObject(this.mvcResult.getResponse().getContentAsString());
+    System.out.println(userId.get("userId"));
+    String id = userId.get("userId").toString();
+    this.mvcResult = mockMvc.perform(get("/users/{id}", id)
+        .content(id))
+        .andExpect(status().isOk()).andReturn();
+
+    JSONObject result = new JSONObject(this.mvcResult.getResponse().getContentAsString());
+    assertEquals(result.get("email"), email);
   }
 
   @When("I log in with invalid email {string} and password {string} combination")

@@ -3,7 +3,7 @@ Feature: U1
   Background:
 
 # AC1: Assuming I am not already logged in, the application gives me the ability to either log in or register (create) a new account. When registering, the mandatory attributes are clearly marked.
-  Scenario: AC1 successfully register and log into user accounts
+  Scenario: AC1 - Successfully register and log into user accounts
     Given this user exist
     |emailAddress |password  |firstName |lastName |nickname |
     |tst@usr.com  |Test12345 |Test      |User     |testt    |
