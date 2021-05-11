@@ -88,6 +88,7 @@
                   &#10003;
                 </span>
               </a>
+	      <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
               <a v-for="business in actingAsEntities" :key="business.id"
                  class="dropdown-item"
                  href="javascript:"
