@@ -1,13 +1,13 @@
 <template>
   <ul class="d-flex pagination">
     <li
-      v-for="({pageNum, text}) in pages"
-      v-bind:key="pageNum"
+      v-for="({pageNum, key, text}) in pages"
+      v-bind:key="key"
       v-bind:class="{disabled: pageNum == current}"
       class="page-item"
     >
       <a
-        v-on:click="setPage"
+        v-on:click="setPage(pageNum)"
         class="page-link"
       >
         {{text}}
@@ -52,7 +52,8 @@ export default {
       const pages = [];
       if (this.current - 1 >= this.start) pages.push({
         text: "<",
-        pageNum: this.current - 1
+        pageNum: this.current - 1,
+        key: "prev"
       });
 
       const min = Math.max(this.start, this.current - this.numPreviousPagesToShow);
@@ -60,13 +61,15 @@ export default {
       for(let i = min; i <= max; i++) {
         pages.push({
           text: i,
-          pageNum: i
+          pageNum: i,
+          key: i
         });
       }
 
       if (this.current + 1 <= this.end) pages.push({
         text: ">",
-        pageNum: this.current + 1
+        pageNum: this.current + 1,
+        key: "next"
       });
       
       return pages;

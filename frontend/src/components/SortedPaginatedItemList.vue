@@ -11,6 +11,11 @@ To use this component:
 -->
 <template>
   <div>
+    <sort-sidebar
+      v-bind:sortOptions="sortOptions"
+      v-bind:currentSortOption="currentSortOption"
+      v-on:update:currentSortOption="currentSortOption => $emit('update:currentSortOption', currentSortOption)"
+    />
     <ul>
       <li
         v-for="item in itemsToDisplay"
@@ -23,18 +28,20 @@ To use this component:
     <pagination
       v-bind:current="page"
       v-bind:end="numPages"
-      v-bind:setPage="page => this.page = page">
+      v-bind:setPage="newPage => page = newPage">
     </pagination>
   </div>
 </template>
 <script>
 import Pagination from "./Pagination"
 import { constants } from "./../constants"
+import SortSidebar from './SortSidebar.vue';
 
 
 export default {
   components: {
-    Pagination
+    Pagination,
+    SortSidebar 
   },
 
   props: {
@@ -62,11 +69,28 @@ export default {
       default: constants.LISTS.RESULTS_PER_PAGE 
     },
 
-    sortFunction: {
-      required: false,
-      type: Function,
-      default: () => 1 // default sort order
+    /**
+     * [{
+     *   name: String // name to display,
+     *   sortMethod: (item1, item2) => -1, 0 or 1
+     * }]
+     */
+    sortOptions: {
+      required: true,
+      type: Array,
     },
+
+    /**
+     * {
+     * name: String,
+     * sortMethod: Function,
+     * reversed: Boolean
+     * }
+     */
+    currentSortOption: {
+      required: true,
+      type: Object
+    }
   },
 
   data() {
@@ -87,7 +111,9 @@ export default {
     },
     itemsToDisplay() {
       // copy array to not mutate original array
-      return [...this.items].sort(this.sortFunction).slice(this.firstResultIndex, this.lastResultIndex);
+      const sortedItems = [...this.items].sort(this.currentSortOption.sortMethod);
+      if (this.currentSortOption.reversed) sortedItems.reverse();
+      return sortedItems.slice(this.firstResultIndex, this.lastResultIndex);
     }
   },
 
