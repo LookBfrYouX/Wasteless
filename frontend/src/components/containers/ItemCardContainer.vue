@@ -2,16 +2,20 @@
   <!-- This component adds a container in which a list of item cards can be displayed -->
   <!-- This component stores a list of data that can be displayed by child components -->
   <!-- This component can sort the list according to the event emitted by the sort component -->
-<div class="container">
-  <div class="results-wrapper p-3 col-12 mt-5">
-    <!-- Add the sorting and filtering component - update event returns the sorted data -->
-    <item-sorter :headings="sortList" :items="itemList" @update="itemList = $event"></item-sorter>
-    <!-- Create a list of card components from the list of items -->
-    <ul class="list-unstyled list-group">
-      <li class="list-group-item card" v-for="(item, index) in itemList" v-bind:key="index">
-        <item-card v-bind:item="itemList[index]" />
-      </li>
-    </ul>
+<div class="container w-75">
+  <div class="row">
+    <div class="col-12">
+      <!-- Add the sorting and filtering component - update event returns the sorted data -->
+      <item-sorter :headings="sortList" :items="itemList" @update="itemList = $event"></item-sorter>
+    </div>
+    <div class="col-12">
+      <!-- Create a list of card components from the list of items -->
+      <ul class="list-unstyled">
+        <li class="" v-for="(item, index) in itemList" v-bind:key="index">
+          <item-card v-bind:item="itemList[index]" />
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 </template>
@@ -26,10 +30,10 @@ export default {
     return {
       // TODO retrieve itemList from api and replace hardcoded one
       itemList: [{
-        title: "Test title 1",
+        title: "Test title 1 - which is quite a long title just to see what might happen if it goes over the edge",
         imageUrl: "/someimage.png",
         description: "A description for the test title 1",
-        totalPrice: 20.00,
+        totalPrice: "$20.00 NZD",
         quantity: 5,
         pricePerUnit: 4.00,
         expiryDate: "05/06/2021",
@@ -41,7 +45,7 @@ export default {
           title: "Test title 2",
           imageUrl: "/someimage.png",
           description: "A description for the test title 1",
-          totalPrice: 22.00,
+          totalPrice: "$22.00 NZD",
           quantity: 2,
           pricePerUnit: 11.00,
           expiryDate: "05/06/2021",
