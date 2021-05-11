@@ -1,23 +1,23 @@
 <template>
-        <div v-if="isOpen" class="sort-results bg-light">
-          <div class="p-3">
-            <h3 class="d-inline">Sort by</h3>
-            <button class="float-right btn btn-light" type="button" v-on:click="toggleOpen()">
-              <span>&larr;</span>
-            </button>
-            <ul id="search-headers" class="list-unstyled"
-                v-bind:class='{"table-reversed": currentSortOption.reversed}'>
-              <li
-                  v-for="sortOption in sortOptions"
-                  v-bind:key="sortOption.name"
-                  class="mb-1"
-                  v-bind:class='{"current-sort": currentSortOption.name == sortOption.name}'
-                  v-on:click="sortByClicked(sortOption)"
-              > {{ sortOption.name }}
-              </li>
-            </ul>
-          </div>
-        </div>
+  <div class="sort-results bg-light">
+    <div class="p-3">
+      <h3 class="d-inline">Sort by</h3>
+      <button class="float-right btn btn-light" type="button" v-on:click="closeClicked()">
+        <span>&larr;</span>
+      </button>
+      <ul id="search-headers" class="list-unstyled"
+          v-bind:class='{"table-reversed": currentSortOption.reversed}'>
+        <li
+            v-for="sortOption in sortOptions"
+            v-bind:key="sortOption.name"
+            class="mb-1"
+            v-bind:class='{"current-sort": currentSortOption.name == sortOption.name}'
+            v-on:click="sortByClicked(sortOption)"
+        > {{ sortOption.name }}
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 <style scoped>
 .sort-results li.current-sort::after {
@@ -39,6 +39,11 @@ export default {
       required: true
     },
 
+    closeClicked: {
+      type: Function,
+      required: true
+    },
+
     /**
      * name: String
      * reversed: Boolean
@@ -47,19 +52,9 @@ export default {
       type: Object,
       required: true
     },
-
-    isOpen: {
-      type: Boolean,
-      // required: true,
-      default: true
-    }
   },
 
   methods: {
-    toggleOpen() {
-      this.$emit("update:isOpen", !this.isOpen);
-    },
-
     sortByClicked(sortOption) {
       const eventName = "update:currentSortOption";
       if (this.currentSortOption.name == sortOption.name) this.$emit(eventName, {
