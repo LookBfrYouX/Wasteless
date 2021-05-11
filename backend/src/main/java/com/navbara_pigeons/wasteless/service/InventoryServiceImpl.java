@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  * Class for dealing with all business logic to do with Inventories
  */
 @Service
-public class InventoryServiceImpl {
+public class InventoryServiceImpl implements InventoryService {
 
   private final BusinessDao businessDao;
   private final UserService userService;
