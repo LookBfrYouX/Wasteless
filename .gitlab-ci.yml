@@ -38,7 +38,9 @@ junit:
   script:
     - cd backend
     - ./gradlew test
-
+  artifacts:
+    paths:
+      - backend/jacoco
 
 # Run acceptance (cucumber) tests
 # Uncomment after ATDD workshop (at the latest)
@@ -77,11 +79,7 @@ dev-sonarqube:
     - cd frontend
     - npm run sonarqube
     - cd ../backend
-    - ./gradlew jacocoTestReport
     - ./gradlew sonarqube
-  artifacts:
-    paths:
-      - backend/build/jacoco
   only:
     - dev
 
