@@ -1,13 +1,19 @@
 <template>
-  <div>
+  <div class="w-100">
     <sorted-paginated-item-list
       v-bind:items="listings"
       v-bind:sortOptions="sortOptions"
       v-bind:currentSortOption.sync="currentSortOption"
-      v-slot="slotProps"
     >
-      {{JSON.stringify(slotProps.item)}}
-
+      <template v-slot:title>
+        <h2>Listings for business</h2>
+      </template>
+      <template v-slot:item="slotProps">
+        {{JSON.stringify(slotProps.item)}}
+      </template>
+      <template v-slot:right-button>
+        <button type="button" class="btn btn-info" v-on:click="() => showSortSidebar = true">Another button</button>
+      </template>
       <!--<business-listing v-bind:listing="slotProps.item"/> -->
     </sorted-paginated-item-list>
     <error-modal
