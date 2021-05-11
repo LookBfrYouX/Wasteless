@@ -54,8 +54,8 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @Test
   @WithMockUser
   void getInventoryFromOneBusinessTestInvalidId() throws Exception {
-    String enpointUrl = "/businesses/-1/inventory";
+    String endpointUrl = "/businesses/-1/inventory";
     when(inventoryServiceMock.getInventory(-1)).thenThrow(BusinessNotFoundException.class);
-    mockMvc.perform(get(enpointUrl)).andExpect(status().is(406));
+    mockMvc.perform(get(endpointUrl)).andExpect(status().is(406));
   }
 }
