@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.controller;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.service.InventoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

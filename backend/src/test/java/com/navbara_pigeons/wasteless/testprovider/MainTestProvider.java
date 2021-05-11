@@ -26,12 +26,21 @@ public class MainTestProvider {
   protected final String EMAIL_2 = "example2@example.com";
   protected final String BUSINESS_1_NAME = "BUSINESS";
   protected final String PASSWORD_1 = "ABCabc123!@#";
+  protected final String PRODUCT_1_NAME = "PIZZA";
 
   @Autowired
   protected MockMvc mockMvc;
 
   @Autowired
   protected ObjectMapper objectMapper;
+
+  protected InventoryItem makeInventoryItem(Product product) {
+    InventoryItem inventoryItem = new InventoryItem();
+    inventoryItem.setproduct(product)
+        .setExpires("2022-05-11")
+        .setQuantity(10);
+    return inventoryItem;
+  }
 
   protected Product makeProduct(String productName) {
     Product product = new Product();
