@@ -15,6 +15,14 @@ A backend sub-project (business logic and persistence server):
 - `backend/src` Backend source code (Java - Spring)
 - `backend/out` Backend production build
 
+## Credentials
+- Admin Role
+  - Admin@wasteless.co.nz
+  - admin
+- Use Role
+  - test@gmail.com
+  - Password123
+
 ## How to run
 
 ### Frontend / GUI
