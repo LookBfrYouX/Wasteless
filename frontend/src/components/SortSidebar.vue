@@ -2,8 +2,8 @@
   <div class="sort-results bg-light">
     <div class="p-3">
       <h3 class="d-inline">Sort by</h3>
-      <button class="float-right btn btn-light" type="button" v-on:click="closeClicked()">
-        <span>&larr;</span>
+      <button class="float-right btn btn-light d-flex" type="button" v-on:click="closeClicked()">
+        <span class="material-icons">arrow_back</span>
       </button>
       <ul id="search-headers" class="list-unstyled"
           v-bind:class='{"table-reversed": currentSortOption.reversed}'>

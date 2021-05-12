@@ -70,7 +70,7 @@ import { Api } from "../Api";
 // ];
 
 const sampleData = [{
-  id: 10,
+  id: 9,
   name: "AAA"
 }, {
   id: 15,
@@ -83,6 +83,12 @@ const sampleData = [{
   name: "ZZZ"
 }];
 
+for(let i = 0; i < 10; i++) {
+  sampleData.push({
+    id: i * 2 + 4,
+    name: btoa(Math.random().toString())
+  });
+}
 
 const sortOptions = [{
   name: "id",

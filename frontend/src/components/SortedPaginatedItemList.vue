@@ -19,7 +19,7 @@ To use this component:
       v-bind:closeClicked="() => showSortSidebar = false"
       v-on:update:currentSortOption="currentSortOption => $emit('update:currentSortOption', currentSortOption)"
     />
-    <!-- If the screen is large enough, then you can interact with both the sort options and list items at the same time -->
+    <!-- If the screen is large enough, then you can interact with both the sort options and list items at the same time. Otherwise, this will act as a background where clicking anywhere causes it to close -->
     <div
       v-if="showSortSidebar"
       class="sidebar-behind-close d-block d-lg-none"
@@ -185,18 +185,19 @@ export default {
 }
 
 .sidebar-behind-close {
-  z-index: 99;
+  z-index: 1;
+  /* Low z index so that the navbar is above it */
   position: fixed;
-  height: 100vh;
-  width: 100vw;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.8);
 }
 
 .item-width {
   width: min(80%, 40em);
 }
-
-
 
 .item-card {
   transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
