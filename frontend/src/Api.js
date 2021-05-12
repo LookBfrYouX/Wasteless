@@ -289,5 +289,13 @@ export const Api = {
         406: "Could not set primary image."
       });
     });
+  },
+
+  getBusinessListings: businessId => {
+    return instance.get(`/business/${businessId}/listings`).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
+      });
+    })
   }
 }

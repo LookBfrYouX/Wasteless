@@ -300,7 +300,9 @@ export default {
 </script>
 
 <style scoped>
-
+nav {
+  z-index: 10;
+}
 .dropdown-menu {
   z-index: 900000;
 }
