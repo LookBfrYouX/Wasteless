@@ -170,9 +170,8 @@ export default {
      */
     currencyPipeline: async function () {
       try {
-        const currency = await this.$helper.getCurrencyForBusiness(this.businessId,
-            this.$stateStore);
-        this.currency = currency;
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+            this.$stateStore);;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
