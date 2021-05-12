@@ -126,7 +126,6 @@
 </template>
 
 <script>
-// TODO: Uncomment below when controller is added
 // const {Api} = require("./../Api.js");
 
 export default {
@@ -141,6 +140,7 @@ export default {
       sellBy: null,
       bestBefore: null,
       expires: null,
+      products: null,
     }
   },
   props: {
@@ -150,24 +150,9 @@ export default {
     },
   },
   mounted() {
-    // Restricts date inputs when form loads
-    let today = new Date();
-    let dd = today.getDate();
-    let mm = today.getMonth() + 1;
-    let yyyy = today.getFullYear();
-    if (dd < 10) {
-      dd = '0' + dd
-    }
-    if (mm < 10) {
-      mm = '0' + mm
-    }
-    let dateString = yyyy + '-' + mm + '-' + dd
-
-    // Is there a better way to do this?
-    document.getElementById("expires").setAttribute("min", dateString);
-    document.getElementById("bestBefore").setAttribute("min", dateString);
-    document.getElementById("sellBy").setAttribute("min", dateString);
-    document.getElementById("manufactured").setAttribute("max", dateString);
+    // TODO: check user is authenticated before loading page (do this in router.js and store.js)
+    this.setDateInputs();
+    this.populateDropdown();
   },
   methods: {
     async addItem() {
@@ -187,6 +172,31 @@ export default {
       // TODO: Uncomment below when controller is added
       // let response = await Api.addItemToInventory(this.businessId, data);
       // console.log(JSON.stringify(response));
+    },
+    setDateInputs() {
+      let today = new Date();
+      let dd = today.getDate();
+      let mm = today.getMonth() + 1;
+      let yyyy = today.getFullYear();
+      if (dd < 10) {
+        dd = '0' + dd
+      }
+      if (mm < 10) {
+        mm = '0' + mm
+      }
+      let dateString = yyyy + '-' + mm + '-' + dd
+
+      // Is there a better way to do this?
+      document.getElementById("expires").setAttribute("min", dateString);
+      document.getElementById("bestBefore").setAttribute("min", dateString);
+      document.getElementById("sellBy").setAttribute("min", dateString);
+      document.getElementById("manufactured").setAttribute("max", dateString);
+    },
+    async populateDropdown() {
+      // TODO: populate dropdown from received data here
+      // let res = await Api.getProducts(this.businessId);
+      // alert(JSON.stringify(res));
+      // console.log(res);
     }
   }
 }
