@@ -292,8 +292,16 @@ export const Api = {
   },
 
   getBusinessListings: businessId => {
-    return instance.get(`/business/${businessId}/listings`).catch(err => {
+    return instance.get(`/businesses/${businessId}/listings`).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
+        406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
+      });
+    })
+  },
+  getBusinessInventory: businessId => {
+    return instance.get(`/businesses/${businessId}/inventory`).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        403: "You don't have permission view this businesses inventory",
         406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
       });
     })
