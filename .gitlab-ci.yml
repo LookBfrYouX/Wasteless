@@ -1,10 +1,10 @@
 stages:
   - npm-dependencies
   - get-dependencies
-  - move-user-content
   - build
   - test
   - sonarqube
+  - move-user-content
   - deploy-frontend
   - restore-user-content
   - deploy-backend
@@ -14,7 +14,7 @@ stages:
 tag_checker:
   stage: build
   script:
-    - python tag_checker.py $CI_COMMIT_TAG
+    - python3 tag_checker.py $CI_COMMIT_TAG
   only:
     - tags
 
@@ -38,7 +38,9 @@ junit:
   script:
     - cd backend
     - ./gradlew test
-
+  artifacts:
+    paths:
+      - backend/jacoco
 
 # Run acceptance (cucumber) tests
 # Uncomment after ATDD workshop (at the latest)
@@ -77,11 +79,7 @@ dev-sonarqube:
     - cd frontend
     - npm run sonarqube
     - cd ../backend
-    - ./gradlew jacocoTestReport
     - ./gradlew sonarqube
-  artifacts:
-    paths:
-      - backend/build/jacoco
   only:
     - dev
 
@@ -125,6 +123,7 @@ move-user-content-production:
     - rm -rf /home/gitlab-runner/production-user-content/
     - mv /home/gitlab-runner/production-frontend/dist/user-content/ /home/gitlab-runner/production-user-content/
   only:
+    - tags
     - master
 
 deploy-staging-frontend:
@@ -194,6 +193,7 @@ restore-user-content-production:
     - mkdir -p /home/gitlab-runner/production-user-content/images/products
     - mv /home/gitlab-runner/production-user-content/ /home/gitlab-runner/production-frontend/dist/user-content
   only:
+    - tags
     - master
 
 
