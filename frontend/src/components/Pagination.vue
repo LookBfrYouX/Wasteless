@@ -19,35 +19,62 @@
 
 export default {
   props: {
+    /**
+     * First page number. Default 1
+     */
     start: {
       type: Number,
       required: false,
       default: 1
     },
+
+    /**
+     * Last page number
+     */
     end: {
       type: Number,
       required: true
     },
+
+    /**
+     * Current page number
+     */
     current: {
       type: Number,
       required: true
     },
+
+    /**
+     * Will show this many pages prior to the current
+     */
     numPreviousPagesToShow: {
       type: Number,
       required: false,
       default: 2
     },
+
+    /**
+     * Will show this many pages past the current
+     */
     numNextPagesToShow: {
       type: Number,
       required: false,
       default: 3
     },
+
+    /**
+     * Callback event when page is changed via user. Could be done via events, I guess
+     */
     setPage: {
       type: Function,
       required: true
     }
   },
   computed: {
+    /**
+     * Computes the array of pages. The start and end are `<` and `>` for prev/next page if the current page is not the first or last respectively 
+     * @return{*} array of pages with `text`; text to show on page link; `pageNum`: page number to navigate to; `key`: key to use in list
+     */
     pages() {
       const pages = [];
       if (this.current - 1 >= this.start) pages.push({

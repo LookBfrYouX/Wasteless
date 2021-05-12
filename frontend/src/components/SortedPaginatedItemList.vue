@@ -4,9 +4,18 @@ To use this component:
 <sorted-paginated-item-list
   v-bind:items="myItems"
 >
+  <template v-slot:title>
+    <h2>My Component List</h2>
+  </template>
+
+  <template v-slot:right-button>
+    <button>Optional button</button>
+  </template>
+
   <template v-slot:item="slotProps"
     <my-component v-bind:my-item="slotProps.item"/>
   </template>
+
 </sorted-paginated-item-list>
 -->
 <template>
@@ -16,7 +25,7 @@ To use this component:
       v-if="showSortSidebar"
       v-bind:sortOptions="sortOptions"
       v-bind:currentSortOption="currentSortOption"
-      v-bind:closeClicked="() => showSortSidebar = false"
+      v-bind:closeClicked="() => showSortSidebar = !showSortSidebar"
       v-on:update:currentSortOption="currentSortOption => $emit('update:currentSortOption', currentSortOption)"
     />
     <!-- If the screen is large enough, then you can interact with both the sort options and list items at the same time. Otherwise, this will act as a background where clicking anywhere causes it to close -->
@@ -28,7 +37,7 @@ To use this component:
 
     <div class="container">
       <div class="row pt-4">
-        <!-- If margin top used, pushes the sidebar down too -->
+        <!-- If margin top used, pushes the sidebar down too so use padding instead -->
         <slot name="title"/>
       </div>
       <div class="row">
@@ -42,7 +51,7 @@ To use this component:
       </div>
 
       <div class="row justify-content-center mt-4">
-        <!-- Shift the items right if the sidebar is open to prevent overlap when the overlay isn't visible and the screen isn't too big -->
+        <!-- Shift the items right if the sidebar is open to prevent overlap when the overlay isn't visible and the screen isn't too big. Not great as it doesn't shift the page title -->
         <div
           v-if="showSortSidebar"
           class="col-3 d-xl-none"
@@ -85,8 +94,6 @@ export default {
   props: {
     /**
      * Array of items to display. Should be the full, unsorted list of items so that client-side pagination can be done.
-     * 
-     * Only requirement is that each item has an `id` property
      */
     items: {
       required: true,
@@ -94,13 +101,18 @@ export default {
     },
 
     /**
-     * Way to get unique identifier for each item. If string, uses that as the key for the item. If function, it should take in the item as an argument and return a key 
+     * Way to get unique identifier for each item instead of using the default `item.id`.
+     * If string, uses that as the key for the item.
+     * If function, it should take in the item as an argument and return a key 
      */
     itemIdentifier: {
       required: false,
       default: "id"
     },
 
+    /**
+     * Number of results to show per page
+     */
     resultsPerPage: {
       required: false,
       type: Number,
@@ -108,10 +120,13 @@ export default {
     },
 
     /**
+     * Sort options to display on the sidebar
      * [{
      *   name: String // name to display, used as key
      *   sortMethod: (item1, item2) => -1, 0 or 1 (JS sort function)
      * }]
+     * A simple example for numerical sort: (a, b) => a.someVal - b.someVal
+     * An unreadble way to use alphabetical sort (nested ternary expression): a.name == b.name? 0: (a.name > b.name? 1: -1)
      */
     sortOptions: {
       required: true,
@@ -140,15 +155,30 @@ export default {
   },
 
   computed: {
+    /**
+     * Number of pages
+     */
     numPages() {
       return Math.ceil(this.items.length / this.resultsPerPage);
     },
+
+    /**
+     * Index of first result that should be shown with pagination
+     */
     firstResultIndex() {
       return (this.page - 1) * this.resultsPerPage; // Page 1 has elements [0, resultsPerPage - 1]
     },
+
+    /**
+     * Exclusive index of last result that should be shown (i.e. given index - 1 is the last result to show)
+     */
     lastResultIndex() {
       return Math.min(this.items.length, this.page * this.resultsPerPage);
     },
+
+    /**
+     * Sorted, paginated list of items to display
+     */
     itemsToDisplay() {
       // copy array to not mutate original array
       const sortedItems = [...this.items].sort(this.currentSortOption.sortMethod);
@@ -158,6 +188,9 @@ export default {
   },
 
   methods: {
+    /**
+     * Gets the key for the given item - can be either a string or a function
+     */
     getItemId(item) {
       if (this.itemIdentifier instanceof Function) return this.itemIdentifier(item);
       return item[this.itemIdentifier];
@@ -165,9 +198,19 @@ export default {
   },
 
   watch: {
+    /**
+     * When items get updated, reset the page number
+     */
     items() {
-      if (this.numPages > this.page) this.page = this.numPages;
+      this.page = 1;
     },
+
+    /**
+     * When items get updated, reset the page number
+     */
+    resultsPerPage() {
+      this.page = 1;
+    }
   }
 };
 </script>

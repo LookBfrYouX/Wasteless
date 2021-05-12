@@ -10,11 +10,11 @@
       </template>
       <template v-slot:item="slotProps">
         {{JSON.stringify(slotProps.item)}}
+        <!--<business-listing v-bind:listing="slotProps.item"/> -->
       </template>
       <template v-slot:right-button>
         <button type="button" class="btn btn-info" v-on:click="() => showSortSidebar = true">Another button</button>
       </template>
-      <!--<business-listing v-bind:listing="slotProps.item"/> -->
     </sorted-paginated-item-list>
     <error-modal
       title="Error viewing listings"
@@ -57,7 +57,7 @@ import { Api } from "../Api";
 //       "pricePerItem": 6.5,
 //       "totalPrice": 21.99,
 //       "manufactured": "2021-05-10",
-//       "sellBy": "2021-05-10",
+//       "sellBy": "2021-05-10",p
 //       "bestBefore": "2021-05-10",
 //       "expires": "2021-05-10"
 //     },
@@ -90,15 +90,55 @@ for(let i = 0; i < 10; i++) {
   });
 }
 
-const sortOptions = [{
-  name: "id",
-  sortMethod: (a, b) => {
-    return a.id - b.id;
-  }
-}, {
-  name: "By name",
-  sortMethod: (a, b) => a.name > b.name? 1: -1
+/**
+ * Gets property from an object given key or lambda
+ * @param {Object} obj object to extract property from
+ * @param {Function|String} key Key is either a key to an object or a lambda which takes in an object and returns a key
+ */
+const getProp = (obj, key) => {
+  if (key instanceof Function) return key(obj);
+  return obj[key];
 }
+
+/**
+ * Method which returns sort method for a string or numeric property of an object
+ * @param{Function|String} key object key to sort by, or lambda which extracts key from an object
+ */
+const sensibleSorter = (key) => {
+  return (a, b) => {
+    a = getProp(a, key);
+    b = getProp(b, key);
+    // For number can use a - b, but this works with both strings and numbers
+    if (a === b) return 0;
+    return a > b? 1: -1;
+  }
+}
+
+const sortOptions = [
+  {
+    name: "ID",
+    sortMethod: sensibleSorter("id")
+  }, {
+    name: "Name TODO delete. Only this and ID work with the dummy data",
+    sortMethod: sensibleSorter("name") 
+  }, {
+    name: "Price",
+    sortMethod: sensibleSorter("price") 
+  }, {
+    name: "RRP",
+    sortMethod: sensibleSorter(el => el.inventoryItem.recommendedRetailPrice)
+  }, {
+    name: "Name",
+    sortMethod: sensibleSorter(el => el.inventoryItem.product.name)
+  }, {
+    name: "Listing Created",
+    // Yes, you can sort dates as a string in this format
+    // Add a reversed param to sorter? Should the 'natural' sort for created/closes be oldest first? 
+    sortMethod: sensibleSorter("created")
+  }, {
+    name: "Listing Closes",
+    sortMethod: sensibleSorter("closes")
+  }
 ];
 
 export default {
