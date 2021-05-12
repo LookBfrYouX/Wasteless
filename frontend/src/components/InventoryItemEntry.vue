@@ -147,7 +147,6 @@ export default {
     },
   },
   mounted() {
-    // TODO: check user is authenticated before loading page (do this in router.js and store.js)
     this.setDateInputs();
     this.populateDropdown();
   },

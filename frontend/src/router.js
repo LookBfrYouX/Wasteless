@@ -118,6 +118,16 @@ export const router = new VueRouter({
     {
       name: "inventoryItemEntry",
       path: "/businesses/:businessId(\\d+)/inventory/addToInventory",
+      beforeEnter: (to, from, next) => {
+        // Only load the page if the user is GAA or business admin
+        let business = store.getters.getActingAs()
+        let businessId = parseInt(to.params.businessId, 10);
+        if ((business && businessId == business.id) || store.getters.isAdmin()) {
+          next()
+        } else {
+          next({name: 'error403'});
+        }
+      },
       meta: {title: "Add to inventory | Wasteless"},
       component: () => import("./components/InventoryItemEntry.vue"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)})
@@ -133,6 +143,12 @@ export const router = new VueRouter({
       path: "/error401",
       meta: {title: "401 Not Authorized | Wasteless"},
       component: () => import("./components/Errors/Error401.vue")
+    },
+    {
+      name: "error403",
+      path: "/error403",
+      meta: {title: "403 Forbidden | Wasteless"},
+      component: () => import("./components/Errors/Error403.vue")
     },
     {
       name: "error404",
