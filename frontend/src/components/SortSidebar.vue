@@ -45,7 +45,7 @@ export default {
     },
 
     /**
-     * name: String
+     * name: String (used as key)
      * reversed: Boolean
      */
     currentSortOption: {

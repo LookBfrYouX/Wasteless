@@ -109,8 +109,8 @@ export default {
 
     /**
      * [{
-     *   name: String // name to display,
-     *   sortMethod: (item1, item2) => -1, 0 or 1
+     *   name: String // name to display, used as key
+     *   sortMethod: (item1, item2) => -1, 0 or 1 (JS sort function)
      * }]
      */
     sortOptions: {
@@ -172,10 +172,6 @@ export default {
 };
 </script>
 <style scoped>
-.top-buttons-and-sidebar-wrapper {
-  border: 1px solid red;
-}
-
 .sort-sidebar {
   z-index: 100;
   position: fixed;
