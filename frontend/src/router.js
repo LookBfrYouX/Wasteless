@@ -116,6 +116,12 @@ export const router = new VueRouter({
       }
     },
     {
+      name: "inventoryItemEntry",
+      path: "/businesses/:businessId(\\d+)/inventory/addToInventory",
+      meta: {title: "Add to inventory | Wasteless"},
+      component: () => import("./components/InventoryItemEntry.vue"),
+    },
+    {
       name: "error",
       path: "/error",
       meta: {title: "Error 😢 | Wasteless"},
