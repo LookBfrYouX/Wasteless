@@ -12,22 +12,18 @@
         </div>
       </div>
       <div class="row">
-        <div class="col form-group required">
-          <label for="name">Product Name</label>
-          <input
-              id="name"
-              v-model="name"
-              class="form-control"
-              maxlength="30"
-              name="name"
-              placeholder="Product name"
-              required
-              type="text"
-          />
+        <div class="col-6 form-group required">
+          <label>Select product</label>
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Product
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item">Beans</a>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-4 form-group required">
+        <div class="col-6 form-group required">
           <label for="quantity">Quantity</label>
           <input
               id="quantity"
@@ -40,8 +36,10 @@
               min="0"
           />
         </div>
-        <div class="col-4 form-group">
-          <label for="quantity">Price per item</label>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="pricePerItem">Price per item</label>
           <input
               id="pricePerItem"
               v-model="pricePerItem"
@@ -52,8 +50,8 @@
               min="0"
           />
         </div>
-        <div class="col-4 form-group">
-          <label for="quantity">Total price</label>
+        <div class="col-6 form-group">
+          <label for="totalPrice">Total price</label>
           <input
               id="totalPrice"
               v-model="totalPrice"
@@ -67,7 +65,7 @@
       </div>
       <div class="row">
         <div class="col-6 form-group">
-          <label for="name">Manufactured</label>
+          <label for="manufactured">Manufactured</label>
           <input
               id="manufactured"
               v-model="manufactured"
@@ -79,7 +77,7 @@
           />
         </div>
         <div class="col-6 form-group">
-          <label for="name">Sell By</label>
+          <label for="sellBy">Sell By</label>
           <input
               id="sellBy"
               v-model="sellBy"
@@ -93,7 +91,7 @@
       </div>
       <div class="row">
         <div class="col-6 form-group">
-          <label for="name">Best before</label>
+          <label for="bestBefore">Best before</label>
           <input
               id="bestBefore"
               v-model="bestBefore"
@@ -105,7 +103,7 @@
           />
         </div>
         <div class="col-6 form-group required">
-          <label for="name">Expires</label>
+          <label for="expires">Expires</label>
           <input
               id="expires"
               v-model="expires"
