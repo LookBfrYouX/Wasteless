@@ -34,14 +34,14 @@
           <p>{{ userInfo.bio }}</p>
 
           <br>
-          <div class="profile-buttons d-flex">
-            <button class="btn btn-white-bg-primary mx-1 d-flex" disabled><span
+          <div class="profile-buttons d-flex flex-wrap justify-content-center">
+            <button class="btn btn-white-bg-primary m-1 d-flex" disabled><span
                 class="material-icons mr-1">send</span>Send Message
             </button>
             <button
                 v-if="isAdmin && userInfo.role != 'ROLE_ADMIN'"
                 id="makeAdmin"
-                class="btn btn-white-bg-primary mx-1 d-flex"
+                class="btn btn-white-bg-primary m-1 d-flex"
                 type="button"
                 v-on:click="makeAdmin(userId)"
             >
@@ -51,7 +51,7 @@
             <button
                 v-if="isAdmin && userInfo.role == 'ROLE_ADMIN'"
                 id="revokeAdmin"
-                class="btn btn-white-bg-primary mx-1 d-flex"
+                class="btn btn-white-bg-primary m-1 d-flex"
                 type="button"
                 v-on:click="revokeAdmin(userId)"
             >
@@ -60,7 +60,7 @@
             </button>
             <button
                 v-if="isLoggedIn && authUser.id === userInfo.id"
-                class="btn btn-white-bg-primary mx-1 d-flex"
+                class="btn btn-white-bg-primary m-1 d-flex"
                 type="button"
                 v-on:click="registerBusiness()"
             >
@@ -85,7 +85,7 @@
             <li
                 v-for="(business, index) in userInfo.businessesAdministered"
                 v-bind:key="index"
-                class="list-group-item card text-wrap my-3"
+                class="list-group-item card text-wrap"
             >
               <h5 class="business-name card-title card-link"
                   href="javascript:;"
@@ -111,38 +111,38 @@
             <a class="nav-link disabled">Future Tab</a>
           </li>
         </ul>
-        <div class="m-4">
+        <div class="m-md-4">
           <table class="table table-hover">
             <tbody>
             <tr>
-              <td colspan="2"><h5 class="text-muted">User Details</h5></td>
+              <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
             </tr>
             <tr v-if="userInfo.nickname" scope="row">
-              <th>Nickname:</th>
-              <td class="col-md value"><p>{{ userInfo.nickname }}</p></td>
+              <th class="pl-0 pl-md-2">Nickname:</th>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
             </tr>
             <tr v-if="memberSinceText" scope="row">
-              <th>Member since:</th>
-              <td class="col-md value"><p>{{ memberSinceText }}</p></td>
+              <th class="pl-0 pl-md-2">Member since:</th>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ memberSinceText }}</p></td>
             </tr>
             <tr v-if="dateOfBirthText" scope="row">
-              <th>Date of Birth:</th>
-              <td class="col-md value"><p>{{ dateOfBirthText }}</p></td>
+              <th class="pl-0 pl-md-2">Date of Birth:</th>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
             </tr>
             <tr>
-              <td colspan="2"><h5 class="text-muted">Contact Information</h5></td>
+            <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5></td>
             </tr>
             <tr v-if="userInfo.email" scope="row">
-              <th>Email Address:</th>
-              <td class="col-md value"><p>{{ userInfo.email }}</p></td>
+              <th class="pl-0 pl-md-2">Email Address:</th>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
             </tr>
             <tr v-if="userInfo.phoneNumber" scope="row">
-              <th>Phone Number:</th>
-              <td class="col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
+              <th class="pl-0 pl-md-2">Phone Number:</th>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
             </tr>
             <tr v-if="userInfo.homeAddress" scope="row">
-              <th>Address:</th>
-              <td class="col-md value">
+              <th class="pl-0 pl-md-2">Address:</th>
+              <td class="pr-0 pr-md-2 col-md value">
                 <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
               </td>
             </tr>
