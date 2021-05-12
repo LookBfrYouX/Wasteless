@@ -120,6 +120,7 @@ export const router = new VueRouter({
       path: "/businesses/:businessId(\\d+)/inventory/addToInventory",
       meta: {title: "Add to inventory | Wasteless"},
       component: () => import("./components/InventoryItemEntry.vue"),
+      props: route => ({businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "error",

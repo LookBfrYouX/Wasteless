@@ -2,7 +2,7 @@
   <div class="container">
     <form class="slightly-transparent-inputs"
           method="POST"
-          v-on:submit.prevent="register"
+          v-on:submit.prevent="addItem"
     >
       <div class="row">
         <div class="col text-center">
@@ -128,6 +128,9 @@
 </template>
 
 <script>
+// TODO: Uncomment below when controller is added
+// const {Api} = require("./../Api.js");
+
 export default {
   name: "InventoryItemEntry.vue",
   data() {
@@ -142,25 +145,51 @@ export default {
       expires: Date,
     }
   },
+  props: {
+    businessId: {
+      type: Number,
+      required: true
+    },
+  },
   mounted() {
     // Restricts date inputs when form loads
     let today = new Date();
     let dd = today.getDate();
-    let mm = today.getMonth()+1;
+    let mm = today.getMonth() + 1;
     let yyyy = today.getFullYear();
-    if(dd<10){
-      dd='0'+dd
+    if (dd < 10) {
+      dd = '0' + dd
     }
-    if(mm<10){
-      mm='0'+mm
+    if (mm < 10) {
+      mm = '0' + mm
     }
-    let dateString = yyyy+'-'+mm+'-'+dd
+    let dateString = yyyy + '-' + mm + '-' + dd
 
     // Is there a better way to do this?
     document.getElementById("expires").setAttribute("min", dateString);
     document.getElementById("bestBefore").setAttribute("min", dateString);
     document.getElementById("sellBy").setAttribute("min", dateString);
     document.getElementById("manufactured").setAttribute("max", dateString);
+  },
+  methods: {
+    async addItem() {
+      // TODO: productId needs to be the id of the product to add
+      let data = {
+        "productId": this.name,
+        "quantity": this.quantity,
+        "pricePerItem": this.pricePerItem,
+        "totalPrice": this.totalPrice,
+        "manufactured": this.manufactured,
+        "sellBy": this.sellBy,
+        "bestBefore": this.bestBefore,
+        "expires": this.expires,
+      }
+      alert(JSON.stringify(data));
+
+      // TODO: Uncomment below when controller is added
+      // let response = await Api.addItemToInventory(this.businessId, data);
+      // console.log(JSON.stringify(response));
+    }
   }
 }
 
