@@ -36,27 +36,31 @@
       </div>
       <div class="row">
         <div class="col-6 form-group">
-          <label for="pricePerItem">Price per item</label>
+          <label for="pricePerItem">Price per item {{ currencyText }}</label>
           <input
               id="pricePerItem"
               v-model="pricePerItem"
               class="form-control"
               name="pricePerItem"
-              placeholder="Price per item"
               type="number"
-              min="0"
+              min="0.01"
+              step="0.01"
+              max="9999.99"
+              v-bind:placeholder="currencyText"
           />
         </div>
         <div class="col-6 form-group">
-          <label for="totalPrice">Total price</label>
+          <label for="totalPrice">Total price {{ currencyText }}</label>
           <input
               id="totalPrice"
               v-model="totalPrice"
               class="form-control"
               name="totalPrice"
-              placeholder="Total price"
               type="number"
-              min="0"
+              min="0.01"
+              step="0.01"
+              max="9999.99"
+              v-bind:placeholder="currencyText"
           />
         </div>
       </div>
@@ -138,6 +142,7 @@ export default {
       bestBefore: null,
       expires: null,
       products: null,
+      currency: null,
     }
   },
   props: {
@@ -149,8 +154,33 @@ export default {
   mounted() {
     this.setDateInputs();
     this.populateDropdown();
+    return this.currencyPipeline();
+  },
+  computed: {
+    currencyText() {
+      if (this.currency == null) {
+        return "(Unknown currency)";
+      }
+      return `${this.currency.symbol} (${this.currency.code})`;
+    }
   },
   methods: {
+    /**
+     * Pipeline that sets currency data
+     */
+    currencyPipeline: async function () {
+      try {
+        const currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+            this.$stateStore);
+        this.currency = currency;
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
+        this.apiErrorMessage = err.userFacingErrorMessage;
+
+      }
+    },
     async addItem() {
       let data = {
         "productId": this.product.id,
