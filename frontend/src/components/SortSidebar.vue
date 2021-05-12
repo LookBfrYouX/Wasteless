@@ -1,7 +1,7 @@
 <template>
   <div class="sort-results bg-light">
     <div class="p-3">
-      <h3 class="d-inline">Sort by</h3>
+      <h3 class="d-inline">Sort By:</h3>
       <button class="float-right btn btn-light d-flex" type="button" v-on:click="closeClicked()">
         <span class="material-icons">arrow_back</span>
       </button>
@@ -32,6 +32,8 @@
 export default {
   props: {
     /**
+     * Array of sort options to display.
+     * Must have at least the 'name' property (text to display) and the name must be unique
      * [{name: String}]
      */
     sortOptions: {
@@ -39,14 +41,20 @@ export default {
       required: true
     },
 
+    /**
+     * Callback when the user closes the sidebar
+     */
     closeClicked: {
       type: Function,
       required: true
     },
 
     /**
-     * name: String (used as key)
-     * reversed: Boolean
+     * Current sort option.
+     * Must contain at least the `name` property and a `reversed` boolean.
+     * An update event, `update:currentSortOption` is emitted when it gets updated
+     * The name is used as a key to determine if the `reversed` boolean should be toggled
+     * { name: String, reversed: Boolean}
      */
     currentSortOption: {
       type: Object,
@@ -55,6 +63,11 @@ export default {
   },
 
   methods: {
+    /**
+     * Callback when the user clicks on one of the sort options.
+     * If the user clicks the current sort option (determined by comparing names) the `currentSortOption` `reversed
+     * If it is a different option, the `reversed` property of the current sort option is unmodified.
+     */
     sortByClicked(sortOption) {
       const eventName = "update:currentSortOption";
       if (this.currentSortOption.name == sortOption.name) this.$emit(eventName, {
