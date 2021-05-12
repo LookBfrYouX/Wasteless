@@ -134,13 +134,13 @@ export default {
   data() {
     return {
       name: "",
-      quantity: Number,
-      pricePerItem: Number,
-      totalPrice: Number,
-      manufactured: Date,
-      sellBy: Date,
-      bestBefore: Date,
-      expires: Date,
+      quantity: null,
+      pricePerItem: null,
+      totalPrice: null,
+      manufactured: null,
+      sellBy: null,
+      bestBefore: null,
+      expires: null,
     }
   },
   props: {
