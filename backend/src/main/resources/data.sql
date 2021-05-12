@@ -110,7 +110,7 @@ CREATE TABLE catalogue
 
 CREATE TABLE inventory
 (
-    ID          INT AUTOINCREMENT PRIMARY KEY,
+    ID          INT AUTO_INCREMENT PRIMARY KEY,
     PRODUCT_ID  INT                  NOT NULL,
     BUSINESS_ID INT                  NOT NULL,
     QUANTITY    INT                  NOT NULL,
