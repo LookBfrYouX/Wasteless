@@ -13,15 +13,12 @@
       </div>
       <div class="row">
         <div class="col-6 form-group required">
-          <label>Select product</label>
-          <div class="dropdown">
-            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Product
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item">Beans</a>
-            </div>
-          </div>
+          <label for="productDropdown">Select product</label>
+          <select required class="form-control" id="productDropdown" v-model="product">
+            <option v-for="product in products" :key="product.id" v-bind:value="product">
+              {{ product.name }}
+            </option>
+          </select>
         </div>
         <div class="col-6 form-group required">
           <label for="quantity">Quantity</label>
@@ -126,13 +123,13 @@
 </template>
 
 <script>
-// const {Api} = require("./../Api.js");
+const {Api} = require("./../Api.js");
 
 export default {
-  name: "InventoryItemEntry.vue",
+  name: "InventoryItemEntry",
   data() {
     return {
-      name: "",
+      product: null,
       quantity: null,
       pricePerItem: null,
       totalPrice: null,
@@ -156,9 +153,8 @@ export default {
   },
   methods: {
     async addItem() {
-      // TODO: productId needs to be the id of the product to add
       let data = {
-        "productId": this.name,
+        "productId": this.product.id,
         "quantity": this.quantity,
         "pricePerItem": this.pricePerItem,
         "totalPrice": this.totalPrice,
@@ -169,7 +165,7 @@ export default {
       }
       alert(JSON.stringify(data));
 
-      // TODO: Uncomment below when controller is added
+      // TODO: Uncomment below when controller is added, need to catch its errors and load new page
       // let response = await Api.addItemToInventory(this.businessId, data);
       // console.log(JSON.stringify(response));
     },
@@ -193,20 +189,15 @@ export default {
       document.getElementById("manufactured").setAttribute("max", dateString);
     },
     async populateDropdown() {
-      // TODO: populate dropdown from received data here
-      // let res = await Api.getProducts(this.businessId);
-      // alert(JSON.stringify(res));
-      // console.log(res);
+      let response = await Api.getProducts(this.businessId);
+      this.products = response.data;
     }
   }
 }
-
 </script>
 
 <style scoped>
-
 .container {
   margin-top: 10px;
 }
-
 </style>
