@@ -171,7 +171,7 @@ export default {
     currencyPipeline: async function () {
       try {
         this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
-            this.$stateStore);;
+            this.$stateStore);
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
