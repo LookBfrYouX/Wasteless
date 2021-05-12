@@ -122,7 +122,9 @@ export const router = new VueRouter({
         // Only load the page if the user is GAA or business admin
         let business = store.getters.getActingAs()
         let businessId = parseInt(to.params.businessId, 10);
-        if ((business && businessId == business.id) || store.getters.isAdmin()) {
+        if (!store.getters.isLoggedIn()) {
+          next({name: 'error401'});
+        } else if ((business && businessId == business.id) || store.getters.isAdmin()) {
           next()
         } else {
           next({name: 'error403'});
