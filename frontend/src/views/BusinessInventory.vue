@@ -21,7 +21,7 @@
       v-bind:goBack="false"
       v-bind:hideCallback="() => apiErrorMessage = null"
       v-bind:refresh="true"
-      v-bind:retry="this.getListingsPipeline"
+      v-bind:retry="this.getInventory"
       v-bind:show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
@@ -69,7 +69,7 @@ export default {
 
   data() {
     return {
-      listings: mockResult,
+      listings: [],
       apiErrorMessage: null,
       sortOptions,
       currentSortOption: { ...sortOptions[0], reversed: false}
@@ -78,12 +78,12 @@ export default {
 
   beforeMount: async function() {
     // TODO Uncomment once backend endpoint is created
-    this.listings = mockResult;
-    // await this.getListingsPipeline();
+    // this.listings = mockResult;
+    await this.getInventory();
   },
   
   methods: {
-    getListingsPipeline: async function() {
+    getInventory: async function() {
       try {
         this.listings = (await Api.getBusinessInventory(this.businessId)).data;
       } catch(err) {
