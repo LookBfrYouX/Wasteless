@@ -2,18 +2,18 @@
   <!-- this component produces the item card component from the given props -->
   <div class="container card item-card" @click="console.log('clicked')"> <!-- TODO add onclick handler and method when components and routes are ready -->
     <div class="row">
-      <div class="col-md-3 col-sm-12 p-2">
+      <div class="col-md-2 col-sm-12 p-2 w-100">
         <img class="img-fluid item-image" src="./../../../assets/images/default-product-thumbnail.svg" alt="Image" />
       </div>
-      <div class="col-9">
+      <div class="col-10 w-100">
         <div class="col-12 p-2 item-title">
           <h1>{{ item.product.name }}</h1>
         </div>
-        <div class="col-12 p-2 item-description">
+        <div class="col-12 p-2 item-description w-100">
           <p>{{ item.product.description }}</p>
         </div>
       </div>
-      <div class="col-lg-3 col-sm-12 p-2">
+      <div class="col-lg-3 col-sm-12 p-2 w-100">
         <h3 class="w100">{{ item.totalPrice }}</h3>
         <p>{{ item.quantity }} units @ ${{ item.pricePerItem }} each</p>
       </div>
@@ -53,6 +53,12 @@ export default {
 </script>
 
 <style scoped>
+.item-card:hover {
+  cursor: pointer;
+  transition-timing-function: ease-in-out;
+  transition: 0.25s;
+  transform: translateX(10px);
+}
 .item-image {
   max-width: 120px;
 }
