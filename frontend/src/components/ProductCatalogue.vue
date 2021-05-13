@@ -328,7 +328,7 @@ button.page-link {
   position: fixed;
   left: 0;
   right: 0;
-  z-index: 910;
+  z-index: 7;
 }
 
 .sort-results {
