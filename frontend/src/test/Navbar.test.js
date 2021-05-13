@@ -51,7 +51,7 @@ describe("logout", () => {
       mocks: globalStateMocks()
     });
     const logOut = jest.fn(() => Promise.resolve());
-    Api._setMethod("logOut", logOut);
+    Api.logOut.mockImplementation(logOut);
     await wrapper.vm.logOut();
     expect(logOut.mock.calls.length).toBe(1);
   });
@@ -61,7 +61,7 @@ describe("logout", () => {
       mocks: globalStateMocks()
     });
     const logOut = jest.fn(() => Promise.reject(new ApiRequestError("MSG")));
-    Api._setMethod("logOut", logOut);
+    Api.logOut.mockImplementation(logOut);
     await wrapper.vm.logOut();
     expect(wrapper.vm.logOutErrorMessage).toBe("MSG");
   });

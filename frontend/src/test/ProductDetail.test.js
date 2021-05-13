@@ -1,9 +1,10 @@
 import {shallowMount} from "@vue/test-utils";
 import {globalStateMocks} from "./testHelper";
-import ProductDetail from "../components/ProductDetail";
-
 jest.mock("./../Api.js");
 const {Api} = require("./../Api.js");
+
+import ProductDetail from "../components/ProductDetail";
+
 
 let wrapper;
 
@@ -26,7 +27,7 @@ const mockProduct = () => {
   });
 }
 
-Api._setMethod("getProducts", () => Promise.resolve(mockProduct()));
+Api.getProducts.mockResolvedValue(mockProduct());
 window.alert = jest.fn();
 
 afterEach(() => wrapper.destroy());
@@ -34,6 +35,7 @@ afterEach(() => wrapper.destroy());
 describe("Parsing API response to get product images", () => {
 
   test("Acting as a business", async () => {
+
     const mocks = globalStateMocks();
     wrapper = shallowMount(ProductDetail, {
       propsData: {
@@ -43,11 +45,8 @@ describe("Parsing API response to get product images", () => {
       mocks
     });
     const getProducts = jest.fn(() => Promise.resolve());
-    Api._setMethod("getProducts", getProducts);
+    Api.getProducts.mockImplementation(getProducts);
     await wrapper.vm.callApi();
     expect(getProducts.mock.calls.length).toBe(1);
   });
 });
-
-
-
