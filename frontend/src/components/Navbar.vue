@@ -12,6 +12,7 @@
           data-target="#navbarSupportedContent"
           data-toggle="collapse"
           type="button"
+          id="hamburger-button"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
