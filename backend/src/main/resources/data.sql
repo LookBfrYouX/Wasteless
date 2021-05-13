@@ -110,19 +110,22 @@ CREATE TABLE catalogue
 
 CREATE TABLE inventory
 (
-    PRODUCT_ID  INT           NOT NULL,
-    BUSINESS_ID INT           NOT NULL,
-    QUANTITY    INT           NOT NULL,
-    PRICE       DECIMAL(6, 2) NOT NULL,
-    EXPIRY      DATETIME      NOT NULL,
-    CONSTRAINT inventory_pk
-        UNIQUE (PRODUCT_ID, BUSINESS_ID),
+    ID          INT AUTO_INCREMENT PRIMARY KEY,
+    PRODUCT_ID  INT                  NOT NULL,
+    BUSINESS_ID INT                  NOT NULL,
+    QUANTITY    INT                  NOT NULL,
+    PRICE_PER_ITEM DECIMAL(6,2)      NOT NULL,
+    TOTAL_PRICE DECIMAL(6, 2)        NOT NULL,
+    EXPIRES     DATETIME             NOT NULL,
+    MANUFACTURED DATETIME,
+    SELL_BY     DATETIME,
+    BEST_BEFORE DATETIME,
+
     CONSTRAINT inventory_product_fk
         FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
     CONSTRAINT inventory_business_fk
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
-
 
 
 -- INSERTING TEST DATA BELOW
