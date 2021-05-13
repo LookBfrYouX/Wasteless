@@ -161,4 +161,29 @@ export const helper = {
     }
     return str;
   },
+
+  
+  /**
+   * Method which returns sort method for a string or numeric property of an object
+   * @param{Function|String} key object key to sort by, or lambda which extracts key from an object
+   */
+   sensibleSorter: (key) => {
+    /**
+     * Gets property from an object given key or lambda
+     * @param {Object} obj object to extract property from
+     * @param {Function|String} key Key is either a key to an object or a lambda which takes in an object and returns a key
+     */
+    const getProp = (obj, key) => {
+      if (key instanceof Function) return key(obj);
+      return obj[key];
+    }
+
+    return (a, b) => {
+      a = getProp(a, key);
+      b = getProp(b, key);
+      // For number can use a - b, but this works with both strings and numbers
+      if (a === b) return 0;
+      return a > b? 1: -1;
+    }
+  }
 }

@@ -33,6 +33,8 @@ import SortedPaginatedItemList from '../components/SortedPaginatedItemList.vue';
 import ErrorModal from "../components/Errors/ErrorModal";
 import { Api } from "../Api";
 
+import { helper } from "../helper";
+
 // const sampleData = [
 //   {
 //     "id": 57,
@@ -90,54 +92,30 @@ for(let i = 0; i < 10; i++) {
   });
 }
 
-/**
- * Gets property from an object given key or lambda
- * @param {Object} obj object to extract property from
- * @param {Function|String} key Key is either a key to an object or a lambda which takes in an object and returns a key
- */
-const getProp = (obj, key) => {
-  if (key instanceof Function) return key(obj);
-  return obj[key];
-}
-
-/**
- * Method which returns sort method for a string or numeric property of an object
- * @param{Function|String} key object key to sort by, or lambda which extracts key from an object
- */
-const sensibleSorter = (key) => {
-  return (a, b) => {
-    a = getProp(a, key);
-    b = getProp(b, key);
-    // For number can use a - b, but this works with both strings and numbers
-    if (a === b) return 0;
-    return a > b? 1: -1;
-  }
-}
-
 const sortOptions = [
   {
     name: "ID",
-    sortMethod: sensibleSorter("id")
+    sortMethod: helper.sensibleSorter("id")
   }, {
     name: "Name TODO delete. Only this and ID work with the dummy data",
-    sortMethod: sensibleSorter("name") 
+    sortMethod: helper.sensibleSorter("name") 
   }, {
     name: "Price",
-    sortMethod: sensibleSorter("price") 
+    sortMethod: helper.sensibleSorter("price") 
   }, {
     name: "RRP",
-    sortMethod: sensibleSorter(el => el.inventoryItem.recommendedRetailPrice)
+    sortMethod: helper.sensibleSorter(el => el.inventoryItem.recommendedRetailPrice)
   }, {
     name: "Name",
-    sortMethod: sensibleSorter(el => el.inventoryItem.product.name)
+    sortMethod: helper.sensibleSorter(el => el.inventoryItem.product.name)
   }, {
     name: "Listing Created",
     // Yes, you can sort dates as a string in this format
     // Add a reversed param to sorter? Should the 'natural' sort for created/closes be oldest first? 
-    sortMethod: sensibleSorter("created")
+    sortMethod: helper.sensibleSorter("created")
   }, {
     name: "Listing Closes",
-    sortMethod: sensibleSorter("closes")
+    sortMethod: helper.sensibleSorter("closes")
   }
 ];
 

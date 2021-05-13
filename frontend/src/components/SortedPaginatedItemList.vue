@@ -12,6 +12,11 @@ To use this component:
     <button>Optional button</button>
   </template>
 
+  <template v-slot:no-items>
+    <p>Content to show if there are no items 
+    </p>
+  <template>
+
   <template v-slot:item="slotProps"
     <my-component v-bind:my-item="slotProps.item"/>
   </template>
@@ -40,23 +45,28 @@ To use this component:
         <!-- If margin top used, pushes the sidebar down too so use padding instead -->
         <slot name="title"/>
       </div>
-      <div class="row">
-        Displaying results {{ firstResultIndex + 1 }} - {{ lastResultIndex }} out of {{ items.length }}
-      </div>
-      <div class="row d-block pt-2">
+      <div v-if="items.length" class="row d-block">
         <button type="button" class="btn btn-info" v-on:click="() => showSortSidebar = true">Sort</button>
         <div class="float-right">
           <slot name="right-button"/>
         </div>
       </div>
 
-      <div class="row justify-content-center mt-4">
+      <div v-if="!items.length" class="row mt-2">
+        <slot name="no-items">
+          <p>No items</p>
+        </slot>
+      </div>
+      <div v-else class="row justify-content-center mt-2">
         <!-- Shift the items right if the sidebar is open to prevent overlap when the overlay isn't visible and the screen isn't too big. Not great as it doesn't shift the page title -->
         <div
           v-if="showSortSidebar"
           class="col-3 d-xl-none"
         ></div>
         <div class="col-12 col-md-8 col-lg-6">
+          <div> 
+            Displaying results {{ firstResultIndex + 1 }} - {{ lastResultIndex }} out of {{ items.length }}
+          </div>
           <ul class="list unstyled list-group">
             <li
               class="list-group-item card item-card slightly-transparent-white-background my-1"
