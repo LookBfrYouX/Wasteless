@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -53,7 +54,7 @@ public class InventoryServiceImpl implements InventoryService {
     if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
       Business business = businessDao.getBusinessById(businessId);
       ArrayList<BasicInventoryDto> inventory = new ArrayList<>();
-      for (InventoryItem inventoryItem : business.getInventory()) {
+      for (Inventory inventoryItem : business.getInventory()) {
         inventory.add(new BasicInventoryDto(inventoryItem, publicPathPrefix));
       }
       return inventory;

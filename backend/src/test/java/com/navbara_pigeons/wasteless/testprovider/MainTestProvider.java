@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.testprovider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import java.time.ZoneOffset;
@@ -34,10 +35,10 @@ public class MainTestProvider {
   @Autowired
   protected ObjectMapper objectMapper;
 
-  protected InventoryItem makeInventoryItem(Product product) {
-    InventoryItem inventoryItem = new InventoryItem();
-    inventoryItem.setproduct(product)
-        .setExpires("2022-05-11")
+  protected Inventory makeInventoryItem(Product product) {
+    Inventory inventoryItem = new Inventory();
+    inventoryItem.setProduct(product)
+        .setExpires(ZonedDateTime.now(ZoneOffset.ofHours(10)))
         .setQuantity(10);
     return inventoryItem;
   }

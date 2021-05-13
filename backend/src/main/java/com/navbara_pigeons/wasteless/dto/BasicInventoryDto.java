@@ -1,28 +1,32 @@
 package com.navbara_pigeons.wasteless.dto;
 
+import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.entity.Product;
 import java.time.ZonedDateTime;
+import lombok.Data;
 
+@Data
 public class BasicInventoryDto {
 
   private long id;
-  private Product product;
+  private BasicProductDto product;
   private long quantity;
-  private Double pricePerItem;
-  private Double totalPrice;
-  private ZonedDateTime manufatured;
+  private float pricePerItem;
+  private float totalPrice;
+  private ZonedDateTime manufactured;
   private ZonedDateTime sellBy;
   private ZonedDateTime bestBefore;
   private ZonedDateTime expires;
 
-  public BasicInventoryDto(InventoryItem inventoryItem, String publicPathPrefix) {
+  public BasicInventoryDto(Inventory inventoryItem, String publicPathPrefix) {
     this.id = inventoryItem.getId();
     this.product = new BasicProductDto(inventoryItem.getProduct(), publicPathPrefix);
-    this.quantity = product.getQuantity();
-    this.pricePerItem = product.getPricePerItem();
-    this.manufatured = product.getManufatured();
-    this.sellBy = product.getSellBy();
-    this.bestBefore = product.getBestBefore();
-    this.expires = product.getExpires();
+    this.quantity = inventoryItem.getQuantity();
+    this.pricePerItem = inventoryItem.getPricePerItem();
+    this.totalPrice = inventoryItem.getTotalPrice();
+    this.manufactured = inventoryItem.getManufactured();
+    this.sellBy = inventoryItem.getSellBy();
+    this.bestBefore = inventoryItem.getBestBefore();
+    this.expires = inventoryItem.getExpires();
   }
 }

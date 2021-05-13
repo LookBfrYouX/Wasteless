@@ -28,22 +28,22 @@ public class Inventory {
     @Column(name = "QUANTITY")
     private long quantity;
 
-    @Column(name = "PRICE")
-    private float price;
+    @Column(name = "PRICE_PER_ITEM")
+    private float pricePerItem;
 
     @Column(name = "TOTAL_PRICE")
-    private float total_price;
+    private float totalPrice;
 
     @Column(name = "EXPIRES")
     private ZonedDateTime expires;
 
-    @Column(name = "MANUFACTERED")
-    private ZonedDateTime manufacured;
+    @Column(name = "MANUFACTURED")
+    private ZonedDateTime manufactured;
 
     @Column(name = "SELL_BY")
-    private ZonedDateTime sell_by;
+    private ZonedDateTime sellBy;
 
     @Column(name = "BEST_BEFORE")
-    private ZonedDateTime best_before;
+    private ZonedDateTime bestBefore;
 
 }

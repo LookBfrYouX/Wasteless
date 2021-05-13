@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
@@ -71,9 +72,9 @@ public class ServiceTestProvider extends MainTestProvider {
    * @param inventory
    * @param inventoryDto
    */
-  protected void assertInventoryListEquals(List<InventoryItem> inventory, List<BasicInventoryDto> inventoryDto) {
-    inventory.sort(Comparator.comparing(inv -> inv.getId()));
-    inventoryDto.sort(Comparator.comparing(inv -> inv.getId()));
+  protected void assertInventoryListEquals(List<Inventory> inventory, List<BasicInventoryDto> inventoryDto) {
+    inventory.sort(Comparator.comparing(Inventory::getId));
+    inventoryDto.sort(Comparator.comparing(BasicInventoryDto::getId));
     assertEquals(inventory.size(), inventoryDto.size());
     for (int i = 0; i < inventory.size(); i++) {
       assertInventoryEquals(inventory.get(i), inventoryDto.get(i));
@@ -86,7 +87,7 @@ public class ServiceTestProvider extends MainTestProvider {
    * @param inventory
    * @param inventoryDto
    */
-  protected void assertInventoryEquals(InventoryItem inventory, BasicInventoryDto inventoryDto) {
+  protected void assertInventoryEquals(Inventory inventory, BasicInventoryDto inventoryDto) {
     assertEquals(inventory.getId(), inventoryDto.getId());
     assertProductEquals(inventory.getProduct(), inventoryDto.getProduct());
     assertEquals(inventory.getQuantity(), inventoryDto.getQuantity());
