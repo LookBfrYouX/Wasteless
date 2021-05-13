@@ -67,16 +67,14 @@ describe("Full pipeline", () => {
       properties: standardOSMAddress()
     };
 
-    Api._setMethod("addressSuggestions", () => {
-      return Promise.resolve({
-        features: [responseOsmObject]
-      });
+    Api.addressSuggestions.mockResolvedValue({
+      features: [responseOsmObject]
     });
 
     await wrapper.setProps({
       address: standardAddress()
     });
-    jest.runAllTimers();
+    await jest.runAllTimers();
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.addressSuggestionsRaw).toEqual([responseOsmObject]);
 
