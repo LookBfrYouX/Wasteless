@@ -1,18 +1,18 @@
 <template>
   <!-- this component produces the item card component from the given props -->
-  <div class="container card item-card">
+  <div class="container card item-card" @click="console.log('clicked')"> <!-- TODO add onclick handler and method when components and routes are ready -->
     <div class="row item-title">
       <div class="col-12 p-2">
-        <h1>{{ item.title }}</h1>
+        <h1>{{ item.product.name }}</h1>
       </div>
     </div>
     <div class="row">
       <div class="col-lg-3 col-sm-12 p-2">
         <h3 class="w100">{{ item.totalPrice }}</h3>
-        <p>{{ item.quantity }} units @ ${{ item.pricePerUnit }} each</p>
+        <p>{{ item.quantity }} units @ ${{ item.pricePerItem }} each</p>
       </div>
       <div class="col-9 p-2 item-description">
-        <p>{{ item.description }}</p>
+        <p>{{ item.product.description }}</p>
       </div>
     </div>
     <div class="row item-meta">
@@ -31,12 +31,14 @@ export default {
     item: Object,
   },
   computed: {
+    // A list of dates and their description strings used for the date data.
+    // Only dates that were supplied and not empty are displayed.
     metaValues() {
       let results = [];
-      [{ key: 'Expires On', value: this.item.expiryDate },
-        { key: 'Best Before', value: this.item.bestBeforeDate },
-        { key: 'Manufactured On', value: this.item.manufacturedDate },
-        { key: 'Sell By', value: this.item.sellByDate }].forEach((meta) => {
+      [{ key: 'Expires On', value: this.item.expires },
+        { key: 'Best Before', value: this.item.bestBefore },
+        { key: 'Manufactured On', value: this.item.manufactured },
+        { key: 'Sell By', value: this.item.sellBy }].forEach((meta) => {
         if (meta.value !== null && meta.value !== undefined && meta.value !== "") {
           results.push(meta)
         }
@@ -58,7 +60,7 @@ export default {
 .item-description:after {
   content:"";
   position:absolute;
-  bottom:0px;
+  bottom:0;
   left:0;
   height:60px;
   width:100%;
