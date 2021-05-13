@@ -35,11 +35,13 @@
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
 import SortedPaginatedItemList from "./SortedPaginatedItemList";
-import { helper } from "./../helper";
 import UserListItem from "./UserListItem";
 
-const {Api} = require("./../Api.js");
+import { helper } from "./../helper";
+import { Api } from "./../Api"
 
+
+// Sort options need to be in [{name, sortMethod}] format but since users are simple objects, it has been put in a more compact and easier to edit form and then immediately mapped to the required format
 const sortOptions = Object.entries({
   firstName: 'First Name',
   middleName: 'Middle Name',
@@ -70,11 +72,11 @@ export default {
   },
 
   data() {
-    /* setting intial state */
     return {
       results: [],
       sortOptions,
-      currentSortOption: {...sortOptions[0], revsered: false },
+      // Use first sort option as default
+      currentSortOption: {...sortOptions[0], reversed: false },
       apiErrorMessage: null,
     }
   },

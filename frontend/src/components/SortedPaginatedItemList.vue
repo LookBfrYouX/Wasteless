@@ -45,11 +45,19 @@ To use this component:
         <!-- If margin top used, pushes the sidebar down too so use padding instead -->
         <slot name="title"/>
       </div>
-      <div v-if="items.length" class="row d-block">
-        <button type="button" class="btn btn-info" v-on:click="() => showSortSidebar = true">Sort</button>
-        <div class="float-right">
-          <slot name="right-button"/>
+      <div class="row justify-content-between">
+        <!-- sort by only appears when there are any items but the right button will always appear, and the slot is optional. So that the buttons always stay left/right, need to wrap them in divs -->
+        <div>
+          <button
+            type="button"
+            class="btn btn-info"
+            v-if="items.length"
+            v-on:click="() => showSortSidebar = !showSortSidebar"
+          >
+            Sort
+          </button>
         </div>
+        <div><slot name="right-button"/></div>
       </div>
 
       <div v-if="!items.length" class="row mt-2">

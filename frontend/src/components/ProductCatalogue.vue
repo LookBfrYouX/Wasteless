@@ -1,112 +1,36 @@
 <template>
   <div class="w-100">
-    <div class="w-100">
-      <div class="button-expand-sidebar-wrapper mt-2 mx-2">
-        <button v-if="results.length && !isVisible" class="btn btn-info" type="button"
-                v-on:click="toggleSidebar()">
-          <span>Sort results</span>
-        </button>
-        <!-- create product button doesn't really belong here, but want it aligned with the sort results button -->
-        <button class="btn btn-info float-right" type="button" v-on:click="createProduct">
-          <span>Create Product</span>
-        </button>
-      </div>
-      <div v-if="isVisible" class="overlay w-100 d-md-none" v-on:click="toggleSidebar()"></div>
-      <div v-if="results.length" class="p-relative w-100 d-flex align-items-stretch">
-        <div v-if="isVisible" class="sort-results bg-light">
-          <div class="p-3">
-            <h3 class="d-inline">Sort by</h3>
-            <button class="float-right btn btn-light" type="button" v-on:click="toggleSidebar()">
-              <span>&larr;</span>
-            </button>
-            <ul id="search-headers" class="list-unstyled"
-                v-bind:class='{"table-reversed": reversed}'>
-              <li
-                  v-for="[key, value] in Object.entries({id: 'Product Code', name: 'Name', manufacturer: 'Manufacturer', recommendedRetailPrice: 'RRP', created: 'Created', description: 'Description'})"
-                  v-bind:key="key"
-                  class="mb-1"
-                  v-bind:class='{"current-sort": sortBy==key}'
-                  v-on:click="sortByClicked(key)"
-              > {{ value }}
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div v-if="isVisible" class="overlay w-100 d-md-none" v-on:click="toggleSidebar()"></div>
-        <div class="results-content container d-flex justify-content-end justify-content-md-center">
-          <div class="results-wrapper col-12 col-md-8 mt-5">
-            Displaying {{ this.resultsPerPage * this.pageNum + 1 }} -
-            {{ Math.min(results.length, this.resultsPerPage * (this.pageNum + 1)) }}
-            out of {{ results.length }}
-            <ul class="list-unstyled list-group">
-              <!--viewUser method uses router.push to display profile page-->
-              <li v-for="(product, index) in displayedResults" v-bind:key="index"
-                  class="list-group-item card"
-                  v-on:click="viewProduct(product.id)">
-                <div class="row">
-                  <div class="col-3">
-                    <img
-                        v-if="getThumbnailImage(product.id) != null"
-                        alt="Product Image"
-                        class="image-fluid w-100 rounded-circle"
-                        v-bind:src="getThumbnailImage(product.id)"
-                    >
-                    <img
-                        v-else
-                        alt="Product Image"
-                        class="image-fluid w-100 rounded-circle"
-                        src="./../../assets/images/default-product-thumbnail.svg"
-                    >
-                  </div>
-                  <div class="col-9">
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <h4 class="card-title mb-0">{{ product.name }} (Id: {{ product.id }})</h4>
-                    </div>
-                  </div>
-                </div>
-                <div class="text-muted">Manufacturer: {{ product.manufacturer }}</div>
-                <div class="text-muted">Description: {{ product.description }}</div>
-                <div class="text-muted">RRP: {{
-                    $helper.makeCurrencyString(product.recommendedRetailPrice, currency)
-                  }}
-                </div>
-                <div class="text-muted">Created: {{
-                    $helper.isoToDateString(product.created)
-                  }}
-                </div>
-              </li>
-            </ul>
-            <div aria-label="table-nav" class="mt-2">
-              <ul class="paginate list-unstyled d-flex justify-content-center">
-                <li class="pageItem">
-                  <button v-if="pageNum > 0" class="page-link" name="button" type="button"
-                          v-on:click="pageNum--">Previous
-                  </button>
-                </li>
-                <!--number of buttons scale to amount of pages-->
-                <li v-for="pageNumber in pages.slice(Math.max(0, pageNum - 1), pageNum + 5)"
-                    :key="pageNumber"
-                    class="page-item"
-                    v-bind:class="{'active': pageNum == pageNumber}"
-                >
-                  <button class="page-link" name="button" type="button"
-                          v-on:click="pageNum = pageNumber">{{ pageNumber + 1 }}
-                  </button>
-                </li>
-                <li>
-                  <button v-if="pageNum < pages.length - 1" class="page-link" name="button"
-                          type="button" v-on:click="pageNum++">Next
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div v-if="results.length == 0" class="container pt-4">
-        <h4>No results found</h4>
-      </div>
-    </div>
+    <sorted-paginated-item-list
+      v-bind:items="products"
+      v-bind:sortOptions="sortOptions"
+      v-bind:currentSortOption.sync="currentSortOption"
+    >
+      <template v-slot:title>
+        <h2>Product Catalogue</h2>
+      </template>
+      <template v-slot:right-button>
+        <router-link
+          v-bind:to="{name: 'createProduct', params: { businessId }}"
+          class="btn btn-info"
+        >
+          Create Product
+        </router-link>
+      </template>
+      <template v-slot:item="slotProps">
+        <router-link
+          v-bind:to="{ name: 'productDetail', params: { businessId, productId: slotProps.item.id }}"
+          class="text-decoration-none text-reset"
+        >
+          <product-catalogue-list-item
+            v-bind:product="slotProps.item"
+            v-bind:currency="currency"
+          />
+        </router-link>
+      </template>
+      <template v-slot:no-items>
+        <p>No products found TODO does create prodcut button appear when no items</p>
+      </template>
+    </sorted-paginated-item-list>
     <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error viewing business catalog"
@@ -120,35 +44,36 @@
     </error-modal>
   </div>
 </template>
-
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
 import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
+import SortedPaginatedItemList from "./SortedPaginatedItemList";
+import ProductCatalogueListItem from "./ProductCatalogueListItem";
 
-const {Api} = require("./../Api.js");
+import { helper } from "./../helper";
+import { Api } from "./../Api";
 
-const ProductCatalogue = {
+// Sort options need to be in [{name, sortMethod}] format but since product is a simple object, it has been put in a more compact and easier to edit form and then immediately mapped to the required format
+const sortOptions = Object.entries({
+  id: 'Product Code',
+  name: 'Name',
+  manufacturer: 'Manufacturer',
+  recommendedRetailPrice: 'RRP',
+  created: 'Date Created',
+  // Dates can be sorted as strings in ISO8601 format
+  description: 'Description'
+}).map(([key, name]) => ({
+  name,
+  sortMethod: helper.sensibleSorter(key)
+}));
+
+export default {
   name: "ProductCatalogue",
   components: {
     ErrorModal,
-    NotActingAsBusiness
-  },
-
-  /*has a search prop from app.vue*/
-  data: function () {
-    /* setting intial state */
-    return {
-      results: [],
-      pageNum: 0, // Page number starts from 0 but it will shown as 1 on UI
-      resultsPerPage: this.$constants.PRODUCT_CATALOG.RESULTS_PER_PAGE,
-      highlightedItem: null,
-      pages: [],
-      sortBy: null,
-      reversed: false,
-      isVisible: false,
-      apiErrorMessage: null,
-      currency: null
-    }
+    NotActingAsBusiness,
+    SortedPaginatedItemList,
+    ProductCatalogueListItem
   },
 
   props: {
@@ -158,23 +83,23 @@ const ProductCatalogue = {
     },
   },
 
+  data() {
+    return {
+      products: [],
+      currency: null,
+      sortOptions,
+      // use first sort option as default
+      currentSortOption: { ...sortOptions[0], reversed: false },
+      apiErrorMessage: null,
+    }
+  },
+
   beforeMount: async function () {
     const success = await this.query();
     if (success) await this.loadCurrencies();
   },
 
   methods: {
-    toggleSidebar() {
-      this.isVisible = !this.isVisible;
-    },
-
-    sortByClicked(newSortBy) {
-      if (this.sortBy == newSortBy) {
-        this.reversed = !this.reversed;
-      }
-      this.sortBy = newSortBy;
-    },
-
     /**
      * Loads currency info
      * @return true on success
@@ -208,9 +133,8 @@ const ProductCatalogue = {
         return false;
       }
 
-      let data;
       try {
-        data = (await Api.getProducts(this.businessId)).data;
+        this.products = (await Api.getProducts(this.businessId)).data;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -219,102 +143,11 @@ const ProductCatalogue = {
         return false;
       }
 
-      this.results = this.parseSearchResults(data);
-      this.setPages();
-
       return true;
     },
-
-    parseSearchResults: function (results) {
-      return results;
-    },
-
-    setPages() {
-      /* calculates number of pages which is reliant on resultsPerPage set in the data section*/
-      let numOfPages = Math.ceil(this.results.length / this.resultsPerPage);
-      this.pages = [];
-      for (let i = 0; i < numOfPages; i++) {
-        this.pages.push(i);
-
-      }
-    },
-
-    paginate(results) {
-      // calculates information for results
-      let page = this.pageNum;
-      let resultsPerPage = this.resultsPerPage;
-      let from = page * resultsPerPage;
-      let to = from + resultsPerPage;
-      return results.slice(from, to);
-    },
-
-    createProduct() {
-      this.$router.push("createProduct");
-    },
-
-    /**
-     * Retreive product primary image URL to show as a thumbnail
-     * If no thumbnail image returns null
-     */
-    getThumbnailImage(productId) {
-      const products = this.results;
-      const product = products.find(({id}) => id === productId);
-      if (product && product.images && product.images[0]) {
-        return product.images[0].thumbnailFilename;
-      }
-      return null;
-    },
-
-    /**
-     * Go to product detail page by passing the product id
-     */
-    viewProduct(productId) {
-      this.$router.push({
-        name: "productDetail",
-        params: {
-          businessId: this.businessId,
-          productId
-        }
-      });
-    }
   },
-  computed: {
-    /*computed comes after created*/
-    sortedResults() {
-      if (this.sortBy == null) {
-        return this.results;
-      }
-
-      let formatter = product => {
-        if (product[this.sortBy] == null) {
-          return "";
-        }
-        return product[this.sortBy];
-      }
-
-      return this.results.sort((a, b) => { // sort using this.orderBy
-        return (this.reversed ? -1 : 1) * (formatter(a) > formatter(b) ? 1 : -1);
-      })
-    },
-    // used for for loop in html
-    displayedResults() {
-      return this.paginate(this.sortedResults);
-    },
-  },
-
-  watch: {
-    // /**
-    //  * Watch acting as is switched by clicking navbar dropdown
-    //  */
-    // businessId() {
-    //   this.$helper.goToProfile.bind(this)();
-    // }
-  }
 };
-
-export default ProductCatalogue;
 </script>
-
 <style>
 
 button.page-link {
@@ -324,31 +157,4 @@ button.page-link {
   font-weight: 500;
 }
 
-.button-expand-sidebar-wrapper {
-  position: fixed;
-  left: 0;
-  right: 0;
-  z-index: 910;
-}
-
-.sort-results {
-  width: 200px;
-  position: fixed;
-  height: 100vh;
-  z-index: 999;
-}
-
-.sort-results li.current-sort::after {
-  content: '\2191';
-}
-
-.sort-results .table-reversed li.current-sort::after {
-  content: '\2193';
-}
-
-.overlay {
-  position: fixed;
-  height: 100vh;
-  z-index: 900;
-}
 </style>

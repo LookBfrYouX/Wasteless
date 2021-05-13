@@ -55,17 +55,9 @@ export const constants = {
   ],
 
   LISTS: {
-    RESULTS_PER_PAGE: 10
+    RESULTS_PER_PAGE:1 
   },
-
-  SEARCH_RESULTS: {
-    RESULTS_PER_PAGE: 10
-  },
-
-  PRODUCT_CATALOG: {
-    RESULTS_PER_PAGE: 10
-  },
-
+  
   BUSINESSES: {
     TYPES: [
       "Accommodation and Food Services",
