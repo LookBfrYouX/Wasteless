@@ -2,6 +2,10 @@
  * Module containing constants
  */
 export const constants = {
+  USER: {
+    ADMIN_ROLE: "ROLE_ADMIN"
+  },
+
   SIGN_UP: {
     MIN_AGE: 13
   },
