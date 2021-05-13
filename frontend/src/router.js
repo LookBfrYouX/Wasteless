@@ -144,6 +144,7 @@ export const router = new VueRouter({
   ],
 });
 
+
 /**
  * Sets page title on navigate
  * Uses `route.meta.title`; either a string or function that, given the route, returns a string
@@ -151,6 +152,14 @@ export const router = new VueRouter({
  * To set title after navigate, use the `setDocumentTitle` prop passed to the router component in `App.vue`
  */
 router.afterEach((to) => {
+  
+  // Navbar is static now so when the user clicks a link, close the navbar so it doesn't cover the new content
+  if (document) {
+    const hamburger = document.getElementById("hamburger-button");
+    if (hamburger && !hamburger.classList.contains("collapsed")) {
+      hamburger.click();
+    }
+  }
   Vue.nextTick(() => {
     let title = "Wasteless";
     if (typeof to.meta.title == "string") {
