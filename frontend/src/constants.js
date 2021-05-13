@@ -55,7 +55,7 @@ export const constants = {
   ],
 
   LISTS: {
-    RESULTS_PER_PAGE:1 
+    RESULTS_PER_PAGE: 10
   },
   
   BUSINESSES: {
