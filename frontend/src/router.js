@@ -117,7 +117,7 @@ export const router = new VueRouter({
     },
     {
       name: "inventoryItemEntry",
-      path: "/businesses/:businessId(\\d+)/inventory/addToInventory",
+      path: "/business/:businessId(\\d+)/inventory/add",
       beforeEnter: (to, from, next) => {
         // Only load the page if the user is GAA or business admin
         let business = store.getters.getActingAs()

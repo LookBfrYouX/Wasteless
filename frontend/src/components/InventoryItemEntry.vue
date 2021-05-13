@@ -11,6 +11,11 @@
           </h1>
         </div>
       </div>
+      <div v-if="errorMessage" class="row mt-2">
+          <div class="col">
+            <p class="alert alert-warning">{{ errorMessage }}</p>
+        </div>
+      </div>
       <div class="row">
         <div class="col-12 col-md-6 form-group required">
           <label for="productDropdown">Select product</label>
@@ -30,7 +35,7 @@
               placeholder="Quantity"
               required
               type="number"
-              min="0"
+              min="1"
           />
         </div>
       </div>
@@ -72,6 +77,7 @@
               v-model="manufactured"
               class="form-control"
               maxlength="30"
+              v-bind:max="todayDate"
               name="manufactured"
               placeholder="Manufactured"
               type="date"
@@ -84,6 +90,7 @@
               v-model="sellBy"
               class="form-control"
               maxlength="30"
+              v-bind:min="todayDate"
               name="sellBy"
               placeholder="Sell By"
               type="date"
@@ -98,6 +105,7 @@
               v-model="bestBefore"
               class="form-control"
               maxlength="30"
+              v-bind:min="todayDate"
               name="bestBefore"
               placeholder="Best before"
               type="date"
@@ -110,6 +118,7 @@
               v-model="expires"
               class="form-control"
               maxlength="30"
+              v-bind:min="todayDate"
               name="expires"
               required
               placeholder="Expires"
@@ -123,16 +132,33 @@
         </div>
       </div>
     </form>
+    <error-modal
+        title="Error fetching business products"
+        v-bind:goBack="false"
+        v-bind:hideCallback="() => apiErrorMessage = null"
+        v-bind:refresh="true"
+        v-bind:retry="this.populateDropdown"
+        v-bind:show="apiErrorMessage !== null"
+    >
+      <p>{{ apiErrorMessage }}</p>
+    </error-modal>
   </div>
 </template>
 
 <script>
 const {Api} = require("./../Api.js");
+import ErrorModal from "./Errors/ErrorModal";
 
 export default {
   name: "InventoryItemEntry",
+  components: {
+    ErrorModal
+  },
+
   data() {
     return {
+      todayDate: null,
+      apiErrorMessage: null,
       product: null,
       quantity: null,
       pricePerItem: null,
@@ -143,6 +169,7 @@ export default {
       expires: null,
       products: null,
       currency: null,
+      errorMessage: null,
     }
   },
   props: {
@@ -151,11 +178,13 @@ export default {
       required: true
     },
   },
-  mounted() {
-    this.setDateInputs();
-    this.populateDropdown();
-    return this.currencyPipeline();
+
+  beforeMount: async function() {
+    this.setDateInputs(new Date());
+    await this.populateDropdown();
+    await this.currencyPipeline();
   },
+
   computed: {
     currencyText() {
       if (this.currency == null) {
@@ -176,8 +205,6 @@ export default {
         if (await Api.handle401.call(this, err)) {
           return;
         }
-        this.apiErrorMessage = err.userFacingErrorMessage;
-
       }
     },
     async addItem() {
@@ -191,14 +218,13 @@ export default {
         "bestBefore": this.bestBefore,
         "expires": this.expires,
       }
-      alert(JSON.stringify(data));
 
-      // TODO: Uncomment below when controller is added, need to catch its errors and load new page
-      // let response = await Api.addItemToInventory(this.businessId, data);
-      // console.log(JSON.stringify(response));
+      await Api.addItemToInventory(this.businessId, data)
+      .catch((error) => {
+        this.errorMessage=error.userFacingErrorMessage
+      });
     },
-    setDateInputs() {
-      let today = new Date();
+    setDateInputs(today) {
       let dd = today.getDate();
       let mm = today.getMonth() + 1;
       let yyyy = today.getFullYear();
@@ -208,17 +234,12 @@ export default {
       if (mm < 10) {
         mm = '0' + mm
       }
-      let dateString = yyyy + '-' + mm + '-' + dd
-
-      // Is there a better way to do this?
-      document.getElementById("expires").setAttribute("min", dateString);
-      document.getElementById("bestBefore").setAttribute("min", dateString);
-      document.getElementById("sellBy").setAttribute("min", dateString);
-      document.getElementById("manufactured").setAttribute("max", dateString);
+      this.todayDate = yyyy + '-' + mm + '-' + dd;
     },
     async populateDropdown() {
-      let response = await Api.getProducts(this.businessId);
-      this.products = response.data;
+      await Api.getProducts(this.businessId)
+      .then(({data}) => this.products = data)
+      .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
     }
   }
 }
