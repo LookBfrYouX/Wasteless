@@ -1,18 +1,21 @@
 <template>
   <!-- this component produces the item card component from the given props -->
   <div class="container card item-card" @click="console.log('clicked')"> <!-- TODO add onclick handler and method when components and routes are ready -->
-    <div class="row item-title">
-      <div class="col-12 p-2">
-        <h1>{{ item.product.name }}</h1>
-      </div>
-    </div>
     <div class="row">
+      <div class="col-md-3 col-sm-12 p-2">
+        <img class="img-fluid item-image" src="./../../../assets/images/default-product-thumbnail.svg" alt="Image" />
+      </div>
+      <div class="col-9">
+        <div class="col-12 p-2">
+          <h1>{{ item.product.name }}</h1>
+        </div>
+        <div class="col-12 p-2 item-description">
+          <p>{{ item.product.description }}</p>
+        </div>
+      </div>
       <div class="col-lg-3 col-sm-12 p-2">
         <h3 class="w100">{{ item.totalPrice }}</h3>
         <p>{{ item.quantity }} units @ ${{ item.pricePerItem }} each</p>
-      </div>
-      <div class="col-9 p-2 item-description">
-        <p>{{ item.product.description }}</p>
       </div>
     </div>
     <div class="row item-meta">
@@ -50,6 +53,9 @@ export default {
 </script>
 
 <style scoped>
+.item-image {
+  max-width: 120px;
+}
 .item-meta {
   font-size: 0.7em;
 }
