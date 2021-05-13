@@ -145,9 +145,8 @@ export default {
   beforeDestroy() {
     if (this.modal) {
       this.modal.modal("hide"); // If navigation occurs while modal open, modal disapears but body has the modal open class
-      // Wait for modal to completely disapear, then hide modal
-      this.modal.on("hidden.bs.modal", () => this.modal.modal("dispose"));
     }
+    this.modal.modal("dispose"); // dipose of the modal
   }
 
 }
