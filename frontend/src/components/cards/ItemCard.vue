@@ -1,26 +1,31 @@
 <template>
   <!-- this component produces the item card component from the given props -->
-  <div class="container card item-card" @click="console.log('clicked')"> <!-- TODO add onclick handler and method when components and routes are ready -->
+  <div class="container card item-card p-2" data-toggle="collapse" data-target="#hidden" @click="console.log('clicked')"> <!-- TODO add onclick handler and method when components and routes are ready -->
     <div class="row">
-      <div class="col-md-2 col-sm-12 p-2 w-100">
-        <img class="img-fluid item-image" src="./../../../assets/images/default-product-thumbnail.svg" alt="Image" />
+      <div class="col-2 pr-0">
+        <img class="img-fluid item-image" src="./../../../assets/images/login.jpg" alt="Image" />
       </div>
-      <div class="col-10 w-100">
-        <div class="col-12 p-2 item-title">
-          <h1>{{ item.product.name }}</h1>
+      <div class="col-10">
+        <div class="item-title">
+          <h1 class="text-truncate mb-0">{{ item.product.name }}</h1>
         </div>
-        <div class="col-12 p-2 item-description w-100">
-          <p>{{ item.product.description }}</p>
-        </div>
-      </div>
-      <div class="col-lg-3 col-sm-12 p-2 w-100">
-        <h3 class="w100">{{ item.totalPrice }}</h3>
-        <p>{{ item.quantity }} units @ ${{ item.pricePerItem }} each</p>
       </div>
     </div>
-    <div class="row item-meta">
-      <div v-for="(meta, index) in metaValues" v-bind:key="index" class="col-xl-3 col-lg-3 col-sm-6 p-2">
-        <i>{{ meta.key }}:</i> {{ meta.value }}
+
+    <div class="row collapse" id="hidden">
+      <div class="col-10 offset-2">
+        <div class="d-flex flex-wrap align-items-baseline w-100">
+          <h3 class="mb-0 mr-3">{{ item.totalPrice }}</h3>
+          <p class="mb-0">{{ item.quantity }} units @ ${{ item.pricePerItem }} each</p>
+        </div>
+        <div class="item-description w-100">
+          <div class="py-2">{{ item.product.description }}</div>
+        </div>
+        <div class="row">
+          <div v-for="(meta, index) in metaValues" v-bind:key="index" class="col-sm-6 col-md-3 item-meta">
+            <i>{{ meta.key }}:</i> {{ meta.value }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -59,36 +64,11 @@ export default {
   transition: 0.25s;
   transform: translateX(10px);
 }
-.item-image {
-  max-width: 120px;
-}
 .item-meta {
   font-size: 0.7em;
 }
-.item-description {
-  max-height: 120px;
-  overflow: hidden;
+.item-image {
+  max-height: 48px;
 }
-.item-description:after {
-  content:"";
-  position:absolute;
-  bottom:0;
-  left:0;
-  height:60px;
-  width:100%;
-  background: linear-gradient(rgba(0,0,0,0), #FFF);
-}
-.item-title {
-  max-height: 80px;
-  overflow: hidden;
-}
-.item-title:after {
-  content:"";
-  position:absolute;
-  top:40px;
-  left:0;
-  height:40px;
-  width:100%;
-  background: linear-gradient(rgba(0,0,0,0), #FFF);
-}
+
 </style>

@@ -27,6 +27,8 @@ describe("displays on the valid dates test", () => {
         expect(wrapper.text()).toContain('beans');
         expect(wrapper.text()).toContain('Yummy beans');
         expect(wrapper.text()).toContain('Manufactured On');
+        // metaValue is a computer attribute that takes the four dates and only returns the list of those that
+        // actually contain values (i.e. are not undefined, null, or empty strings)
         expect(ItemCard.computed.metaValues.call({ item: inventoryItem })).toHaveLength(2);
     })
 });
