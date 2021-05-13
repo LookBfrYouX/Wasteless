@@ -28,7 +28,7 @@
         </router-link>
       </template>
       <template v-slot:no-items>
-        <p>No products found TODO does create prodcut button appear when no items</p>
+        <p>No products found. Why not add one?</p>
       </template>
     </sorted-paginated-item-list>
     <not-acting-as-business v-bind:businessId="businessId"/>
