@@ -10,7 +10,7 @@ const inventoryItem = {
     },
     quantity: 5,
     pricePerItem: 4,
-    totalPrice: 20,
+    totalPrice: '$20 NZD',
     manufactured: '2021-04-24',
     sellBy: null,
     bestBefore: null,

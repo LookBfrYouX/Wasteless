@@ -6,7 +6,7 @@
         <img class="img-fluid item-image" src="./../../../assets/images/default-product-thumbnail.svg" alt="Image" />
       </div>
       <div class="col-9">
-        <div class="col-12 p-2">
+        <div class="col-12 p-2 item-title">
           <h1>{{ item.product.name }}</h1>
         </div>
         <div class="col-12 p-2 item-description">
