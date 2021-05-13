@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container mt-2">
     <form class="slightly-transparent-inputs"
           method="POST"
           v-on:submit.prevent="addItem"
@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-6 form-group required">
+        <div class="col-12 col-md-6 form-group required">
           <label for="productDropdown">Select product</label>
           <select required class="form-control" id="productDropdown" v-model="product">
             <option v-for="product in products" :key="product.id" v-bind:value="product">
@@ -20,7 +20,7 @@
             </option>
           </select>
         </div>
-        <div class="col-6 form-group required">
+        <div class="col-12 col-md-6 form-group required">
           <label for="quantity">Quantity</label>
           <input
               id="quantity"
@@ -35,7 +35,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-6 form-group">
+        <div class="col-12 col-md-6 form-group">
           <label for="pricePerItem">Price per item {{ currencyText }}</label>
           <input
               id="pricePerItem"
@@ -49,7 +49,7 @@
               v-bind:placeholder="currencyText"
           />
         </div>
-        <div class="col-6 form-group">
+        <div class="col-12 col-md-6 form-group">
           <label for="totalPrice">Total price {{ currencyText }}</label>
           <input
               id="totalPrice"
@@ -65,7 +65,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-6 form-group">
+        <div class="col-12 col-md-6 form-group">
           <label for="manufactured">Manufactured</label>
           <input
               id="manufactured"
@@ -77,7 +77,7 @@
               type="date"
           />
         </div>
-        <div class="col-6 form-group">
+        <div class="col-12 col-md-6 form-group">
           <label for="sellBy">Sell By</label>
           <input
               id="sellBy"
@@ -91,7 +91,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-6 form-group">
+        <div class="col-12 col-md-6 form-group">
           <label for="bestBefore">Best before</label>
           <input
               id="bestBefore"
@@ -103,7 +103,7 @@
               type="date"
           />
         </div>
-        <div class="col-6 form-group required">
+        <div class="col-12 col-md-6 form-group required">
           <label for="expires">Expires</label>
           <input
               id="expires"
@@ -223,9 +223,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.container {
-  margin-top: 10px;
-}
-</style>
