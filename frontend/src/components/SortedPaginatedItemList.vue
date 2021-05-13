@@ -216,9 +216,13 @@ export default {
 </script>
 <style scoped>
 .sort-sidebar {
-  z-index: 100;
+  z-index: 9;
   position: fixed;
   height: 100vh;
+
+  /*content has padding-top that is approximately the height of the navbar, but can sometimes be a bit too much. Add negative margin so that the background of the sidebar intersects with the navbar (but goes behind it) */
+  margin-top: -1em;
+  padding-top: 1em;
   /* WARNING: content overflows past the bottom of the screen if it is there is too much content */
   width: min(80%, 20em);
 }

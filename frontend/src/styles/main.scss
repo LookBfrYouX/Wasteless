@@ -12,6 +12,10 @@
 @import "./material-icons.scss";
 @import "./fonts.scss";
 
+.main-content {
+  padding-top: 65px;
+  // transform: translateY(55px)
+}
 
 // Fonts
 h1 {
@@ -31,7 +35,17 @@ nav {
     text-decoration: underline;
     color: black;
   }
+
+  @include media-breakpoint-up(lg) {
+    // if business/user name is short the dropdown menu cuts cut off by the right edger of the screen (on large screens)
+    .dropdown-menu {
+      right: 0;
+      left: inherit;
+    }
+  }
 }
+
+
 
 // Profile page
 .image-upload-button {
