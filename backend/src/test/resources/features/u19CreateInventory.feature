@@ -1,20 +1,20 @@
 Feature: U19 Create Inventory
 
   Background:
-    Given these users exist
+    Given these users all exist
       | emailAddress     | password          | firstName |
       | Bobby@email.test | TestUserPassword1 | Bob       |
       | Tim@email.test   | TestUserPassword2 | Tim       |
 
   Scenario: AC1 - Accessing the inventory
-    Given "Bobby@email.test" administers a business "Bobbys Barnacles" with an inventory item "barnacles"
-    When "Bobby@email.test" is logged in with password "TestUserPassword1"
-    And He tries to access his business called "Bobbys Barnacles" inventory
-    Then The inventory item "barnacles" is displayed
+#    Given "Bobby@email.test" administers a business "Bobbys Barnacles" with an inventory item "barnacles"
+#    When "Bobby@email.test" is logged in with password "TestUserPassword1"
+#    And He tries to access his business called "Bobbys Barnacles" inventory
+#    Then The inventory item "barnacles" is displayed
 
-    When "Tim@email.test" is logged in with password "TestUserPassword2"
-    And He tries to access another business called "Bobbys Barnacles" inventory
-    Then An error is thrown with message "Insufficient Privileges"
+#    When "Tim@email.test" is logged in with password "TestUserPassword2"
+#    And He tries to access another business called "Bobbys Barnacles" inventory
+#    Then An error is thrown with message "Insufficient Privileges"
 
 
 #AC2: I can add entries to the inventory of my business.  Each represents one or more physical product items.
