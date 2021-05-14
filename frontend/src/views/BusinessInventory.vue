@@ -17,7 +17,7 @@
       <!--<business-listing v-bind:listing="slotProps.item"/> -->
     </sorted-paginated-item-list>
     <error-modal
-      title="Error viewing listings"
+      title="Error viewing inventory"
       v-bind:goBack="false"
       v-bind:hideCallback="() => apiErrorMessage = null"
       v-bind:refresh="true"
