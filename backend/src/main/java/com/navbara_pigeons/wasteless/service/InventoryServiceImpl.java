@@ -53,9 +53,7 @@ public class InventoryServiceImpl implements InventoryService {
     if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
       ArrayList<BasicInventoryDto> inventory = new ArrayList<>();
       Business business = businessDao.getBusinessById(businessId);
-      System.out.println(business);
       for (Inventory inventoryItem : business.getInventory()) {
-        System.out.println("test");
         System.out.println(inventoryItem);
         inventory.add(new BasicInventoryDto(inventoryItem, publicPathPrefix));
       }
