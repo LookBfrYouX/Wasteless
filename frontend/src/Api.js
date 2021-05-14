@@ -299,7 +299,6 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any> | void>}
    */
   addItemToInventory: (businessId, item) => {
-    console.log("In API");
     return instance.post(
         `/businesses/${businessId}/inventory/`, item)
     .catch(error => {
