@@ -298,6 +298,11 @@ export const Api = {
       });
     })
   },
+  /**
+   * Get the businesses Inventory from API
+   * @param businessId The id of the business
+   * @returns {Promise<AxiosResponse<any>>} Promise containing the inventory
+   */
   getBusinessInventory: businessId => {
     return instance.get(`/businesses/${businessId}/inventory`).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
