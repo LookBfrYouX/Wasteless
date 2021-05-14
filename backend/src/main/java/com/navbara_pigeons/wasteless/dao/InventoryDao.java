@@ -8,6 +8,6 @@ public interface InventoryDao {
 
   Inventory getInventoryItem(long businessId) throws InventoryItemNotFoundException;
 
-  List<Inventory> getBusinessesInventory(long businessId);
+  List<Inventory> getBusinessesInventory(long businessId) throws InventoryItemNotFoundException;
 
 }

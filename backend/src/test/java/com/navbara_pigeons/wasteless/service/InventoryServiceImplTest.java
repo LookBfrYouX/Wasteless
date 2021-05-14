@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
@@ -49,7 +50,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   public void getInventory_isBusinessAdmin()
-      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException {
+      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
@@ -73,7 +74,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
     List<Inventory> inventoryItemList = new ArrayList<>();
     inventoryItemList.add(inventoryItem);
-    when(inventoryDaoMock.getBusinessesInventory(business.getId())).thenReturn(inventoryItemList);
+//    when(inventoryDaoMock.getBusinessesInventory(business.getId())).thenReturn(inventoryItemList);
 
     List<BasicInventoryDto> inventory = inventoryService.getInventory(business.getId());
 
@@ -96,7 +97,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   @Test
   @WithMockUser(authorities = {"ADMIN"})
   public void getInventory_isAdmin()
-      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException {
+      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
@@ -120,7 +121,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
     List<Inventory> inventoryItemList = new ArrayList<>();
     inventoryItemList.add(inventoryItem);
-    when(inventoryDaoMock.getBusinessesInventory(business.getId())).thenReturn(inventoryItemList);
+//    when(inventoryDaoMock.getBusinessesInventory(business.getId())).thenReturn(inventoryItemList);
 
     List<BasicInventoryDto> inventory = inventoryService.getInventory(business.getId());
 

@@ -46,12 +46,18 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
     return inventory;
   }
 
-  public List<Inventory> getBusinessesInventory(long businessId) {
-    System.out.println("test4");
+  public List<Inventory> getBusinessesInventory(long businessId)
+      throws InventoryItemNotFoundException {
     Session currentSession = getSession();
-    Query query = currentSession.createQuery("SELECT * FROM INVENTORY WHERE BUSINESS_ID = :businessId");
+    Query query = currentSession.createQuery("select id FROM inventory WHERE BUSINESS_ID = :businessId");
     query.setParameter("businessId", businessId);
-    List<Inventory> inventory = query.getResultList();
+    List<Inventory> inventory = new ArrayList<>();
+    List temp = query.getResultList();
+    System.out.println("testt");
+    for (Object id : temp) {
+      System.out.println(id);
+//      inventory.add(getInventoryItem());
+    }
     System.out.println(inventory);
     return inventory;
   }

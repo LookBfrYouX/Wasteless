@@ -9,6 +9,7 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 public class InventoryServiceImpl implements InventoryService {
 
   private final InventoryDao inventoryDao;
+  private final BusinessDao businessDao;
   private final UserService userService;
   private final BusinessService businessService;
 
@@ -34,8 +36,9 @@ public class InventoryServiceImpl implements InventoryService {
    * interacting with all business related services.
    */
   @Autowired
-  public InventoryServiceImpl(InventoryDao inventoryDao, UserService userService, BusinessService businessService) {
+  public InventoryServiceImpl(InventoryDao inventoryDao, BusinessDao businessDao, UserService userService, BusinessService businessService) {
     this.inventoryDao = inventoryDao;
+    this.businessDao = businessDao;
     this.userService = userService;
     this.businessService = businessService;
   }
@@ -51,9 +54,13 @@ public class InventoryServiceImpl implements InventoryService {
    */
   @Override
   public List<BasicInventoryDto> getInventory(long businessId)
-      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
+      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InventoryItemNotFoundException {
     if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
       ArrayList<BasicInventoryDto> inventory = new ArrayList<>();
+//      Business business = businessDao.getBusinessById(businessId);
+//      for (Inventory inventoryItem : business.getInventory()) {
+//        inventory.add(new BasicInventoryDto(inventoryItem, publicPathPrefix));
+//      }
       for (Inventory inventoryItem : this.inventoryDao.getBusinessesInventory(businessId)) {
         inventory.add(new BasicInventoryDto(inventoryItem, publicPathPrefix));
       }
