@@ -49,12 +49,11 @@ public class InventoryServiceImpl implements InventoryService {
    */
   @Override
   public List<BasicInventoryDto> getInventory(long businessId)
-      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InventoryItemNotFoundException {
+      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
     if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
       ArrayList<BasicInventoryDto> inventory = new ArrayList<>();
       Business business = businessDao.getBusinessById(businessId);
       for (Inventory inventoryItem : business.getInventory()) {
-        System.out.println(inventoryItem);
         inventory.add(new BasicInventoryDto(inventoryItem, publicPathPrefix));
       }
       return inventory;
