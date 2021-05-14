@@ -1,5 +1,8 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import com.navbara_pigeons.wasteless.dto.BasicImageDto;
+import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
+import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
 import lombok.Data;
@@ -45,5 +48,21 @@ public class Inventory {
 
     @Column(name = "BEST_BEFORE")
     private ZonedDateTime bestBefore;
+
+    public Inventory(BasicInventoryDto inventory) {
+        this.id = inventory.getId();
+        this.product = new Product(inventory.getProduct());
+        this.quantity = inventory.getQuantity();
+        this.pricePerItem = inventory.getPricePerItem();
+        this.totalPrice = inventory.getTotalPrice();
+        this.expires = inventory.getExpires();
+        this.manufactured = inventory.getManufactured();
+        this.sellBy = inventory.getSellBy();
+        this.bestBefore = inventory.getBestBefore();
+    }
+
+    public Inventory() {
+
+    }
 
 }

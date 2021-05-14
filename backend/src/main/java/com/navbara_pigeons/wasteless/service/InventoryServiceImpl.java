@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
+import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class InventoryServiceImpl implements InventoryService {
 
-  private final BusinessDao businessDao;
+  private final InventoryDao inventoryDao;
   private final UserService userService;
   private final BusinessService businessService;
 
@@ -33,8 +34,8 @@ public class InventoryServiceImpl implements InventoryService {
    * interacting with all business related services.
    */
   @Autowired
-  public InventoryServiceImpl(BusinessDao businessDao, UserService userService, BusinessService businessService) {
-    this.businessDao = businessDao;
+  public InventoryServiceImpl(InventoryDao inventoryDao, UserService userService, BusinessService businessService) {
+    this.inventoryDao = inventoryDao;
     this.userService = userService;
     this.businessService = businessService;
   }
@@ -52,9 +53,8 @@ public class InventoryServiceImpl implements InventoryService {
   public List<BasicInventoryDto> getInventory(long businessId)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
     if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
-      Business business = businessDao.getBusinessById(businessId);
       ArrayList<BasicInventoryDto> inventory = new ArrayList<>();
-      for (Inventory inventoryItem : business.getInventory()) {
+      for (Inventory inventoryItem : this.inventoryDao.getBusinessesInventory(businessId)) {
         inventory.add(new BasicInventoryDto(inventoryItem, publicPathPrefix));
       }
       return inventory;
