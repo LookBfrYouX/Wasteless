@@ -1,12 +1,12 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
-import com.navbara_pigeons.wasteless.dao.ProductDao;
-import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,11 +49,14 @@ public class InventoryServiceImpl implements InventoryService {
    */
   @Override
   public List<BasicInventoryDto> getInventory(long businessId)
-      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
+      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InventoryItemNotFoundException {
     if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
-      Business business = businessDao.getBusinessById(businessId);
       ArrayList<BasicInventoryDto> inventory = new ArrayList<>();
-      for (InventoryItem inventoryItem : business.getInventory()) {
+      Business business = businessDao.getBusinessById(businessId);
+      System.out.println(business);
+      for (Inventory inventoryItem : business.getInventory()) {
+        System.out.println("test");
+        System.out.println(inventoryItem);
         inventory.add(new BasicInventoryDto(inventoryItem, publicPathPrefix));
       }
       return inventory;
