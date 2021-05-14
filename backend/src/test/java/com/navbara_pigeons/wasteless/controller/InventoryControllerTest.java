@@ -58,4 +58,29 @@ public class InventoryControllerTest extends ControllerTestProvider {
     when(inventoryServiceMock.getInventory(-1)).thenThrow(BusinessNotFoundException.class);
     mockMvc.perform(get(endpointUrl)).andExpect(status().is(406));
   }
+
+  @Test
+  @WithMockUser
+  void asUser_addInventoryItem_expectOk() {
+    // TODO
+  }
+
+  @Test
+  @WithAnonymousUser
+  void asAnon_addInventoryItem_expectForbidden() {
+    // TODO
+  }
+
+  @Test
+  @WithMockUser
+  void asUser_addInventoryItemToNonExistingBusiness_expectNotFound() {
+    // TODO
+  }
+
+  @Test
+  @WithUserDetails(value = "mbi47@uclive.ac.nz")
+  void asSpecificUser_addInventoryItemToOtherUsersBusiness_expectForbidden() {
+    //TODO
+  }
+
 }
