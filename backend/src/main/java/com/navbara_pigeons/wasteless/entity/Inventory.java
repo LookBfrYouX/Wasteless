@@ -1,10 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
-import com.navbara_pigeons.wasteless.dto.BasicImageDto;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
-import com.navbara_pigeons.wasteless.dto.BasicProductDto;
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.Product;
 import lombok.Data;
 
 import javax.persistence.*;
