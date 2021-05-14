@@ -62,7 +62,7 @@
               class="form-control"
               name="totalPrice"
               type="number"
-              min="0.01"
+              v-bind:min="pricePerItem * quantity"
               step="0.01"
               max="9999.99"
               v-bind:placeholder="currencyText"
