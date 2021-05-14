@@ -31,7 +31,6 @@
         <p>No products found. Why not add one?</p>
       </template>
     </sorted-paginated-item-list>
-    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error viewing business catalog"
         v-bind:goBack="false"
@@ -46,7 +45,6 @@
 </template>
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
-import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 import SortedPaginatedItemList from "./SortedPaginatedItemList";
 import ProductCatalogueListItem from "./ProductCatalogueListItem";
 
@@ -71,7 +69,6 @@ export default {
   name: "ProductCatalogue",
   components: {
     ErrorModal,
-    NotActingAsBusiness,
     SortedPaginatedItemList,
     ProductCatalogueListItem
   },
