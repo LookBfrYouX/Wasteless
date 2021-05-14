@@ -4,7 +4,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-public class U19InventoryStepdefs {
+public class U19InventoryStepdefs extends CucumberTestProvider {
     @Given("My business has an item called {string}")
     public void myBusinessHasAnItemCalled(String item) {
     }
