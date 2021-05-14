@@ -2,7 +2,7 @@
   <div id="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <!-- Title -->
-      <a class="navbar-brand" href="javascript:" v-on:click="pushOrGo('home')">Navbara Pigeon</a>
+      <a class="navbar-brand" href="javascript:" v-on:click="homeButtonClicked()">Navbara Pigeon</a>
       <!-- Hamburger button -->
       <button
           aria-controls="navbarSupportedContent"
@@ -214,6 +214,17 @@ export default {
       this.$stateStore.actions.setActingAs(business);
       // Must set business after redirecting as some pages do not like it if a 
       // user accesses a business page they are not an admin of
+    },
+
+    /**
+     * Redirects to 'home' if logged in, '/' otherwise
+     */
+    homeButtonClicked() {
+      if (this.$stateStore.getters.isLoggedIn()) {
+        this.pushOrGo('home');
+      } else {
+        this.pushOrGo('landing');
+      }
     },
 
     /**
