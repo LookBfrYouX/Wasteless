@@ -6,7 +6,6 @@ import { Api } from "./../Api";
 import { globalStateMocks } from "./testHelper";
 import SortedPaginatedItemList from "../components/SortedPaginatedItemList";
 import {ApiRequestError} from "../ApiRequestError";
-Api.getBusinessListings = jest.fn();
 
 let wrapper;
 beforeEach(() => {
@@ -32,10 +31,10 @@ describe("API handling", () => {
   });
 
 
-  test("Error", async () => {
+  test("API returns error", async () => {
     const message = "It's a Mario!";
-    Api.getBusinessListings.mockImplementation(() => Promise.resolve(new ApiRequestError(message)));
+    Api.getBusinessListings.mockImplementation(() => Promise.reject(new ApiRequestError(message)));
     await wrapper.vm.getListingsPipeline();
-    expect(wrapper.vm.errorMessage).toEqual(message);
+    expect(wrapper.vm.apiErrorMessage).toEqual(message);
   });
 });
