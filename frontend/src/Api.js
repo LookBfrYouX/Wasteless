@@ -291,11 +291,34 @@ export const Api = {
     });
   },
 
+  /**
+   * Gets all listings for a given business
+   * @param {*} businessId id of the business to get listings for
+   * @returns axios response or ApiRequestError
+   */
   getBusinessListings: businessId => {
     return instance.get(`/business/${businessId}/listings`).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
       });
     })
+  },
+
+  /**
+   * Adds product and extra info to businesses inventory
+   *
+   * @param businessId of the business the item will be added to
+   * @param item to be added to the businesses inventory
+   * @returns {Promise<AxiosResponse<any> | void>}
+   */
+  addItemToInventory: (businessId, item) => {
+    return instance.post(
+        `/businesses/${businessId}/inventory/`, item)
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        400: "Bad request: Invalid data supplied",
+        403: "Forbidden: Insufficient privileges"
+      });
+    });
   }
 }

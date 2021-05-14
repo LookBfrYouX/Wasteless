@@ -123,7 +123,6 @@
 
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
-import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 
 const {Api} = require("./../Api.js");
 
@@ -131,7 +130,6 @@ const ProductCatalogue = {
   name: "ProductCatalogue",
   components: {
     ErrorModal,
-    NotActingAsBusiness
   },
 
   /*has a search prop from app.vue*/
