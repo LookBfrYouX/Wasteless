@@ -2,10 +2,11 @@
   <div ref="modal" class="modal fade">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
+        <button class="btn btn-danger d-flex p-0 justify-content-center align-items-center rounded-circle close-button" type="button" v-on:click="hideCallback">
+        <span class="material-icons">close</span>
+      </button>
         <div class="modal-header">
           <h4 class="modal-title">{{ title }}</h4>
-          <button class="close" type="button" v-on:click="hideCallback">
-          </button>
         </div>
         <div class="modal-body">
           <slot></slot>
@@ -25,6 +26,15 @@
     </div>
   </div>
 </template>
+<style scoped>
+.close-button {
+  position: absolute;
+  top: -0.5em;
+  right: -0.5em;
+  height: 1.5em;
+  width: 1.5em;
+}
+</style>
 <script>
 // When there's an unrecoverable error, but not a 404
 
@@ -145,9 +155,8 @@ export default {
   beforeDestroy() {
     if (this.modal) {
       this.modal.modal("hide"); // If navigation occurs while modal open, modal disapears but body has the modal open class
-      // Wait for modal to completely disapear, then hide modal
-      this.modal.on("hidden.bs.modal", () => this.modal.modal("dispose"));
     }
+    this.modal.modal("dispose"); // dipose of the modal
   }
 
 }

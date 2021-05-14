@@ -148,13 +148,3 @@ export default {
   },
 };
 </script>
-<style>
-
-button.page-link {
-  display: inline-block;
-  font-size: 20px;
-  color: #29b3ed;
-  font-weight: 500;
-}
-
-</style>

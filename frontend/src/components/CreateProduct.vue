@@ -112,14 +112,12 @@
 
 <script>
 import {ApiRequestError} from '../ApiRequestError';
-import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 import ErrorModal from "./Errors/ErrorModal";
 
 const {Api} = require("./../Api.js");
 
 export default {
   components: {
-    NotActingAsBusiness,
     ErrorModal
   },
 

@@ -266,7 +266,7 @@ export default {
 
 .item-card:hover {
   transform: scale(1.01);
-  z-index: 10;
+  z-index: 7;
   /* Without this, it appears below the card below it when the card gets larger and intersects with its neighbouring cards*/
   background-color: white;
   box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.05);
