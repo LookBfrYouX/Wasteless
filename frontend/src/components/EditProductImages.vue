@@ -99,7 +99,6 @@
 </style>
 <script>
 import ErrorModal from './Errors/ErrorModal.vue';
-import NotActingAsBusiness from "./Errors/NotActingAsBusiness";
 import {ApiRequestError} from "./../ApiRequestError";
 
 const {Api} = require("./../Api");
@@ -108,7 +107,6 @@ export default {
   name: 'editProductImages',
   components: {
     ErrorModal,
-    NotActingAsBusiness
   },
 
   data() {
