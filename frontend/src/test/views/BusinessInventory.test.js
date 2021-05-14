@@ -2,6 +2,7 @@ import BusinessInventory from "../../views/BusinessInventory";
 import {shallowMount} from "@vue/test-utils";
 import {Api} from "../../Api";
 import {ApiRequestError} from "../../ApiRequestError";
+import {globalStateMocks} from "../testHelper";
 
 // The possible error messages that can the API can respond with
 const errorMessages = {
@@ -26,14 +27,18 @@ const testData = [
 
 // Mock the API response
 Api.getBusinessInventory = jest.fn();
+let wrapper;
 
-// Mount the component to test
-const wrapper = shallowMount(BusinessInventory,
+// Mount the component and give access to mocked state
+beforeEach(() => {
+  wrapper = shallowMount(BusinessInventory,
     {
       propsData: {
         businessId: 1
-      }
+      },
+      mocks: {...globalStateMocks()}
     });
+});
 
 describe("Test getting Inventory from the API", () => {
   test("Test successful handling of API response", async () => {
