@@ -1,9 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
-import com.navbara_pigeons.wasteless.dao.InventoryDao;
-import com.navbara_pigeons.wasteless.dao.ProductDao;
-import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Inventory;
@@ -23,7 +20,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class InventoryServiceImpl implements InventoryService {
 
-  private final InventoryDao inventoryDao;
   private final BusinessDao businessDao;
   private final UserService userService;
   private final BusinessService businessService;
@@ -36,8 +32,7 @@ public class InventoryServiceImpl implements InventoryService {
    * interacting with all business related services.
    */
   @Autowired
-  public InventoryServiceImpl(InventoryDao inventoryDao, BusinessDao businessDao, UserService userService, BusinessService businessService) {
-    this.inventoryDao = inventoryDao;
+  public InventoryServiceImpl(BusinessDao businessDao, UserService userService, BusinessService businessService) {
     this.businessDao = businessDao;
     this.userService = userService;
     this.businessService = businessService;
@@ -57,11 +52,11 @@ public class InventoryServiceImpl implements InventoryService {
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InventoryItemNotFoundException {
     if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
       ArrayList<BasicInventoryDto> inventory = new ArrayList<>();
-//      Business business = businessDao.getBusinessById(businessId);
-//      for (Inventory inventoryItem : business.getInventory()) {
-//        inventory.add(new BasicInventoryDto(inventoryItem, publicPathPrefix));
-//      }
-      for (Inventory inventoryItem : this.inventoryDao.getBusinessesInventory(businessId)) {
+      Business business = businessDao.getBusinessById(businessId);
+      System.out.println(business);
+      for (Inventory inventoryItem : business.getInventory()) {
+        System.out.println("test");
+        System.out.println(inventoryItem);
         inventory.add(new BasicInventoryDto(inventoryItem, publicPathPrefix));
       }
       return inventory;

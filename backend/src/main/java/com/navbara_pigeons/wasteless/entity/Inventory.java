@@ -24,10 +24,6 @@ public class Inventory {
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 
-    @OneToOne()
-    @JoinColumn(name = "BUSINESS_ID")
-    private Business business;
-
     @Column(name = "QUANTITY")
     private long quantity;
 

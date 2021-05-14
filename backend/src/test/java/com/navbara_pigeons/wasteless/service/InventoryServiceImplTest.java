@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.service;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
-import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
@@ -41,9 +40,6 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   @Mock
   ProductDao productDaoMock;
 
-  @Mock
-  InventoryDao inventoryDaoMock;
-
   @InjectMocks
   InventoryServiceImpl inventoryService;
 
@@ -72,9 +68,10 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     Inventory inventoryItem = makeInventoryItem(product);
     inventoryItem.setId(103);
 
+    business.getInventory().add(inventoryItem);
+
     List<Inventory> inventoryItemList = new ArrayList<>();
     inventoryItemList.add(inventoryItem);
-//    when(inventoryDaoMock.getBusinessesInventory(business.getId())).thenReturn(inventoryItemList);
 
     List<BasicInventoryDto> inventory = inventoryService.getInventory(business.getId());
 
@@ -91,7 +88,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   @WithMockUser()
   public void getInventory_isNotLoggedIn() {
     //not sure what exception to use here as it is handled by sprint security
-//    assertThrows(InventoryItemNotFoundException.class, () -> inventoryService.getInventory(1000));
+//    assertThrows(.class, () -> inventoryService.getInventory(1000));
   }
 
   @Test
@@ -119,9 +116,10 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     Inventory inventoryItem = makeInventoryItem(product);
     inventoryItem.setId(103);
 
+    business.getInventory().add(inventoryItem);
+
     List<Inventory> inventoryItemList = new ArrayList<>();
     inventoryItemList.add(inventoryItem);
-//    when(inventoryDaoMock.getBusinessesInventory(business.getId())).thenReturn(inventoryItemList);
 
     List<BasicInventoryDto> inventory = inventoryService.getInventory(business.getId());
 
