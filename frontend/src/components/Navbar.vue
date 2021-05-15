@@ -1,6 +1,6 @@
 <template>
   <div id="navbar">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-xl navbar-light bg-light">
       <!-- Title -->
       <a class="navbar-brand" href="javascript:" v-on:click="homeButtonClicked()">Navbara Pigeon</a>
       <!-- Hamburger button -->
@@ -19,24 +19,30 @@
       <!-- Overflow content -->
       <div id="navbarSupportedContent" class="collapse navbar-collapse">
         <!-- Left group -->
-        <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
-          <div class="d-lg-flex">
+        <ul class="navbar-nav d-flex justify-content-between align-items-xl-center w-100 align-items-start">
+          <div class="d-xl-flex col-3">
             <!--Profile page link -->
-            <li v-if="isLoggedIn" class="nav-item mr-lg-auto d-flex align-items-center text-center">
+            <li v-if="isLoggedIn" class="nav-item d-flex align-items-center text-center">
               <a class="nav-link" href="javascript:" v-on:click="profileClicked">
                 {{ currentActingAs ? "Business " : "" }} Profile
               </a>
             </li>
             <!-- Product catalog link -->
-            <li v-if="isActingAsBusiness" class="navbar-item mr-lg-auto d-flex align-items-center">
+            <li v-if="isActingAsBusiness" class="navbar-item d-flex align-items-center">
               <a class="nav-link" href="javascript:" v-on:click="productCatalogClicked">
                 Catalogue
               </a>
             </li>
+            <li v-if="isActingAsBusiness" class="navbar-item d-flex align-items-center">
+              <a class="nav-link" href="javascript:" v-on:click="viewInventory">
+                Inventory
+              </a>
+            </li>
+
           </div>
 
           <!-- Center group: search input and button -->
-          <li v-if="isLoggedIn" class="navbar-item d-flex search-container w-100">
+          <li v-if="isLoggedIn" class="col-5 navbar-item d-flex search-container w-100">
             <form class="input-group navbar-center form-inline" v-on:submit.prevent="search">
               <div class="input-group w-100">
                 <div class="input-group-prepend h-100">
@@ -56,9 +62,9 @@
           </li>
 
           <!-- Right group: User and acting as -->
-          <li v-if="isLoggedIn" class="nav-item dropdown">
+          <li v-if="isLoggedIn" class="col-4 nav-item dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
-               aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
+               aria-haspopup="true" class="float-xl-right nav-link dropdown-toggle d-flex align-items-center"
                data-toggle="dropdown"
                href="javascript:" role="button">
               <img v-if="isActingAsBusiness"
@@ -305,7 +311,20 @@ export default {
       } else {
         await this.$router.push(params);
       }
-    }
+    },
+
+    /**
+     * Simple utility function to route to the current businesses inventory.
+     * Passes in the businesses Id
+     */
+    viewInventory: function () {
+      this.$router.push({
+        name: "businessInventory",
+        params: {
+          businessId: this.$stateStore.getters.getActingAs().id
+        }
+      });
+    },
   },
 };
 </script>
