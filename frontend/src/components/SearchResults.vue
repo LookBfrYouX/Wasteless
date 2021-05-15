@@ -11,9 +11,11 @@
       <template v-slot:item="slotProps">
         <router-link
           v-bind:to="{ name: 'profile', params: { userId: slotProps.item.id }}"
-          class="text-decoration-none text-reset"
+          class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded"
         >
-          <user-list-item v-bind:user="slotProps.item"/>
+          <user-list-item
+            v-bind:user="slotProps.item"
+          />
         </router-link>
       </template>
       <template v-slot:no-items>
