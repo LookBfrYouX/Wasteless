@@ -17,8 +17,15 @@
             v-bind:class='{"current-sort": currentSortOption.name == sortOption.name}'
             v-on:click="sortByClicked(sortOption)"
         > 
+        <!--
+            Currently selected item (found by comparing names, so name must be unique within the list of
+            sort options) has `current-sort` class which shows the up/down arrow to indicate if
+            it is sorting ascending or descending. Using `visibility:hidden` on non-selected items so that
+            the content doesn't shift when it gets selected (i.e. sidebar just wide enough to fit text on
+            one line, but when the arrow appears it makes it narrower and forces it onto two lines)
+         -->
           <div class="dropdown-divider" v-if="i"></div>
-          <div class="w-100 sort-text rounded p-1 d-flex flex-row justify-content-between align-items-center">
+          <div class="w-100 sort-text rounded p-1 d-flex flex-row justify-content-between align-items-center hover-cursor-pointer">
             <span>{{ sortOption.name }}</span>
             <span class="arrow material-icons user-select-none">arrow_upward</span>
           </div>

@@ -74,6 +74,11 @@ To use this component:
         <div class="col-12 col-md-8 col-lg-6">
           <div> 
             Displaying results {{ firstResultIndex + 1 }} - {{ lastResultIndex }} out of {{ items.length }}
+
+            <!--
+              Add 1 to `firstResultIndex` as zero-based indexing used internally (first item should be item 1, not 0).
+              JS's `slice` method includes the first element but excludes the last element (like Python's arr[1:4]), so the last element included in the list is `lastResultIndex - 1`.
+              Add 1 to convert to one-based indexing which simplifies to just `lastResultIndex`. -->
           </div>
           <ul class="list-unstyled">
             <li
@@ -133,7 +138,7 @@ export default {
     resultsPerPage: {
       required: false,
       type: Number,
-      default: constants.LISTS.RESULTS_PER_PAGE 
+      default: constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_PAGE 
     },
 
     /**
