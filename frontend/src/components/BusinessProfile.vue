@@ -38,23 +38,28 @@
           v-if="$stateStore.getters.canEditBusiness(businessId)"
           class="d-flex flex-wrap justify-content-space"
       >
-        <button
+        <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
-            type="button"
-            v-on:click="createProduct()"
+            v-bind:to="{ name: 'createProduct', params: { businessId }}"
         >
-          <span class="material-icons mr-1">person</span>
+          <span class="material-icons mr-1">add</span>
           Add Product To Catalogue
-        </button>
-        <button
-            v-if="$stateStore.getters.canEditBusiness(businessId)"
+        </router-link>
+        <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
-            type="button"
-            v-on:click="viewCatalogue()"
+            v-bind:to="{ name: 'productCatalogue', params: { businessId }}"
         >
-          <span class="material-icons mr-1">person</span>
-          View Catalog
-        </button>
+          <span class="material-icons mr-1">list</span>
+          View Catalogue
+        </router-link>
+        <router-link
+            class="btn btn-white-bg-primary m-1 d-flex"
+            v-bind:to="{ name: 'businessListings', params: { businessId }}"
+        >
+          <span class="material-icons mr-1">store</span>
+          View Listings 
+        </router-link>
+        
       </div>
       <error-modal
           title="Error fetching business details"
@@ -123,24 +128,6 @@ export default {
       }
 
       return Api.businessProfile(businessId);
-    },
-
-    createProduct: function () {
-      this.$router.push({
-        name: "createProduct",
-        params: {
-          businessId: this.businessId
-        }
-      });
-    },
-
-    viewCatalogue: function () {
-      this.$router.push({
-        name: "productCatalogue",
-        params: {
-          businessId: this.businessId
-        }
-      });
     },
 
     /**

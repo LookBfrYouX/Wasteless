@@ -95,7 +95,6 @@
         </form>
       </div>
     </div>
-    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         class="p-absolute w-100"
         title="Could not retrieve business data"

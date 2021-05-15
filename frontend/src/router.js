@@ -92,7 +92,7 @@ export const router = new VueRouter({
     },
     {
       name: "productCatalogue",
-      path: "/business/:businessId(\\d+)/catalog",
+      path: "/business/:businessId(\\d+)/catalogue",
       component: () => import("./components/ProductCatalogue.vue"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)}),
       meta: {
