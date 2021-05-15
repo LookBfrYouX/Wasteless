@@ -82,8 +82,7 @@ export const helper = {
         name: "profile"
       }
 
-      if ($route.name === args.name && $route.params.userId
-          === undefined) {
+      if ($route.name === args.name && $route.params.userId === undefined) {
         reload = true;
       }
     } else {
