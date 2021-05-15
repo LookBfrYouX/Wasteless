@@ -11,9 +11,17 @@
       <template v-slot:item="slotProps">
         {{ slotProps.item.product.name }}
       </template>
-<!--      <template v-slot:right-button>-->
-<!--        <button type="button" class="btn btn-info" v-on:click="() => showSortSidebar = true">Another button</button>-->
-<!--      </template>-->
+      <template v-slot:right-button>
+        <button
+            id="revokeAdmin"
+            class="btn btn-info mx-1 d-flex"
+            type="button"
+            v-on:click="addProductToInventory"
+        >
+          <span class="material-icons mr-1">add</span>
+          Add Product
+        </button>
+      </template>
       <!--<business-listing v-bind:listing="slotProps.item"/> -->
     </sorted-paginated-item-list>
     <error-modal
@@ -90,7 +98,20 @@ export default {
         if (await Api.handle401.call(this, err)) return false;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
-    }
+    },
+
+    /**
+     * Simple utility function to route to the add inventory item form.
+     * Passes in the businesses Id
+     */
+     addProductToInventory: function () {
+      this.$router.push({
+        name: "inventoryItemEntry",
+        params: {
+          businessId: this.$props.businessId
+        }
+      });
+    },
   }
 }
 </script>
