@@ -92,7 +92,7 @@ export const router = new VueRouter({
     },
     {
       name: "productCatalogue",
-      path: "/business/:businessId(\\d+)/catalog",
+      path: "/business/:businessId(\\d+)/catalogue",
       component: () => import("./components/ProductCatalogue.vue"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)}),
       meta: {
@@ -155,7 +155,10 @@ export const router = new VueRouter({
     {
       name: "businessListings",
       path: "/business/:businessId(\\d+)/listings",
-      meta: { title: "Business Listings TODO | Wasteless"},
+      meta: {
+        title: "Business Listings | Wasteless",
+        requiresSignIn: true
+      },
       component: () => import("./views/BusinessListings.vue"),
       props: route => ({ businessId: parseInt(route.params.businessId, 10)})
     },
@@ -234,7 +237,7 @@ router.beforeEach(async (to, from, next) => {
 
   // Must be logged in
   if (to.meta.requiresSignIn && !store.getters.isLoggedIn()) {
-    next({name: 'error401'});
+    next({name: 'error401' });
   }
   // Admins can do everything
   else if (store.getters.isAdmin()) {

@@ -113,7 +113,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
 button.page-link {
   display: inline-block;

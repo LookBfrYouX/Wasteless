@@ -28,33 +28,45 @@
         </dl>
         <dl class="row">
           <dt class="col-md label">Administrator:</dt>
-          <dd v-for="admin in businessInfo.administrators" v-bind:key="admin.id"
-              class="col-md value admin-link"
-              v-on:click="viewAdmin(admin.id)"> {{ admin.firstName }} {{ admin.lastName }}
+          <dd
+            v-for="admin in businessInfo.administrators"
+            v-bind:key="admin.id"
+            class="col-md value"
+          >
+              <router-link
+                class="admin-link text-decoration-none"
+                v-bind:to="{ name: 'profile', params: { userId: admin.id }}"
+              >
+                {{ admin.firstName }} {{ admin.lastName }}
+              </router-link>
           </dd>
         </dl>
       </ul>
-      <div
-          v-if="$stateStore.getters.canEditBusiness(businessId)"
-          class="d-flex flex-wrap justify-content-space"
-      >
-        <button
+      <div class="d-flex flex-wrap justify-content-space">
+        <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
-            type="button"
-            v-on:click="createProduct()"
+            v-if="canEditBusiness"
+            v-bind:to="{ name: 'createProduct', params: { businessId }}"
         >
-          <span class="material-icons mr-1">person</span>
+          <span class="material-icons mr-1">add</span>
           Add Product To Catalogue
-        </button>
-        <button
-            v-if="$stateStore.getters.canEditBusiness(businessId)"
+        </router-link>
+        <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
-            type="button"
-            v-on:click="viewCatalogue()"
+            v-if="canEditBusiness"
+            v-bind:to="{ name: 'productCatalogue', params: { businessId }}"
         >
-          <span class="material-icons mr-1">person</span>
-          View Catalog
-        </button>
+          <span class="material-icons mr-1">list</span>
+          View Catalogue
+        </router-link>
+        <router-link
+            class="btn btn-white-bg-primary m-1 d-flex"
+            v-bind:to="{ name: 'businessListings', params: { businessId }}"
+        >
+          <span class="material-icons mr-1">store</span>
+          View Listings
+        </router-link>
+        
       </div>
       <error-modal
           title="Error fetching business details"
@@ -125,24 +137,6 @@ export default {
       return Api.businessProfile(businessId);
     },
 
-    createProduct: function () {
-      this.$router.push({
-        name: "createProduct",
-        params: {
-          businessId: this.businessId
-        }
-      });
-    },
-
-    viewCatalogue: function () {
-      this.$router.push({
-        name: "productCatalogue",
-        params: {
-          businessId: this.businessId
-        }
-      });
-    },
-
     /**
      * Parses the API response given a promise to the request,
      * setting the businessInfo object, handling errors if necessary,
@@ -185,22 +179,16 @@ export default {
         this.$stateStore.actions.setAuthUser(userCopy);
       }
     },
-
-    /**
-     * View profile of the business administrator
-     * @param userId Passed as admin id but it is the same as user id.
-     */
-    viewAdmin(userId) {
-      this.$router.push({
-        name: "profile",
-        params: {
-          userId
-        }
-      });
-    }
   },
 
-  computed: {},
+  computed: {
+    /**
+     * Checks if the user can edit the business
+     */
+    canEditBusiness() {
+      return this.$stateStore.getters.canEditBusiness(this.businessId);
+    }
+  },
 
   watch: {
     businessId: function () {
@@ -238,7 +226,11 @@ export default {
   padding: 30px;
 }
 
-.admin-link:hover {
+a.admin-link {
+  color: inherit;
+}
+
+a.admin-link:hover {
   cursor: pointer;
   color: #1ec996;
 }

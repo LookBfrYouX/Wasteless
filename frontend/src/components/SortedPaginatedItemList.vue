@@ -75,9 +75,8 @@ To use this component:
           <div> 
             Displaying results {{ firstResultIndex + 1 }} - {{ lastResultIndex }} out of {{ items.length }}
           </div>
-          <ul class="list unstyled list-group">
+          <ul class="list-unstyled">
             <li
-              class="list-group-item card item-card slightly-transparent-white-background my-1"
               v-for="item in itemsToDisplay"
               v-bind:key="getItemId(item)"
             >
@@ -258,17 +257,5 @@ export default {
 
 .item-width {
   width: min(80%, 40em);
-}
-
-.item-card {
-  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-
-.item-card:hover {
-  transform: scale(1.01);
-  z-index: 7;
-  /* Without this, it appears below the card below it when the card gets larger and intersects with its neighbouring cards*/
-  background-color: white;
-  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.05);
 }
 </style>
