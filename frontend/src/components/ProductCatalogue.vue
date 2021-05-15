@@ -107,7 +107,6 @@
         <h4>No results found</h4>
       </div>
     </div>
-    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error viewing business catalog"
         v-bind:goBack="false"
