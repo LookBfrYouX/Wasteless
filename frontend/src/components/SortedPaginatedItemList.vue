@@ -130,7 +130,7 @@ export default {
     resultsPerPage: {
       required: false,
       type: Number,
-      default: constants.LISTS.RESULTS_PER_PAGE 
+      default: constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_PAGE 
     },
 
     /**
