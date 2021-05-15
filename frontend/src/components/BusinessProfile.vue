@@ -34,7 +34,7 @@
             class="col-md value"
           >
               <router-link
-                class="admin-link text-decoration-none"
+                class="admin-link hover-cursor-pointer text-decoration-none"
                 v-bind:to="{ name: 'profile', params: { userId: admin.id }}"
               >
                 {{ admin.firstName }} {{ admin.lastName }}
@@ -231,7 +231,6 @@ a.admin-link {
 }
 
 a.admin-link:hover {
-  cursor: pointer;
   color: #1ec996;
 }
 

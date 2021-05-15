@@ -12,18 +12,22 @@
 @import "./material-icons.scss";
 @import "./fonts.scss";
 
-.main-content {
-  padding-top: 65px;
-  // transform: translateY(55px)
-}
 
 // Fonts
 h1 {
   font-weight: 600;
 }
 
+.hover-cursor-pointer:hover {
+  cursor: pointer;
+}
 
 // Navbar
+.main-content {
+  // Navbar is about this height; shifts content down so it doesn't overlap
+  padding-top: 65px;
+}
+
 nav {
   .nav-picture {
     width: 35px;
