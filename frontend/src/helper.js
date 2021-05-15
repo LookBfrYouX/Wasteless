@@ -185,5 +185,20 @@ export const helper = {
       if (a === b) return 0;
       return a > b? 1: -1;
     }
+  },
+
+  /**
+   * Attempts to get business name.
+   * 
+   * @param {Number} id business id
+   * @return null if could not get it, string otherwise
+   */
+  tryGetBusinessName: async function(id) {
+    try {
+      const {data} = await Api.businessProfile(id);
+      return data.name;
+    } catch(err) {
+      return null;
+    }
   }
 }

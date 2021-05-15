@@ -6,7 +6,7 @@
       v-bind:currentSortOption.sync="currentSortOption"
     >
       <template v-slot:title>
-        <h2>Listings for business</h2>
+        <h2>Listings for {{businessName? businessName: "business"}}</h2>
       </template>
       <template v-slot:item="slotProps">
         {{JSON.stringify(slotProps.item)}}
@@ -137,12 +137,14 @@ export default {
       listings: sampleData,
       apiErrorMessage: null,
       sortOptions,
-      currentSortOption: { ...sortOptions[0], reversed: false}
+      currentSortOption: { ...sortOptions[0], reversed: false},
+      businessName: null
     };
   },
 
   beforeMount: async function() {
     // TODO ENABLE
+    await this.updateBusinessName(); 
     // await this.getListingsPipeline();
   },
   
@@ -154,6 +156,16 @@ export default {
         if (await Api.handle401.call(this, err)) return false;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
+    },
+
+    updateBusinessName: async function() {
+      this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
+    }
+  },
+
+  watch: {
+    businessName() {
+      if (this.businessName != null) document.title = `Listings for ${this.businessName}`
     }
   }
 }
