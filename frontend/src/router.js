@@ -234,7 +234,7 @@ router.beforeEach(async (to, from, next) => {
 
   // Must be logged in
   if (to.meta.requiresSignIn && !store.getters.isLoggedIn()) {
-    next({name: 'error401'});
+    next({name: 'error401' });
   }
   // Admins can do everything
   else if (store.getters.isAdmin()) {
