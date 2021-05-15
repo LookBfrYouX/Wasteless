@@ -159,7 +159,7 @@ export default {
      * {
      * name: String,
      * sortMethod: Function,
-     * reversed: Boolean
+     * reversed: Boolean (toggles between sorting the list ascending or descending)
      * }
      */
     currentSortOption: {
