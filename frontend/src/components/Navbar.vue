@@ -19,22 +19,56 @@
 
       <!-- Overflow content -->
       <div id="navbarSupportedContent" class="collapse navbar-collapse">
-        <!-- Left group -->
+        <!-- Left group: links to profile and business -->
         <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
-          <div class="d-lg-flex">
-            <!--Profile page link -->
-            <li v-if="isLoggedIn" class="nav-item mr-lg-auto d-flex align-items-center text-center">
-              <a class="nav-link" href="javascript:" v-on:click="profileClicked">
-                {{ currentActingAs ? "Business " : "" }} Profile
-              </a>
-            </li>
-            <!-- Product catalog link -->
-            <li v-if="isActingAsBusiness" class="navbar-item mr-lg-auto d-flex align-items-center">
-              <a class="nav-link" href="javascript:" v-on:click="productCatalogClicked">
-                Catalogue
+          <div
+            class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center"
+            v-bind:class="{'d-lg-none': navbarLinks.length > 2}"
+          >
+          <!-- List of links in XL only hidden if lg and more than 2 links -->
+            <li
+              v-for="({name, click}, i) in navbarLinks"
+              v-bind:key="i"
+              class="nav-item d-flex align-items-center text-center mx-lg-0"
+              v-bind:class="{'mx-4': i != 0}"
+            >
+              <a
+                class="nav-link"
+                href="javascript:"
+                v-on:click="click"
+              > {{name}}
               </a>
             </li>
           </div>
+
+          <li
+            class="navbar-item dropdown d-none d-xl-none p-absolute"
+            v-bind:class="{'d-lg-block': navbarLinks.length > 2}"
+          >
+            <!-- dropdown menu for the business/profile links only if lg AND if more than 2 links-->
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdownBusinessLinks"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Quick Links
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownBusinessLinks">
+              <a
+                v-for="({name, click}, i) in navbarLinks"
+                v-bind:key="i"
+                class="dropdown-item"
+                href="javascript:"
+                v-on:click="click"
+              >
+                {{name}}
+              </a>
+            </div>
+        </li>
 
           <!-- Center group: search input and button -->
           <li v-if="isLoggedIn" class="navbar-item d-flex search-container w-100">
@@ -161,6 +195,33 @@ export default {
       get: function () {
         return this.$stateStore.getters.getAuthUser();
       }
+    },
+
+    navbarLinks() {
+      if (!this.isLoggedIn) return [];
+      if (!this.isActingAsBusiness) return [
+        {
+          name: "Profile",
+          click: this.profileClicked
+        }
+      ];
+
+      return [
+        {
+          name: "Business Profile",
+          click: this.profileClicked
+        },
+        {
+          name: "Business Catalogue",
+          click: this.productCatalogueClicked
+        }, {
+          name: "Business Listings",
+          click: this.businessListingsClicked
+        }, {
+          name: "Business LINK $",
+          click: () => {},
+        }
+      ];
     },
 
     /**
@@ -290,7 +351,7 @@ export default {
     /**
      * Link to product catalog page clicked
      */
-    productCatalogClicked: async function () {
+    productCatalogueClicked: async function () {
       const business = this.$stateStore.getters.getActingAs();
       if (business == null) {
         return;
@@ -306,7 +367,26 @@ export default {
       } else {
         await this.$router.push(params);
       }
+    },
+
+    businessListingsClicked: async function () {
+      const business = this.$stateStore.getters.getActingAs();
+      if (business == null) {
+        return;
+      }
+      const params = {
+        name: "businessListings",
+        params: {
+          businessId: business.id
+        }
+      };
+      if (this.$route.name == 'businessListings' && this.$route.params.businessId == business.id) {
+        await this.$router.go();
+      } else {
+        await this.$router.push(params);
+      }
     }
+
   },
 };
 </script>
@@ -324,7 +404,7 @@ nav {
 }
 
 .search-container {
-  max-width: 30em;
+  max-width: 25em;
   flex-grow: 2;
 }
 </style>
