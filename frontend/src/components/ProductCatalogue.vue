@@ -313,7 +313,7 @@ const ProductCatalogue = {
 export default ProductCatalogue;
 </script>
 
-<style>
+<style scoped>
 
 button.page-link {
   display: inline-block;
