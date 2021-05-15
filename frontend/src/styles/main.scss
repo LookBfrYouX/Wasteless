@@ -46,6 +46,22 @@ nav {
 }
 
 
+// SortedPaginatedItemList
+// Class which slightly increases size and adds box shadow
+// Also adds transition for background
+.hover-scale-effect {
+  transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.hover-scale-effect:hover {
+  transform: scale(1.01);
+  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.05);
+}
+
+// Sets background to white on hover
+.hover-white-bg:hover {
+  background-color: white;
+}
 
 // Profile page
 .image-upload-button {
