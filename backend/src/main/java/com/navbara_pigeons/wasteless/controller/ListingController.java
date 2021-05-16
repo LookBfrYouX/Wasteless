@@ -1,9 +1,10 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.service.ListingService;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,41 +34,32 @@ public class ListingController {
   /**
    * Endpoint allowing a business admin to add a new listing to a business
    *
-   * @param id Id of the business to add the listing to
-   * @param listing listing to add to the business
+   * @param businessId Id of the business to add the listing to
+   * @param listing    listing to add to the business
    * @return Returns the newly created listing id and 201 status code in a ResponseEntity
    * @throws ResponseStatusException TODO
    */
   @PostMapping("/businesses/{id}/listings")
-  public ResponseEntity<JSONObject> addListing(@PathVariable long id, @RequestBody Listing listing) {
+  public ResponseEntity<Long> addListing(@PathVariable long businessId,
+      @RequestBody Listing listing) {
     try {
-      JSONObject listingId = listingService.addListing(id, new Listing(listing));
-      log.info("LISTING CREATED SUCCESSFULLY: " + listingId.get("listingId") + "FOR BUSINESS " + id);
+      Long listingId = listingService.addListing(businessId, listing);
+      log.info("LISTING CREATED SUCCESSFULLY: " + listingId + " FOR BUSINESS " + businessId);
       return new ResponseEntity<>(listingId, HttpStatus.valueOf(201));
-    } catch (Exception exc) {
-      log.error("CRITICAL LISTING CREATION ERROR FOR BUSINESS " + id + " (" + exc.getMessage() + ")");
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-    }
-  }
-
-  /**
-   * Gets listings from the business with the given id
-   *
-   * @param id unique identifier of the business being searched for
-   * @return listings from the business
-   * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
-   */
-  @GetMapping("/businesses/{id}/listings")
-  public ResponseEntity<Object> getBusinessById(@PathVariable long id) {
-    try {
-      log.info("GETTING LISTINGS FOR BUSINESS WITH ID " + id);
-      return new ResponseEntity<>(listingService.getListings(id),
-          HttpStatus.valueOf(200));
     } catch (BusinessNotFoundException exc) {
-      log.error("GETTING LISTINGS, BUSINESS NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
+      log.error(
+          "CRITICAL LISTING CREATION ERROR FOR BUSINESS " + businessId + " (" + exc.getMessage()
+              + ")");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown error.");
+    } catch (ForbiddenException exc) {
+      log.error(
+          "CRITICAL LISTING CREATION ERROR FOR BUSINESS " + businessId + " (" + exc.getMessage()
+              + ")");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unknown error.");
     } catch (Exception exc) {
-      log.error("CRITICAL ERROR GETTING LISTINGS FOR BUSINESS " + id + " (" + exc.getMessage() + ")");
+      log.error(
+          "CRITICAL LISTING CREATION ERROR FOR BUSINESS " + businessId + " (" + exc.getMessage()
+              + ")");
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
     }
   }

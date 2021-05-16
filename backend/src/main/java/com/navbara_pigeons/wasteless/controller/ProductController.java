@@ -3,7 +3,7 @@ package com.navbara_pigeons.wasteless.controller;
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
+import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.ProductService;
@@ -76,7 +76,7 @@ public class ProductController {
       log.info("ADDING NEW PRODUCT, BUSINESS ID " + id + " BAD INFO " + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.valueOf(400),
           "There was some error with the data supplied by the user");
-    } catch (ProductForbiddenException exc) {
+    } catch (ForbiddenException exc) {
       log.info("ADDING NEW PRODUCT, BUSINESS ID " + id + " FORBIDDEN " + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.valueOf(403), "Forbidden");
     } catch (Exception exc) {

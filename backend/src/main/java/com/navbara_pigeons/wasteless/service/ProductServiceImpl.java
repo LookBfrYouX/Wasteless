@@ -10,7 +10,7 @@ import com.navbara_pigeons.wasteless.entity.Currency;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
+import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -90,19 +90,19 @@ public class ProductServiceImpl implements ProductService {
    * @param businessId   The ID of the business.
    * @param basicProduct basic product details for the product to be added.
    * @throws ProductRegistrationException If data supplied is not expected (bad request)
-   * @throws ProductForbiddenException    If user if not an admin of the business (forbidden)
+   * @throws ForbiddenException    If user if not an admin of the business (forbidden)
    */
   @Override
   @Transactional
   public void addProduct(long businessId, BasicProductCreationDto basicProduct)
       throws ProductRegistrationException,
-      ProductForbiddenException {
+      ForbiddenException {
     // Throw 400 if bad request, 403 if user is not business admin
     Business business;
     try {
       business = businessDao.getBusinessById(businessId);
       if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
-        throw new ProductForbiddenException(
+        throw new ForbiddenException(
             "User does not have permission to add a product to the business");
       }
     } catch (UserNotFoundException | BusinessNotFoundException exc) {
