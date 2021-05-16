@@ -64,7 +64,7 @@
                 type="button"
                 v-on:click="registerBusiness()"
             >
-              <span class="material-icons mr-1">person</span>
+              <span class="material-icons mr-1">business</span>
               Register Business
             </button>
           </div>
