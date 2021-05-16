@@ -1,18 +1,31 @@
 import {mount} from "@vue/test-utils";
 import {globalStateMocks} from "./testHelper";
 import Login from "../components/Login";
+jest.mock("../Api.js");
+const { Api } = require("../Api.js");
 
 let wrapper;
 
 jest.useFakeTimers();
 
+
+const validRequest = () => {
+  return {
+    email: "request@user.com",
+    password: "PASS",
+  };
+};
+
 const successfulResponse = () => {
   // constant for mocking a successful response
   return {
-    email: "username@user.com",
-    password: "LOGIN",
+    data: {
+      userId: 101
+    }
   };
 };
+
+const mock = globalStateMocks();
 
 beforeEach(() => {
   wrapper = mount(Login, {
@@ -43,13 +56,13 @@ describe("testing login page", () => {
     expect(wrapper.vm.login).toHaveBeenCalled();
   });
 
-  test("successful login", async () => {
-    wrapper.vm.login = jest.fn(() => {
-      const data = successfulResponse();
-      wrapper.setData(data)
-      expect(wrapper.vm.responseSuccess).toBeTruthy();
-    });
+  test("Api login method called", async () => {
+    Api.login.mockResolvedValue(successfulResponse());
+    Api.profile.mockResolvedValue(wrapper.vm.$stateStore.getters.getAuthUser());
+    await wrapper.vm.login();
+    expect(Api.login.mock.calls.length).toBe(1);
   });
+
   test("unsuccessful login", async () => {
     wrapper.vm.login = jest.fn(() => {
       const data = successfulResponse();
@@ -58,4 +71,11 @@ describe("testing login page", () => {
       expect(wrapper.vm.responseSuccess).toBeFalsy();
     });
   });
+});
+
+test("Routed to Sign up page", async () => {
+  wrapper.vm.signUp();
+  await wrapper.vm.$nextTick();
+  // console.log(wrapper.vm.$router.push.mock.calls[0][0].name);
+  expect(wrapper.vm.$router.push.mock.calls[0][0].name).toEqual("signUp");
 });
