@@ -307,5 +307,27 @@ export const Api = {
         403: "Forbidden: Insufficient privileges"
       });
     });
+  },
+
+  getBusinessListings: businessId => {
+    return instance.get(`/businesses/${businessId}/listings`).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
+      });
+    })
+  },
+
+  /**
+   * Get the businesses Inventory from API
+   * @param businessId The id of the business
+   * @returns {Promise<AxiosResponse<any>>} Promise containing the inventory
+   */
+  getBusinessInventory: businessId => {
+    return instance.get(`/businesses/${businessId}/inventory`).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        403: "You don't have permission view this businesses inventory",
+        406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
+      });
+    })
   }
 }

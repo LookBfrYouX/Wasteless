@@ -153,6 +153,20 @@ export const router = new VueRouter({
       props: route => ({businessId: parseInt(route.params.businessId, 10)})
     },
     {
+      name: "businessListings",
+      path: "/business/:businessId(\\d+)/listings",
+      meta: { title: "Business Listings TODO | Wasteless"},
+      component: () => import("./views/BusinessListings.vue"),
+      props: route => ({ businessId: parseInt(route.params.businessId, 10)})
+    },
+    {
+      name: "inventoryPage",
+      path: "/business/:businessId(\\d+)/inventory",
+      meta: { title: "Business Inventory TODO | Wasteless"},
+      component: () => import("./views/BusinessInventory"),
+      props: route => ({businessId: parseInt(route.params.businessId, 10)})
+    },
+    {
       name: "error",
       path: "/error",
       meta: {
