@@ -7,9 +7,15 @@
       <div class="row">
         <div class="form-group required col-md-6">
           <label for="product">Product to List</label>
-          <select required class="form-control" id="product" v-model="product">
-            <option v-for="product in productOptions" :key="product.id" v-bind:value="productToList">
-              {{ productToList.name }}
+          <select
+              id="product"
+              class="form-control"
+              required >
+            <option disabled selected value> -- Select product to list -- </option>
+            <option v-for="product in productOptions"
+                    :key="product.id"
+                    v-bind:value="productToList">
+              {{ product.name }}
             </option>
           </select>
         </div>
@@ -51,17 +57,21 @@ export default {
     }
   },
 
-  // props: {
-  //   businessId: {
-  //     required: true,
-  //     type: Number
-  //   }
-  // },
+  props: {
+    businessId: {
+      required: true,
+      type: Number
+    }
+  },
+
+  beforeMount: async function() {
+    await this.getProductOptions();
+  },
 
   methods: {
 
     async getProductOptions() {
-      await Api.getProducts(this.businessId)
+      await Api.getProducts(1)
       .then(({data}) => this.productOptions = data)
       .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
     }
