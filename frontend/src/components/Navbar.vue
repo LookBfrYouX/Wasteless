@@ -62,52 +62,54 @@
           </li>
 
           <!-- Right group: User and acting as -->
-          <li v-if="isLoggedIn" class="col-4 nav-item dropdown">
-            <a id="navbarDropdownMenuLink" aria-expanded="false"
-               aria-haspopup="true" class="float-xl-right nav-link dropdown-toggle d-flex align-items-center"
-               data-toggle="dropdown"
-               href="javascript:" role="button">
-              <img v-if="isActingAsBusiness"
-                   alt="User is acting as business"
-                   class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-business-thumbnail.svg"
-              >
-              <img v-else
-                   alt="User is acting as self"
-                   class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-user-thumbnail.svg"
-              >
-              <div class="d-flex flex-column mx-1">
+          <div class="col-4">
+            <li v-if="isLoggedIn" class="nav-item dropdown float-xl-right">
+              <a id="navbarDropdownMenuLink" aria-expanded="false"
+                 aria-haspopup="true" class=" nav-link dropdown-toggle d-flex align-items-center"
+                 data-toggle="dropdown"
+                 href="javascript:" role="button">
+                <img v-if="isActingAsBusiness"
+                     alt="User is acting as business"
+                     class="nav-picture rounded-circle"
+                     src="./../../assets/images/default-business-thumbnail.svg"
+                >
+                <img v-else
+                     alt="User is acting as self"
+                     class="nav-picture rounded-circle"
+                     src="./../../assets/images/default-user-thumbnail.svg"
+                >
+                <div class="d-flex flex-column mx-1">
                 <span class="m-0 p-0 text-dark">
                   {{ printCurrentActingAs }}
                 </span>
-                <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
-              </div>
-            </a>
+                  <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
+                </div>
+              </a>
 
-            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
-              <div class="h4 dropdown-header">Act as</div>
-              <a class="dropdown-item" href="javascript:"
-                 v-on:click="switchActingAs(null)">
-                {{ authUser.firstName }} {{ authUser.lastName }}
-                <span v-if="currentActingAs === null">
+              <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
+                <div class="h4 dropdown-header">Act as</div>
+                <a class="dropdown-item" href="javascript:"
+                   v-on:click="switchActingAs(null)">
+                  {{ authUser.firstName }} {{ authUser.lastName }}
+                  <span v-if="currentActingAs === null">
                   &#10003;
                 </span>
-              </a>
-            <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
-              <a v-for="business in actingAsEntities" :key="business.id"
-                 class="dropdown-item"
-                 href="javascript:"
-                 v-on:click="switchActingAs(business)">
-                {{ business.name }}
-                <span v-if="business === currentActingAs">
+                </a>
+                <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
+                <a v-for="business in actingAsEntities" :key="business.id"
+                   class="dropdown-item"
+                   href="javascript:"
+                   v-on:click="switchActingAs(business)">
+                  {{ business.name }}
+                  <span v-if="business === currentActingAs">
                     &#10003;
                   </span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="javascript:" v-on:click="logOut">Log out</a>
-            </div>
-          </li>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="javascript:" v-on:click="logOut">Log out</a>
+              </div>
+            </li>
+          </div>
 
           <!-- Right group (if not logged in) -->
           <div v-if="!isLoggedIn" class="d-lg-flex ml-lg-auto">
