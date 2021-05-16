@@ -166,6 +166,12 @@ export const router = new VueRouter({
       component: () => import("./views/BusinessInventory"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)})
     },
+      // Router to create listing component. TODO remove later
+    {
+      name: "createListing",
+      path: "/createlisting",
+      component: () => import("./components/CreateListing")
+    },
     {
       name: "error",
       path: "/error",

@@ -329,5 +329,14 @@ export const Api = {
         406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
       });
     })
+  },
+  addListing: (businessId, listings) => {
+    return instance.post(
+        `/businesses/${businessId}/listings`, listings)
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        403: "You don't have permission to add the listings"
+      });
+    });
   }
 }
