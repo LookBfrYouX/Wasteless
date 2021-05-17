@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Data
 public class CreateInventoryItemDto {
 
-    private String productId;
+    private long productId;
     private long quantity;
     private Double pricePerItem;
     private Double totalPrice;
