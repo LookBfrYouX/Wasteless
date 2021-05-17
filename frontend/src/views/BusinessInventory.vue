@@ -9,11 +9,12 @@
         <h2>Inventory for Business</h2>
       </template>
       <template v-slot:item="slotProps">
-        {{ slotProps.item.product.name }}
+        <div class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded">
+          {{ slotProps.item.product.name }}
+        </div>
       </template>
       <template v-slot:right-button>
         <button
-            id="revokeAdmin"
             class="btn btn-info mx-1 d-flex"
             type="button"
             v-on:click="addProductToInventory"
@@ -40,6 +41,7 @@
 import SortedPaginatedItemList from '../components/SortedPaginatedItemList.vue';
 import ErrorModal from "../components/Errors/ErrorModal";
 import { Api } from "../Api";
+import { helper } from "./../helper";
 
 const mockResult = [];
 for(let i = 1; i < 12; i++) {
@@ -51,16 +53,37 @@ for(let i = 1; i < 12; i++) {
   });
 }
 
-const sortOptions = [{
-  name: "id",
-  sortMethod: (a, b) => {
-    return a.id - b.id;
+const sortOptions = [
+  {
+    name: "ID",
+    sortMethod: helper.sensibleSorter("id")
+  }, {
+    name: "Product ID",
+    sortMethod: helper.sensibleSorter("productId") 
+  }, {
+    name: "Product Name",
+    sortMethod: helper.sensibleSorter(el => el.product.name) 
+  }, {
+    name: "Quantity",
+    sortMethod: helper.sensibleSorter("quantity") 
+  }, {
+    name: "Price Per Item",
+    sortMethod: helper.sensibleSorter("pricePerItem")
+  }, {
+    name: "Manufacturing Date",
+    sortMethod: helper.sensibleSorter("manufactured")
+  }, {
+    name: "Best Before Date",
+    sortMethod: helper.sensibleSorter("bestBefore")
+  }, {
+    name: "Sell By Date",
+    sortMethod: helper.sensibleSorter("sellBy")
+  }, {
+    name: "Expires",
+    sortMethod: helper.sensibleSorter("expires")
   }
-}, {
-  name: "By name",
-  sortMethod: (a, b) => a.name > b.name? 1: -1
-}
 ];
+
 
 export default {
   components: {
