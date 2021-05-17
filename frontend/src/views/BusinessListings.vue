@@ -125,7 +125,7 @@ export default {
 
   beforeMount: async function() {
     // TODO ENABLE
-    // await this.getListingsPipeline();
+    await this.getListingsPipeline();
   },
   
   methods: {

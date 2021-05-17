@@ -117,10 +117,10 @@ CREATE TABLE inventory
     QUANTITY       INT           NOT NULL,
     PRICE_PER_ITEM DECIMAL(6, 2) NOT NULL,
     TOTAL_PRICE    DECIMAL(6, 2) NOT NULL,
-    EXPIRES        DATETIME      NOT NULL,
-    MANUFACTURED   DATETIME,
-    SELL_BY        DATETIME,
-    BEST_BEFORE    DATETIME,
+    EXPIRES        DATE          NOT NULL,
+    MANUFACTURED   DATE,
+    SELL_BY        DATE,
+    BEST_BEFORE    DATE,
 
     CONSTRAINT inventory_product_fk
         FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
@@ -345,12 +345,12 @@ VALUES (1, 1),
 
 INSERT INTO inventory (ID, PRODUCT_ID, BUSINESS_ID, QUANTITY, PRICE_PER_ITEM, TOTAL_PRICE,
                        EXPIRES, MANUFACTURED, SELL_BY, BEST_BEFORE)
-VALUES (1, 1, 1, 5, 4.67, 20.00, '2021-08-16 21:07:41', '2021-08-13 21:07:41',
-        '2021-08-15 21:07:41', '2021-08-16 21:07:41'),
-       (2, 2, 1, 10, 4.62, 20.00, '2021-08-16 21:07:41', '2021-08-13 21:07:41',
-        '2021-08-15 21:07:41', '2021-08-16 21:07:41'),
-       (3, 3, 1, 15, 3.00, 20.00, '2021-08-16 21:07:41', '2021-08-13 21:07:41',
-        '2021-08-15 21:07:41', '2021-08-16 21:07:41');
+VALUES (1, 1, 1, 5, 4.67, 20.00, '2021-08-16', '2021-08-13',
+        '2021-08-15', '2021-08-16'),
+       (2, 2, 1, 10, 4.62, 20.00, '2021-08-16', '2021-08-13',
+        '2021-08-15', '2021-08-16'),
+       (3, 3, 1, 15, 3.00, 20.00, '2021-08-16', '2021-08-13',
+        '2021-08-15', '2021-08-16');
 
 -- Inserting listing data
 

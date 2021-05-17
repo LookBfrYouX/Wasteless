@@ -2,14 +2,19 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Inventory;
+import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ListingServiceImpl implements ListingService {
   private final UserService userService;
   private final BusinessService businessService;
@@ -36,9 +41,13 @@ public class ListingServiceImpl implements ListingService {
 
   public List<FullListingDto> getListings(long businessId) throws BusinessNotFoundException, UserNotFoundException {
     Business business = businessService.getBusiness(businessId);
-    ArrayList<FullListingDto> listings = new ArrayList<>(business.getListings().size());
-    for(Listing listing: business.getListings()) {
-      listings.add(new FullListingDto(listing, publicPathPrefix));
+    ArrayList<FullListingDto> listings = new ArrayList<>();
+    for(Product product: business.getProductsCatalogue()) {
+      for (Inventory inventory: product.getInventoryItems()) {
+        for (Listing listing: inventory.getListings()) {
+          listings.add(new FullListingDto(listing, publicPathPrefix));
+        }
+      }
     }
 
     return listings;

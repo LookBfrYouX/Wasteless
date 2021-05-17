@@ -118,10 +118,10 @@ CREATE TABLE inventory
     QUANTITY       INT           NOT NULL,
     PRICE_PER_ITEM DECIMAL(6, 2) NOT NULL,
     TOTAL_PRICE    DECIMAL(6, 2) NOT NULL,
-    EXPIRES        DATETIME      NOT NULL,
-    MANUFACTURED   DATETIME,
-    SELL_BY        DATETIME,
-    BEST_BEFORE    DATETIME,
+    EXPIRES        DATE          NOT NULL,
+    MANUFACTURED   DATE,
+    SELL_BY        DATE,
+    BEST_BEFORE    DATE,
 
     CONSTRAINT inventory_product_fk
         FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
@@ -335,10 +335,30 @@ VALUES ('Anchor Milk Standard Blue Top',
 
 -- Inserting catalogue data
 
-INSERT INTO CATALOGUE (PRODUCT_ID, BUSINESS_ID)
+INSERT INTO catalogue (PRODUCT_ID, BUSINESS_ID)
 VALUES (1, 1),
        (2, 2),
        (3, 1),
        (4, 2),
        (5, 1),
        (6, 3);
+
+-- Inserting inventory data
+
+INSERT INTO inventory (ID, PRODUCT_ID, BUSINESS_ID, QUANTITY, PRICE_PER_ITEM, TOTAL_PRICE,
+                       EXPIRES, MANUFACTURED, SELL_BY, BEST_BEFORE)
+VALUES (1, 1, 1, 5, 4.67, 20.00, '2021-08-16', '2021-08-13',
+        '2021-08-15', '2021-08-16'),
+       (2, 2, 1, 10, 4.62, 20.00, '2021-08-16', '2021-08-13',
+        '2021-08-15', '2021-08-16'),
+       (3, 3, 1, 15, 3.00, 20.00, '2021-08-16', '2021-08-13',
+        '2021-08-15', '2021-08-16');
+
+-- Inserting listing data
+
+INSERT INTO listing (INVENTORY_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
+VALUES (1, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (1, 3, 12.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (2, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (3, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
+

@@ -2,10 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.exception.AddressValidationException;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
-import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import com.navbara_pigeons.wasteless.service.ListingService;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +66,9 @@ public class ListingController {
           HttpStatus.valueOf(200));
     } catch (BusinessNotFoundException exc) {
       log.error("GETTING LISTINGS, BUSINESS NOT FOUND ERROR: " + id);
+      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
+    } catch (UserNotFoundException exc) {
+      log.error("GETTING LISTINGS, USER NOT FOUND ERROR: " + id);
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
     } catch (Exception exc) {
       log.error("CRITICAL ERROR GETTING LISTINGS FOR BUSINESS " + id + " (" + exc.getMessage() + ")");
