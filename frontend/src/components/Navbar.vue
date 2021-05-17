@@ -1,6 +1,6 @@
 <template>
   <div id="navbar">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-xl navbar-light bg-light">
       <!-- Title -->
       <a class="navbar-brand" href="javascript:" v-on:click="homeButtonClicked()">Navbara Pigeon</a>
       <!-- Hamburger button -->
@@ -19,24 +19,30 @@
       <!-- Overflow content -->
       <div id="navbarSupportedContent" class="collapse navbar-collapse">
         <!-- Left group -->
-        <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
-          <div class="d-lg-flex">
+        <ul class="navbar-nav d-flex justify-content-between align-items-xl-center w-100 align-items-start">
+          <div class="d-xl-flex col-3">
             <!--Profile page link -->
-            <li v-if="isLoggedIn" class="nav-item mr-lg-auto d-flex align-items-center text-center">
+            <li v-if="isLoggedIn" class="nav-item d-flex align-items-center text-center">
               <a class="nav-link" href="javascript:" v-on:click="profileClicked">
                 {{ currentActingAs ? "Business " : "" }} Profile
               </a>
             </li>
             <!-- Product catalog link -->
-            <li v-if="isActingAsBusiness" class="navbar-item mr-lg-auto d-flex align-items-center">
+            <li v-if="isActingAsBusiness" class="navbar-item d-flex align-items-center">
               <a class="nav-link" href="javascript:" v-on:click="productCatalogClicked">
                 Catalogue
               </a>
             </li>
+            <li v-if="isActingAsBusiness" class="navbar-item d-flex align-items-center">
+              <a class="nav-link" href="javascript:" v-on:click="viewInventory">
+                Inventory
+              </a>
+            </li>
+
           </div>
 
           <!-- Center group: search input and button -->
-          <li v-if="isLoggedIn" class="navbar-item d-flex search-container w-100">
+          <li v-if="isLoggedIn" class="col-5 navbar-item d-flex search-container w-100">
             <form class="input-group navbar-center form-inline" v-on:submit.prevent="search">
               <div class="input-group w-100">
                 <div class="input-group-prepend h-100">
@@ -56,52 +62,54 @@
           </li>
 
           <!-- Right group: User and acting as -->
-          <li v-if="isLoggedIn" class="nav-item dropdown">
-            <a id="navbarDropdownMenuLink" aria-expanded="false"
-               aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
-               data-toggle="dropdown"
-               href="javascript:" role="button">
-              <img v-if="isActingAsBusiness"
-                   alt="User is acting as business"
-                   class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-business-thumbnail.svg"
-              >
-              <img v-else
-                   alt="User is acting as self"
-                   class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-user-thumbnail.svg"
-              >
-              <div class="d-flex flex-column mx-1">
+          <div class="col-4">
+            <li v-if="isLoggedIn" class="nav-item dropdown float-xl-right">
+              <a id="navbarDropdownMenuLink" aria-expanded="false"
+                 aria-haspopup="true" class=" nav-link dropdown-toggle d-flex align-items-center"
+                 data-toggle="dropdown"
+                 href="javascript:" role="button">
+                <img v-if="isActingAsBusiness"
+                     alt="User is acting as business"
+                     class="nav-picture rounded-circle"
+                     src="./../../assets/images/default-business-thumbnail.svg"
+                >
+                <img v-else
+                     alt="User is acting as self"
+                     class="nav-picture rounded-circle"
+                     src="./../../assets/images/default-user-thumbnail.svg"
+                >
+                <div class="d-flex flex-column mx-1">
                 <span class="m-0 p-0 text-dark">
                   {{ printCurrentActingAs }}
                 </span>
-                <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
-              </div>
-            </a>
+                  <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
+                </div>
+              </a>
 
-            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
-              <div class="h4 dropdown-header">Act as</div>
-              <a class="dropdown-item" href="javascript:"
-                 v-on:click="switchActingAs(null)">
-                {{ authUser.firstName }} {{ authUser.lastName }}
-                <span v-if="currentActingAs === null">
+              <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
+                <div class="h4 dropdown-header">Act as</div>
+                <a class="dropdown-item" href="javascript:"
+                   v-on:click="switchActingAs(null)">
+                  {{ authUser.firstName }} {{ authUser.lastName }}
+                  <span v-if="currentActingAs === null">
                   &#10003;
                 </span>
-              </a>
-            <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
-              <a v-for="business in actingAsEntities" :key="business.id"
-                 class="dropdown-item"
-                 href="javascript:"
-                 v-on:click="switchActingAs(business)">
-                {{ business.name }}
-                <span v-if="business === currentActingAs">
+                </a>
+                <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
+                <a v-for="business in actingAsEntities" :key="business.id"
+                   class="dropdown-item"
+                   href="javascript:"
+                   v-on:click="switchActingAs(business)">
+                  {{ business.name }}
+                  <span v-if="business === currentActingAs">
                     &#10003;
                   </span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="javascript:" v-on:click="logOut">Log out</a>
-            </div>
-          </li>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="javascript:" v-on:click="logOut">Log out</a>
+              </div>
+            </li>
+          </div>
 
           <!-- Right group (if not logged in) -->
           <div v-if="!isLoggedIn" class="d-lg-flex ml-lg-auto">
@@ -305,7 +313,20 @@ export default {
       } else {
         await this.$router.push(params);
       }
-    }
+    },
+
+    /**
+     * Simple utility function to route to the current businesses inventory.
+     * Passes in the businesses Id
+     */
+    viewInventory: function () {
+      this.$router.push({
+        name: "businessInventory",
+        params: {
+          businessId: this.$stateStore.getters.getActingAs().id
+        }
+      });
+    },
   },
 };
 </script>
