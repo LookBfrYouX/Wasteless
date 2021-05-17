@@ -37,8 +37,10 @@ public class MainTestProvider {
 
   protected Inventory makeInventoryItem(Product product) {
     Inventory inventoryItem = new Inventory();
+    ZonedDateTime date = ZonedDateTime.now(ZoneOffset.UTC);
+    date = date.plusMonths(1);
     inventoryItem.setProduct(product)
-        .setExpires(ZonedDateTime.now(ZoneOffset.ofHours(10)))
+        .setExpires(date)
         .setQuantity(10);
     return inventoryItem;
   }
