@@ -1,13 +1,15 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
 import lombok.Data;
+
 import javax.persistence.*;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 
 @Data
 @Entity
 @Table(name = "INVENTORY")
-public class InventoryItem {
+public class Inventory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,29 +20,41 @@ public class InventoryItem {
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 
-    @OneToOne()
-    @JoinColumn(name = "BUSINESS_ID")
-    private Business business;
-
     @Column(name = "QUANTITY")
     private long quantity;
 
-    @Column(name = "PRICE")
-    private float price;
+    @Column(name = "PRICE_PER_ITEM")
+    private Double pricePerItem;
 
     @Column(name = "TOTAL_PRICE")
-    private float total_price;
+    private Double totalPrice;
 
     @Column(name = "EXPIRES")
-    private ZonedDateTime expires;
+    private LocalDate expires;
 
     @Column(name = "MANUFACTURED")
-    private ZonedDateTime manufactured;
+    private LocalDate manufactured;
 
     @Column(name = "SELL_BY")
-    private ZonedDateTime sell_by;
+    private LocalDate sellBy;
 
     @Column(name = "BEST_BEFORE")
-    private ZonedDateTime best_before;
+    private LocalDate bestBefore;
+
+    public Inventory(BasicInventoryDto inventory) {
+        this.id = inventory.getId();
+        this.product = new Product(inventory.getProduct());
+        this.quantity = inventory.getQuantity();
+        this.pricePerItem = inventory.getPricePerItem();
+        this.totalPrice = inventory.getTotalPrice();
+        this.expires = inventory.getExpires();
+        this.manufactured = inventory.getManufactured();
+        this.sellBy = inventory.getSellBy();
+        this.bestBefore = inventory.getBestBefore();
+    }
+
+    public Inventory() {
+
+    }
 
 }
