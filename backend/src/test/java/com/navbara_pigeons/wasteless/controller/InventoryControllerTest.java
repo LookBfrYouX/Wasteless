@@ -57,7 +57,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
     String endpointUrl = "/businesses/2/inventory";
     CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
     inventoryItemDto.setExpires(LocalDate.now());
-    inventoryItemDto.setProductId("TEST-ID");
+    inventoryItemDto.setProductId(2);
     inventoryItemDto.setQuantity(15);
     inventoryItemDto.setTotalPrice(220.00);
     inventoryItemDto.setPricePerItem(20.00);
@@ -73,7 +73,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
     String endpointUrl = "/businesses/2/inventory";
     CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
     inventoryItemDto.setExpires(LocalDate.now());
-    inventoryItemDto.setProductId("TEST-ID");
+    inventoryItemDto.setProductId(2);
     inventoryItemDto.setQuantity(15);
     inventoryItemDto.setTotalPrice(220.00);
     inventoryItemDto.setPricePerItem(20.00);
