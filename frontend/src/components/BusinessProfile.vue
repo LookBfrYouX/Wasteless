@@ -3,7 +3,7 @@
     <div>
       <h1 class="title">Business Information</h1>
       <button v-if="showBackButton"
-              class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3"
+              class="btn btn-white-bg-primary mr-1 d-flex align-items-end mb-3"
               type="button" v-on:click="$router.go(-1)">
         <span class="material-icons mr-1">arrow_back</span>
         Go back
@@ -39,21 +39,20 @@
           class="d-flex flex-wrap justify-content-space"
       >
         <button
-            class="btn btn-white-bg-primary m-1 d-flex"
+            class="btn btn-white-bg-primary mr-1 d-flex"
             type="button"
-            v-on:click="createProduct()"
+            v-on:click="viewCatalogue"
         >
-          <span class="material-icons mr-1">person</span>
-          Add Product To Catalogue
+          <span class="material-icons mr-1">menu</span>
+          View Catalog
         </button>
         <button
-            v-if="$stateStore.getters.canEditBusiness(businessId)"
-            class="btn btn-white-bg-primary m-1 d-flex"
+            class="btn btn-white-bg-primary mr-1 d-flex"
             type="button"
-            v-on:click="viewCatalogue()"
+            v-on:click="viewInventory"
         >
-          <span class="material-icons mr-1">person</span>
-          View Catalog
+          <span class="material-icons mr-1">menu</span>
+          View Inventory
         </button>
       </div>
       <error-modal
@@ -134,9 +133,26 @@ export default {
       });
     },
 
+    /**
+     * Simple utility function to route to the current businesses catalogue.
+     * Passes in the businesses Id
+     */
     viewCatalogue: function () {
       this.$router.push({
         name: "productCatalogue",
+        params: {
+          businessId: this.businessId
+        }
+      });
+    },
+
+    /**
+     * Simple utility function to route to the current businesses inventory.
+     * Passes in the businesses Id
+     */
+    viewInventory: function () {
+      this.$router.push({
+        name: "businessInventory",
         params: {
           businessId: this.businessId
         }
