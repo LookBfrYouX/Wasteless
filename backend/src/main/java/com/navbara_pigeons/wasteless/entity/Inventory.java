@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 @Data
@@ -24,22 +25,22 @@ public class Inventory {
     private long quantity;
 
     @Column(name = "PRICE_PER_ITEM")
-    private float pricePerItem;
+    private Double pricePerItem;
 
     @Column(name = "TOTAL_PRICE")
-    private float totalPrice;
+    private Double totalPrice;
 
     @Column(name = "EXPIRES")
-    private ZonedDateTime expires;
+    private LocalDate expires;
 
     @Column(name = "MANUFACTURED")
-    private ZonedDateTime manufactured;
+    private LocalDate manufactured;
 
     @Column(name = "SELL_BY")
-    private ZonedDateTime sellBy;
+    private LocalDate sellBy;
 
     @Column(name = "BEST_BEFORE")
-    private ZonedDateTime bestBefore;
+    private LocalDate bestBefore;
 
     public Inventory(BasicInventoryDto inventory) {
         this.id = inventory.getId();

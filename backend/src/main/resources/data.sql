@@ -124,18 +124,8 @@ CREATE TABLE inventory
     BEST_BEFORE    DATETIME,
 
     CONSTRAINT inventory_product_fk
-        FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID)
-);
-
-CREATE TABLE inventory_join
-(
-    INVENTORY_ID  INT NOT NULL,
-    BUSINESS_ID INT NOT NULL,
-    CONSTRAINT inventory_join_pk
-        UNIQUE (INVENTORY_ID, BUSINESS_ID),
-    CONSTRAINT inventory_join_inventory_fk
-        FOREIGN KEY (INVENTORY_ID) REFERENCES inventory (ID),
-    CONSTRAINT inventory_join_business_fk
+        FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
+    CONSTRAINT inventory_business_fk
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
 
