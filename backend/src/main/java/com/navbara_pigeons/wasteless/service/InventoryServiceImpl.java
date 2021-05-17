@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
+import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -63,6 +64,11 @@ public class InventoryServiceImpl implements InventoryService {
     } else {
       throw new InsufficientPrivilegesException("You are not permitted to modify this business");
     }
+  }
+
+  @Override
+  public void registerInventoryItem(CreateInventoryItemDto inventoryItemDto) throws InsufficientPrivilegesException {
+    return;
   }
 
 }

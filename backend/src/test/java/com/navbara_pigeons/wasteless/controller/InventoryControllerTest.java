@@ -1,12 +1,18 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
+
+import java.time.LocalDate;
 
 public class InventoryControllerTest extends ControllerTestProvider {
 
@@ -46,27 +52,47 @@ public class InventoryControllerTest extends ControllerTestProvider {
   }
 
   @Test
-  @WithMockUser
-  void asUser_addInventoryItem_expectOk() {
-    // TODO
+  @WithUserDetails(value = "mbi47@uclive.ac.nz")
+  void asUser_addInventoryItem_expectOk() throws Exception {
+    String endpointUrl = "/businesses/2/inventory";
+    CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
+    inventoryItemDto.setExpires(LocalDate.now());
+    inventoryItemDto.setProductId("TEST-ID");
+    inventoryItemDto.setQuantity(15);
+    inventoryItemDto.setTotalPrice(220.00);
+    inventoryItemDto.setPricePerItem(20.00);
+    mockMvc.perform(post(endpointUrl)
+    .contentType("application/json")
+    .content(objectMapper.writeValueAsString(inventoryItemDto)))
+            .andExpect(status().isCreated());
   }
 
   @Test
   @WithAnonymousUser
-  void asAnon_addInventoryItem_expectForbidden() {
-    // TODO
+  void asAnon_addInventoryItem_expectForbidden() throws Exception {
+    String endpointUrl = "/businesses/2/inventory";
+    CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
+    inventoryItemDto.setExpires(LocalDate.now());
+    inventoryItemDto.setProductId("TEST-ID");
+    inventoryItemDto.setQuantity(15);
+    inventoryItemDto.setTotalPrice(220.00);
+    inventoryItemDto.setPricePerItem(20.00);
+    mockMvc.perform(post(endpointUrl)
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(inventoryItemDto)))
+            .andExpect(status().isUnauthorized());
   }
 
   @Test
   @WithMockUser
   void asUser_addInventoryItemToNonExistingBusiness_expectNotFound() {
-    // TODO
+    // TODO when service is created
   }
 
   @Test
   @WithUserDetails(value = "mbi47@uclive.ac.nz")
   void asSpecificUser_addInventoryItemToOtherUsersBusiness_expectForbidden() {
-    //TODO
+    //TODO when service is created
   }
 
 }

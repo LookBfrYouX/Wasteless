@@ -24,10 +24,10 @@ public class Inventory {
     private long quantity;
 
     @Column(name = "PRICE_PER_ITEM")
-    private float pricePerItem;
+    private Double pricePerItem;
 
     @Column(name = "TOTAL_PRICE")
-    private float totalPrice;
+    private Double totalPrice;
 
     @Column(name = "EXPIRES")
     private ZonedDateTime expires;

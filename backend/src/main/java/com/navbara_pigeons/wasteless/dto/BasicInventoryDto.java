@@ -11,8 +11,8 @@ public class BasicInventoryDto {
   private long id;
   private BasicProductDto product;
   private long quantity;
-  private float pricePerItem;
-  private float totalPrice;
+  private Double pricePerItem;
+  private Double totalPrice;
   private ZonedDateTime manufactured;
   private ZonedDateTime sellBy;
   private ZonedDateTime bestBefore;

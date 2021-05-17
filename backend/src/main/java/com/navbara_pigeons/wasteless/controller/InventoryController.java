@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
@@ -44,8 +45,9 @@ public class InventoryController {
   }
 
   @PostMapping("/businesses/{id}/inventory")
-  public ResponseEntity<Object> registerInventoryItem(@PathVariable long id, @RequestBody JSONObject object) throws InsufficientPrivilegesException {
-    throw new InsufficientPrivilegesException();
+  @ResponseStatus(value = HttpStatus.CREATED)
+  public void registerInventoryItem(@PathVariable long id, @RequestBody CreateInventoryItemDto inventoryItemDto) throws InsufficientPrivilegesException {
+    this.inventoryService.registerInventoryItem(inventoryItemDto);
   }
 
 }
