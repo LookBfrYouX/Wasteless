@@ -330,11 +330,12 @@ export const Api = {
       });
     })
   },
-  addListing: (businessId, listings) => {
+  addBusinessListings: (businessId, listings) => {
     return instance.post(
         `/businesses/${businessId}/listings`, listings)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
+        400: err => `An error creating the listing. ${err.response.statusText}`,
         403: "You don't have permission to add the listings"
       });
     });

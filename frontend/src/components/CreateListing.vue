@@ -65,15 +65,34 @@ export default {
   },
 
   beforeMount: async function() {
-    await this.getProductOptions();
+    await this.getAvailableInventoryItem();
   },
 
   methods: {
 
-    async getProductOptions() {
-      await Api.getProducts(1)
-      .then(({data}) => this.productOptions = data)
+    async getInventory() {
+      await Api.getBusinessInventory(1)
       .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
+    },
+
+    async getListings() {
+      await Api.getBusinessListings(1)
+      .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
+    },
+
+    async getAvailableInventoryItem() {
+      var inventoryItems = await this.getInventory();
+      inventoryItems = [].map(inventoryItem => {
+        inventoryItem.quantityRemaining = inventoryItem.quantity;
+        return inventoryItem;
+      });
+      const listings = await this.getListings();
+      listings.forEach(listing => {
+        const inventoryItem = inventoryItems.find(({ id }) => id === listing.inventoryItem.id);
+        inventoryItem.quantityRemaining -= listing.quantity;
+      });
+      this.productOptions = inventoryItems;
+
     }
   }
 }
