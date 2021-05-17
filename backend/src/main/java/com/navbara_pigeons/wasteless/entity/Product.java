@@ -49,18 +49,18 @@ public class Product {
   @Column(name = "CREATED")
   private ZonedDateTime created;
 
-  @JsonIgnore
-  @OneToMany(
-      fetch = FetchType.LAZY,
-      cascade = {
-          CascadeType.DETACH,
-          CascadeType.MERGE,
-          CascadeType.PERSIST,
-          CascadeType.REFRESH
-      }
-  )
-  @JoinColumn(name = "PRODUCT_ID")
-  private List<Inventory> inventoryItems;
+//  @JsonIgnore
+//  @OneToMany(
+//      fetch = FetchType.LAZY,
+//      cascade = {
+//          CascadeType.DETACH,
+//          CascadeType.MERGE,
+//          CascadeType.PERSIST,
+//          CascadeType.REFRESH
+//      }
+//  )
+//  @JoinColumn(name = "PRODUCT_ID")
+//  private List<Inventory> inventoryItems;
 
   @JsonIgnore
   @OneToOne(fetch = FetchType.EAGER)
@@ -101,17 +101,19 @@ public class Product {
 
   }
 
-  /**
-   * Helper method which adds inventory item to list of inventory items
-   * @param inventoryItem item to add
-   */
-  public void addInventoryItem(Inventory inventoryItem) {
-    if (this.inventoryItems == null) {
-      this.inventoryItems = new ArrayList<>();
-    }
+//  /**
+//   * Helper method which adds inventory item to list of inventory items
+//   * @param inventoryItem item to add
+//   */
+//  public void addInventoryItem(Inventory inventoryItem) {
+//    if (this.inventoryItems == null) {
+//      this.inventoryItems = new ArrayList<>();
+//    }
+//
+//    this.inventoryItems.add(inventoryItem);
+//  }
 
-    this.inventoryItems.add(inventoryItem);
-  }
+
   /**
    * This is a helper method for adding a image to the product.
    *

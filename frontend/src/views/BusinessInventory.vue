@@ -87,7 +87,7 @@ export default {
   beforeMount: async function() {
     // TODO Uncomment once backend endpoint is created
     this.listings = mockResult;
-    // await this.getInventory();
+    await this.getInventory();
   },
   
   methods: {

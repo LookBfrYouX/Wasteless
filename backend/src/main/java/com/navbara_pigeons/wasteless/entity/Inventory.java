@@ -23,6 +23,7 @@ public class Inventory {
   @JoinColumn(name = "PRODUCT_ID")
   private Product product;
 
+  @JsonIgnore
   @OneToOne()
   @JoinColumn(name = "BUSINESS_ID")
   private Business business;

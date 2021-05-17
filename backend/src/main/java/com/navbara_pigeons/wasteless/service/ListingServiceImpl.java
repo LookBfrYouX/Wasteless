@@ -39,14 +39,22 @@ public class ListingServiceImpl implements ListingService {
 //    }
 //  }
 
+  /**
+   * Gets all listings for the given business
+   * @param businessId id of business
+   * @return listings in no guaranteed order
+   * @throws BusinessNotFoundException
+   * @throws UserNotFoundException
+   */
   public List<FullListingDto> getListings(long businessId) throws BusinessNotFoundException, UserNotFoundException {
     Business business = businessService.getBusiness(businessId);
     ArrayList<FullListingDto> listings = new ArrayList<>();
-    for(Product product: business.getProductsCatalogue()) {
-      for (Inventory inventory: product.getInventoryItems()) {
-        for (Listing listing: inventory.getListings()) {
-          listings.add(new FullListingDto(listing, publicPathPrefix));
-        }
+//    System.out.println(business.getInventory().size());
+    for (Inventory inventory: business.getInventory()) {
+//      System.out.println(inventory);
+//      System.out.println(inventory.getListings().size());
+      for (Listing listing: inventory.getListings()) {
+        listings.add(new FullListingDto(listing, publicPathPrefix));
       }
     }
 

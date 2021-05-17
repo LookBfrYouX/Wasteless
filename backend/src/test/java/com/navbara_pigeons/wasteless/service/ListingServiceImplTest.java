@@ -32,9 +32,9 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     return product;
   }
 
-  Inventory newInventory(long id, Product product) {
+  Inventory newInventory(long id, Product product, Business business) {
     Inventory inventory = new Inventory();
-    product.addInventoryItem(inventory);
+    business.getInventory().add(inventory);
     inventory.setProduct(product);
     inventory.setId(id);
     return inventory;
@@ -59,14 +59,14 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     Business business = new Business();
     business.setId(1);
     Product p1 = newProduct(1, business);
-    Inventory i1 = newInventory(1, p1);
+    Inventory i1 = newInventory(1, p1, business);
     Listing l1 = newListing(1, i1);
     Listing l2 = newListing(2, i1);
-    Inventory i2 = newInventory(2, p1);
+    Inventory i2 = newInventory(2, p1, business);
     Listing l3 = newListing(3, i2);
 
     Product p2 = newProduct(2, business);
-    Inventory i3 = newInventory(3, p2);
+    Inventory i3 = newInventory(3, p2, business);
     Listing l4 = newListing(4, i3);
     Listing l5 = newListing(5, i3);
     Listing l6 = newListing(6, i3);

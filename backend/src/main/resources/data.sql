@@ -1,7 +1,6 @@
 /* MAIN SCHEMA DEFINITION */
 
 DROP TABLE IF EXISTS listing CASCADE;
-DROP TABLE IF EXISTS inventory_join CASCADE;
 DROP TABLE IF EXISTS inventory CASCADE;
 DROP TABLE IF EXISTS product_image CASCADE;
 DROP TABLE IF EXISTS catalogue CASCADE;
@@ -114,7 +113,8 @@ CREATE TABLE inventory
 (
     ID             INT AUTO_INCREMENT PRIMARY KEY,
     PRODUCT_ID     INT           NOT NULL,
-    BUSINESS_ID    INT           NOT NULL,
+    BUSINESS_ID    INT           NOT NULL, 
+    -- WARNING: BUSINESS ID IS DUPLICATED DATA - CAN BE FOUND FROM PRODUCT
     QUANTITY       INT           NOT NULL,
     PRICE_PER_ITEM DECIMAL(6, 2) NOT NULL,
     TOTAL_PRICE    DECIMAL(6, 2) NOT NULL,
@@ -128,6 +128,7 @@ CREATE TABLE inventory
     CONSTRAINT inventory_business_fk
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
+
 
 CREATE TABLE listing
 (
@@ -360,4 +361,3 @@ VALUES (1, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17', '2021-06
        (1, 3, 12.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (2, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (3, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
-
