@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.dto;
 
+import com.navbara_pigeons.wasteless.entity.Listing;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
@@ -8,7 +9,7 @@ import java.time.ZonedDateTime;
 public class FullListingDto {
   private long id;
   private BasicProductDto product;
-  private int quantity;
+  private long quantity;
   private double price;
   private String moreInfo;
   private ZonedDateTime created;
@@ -16,7 +17,7 @@ public class FullListingDto {
 
   public FullListingDto(Listing listing, String publicPathPrefix) {
     id = listing.getId();
-    product = new BasicProductDto(listing.getProduct(), publicPathPrefix);
+    product = new BasicProductDto(listing.getInventoryItem().getProduct(), publicPathPrefix);
     quantity = listing.getQuantity();
     price = listing.getPrice();
     created = listing.getCreated();

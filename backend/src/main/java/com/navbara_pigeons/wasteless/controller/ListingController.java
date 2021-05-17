@@ -37,7 +37,7 @@ public class ListingController {
    * @param businessId Id of the business to add the listing to
    * @param listing    listing to add to the business
    * @return Returns the newly created listing id and 201 status code in a ResponseEntity
-   * @throws ResponseStatusException TODO
+   * @throws ResponseStatusException with 400 and 403 responses
    */
   @PostMapping("/businesses/{businessId}/listings")
   public ResponseEntity<Long> addListing(@PathVariable long businessId,
