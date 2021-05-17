@@ -22,14 +22,16 @@ Feature: U22
     Given a user has a business "Jovial Jerky" in "New Zealand"
     # NB: test countryData.json only has NZ
     And the business has the product "Jenkin's Jerky" with RRP of 7.99
-    And they have 40 in their inventory with a price of 4.50 expiring on "2022-04-13"
+#    And they have 40 in their inventory with a price of 4.50 expiring on "2022-04-13"
 
 #  Scenario: AC3 - less than amount in inventory
-  Scenario: AC2 footnote, two listings below amount in inventory
-    Given a listing with quantity 20 and price 150.00
-    Then another listing with quantity 20 and price 150.00 succeeds
 
-  Scenario: AC2 footnote, two listings above amount in inventory
-    Given a listing with quantity 20 and price 150.00
-    Then another listing with quantity 21 and price 152.00 fails
+#
+#  Scenario: AC2 footnote, two listings below amount in inventory
+#    Given a listing with quantity 20 and price 150.00
+#    Then another listing with quantity 20 and price 150.00 succeeds
+#
+#  Scenario: AC2 footnote, two listings above amount in inventory
+#    Given a listing with quantity 20 and price 150.00
+#    Then another listing with quantity 21 and price 152.00 fails
 
