@@ -6,7 +6,7 @@
       v-bind:currentSortOption.sync="currentSortOption"
     >
       <template v-slot:title>
-        <h2>Inventory for Business</h2>
+        <h2>Inventory for {{businessName? businessName: "business"}}</h2>
       </template>
       <template v-slot:item="slotProps">
         <div class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded">
@@ -103,13 +103,15 @@ export default {
       listings: [],
       apiErrorMessage: null,
       sortOptions,
-      currentSortOption: { ...sortOptions[0], reversed: false}
+      currentSortOption: { ...sortOptions[0], reversed: false},
+      businessName: null,
     };
   },
 
   beforeMount: async function() {
     // TODO Uncomment once backend endpoint is created
     this.listings = mockResult;
+    await this.updateBusinessName();
     // await this.getInventory();
   },
   
@@ -135,6 +137,16 @@ export default {
         }
       });
     },
+
+    updateBusinessName: async function() {
+      this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
+    },
+  },
+
+  watch: {
+    businessName() {
+      if (this.businessName != null) document.title = `Inventory for ${this.businessName}`
+    }
   }
 }
 </script>
