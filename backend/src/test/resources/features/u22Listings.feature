@@ -19,7 +19,8 @@ Feature: U22
 #  (e.g. “seller may be willing to consider near offers”) is available.
 
   Background:
-    Given a user with name "James" has a "Retail Trade" business "Jovial Jerky" in "Australia"
+    Given a user has a business "Jovial Jerky" in "New Zealand"
+    # NB: test countryData.json only has NZ
     And the business has the product "Jenkin's Jerky" with RRP of 7.99
     And they have 40 in their inventory with a price of 4.50 expiring on "2022-04-13"
 
