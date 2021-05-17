@@ -3,8 +3,11 @@ package com.navbara_pigeons.wasteless.testprovider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
+
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -26,12 +29,21 @@ public class MainTestProvider {
   protected final String EMAIL_2 = "example2@example.com";
   protected final String BUSINESS_1_NAME = "BUSINESS";
   protected final String PASSWORD_1 = "ABCabc123!@#";
+  protected final String PRODUCT_1_NAME = "PIZZA";
 
   @Autowired
   protected MockMvc mockMvc;
 
   @Autowired
   protected ObjectMapper objectMapper;
+
+  protected Inventory makeInventoryItem(Product product) {
+    Inventory inventoryItem = new Inventory();
+    inventoryItem.setProduct(product)
+        .setExpires(LocalDate.now())
+        .setQuantity(10);
+    return inventoryItem;
+  }
 
   protected Product makeProduct(String productName) {
     Product product = new Product();
