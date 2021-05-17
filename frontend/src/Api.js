@@ -289,5 +289,45 @@ export const Api = {
         406: "Could not set primary image."
       });
     });
+  },
+
+  /**
+   * Adds product and extra info to businesses inventory
+   *
+   * @param businessId of the business the item will be added to
+   * @param item to be added to the businesses inventory
+   * @returns {Promise<AxiosResponse<any> | void>}
+   */
+  addItemToInventory: (businessId, item) => {
+    return instance.post(
+        `/businesses/${businessId}/inventory/`, item)
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        400: "Bad request: Invalid data supplied",
+        403: "Forbidden: Insufficient privileges"
+      });
+    });
+  },
+
+  getBusinessListings: businessId => {
+    return instance.get(`/businesses/${businessId}/listings`).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
+      });
+    })
+  },
+
+  /**
+   * Get the businesses Inventory from API
+   * @param businessId The id of the business
+   * @returns {Promise<AxiosResponse<any>>} Promise containing the inventory
+   */
+  getBusinessInventory: businessId => {
+    return instance.get(`/businesses/${businessId}/inventory`).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        403: "You don't have permission view this businesses inventory",
+        406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
+      });
+    })
   }
 }
