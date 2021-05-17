@@ -23,4 +23,8 @@ public class FullListingDto {
     created = listing.getCreated();
     closes = listing.getCloses();
   }
+
+  public FullListingDto() {
+
+  }
 }
