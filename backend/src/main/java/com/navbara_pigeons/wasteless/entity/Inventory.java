@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
@@ -30,10 +31,10 @@ public class Inventory {
   private long quantity;
 
   @Column(name = "PRICE_PER_ITEM")
-  private float price;
+  private Double pricePerItem;
 
   @Column(name = "TOTAL_PRICE")
-  private float totalPrice;
+  private Double totalPrice;
 
   @Column(name = "EXPIRES")
   private LocalDate expires;
@@ -59,6 +60,20 @@ public class Inventory {
   )
   @JoinColumn(name = "INVENTORY_ID")
   private List<Listing> listings;
+
+  public Inventory(BasicInventoryDto inventory) { this.id = inventory.getId();
+    this.product = new Product(inventory.getProduct());
+    this.quantity = inventory.getQuantity();
+    this.pricePerItem = inventory.getPricePerItem();
+    this.totalPrice = inventory.getTotalPrice();
+    this.expires = inventory.getExpires();
+    this.manufactured = inventory.getManufactured();
+    this.sellBy = inventory.getSellBy();
+    this.bestBefore = inventory.getBestBefore();
+  }
+
+  public Inventory() {
+  }
 
   /**
    * Helper method which adds a listing to a inventory item

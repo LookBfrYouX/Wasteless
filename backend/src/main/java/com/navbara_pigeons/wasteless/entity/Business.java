@@ -84,6 +84,22 @@ public class Business {
   )
   private List<Product> productsCatalogue = new ArrayList<>();
 
+  @OneToMany(
+      fetch = FetchType.LAZY,
+      cascade = {
+          CascadeType.DETACH,
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.REFRESH
+      }
+  )
+  @JoinTable(
+      name = "INVENTORY_JOIN",
+      joinColumns = @JoinColumn(name = "BUSINESS_ID"),
+      inverseJoinColumns = @JoinColumn(name = "INVENTORY_ID")
+  )
+  private List<Inventory> inventory = new ArrayList<>();
+
   public Business(FullBusinessDto business) {
     this.id = business.getId();
     this.primaryAdministratorId = business.getPrimaryAdministratorId();

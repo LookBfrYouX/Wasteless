@@ -1,11 +1,11 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.controller.BusinessController;
 import com.navbara_pigeons.wasteless.controller.ProductController;
 import com.navbara_pigeons.wasteless.controller.UserController;
 import com.navbara_pigeons.wasteless.security.service.BasicUserDetailsServiceImpl;
+import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @CucumberContextConfiguration
 public class CucumberTestProvider extends MainTestProvider {
@@ -34,6 +33,10 @@ public class CucumberTestProvider extends MainTestProvider {
   @Autowired
   protected BasicUserDetailsServiceImpl basicUserDetailsService;
 
+
+  /**
+   * Logs in as admin using userController. See `adminLogin`, may or may not be exactly the same
+   */
   protected void login(String email) {
     // https://stackoverflow.com/questions/36584184/spring-security-withmockuser-does-not-work-with-cucumber-tests
     SecurityContextHolder.getContext().setAuthentication(
@@ -45,6 +48,10 @@ public class CucumberTestProvider extends MainTestProvider {
     );
   }
 
+
+  /**
+   * Logs in as admin using userController. See `adminLogin`, may or may not be exactly the same
+   */
   protected void login() {
     login("dnb36@uclive.ac.nz");
   }
@@ -68,5 +75,15 @@ public class CucumberTestProvider extends MainTestProvider {
     String response = result.andReturn().getResponse().getContentAsString();
 
     return objectMapper.readTree(response);
+  }
+
+  /**
+   * Logs in as admin using userController. See `login`, may or may not be exactly the same
+   */
+  void adminLogin() {
+    UserCredentials credentials = new UserCredentials();
+    credentials.setEmail("mbi47@uclive.ac.nz");
+    credentials.setPassword("fun123");
+    this.userController.login(credentials);
   }
 }
