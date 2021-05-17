@@ -25,7 +25,11 @@ h1 {
 // Navbar
 .main-content {
   // Navbar is about this height; shifts content down so it doesn't overlap
-  padding-top: 65px;
+  padding-top: $navbar-height;
+}
+
+.bottom-padding-navbar-height {
+  padding-bottom: $navbar-height;
 }
 
 nav {

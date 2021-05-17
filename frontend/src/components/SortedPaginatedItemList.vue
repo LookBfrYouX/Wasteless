@@ -26,7 +26,7 @@ To use this component:
 <template>
   <div class="w-100">
     <sort-sidebar
-      class="sort-sidebar"
+      class="sort-sidebar bottom-padding-navbar-height overflow-auto"
       v-if="showSortSidebar"
       v-bind:sortOptions="sortOptions"
       v-bind:currentSortOption="currentSortOption"
