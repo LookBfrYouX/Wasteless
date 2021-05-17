@@ -23,7 +23,7 @@ public class Listing {
 
   @OneToOne()
   @JoinColumn(name = "INVENTORY_ID")
-  private Inventory inventory;
+  private InventoryItem inventoryItem;
 
   @Column(name = "QUANTITY")
   private long quantity;

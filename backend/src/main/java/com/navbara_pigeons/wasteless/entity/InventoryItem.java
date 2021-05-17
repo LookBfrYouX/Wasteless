@@ -1,16 +1,13 @@
 package com.navbara_pigeons.wasteless.entity;
 
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.Product;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 @Data
 @Entity
 @Table(name = "INVENTORY")
-public class Inventory {
+public class InventoryItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +34,8 @@ public class Inventory {
     @Column(name = "EXPIRES")
     private ZonedDateTime expires;
 
-    @Column(name = "MANUFACTERED")
-    private ZonedDateTime manufacured;
+    @Column(name = "MANUFACTURED")
+    private ZonedDateTime manufactured;
 
     @Column(name = "SELL_BY")
     private ZonedDateTime sell_by;

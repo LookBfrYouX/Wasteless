@@ -1,17 +1,13 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
-import com.navbara_pigeons.wasteless.dto.FullListingDto;
-import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
+import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -47,13 +43,17 @@ public class ListingServiceImpl implements ListingService {
    * @throws UserNotFoundException     this will be caught by spring first
    */
   public Long addListing(long businessId, Listing listing)
-      throws ForbiddenException, BusinessNotFoundException, UserNotFoundException {
+      throws ForbiddenException, BusinessNotFoundException, UserNotFoundException, ListingValidationException {
     if (!userService.isAdmin() && !businessService.isBusinessAdmin(businessId)) {
       throw new ForbiddenException(
           "Only admins and business admins are allowed to add listings to a business");
     }
-    // TODO: validate listing, add validation class
-
+    if (listing.getCloses() == null) {
+      listing.setCloses(listing.getInventoryItem().getExpires());
+    }
+    if (!ListingServiceValidation.isListingValid(listing)) {
+      throw new ListingValidationException();
+    }
     listingDao.saveListing(listing);
     return listing.getId();
   }
