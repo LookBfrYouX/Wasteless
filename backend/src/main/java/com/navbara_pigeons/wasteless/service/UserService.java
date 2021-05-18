@@ -39,5 +39,5 @@ public interface UserService {
 
   String getLoggedInUserEmail();
 
-  User getLoggedInUser() throws UserNotFoundException;
+  User  getLoggedInUser() throws UserNotFoundException;
 }

@@ -116,10 +116,10 @@ CREATE TABLE inventory
     QUANTITY    INT                  NOT NULL,
     PRICE_PER_ITEM DECIMAL(6,2)      NOT NULL,
     TOTAL_PRICE DECIMAL(6, 2)        NOT NULL,
-    EXPIRES     DATETIME             NOT NULL,
-    MANUFACTURED DATETIME,
-    SELL_BY     DATETIME,
-    BEST_BEFORE DATETIME,
+    EXPIRES     DATE                 NOT NULL,
+    MANUFACTURED DATE,
+    SELL_BY     DATE,
+    BEST_BEFORE DATE,
 
     CONSTRAINT inventory_product_fk
         FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID)

@@ -1,17 +1,14 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.dto.CreateInventoryDto;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.service.InventoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -48,6 +45,24 @@ public class InventoryController {
     } catch (BusinessNotFoundException | UserNotFoundException exc) {
       log.info("USER OR BUSINESS NOT FOUND: " + id + " " + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
+    } catch (Exception exc) {
+      log.info("EXCEPTION GETTING INVENTORY + " + exc.getMessage());
+      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
+    }
+  }
+
+  @PostMapping("/businesses/{id}/inventory")
+  public ResponseEntity<Object> addToBusinessInventory(@PathVariable long id, @RequestBody CreateInventoryDto inventoryDto) {
+    try {
+      log.info("ADDED NEW INVENTORY ITEM FOR PRODUCT id: " + inventoryDto.getProductId() + " FOR BUSINESS: " + id);
+      return new ResponseEntity<>(this.inventoryService.addInventoryItem(id, inventoryDto), HttpStatus.valueOf(201));
+    } catch (InventoryRegistrationException exc) {
+      log.info("ADDING NEW INVENTORY_ITEM, BUSINESS ID " + id + " ERROR " + exc.getMessage());
+      throw new ResponseStatusException(HttpStatus.valueOf(400),
+              "There was some error with the data supplied by the user");
+    } catch (InventoryItemForbiddenException exc) {
+      log.info("INSUFFICIENT PRIVILEGES GETTING BUSINESS WITH ID " + id + " " + exc.getMessage());
+      throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient Privileges");
     } catch (Exception exc) {
       log.info("EXCEPTION GETTING INVENTORY + " + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
