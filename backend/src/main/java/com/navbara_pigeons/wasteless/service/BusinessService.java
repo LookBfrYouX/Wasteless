@@ -8,12 +8,16 @@ import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import net.minidev.json.JSONObject;
 
+import javax.transaction.Transactional;
+
 public interface BusinessService {
 
   JSONObject saveBusiness(Business business)
       throws BusinessTypeException, UserNotFoundException, BusinessRegistrationException, AddressValidationException;
 
   Object getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException;
+
+  Business getBusiness(long id) throws BusinessNotFoundException, UserNotFoundException;
 
   boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException;
 

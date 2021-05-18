@@ -145,9 +145,7 @@ export default {
   },
 
   beforeMount: async function() {
-    // TODO ENABLE
-    await this.updateBusinessName(); 
-    // await this.getListingsPipeline();
+    await this.getListingsPipeline();
   },
   
   methods: {
