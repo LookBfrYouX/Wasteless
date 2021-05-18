@@ -1,6 +1,6 @@
 <template>
   <div id="navbar">
-    <nav class="navbar navbar-expand-xl navbar-light bg-light">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
       <!-- Title -->
       <a class="navbar-brand" href="javascript:" v-on:click="homeButtonClicked()">Navbara Pigeon</a>
       <!-- Hamburger button -->
@@ -12,6 +12,7 @@
           data-target="#navbarSupportedContent"
           data-toggle="collapse"
           type="button"
+          id="hamburger-button"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -330,7 +331,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 nav {
   z-index: 10;
