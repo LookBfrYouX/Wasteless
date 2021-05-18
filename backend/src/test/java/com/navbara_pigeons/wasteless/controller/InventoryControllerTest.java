@@ -35,7 +35,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
   void getInventoryFromOneNonExistingBusinessTest() throws Exception {
     String endpointUrl = "/businesses/9999/inventory";
-    mockMvc.perform(get(endpointUrl)).andExpect(status().is(406));
+    mockMvc.perform(get(endpointUrl)).andExpect(status().is(400));
   }
 
   @Test
@@ -49,7 +49,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @WithMockUser
   void getInventoryFromOneBusinessTestInvalidId() throws Exception {
     String endpointUrl = "/businesses/-1/inventory";
-    mockMvc.perform(get(endpointUrl)).andExpect(status().is(406));
+    mockMvc.perform(get(endpointUrl)).andExpect(status().is(400));
   }
 
   @Test
@@ -84,7 +84,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
 
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  void addInventoryItemToBusinessInventoryInvalidBusinessId() throws Exception {
+  void asUser_addInventoryItem_expect_InvalidBusinessId() throws Exception {
     String endpointUrl = "/businesses/5/inventory";
     CreateInventoryItemDto dto = new CreateInventoryItemDto();
     dto.setProductId(1);
@@ -123,7 +123,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
     mockMvc.perform(post(endpointUrl)
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(inventoryItemDto)))
-            .andExpect(status().isUnauthorized());
+            .andExpect(status().is(403));
   }
 
   @Test
@@ -139,13 +139,13 @@ public class InventoryControllerTest extends ControllerTestProvider {
     mockMvc.perform(post(endpointUrl)
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(inventoryItemDto)))
-            .andExpect(status().isNotFound());
+            .andExpect(status().is(400));
   }
 
   @Test
-  @WithUserDetails(value = "mbi47@uclive.ac.nz")
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void asSpecificUser_addInventoryItemToOtherUsersBusiness_expectForbidden() throws Exception {
-    String endpointUrl = "/businesses/1/inventory";
+    String endpointUrl = "/businesses/3/inventory";
     CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
     inventoryItemDto.setExpires(LocalDate.now());
     inventoryItemDto.setProductId(2);

@@ -71,11 +71,10 @@ public class InventoryController {
     } catch (ProductNotFoundException exc) {
       log.info("PRODUCT NOT FOUND WITH ID AND BUSINESS ID: " + id + " " + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.valueOf(400), exc.getMessage());
+    } catch (Exception exc) {
+      log.info("EXCEPTION GETTING INVENTORY + " + exc.getMessage());
+      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
     }
-//    catch (Exception exc) {
-//      log.info("EXCEPTION GETTING INVENTORY + " + exc.getMessage());
-//      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
-//    }
   }
 // sorry Max we don't know how to cast these wizadry magic spells to do this have fun.
 //  @PostMapping("/businesses/{id}/inventory")

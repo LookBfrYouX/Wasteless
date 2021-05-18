@@ -86,9 +86,13 @@ public class InventoryServiceImpl implements InventoryService {
       throw new InventoryRegistrationException("User or business not found");
     }
     Product product;
+    long productId = inventoryItem.getProductId();
     LocalDate date = LocalDate.now();
-    long productid = inventoryItem.getProductId();
-    product = productService.getProduct(productid);
+    try {
+      product = productService.getProduct(productId);
+    } catch (ProductNotFoundException exc) {
+      throw new InventoryRegistrationException("Product not found");
+    }
 
     Inventory inventory = new Inventory();
     if (!InventoryServiceValidation.requiredFieldsNotEmpty(inventoryItem)) {
@@ -100,10 +104,19 @@ public class InventoryServiceImpl implements InventoryService {
     InventoryServiceValidation.priceValid(inventoryItem.getTotalPrice());
 
     inventory.setProduct(product);
+    if (inventoryItem.getPricePerItem() == null) {
+      inventory.setPricePerItem(product.getRecommendedRetailPrice());
+    } else {
+      inventory.setPricePerItem(inventoryItem.getPricePerItem());
+    }
     inventory.setBusiness(business);
     inventory.setQuantity(inventoryItem.getQuantity());
-    inventory.setPricePerItem(inventoryItem.getPricePerItem());
     inventory.setTotalPrice(inventoryItem.getTotalPrice());
+    if (inventoryItem.getTotalPrice() == null) {
+      inventory.setTotalPrice(inventory.getPricePerItem() * inventory.getQuantity());
+    } else {
+      inventory.setTotalPrice(inventoryItem.getTotalPrice());
+    }
     inventory.setExpires(inventoryItem.getExpires());
     inventory.setManufactured(inventoryItem.getManufactured());
     inventory.setSellBy(inventoryItem.getSellBy());
