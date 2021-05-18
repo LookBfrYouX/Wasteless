@@ -94,7 +94,7 @@
           <div class="col-4">
             <li v-if="isLoggedIn" class="nav-item dropdown float-xl-right pr-3">
               <a id="navbarDropdownMenuLink" aria-expanded="false"
-                 aria-haspopup="true" class=" nav-link dropdown-toggle d-flex align-items-center justify-content-md-flex-end"
+                 aria-haspopup="true" class=" nav-link dropdown-toggle d-flex align-items-center justify-content-md-end"
                  data-toggle="dropdown"
                  href="javascript:" role="button">
                 <img v-if="isActingAsBusiness"
