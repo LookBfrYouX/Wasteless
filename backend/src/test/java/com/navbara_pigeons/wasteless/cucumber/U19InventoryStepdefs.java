@@ -33,4 +33,16 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
     @Then("An error is shown")
     public void anErrorIsShown() {
     }
+
+    @Given("I am logged in and have a product with id {string}")
+    public void iAmLoggedInAndHaveAProductWithId(String arg0) {
+    }
+
+    @When("I add an inventory entry product id {string} with quantity {string} and expiry date in the future")
+    public void iAddAnInventoryEntryProductIdWithQuantityAndExpiryDateInTheFuture(String arg0, String arg1) {
+    }
+
+    @Then("When I retrieve my inventory the entry is listed")
+    public void whenIRetrieveMyInventoryTheEntryIsListed() {
+    }
 }
