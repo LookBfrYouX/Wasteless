@@ -94,7 +94,7 @@
           <div class="col-4">
             <li v-if="isLoggedIn" class="nav-item dropdown float-xl-right pr-3">
               <a id="navbarDropdownMenuLink" aria-expanded="false"
-                 aria-haspopup="true" class=" nav-link dropdown-toggle d-flex align-items-center"
+                 aria-haspopup="true" class=" nav-link dropdown-toggle d-flex align-items-center justify-content-md-flex-end"
                  data-toggle="dropdown"
                  href="javascript:" role="button">
                 <img v-if="isActingAsBusiness"
@@ -150,7 +150,7 @@
                 Login
               </a>
             </li>
-            <li v-if="this.$route.name != 'Sign Up'" class="nav-item">
+            <li v-if="this.$route.name != 'signUp'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
                   v-on:click="pushOrGo('signUp')"
@@ -199,6 +199,10 @@ export default {
       }
     },
 
+    /**
+     * Returns a list of navbar links depending on if they are acting as a business or user
+     * @return array with `name` string and `click` methods
+     */
     navbarLinks() {
       if (!this.isLoggedIn) return [];
       if (!this.isActingAsBusiness) return [
