@@ -11,6 +11,10 @@ Feature: Create Inventory
   When Someone else retrieves my inventory
   Then An error is shown
 #AC2: I can add entries to the inventory of my business.  Each represents one or more physical product items.  For now, entry is done via an appropriate form—later we may support bulk loading.  Each inventory entry has a mandatory product code, corresponding to the appropriate catalogue item.
+  Scenario: I can add entries to my inventory
+  Given I am logged in and have a product with id "1"
+  When I add an inventory entry product id "1" with quantity "1" and expiry date in the future
+  Then When I retrieve my inventory the entry is listed
 #AC3: Inventory entries have additional fields: quantity*, price per item, total price, and at least one date related to the product* (see AC4).
 #AC4: The date related to the entry could be one or more of Prepared/manufactured on, Sell by, Best before, Expiry date (default). The expiry date is mandatory. Dates are easy to enter (e.g. date picker), are validated (dates in the past/future), and displayed so that there is no confusion.  Note:  Subsequent stories will involve displaying information about specific sale listings—only the dates that are filled in will be shown to the public.
 #AC5: The currency (both the symbol and the currency code) is shown automatically for any prices in the inventory, e.g. “$30 NZD”. The creator’s (acting as individual or business) location determines the currency. Use an API such as: https://restcountries.eu/ to be current.
