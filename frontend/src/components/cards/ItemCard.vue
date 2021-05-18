@@ -1,16 +1,16 @@
 <template>
   <!-- this component produces the item card component from the given props -->
-  <div class="container card item-card"
+  <div class="container card item-card collapsed"
        data-toggle="collapse"
        v-bind:data-target="'#' + idPrefix + item.id"
-       @click="toggleCollapse()"> <!-- TODO add onclick handler and method when components and routes are ready -->
+       > <!-- TODO add onclick handler and method when components and routes are ready -->
     <div class="row card-body">
       <div class="col-2 pr-0">
         <img class="img-fluid item-image" src="./../../../assets/images/login.jpg" alt="Image" />
       </div>
       <div class="col-10">
         <h1 class="card-title"
-            v-bind:class="{'text-truncate': !isExpanded}">{{ item.product.name }}</h1>
+            >{{ item.product.name }}</h1>
         <div class="d-flex flex-wrap justify-content-between">
           <h4 class="pr-2">{{ item.quantity }} <small>units in stock</small></h4>
           <h4 class="pr-2">
@@ -45,11 +45,7 @@
 <script>
 export default {
   name: "ItemCard",
-  data() {
-    return {
-      isExpanded: false,
-    }
-  },
+
   props: {
     // The item information to be displayed. (See API spec for details)
     item: Object,
@@ -58,11 +54,7 @@ export default {
       default: "inventory-item-"
     }
   },
-  methods: {
-    toggleCollapse() {
-      this.isExpanded = !this.isExpanded;
-    }
-  },
+
   computed: {
     // A list of dates and their description strings used for the date data.
     // Only dates that were supplied and not empty are displayed.
@@ -94,4 +86,9 @@ export default {
   max-height: 48px;
 }
 
+.collapsed .card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
