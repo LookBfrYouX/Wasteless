@@ -2,7 +2,15 @@
   <div class="container pt-4">
     <h1>Home Page</h1>
     <p>Beautiful, ain't it?</p>
-    <item-card v-bind:item="inventoryItem"></item-card>
+    <item-card
+        v-bind:item="inventoryItem"
+        :id-prefix="'item1-'"></item-card>
+    <item-card
+        v-bind:item="inventoryItem"
+        :id-prefix="'item2-'"></item-card>
+    <item-card
+        v-bind:item="inventoryItem"
+        :id-prefix="'item3-'"></item-card>
   </div>
 </template>
 <script>
@@ -25,8 +33,9 @@ export default {
         totalPrice: '$20 NZD',
         manufactured: '2021-04-24',
         sellBy: '2021-05-26',
-        bestBefore: 'Haruka is bootstrap queen',
+        bestBefore: '2021-05-27',
         expires: '2021-05-29',
+        description: "This bean is leftover from International Bean Festival"
       }
     }
   }
