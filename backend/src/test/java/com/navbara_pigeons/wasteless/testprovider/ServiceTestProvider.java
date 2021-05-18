@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.navbara_pigeons.wasteless.dto.BasicAddressDto;
 import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
+import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.FullAddressDto;
@@ -12,6 +13,7 @@ import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
@@ -62,6 +64,38 @@ public class ServiceTestProvider extends MainTestProvider {
     } catch (Exception e) {
       Assertions.fail(e);
     }
+  }
+
+  /**
+   * Asserts that an inventory and its DTO's are equal
+   *
+   * @param inventory
+   * @param inventoryDto
+   */
+  protected void assertInventoryListEquals(List<Inventory> inventory, List<BasicInventoryDto> inventoryDto) {
+    inventory.sort(Comparator.comparing(Inventory::getId));
+    inventoryDto.sort(Comparator.comparing(BasicInventoryDto::getId));
+    assertEquals(inventory.size(), inventoryDto.size());
+    for (int i = 0; i < inventory.size(); i++) {
+      assertInventoryEquals(inventory.get(i), inventoryDto.get(i));
+    }
+  }
+
+  /**
+   * Asserts that a given inventory and its DTO are equal
+   *
+   * @param inventory
+   * @param inventoryDto
+   */
+  protected void assertInventoryEquals(Inventory inventory, BasicInventoryDto inventoryDto) {
+    assertEquals(inventory.getId(), inventoryDto.getId());
+    assertProductEquals(inventory.getProduct(), inventoryDto.getProduct());
+    assertEquals(inventory.getQuantity(), inventoryDto.getQuantity());
+    assertEquals(inventory.getPricePerItem(), inventoryDto.getPricePerItem());
+    assertEquals(inventory.getManufactured(), inventoryDto.getManufactured());
+    assertEquals(inventory.getSellBy(), inventoryDto.getSellBy());
+    assertEquals(inventory.getBestBefore(), inventoryDto.getBestBefore());
+    assertEquals(inventory.getExpires(), inventoryDto.getExpires());
   }
 
   /**

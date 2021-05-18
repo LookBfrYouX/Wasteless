@@ -3,7 +3,7 @@
     <div>
       <h1 class="title">Business Information</h1>
       <button v-if="showBackButton"
-              class="btn btn-white-bg-primary mx-1 d-flex align-items-end mb-3"
+              class="btn btn-white-bg-primary mr-1 d-flex align-items-end mb-3"
               type="button" v-on:click="$router.go(-1)">
         <span class="material-icons mr-1">arrow_back</span>
         Go back
@@ -34,7 +34,7 @@
             class="col-md value"
           >
               <router-link
-                class="admin-link text-decoration-none"
+                class="admin-link hover-cursor-pointer text-decoration-none"
                 v-bind:to="{ name: 'profile', params: { userId: admin.id }}"
               >
                 {{ admin.firstName }} {{ admin.lastName }}
@@ -61,9 +61,17 @@
         </router-link>
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
+            v-if="canEditBusiness"
+            v-bind:to="{ name: 'businessInventory', params: { businessId }}"
+        >
+          <span class="material-icons mr-1">inventory</span>
+          View Inventory 
+        </router-link>
+        <router-link
+            class="btn btn-white-bg-primary m-1 d-flex"
             v-bind:to="{ name: 'businessListings', params: { businessId }}"
         >
-          <span class="material-icons mr-1">store</span>
+          <span class="material-icons mr-1">storefront</span>
           View Listings
         </router-link>
         
@@ -231,7 +239,6 @@ a.admin-link {
 }
 
 a.admin-link:hover {
-  cursor: pointer;
   color: #1ec996;
 }
 

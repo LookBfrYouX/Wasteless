@@ -71,7 +71,7 @@
         </li>
 
           <!-- Center group: search input and button -->
-          <li v-if="isLoggedIn" class="navbar-item d-flex search-container w-100">
+          <li v-if="isLoggedIn" class="col-5 navbar-item d-flex search-container w-100">
             <form class="input-group navbar-center form-inline" v-on:submit.prevent="search">
               <div class="input-group w-100">
                 <div class="input-group-prepend h-100">
@@ -91,52 +91,54 @@
           </li>
 
           <!-- Right group: User and acting as -->
-          <li v-if="isLoggedIn" class="nav-item dropdown">
-            <a id="navbarDropdownMenuLink" aria-expanded="false"
-               aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
-               data-toggle="dropdown"
-               href="javascript:" role="button">
-              <img v-if="isActingAsBusiness"
-                   alt="User is acting as business"
-                   class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-business-thumbnail.svg"
-              >
-              <img v-else
-                   alt="User is acting as self"
-                   class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-user-thumbnail.svg"
-              >
-              <div class="d-flex flex-column mx-1">
+          <div class="col-4">
+            <li v-if="isLoggedIn" class="nav-item dropdown float-xl-right pr-3">
+              <a id="navbarDropdownMenuLink" aria-expanded="false"
+                 aria-haspopup="true" class=" nav-link dropdown-toggle d-flex align-items-center"
+                 data-toggle="dropdown"
+                 href="javascript:" role="button">
+                <img v-if="isActingAsBusiness"
+                     alt="User is acting as business"
+                     class="nav-picture rounded-circle"
+                     src="./../../assets/images/default-business-thumbnail.svg"
+                >
+                <img v-else
+                     alt="User is acting as self"
+                     class="nav-picture rounded-circle"
+                     src="./../../assets/images/default-user-thumbnail.svg"
+                >
+                <div class="d-flex flex-column mx-1">
                 <span class="m-0 p-0 text-dark">
                   {{ printCurrentActingAs }}
                 </span>
-                <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
-              </div>
-            </a>
+                  <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
+                </div>
+              </a>
 
-            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
-              <div class="h4 dropdown-header">Act as</div>
-              <a class="dropdown-item" href="javascript:"
-                 v-on:click="switchActingAs(null)">
-                {{ authUser.firstName }} {{ authUser.lastName }}
-                <span v-if="currentActingAs === null">
+              <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
+                <div class="h4 dropdown-header">Act as</div>
+                <a class="dropdown-item" href="javascript:"
+                   v-on:click="switchActingAs(null)">
+                  {{ authUser.firstName }} {{ authUser.lastName }}
+                  <span v-if="currentActingAs === null">
                   &#10003;
                 </span>
-              </a>
-            <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
-              <a v-for="business in actingAsEntities" :key="business.id"
-                 class="dropdown-item"
-                 href="javascript:"
-                 v-on:click="switchActingAs(business)">
-                {{ business.name }}
-                <span v-if="business === currentActingAs">
+                </a>
+                <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
+                <a v-for="business in actingAsEntities" :key="business.id"
+                   class="dropdown-item"
+                   href="javascript:"
+                   v-on:click="switchActingAs(business)">
+                  {{ business.name }}
+                  <span v-if="business === currentActingAs">
                     &#10003;
                   </span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="javascript:" v-on:click="logOut">Log out</a>
-            </div>
-          </li>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="javascript:" v-on:click="logOut">Log out</a>
+              </div>
+            </li>
+          </div>
 
           <!-- Right group (if not logged in) -->
           <div v-if="!isLoggedIn" class="d-lg-flex ml-lg-auto">
@@ -212,14 +214,14 @@ export default {
           click: this.profileClicked
         },
         {
-          name: "Business Catalogue",
-          click: this.productCatalogueClicked
+          name: "Product Catalogue",
+          click: () => this.pushOrGoToBusinessPage("productCatalogue")
         }, {
-          name: "Business Listings",
-          click: this.businessListingsClicked
+          name: "Inventory",
+          click: () => this.pushOrGoToBusinessPage("businessInventory")
         }, {
-          name: "Business LINK $",
-          click: () => {},
+          name: "Listings",
+          click: () => this.pushOrGoToBusinessPage("businessListings")
         }
       ];
     },
@@ -349,44 +351,26 @@ export default {
     },
 
     /**
-     * Link to product catalog page clicked
+     * Goes to business page, given the user is acting as a business
+     * @param name name of page to go to
      */
-    productCatalogueClicked: async function () {
+    pushOrGoToBusinessPage: async function(name) {
       const business = this.$stateStore.getters.getActingAs();
       if (business == null) {
         return;
       }
       const params = {
-        name: "productCatalogue",
+        name, 
         params: {
           businessId: business.id
         }
       };
-      if (this.$route.name == 'productCatalogue' && this.$route.params.businessId == business.id) {
+      if (this.$route.name == name && this.$route.params.businessId == business.id) {
         await this.$router.go();
       } else {
         await this.$router.push(params);
       }
     },
-
-    businessListingsClicked: async function () {
-      const business = this.$stateStore.getters.getActingAs();
-      if (business == null) {
-        return;
-      }
-      const params = {
-        name: "businessListings",
-        params: {
-          businessId: business.id
-        }
-      };
-      if (this.$route.name == 'businessListings' && this.$route.params.businessId == business.id) {
-        await this.$router.go();
-      } else {
-        await this.$router.push(params);
-      }
-    }
-
   },
 };
 </script>

@@ -2,6 +2,7 @@ import {shallowMount} from "@vue/test-utils";
 import {globalStateMocks} from "./testHelper";
 import ProductCatalogue from "../components/ProductCatalogue";
 
+
 let wrapper;
 
 const mockProduct = (id = 1) => {

@@ -9,7 +9,9 @@
         <h2>Listings for {{businessName? businessName: "business"}}</h2>
       </template>
       <template v-slot:item="slotProps">
+        <div class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded">
         {{JSON.stringify(slotProps.item)}}
+        </div>
         <!--<business-listing v-bind:listing="slotProps.item"/> -->
       </template>
       <template v-slot:right-button>

@@ -8,7 +8,7 @@
     >
       <a
         v-on:click="setPage(pageNum)"
-        class="page-link"
+        class="page-link hover-cursor-pointer"
       >
         {{text}}
       </a>
