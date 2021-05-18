@@ -49,10 +49,7 @@ public class ListingServiceImpl implements ListingService {
   public List<FullListingDto> getListings(long businessId) throws BusinessNotFoundException, UserNotFoundException {
     Business business = businessService.getBusiness(businessId);
     ArrayList<FullListingDto> listings = new ArrayList<>();
-//    System.out.println(business.getInventory().size());
     for (Inventory inventory: business.getInventory()) {
-//      System.out.println(inventory);
-//      System.out.println(inventory.getListings().size());
       for (Listing listing: inventory.getListings()) {
         listings.add(new FullListingDto(listing, publicPathPrefix));
       }

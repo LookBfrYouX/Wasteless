@@ -62,7 +62,8 @@ public class Inventory {
   @JoinColumn(name = "INVENTORY_ID")
   private List<Listing> listings;
 
-  public Inventory(BasicInventoryDto inventory) { this.id = inventory.getId();
+  public Inventory(BasicInventoryDto inventory) { 
+    this.id = inventory.getId();
     this.product = new Product(inventory.getProduct());
     this.quantity = inventory.getQuantity();
     this.pricePerItem = inventory.getPricePerItem();
