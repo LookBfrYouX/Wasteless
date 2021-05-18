@@ -1,9 +1,10 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.dto.CreateInventoryDto;
+import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.service.InventoryService;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ public class InventoryController {
   public InventoryController(InventoryService inventoryService) {
     this.inventoryService = inventoryService;
   }
+
 
   /**
    * This endpoint retrieves a list of all products listed by a particular business (id).
@@ -55,7 +57,7 @@ public class InventoryController {
   }
 
   @PostMapping("/businesses/{id}/inventory")
-  public ResponseEntity<Object> addToBusinessInventory(@PathVariable long id, @RequestBody CreateInventoryDto inventoryDto) {
+  public ResponseEntity<Object> addToBusinessInventory(@PathVariable long id, @RequestBody CreateInventoryItemDto inventoryDto) {
     try {
       log.info("ADDED NEW INVENTORY ITEM FOR PRODUCT id: " + inventoryDto.getProductId() + " FOR BUSINESS: " + id);
       return new ResponseEntity<>(this.inventoryService.addInventoryItem(id, inventoryDto), HttpStatus.valueOf(201));
@@ -69,9 +71,17 @@ public class InventoryController {
     } catch (ProductNotFoundException exc) {
       log.info("PRODUCT NOT FOUND WITH ID AND BUSINESS ID: " + id + " " + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.valueOf(400), exc.getMessage());
-    } catch (Exception exc) {
-      log.info("EXCEPTION GETTING INVENTORY + " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
     }
+//    catch (Exception exc) {
+//      log.info("EXCEPTION GETTING INVENTORY + " + exc.getMessage());
+//      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
+//    }
   }
+// sorry Max we don't know how to cast these wizadry magic spells to do this have fun.
+//  @PostMapping("/businesses/{id}/inventory")
+//  @ResponseStatus(value = HttpStatus.CREATED)
+//  public void registerInventoryItem(@PathVariable long id, @RequestBody CreateInventoryItemDto inventoryItemDto) throws InsufficientPrivilegesException {
+//    this.inventoryService.registerInventoryItem(inventoryItemDto);
+//  }
+
 }

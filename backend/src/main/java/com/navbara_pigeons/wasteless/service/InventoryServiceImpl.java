@@ -3,7 +3,7 @@ package com.navbara_pigeons.wasteless.service;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
-import com.navbara_pigeons.wasteless.dto.CreateInventoryDto;
+import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.entity.Product;
@@ -74,7 +74,7 @@ public class InventoryServiceImpl implements InventoryService {
   }
 
   @Override
-  public JSONObject addInventoryItem(long businessId, CreateInventoryDto inventoryItem) throws InventoryRegistrationException, InventoryItemForbiddenException, ProductNotFoundException {
+  public JSONObject addInventoryItem(long businessId, CreateInventoryItemDto inventoryItem) throws InventoryRegistrationException, InventoryItemForbiddenException, ProductNotFoundException {
     Business business;
     try {
       business = businessDao.getBusinessById(businessId);
@@ -100,6 +100,7 @@ public class InventoryServiceImpl implements InventoryService {
     InventoryServiceValidation.priceValid(inventoryItem.getTotalPrice());
 
     inventory.setProduct(product);
+    inventory.setBusiness(business);
     inventory.setQuantity(inventoryItem.getQuantity());
     inventory.setPricePerItem(inventoryItem.getPricePerItem());
     inventory.setTotalPrice(inventoryItem.getTotalPrice());

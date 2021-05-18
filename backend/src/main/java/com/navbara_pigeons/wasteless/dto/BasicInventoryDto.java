@@ -2,7 +2,9 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.entity.Product;
+
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import lombok.Data;
 
 @Data
@@ -11,8 +13,8 @@ public class BasicInventoryDto {
   private long id;
   private BasicProductDto product;
   private long quantity;
-  private float pricePerItem;
-  private float totalPrice;
+  private Double pricePerItem;
+  private Double totalPrice;
   private LocalDate manufactured;
   private LocalDate sellBy;
   private LocalDate bestBefore;

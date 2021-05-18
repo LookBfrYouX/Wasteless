@@ -95,6 +95,7 @@ export default {
      * Synchronizes modal visibility with state
      */
     updateModalVisibility: function () {
+      if (this.show) console.log("SHOW MODAL");
       this.show ? this.modal.modal("show") : this.modal.modal("hide");
     },
 
@@ -153,10 +154,17 @@ export default {
    * Hide the modal if it is open
    */
   beforeDestroy() {
-    if (this.modal) {
-      this.modal.modal("hide"); // If navigation occurs while modal open, modal disapears but body has the modal open class
-      // Wait for modal to completely disapear, then hide modal
-      this.modal.on("hidden.bs.modal", () => this.modal.modal("dispose"));
+    try {
+      // if (this.modal) {
+      //   this.modal.modal("hide"); // If navigation occurs while modal open, modal disapears but body has the modal open class
+      // }
+      this.modal.modal("dispose"); // dipose of the modal
+    } catch(err) {
+      console.warn("Modal destroy failed. Removing it manually...")
+      document.body.classList.remove("modal-open");
+      document.body.style.paddingRight = "inherit";
+      const backdrops = document.body.querySelectorAll(".modal-backdrop");
+      backdrops.forEach( backdrop => backdrop.remove());
     }
   }
 

@@ -1,6 +1,6 @@
 package com.navbara_pigeons.wasteless.validation;
 
-import com.navbara_pigeons.wasteless.dto.CreateInventoryDto;
+import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
@@ -15,7 +15,7 @@ public class InventoryServiceValidation {
    * @param inventory item to validate
    * @return true if the product is valid
    */
-  public static boolean requiredFieldsNotEmpty(CreateInventoryDto inventory) {
+  public static boolean requiredFieldsNotEmpty(CreateInventoryItemDto inventory) {
     return inventory.getExpires() != null;
   }
 
@@ -29,7 +29,7 @@ public class InventoryServiceValidation {
    *
    * @param currentDate date to check
    */
-  public static void datesValid(CreateInventoryDto inventory, LocalDate currentDate) throws InventoryRegistrationException {
+  public static void datesValid(CreateInventoryItemDto inventory, LocalDate currentDate) throws InventoryRegistrationException {
     // TODO how do we ensure local date is equal to date of the user?
     if (InventoryServiceValidation.date1AfterDate2(inventory.getManufactured(), currentDate)) {
       throw new InventoryRegistrationException("Manufacture date must be before or equal to today");
@@ -49,8 +49,10 @@ public class InventoryServiceValidation {
    * Checks if price is valid: positive and less than 10000
    *
    * @param price price to check
+   * @return if price is valid or null
    */
-  public static void priceValid(float price) throws InventoryRegistrationException {
+  public static void priceValid(Double price) throws InventoryRegistrationException {
+    if (price == null) return;
     if (price < 0) {
       throw new InventoryRegistrationException("Price cannot be negative");
     } else if (price >= 10000) {

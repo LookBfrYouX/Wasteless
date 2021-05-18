@@ -7,17 +7,17 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class CreateInventoryDto {
+public class CreateInventoryItemDto {
   private long productId;
   private long quantity;
-  private float pricePerItem;
-  private float totalPrice;
+  private Double pricePerItem;
+  private Double totalPrice;
   private LocalDate manufactured;
   private LocalDate sellBy;
   private LocalDate bestBefore;
   private LocalDate expires;
 
-  public CreateInventoryDto(Inventory inventoryItem) {
+  public CreateInventoryItemDto(Inventory inventoryItem) {
     this.productId = inventoryItem.getProduct().getId();
     this.quantity = inventoryItem.getQuantity();
     this.pricePerItem = inventoryItem.getPricePerItem();
@@ -28,5 +28,5 @@ public class CreateInventoryDto {
     this.expires = inventoryItem.getExpires();
   }
 
-  public CreateInventoryDto() {};
+  public CreateInventoryItemDto() {};
 }
