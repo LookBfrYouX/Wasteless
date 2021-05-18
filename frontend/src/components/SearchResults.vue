@@ -222,7 +222,7 @@ const SearchResults = {
 export default SearchResults
 </script>
 
-<style>
+<style scoped>
 
 button.page-link {
   display: inline-block;

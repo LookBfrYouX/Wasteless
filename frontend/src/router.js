@@ -92,7 +92,7 @@ export const router = new VueRouter({
     },
     {
       name: "productCatalogue",
-      path: "/business/:businessId(\\d+)/catalog",
+      path: "/business/:businessId(\\d+)/catalogue",
       component: () => import("./components/ProductCatalogue.vue"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)}),
       meta: {
@@ -155,14 +155,17 @@ export const router = new VueRouter({
     {
       name: "businessListings",
       path: "/business/:businessId(\\d+)/listings",
-      meta: { title: "Business Listings TODO | Wasteless"},
+      meta: {
+        title: "Business Listings | Wasteless",
+        requiresSignIn: true
+      },
       component: () => import("./views/BusinessListings.vue"),
       props: route => ({ businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "businessInventory",
       path: "/business/:businessId(\\d+)/inventory",
-      meta: { title: "Business Inventory TODO | Wasteless"},
+      meta: { title: "Business Inventory | Wasteless"},
       component: () => import("./views/BusinessInventory"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)})
     },
@@ -202,6 +205,7 @@ export const router = new VueRouter({
   ],
 });
 
+
 /**
  * Sets page title on navigate
  * Uses `route.meta.title`; either a string or function that, given the route, returns a string
@@ -209,6 +213,14 @@ export const router = new VueRouter({
  * To set title after navigate, use the `setDocumentTitle` prop passed to the router component in `App.vue`
  */
 router.afterEach((to) => {
+  
+  // Navbar is static now so when the user clicks a link, close the navbar so it doesn't cover the new content
+  if (document) {
+    const hamburger = document.getElementById("hamburger-button");
+    if (hamburger && !hamburger.classList.contains("collapsed")) {
+      hamburger.click();
+    }
+  }
   Vue.nextTick(() => {
     let title = "Wasteless";
     if (typeof to.meta.title == "string") {
@@ -232,7 +244,7 @@ router.beforeEach(async (to, from, next) => {
 
   // Must be logged in
   if (to.meta.requiresSignIn && !store.getters.isLoggedIn()) {
-    next({name: 'error401'});
+    next({name: 'error401' });
   }
   // Admins can do everything
   else if (store.getters.isAdmin()) {

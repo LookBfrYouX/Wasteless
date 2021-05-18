@@ -4,7 +4,7 @@
         v-bind:query="query"
         v-on:input="event => this.query = event.target.value"
     />
-    <div class="w-100 d-flex justify-content-center gradient-background pb-4">
+    <div class="w-100 main-content d-flex justify-content-center gradient-background">
       <router-view
           v-on:searchresultscreated="updateInput"
       ></router-view>
