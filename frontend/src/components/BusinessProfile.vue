@@ -61,16 +61,17 @@
         </router-link>
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
-            v-bind:to="{ name: 'businessListings', params: { businessId }}"
+            v-if="canEditBusiness"
+            v-bind:to="{ name: 'businessInventory', params: { businessId }}"
         >
-          <span class="material-icons mr-1">store</span>
-          View Listings
+          <span class="material-icons mr-1">inventory</span>
+          View Inventory 
         </router-link>
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
-            v-bind:to="{ name: 'businessInventory', params: { businessId }}"
+            v-bind:to="{ name: 'businessListings', params: { businessId }}"
         >
-          <span class="material-icons mr-1">store</span>
+          <span class="material-icons mr-1">storefront</span>
           View Listings
         </router-link>
         
