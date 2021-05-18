@@ -1,6 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,8 +35,8 @@ public class Listing {
   private String moreInfo;
 
   @Column(name = "CREATED")
-  private ZonedDateTime created;
+  private LocalDate created;
 
   @Column(name = "CLOSES")
-  private ZonedDateTime closes;
+  private LocalDate closes;
 }

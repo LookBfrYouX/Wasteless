@@ -98,7 +98,7 @@ public class Business {
       joinColumns = @JoinColumn(name = "BUSINESS_ID"),
       inverseJoinColumns = @JoinColumn(name = "INVENTORY_ID")
   )
-  private List<Inventory> inventory = new ArrayList<>();
+  private List<InventoryItem> inventory = new ArrayList<>();
 
   public Business(FullBusinessDto business) {
     this.id = business.getId();

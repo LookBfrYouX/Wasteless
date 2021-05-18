@@ -14,7 +14,7 @@ import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,7 +96,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     InventoryItem inventoryItem = new InventoryItem();
     inventoryItem.setProduct(product);
     inventoryItem.setQuantity(4);
-    inventoryItem.setExpires(ZonedDateTime.parse("2021-07-21T23:59:00Z"));
+    inventoryItem.setExpires(LocalDate.parse("2021-07-21"));
 
     Listing listing = new Listing();
     listing.setInventoryItem(inventoryItem);

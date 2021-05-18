@@ -4,7 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -19,7 +19,7 @@ public class ListingController extends ControllerTestProvider {
     mockListing.setQuantity(3);
     mockListing.setPrice(17.99f);
     mockListing.setMoreInfo("Seller may be willing to consider near offers");
-    mockListing.setCloses(ZonedDateTime.parse("2021-07-21T23:59:00Z"));
+    mockListing.setCloses(LocalDate.parse("2021-07-21T23:59:00Z"));
 
     mockMvc.perform(post("/businesses/1/listings")
         .contentType("application/json")

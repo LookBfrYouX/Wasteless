@@ -1,15 +1,13 @@
 package com.navbara_pigeons.wasteless.entity;
 
-import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Data
 @Entity
 @Table(name = "INVENTORY")
-public class Inventory {
+public class InventoryItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,21 +38,4 @@ public class Inventory {
 
     @Column(name = "BEST_BEFORE")
     private LocalDate bestBefore;
-
-    public Inventory(BasicInventoryDto inventory) {
-        this.id = inventory.getId();
-        this.product = new Product(inventory.getProduct());
-        this.quantity = inventory.getQuantity();
-        this.pricePerItem = inventory.getPricePerItem();
-        this.totalPrice = inventory.getTotalPrice();
-        this.expires = inventory.getExpires();
-        this.manufactured = inventory.getManufactured();
-        this.sellBy = inventory.getSellBy();
-        this.bestBefore = inventory.getBestBefore();
-    }
-
-    public Inventory() {
-
-    }
-
 }
