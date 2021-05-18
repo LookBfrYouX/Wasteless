@@ -84,7 +84,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
   void addInventoryItemToBusinessInventoryInvalidProductId() throws Exception {
     String endpointUrl = "/businesses/1/inventory";
     CreateInventoryDto dto = new CreateInventoryDto();
-    dto.setProductId(1);
+    dto.setProductId(7000);
     dto.setQuantity(2);
     dto.setExpires(LocalDate.now());
     mockMvc.perform(post(endpointUrl)
