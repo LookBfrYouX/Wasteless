@@ -208,6 +208,10 @@ export default {
         {
           name: "Profile",
           click: this.profileClicked
+        },
+        {
+          name: "Marketplace",
+          click: () => this.pushOrGo('marketplace')
         }
       ];
 
