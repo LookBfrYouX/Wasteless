@@ -2,6 +2,8 @@
   <div class="container pt-4">
     <h1>Home Page</h1>
     <p>Beautiful, ain't it?</p>
+
+<!--    <item-card> is here for demo purpose. TODO remove them before merge-->
     <item-card
         v-bind:item="inventoryItem"
         :id-prefix="'item1-'"
@@ -17,6 +19,7 @@
         :id-prefix="'item3-'"
         :business-id="1"
         :currency="currency"></item-card>
+<!--    End of item-card demo-->
   </div>
 </template>
 <script>

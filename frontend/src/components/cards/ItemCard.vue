@@ -3,7 +3,7 @@
   <div class="container card item-card collapsed"
        data-toggle="collapse"
        v-bind:data-target="'#' + idPrefix + item.id"
-       > <!-- TODO add onclick handler and method when components and routes are ready -->
+       >
     <div class="row card-body">
       <div class="col-2 pr-0">
         <img class="img-fluid item-image" src="./../../../assets/images/login.jpg" alt="Image" />
@@ -57,6 +57,7 @@ export default {
   props: {
     // The item information to be displayed. (See API spec for details)
     item: Object,
+    // idPrefix for giving unique html id value for each item card. Id is required for Bootstrap expanding/collapsing functionality.
     idPrefix: {
       type: String,
       default: "inventory-item-"
