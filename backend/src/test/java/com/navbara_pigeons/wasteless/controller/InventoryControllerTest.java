@@ -111,22 +111,6 @@ public class InventoryControllerTest extends ControllerTestProvider {
   }
 
   @Test
-  @WithAnonymousUser
-  void asAnon_addInventoryItem_expectForbidden() throws Exception {
-    String endpointUrl = "/businesses/2/inventory";
-    CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
-    inventoryItemDto.setExpires(LocalDate.now());
-    inventoryItemDto.setProductId(2);
-    inventoryItemDto.setQuantity(15);
-    inventoryItemDto.setTotalPrice(220.00);
-    inventoryItemDto.setPricePerItem(20.00);
-    mockMvc.perform(post(endpointUrl)
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(inventoryItemDto)))
-            .andExpect(status().is(403));
-  }
-
-  @Test
   @WithMockUser
   void asUser_addInventoryItemToNonExistingBusiness_expectNotFound() throws Exception {
     String endpointUrl = "/businesses/200000/inventory";

@@ -8,6 +8,14 @@ Feature: Create Inventory
 #CRud: Inventory
 #Note: Entries in the inventory are (batches of) products that are in stock.  N.B.: this is not the same thing as the catalogue of products of interest to us.  The development team can choose, ideally in consultation with the SM/PO,  the best way of displaying the inventory.
 #AC1: As a logged in business administrator I can access my inventory.  Other users can not see it.
+  Scenario: the user can see their inventory
+    Given the user has created an inventory item with the product
+    When I retrieve my inventory
+    Then The inventory item is listed
+  # To those who wish to test acting as someone else:
+  # a) is already tested in the inventory controller tests and
+  # b) we spent 2 hours trying to figure out how to login after changing login: calling the user controller's login method does not work; setting SecurityContextHolder.getContext.setAuthentication does not; in the user controller getAuthentication still returns the user that was logged in first.
+
 #AC2: I can add entries to the inventory of my business.  Each represents one or more physical product items.  For now, entry is done via an appropriate form—later we may support bulk loading.  Each inventory entry has a mandatory product code, corresponding to the appropriate catalogue item.
   Scenario: I can add entries to my inventory
     When I add an inventory entry, with the a product with quantity 1 and expiry date in the future
