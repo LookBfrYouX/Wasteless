@@ -8,7 +8,7 @@ public class ListingServiceValidation {
 
   public static boolean isListingValid(Listing listing) {
     // Check the given id exists
-    if (listing.getInventoryItem() != null) {
+    if (listing.getInventoryItem() == null) {
       return false;
     }
 

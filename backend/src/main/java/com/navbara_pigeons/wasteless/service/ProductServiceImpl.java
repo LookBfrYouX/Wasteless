@@ -78,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
       Business business = businessDao.getBusinessById(businessId);
       ArrayList<BasicProductDto> products = new ArrayList<>();
       for (Product product : business.getProductsCatalogue()) {
-        products.add(new BasicProductDto(product, publicPathPrefix));
+        products.add(new BasicProductDto(product));
       }
       return products;
     } else {
@@ -93,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
    * @param basicProduct basic product details for the product to be added.
    * @throws ProductRegistrationException If data supplied is not expected (bad request)
    * @throws ForbiddenException    If user if not an admin of the business (forbidden)
-   * @throws ProductForbiddenException    If user if not an admin of the business (forbidden)
+   * @throws ForbiddenException    If user if not an admin of the business (forbidden)
    * @return JSONObject with `productId`
    */
   @Override

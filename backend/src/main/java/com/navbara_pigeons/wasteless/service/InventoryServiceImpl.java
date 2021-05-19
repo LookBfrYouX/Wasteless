@@ -62,6 +62,24 @@ public class InventoryServiceImpl implements InventoryService {
     }
   }
 
+  /**
+   * Returns an inventory item by a given id
+   * @param businessId business with inventory to query
+   * @param itemId id of the item to be retrieved
+   * @return inventory item or null
+   */
+  public InventoryItem getInventoryItemById(long businessId, long itemId)
+      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+    List<BasicInventoryItemDto> inventory = getInventory(businessId);
+
+    for (BasicInventoryItemDto inventoryItemDto: inventory) {
+      if (inventoryItemDto.getId() == itemId) {
+        return new InventoryItem(inventoryItemDto);
+      }
+    }
+    return null;
+  }
+
   @Override
   public void registerInventoryItem(CreateInventoryItemDto inventoryItemDto) throws InsufficientPrivilegesException {
     return;

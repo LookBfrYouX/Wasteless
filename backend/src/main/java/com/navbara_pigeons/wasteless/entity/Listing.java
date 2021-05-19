@@ -1,6 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,6 +25,9 @@ public class Listing {
   @JoinColumn(name = "INVENTORY_ID")
   private InventoryItem inventoryItem;
 
+  // This is required to convert a create DTO into a listing
+  private long inventoryItemId;
+
   @Column(name = "QUANTITY")
   private long quantity;
 
@@ -35,8 +38,8 @@ public class Listing {
   private String moreInfo;
 
   @Column(name = "CREATED")
-  private LocalDate created;
+  private ZonedDateTime created;
 
   @Column(name = "CLOSES")
-  private LocalDate closes;
+  private ZonedDateTime closes;
 }

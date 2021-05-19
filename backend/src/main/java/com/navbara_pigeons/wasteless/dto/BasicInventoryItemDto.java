@@ -20,7 +20,7 @@ public class BasicInventoryItemDto {
 
   public BasicInventoryItemDto(InventoryItem inventoryItem, String publicPathPrefix) {
     this.id = inventoryItem.getId();
-    this.product = new BasicProductDto(inventoryItem.getProduct(), publicPathPrefix);
+    this.product = new BasicProductDto(inventoryItem.getProduct());
     this.quantity = inventoryItem.getQuantity();
     this.pricePerItem = inventoryItem.getPricePerItem();
     this.totalPrice = inventoryItem.getTotalPrice();

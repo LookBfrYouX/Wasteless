@@ -3,15 +3,19 @@ package com.navbara_pigeons.wasteless.service;
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,6 +27,7 @@ public class ListingServiceImpl implements ListingService {
   private final UserService userService;
   private final BusinessService businessService;
   private final ListingDao listingDao;
+  private final InventoryService inventoryService;
 
   @Value("${public_path_prefix}")
   private String publicPathPrefix;
@@ -33,10 +38,11 @@ public class ListingServiceImpl implements ListingService {
    */
   @Autowired
   public ListingServiceImpl(UserService userService, BusinessService businessService,
-      ListingDao listingDao) {
+      ListingDao listingDao, InventoryService inventoryService) {
     this.userService = userService;
     this.businessService = businessService;
     this.listingDao = listingDao;
+    this.inventoryService = inventoryService;
   }
 
   /**
@@ -50,14 +56,16 @@ public class ListingServiceImpl implements ListingService {
    * @throws UserNotFoundException     this will be caught by spring first
    */
   public Long addListing(long businessId, Listing listing)
-      throws ForbiddenException, BusinessNotFoundException, UserNotFoundException, ListingValidationException {
+      throws ForbiddenException, BusinessNotFoundException, UserNotFoundException, ListingValidationException, InsufficientPrivilegesException {
     if (!userService.isAdmin() && !businessService.isBusinessAdmin(businessId)) {
       throw new ForbiddenException(
           "Only admins and business admins are allowed to add listings to a business");
     }
     if (listing.getCloses() == null) {
-      listing.setCloses(listing.getInventoryItem().getExpires());
+      listing.setCloses(ZonedDateTime.from(listing.getInventoryItem().getExpires()));
     }
+    // Add inventory item to listing from inventory item id
+    listing.setInventoryItem(inventoryService.getInventoryItemById(businessId, listing.getInventoryItemId()));
     if (!ListingServiceValidation.isListingValid(listing)) {
       throw new ListingValidationException();
     }
@@ -77,7 +85,7 @@ public class ListingServiceImpl implements ListingService {
     ArrayList<FullListingDto> listings = new ArrayList<>();
     for (InventoryItem inventory: business.getInventory()) {
       for (Listing listing: inventory.getListings()) {
-        listings.add(new FullListingDto(listing, publicPathPrefix));
+        listings.add(new FullListingDto(listing));
       }
     }
 

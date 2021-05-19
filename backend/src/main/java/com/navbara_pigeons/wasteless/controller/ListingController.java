@@ -86,6 +86,7 @@ public class ListingController {
     } catch (Exception exc) {
       log.error(
           "CRITICAL ERROR GETTING LISTINGS FOR BUSINESS " + id + " (" + exc.getMessage() + ")");
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exc.getMessage());
     }
   }
 }

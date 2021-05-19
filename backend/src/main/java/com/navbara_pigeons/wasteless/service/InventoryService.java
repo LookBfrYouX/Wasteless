@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
@@ -14,5 +15,7 @@ public interface InventoryService {
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InventoryItemNotFoundException;
 
   void registerInventoryItem(CreateInventoryItemDto inventoryItemDto) throws InsufficientPrivilegesException;
+
+  InventoryItem getInventoryItemById(long businessId, long itemId) throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException;
 
 }
