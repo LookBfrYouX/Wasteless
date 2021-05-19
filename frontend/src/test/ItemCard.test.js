@@ -1,5 +1,6 @@
 import {shallowMount} from "@vue/test-utils";
 import ItemCard from "../components/cards/ItemCard";
+import {globalStateMocks} from "./testHelper";
 
 const inventoryItem = {
     id: 1,
@@ -15,18 +16,23 @@ const inventoryItem = {
     sellBy: null,
     bestBefore: null,
     expires: '2021-05-29',
+    description: 'This bean is leftover from the International Bean Festival',
 }
 
 describe("displays on the valid dates test", () => {
     test("valid dates displayed", () => {
-        const wrapper = shallowMount(ItemCard, {
+        let wrapper = shallowMount(ItemCard, {
             propsData: {
                 item: inventoryItem,
-            }
+                businessId: 0,
+            },
+            mocks: globalStateMocks(),
+            stubs: ["router-link"]
         })
-        expect(wrapper.text()).toContain('beans');
-        expect(wrapper.text()).toContain('Yummy beans');
+        expect(wrapper.props().item.product.name).toEqual('beans');
+        expect(wrapper.props().item.product.description).toEqual('Yummy beans');
         expect(wrapper.text()).toContain('Manufactured On');
+        expect(wrapper.props().item.description).toEqual('This bean is leftover from the International Bean Festival');
         // metaValue is a computer attribute that takes the four dates and only returns the list of those that
         // actually contain values (i.e. are not undefined, null, or empty strings)
         expect(ItemCard.computed.metaValues.call({ item: inventoryItem })).toHaveLength(2);
