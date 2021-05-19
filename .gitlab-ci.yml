@@ -40,7 +40,7 @@ junit:
     - ./gradlew test
   artifacts:
     paths:
-      - backend/jacoco
+      - backend/build/jacoco
 
 # Run acceptance (cucumber) tests
 # Uncomment after ATDD workshop (at the latest)
