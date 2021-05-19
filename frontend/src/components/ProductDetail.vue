@@ -89,7 +89,7 @@ export default {
     return {
       name: "",
       description: "",
-      recommendedRetailPrice: "",
+      recommendedRetailPrice: null,
       created: "",
       productImages: [],
       apiErrorMessage: null,
