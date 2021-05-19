@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @CucumberContextConfiguration
@@ -77,12 +78,16 @@ public class CucumberTestProvider extends MainTestProvider {
 
     return objectMapper.readTree(response);
   }
-
-  protected JsonNode makeGetRequestGetJson(String endpoint, Object data, ResultMatcher expect) throws Exception {
+  /**
+   * Make get request to endpoint, expecting some status code and expected some JSON to get returned
+   * @param endpoint
+   * @param expect e.g. status.getCreated(). can be null
+   * @return objectMapped response
+   * @throws Exception
+   */
+  protected JsonNode makeGetRequestGetJson(String endpoint, ResultMatcher expect) throws Exception {
     ResultActions result = mockMvc.perform(
-            post(endpoint)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(data))
+            get(endpoint).contentType(MediaType.APPLICATION_JSON)
     );
 
     if (expect != null) result = result.andExpect(expect);
@@ -100,4 +105,19 @@ public class CucumberTestProvider extends MainTestProvider {
     credentials.setPassword("fun123");
     this.userController.login(credentials);
   }
+  /**
+   * Logs in as non admin user using userController. See `login`, may or may not be exactly the same
+   */
+  void nonAdminLogin(String email) {
+    UserCredentials credentials = new UserCredentials();
+    credentials.setEmail(email);
+    credentials.setPassword("fun123");
+    this.userController.login(credentials);
+  }
+
+  void nonAdminLogin() {
+    nonAdminLogin("fdi19@uclive.ac.nz");
+  }
+
+
 }

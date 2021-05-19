@@ -6,10 +6,7 @@ import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.FullAddressDto;
-import com.navbara_pigeons.wasteless.entity.Address;
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.entity.*;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -26,7 +23,8 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
 
     private long businessId;
     private long productId;
-    private MvcResult response;
+    private JsonNode response;
+    private CreateInventoryItemDto inventoryItem;
 
     // background is run before each test
     @Given("A user is logged in")
@@ -36,9 +34,9 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
 
     @And("has a business {string} with type {string}")
     public void hasABusiness(String businessName, String businessType) throws Exception {
-        CreateBusinessDto business = new CreateBusinessDto();
+        Business business = new Business();
         business.setName(businessName);
-        FullAddressDto address = new FullAddressDto();
+        Address address = makeAddress();
         business.setBusinessType(businessType)
                 .setName(businessName)
                 .setAddress(address);
@@ -54,22 +52,24 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
     public void withAProduct(String name) throws Exception {
         BasicProductCreationDto product = new BasicProductCreationDto();
         product.setName(name);
+        product.setManufacturer("Should be optional but might still be required");
         product.setRecommendedRetailPrice(10.0);
         JsonNode response = makePostRequestGetJson(
                 "/businesses/" + businessId + "/products",
                 product,
                 status().isCreated()
         );
-        long productId = response.get("productId").asLong();
+
+        productId = response.get("productId").asLong();
     }
 
 
     // Scenario 1
     @Given("the user has created an inventory item with the product")
     public void theUserHasCreatedAnInventoryItemWithTheProduct() throws Exception {
-        CreateInventoryItemDto inventoryItem = new CreateInventoryItemDto();
+        inventoryItem = new CreateInventoryItemDto();
         inventoryItem.setQuantity(10);
-        inventoryItem.setProductId(this.productId);
+        inventoryItem.setProductId(productId);
         inventoryItem.setExpires(LocalDate.now());
         JsonNode response = makePostRequestGetJson(
                 "/businesses/" + businessId + "/inventory",
@@ -79,21 +79,31 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
     }
 
     @When("I retrieve my inventory")
-    public void iRetrieveMyInventory() {
-
-
+    public void iRetrieveMyInventory() throws Exception {
+        response = makeGetRequestGetJson(
+                "/businesses/" + businessId + "/inventory",
+                status().isOk()
+        );
     }
 
     @Then("The inventory item is listed")
     public void theInventoryItemIsListed() {
+        response.has(String.valueOf(inventoryItem));
     }
 
     @When("Someone else retrieves my inventory")
     public void someoneElseRetrievesMyInventory() {
+        nonAdminLogin();
+        System.out.println("here!!!");
+
     }
 
     @Then("An error is shown")
-    public void anErrorIsShown() {
+    public void anErrorIsShown() throws Exception {
+        JsonNode response = makeGetRequestGetJson(
+                "/businesses/" + businessId + "/inventory",
+                status().isForbidden()
+        );
     }
 
 
@@ -102,7 +112,7 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
     public void iAddAnInventoryEntryWithTheAProductWithQuantityAndExpiryDateInTheFuture(int quantity) throws Exception {
         CreateInventoryItemDto inventoryItem = new CreateInventoryItemDto();
         inventoryItem.setQuantity(quantity);
-        inventoryItem.setProductId(this.productId);
+        inventoryItem.setProductId(productId);
         inventoryItem.setExpires(LocalDate.now());
         JsonNode response = makePostRequestGetJson(
                 "/businesses/" + businessId + "/inventory",
@@ -112,8 +122,12 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
     }
 
     @Then("When I retrieve my inventory the entry is listed")
-    public void whenIRetrieveMyInventoryTheEntryIsListed() {
-
+    public void whenIRetrieveMyInventoryTheEntryIsListed() throws Exception {
+        response = makeGetRequestGetJson(
+                "/businesses/" + businessId + "/inventory",
+                status().isOk()
+        );
+        response.has(String.valueOf(inventoryItem));
     }
 
 

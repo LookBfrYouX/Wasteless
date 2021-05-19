@@ -276,6 +276,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean isAdmin() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
 
     if (authentication == null) {
       return false;
