@@ -78,6 +78,19 @@ public class CucumberTestProvider extends MainTestProvider {
     return objectMapper.readTree(response);
   }
 
+  protected JsonNode makeGetRequestGetJson(String endpoint, Object data, ResultMatcher expect) throws Exception {
+    ResultActions result = mockMvc.perform(
+            post(endpoint)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(data))
+    );
+
+    if (expect != null) result = result.andExpect(expect);
+    String response = result.andReturn().getResponse().getContentAsString();
+
+    return objectMapper.readTree(response);
+  }
+
   /**
    * Logs in as admin using userController. See `login`, may or may not be exactly the same
    */
