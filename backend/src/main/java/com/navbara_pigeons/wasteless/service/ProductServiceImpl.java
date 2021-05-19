@@ -20,6 +20,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
+
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -91,10 +93,12 @@ public class ProductServiceImpl implements ProductService {
    * @param basicProduct basic product details for the product to be added.
    * @throws ProductRegistrationException If data supplied is not expected (bad request)
    * @throws ForbiddenException    If user if not an admin of the business (forbidden)
+   * @throws ProductForbiddenException    If user if not an admin of the business (forbidden)
+   * @return JSONObject with `productId`
    */
   @Override
   @Transactional
-  public void addProduct(long businessId, BasicProductCreationDto basicProduct)
+  public JSONObject addProduct(long businessId, BasicProductCreationDto basicProduct)
       throws ProductRegistrationException,
       ForbiddenException {
     // Throw 400 if bad request, 403 if user is not business admin
@@ -139,6 +143,10 @@ public class ProductServiceImpl implements ProductService {
     // add product to catalogue table
     business.addCatalogueProduct(product);
     businessDao.saveBusiness(business);
+
+    JSONObject response = new JSONObject();
+    response.appendField("productId", product.getId());
+    return response;
   }
 
   @Override

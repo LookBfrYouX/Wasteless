@@ -93,11 +93,7 @@ public class Business {
           CascadeType.REFRESH
       }
   )
-  @JoinTable(
-      name = "INVENTORY_JOIN",
-      joinColumns = @JoinColumn(name = "BUSINESS_ID"),
-      inverseJoinColumns = @JoinColumn(name = "INVENTORY_ID")
-  )
+  @JoinColumn(name = "BUSINESS_ID")
   private List<InventoryItem> inventory = new ArrayList<>();
 
   public Business(FullBusinessDto business) {

@@ -8,6 +8,7 @@ import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,12 +67,12 @@ public class ProductController {
    * @param product The product to be added
    */
   @PostMapping("/businesses/{id}/products")
-  public ResponseEntity<String> addToCatalogue(@PathVariable long id,
-      @RequestBody BasicProductCreationDto product) {
+  public ResponseEntity<Object> addToCatalogue(@PathVariable long id,
+                                                   @RequestBody BasicProductCreationDto product) {
     try {
-      productService.addProduct(id, product);
+      JSONObject response = productService.addProduct(id, product);
       log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());
-      return new ResponseEntity<>("Product created successfully", HttpStatus.valueOf(201));
+      return new ResponseEntity<>(response, HttpStatus.valueOf(201));
     } catch (ProductRegistrationException exc) {
       log.info("ADDING NEW PRODUCT, BUSINESS ID " + id + " BAD INFO " + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.valueOf(400),

@@ -1,12 +1,16 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
+import com.navbara_pigeons.wasteless.dto.FullListingDto;
+import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,9 @@ public class ListingServiceImpl implements ListingService {
   private final UserService userService;
   private final BusinessService businessService;
   private final ListingDao listingDao;
+
+  @Value("${public_path_prefix}")
+  private String publicPathPrefix;
 
   /**
    * ListingService constructor that takes autowired parameters and sets up the service for
@@ -56,5 +63,24 @@ public class ListingServiceImpl implements ListingService {
     }
     listingDao.saveListing(listing);
     return listing.getId();
+  }
+
+  /**
+   * Gets all listings for the given business
+   * @param businessId id of business
+   * @return listings in no guaranteed order
+   * @throws BusinessNotFoundException
+   * @throws UserNotFoundException
+   */
+  public List<FullListingDto> getListings(long businessId) throws BusinessNotFoundException, UserNotFoundException {
+    Business business = businessService.getBusiness(businessId);
+    ArrayList<FullListingDto> listings = new ArrayList<>();
+    for (InventoryItem inventory: business.getInventory()) {
+      for (Listing listing: inventory.getListings()) {
+        listings.add(new FullListingDto(listing, publicPathPrefix));
+      }
+    }
+
+    return listings;
   }
 }
