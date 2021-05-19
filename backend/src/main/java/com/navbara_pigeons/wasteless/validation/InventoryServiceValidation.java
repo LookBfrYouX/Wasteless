@@ -55,7 +55,8 @@ public class InventoryServiceValidation {
     if (price == null) return;
     if (price < 0) {
       throw new InventoryRegistrationException("Price cannot be negative");
-    } else if (price >= 10000) {
+      // test gets broken when user inputs 9999.999
+    } else if (price > 9999.99) {
       throw new InventoryRegistrationException("Price cannot be more than 10000");
     }
   }

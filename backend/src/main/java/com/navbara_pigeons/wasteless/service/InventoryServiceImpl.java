@@ -100,8 +100,6 @@ public class InventoryServiceImpl implements InventoryService {
     };
     InventoryServiceValidation.datesValid(inventoryItem, date);
     InventoryServiceValidation.quantityValid(inventoryItem.getQuantity());
-    InventoryServiceValidation.priceValid(inventoryItem.getPricePerItem());
-    InventoryServiceValidation.priceValid(inventoryItem.getTotalPrice());
 
     inventory.setProduct(product);
     if (inventoryItem.getPricePerItem() == null) {
@@ -111,12 +109,12 @@ public class InventoryServiceImpl implements InventoryService {
     }
     inventory.setBusiness(business);
     inventory.setQuantity(inventoryItem.getQuantity());
-    inventory.setTotalPrice(inventoryItem.getTotalPrice());
     if (inventoryItem.getTotalPrice() == null) {
       inventory.setTotalPrice(inventory.getPricePerItem() * inventory.getQuantity());
     } else {
       inventory.setTotalPrice(inventoryItem.getTotalPrice());
     }
+    InventoryServiceValidation.priceValid(inventory.getTotalPrice());
     inventory.setExpires(inventoryItem.getExpires());
     inventory.setManufactured(inventoryItem.getManufactured());
     inventory.setSellBy(inventoryItem.getSellBy());
