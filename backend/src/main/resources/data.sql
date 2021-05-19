@@ -1,7 +1,7 @@
 /* MAIN SCHEMA DEFINITION */
 
 DROP TABLE IF EXISTS listing CASCADE;
-DROP TABLE IF EXISTS inventory CASCADE;
+DROP TABLE IF EXISTS inventory_item CASCADE;
 DROP TABLE IF EXISTS product_image CASCADE;
 DROP TABLE IF EXISTS catalogue CASCADE;
 DROP TABLE IF EXISTS product CASCADE;
@@ -109,7 +109,7 @@ CREATE TABLE catalogue
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
 
-CREATE TABLE inventory
+CREATE TABLE inventory_item
 (
     ID             INT AUTO_INCREMENT PRIMARY KEY,
     PRODUCT_ID     INT           NOT NULL,
@@ -122,25 +122,24 @@ CREATE TABLE inventory
     MANUFACTURED   DATE,
     SELL_BY        DATE,
     BEST_BEFORE    DATE,
-
-    CONSTRAINT inventory_product_fk
+    CONSTRAINT inventory_item_product_fk
         FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
-    CONSTRAINT inventory_business_fk
+    CONSTRAINT inventory_item_business_fk
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
 
 
 CREATE TABLE listing
 (
-    ID           INT AUTO_INCREMENT PRIMARY KEY,
-    INVENTORY_ID INT           NOT NULL,
+    ID           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    INVENTORY_ITEM_ID BIGINT        NOT NULL,
     QUANTITY     INT           NOT NULL,
     PRICE        DECIMAL(6, 2) NOT NULL,
     MORE_INFO    VARCHAR(50),
     CREATED      DATETIME,
     CLOSES       DATETIME,
-    CONSTRAINT inventory_fk
-        FOREIGN KEY (INVENTORY_ID) REFERENCES inventory (ID)
+    CONSTRAINT inventory_item_fk
+        FOREIGN KEY (INVENTORY_ITEM_ID) REFERENCES inventory_item (ID)
 );
 
 

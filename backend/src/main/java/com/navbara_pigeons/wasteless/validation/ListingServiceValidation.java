@@ -1,7 +1,9 @@
 package com.navbara_pigeons.wasteless.validation;
 
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListingServiceValidation {
 
@@ -12,15 +14,16 @@ public class ListingServiceValidation {
       return false;
     }
 
-    // TODO: merge get endpoint into this branch to be able to call this method below
     // Quantity must be above 0 and below the remaining quantity
     long remainingQuantity = listing.getInventoryItem().getQuantity();
-//    ArrayList<Listing> currentListings = listing.getInventoryItem().getBusiness().getInventory().getListings();
-//    for (Listing loopListing : currentListings) {
-//      if (loopListing.getId() == listing.getId()) {
-//        remainingQuantity -= loopListing.getQuantity();
-//      }
-//    }
+    List<InventoryItem> currentListings = listing.getInventoryItem().getBusiness().getInventory();
+    for (InventoryItem loopItem : currentListings) {
+      for (Listing loopListing : loopItem.getListings()) {
+        if (loopListing.getId() == listing.getId()) {
+          remainingQuantity -= loopListing.getQuantity();
+        }
+      }
+    }
     if (listing.getQuantity() <= 0 || listing.getQuantity() > remainingQuantity) {
       return false;
     }

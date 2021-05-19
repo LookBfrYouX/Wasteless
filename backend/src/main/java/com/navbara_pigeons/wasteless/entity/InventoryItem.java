@@ -11,53 +11,53 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "INVENTORY")
+@Table(name = "INVENTORY_ITEM")
 public class InventoryItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "ID")
+  private long id;
 
-    @OneToOne()
-    @JoinColumn(name = "PRODUCT_ID")
-    private Product product;
+  @OneToOne()
+  @JoinColumn(name = "PRODUCT_ID")
+  private Product product;
 
   @JsonIgnore
-  @OneToOne()
+  @ManyToOne()
   @JoinColumn(name = "BUSINESS_ID")
   private Business business;
 
   @Column(name = "QUANTITY")
   private long quantity;
 
-    @Column(name = "PRICE_PER_ITEM")
-    private Double pricePerItem;
+  @Column(name = "PRICE_PER_ITEM")
+  private Double pricePerItem;
 
-    @Column(name = "TOTAL_PRICE")
-    private Double totalPrice;
+  @Column(name = "TOTAL_PRICE")
+  private Double totalPrice;
 
-    @Column(name = "EXPIRES")
-    private LocalDate expires;
+  @Column(name = "EXPIRES")
+  private LocalDate expires;
 
-    @Column(name = "MANUFACTURED")
-    private LocalDate manufactured;
+  @Column(name = "MANUFACTURED")
+  private LocalDate manufactured;
 
-    @Column(name = "SELL_BY")
-    private LocalDate sellBy;
+  @Column(name = "SELL_BY")
+  private LocalDate sellBy;
 
   @Column(name = "BEST_BEFORE")
   private LocalDate bestBefore;
 
   @JsonIgnore
   @OneToMany(
-    fetch = FetchType.LAZY,
-    cascade = {
-        CascadeType.DETACH,
-        CascadeType.MERGE,
-        CascadeType.PERSIST,
-        CascadeType.REFRESH
-    }
+      fetch = FetchType.LAZY,
+      cascade = {
+          CascadeType.DETACH,
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.REFRESH
+      }
   )
   @JoinColumn(name = "INVENTORY_ID")
   private List<Listing> listings;
@@ -79,12 +79,13 @@ public class InventoryItem {
 
   /**
    * Helper method which adds a listing to a inventory item
+   *
    * @param listing
    */
   public void addListing(Listing listing) {
-      if (listings == null) {
-          listings = new ArrayList<>();
-      }
-      listings.add(listing);
+    if (listings == null) {
+      listings = new ArrayList<>();
+    }
+    listings.add(listing);
   }
 }

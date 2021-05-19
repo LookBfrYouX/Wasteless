@@ -1,7 +1,12 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.dto.CreateListingDto;
+import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -31,12 +36,7 @@ public class ListingControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   public void return201OnAddProductTest() throws Exception {
-    Listing mockListing = new Listing();
-    mockListing.setQuantity(3);
-    mockListing.setPrice(17.99f);
-    mockListing.setInventoryItemId(1);
-    mockListing.setMoreInfo("Seller may be willing to consider near offers");
-    mockListing.setCloses(ZonedDateTime.parse("2021-07-21T23:59:00Z"));
+    CreateListingDto mockListing = makeListing();
 
     mockMvc.perform(post("/businesses/1/listings")
         .contentType("application/json")
@@ -83,5 +83,26 @@ public class ListingControllerTest extends ControllerTestProvider {
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(mockListing)))
         .andExpect(status().isForbidden());
+  }
+
+  private CreateListingDto makeListing() {
+    Business business = makeBusiness();
+
+    Product product = new Product();
+    product.setName("Some product");
+
+    InventoryItem inventoryItem = new InventoryItem();
+    inventoryItem.setProduct(product);
+    inventoryItem.setQuantity(4);
+    inventoryItem.setExpires(LocalDate.parse("2021-07-21"));
+    inventoryItem.setBusiness(business);
+
+    CreateListingDto listing = new CreateListingDto();
+    listing.setInventoryItemId(inventoryItem.getId());
+    listing.setQuantity(4);
+    listing.setPrice(17.99f);
+    listing.setInventoryItemId(1);
+
+    return listing;
   }
 }

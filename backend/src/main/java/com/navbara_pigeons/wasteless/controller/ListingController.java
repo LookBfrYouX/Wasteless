@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
@@ -42,7 +43,7 @@ public class ListingController {
    */
   @PostMapping("/businesses/{businessId}/listings")
   public ResponseEntity<Long> addListing(@PathVariable long businessId,
-      @RequestBody Listing listing) {
+      @RequestBody CreateListingDto listing) {
     try {
       Long listingId = listingService.addListing(businessId, listing);
       log.info("LISTING CREATED SUCCESSFULLY: " + listingId + " FOR BUSINESS " + businessId);

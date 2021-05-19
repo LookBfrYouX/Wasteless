@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
+import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
@@ -53,7 +54,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
 
     when(userService.isAdmin()).thenReturn(false);
     when(businessService.isBusinessAdmin(businessId)).thenReturn(true);
-    doNothing().when(listingDao).saveListing(any(Listing.class));
+    doNothing().when(listingDao).save(any(Listing.class));
   }
 
   Product newProduct(long id, Business business) {
@@ -120,7 +121,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   @Test
   @WithMockUser(username = email, password = password)
   void postListingExpectOk() {
-    Listing listing = makeListing();
+    CreateListingDto listing = makeListing();
 
     Assertions.assertDoesNotThrow(() -> {
       listingService.addListing(businessId, listing);
@@ -131,7 +132,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   @WithMockUser(username = email, password = password)
   void postListingExpectInvalid() {
     // Listings must have quantities otherwise throw ListingValidationException
-    Listing listing = makeListing();
+    CreateListingDto listing = makeListing();
 
     Assertions.assertThrows(ListingValidationException.class, () -> {
       listingService.addListing(businessId, listing);
@@ -142,7 +143,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   @WithMockUser(username = "notTony@notTony.notTony", password = "notTonyNotTony1")
   void postListingExpectForbidden() throws BusinessNotFoundException, UserNotFoundException {
     // Must be the business admin or GAA otherwise throw ForbiddenException
-    Listing listing = makeListing();
+    CreateListingDto listing = makeListing();
 
     // Setting mocks
     when(businessService.isBusinessAdmin(businessId)).thenReturn(false);
@@ -152,8 +153,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     });
   }
 
-  private Listing makeListing() {
-    // TODO: mock the inventory item here
+  private CreateListingDto makeListing() {
     Product product = new Product();
     product.setName("Some product");
 
@@ -162,8 +162,8 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     inventoryItem.setQuantity(4);
     inventoryItem.setExpires(LocalDate.parse("2021-07-21"));
 
-    Listing listing = new Listing();
-    listing.setInventoryItem(inventoryItem);
+    CreateListingDto listing = new CreateListingDto();
+    listing.setInventoryItemId(inventoryItem.getId());
     listing.setQuantity(4);
     listing.setPrice(17.99f);
 

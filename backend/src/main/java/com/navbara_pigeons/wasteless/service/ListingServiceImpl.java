@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
+import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
@@ -49,27 +50,28 @@ public class ListingServiceImpl implements ListingService {
    * Adds a given listing to a businesses listings
    *
    * @param businessId id of the business to add the listing to
-   * @param listing    listing to be added tot the business
+   * @param listingDto listing dto of the listing to be added tot the business
    * @return newly created listing id
    * @throws ForbiddenException        when a user is not admin nor business admin
    * @throws BusinessNotFoundException when no business with given id exists
    * @throws UserNotFoundException     this will be caught by spring first
    */
-  public Long addListing(long businessId, Listing listing)
+  public Long addListing(long businessId, CreateListingDto listingDto)
       throws ForbiddenException, BusinessNotFoundException, UserNotFoundException, ListingValidationException, InsufficientPrivilegesException {
     if (!userService.isAdmin() && !businessService.isBusinessAdmin(businessId)) {
       throw new ForbiddenException(
           "Only admins and business admins are allowed to add listings to a business");
     }
-    if (listing.getCloses() == null) {
-      listing.setCloses(ZonedDateTime.from(listing.getInventoryItem().getExpires()));
-    }
     // Add inventory item to listing from inventory item id
-    listing.setInventoryItem(inventoryService.getInventoryItemById(businessId, listing.getInventoryItemId()));
+    Listing listing = new Listing(listingDto);
+    listing.setInventoryItem(inventoryService.getInventoryItemById(businessId, listingDto.getInventoryItemId()));
+    if (listing.getCloses() == null) {
+      listing.setCloses(listing.getInventoryItem().getExpires());
+    }
     if (!ListingServiceValidation.isListingValid(listing)) {
       throw new ListingValidationException();
     }
-    listingDao.saveListing(listing);
+    listingDao.save(listing);
     return listing.getId();
   }
 

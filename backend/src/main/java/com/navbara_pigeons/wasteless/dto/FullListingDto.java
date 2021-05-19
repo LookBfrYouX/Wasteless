@@ -1,10 +1,9 @@
 package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Listing;
+import java.time.LocalDate;
 import lombok.Data;
-
 import java.time.ZonedDateTime;
-import org.springframework.beans.factory.annotation.Value;
 
 @Data
 public class FullListingDto {
@@ -13,8 +12,8 @@ public class FullListingDto {
   private long quantity;
   private double price;
   private String moreInfo;
-  private ZonedDateTime created;
-  private ZonedDateTime closes;
+  private LocalDate created;
+  private LocalDate closes;
 
   public FullListingDto(Listing listing) {
     id = listing.getId();
