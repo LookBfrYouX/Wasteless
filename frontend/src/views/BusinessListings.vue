@@ -15,7 +15,7 @@
         <!--<business-listing v-bind:listing="slotProps.item"/> -->
       </template>
       <template v-slot:right-button>
-        <button type="button" class="btn btn-info" v-on:click="() => showSortSidebar = true">Another button</button>
+        <button type="button" class="btn btn-info" v-on:click="viewListing(1)">Another button</button>
       </template>
     </sorted-paginated-item-list>
     <error-modal
@@ -160,6 +160,19 @@ export default {
 
     updateBusinessName: async function() {
       this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
+    },
+
+    /**
+     * Go to listing detail page by passing the listing id
+     */
+    viewListing(listingId) {
+      this.$router.push({
+        name: "salesListingDetail",
+        params: {
+          businessId: this.businessId,
+          listingId
+        }
+      });
     }
   },
 
