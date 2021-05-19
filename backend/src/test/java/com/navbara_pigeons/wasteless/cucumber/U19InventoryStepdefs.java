@@ -63,50 +63,6 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
         productId = response.get("productId").asLong();
     }
 
-
-    // Scenario 1
-    @Given("the user has created an inventory item with the product")
-    public void theUserHasCreatedAnInventoryItemWithTheProduct() throws Exception {
-        inventoryItem = new CreateInventoryItemDto();
-        inventoryItem.setQuantity(10);
-        inventoryItem.setProductId(productId);
-        inventoryItem.setExpires(LocalDate.now());
-        JsonNode response = makePostRequestGetJson(
-                "/businesses/" + businessId + "/inventory",
-                inventoryItem,
-                status().isCreated()
-        );
-    }
-
-    @When("I retrieve my inventory")
-    public void iRetrieveMyInventory() throws Exception {
-        response = makeGetRequestGetJson(
-                "/businesses/" + businessId + "/inventory",
-                status().isOk()
-        );
-    }
-
-    @Then("The inventory item is listed")
-    public void theInventoryItemIsListed() {
-        response.has(String.valueOf(inventoryItem));
-    }
-
-    @When("Someone else retrieves my inventory")
-    public void someoneElseRetrievesMyInventory() {
-        nonAdminLogin();
-        System.out.println("here!!!");
-
-    }
-
-    @Then("An error is shown")
-    public void anErrorIsShown() throws Exception {
-        JsonNode response = makeGetRequestGetJson(
-                "/businesses/" + businessId + "/inventory",
-                status().isForbidden()
-        );
-    }
-
-
     // scenario 2
     @When("I add an inventory entry, with the a product with quantity {int} and expiry date in the future")
     public void iAddAnInventoryEntryWithTheAProductWithQuantityAndExpiryDateInTheFuture(int quantity) throws Exception {
