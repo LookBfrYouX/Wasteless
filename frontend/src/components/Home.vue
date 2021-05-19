@@ -4,13 +4,19 @@
     <p>Beautiful, ain't it?</p>
     <item-card
         v-bind:item="inventoryItem"
-        :id-prefix="'item1-'"></item-card>
+        :id-prefix="'item1-'"
+        :business-id="1"
+        :currency="currency"></item-card>
     <item-card
         v-bind:item="inventoryItem"
-        :id-prefix="'item2-'"></item-card>
+        :id-prefix="'item2-'"
+        :business-id="1"
+        :currency="currency"></item-card>
     <item-card
         v-bind:item="inventoryItem"
-        :id-prefix="'item3-'"></item-card>
+        :id-prefix="'item3-'"
+        :business-id="1"
+        :currency="currency"></item-card>
   </div>
 </template>
 <script>
@@ -24,18 +30,23 @@ export default {
       inventoryItem: {
         id: 1,
         product: {
-          id: 2,
+          id: 3,
           name: 'beans long data long data long data long data long data long data long data long data long data long data long data long data ',
           description: "Yummy beans long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data ",
         },
         quantity: 5,
         pricePerItem: 4,
-        totalPrice: '$20 NZD',
+        totalPrice: 18.89,
         manufactured: '2021-04-24',
         sellBy: '2021-05-26',
         bestBefore: '2021-05-27',
         expires: '2021-05-29',
         description: "This bean is leftover from International Bean Festival"
+      },
+      currency: {
+        symbol: "$",
+        name: "New Zealand Dollar",
+        code: "NZD"
       }
     }
   }

@@ -9,18 +9,21 @@
         <img class="img-fluid item-image" src="./../../../assets/images/login.jpg" alt="Image" />
       </div>
       <div class="col-10">
-        <h1 class="card-title"
-            >{{ item.product.name }}</h1>
+        <h2 class="card-title"
+            >{{ item.product.name }}</h2>
         <div class="d-flex flex-wrap justify-content-between">
           <h4 class="pr-2">{{ item.quantity }} <small>units in stock</small></h4>
           <h4 class="pr-2">
-            {{ item.pricePerItem }} <small>per item</small>
+            {{ $helper.makeCurrencyString(item.pricePerItem, currency, false) }}
+            <small>per item</small>
           </h4>
           <h4 class="pr-2">
-            {{ item.totalPrice }} <small>for whole</small>
+            {{ $helper.makeCurrencyString(item.totalPrice, currency, false) }}
+            <small>for whole</small>
           </h4>
         </div>
-        <h4 class="text-nowrap">
+        <h4 v-if="metaValues.length !== 0"
+            class="text-nowrap">
           <small>{{ metaValues[0].key }}:</small> <span class="text-nowrap">{{ metaValues[0].value}}</span>
         </h4>
 
@@ -35,6 +38,12 @@
           <div class="card-text">
             About: {{ item.description }}
           </div>
+          <div class="d-flex justify-content-end">
+            <router-link :to="{ name: 'productDetail', params: {businessId: businessId, productId: item.product.id }}"
+                         class="btn btn-success">
+              View Product
+            </router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -45,16 +54,19 @@
 <script>
 export default {
   name: "ItemCard",
-
   props: {
     // The item information to be displayed. (See API spec for details)
     item: Object,
     idPrefix: {
       type: String,
       default: "inventory-item-"
-    }
+    },
+    businessId: {
+      type: Number,
+      required: true
+    },
+    currency: Object,
   },
-
   computed: {
     // A list of dates and their description strings used for the date data.
     // Only dates that were supplied and not empty are displayed.
@@ -69,7 +81,7 @@ export default {
         }
       });
       return results;
-    }
+    },
   }
 }
 </script>
