@@ -102,6 +102,20 @@ public class BusinessServiceImpl implements BusinessService {
   }
 
   /**
+   * Calls the businessDao to get the specified business
+   *
+   * @param id the id of the business
+   * @return a business
+   * @throws BusinessNotFoundException when business with given id does not exist
+   * @throws UserNotFoundException     should never be thrown. If is thrown, return 500 status code
+   */
+  @Override
+  @Transactional
+  public Business getBusiness(long id) throws BusinessNotFoundException, UserNotFoundException {
+    return businessDao.getBusinessById(id);
+  }
+
+  /**
    * This helper method tests if the currently logged in user is an administrator of the business
    * with the given ID
    *

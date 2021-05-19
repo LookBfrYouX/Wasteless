@@ -107,7 +107,6 @@
         <h4>No results found</h4>
       </div>
     </div>
-    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error viewing business catalog"
         v-bind:goBack="false"
@@ -313,7 +312,7 @@ const ProductCatalogue = {
 export default ProductCatalogue;
 </script>
 
-<style>
+<style scoped>
 
 button.page-link {
   display: inline-block;
@@ -326,7 +325,7 @@ button.page-link {
   position: fixed;
   left: 0;
   right: 0;
-  z-index: 910;
+  z-index: 7;
 }
 
 .sort-results {

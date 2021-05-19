@@ -6,15 +6,17 @@
       v-bind:currentSortOption.sync="currentSortOption"
     >
       <template v-slot:title>
-        <h2>Listings for business</h2>
+        <h2>Listings for {{businessName? businessName: "business"}}</h2>
       </template>
       <template v-slot:item="slotProps">
+        <div class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded">
         {{JSON.stringify(slotProps.item)}}
+        </div>
+        <!--<business-listing v-bind:listing="slotProps.item"/> -->
       </template>
       <template v-slot:right-button>
         <button type="button" class="btn btn-info" v-on:click="() => showSortSidebar = true">Another button</button>
       </template>
-      <!--<business-listing v-bind:listing="slotProps.item"/> -->
     </sorted-paginated-item-list>
     <error-modal
       title="Error viewing listings"
@@ -32,6 +34,8 @@
 import SortedPaginatedItemList from '../components/SortedPaginatedItemList.vue';
 import ErrorModal from "../components/Errors/ErrorModal";
 import { Api } from "../Api";
+
+import { helper } from "../helper";
 
 // const sampleData = [
 //   {
@@ -57,7 +61,7 @@ import { Api } from "../Api";
 //       "pricePerItem": 6.5,
 //       "totalPrice": 21.99,
 //       "manufactured": "2021-05-10",
-//       "sellBy": "2021-05-10",
+//       "sellBy": "2021-05-10",p
 //       "bestBefore": "2021-05-10",
 //       "expires": "2021-05-10"
 //     },
@@ -90,15 +94,31 @@ for(let i = 0; i < 10; i++) {
   });
 }
 
-const sortOptions = [{
-  name: "id",
-  sortMethod: (a, b) => {
-    return a.id - b.id;
+const sortOptions = [
+  {
+    name: "ID",
+    sortMethod: helper.sensibleSorter("id")
+  }, {
+    name: "Name TODO delete. Only this and ID work with the dummy data",
+    sortMethod: helper.sensibleSorter("name") 
+  }, {
+    name: "Price",
+    sortMethod: helper.sensibleSorter("price") 
+  }, {
+    name: "RRP",
+    sortMethod: helper.sensibleSorter(el => el.inventoryItem.recommendedRetailPrice)
+  }, {
+    name: "Name",
+    sortMethod: helper.sensibleSorter(el => el.inventoryItem.product.name)
+  }, {
+    name: "Listing Created",
+    // Yes, you can sort dates as a string in this format
+    // Add a reversed param to sorter? Should the 'natural' sort for created/closes be oldest first? 
+    sortMethod: helper.sensibleSorter("created")
+  }, {
+    name: "Listing Closes",
+    sortMethod: helper.sensibleSorter("closes")
   }
-}, {
-  name: "By name",
-  sortMethod: (a, b) => a.name > b.name? 1: -1
-}
 ];
 
 export default {
@@ -119,13 +139,13 @@ export default {
       listings: sampleData,
       apiErrorMessage: null,
       sortOptions,
-      currentSortOption: { ...sortOptions[0], reversed: false}
+      currentSortOption: { ...sortOptions[0], reversed: false},
+      businessName: null
     };
   },
 
   beforeMount: async function() {
-    // TODO ENABLE
-    // await this.getListingsPipeline();
+    await this.getListingsPipeline();
   },
   
   methods: {
@@ -136,6 +156,16 @@ export default {
         if (await Api.handle401.call(this, err)) return false;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
+    },
+
+    updateBusinessName: async function() {
+      this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
+    }
+  },
+
+  watch: {
+    businessName() {
+      if (this.businessName != null) document.title = `Listings for ${this.businessName}`
     }
   }
 }
