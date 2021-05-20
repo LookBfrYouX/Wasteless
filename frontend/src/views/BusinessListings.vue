@@ -109,9 +109,7 @@ export default {
   },
 
   beforeMount: async function() {
-    // TODO ENABLE WHEN THERE IS A BACKEND ENDPOINT
-    await this.updateBusinessName(); 
-    // await this.getListingsPipeline();
+    return Promise.allSettled([this.updateBusinessName(), this.getListingsPipeline()]);
   },
   
   methods: {

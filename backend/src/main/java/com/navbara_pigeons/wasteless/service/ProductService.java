@@ -10,6 +10,8 @@ import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import net.minidev.json.JSONObject;
+
 import java.util.List;
 
 public interface ProductService {
@@ -17,7 +19,7 @@ public interface ProductService {
   List<BasicProductDto> getProducts(long businessId)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException;
 
-  void addProduct(long id, BasicProductCreationDto product) throws ProductRegistrationException,
+  JSONObject addProduct(long id, BasicProductCreationDto product) throws ProductRegistrationException,
       ProductForbiddenException;
 
   Product getProduct(long productId) throws ProductNotFoundException;
