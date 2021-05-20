@@ -144,6 +144,19 @@ export const helper = {
     return null;
   },
 
+  /**
+   * getCurrencyForBusiness with error handling
+   * @param {*} businessId
+   * @param {*} stateStore
+   * @returns currency, returns null when currency is not found or API request error
+   */
+  tryGetCurrencyForBusiness: async function(businessId, stateStore) {
+    try {
+      return await this.getCurrencyForBusiness(businessId, stateStore);
+    } catch(err) {
+      return null;
+    }
+  },
   
   /**
    * Given price and currency, return price with currency
@@ -203,5 +216,5 @@ export const helper = {
     } catch(err) {
       return null;
     }
-  }
+  },
 }

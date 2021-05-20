@@ -5,8 +5,19 @@
        v-bind:data-target="'#' + idPrefix + item.id"
        >
     <div class="row card-body">
-      <div class="col-2 pr-0">
-        <img class="img-fluid item-image" src="./../../../assets/images/login.jpg" alt="Image" />
+      <div class="col-2 p-0">
+        <img
+            v-if="item.product.images.length"
+            alt="Product Image"
+            class="image-fluid w-100 rounded-circle"
+            v-bind:src="item.product.images[0].thumbnailFilename"
+        >
+        <img
+            v-else
+            alt="Product Image"
+            class="image-fluid w-100 rounded-circle"
+            src="./../../../assets/images/default-product-thumbnail.svg"
+        >
       </div>
       <div class="col-10">
         <h2 class="card-title"
@@ -35,11 +46,8 @@
                 >
               <small>{{ meta.key }}:</small> <span class="text-nowrap">{{ meta.value }}</span></h4>
           </div>
-          <div class="card-text">
-            About: {{ item.description }}
-          </div>
           <div class="d-flex justify-content-end">
-            <router-link :to="{ name: 'productDetail', params: {businessId: businessId, productId: item.product.id }}"
+            <router-link :to="{ name: 'productDetail', params: { businessId, productId: item.product.id }}"
                          class="btn btn-success">
               View Product
             </router-link>
@@ -53,7 +61,7 @@
 
 <script>
 export default {
-  name: "ItemCard",
+  name: "InventoryItemCard",
   props: {
     // The item information to be displayed. (See API spec for details)
     item: Object,
@@ -88,16 +96,12 @@ export default {
 </script>
 
 <style scoped>
-.item-card:hover {
-  cursor: pointer;
-  transition-timing-function: ease-in-out;
-  transition: 0.25s;
-  transform: translateX(10px);
-}
-
-.item-image {
-  max-height: 48px;
-}
+/*.item-card:hover {*/
+/*  cursor: pointer;*/
+/*  transition-timing-function: ease-in-out;*/
+/*  transition: 0.25s;*/
+/*  transform: translateX(10px);*/
+/*}*/
 
 .collapsed .card-title {
   white-space: nowrap;

@@ -1,5 +1,5 @@
 import {shallowMount} from "@vue/test-utils";
-import ItemCard from "../components/cards/ItemCard";
+import ItemCard from "../components/cards/InventoryItemCard";
 import {globalStateMocks} from "./testHelper";
 
 const inventoryItem = {
