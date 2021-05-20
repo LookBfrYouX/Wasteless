@@ -4,6 +4,7 @@ package com.navbara_pigeons.wasteless.dto;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import java.time.LocalDate;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 
 @Data
 public class BasicInventoryItemDto {
@@ -18,7 +19,7 @@ public class BasicInventoryItemDto {
   private LocalDate bestBefore;
   private LocalDate expires;
 
-  public BasicInventoryItemDto(InventoryItem inventoryItem, String publicPathPrefix) {
+  public BasicInventoryItemDto(InventoryItem inventoryItem) {
     this.id = inventoryItem.getId();
     this.product = new BasicProductDto(inventoryItem.getProduct());
     this.quantity = inventoryItem.getQuantity();

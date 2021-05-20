@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.service.BusinessService;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -36,13 +37,19 @@ public class MainTestProvider {
   @Autowired
   protected ObjectMapper objectMapper;
 
-  protected InventoryItem makeInventoryItem(Product product) {
+  @Autowired
+  protected BusinessService businessService;
+
+  protected InventoryItem makeInventoryItem(Product product, Business business) {
     InventoryItem inventoryItem = new InventoryItem();
     LocalDate date = LocalDate.now(ZoneOffset.UTC);
     date = date.plusMonths(1);
     inventoryItem.setProduct(product)
         .setExpires(date)
-        .setQuantity(10);
+        .setQuantity(10)
+        .setPricePerItem(2.00)
+        .setPricePerItem(10.00)
+        .setBusiness(business);
     return inventoryItem;
   }
 

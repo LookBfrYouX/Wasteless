@@ -137,7 +137,7 @@ CREATE TABLE listing
     PRICE        DECIMAL(6, 2) NOT NULL,
     MORE_INFO    VARCHAR(50),
     CREATED      DATETIME,
-    CLOSES       DATETIME,
+    CLOSES       DATE,
     CONSTRAINT inventory_item_fk
         FOREIGN KEY (INVENTORY_ITEM_ID) REFERENCES inventory_item (ID)
 );
@@ -342,9 +342,9 @@ VALUES (1, 1),
        (5, 1),
        (6, 3);
 
--- Inserting inventory data
+-- Inserting inventory_item data
 
-INSERT INTO inventory (ID, PRODUCT_ID, BUSINESS_ID, QUANTITY, PRICE_PER_ITEM, TOTAL_PRICE,
+INSERT INTO inventory_item (ID, PRODUCT_ID, BUSINESS_ID, QUANTITY, PRICE_PER_ITEM, TOTAL_PRICE,
                        EXPIRES, MANUFACTURED, SELL_BY, BEST_BEFORE)
 VALUES (1, 1, 1, 5, 4.67, 20.00, '2021-08-16', '2021-08-13',
         '2021-08-15', '2021-08-16'),
@@ -355,8 +355,8 @@ VALUES (1, 1, 1, 5, 4.67, 20.00, '2021-08-16', '2021-08-13',
 
 -- Inserting listing data
 
-INSERT INTO listing (INVENTORY_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
-VALUES (1, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (1, 3, 12.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (2, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (3, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
+INSERT INTO listing (INVENTORY_ITEM_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
+VALUES (1, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17', '2021-06-16'),
+       (1, 3, 12.00, null, '2021-05-16 21:16:17', '2021-06-16'),
+       (2, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16'),
+       (3, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16');

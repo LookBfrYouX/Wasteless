@@ -12,7 +12,7 @@ public class FullListingDto {
   private long quantity;
   private double price;
   private String moreInfo;
-  private LocalDate created;
+  private ZonedDateTime created;
   private LocalDate closes;
 
   public FullListingDto(Listing listing) {

@@ -65,7 +65,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
     business.addCatalogueProduct(product);
 
-    InventoryItem inventoryItem = makeInventoryItem(product);
+    InventoryItem inventoryItem = makeInventoryItem(product, business);
     inventoryItem.setId(103);
 
     business.getInventory().add(inventoryItem);
@@ -113,7 +113,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
     business.addCatalogueProduct(product);
 
-    InventoryItem inventoryItem = makeInventoryItem(product);
+    InventoryItem inventoryItem = makeInventoryItem(product, business);
     inventoryItem.setId(103);
 
     business.getInventory().add(inventoryItem);

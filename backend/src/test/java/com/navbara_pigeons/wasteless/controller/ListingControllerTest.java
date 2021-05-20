@@ -5,9 +5,9 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.service.BusinessService;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -24,7 +24,6 @@ public class ListingControllerTest extends ControllerTestProvider {
   void getListings_normalUser() throws Exception {
     mockMvc.perform(get("/businesses/1/listings")).andExpect(status().isOk());
   }
-
 
   @Test
   @WithMockUser
@@ -87,18 +86,18 @@ public class ListingControllerTest extends ControllerTestProvider {
 
   private CreateListingDto makeListing() {
     Business business = makeBusiness();
+    Product product = makeProduct("Stoopid");
+    InventoryItem inventoryItem = makeInventoryItem(product, business);
+    business.addInventoryItem(inventoryItem);
 
-    Product product = new Product();
-    product.setName("Some product");
-
-    InventoryItem inventoryItem = new InventoryItem();
-    inventoryItem.setProduct(product);
-    inventoryItem.setQuantity(4);
-    inventoryItem.setExpires(LocalDate.parse("2021-07-21"));
-    inventoryItem.setBusiness(business);
+    try {
+      businessService.saveBusiness(business);
+    } catch (Exception exc) {
+      exc.printStackTrace();
+    }
 
     CreateListingDto listing = new CreateListingDto();
-    listing.setInventoryItemId(inventoryItem.getId());
+    listing.setInventoryItemId(1);
     listing.setQuantity(4);
     listing.setPrice(17.99f);
     listing.setInventoryItemId(1);

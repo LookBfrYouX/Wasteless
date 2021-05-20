@@ -24,9 +24,6 @@ public class InventoryServiceImpl implements InventoryService {
   private final UserService userService;
   private final BusinessService businessService;
 
-  @Value("${public_path_prefix}")
-  private String publicPathPrefix;
-
   /**
    * InventoryImplementation constructor that takes autowired parameters and sets up the service for
    * interacting with all business related services.
@@ -54,7 +51,7 @@ public class InventoryServiceImpl implements InventoryService {
       ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
       Business business = businessDao.getBusinessById(businessId);
       for (InventoryItem inventoryItem : business.getInventory()) {
-        inventory.add(new BasicInventoryItemDto(inventoryItem, publicPathPrefix));
+        inventory.add(new BasicInventoryItemDto(inventoryItem));
       }
       return inventory;
     } else {

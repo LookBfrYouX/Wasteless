@@ -157,4 +157,15 @@ public class Business {
     this.productsCatalogue.add(product);
   }
 
+  /**
+   * This is a helper method for adding an inventory item to the business inventory.
+   *
+   * @param inventoryItem The product to be added.
+   */
+  public void addInventoryItem(InventoryItem inventoryItem) {
+    if (this.inventory == null) {
+      this.inventory = new ArrayList<>();
+    }
+    this.inventory.add(inventoryItem);
+  }
 }

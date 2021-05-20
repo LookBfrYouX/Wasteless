@@ -35,7 +35,7 @@ public class Listing {
           CascadeType.REFRESH
       }
   )
-  @JoinColumn(name = "INVENTORY_ID")
+  @JoinColumn(name = "INVENTORY_ITEM_ID")
   private InventoryItem inventoryItem;
 
   @Column(name = "QUANTITY")
@@ -48,7 +48,7 @@ public class Listing {
   private String moreInfo;
 
   @Column(name = "CREATED")
-  private LocalDate created;
+  private ZonedDateTime created;
 
   @Column(name = "CLOSES")
   private LocalDate closes;

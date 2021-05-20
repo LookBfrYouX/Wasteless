@@ -9,6 +9,7 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 public class ListingServiceImplTest extends ServiceTestProvider {
+
   @InjectMocks
   private ListingServiceImpl listingService;
   @Mock
@@ -36,6 +38,8 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   ListingDao listingDao;
   @Mock
   UserService userService;
+  @Mock
+  InventoryService inventoryService;
 
   private final String email = "tony@tony.tony";
   private final String password = "tonyTony1";
@@ -107,16 +111,14 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  void getListings_one_product_multiple_inventory_multiple_listings() throws UserNotFoundException, BusinessNotFoundException {
+  void getListings_one_product_multiple_inventory_multiple_listings()
+      throws UserNotFoundException, BusinessNotFoundException {
     when(businessService.getBusiness(Mockito.anyLong())).thenReturn(getMockBusiness());
     Assertions.assertArrayEquals(
         listingService.getListings(1).stream().map(listing -> listing.getId()).toArray(),
         List.of(1, 2, 3, 4, 5, 6).stream().map(id -> Long.valueOf(id)).toArray()
     );
   }
-
-
-
 
   @Test
   @WithMockUser(username = email, password = password)
@@ -154,6 +156,8 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   }
 
   private CreateListingDto makeListing() {
+    Business business = makeBusiness();
+
     Product product = new Product();
     product.setName("Some product");
 
@@ -161,11 +165,19 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     inventoryItem.setProduct(product);
     inventoryItem.setQuantity(4);
     inventoryItem.setExpires(LocalDate.parse("2021-07-21"));
+    inventoryItem.setBusiness(business);
 
     CreateListingDto listing = new CreateListingDto();
     listing.setInventoryItemId(inventoryItem.getId());
     listing.setQuantity(4);
     listing.setPrice(17.99f);
+    listing.setId(47);
+
+    try {
+      when(inventoryService.getInventoryItemById(businessId, 47)).thenReturn(inventoryItem);
+    } catch (Exception exc) {
+      exc.printStackTrace();
+    }
 
     return listing;
   }
