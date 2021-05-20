@@ -95,7 +95,6 @@
         </form>
       </div>
     </div>
-    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         class="p-absolute w-100"
         title="Could not retrieve business data"
@@ -112,14 +111,12 @@
 
 <script>
 import {ApiRequestError} from '../ApiRequestError';
-import NotActingAsBusiness from './Errors/NotActingAsBusiness.vue';
 import ErrorModal from "./Errors/ErrorModal";
 
 const {Api} = require("./../Api.js");
 
 export default {
   components: {
-    NotActingAsBusiness,
     ErrorModal
   },
 

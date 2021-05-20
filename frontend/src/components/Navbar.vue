@@ -1,8 +1,8 @@
 <template>
   <div id="navbar">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
       <!-- Title -->
-      <a class="navbar-brand" href="javascript:" v-on:click="pushOrGo('home')">Navbara Pigeon</a>
+      <a class="navbar-brand" href="javascript:" v-on:click="homeButtonClicked()">Navbara Pigeon</a>
       <!-- Hamburger button -->
       <button
           aria-controls="navbarSupportedContent"
@@ -12,28 +12,63 @@
           data-target="#navbarSupportedContent"
           data-toggle="collapse"
           type="button"
+          id="hamburger-button"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <!-- Overflow content -->
       <div id="navbarSupportedContent" class="collapse navbar-collapse">
-        <!-- Left group -->
+        <!-- Left group: links to profile and business -->
         <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
-          <div class="d-lg-flex">
-            <!--Profile page link -->
-            <li v-if="isLoggedIn" class="nav-item mr-lg-auto d-flex align-items-center text-center">
-              <a class="nav-link" href="javascript:" v-on:click="profileClicked">
-                {{ currentActingAs ? "Business " : "" }} Profile
-              </a>
-            </li>
-            <!-- Product catalog link -->
-            <li v-if="isActingAsBusiness" class="navbar-item mr-lg-auto d-flex align-items-center">
-              <a class="nav-link" href="javascript:" v-on:click="productCatalogClicked">
-                Catalogue
+          <div
+            class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center"
+            v-bind:class="{'d-lg-none': navbarLinks.length > 2}"
+          >
+          <!-- List of links in XL only hidden if lg and more than 2 links -->
+            <li
+              v-for="({name, click}, i) in navbarLinks"
+              v-bind:key="i"
+              class="nav-item d-flex align-items-center text-center mx-lg-0"
+              v-bind:class="{'mx-4': i != 0}"
+            >
+              <a
+                class="nav-link"
+                href="javascript:"
+                v-on:click="click"
+              > {{name}}
               </a>
             </li>
           </div>
+
+          <li
+            class="navbar-item dropdown d-none d-xl-none p-absolute"
+            v-bind:class="{'d-lg-block': navbarLinks.length > 2}"
+          >
+            <!-- dropdown menu for the business/profile links only if lg AND if more than 2 links-->
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdownBusinessLinks"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Quick Links
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownBusinessLinks">
+              <a
+                v-for="({name, click}, i) in navbarLinks"
+                v-bind:key="i"
+                class="dropdown-item"
+                href="javascript:"
+                v-on:click="click"
+              >
+                {{name}}
+              </a>
+            </div>
+        </li>
 
           <!-- Center group: search input and button -->
           <li v-if="isLoggedIn" class="navbar-item d-flex search-container w-100">
@@ -72,7 +107,7 @@
                    src="./../../assets/images/default-user-thumbnail.svg"
               >
               <div class="d-flex flex-column mx-1">
-                <span class="m-0 p-0 text-dark">
+              <span class="m-0 p-0 text-dark">
                   {{ printCurrentActingAs }}
                 </span>
                 <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
@@ -95,7 +130,8 @@
                  v-on:click="switchActingAs(business)">
                 {{ business.name }}
                 <span v-if="business === currentActingAs">
-                    &#10003;
+
+                  &#10003;
                   </span>
               </a>
               <div class="dropdown-divider"></div>
@@ -113,7 +149,7 @@
                 Login
               </a>
             </li>
-            <li v-if="this.$route.name != 'Sign Up'" class="nav-item">
+            <li v-if="this.$route.name != 'signUp'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
                   v-on:click="pushOrGo('signUp')"
@@ -160,6 +196,41 @@ export default {
       get: function () {
         return this.$stateStore.getters.getAuthUser();
       }
+    },
+
+    /**
+     * Returns a list of navbar links depending on if they are acting as a business or user
+     * @return array with `name` string and `click` methods
+     */
+    navbarLinks() {
+      if (!this.isLoggedIn) return [];
+      if (!this.isActingAsBusiness) return [
+        {
+          name: "Profile",
+          click: this.profileClicked
+        },
+        {
+          name: "Marketplace",
+          click: () => this.pushOrGo('marketplace')
+        }
+      ];
+
+      return [
+        {
+          name: "Business Profile",
+          click: this.profileClicked
+        },
+        {
+          name: "Product Catalogue",
+          click: () => this.pushOrGoToBusinessPage("productCatalogue")
+        }, {
+          name: "Inventory",
+          click: () => this.pushOrGoToBusinessPage("businessInventory")
+        }, {
+          name: "Listings",
+          click: () => this.pushOrGoToBusinessPage("businessListings")
+        }
+      ];
     },
 
     /**
@@ -214,6 +285,17 @@ export default {
       this.$stateStore.actions.setActingAs(business);
       // Must set business after redirecting as some pages do not like it if a 
       // user accesses a business page they are not an admin of
+    },
+
+    /**
+     * Redirects to 'home' if logged in, '/' otherwise
+     */
+    homeButtonClicked() {
+      if (this.$stateStore.getters.isLoggedIn()) {
+        this.pushOrGo('home');
+      } else {
+        this.pushOrGo('landing');
+      }
     },
 
     /**
@@ -276,31 +358,33 @@ export default {
     },
 
     /**
-     * Link to product catalog page clicked
+     * Goes to business page, given the user is acting as a business
+     * @param name name of page to go to
      */
-    productCatalogClicked: async function () {
+    pushOrGoToBusinessPage: async function(name) {
       const business = this.$stateStore.getters.getActingAs();
       if (business == null) {
         return;
       }
       const params = {
-        name: "productCatalogue",
+        name, 
         params: {
           businessId: business.id
         }
       };
-      if (this.$route.name == 'productCatalogue' && this.$route.params.businessId == business.id) {
+      if (this.$route.name == name && this.$route.params.businessId == business.id) {
         await this.$router.go();
       } else {
         await this.$router.push(params);
       }
-    }
+    },
   },
 };
 </script>
-
 <style scoped>
-
+nav {
+  z-index: 10;
+}
 .dropdown-menu {
   z-index: 900000;
 }
@@ -311,7 +395,7 @@ export default {
 }
 
 .search-container {
-  max-width: 30em;
+  max-width: 25em;
   flex-grow: 2;
 }
 </style>

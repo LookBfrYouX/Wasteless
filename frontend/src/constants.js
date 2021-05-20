@@ -50,6 +50,10 @@ export const constants = {
     "December"
   ],
 
+  SORTED_PAGINATED_ITEM_LIST: {
+    RESULTS_PER_PAGE: 10
+  },
+
   SEARCH_RESULTS: {
     RESULTS_PER_PAGE: 10
   },

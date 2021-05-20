@@ -41,7 +41,6 @@
         </button>
       </div>
     </div>
-    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error fetching product information"
         v-bind:goBack="false"
@@ -73,7 +72,6 @@
 </style>
 <script>
 import ErrorModal from "./Errors/ErrorModal.vue";
-import NotActingAsBusiness from "./Errors/NotActingAsBusiness";
 
 import {ApiRequestError} from "../ApiRequestError";
 const { Api } = require("./../Api");
@@ -82,7 +80,6 @@ export default {
   name: "productDetail",
   components: {
     ErrorModal,
-    NotActingAsBusiness
   },
 
   data() {

@@ -1,56 +1,28 @@
 <template>
-  <div class="container pt-4">
-    <h1>Home Page</h1>
-    <p>Beautiful, ain't it?</p>
-
-<!--    <item-card> is here for demo purpose. TODO remove them before merge-->
-    <item-card
-        v-bind:item="inventoryItem"
-        :id-prefix="'item1-'"
-        :business-id="1"
-        :currency="currency"></item-card>
-    <item-card
-        v-bind:item="inventoryItem"
-        :id-prefix="'item2-'"
-        :business-id="1"
-        :currency="currency"></item-card>
-    <item-card
-        v-bind:item="inventoryItem"
-        :id-prefix="'item3-'"
-        :business-id="1"
-        :currency="currency"></item-card>
-<!--    End of item-card demo-->
+  <div class="container m-3">
+    <div class="row">
+      <div class="col-md-3 card m-1">
+        <h5 class="text-muted mt-3">Quick Links</h5>
+        <div class="profile-buttons d-flex flex-wrap">
+          <button class="btn btn-white-bg-primary m-1 d-flex" v-on:click="goToMarketplace">
+            <span class="material-icons mr-1">store</span>
+            Marketplace
+          </button>
+        </div>
+      </div>
+      <div class="col-md-8 card m-1">
+        <h5 class="text-muted mt-3">Home</h5>
+        <p>Beautiful, ain't it?</p>
+      </div>
+    </div>
   </div>
 </template>
 <script>
-import ItemCard from "./cards/ItemCard";
-
 export default {
   name: "home",
-  components: {ItemCard},
-  data() {
-    return {
-      inventoryItem: {
-        id: 1,
-        product: {
-          id: 3,
-          name: 'beans long data long data long data long data long data long data long data long data long data long data long data long data ',
-          description: "Yummy beans long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data long data ",
-        },
-        quantity: 5,
-        pricePerItem: 4,
-        totalPrice: 18.89,
-        manufactured: '2021-04-24',
-        sellBy: '2021-05-26',
-        bestBefore: '2021-05-27',
-        expires: '2021-05-29',
-        description: "This bean is leftover from International Bean Festival"
-      },
-      currency: {
-        symbol: "$",
-        name: "New Zealand Dollar",
-        code: "NZD"
-      }
+  methods: {
+    goToMarketplace() {
+      this.$router.push({name: 'marketplace'});
     }
   }
 }
