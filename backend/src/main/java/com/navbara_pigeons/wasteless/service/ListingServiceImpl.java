@@ -7,16 +7,13 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,9 +26,6 @@ public class ListingServiceImpl implements ListingService {
   private final BusinessService businessService;
   private final ListingDao listingDao;
   private final InventoryService inventoryService;
-
-  @Value("${public_path_prefix}")
-  private String publicPathPrefix;
 
   /**
    * ListingService constructor that takes autowired parameters and sets up the service for
@@ -52,17 +46,17 @@ public class ListingServiceImpl implements ListingService {
    * @param businessId id of the business to add the listing to
    * @param listingDto listing dto of the listing to be added tot the business
    * @return newly created listing id
-   * @throws ForbiddenException        when a user is not admin nor business admin
-   * @throws BusinessNotFoundException when no business with given id exists
-   * @throws UserNotFoundException     this will be caught by spring first
+   * @throws InsufficientPrivilegesException  when a user is not admin nor business admin
+   * @throws BusinessNotFoundException        when no business with given id exists
+   * @throws UserNotFoundException            this will be caught by spring first
    */
   public Long addListing(long businessId, CreateListingDto listingDto)
-      throws ForbiddenException, BusinessNotFoundException, UserNotFoundException, ListingValidationException, InsufficientPrivilegesException {
+      throws InsufficientPrivilegesException, BusinessNotFoundException, UserNotFoundException, ListingValidationException {
     if (!userService.isAdmin() && !businessService.isBusinessAdmin(businessId)) {
-      throw new ForbiddenException(
+      throw new InsufficientPrivilegesException(
           "Only admins and business admins are allowed to add listings to a business");
     }
-    // Add inventory item to listing from inventory item id
+    // Add inventory item to listing from given id
     Listing listing = new Listing(listingDto);
     listing.setInventoryItem(inventoryService.getInventoryItemById(businessId, listingDto.getInventoryItemId()));
     if (listing.getCloses() == null) {

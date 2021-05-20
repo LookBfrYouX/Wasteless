@@ -16,11 +16,11 @@ public class ListingServiceValidation {
 
     // Quantity must be above 0 and below the remaining quantity
     long remainingQuantity = listing.getInventoryItem().getQuantity();
-    List<InventoryItem> currentListings = listing.getInventoryItem().getBusiness().getInventory();
-    for (InventoryItem loopItem : currentListings) {
-      for (Listing loopListing : loopItem.getListings()) {
-        if (loopListing.getId() == listing.getId()) {
-          remainingQuantity -= loopListing.getQuantity();
+    List<InventoryItem> inventory = listing.getInventoryItem().getBusiness().getInventory();
+    for (InventoryItem inventoryItem : inventory) {
+      for (Listing listing1 : inventoryItem.getListings()) {
+        if (listing1.getId() == listing.getId()) {
+          remainingQuantity -= listing1.getQuantity();
         }
       }
     }

@@ -5,7 +5,6 @@ import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class InventoryItem {
   private Product product;
 
   @JsonIgnore
-  @ManyToOne()
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "BUSINESS_ID")
   private Business business;
 

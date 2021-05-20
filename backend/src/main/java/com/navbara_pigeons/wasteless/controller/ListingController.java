@@ -35,6 +35,7 @@ public class ListingController {
   }
 
   /**
+   * Adds an inventory item to a businesses inventory
    *
    * @param businessId Id of the business to add the listing to
    * @param listing    listing to add to the business
@@ -43,26 +44,11 @@ public class ListingController {
    */
   @PostMapping("/businesses/{businessId}/listings")
   public ResponseEntity<Long> addListing(@PathVariable long businessId,
-      @RequestBody CreateListingDto listing) {
-    try {
-      Long listingId = listingService.addListing(businessId, listing);
-      log.info("LISTING CREATED SUCCESSFULLY: " + listingId + " FOR BUSINESS " + businessId);
-      return new ResponseEntity<>(listingId, HttpStatus.CREATED);
-    } catch (BusinessNotFoundException | ListingValidationException exc) {
-      log.error(
-          "INVALID DATA SUPPLIED WHEN ADDING NEW LISTING FOR BUSINESS " + businessId + " (" + exc
-              .getMessage()
-              + ")");
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data supplied.");
-    } catch (ForbiddenException exc) {
-      log.error("USER LACKS PRIVILEGES TO ADD LISTING TO BUSINESS " + businessId);
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, " Invalid Privileges.");
-    } catch (Exception exc) {
-      log.error(
-          "CRITICAL LISTING CREATION ERROR FOR BUSINESS " + businessId + " (" + exc.getMessage()
-              + ")");
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-    }
+      @RequestBody CreateListingDto listing)
+      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ListingValidationException {
+    Long listingId = listingService.addListing(businessId, listing);
+    log.info("LISTING CREATED SUCCESSFULLY: " + listingId + " FOR BUSINESS " + businessId);
+    return new ResponseEntity<>(listingId, HttpStatus.CREATED);
   }
 
   /**

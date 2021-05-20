@@ -9,7 +9,6 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
-import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
@@ -58,7 +57,74 @@ public class ListingServiceImplTest extends ServiceTestProvider {
 
     when(userService.isAdmin()).thenReturn(false);
     when(businessService.isBusinessAdmin(businessId)).thenReturn(true);
-    doNothing().when(listingDao).save(any(Listing.class));
+    when(listingDao.save(any(Listing.class))).thenReturn(null);
+  }
+
+  @Test
+  void getListings_one_product_multiple_inventory_multiple_listings()
+      throws UserNotFoundException, BusinessNotFoundException {
+    when(businessService.getBusiness(Mockito.anyLong())).thenReturn(getMockBusiness());
+    Assertions.assertArrayEquals(
+        listingService.getListings(1).stream().map(listing -> listing.getId()).toArray(),
+        List.of(1, 2, 3, 4, 5, 6).stream().map(id -> Long.valueOf(id)).toArray()
+    );
+  }
+
+  @Test
+  @WithMockUser(username = email, password = password)
+  void postListingExpectOk() {
+    CreateListingDto listing = makeListing();
+
+    Assertions.assertDoesNotThrow(() -> {
+      listingService.addListing(businessId, listing);
+    });
+  }
+
+//  @Test
+//  @WithMockUser(username = email, password = password)
+//  void postListingExpectInvalid() {
+//    // Listings must have quantities otherwise throw ListingValidationException
+//    CreateListingDto listing = makeListing();
+//
+//    Assertions.assertThrows(ListingValidationException.class, () -> {
+//      listingService.addListing(businessId, listing);
+//    });
+//  }
+
+//  @Test
+//  @WithMockUser(username = "notTony@notTony.notTony", password = "notTonyNotTony1")
+//  void postListingExpectForbidden() throws BusinessNotFoundException, UserNotFoundException {
+//    // Must be the business admin or GAA otherwise throw ForbiddenException
+//    CreateListingDto listing = makeListing();
+//
+//    // Setting mocks
+//    when(businessService.isBusinessAdmin(businessId)).thenReturn(false);
+//
+//    Assertions.assertThrows(ForbiddenException.class, () -> {
+//      listingService.addListing(businessId, listing);
+//    });
+//  }
+
+  private CreateListingDto makeListing() {
+    Business business = makeBusiness();
+    Product product = makeProduct("Some product");
+    InventoryItem inventoryItem = makeInventoryItem(product, business);
+
+    business.addInventoryItem(inventoryItem);
+
+    CreateListingDto listing = new CreateListingDto();
+    listing.setInventoryItemId(inventoryItem.getId());
+    listing.setQuantity(4);
+    listing.setPrice(17.99f);
+    listing.setId(47);
+
+    try {
+      when(inventoryService.getInventoryItemById(businessId, inventoryItem.getId())).thenReturn(inventoryItem);
+    } catch (Exception exc) {
+      exc.printStackTrace();
+    }
+
+    return listing;
   }
 
   Product newProduct(long id, Business business) {
@@ -76,7 +142,6 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     inventory.setId(id);
     return inventory;
   }
-
 
   Listing newListing(long id, InventoryItem inventory) {
     Listing listing = new Listing();
@@ -108,77 +173,5 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     Listing l5 = newListing(5, i3);
     Listing l6 = newListing(6, i3);
     return business;
-  }
-
-  @Test
-  void getListings_one_product_multiple_inventory_multiple_listings()
-      throws UserNotFoundException, BusinessNotFoundException {
-    when(businessService.getBusiness(Mockito.anyLong())).thenReturn(getMockBusiness());
-    Assertions.assertArrayEquals(
-        listingService.getListings(1).stream().map(listing -> listing.getId()).toArray(),
-        List.of(1, 2, 3, 4, 5, 6).stream().map(id -> Long.valueOf(id)).toArray()
-    );
-  }
-
-  @Test
-  @WithMockUser(username = email, password = password)
-  void postListingExpectOk() {
-    CreateListingDto listing = makeListing();
-
-    Assertions.assertDoesNotThrow(() -> {
-      listingService.addListing(businessId, listing);
-    });
-  }
-
-  @Test
-  @WithMockUser(username = email, password = password)
-  void postListingExpectInvalid() {
-    // Listings must have quantities otherwise throw ListingValidationException
-    CreateListingDto listing = makeListing();
-
-    Assertions.assertThrows(ListingValidationException.class, () -> {
-      listingService.addListing(businessId, listing);
-    });
-  }
-
-  @Test
-  @WithMockUser(username = "notTony@notTony.notTony", password = "notTonyNotTony1")
-  void postListingExpectForbidden() throws BusinessNotFoundException, UserNotFoundException {
-    // Must be the business admin or GAA otherwise throw ForbiddenException
-    CreateListingDto listing = makeListing();
-
-    // Setting mocks
-    when(businessService.isBusinessAdmin(businessId)).thenReturn(false);
-
-    Assertions.assertThrows(ForbiddenException.class, () -> {
-      listingService.addListing(businessId, listing);
-    });
-  }
-
-  private CreateListingDto makeListing() {
-    Business business = makeBusiness();
-
-    Product product = new Product();
-    product.setName("Some product");
-
-    InventoryItem inventoryItem = new InventoryItem();
-    inventoryItem.setProduct(product);
-    inventoryItem.setQuantity(4);
-    inventoryItem.setExpires(LocalDate.parse("2021-07-21"));
-    inventoryItem.setBusiness(business);
-
-    CreateListingDto listing = new CreateListingDto();
-    listing.setInventoryItemId(inventoryItem.getId());
-    listing.setQuantity(4);
-    listing.setPrice(17.99f);
-    listing.setId(47);
-
-    try {
-      when(inventoryService.getInventoryItemById(businessId, 47)).thenReturn(inventoryItem);
-    } catch (Exception exc) {
-      exc.printStackTrace();
-    }
-
-    return listing;
   }
 }
