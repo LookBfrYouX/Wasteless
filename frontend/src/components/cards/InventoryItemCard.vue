@@ -96,6 +96,9 @@ export default {
 </script>
 
 <style scoped>
+.card-body {
+  cursor: pointer;
+}
 .collapsed .card-title {
   white-space: nowrap;
   overflow: hidden;
