@@ -109,7 +109,7 @@ export default {
   },
 
   beforeMount: async function() {
-    return Promise.allSettled([this.updateBusinessName(), this.getListingsPipeline()]);
+    return Promise.allSettled([this.loadBusinessName(), this.getListingsPipeline()]);
   },
   
   methods: {
@@ -122,7 +122,7 @@ export default {
       }
     },
 
-    updateBusinessName: async function() {
+    loadBusinessName: async function() {
       this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
     }
   },

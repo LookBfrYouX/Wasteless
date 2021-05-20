@@ -6,7 +6,7 @@
       v-bind:currentSortOption.sync="currentSortOption"
     >
       <template v-slot:title>
-        <h2>Product Catalogue</h2>
+        <h2>Product Catalogue {{businessName? `for ${businessName}`: ""}}</h2>
       </template>
       <template v-slot:right-button>
         <router-link
@@ -88,12 +88,13 @@ export default {
       // use first sort option as default
       currentSortOption: { ...sortOptions[0], reversed: false },
       apiErrorMessage: null,
+      businessName: null
     }
   },
 
   beforeMount: async function () {
     const success = await this.query();
-    if (success) await this.loadCurrencies();
+    if (success) await Promise.allSettled([this.loadCurrencies(), this.loadBusinessName()]);
   },
 
   methods: {
@@ -142,6 +143,19 @@ export default {
 
       return true;
     },
+
+    /*
+     * Attempts to update the business name
+     */
+    loadBusinessName: async function() {
+      this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
+    }
   },
+
+  watch: {
+    businessName() {
+      if (this.businessName != null) document.title = `Product Catalogue for ${this.businessName}`
+    }
+  }
 };
 </script>
