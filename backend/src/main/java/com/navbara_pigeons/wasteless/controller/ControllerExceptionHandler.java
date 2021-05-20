@@ -1,8 +1,8 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -62,5 +62,15 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<String> handleMaxSizeException() {
         return new ResponseEntity<>("File too large!", HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Whenever InventoryItemNotFoundException is thrown, this class will be run
+     *
+     * @return Response to the user (BAD_REQUEST)
+     */
+    @ExceptionHandler(InventoryItemNotFoundException.class)
+    public ResponseEntity<String> handleInventoryItemNotFound() {
+        return new ResponseEntity<>("Inventory item not found!", HttpStatus.BAD_REQUEST);
     }
 }

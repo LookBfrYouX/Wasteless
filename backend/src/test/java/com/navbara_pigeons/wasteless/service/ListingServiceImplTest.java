@@ -6,10 +6,9 @@ import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import java.util.List;
 import org.springframework.security.test.context.support.WithMockUser;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -41,8 +41,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   private Long businessId;
 
   @BeforeEach
-  void beforeEach()
-      throws UserNotFoundException, BusinessNotFoundException {
+  void beforeEach() throws Exception {
     // Setting mocks before tests are run to ensure unit testing only
     User user = makeUser(email, password, false);
     userId = user.getId();
@@ -56,8 +55,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  void getListings_one_product_multiple_inventory_multiple_listings()
-      throws UserNotFoundException, BusinessNotFoundException {
+  void getListings_one_product_multiple_inventory_multiple_listings() throws Exception {
     when(businessService.getBusiness(Mockito.anyLong())).thenReturn(getMockBusiness());
     Assertions.assertArrayEquals(
         listingService.getListings(1).stream().map(listing -> listing.getId()).toArray(),
@@ -67,8 +65,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser(username = email, password = password)
-  void postListingExpectOk()
-      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+  void postListingExpectOk() throws Exception {
     Listing listing = makeListing();
 
     Assertions.assertDoesNotThrow(() -> {
@@ -78,8 +75,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser(username = email, password = password)
-  void postListingExpectValidationException()
-      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+  void postListingExpectValidationException() throws Exception {
     Listing listing = makeListing();
     // Make listing sets inventory item quantity to 4
     listing.setQuantity(100);
@@ -91,8 +87,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser(username = "notTony@notTony.notTony", password = "notTonyNotTony1")
-  void postListingExpectInsufficientPrivileges()
-      throws BusinessNotFoundException, UserNotFoundException, InsufficientPrivilegesException {
+  void postListingExpectInsufficientPrivileges() throws Exception {
     Listing listing = makeListing();
 
     when(businessService.isBusinessAdmin(businessId)).thenReturn(false);
@@ -103,8 +98,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   }
 
   // Creates a business, product, inventory item and listing
-  private Listing makeListing()
-      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+  private Listing makeListing() throws Exception {
     Product product = makeProduct("Some product");
     Business business = makeBusiness();
     InventoryItem inventoryItem = makeInventoryItem(product, business);
@@ -119,7 +113,8 @@ public class ListingServiceImplTest extends ServiceTestProvider {
 
     inventoryItem.addListing(listing);
 
-    when(inventoryService.getInventoryItemById(businessId, inventoryItem.getId())).thenReturn(inventoryItem);
+    when(inventoryService.getInventoryItemById(businessId, inventoryItem.getId()))
+        .thenReturn(inventoryItem);
     return listing;
   }
 }

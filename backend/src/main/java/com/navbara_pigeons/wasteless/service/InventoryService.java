@@ -16,6 +16,6 @@ public interface InventoryService {
 
   void registerInventoryItem(CreateInventoryItemDto inventoryItemDto) throws InsufficientPrivilegesException;
 
-  InventoryItem getInventoryItemById(long businessId, long itemId) throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException;
+  InventoryItem getInventoryItemById(long businessId, long itemId) throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InventoryItemNotFoundException;
 
 }

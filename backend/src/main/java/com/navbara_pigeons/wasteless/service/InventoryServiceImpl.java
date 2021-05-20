@@ -7,11 +7,11 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -66,7 +66,7 @@ public class InventoryServiceImpl implements InventoryService {
    * @return inventory item or null
    */
   public InventoryItem getInventoryItemById(long businessId, long itemId)
-      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InventoryItemNotFoundException {
     List<BasicInventoryItemDto> inventory = getInventory(businessId);
 
     for (BasicInventoryItemDto inventoryItemDto: inventory) {
@@ -74,7 +74,7 @@ public class InventoryServiceImpl implements InventoryService {
         return new InventoryItem(inventoryItemDto);
       }
     }
-    return null;
+    throw new InventoryItemNotFoundException(itemId);
   }
 
   @Override

@@ -48,7 +48,7 @@ public class ListingController {
   @PostMapping("/businesses/{businessId}/listings")
   public ResponseEntity<Long> addListing(@PathVariable long businessId,
       @RequestBody CreateListingDto listingDto)
-      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ListingValidationException {
+      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ListingValidationException, InventoryItemNotFoundException {
 
     Long listingId = listingService.addListing(businessId, listingDto.getInventoryItemId(), new Listing(listingDto));
     log.info("LISTING CREATED SUCCESSFULLY: " + listingId + " FOR BUSINESS " + businessId);

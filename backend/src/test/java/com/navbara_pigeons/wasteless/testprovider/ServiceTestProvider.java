@@ -288,28 +288,9 @@ public class ServiceTestProvider extends MainTestProvider {
     assertEquals(product.getRecommendedRetailPrice(), productDto.getRecommendedRetailPrice());
   }
 
-  /**
-   * Checks that products lists are equal
-   *
-   * @param products
-   * @param productDtos
-   */
-  protected void assertProductListsEqual(List<Product> products,
-      List<BasicProductDto> productDtos) {
-    products.sort(Comparator.comparing(prod -> prod.getId()));
-    productDtos.sort(Comparator.comparing(prod -> prod.getId()));
-
-    assertEquals(products.size(), productDtos.size(),
-        "product and product DTOs list different length");
-    for (int i = 0; i < products.size(); i++) {
-      assertProductEquals(products.get(i), productDtos.get(i));
-    }
-  }
-
   Product newProduct(long id, Business business) {
     Product product = new Product();
     business.addCatalogueProduct(product);
-    // product.setBusiness(business); // Product does not store business ID
     product.setId(id);
     return product;
   }

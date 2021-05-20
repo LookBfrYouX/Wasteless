@@ -1,13 +1,13 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
-import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
@@ -51,7 +51,7 @@ public class ListingServiceImpl implements ListingService {
    * @throws UserNotFoundException            this will be caught by spring first
    */
   public Long addListing(long businessId, long inventoryItemId, Listing listing)
-      throws InsufficientPrivilegesException, BusinessNotFoundException, UserNotFoundException, ListingValidationException {
+      throws InsufficientPrivilegesException, BusinessNotFoundException, UserNotFoundException, ListingValidationException, InventoryItemNotFoundException {
     if (!userService.isAdmin() && !businessService.isBusinessAdmin(businessId)) {
       throw new InsufficientPrivilegesException(
           "Only admins and business admins are allowed to add listings to a business");
