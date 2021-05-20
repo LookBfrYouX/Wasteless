@@ -43,17 +43,7 @@ import SortedPaginatedItemList from '../components/SortedPaginatedItemList.vue';
 import ErrorModal from "../components/Errors/ErrorModal";
 import { Api } from "../Api";
 import { helper } from "./../helper";
-import InventoryItemCard from "@/components/cards/InventoryItemCard";
-
-const mockResult = [];
-for(let i = 1; i < 12; i++) {
-  mockResult.push({
-    "id": i,
-    "product": {
-      "name": "Watties Baked Beans - "+ i * 100 + "g can",
-    }
-  });
-}
+import InventoryItemCard from "./../components/cards/InventoryItemCard";
 
 const sortOptions = [
   {

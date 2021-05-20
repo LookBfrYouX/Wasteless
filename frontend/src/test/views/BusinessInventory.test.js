@@ -36,7 +36,8 @@ beforeEach(() => {
       propsData: {
         businessId: 1
       },
-      mocks: {...globalStateMocks()}
+      mocks: {...globalStateMocks()},
+      stubs: ["inventory-item-card"]
     });
 });
 
