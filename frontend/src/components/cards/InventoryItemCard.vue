@@ -96,13 +96,6 @@ export default {
 </script>
 
 <style scoped>
-/*.item-card:hover {*/
-/*  cursor: pointer;*/
-/*  transition-timing-function: ease-in-out;*/
-/*  transition: 0.25s;*/
-/*  transform: translateX(10px);*/
-/*}*/
-
 .collapsed .card-title {
   white-space: nowrap;
   overflow: hidden;

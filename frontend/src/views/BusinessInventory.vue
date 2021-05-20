@@ -116,6 +116,10 @@ export default {
       }
     },
 
+    /**
+     * Gets currency object.
+     * @returns {Promise<void>} Currency object, null when the currency doesn't exist or API request error.
+     */
     getCurrency: async function () {
       this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
     },
