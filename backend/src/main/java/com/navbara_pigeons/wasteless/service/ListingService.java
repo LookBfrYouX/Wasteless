@@ -1,6 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.navbara_pigeons.wasteless.dto.CreateListingDto;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ListingService {
 
-  Long addListing(long businessId, CreateListingDto listing)
+  Long addListing(long businessId, long inventoryItemId, Listing listing)
       throws BusinessNotFoundException, UserNotFoundException, ListingValidationException, InsufficientPrivilegesException;
 
   List<FullListingDto> getListings(long businessId) throws BusinessNotFoundException, UserNotFoundException;

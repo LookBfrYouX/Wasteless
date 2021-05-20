@@ -44,21 +44,21 @@ public class ListingServiceImpl implements ListingService {
    * Adds a given listing to a businesses listings
    *
    * @param businessId id of the business to add the listing to
-   * @param listingDto listing dto of the listing to be added tot the business
+   * @param listing listing dto of the listing to be added tot the business
    * @return newly created listing id
    * @throws InsufficientPrivilegesException  when a user is not admin nor business admin
    * @throws BusinessNotFoundException        when no business with given id exists
    * @throws UserNotFoundException            this will be caught by spring first
    */
-  public Long addListing(long businessId, CreateListingDto listingDto)
+  public Long addListing(long businessId, long inventoryItemId, Listing listing)
       throws InsufficientPrivilegesException, BusinessNotFoundException, UserNotFoundException, ListingValidationException {
     if (!userService.isAdmin() && !businessService.isBusinessAdmin(businessId)) {
       throw new InsufficientPrivilegesException(
           "Only admins and business admins are allowed to add listings to a business");
     }
     // Add inventory item to listing from given id
-    Listing listing = new Listing(listingDto);
-    listing.setInventoryItem(inventoryService.getInventoryItemById(businessId, listingDto.getInventoryItemId()));
+    listing.setInventoryItem(inventoryService.getInventoryItemById(businessId, inventoryItemId));
+
     if (listing.getCloses() == null) {
       listing.setCloses(listing.getInventoryItem().getExpires());
     }

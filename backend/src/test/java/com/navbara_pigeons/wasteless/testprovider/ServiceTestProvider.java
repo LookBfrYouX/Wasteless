@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
@@ -303,5 +304,53 @@ public class ServiceTestProvider extends MainTestProvider {
     for (int i = 0; i < products.size(); i++) {
       assertProductEquals(products.get(i), productDtos.get(i));
     }
+  }
+
+  Product newProduct(long id, Business business) {
+    Product product = new Product();
+    business.addCatalogueProduct(product);
+    // product.setBusiness(business); // Product does not store business ID
+    product.setId(id);
+    return product;
+  }
+
+  InventoryItem newInventory(long id, Product product, Business business) {
+    InventoryItem inventory = new InventoryItem();
+    business.getInventory().add(inventory);
+    inventory.setProduct(product);
+    inventory.setId(id);
+    return inventory;
+  }
+
+  Listing newListing(long id, InventoryItem inventory) {
+    Listing listing = new Listing();
+    inventory.addListing(listing);
+    listing.setInventoryItem(inventory);
+    listing.setId(id);
+    return listing;
+  }
+
+  public Business getMockBusiness() {
+    /**
+     *                  B#1
+     *         p1#1 ---------p2#2
+     *    i1#1---i2#2         i1#3
+     *l1#1--l2#2  l1#3     l1#4 l2#5 l3#6
+     */
+    Business business = new Business();
+    business.setId(1);
+    Product p1 = newProduct(1, business);
+    InventoryItem i1 = newInventory(1, p1, business);
+    Listing l1 = newListing(1, i1);
+    Listing l2 = newListing(2, i1);
+    InventoryItem i2 = newInventory(2, p1, business);
+    Listing l3 = newListing(3, i2);
+
+    Product p2 = newProduct(2, business);
+    InventoryItem i3 = newInventory(3, p2, business);
+    Listing l4 = newListing(4, i3);
+    Listing l5 = newListing(5, i3);
+    Listing l6 = newListing(6, i3);
+    return business;
   }
 }

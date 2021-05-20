@@ -1,30 +1,25 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
-import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.ForbiddenException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
-import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
 import java.util.List;
 import org.springframework.security.test.context.support.WithMockUser;
-
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 public class ListingServiceImplTest extends ServiceTestProvider {
@@ -72,106 +67,59 @@ public class ListingServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser(username = email, password = password)
-  void postListingExpectOk() {
-    CreateListingDto listing = makeListing();
+  void postListingExpectOk()
+      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+    Listing listing = makeListing();
 
     Assertions.assertDoesNotThrow(() -> {
-      listingService.addListing(businessId, listing);
+      listingService.addListing(businessId, listing.getInventoryItem().getId(), listing);
     });
   }
 
-//  @Test
-//  @WithMockUser(username = email, password = password)
-//  void postListingExpectInvalid() {
-//    // Listings must have quantities otherwise throw ListingValidationException
-//    CreateListingDto listing = makeListing();
-//
-//    Assertions.assertThrows(ListingValidationException.class, () -> {
-//      listingService.addListing(businessId, listing);
-//    });
-//  }
+  @Test
+  @WithMockUser(username = email, password = password)
+  void postListingExpectValidationException()
+      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+    Listing listing = makeListing();
+    // Make listing sets inventory item quantity to 4
+    listing.setQuantity(100);
 
-//  @Test
-//  @WithMockUser(username = "notTony@notTony.notTony", password = "notTonyNotTony1")
-//  void postListingExpectForbidden() throws BusinessNotFoundException, UserNotFoundException {
-//    // Must be the business admin or GAA otherwise throw ForbiddenException
-//    CreateListingDto listing = makeListing();
-//
-//    // Setting mocks
-//    when(businessService.isBusinessAdmin(businessId)).thenReturn(false);
-//
-//    Assertions.assertThrows(ForbiddenException.class, () -> {
-//      listingService.addListing(businessId, listing);
-//    });
-//  }
+    Assertions.assertThrows(ListingValidationException.class, () -> {
+      listingService.addListing(businessId, listing.getInventoryItem().getId(), listing);
+    });
+  }
 
-  private CreateListingDto makeListing() {
-    Business business = makeBusiness();
+  @Test
+  @WithMockUser(username = "notTony@notTony.notTony", password = "notTonyNotTony1")
+  void postListingExpectInsufficientPrivileges()
+      throws BusinessNotFoundException, UserNotFoundException, InsufficientPrivilegesException {
+    Listing listing = makeListing();
+
+    when(businessService.isBusinessAdmin(businessId)).thenReturn(false);
+
+    Assertions.assertThrows(InsufficientPrivilegesException.class, () -> {
+      listingService.addListing(businessId, listing.getInventoryItem().getId(), listing);
+    });
+  }
+
+  // Creates a business, product, inventory item and listing
+  private Listing makeListing()
+      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
     Product product = makeProduct("Some product");
+    Business business = makeBusiness();
     InventoryItem inventoryItem = makeInventoryItem(product, business);
 
     business.addInventoryItem(inventoryItem);
 
-    CreateListingDto listing = new CreateListingDto();
-    listing.setInventoryItemId(inventoryItem.getId());
+    Listing listing = new Listing();
+    listing.setInventoryItem(inventoryItem);
     listing.setQuantity(4);
     listing.setPrice(17.99f);
     listing.setId(47);
 
-    try {
-      when(inventoryService.getInventoryItemById(businessId, inventoryItem.getId())).thenReturn(inventoryItem);
-    } catch (Exception exc) {
-      exc.printStackTrace();
-    }
+    inventoryItem.addListing(listing);
 
+    when(inventoryService.getInventoryItemById(businessId, inventoryItem.getId())).thenReturn(inventoryItem);
     return listing;
-  }
-
-  Product newProduct(long id, Business business) {
-    Product product = new Product();
-    business.addCatalogueProduct(product);
-    // product.setBusiness(business); // Product does not store business ID
-    product.setId(id);
-    return product;
-  }
-
-  InventoryItem newInventory(long id, Product product, Business business) {
-    InventoryItem inventory = new InventoryItem();
-    business.getInventory().add(inventory);
-    inventory.setProduct(product);
-    inventory.setId(id);
-    return inventory;
-  }
-
-  Listing newListing(long id, InventoryItem inventory) {
-    Listing listing = new Listing();
-    inventory.addListing(listing);
-    listing.setInventoryItem(inventory);
-    listing.setId(id);
-    return listing;
-  }
-
-  Business getMockBusiness() {
-    /**
-     *                  B#1
-     *         p1#1 ---------p2#2
-     *    i1#1---i2#2         i1#3
-     *l1#1--l2#2  l1#3     l1#4 l2#5 l3#6
-     */
-    Business business = new Business();
-    business.setId(1);
-    Product p1 = newProduct(1, business);
-    InventoryItem i1 = newInventory(1, p1, business);
-    Listing l1 = newListing(1, i1);
-    Listing l2 = newListing(2, i1);
-    InventoryItem i2 = newInventory(2, p1, business);
-    Listing l3 = newListing(3, i2);
-
-    Product p2 = newProduct(2, business);
-    InventoryItem i3 = newInventory(3, p2, business);
-    Listing l4 = newListing(4, i3);
-    Listing l5 = newListing(5, i3);
-    Listing l6 = newListing(6, i3);
-    return business;
   }
 }

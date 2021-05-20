@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
+import com.navbara_pigeons.wasteless.service.InventoryService;
 import com.navbara_pigeons.wasteless.service.ListingService;
 import lombok.extern.slf4j.Slf4j;
 import com.navbara_pigeons.wasteless.exception.*;
@@ -28,25 +29,28 @@ import org.springframework.web.server.ResponseStatusException;
 public class ListingController {
 
   private final ListingService listingService;
+  private final InventoryService inventoryService;
 
   @Autowired
-  public ListingController(ListingService listingService) {
+  public ListingController(ListingService listingService, InventoryService inventoryService) {
     this.listingService = listingService;
+    this.inventoryService = inventoryService;
   }
 
   /**
    * Adds an inventory item to a businesses inventory
    *
    * @param businessId Id of the business to add the listing to
-   * @param listing    listing to add to the business
+   * @param listingDto    listing to add to the business
    * @return Returns the newly created listing id and 201 status code in a ResponseEntity
    * @throws ResponseStatusException with 400 and 403 responses
    */
   @PostMapping("/businesses/{businessId}/listings")
   public ResponseEntity<Long> addListing(@PathVariable long businessId,
-      @RequestBody CreateListingDto listing)
+      @RequestBody CreateListingDto listingDto)
       throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ListingValidationException {
-    Long listingId = listingService.addListing(businessId, listing);
+
+    Long listingId = listingService.addListing(businessId, listingDto.getInventoryItemId(), new Listing(listingDto));
     log.info("LISTING CREATED SUCCESSFULLY: " + listingId + " FOR BUSINESS " + businessId);
     return new ResponseEntity<>(listingId, HttpStatus.CREATED);
   }
