@@ -5,22 +5,41 @@
         >
       <div class="row">
         <div class="form-group required col-md-6">
-          <label for="product">Product to List</label>
+          <label for="product">Find product</label>
           <select
               id="product"
               class="form-control"
               required
-              v-model="selectedInventoryItem"
-              placeholder="Select">
+              v-model="selectedProductId"
+              >
             <option disabled
                     :value="null"
                     selected> -- Select product to list -- </option>
-            <option v-for="inventoryItem in inventory"
+            <option v-for="product in getProducts"
+                    :key="product.id"
+                    v-bind:value="product.id"
+            >
+              {{ product.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group required col-md-6">
+          <label for="inventory">Inventory to List</label>
+          <select
+              id="inventory"
+              class="form-control"
+              required
+              v-model="selectedInventoryItem"
+              :disabled="filteredInventory.length === 0"
+              >
+            <option disabled
+                    :value="null"
+                    selected> -- Select inventory to list -- </option>
+            <option v-for="inventoryItem in filteredInventory"
                     :key="inventoryItem.id"
-                    v-bind:value="inventoryItem"
-                    placeholder="Select a product"
+                    :value="inventoryItem"
                     >
-              {{ inventoryItem.product.name }}
+              Expires at {{ inventoryItem.expires }} (ID: {{ inventoryItem.id }})
             </option>
           </select>
         </div>
@@ -29,13 +48,19 @@
           <input
               id="quantity"
               v-model="quantity"
+              :disabled="selectedInventoryItem == null || maxQuantity <= 0"
               :max="maxQuantity"
               class="form-control"
               name="quantity"
               required
               type="number"
               min="1">
+          <small v-if="selectedInventoryItem"
+               class="text-muted">
+            You can list {{selectedInventoryItem.quantityRemaining}} items out of {{selectedInventoryItem.quantity}} in the inventory.
+          </small>
         </div>
+
       </div>
 
       <div class="d-flex justify-content-end">
@@ -48,7 +73,7 @@
 
 <script>
 
-// const {Api} = require("./../Api.js");
+const {Api} = require("./../Api.js");
 
 export default {
   name: "CreateListing",
@@ -56,160 +81,65 @@ export default {
   data() {
     return {
       inventory: null,
+      selectedProductId: null,
       selectedInventoryItem: null,
       quantity: 0,
       maxQuantity: 0,
     }
   },
 
-  // props: {
-  //   businessId: {
-  //     required: true,
-  //     type: Number
-  //   }
-  // },
+  props: {
+    businessId: {
+      required: false,
+      type: Number,
+      default: 1
+    }
+  },
 
   beforeMount: async function() {
+    let success = (await this.getInventory());
+    if (!success) return;
     await this.getAvailableInventoryItem();
   },
 
   watch: {
     selectedInventoryItem: function (selectedInventoryItem) {
       this.maxQuantity = selectedInventoryItem.quantityRemaining;
+    },
+    selectedProductId: function () {
+      this.selectedInventoryItem = null;
+      this.quantity = 0;
     }
   },
 
   methods: {
 
     async getInventory() {
-      const inventory =
-          [
-            {
-              "id": 101,
-              "product": {
-                "id": 1,
-                "name": "Watties Baked Beans - 420g can",
-                "description": "Baked Beans as they should be.",
-                "manufacturer": "Heinz Wattie's Limited",
-                "recommendedRetailPrice": 2.2,
-                "created": "2021-05-17T04:30:33.616Z",
-                "images": [
-                  {
-                    "id": 1234,
-                    "filename": "/media/images/23987192387509-123908794328.png",
-                    "thumbnailFilename": "/media/images/23987192387509-123908794328_thumbnail.png"
-                  }
-                ]
-              },
-              "quantity": 4,
-              "pricePerItem": 6.5,
-              "totalPrice": 21.99,
-              "manufactured": "2021-05-17",
-              "sellBy": "2021-05-17",
-              "bestBefore": "2021-05-17",
-              "expires": "2021-05-17"
-            },
-            {
-              "id": 102,
-              "product": {
-                "id": 2,
-                "name": "Other product",
-                "description": "Baked Beans as they should be.",
-                "manufacturer": "Heinz Wattie's Limited",
-                "recommendedRetailPrice": 2.2,
-                "created": "2021-05-17T04:30:33.616Z",
-                "images": [
-                  {
-                    "id": 1234,
-                    "filename": "/media/images/23987192387509-123908794328.png",
-                    "thumbnailFilename": "/media/images/23987192387509-123908794328_thumbnail.png"
-                  }
-                ]
-              },
-              "quantity": 4,
-              "pricePerItem": 6.5,
-              "totalPrice": 21.99,
-              "manufactured": "2021-05-17",
-              "sellBy": "2021-05-17",
-              "bestBefore": "2021-05-17",
-              "expires": "2021-05-17"
-            },
-            {
-              "id": 103,
-              "product": {
-                "id": 3,
-                "name": "Another product",
-                "description": "Baked Beans as they should be.",
-                "manufacturer": "Heinz Wattie's Limited",
-                "recommendedRetailPrice": 2.2,
-                "created": "2021-05-17T04:30:33.616Z",
-                "images": [
-                  {
-                    "id": 1234,
-                    "filename": "/media/images/23987192387509-123908794328.png",
-                    "thumbnailFilename": "/media/images/23987192387509-123908794328_thumbnail.png"
-                  }
-                ]
-              },
-              "quantity": 4,
-              "pricePerItem": 6.5,
-              "totalPrice": 21.99,
-              "manufactured": "2021-05-17",
-              "sellBy": "2021-05-17",
-              "bestBefore": "2021-05-17",
-              "expires": "2021-05-17"
-            }
-          ]
-      return inventory;
-      // await Api.getBusinessInventory(1)
-      // .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
+      try {
+        this.inventory = (await Api.getBusinessInventory(1)).data;
+        return true;
+      } catch(err) {
+        this.apiErrorMessage = err.userFacingErrorMessage
+        return false;
+      }
     },
 
     async getListings() {
-      const listings =
-          [
-            {
-              "id": 57,
-              "inventoryItem": {
-                "id": 101,
-                "product": {
-                  "id": 1,
-                  "name": "Watties Baked Beans - 420g can",
-                  "description": "Baked Beans as they should be.",
-                  "manufacturer": "Heinz Wattie's Limited",
-                  "recommendedRetailPrice": 2.2,
-                  "created": "2021-05-17T04:49:48.728Z",
-                  "images": [
-                    {
-                      "id": 1234,
-                      "filename": "/media/images/23987192387509-123908794328.png",
-                      "thumbnailFilename": "/media/images/23987192387509-123908794328_thumbnail.png"
-                    }
-                  ]
-                },
-                "quantity": 4,
-                "pricePerItem": 6.5,
-                "totalPrice": 21.99,
-                "manufactured": "2021-05-17",
-                "sellBy": "2021-05-17",
-                "bestBefore": "2021-05-17",
-                "expires": "2021-05-17"
-              },
-              "quantity": 3,
-              "price": 17.99,
-              "moreInfo": "Seller may be willing to consider near offers",
-              "created": "2021-07-14T11:44:00Z",
-              "closes": "2021-07-21T23:59:00Z"
-            }
-          ]
-      // await Api.getBusinessListings(1)
-      // .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
-      return listings;
+      try {
+        return (await Api.getBusinessListings(1)).data;
+      } catch(err) {
+        this.apiErrorMessage = err.userFacingErrorMessage;
+      }
     },
 
+
+
+    /**
+     *
+     * @returns {Promise<void>}
+     */
     async getAvailableInventoryItem() {
-      let inventory = await this.getInventory();
-      inventory.map(inventoryItem => {
+      let inventory = this.inventory.map(inventoryItem => {
         inventoryItem.quantityRemaining = inventoryItem.quantity;
         return inventoryItem;
       });
@@ -219,12 +149,31 @@ export default {
         inventoryItem.quantityRemaining -= listing.quantity;
       });
       this.inventory = inventory;
-
     },
+
     addListing() {
       alert("Not yet implemented");
     }
     
+  },
+
+  computed: {
+    getProducts() {
+      if (this.inventory == null) return [];
+      let products = {};
+      this.inventory.forEach(inventoryItem => {
+        const product = inventoryItem.product;
+        products[product.id] = product;
+      });
+      return Object.values(products);
+    },
+
+    filteredInventory() {
+      if (this.inventory == null || this.selectedProductId == null) return [];
+      const result = this.inventory.filter(inventoryItem => inventoryItem.product.id === this.selectedProductId);
+      console.log(result);
+      return result
+    }
   }
 }
 </script>
