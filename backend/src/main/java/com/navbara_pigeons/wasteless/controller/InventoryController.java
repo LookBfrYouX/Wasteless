@@ -46,10 +46,10 @@ public class InventoryController {
       throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient Privileges");
     } catch (BusinessNotFoundException | UserNotFoundException exc) {
       log.info("USER OR BUSINESS NOT FOUND: " + id + " " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(400), exc.getMessage());
+      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
     } catch (InventoryItemNotFoundException exc) {
       log.info("PRODUCT NOT FOUND WITH ID AND BUSINESS ID: " + id + " " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(400), exc.getMessage());
+      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
     }  catch (Exception exc) {
       log.info("EXCEPTION GETTING INVENTORY " + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
