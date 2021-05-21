@@ -31,6 +31,10 @@ public class ProductController {
 
   private final ProductService productService;
 
+  /**
+   * This is the constructor for the ProductController.
+   * @param productService The product service that is used by this controller.
+   */
   @Autowired
   public ProductController(ProductService productService) {
     this.productService = productService;

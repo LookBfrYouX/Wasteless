@@ -5,8 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.management.InvalidAttributeValueException;
 
 /**
  * This class handles all custom controller exceptions and returns the appropriate response entity for each.
@@ -78,6 +83,37 @@ public class ControllerExceptionHandler {
     public ResponseEntity<String> handleProductRegistrationException(ProductRegistrationException exc) {
         log.error("PRODUCT REGISTRATION ERROR: 400 - " + exc.getMessage());
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    }
+
+    @ExceptionHandler(InvalidAttributeValueException.class)
+    public ResponseEntity<String> handleInvalidAttributeValueException(InvalidAttributeValueException exc) {
+        log.error("SEARCH QUERY ERROR: 500 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ResponseStatus(code = HttpStatus.CONFLICT, reason = "Email address already in use")
+    public void handleInvalidAttributeValueException(UserAlreadyExistsException exc) {
+        log.error("USER ALREADY EXISTS ERROR: 409 - " + exc.getMessage());
+    }
+
+    @ExceptionHandler(UserRegistrationException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad Request")
+    public ResponseEntity<String> handleInvalidAttributeValueException(UserRegistrationException exc) {
+        log.error("USER REGISTRATION ERROR: 400 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    }
+
+    @ExceptionHandler(AddressValidationException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad address given")
+    public void handleInvalidAttributeValueException(AddressValidationException exc) {
+        log.error("ADDRESS VALIDATION ERROR: 400 - " + exc.getMessage());
+    }
+
+    @ExceptionHandler(UserAuthenticationException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Failed login attempt, email or password incorrect")
+    public void handleInvalidAttributeValueException(UserAuthenticationException exc) {
+        log.error("FAILED LOGIN: 400 - " + exc.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

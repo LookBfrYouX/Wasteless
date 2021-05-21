@@ -2,11 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.AddressValidationException;
-import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.service.UserService;
 import javax.management.InvalidAttributeValueException;
@@ -50,20 +46,11 @@ public class UserController {
    * @throws ResponseStatusException HTTP 400 exception.
    */
   @PostMapping("/login")
-  public ResponseEntity<JSONObject> login(@RequestBody UserCredentials userCredentials) {
-    try {
-      // Attempt to login and return JSON userId if successful
-      JSONObject response = userService.login(userCredentials);
-      log.info("SUCCESSFUL LOGIN: " + userCredentials.getEmail());
-      return new ResponseEntity<>(response, HttpStatus.valueOf(200));
-    } catch (AuthenticationException exc) {
-      log.error("FAILED LOGIN - CREDENTIALS");
-      throw new ResponseStatusException(HttpStatus.valueOf(400),
-          "Failed login attempt, email or password incorrect");
-    } catch (Exception exc) {
-      log.error("CRITICAL LOGIN ERROR: " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-    }
+  public ResponseEntity<JSONObject> login(@RequestBody UserCredentials userCredentials) throws UserNotFoundException, AuthenticationException, UserAuthenticationException {
+    // Attempt to login and return JSON userId if successful
+    JSONObject response = userService.login(userCredentials);
+    log.info("SUCCESSFUL LOGIN: " + userCredentials.getEmail());
+    return new ResponseEntity<>(response, HttpStatus.valueOf(200));
   }
 
   /**
@@ -75,24 +62,10 @@ public class UserController {
    * @throws ResponseStatusException HTTP 400, 409 exceptions.
    */
   @PostMapping("/users")
-  public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user) {
-    try {
-      JSONObject createdUserId = userService.saveUser(new User(user));
-      log.info("ACCOUNT CREATED SUCCESSFULLY: " + user.getEmail());
-      return new ResponseEntity<>(createdUserId, HttpStatus.valueOf(201));
-    } catch (UserAlreadyExistsException exc) {
-      log.error("COULD NOT REGISTER USER - EMAIL ALREADY EXISTS: " + user.getEmail());
-      throw new ResponseStatusException(HttpStatus.valueOf(409), "Email address already in use");
-    } catch (UserRegistrationException exc) {
-      log.error("COULD NOT REGISTER USER (" + exc.getMessage() + "): " + user.getEmail());
-      throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad Request");
-    } catch (AddressValidationException exc) {
-      log.error("COULD NOT REGISTER USER (" + exc.getMessage() + "): " + user.getEmail());
-      throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad address given");
-    } catch (Exception exc) {
-      log.error("CRITICAL REGISTER ERROR: " + exc);
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-    }
+  public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user) throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException, UserAuthenticationException {
+    JSONObject createdUserId = userService.saveUser(new User(user));
+    log.info("ACCOUNT CREATED SUCCESSFULLY: " + user.getEmail());
+    return new ResponseEntity<>(createdUserId, HttpStatus.valueOf(201));
   }
 
   /**
@@ -103,17 +76,10 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/users/{id}")
-  public ResponseEntity<Object> getUserById(@PathVariable String id) {
-    try {
-      log.info("GETTING USER BY ID: " + id);
-      return new ResponseEntity<>(this.userService.getUserById(Long.parseLong(id)),
-          HttpStatus.valueOf(200));
-    } catch (UserNotFoundException exc) {
-      log.error("USER NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (Exception exc) {
-      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Server Error");
-    }
+  public ResponseEntity<Object> getUserById(@PathVariable String id) throws UserNotFoundException, UnhandledException {
+    log.info("GETTING USER BY ID: " + id);
+    return new ResponseEntity<>(this.userService.getUserById(Long.parseLong(id)),
+        HttpStatus.valueOf(200));
   }
 
   /**
@@ -124,14 +90,9 @@ public class UserController {
    * @throws ResponseStatusException Unknown Error
    */
   @GetMapping("/users/search")
-  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery) {
-    try {
-      return new ResponseEntity<>(this.userService.searchUsers(searchQuery),
-          HttpStatus.valueOf(200));
-    } catch (InvalidAttributeValueException e) {
-      log.error("INVALID SEARCH QUERY: " + searchQuery);
-      throw new ResponseStatusException(HttpStatus.valueOf(500), "Invalid Search Query");
-    }
+  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery) throws InvalidAttributeValueException {
+    return new ResponseEntity<>(this.userService.searchUsers(searchQuery),
+        HttpStatus.valueOf(200));
   }
 
   /**
@@ -140,21 +101,10 @@ public class UserController {
    * @param id The unique identifier of the user being given GAA rights.
    */
   @PutMapping("/users/{id}/makeAdmin")
-  public ResponseEntity<String> makeUserAdmin(@PathVariable String id) {
-    try {
-      userService.makeUserAdmin(Integer.parseInt(id));
-      log.info("ADMIN PRIVILEGES GRANTED TO: " + id);
-      return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));
-    } catch (NumberFormatException exc) {
-      log.error("INVALID ID FORMAT ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), "Invalid ID format");
-    } catch (UserNotFoundException exc) {
-      log.error("USER NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), "The user does not exist");
-    } catch (Exception exc) {
-      log.error("CRITICAL MAKEADMIN ERROR: " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-    }
+  public ResponseEntity<String> makeUserAdmin(@PathVariable String id) throws UserNotFoundException {
+    userService.makeUserAdmin(Integer.parseInt(id));
+    log.info("ADMIN PRIVILEGES GRANTED TO: " + id);
+    return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));
   }
 
   /**
