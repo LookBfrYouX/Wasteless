@@ -9,21 +9,22 @@
         <h2>Inventory for {{businessName? businessName: "business"}}</h2>
       </template>
       <template v-slot:item="slotProps">
-        <div class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded">
-          {{ slotProps.item.product.name }}
-        </div>
+        <inventory-item-card
+            class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
+            v-bind:item="slotProps.item"
+            :businessId="businessId"
+            :currency="currency"
+        />
       </template>
       <template v-slot:right-button>
-        <button
-            class="btn btn-info mx-1 d-flex"
-            type="button"
-            v-on:click="addProductToInventory"
+        <router-link
+          :to="{ name: 'inventoryItemEntry', params: { businessId }}"
+          class="btn btn-info d-flex"
         >
           <span class="material-icons mr-1">add</span>
           Add Product
-        </button>
+        </router-link>
       </template>
-      <!--<business-listing v-bind:listing="slotProps.item"/> -->
     </sorted-paginated-item-list>
     <error-modal
       title="Error viewing inventory"
@@ -42,16 +43,7 @@ import SortedPaginatedItemList from '../components/SortedPaginatedItemList.vue';
 import ErrorModal from "../components/Errors/ErrorModal";
 import { Api } from "../Api";
 import { helper } from "./../helper";
-
-const mockResult = [];
-for(let i = 1; i < 12; i++) {
-  mockResult.push({
-    "id": i,
-    "product": {
-      "name": "Watties Baked Beans - "+ i * 100 + "g can",
-    }
-  });
-}
+import InventoryItemCard from "./../components/cards/InventoryItemCard";
 
 const sortOptions = [
   {
@@ -87,6 +79,7 @@ const sortOptions = [
 
 export default {
   components: {
+    InventoryItemCard,
     SortedPaginatedItemList,
     ErrorModal
   },
@@ -105,13 +98,12 @@ export default {
       sortOptions,
       currentSortOption: { ...sortOptions[0], reversed: false},
       businessName: null,
+      currency: null,
     };
   },
 
   beforeMount: async function() {
-    // TODO Uncomment once backend endpoint is created
-    this.listings = mockResult;
-    await this.getInventory();
+    return Promise.allSettled([this.getInventory(), this.updateBusinessName(), this.getCurrency()]);
   },
   
   methods: {
@@ -125,16 +117,11 @@ export default {
     },
 
     /**
-     * Simple utility function to route to the add inventory item form.
-     * Passes in the businesses Id
+     * Gets currency object.
+     * @returns {Promise<void>} Currency object, null when the currency doesn't exist or API request error.
      */
-     addProductToInventory: function () {
-      this.$router.push({
-        name: "inventoryItemEntry",
-        params: {
-          businessId: this.$props.businessId
-        }
-      });
+    getCurrency: async function () {
+      this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
     },
 
     updateBusinessName: async function() {
