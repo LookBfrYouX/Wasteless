@@ -38,8 +38,9 @@
             <option v-for="inventoryItem in filteredInventory"
                     :key="inventoryItem.id"
                     :value="inventoryItem"
+                    :disabled="inventoryItem.quantityRemaining === 0"
                     >
-              Expires at {{ $helper.isoToDateString(inventoryItem.expires) }} (ID: {{ inventoryItem.id }})
+              Expires at {{ $helper.isoToDateString(inventoryItem.expires) }} (ID: {{ inventoryItem.id }}, {{ inventoryItem.quantityRemaining}}/{{ inventoryItem.quantity }} unlisted)
             </option>
           </select>
         </div>
@@ -61,7 +62,7 @@
           </small>
         </div>
         <div class="form-group required col-md-6">
-          <label for="price">Price</label>
+          <label for="price">Price<span v-if="currency !== null"> in {{ currency.code }}</span></label>
             <input
                 id="price"
                 v-model="price"
@@ -88,8 +89,8 @@
               type="text"
           />
         </div>
-        <div class="form-group col-md-6">
-          <label for="closeDate">Close this sale at</label>
+        <div class="col-md-6">
+          <label for="closeDate">Close this sale on</label>
           <input
               id="closeDate"
               v-model="closeDate"
@@ -100,12 +101,19 @@
               name="expires"
               type="date"
           />
+          <label for="closeTime"></label>
+          <input id="closeTime"
+                 v-model="closeTime"
+                 :disabled="selectedInventoryItem == null || maxQuantity <= 0 || closeDate == null"
+                 class="form-control"
+                 name="closeTime"
+                 type="time"
+          >
           <small v-if="selectedInventoryItem && maxQuantity > 0"
                  class="text-muted">
-            Closing date will be set to the expiry date ({{ $helper.isoToDateString(expiryDate) }}) if not specified.
+            Closing date and time will be set to 23:59 on the expiry date ({{ $helper.isoToDateString(expiryDate) }}) if not specified.
           </small>
         </div>
-
       </div>
       <div class="d-flex justify-content-end">
         <input class="btn btn-primary" type="submit"/>
@@ -130,8 +138,10 @@ export default {
       quantity: 0,
       maxQuantity: 0,
       price: this.defaultPrice,
+      currency: null,
       moreInfo: "",
       closeDate: null,
+      closeTime: null,
       todayDate: null,
       expiryDate: null,
     }
@@ -150,6 +160,7 @@ export default {
     if (!success) return;
     await this.getAvailableInventoryItem();
     this.setTodayDate();
+    await this.getCurrency();
   },
 
   watch: {
@@ -208,6 +219,10 @@ export default {
       this.todayDate = new Date().toISOString().split("T")[0];
     },
 
+    async getCurrency() {
+      this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
+    },
+
     addListing() {
       alert("Not yet implemented");
     }
@@ -226,9 +241,7 @@ export default {
 
     filteredInventory() {
       if (this.inventory == null || this.selectedProductId == null) return [];
-      const result = this.inventory.filter(inventoryItem => inventoryItem.product.id === this.selectedProductId);
-      console.log(result);
-      return result
+      return this.inventory.filter(inventoryItem => inventoryItem.product.id === this.selectedProductId);
     },
 
     defaultPrice() {
