@@ -26,7 +26,7 @@
           <div class="primary-image-wrapper">
             <img v-if="productImages.length !== 0" v-bind:src="productImages[0].filename"
                  alt="Primary images">
-            <img v-else src="./../../assets/images/default-product-thumbnail.svg"
+            <img v-else src="assets/images/default-product-thumbnail.svg"
                  alt="Default product image">
           </div>
         </div>
@@ -79,10 +79,10 @@
 }
 </style>
 <script>
-import ErrorModal from "./Errors/ErrorModal.vue";
+import ErrorModal from "../components/Errors/ErrorModal.vue";
 
 import {ApiRequestError} from "../ApiRequestError";
-const { Api } = require("./../Api");
+const { Api } = require("../Api");
 
 export default {
   name: "salesListingDetail",

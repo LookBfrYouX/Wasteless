@@ -165,7 +165,7 @@ export const router = new VueRouter({
     {
       name: "salesListingDetail",
       path: "/business/:businessId(\\d+)/listings/:listingId(\\d+)",
-      component: () => import("./components/SalesListingDetails.vue"),
+      component: () => import("./views/SalesListingDetails.vue"),
       props: route => ({
         listingId: parseInt(route.params.listingId, 10),
         businessId: parseInt(route.params.businessId, 10)
