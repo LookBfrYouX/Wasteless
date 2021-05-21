@@ -1,11 +1,10 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -49,6 +48,43 @@ public class ControllerExceptionHandler {
     public ResponseEntity<String> handleUserNotFound(UserNotFoundException exc) {
         log.error("USER NOT FOUND: 406 - " + exc.getMessage());
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException exc) {
+        log.error("BAD CREDENTIALS: 403 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(403));
+    }
+
+    @ExceptionHandler(NotAcceptableException.class)
+    public ResponseEntity<String> handleNotAcceptableException(NotAcceptableException exc) {
+        log.error("NOT ACCEPTABLE: 409 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(409));
+    }
+
+    @ExceptionHandler(NumberFormatException.class)
+    public ResponseEntity<String> handleNumberFormatException(NumberFormatException exc) {
+        log.error("NUMBER FORMAT ERROR: 406 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
+    }
+
+    @ExceptionHandler(ProductForbiddenException.class)
+    public ResponseEntity<String> handleProductForbiddenException(ProductForbiddenException exc) {
+        log.error("PRODUCT ERROR: 403 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(403));
+    }
+
+    @ExceptionHandler(ProductRegistrationException.class)
+    public ResponseEntity<String> handleProductRegistrationException(ProductRegistrationException exc) {
+        log.error("PRODUCT REGISTRATION ERROR: 400 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneralException(Exception exc) {
+        log.error("CRITICAL ERROR: 500 - " + exc.getMessage());
+        exc.printStackTrace();
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
     }
 
 }

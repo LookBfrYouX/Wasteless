@@ -165,21 +165,9 @@ public class UserController {
    * @return HttpStatus 406 for Invalid ID format or User Doesn't Exist exception.
    */
   @PutMapping("/users/{id}/revokeAdmin")
-  public ResponseEntity<String> revokeAdminPermissions(@PathVariable long id) {
-    try {
-      userService.revokeAdmin(id);
-      log.info("ADMIN PRIVILEGES REVOKED FROM: " + id);
-      return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));
-    } catch (UserNotFoundException exc) {
-      log.error("USER NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), "The user does not exist.");
-    } catch (NotAcceptableException exc) {
-      log.error("DGGA ATTEMPTED TO REVOKE THEIR OWN ADMIN PERMISSIONS");
-      throw new ResponseStatusException(HttpStatus.valueOf(409),
-          "DGGA cannot revoke their own admin permissions");
-    } catch (BadCredentialsException exc) {
-      log.error("INSUFFICIENT PRIVILEGES: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient privileges");
-    }
+  public ResponseEntity<String> revokeAdminPermissions(@PathVariable long id) throws NotAcceptableException, UserNotFoundException {
+    userService.revokeAdmin(id);
+    log.info("ADMIN PRIVILEGES REVOKED FROM: " + id);
+    return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));
   }
 }

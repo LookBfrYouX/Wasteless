@@ -59,20 +59,9 @@ public class ListingController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/businesses/{id}/listings")
-  public ResponseEntity<Object> getBusinessById(@PathVariable long id) {
-    try {
-      log.info("GETTING LISTINGS FOR BUSINESS WITH ID " + id);
-      return new ResponseEntity<>(listingService.getListings(id),
-          HttpStatus.valueOf(200));
-    } catch (BusinessNotFoundException exc) {
-      log.error("GETTING LISTINGS, BUSINESS NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (UserNotFoundException exc) {
-      log.error("GETTING LISTINGS, USER NOT FOUND ERROR: " + id);
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exc.getMessage());
-    } catch (Exception exc) {
-      log.error("CRITICAL ERROR GETTING LISTINGS FOR BUSINESS " + id + " (" + exc.getMessage() + ")");
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-    }
+  public ResponseEntity<Object> getBusinessById(@PathVariable long id) throws UserNotFoundException, BusinessNotFoundException {
+    log.info("GETTING LISTINGS FOR BUSINESS WITH ID " + id);
+    return new ResponseEntity<>(listingService.getListings(id),
+        HttpStatus.valueOf(200));
   }
 }
