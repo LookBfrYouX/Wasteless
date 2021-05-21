@@ -39,7 +39,7 @@
                     :key="inventoryItem.id"
                     :value="inventoryItem"
                     >
-              Expires at {{ inventoryItem.expires }} (ID: {{ inventoryItem.id }})
+              Expires at {{ $helper.isoToDateString(inventoryItem.expires) }} (ID: {{ inventoryItem.id }})
             </option>
           </select>
         </div>
@@ -74,8 +74,39 @@
                 required
             >
         </div>
-      </div>
+        <div class="form-group col-md-6">
+          <label for="moreInfo">More information</label>
+          <textarea
+              id="moreInfo"
+              v-model="moreInfo"
+              :disabled="price === 0"
+              class="form-control"
+              maxlength="200"
+              rows="4"
+              name="moreInfo"
+              placeholder="Extra information about the price"
+              type="text"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="closeDate">Close this sale at</label>
+          <input
+              id="closeDate"
+              v-model="closeDate"
+              :disabled="selectedInventoryItem == null || maxQuantity <= 0"
+              class="form-control"
+              :min="todayDate"
+              :max="expiryDate"
+              name="expires"
+              type="date"
+          />
+          <small v-if="selectedInventoryItem && maxQuantity > 0"
+                 class="text-muted">
+            Closing date will be set to the expiry date ({{ $helper.isoToDateString(expiryDate) }}) if not specified.
+          </small>
+        </div>
 
+      </div>
       <div class="d-flex justify-content-end">
         <input class="btn btn-primary" type="submit"/>
       </div>
@@ -99,6 +130,10 @@ export default {
       quantity: 0,
       maxQuantity: 0,
       price: this.defaultPrice,
+      moreInfo: "",
+      closeDate: null,
+      todayDate: null,
+      expiryDate: null,
     }
   },
 
@@ -114,12 +149,14 @@ export default {
     let success = (await this.getInventory());
     if (!success) return;
     await this.getAvailableInventoryItem();
+    this.setTodayDate();
   },
 
   watch: {
     selectedInventoryItem: function (selectedInventoryItem) {
       if (selectedInventoryItem != null) {
         this.maxQuantity = selectedInventoryItem.quantityRemaining;
+        this.expiryDate = selectedInventoryItem.expires;
       }
       this.quantity = 0;
     },
@@ -138,7 +175,7 @@ export default {
         this.inventory = (await Api.getBusinessInventory(1)).data;
         return true;
       } catch(err) {
-        this.apiErrorMessage = err.userFacingErrorMessage
+        this.apiErrorMessage = err.userFacingErrorMessage;
         return false;
       }
     },
@@ -167,10 +204,13 @@ export default {
       this.inventory = inventory;
     },
 
+    setTodayDate() {
+      this.todayDate = new Date().toISOString().split("T")[0];
+    },
+
     addListing() {
       alert("Not yet implemented");
     }
-    
   },
 
   computed: {
