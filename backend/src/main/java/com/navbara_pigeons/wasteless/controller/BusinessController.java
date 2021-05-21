@@ -42,25 +42,10 @@ public class BusinessController {
    * @throws ResponseStatusException Unknown Error.
    */
   @PostMapping("/businesses")
-  public ResponseEntity<JSONObject> registerBusiness(@RequestBody CreateBusinessDto business) {
-    try {
-      JSONObject businessId = businessService.saveBusiness(new Business(business));
-      log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
-      return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));
-    } catch (BusinessRegistrationException exc) {
-      log.error("COULD NOT REGISTER BUSINESS (" + exc.getMessage() + "): " + business.getName());
-      throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad Request");
-    } catch (AddressValidationException exc) {
-      log.error("COULD NOT REGISTER BUSINESS (" + exc.getMessage() + "): " + business.getName());
-      throw new ResponseStatusException(HttpStatus.valueOf(400), "Bad address given");
-    } catch (BusinessTypeException exc) {
-      log.error("INVALID/UN SUPPLIED BUSINESS TYPE");
-      throw new ResponseStatusException(HttpStatus.valueOf(400),
-          "Invalid/un supplied business type");
-    } catch (Exception exc) {
-      log.error("CRITICAL BUSINESS REGISTRATION ERROR (" + exc.getMessage() + ")");
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error.");
-    }
+  public ResponseEntity<JSONObject> registerBusiness(@RequestBody CreateBusinessDto business) throws UserNotFoundException, AddressValidationException, BusinessTypeException, BusinessRegistrationException {
+    JSONObject businessId = businessService.saveBusiness(new Business(business));
+    log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
+    return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));
   }
 
   /**

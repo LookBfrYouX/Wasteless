@@ -28,7 +28,7 @@ public class ControllerExceptionHandler {
      * @return ResponseEntity with the exception message
      */
     @ExceptionHandler(InsufficientPrivilegesException.class)
-    public ResponseEntity<String> handleConflict(InsufficientPrivilegesException exc) {
+    public ResponseEntity<String> handleInsufficientPrivilegesException(InsufficientPrivilegesException exc) {
         log.error("UNAUTHORISED ACTION: 403 - " + exc.getMessage());
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(403));
     }
@@ -39,7 +39,7 @@ public class ControllerExceptionHandler {
      * @return ResponseEntity with the exception message
      */
     @ExceptionHandler(BusinessNotFoundException.class)
-    public ResponseEntity<String> handleBusinessNotFound(BusinessNotFoundException exc) {
+    public ResponseEntity<String> handleBusinessNotFoundException(BusinessNotFoundException exc) {
         log.error("BUSINESS NOT FOUND: 406 - " + exc.getMessage());
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
     }
@@ -50,7 +50,7 @@ public class ControllerExceptionHandler {
      * @return ResponseEntity with the exception message
      */
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFound(UserNotFoundException exc) {
+    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException exc) {
         log.error("USER NOT FOUND: 406 - " + exc.getMessage());
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
     }
@@ -93,26 +93,37 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(code = HttpStatus.CONFLICT, reason = "Email address already in use")
-    public void handleInvalidAttributeValueException(UserAlreadyExistsException exc) {
+    public void handleUserAlreadyExistsException(UserAlreadyExistsException exc) {
         log.error("USER ALREADY EXISTS ERROR: 409 - " + exc.getMessage());
     }
 
     @ExceptionHandler(UserRegistrationException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad Request")
-    public ResponseEntity<String> handleInvalidAttributeValueException(UserRegistrationException exc) {
+    public void handleUserRegistrationException(UserRegistrationException exc) {
         log.error("USER REGISTRATION ERROR: 400 - " + exc.getMessage());
-        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    }
+
+    @ExceptionHandler(BusinessRegistrationException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad Request")
+    public void handleBusinessRegistrationException(BusinessRegistrationException exc) {
+        log.error("BUSINESS REGISTRATION ERROR: 400 - " + exc.getMessage());
+    }
+
+    @ExceptionHandler(BusinessTypeException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad Request")
+    public void handleBusinessTypeException(BusinessTypeException exc) {
+        log.error("BUSINESS TYPE ERROR: 400 - " + exc.getMessage());
     }
 
     @ExceptionHandler(AddressValidationException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad address given")
-    public void handleInvalidAttributeValueException(AddressValidationException exc) {
+    public void handleAddressValidationException(AddressValidationException exc) {
         log.error("ADDRESS VALIDATION ERROR: 400 - " + exc.getMessage());
     }
 
     @ExceptionHandler(UserAuthenticationException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Failed login attempt, email or password incorrect")
-    public void handleInvalidAttributeValueException(UserAuthenticationException exc) {
+    public void handleUserAuthenticationException(UserAuthenticationException exc) {
         log.error("FAILED LOGIN: 400 - " + exc.getMessage());
     }
 
