@@ -43,7 +43,7 @@
             </option>
           </select>
         </div>
-        <div class="col-md-6">
+        <div class="form-group required col-md-6">
           <label for="quantity">Quantity</label>
           <input
               id="quantity"
@@ -60,7 +60,20 @@
             You can list {{selectedInventoryItem.quantityRemaining}} items out of {{selectedInventoryItem.quantity}} in the inventory.
           </small>
         </div>
-
+        <div class="form-group required col-md-6">
+          <label for="price">Price</label>
+            <input
+                id="price"
+                v-model="price"
+                :disabled="quantity === 0"
+                type="number"
+                step="0.01"
+                min="0.01"
+                class="form-control"
+                name="price"
+                required
+            >
+        </div>
       </div>
 
       <div class="d-flex justify-content-end">
@@ -85,6 +98,7 @@ export default {
       selectedInventoryItem: null,
       quantity: 0,
       maxQuantity: 0,
+      price: this.defaultPrice,
     }
   },
 
@@ -104,16 +118,21 @@ export default {
 
   watch: {
     selectedInventoryItem: function (selectedInventoryItem) {
-      this.maxQuantity = selectedInventoryItem.quantityRemaining;
+      if (selectedInventoryItem != null) {
+        this.maxQuantity = selectedInventoryItem.quantityRemaining;
+      }
+      this.quantity = 0;
     },
     selectedProductId: function () {
       this.selectedInventoryItem = null;
       this.quantity = 0;
+    },
+    quantity: function () {
+      this.price = this.defaultPrice;
     }
   },
 
   methods: {
-
     async getInventory() {
       try {
         this.inventory = (await Api.getBusinessInventory(1)).data;
@@ -123,7 +142,6 @@ export default {
         return false;
       }
     },
-
     async getListings() {
       try {
         return (await Api.getBusinessListings(1)).data;
@@ -131,8 +149,6 @@ export default {
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
-
-
 
     /**
      *
@@ -173,6 +189,19 @@ export default {
       const result = this.inventory.filter(inventoryItem => inventoryItem.product.id === this.selectedProductId);
       console.log(result);
       return result
+    },
+
+    defaultPrice() {
+      if (this.selectedInventoryItem == null || this.quantity <= 0 || this.quantity > this.maxQuantity) {
+        return 0;
+      }
+      const quantityInInventory = this.selectedInventoryItem.quantity;
+      if (Number(this.quantity) === quantityInInventory) {
+        return (this.selectedInventoryItem.totalPrice).toFixed(2);
+      } else {
+        return (this.quantity * this.selectedInventoryItem.pricePerItem).toFixed(2);
+      }
+
     }
   }
 }
