@@ -223,8 +223,28 @@ export default {
       this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
     },
 
-    addListing() {
-      alert("Not yet implemented");
+    async addListing() {
+      let dateTimeString;
+      const defaultTime = "23:59";
+      if (this.closeDate && this.closeTime) {
+        dateTimeString = this.closeDate + "T" + this.closeTime + ":00Z";
+      } else if (this.closeDate && !this.closeTime) {
+        dateTimeString = this.closeDate +  "T" + defaultTime + ":00Z";
+      } else {
+        dateTimeString = null;
+      }
+      let priceFixedString = (parseFloat(this.price)).toFixed(2);
+      const listing = {
+        "inventoryItemId": this.selectedInventoryItem.id,
+        "quantity": parseInt(this.quantity),
+        "price": parseFloat(priceFixedString),
+        "moreInfo": this.moreInfo,
+        "closes": dateTimeString
+      }
+      await Api.addItemToInventory(this.businessId, listing)
+      .catch((err) => {
+        this.errorMessage=err.userFacingErrorMessage
+      });
     }
   },
 
