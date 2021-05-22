@@ -334,5 +334,20 @@ export const Api = {
         406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
       });
     })
+  },
+
+  /**
+   * Create a card to show on the marketplace
+   * @param {*} props card information
+   * @returns {Promise<AxiosResponse<any>>} if successful, response object containing cardId
+   */
+  createCard: props => {
+    return instance.post("/cards", props).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        // TODO
+        400: err => `Invalid information given; ${JSON.stringify(err.response)}`,
+        403: "You tried to create a card as another user; only an admin is allowed to do this"
+      });
+    })
   }
 }

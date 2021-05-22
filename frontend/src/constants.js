@@ -86,5 +86,16 @@ export const constants = {
 
   PRODUCTS: {
     MAX_PRICE: 10000
+  },
+
+  MARKETPLACE: {
+    /**
+     * Key is name of category that should be used internally, value is name that should be used externally
+     */
+    CATEGORIES: {
+       ForSale: "For Sale",
+       Wanted: "Wanted",
+       Exchange: "Exchange"
+    }
   }
 };

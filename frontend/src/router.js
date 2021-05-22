@@ -183,6 +183,35 @@ export const router = new VueRouter({
       component: () => import("./views/Marketplace")
     },
     {
+      name: "createCardAdmin",
+      // GAA can create card acting as any user
+      path: "/marketplace/user/:userId(\\d+)/create",
+      meta: {
+        title: "Create Card | Wasteless",
+        /* Only accessible if GAA */
+        requiresBusinessAdmin: true,
+        requiresNotBusinessAdmin: true,
+        requiresSignIn: true,
+      },
+      component: () => import("./views/CreateCard"),
+      props: route => ({ userId: parseInt(route.params.userId, 10) })
+    },
+    {
+      name: "createCard",
+      path: "/marketplace/create",
+      meta: {
+        title: "Create Card | Wasteless",
+        requiresNotBusinessAdmin: true,
+        requiresSignIn: true,
+      },
+      component: () => import("./views/CreateCard"),
+      props: () => {
+        const user = store.getters.getAuthUser();
+        const userId = user? user.id: NaN; // If not logged in, should be redirected to a different page, so user id should never be NaN anyway
+        return { userId };
+      }
+    },
+    {
       name: "error",
       path: "/error",
       meta: {
@@ -226,14 +255,19 @@ export const router = new VueRouter({
  * To set title after navigate, use the `setDocumentTitle` prop passed to the router component in `App.vue`
  */
 router.afterEach((to) => {
-  
   // Navbar is static now so when the user clicks a link, close the navbar so it doesn't cover the new content
   if (document) {
     const hamburger = document.getElementById("hamburger-button");
-    if (hamburger && !hamburger.classList.contains("collapsed")) {
+    const supportedContent = document.getElementById("navbarSupportedContent");
+    // Sometimes hamburger has no 'collapsed' class but the navbar is still collapsed, so need to check if 'supportedContent' has the 'show' class too
+    if (hamburger && supportedContent && 
+        !hamburger.classList.contains("collapsed") &&
+        supportedContent.classList.contains("show")
+        ) {
       hamburger.click();
     }
   }
+
   Vue.nextTick(() => {
     let title = "Wasteless";
     if (typeof to.meta.title == "string") {
