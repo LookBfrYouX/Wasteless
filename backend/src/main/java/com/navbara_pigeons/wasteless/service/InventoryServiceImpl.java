@@ -73,6 +73,15 @@ public class InventoryServiceImpl implements InventoryService {
     }
   }
 
+  /**
+   * This method retrieves a list of all the products listed by a specific business from the
+   * ProductDao given the business ID.
+   *
+   * @param businessId, Create The ID of the business whose products are to be retrieved.
+   * @return  A List<Product> of products that are in the business product
+   * catalogue.
+   * @throws BusinessNotFoundException If the business is not listed in the database.
+   */
   @Override
   public JSONObject addInventoryItem(long businessId, CreateInventoryItemDto inventoryItem) throws InventoryRegistrationException, InventoryItemForbiddenException, ProductNotFoundException {
     Business business;
@@ -82,50 +91,39 @@ public class InventoryServiceImpl implements InventoryService {
         throw new InventoryItemForbiddenException(
                 "User does not have permission to add an inventory item to the business");
       }
-    } catch (UserNotFoundException | BusinessNotFoundException exc) {
-      throw new InventoryRegistrationException("User or business not found");
-    }
-    Product product;
-    long productId = inventoryItem.getProductId();
-    LocalDate date = LocalDate.now();
-    try {
+      Product product;
+      long productId = inventoryItem.getProductId();
+      LocalDate date = LocalDate.now();
       product = productService.getProduct(productId);
-    } catch (ProductNotFoundException exc) {
-      throw new InventoryRegistrationException("Product not found");
+      if (!InventoryServiceValidation.requiredFieldsNotEmpty(inventoryItem)) {
+        throw new InventoryRegistrationException("Expiry needs to be included");
+      }
+      ;
+      InventoryServiceValidation.datesValid(inventoryItem, date);
+      InventoryServiceValidation.quantityValid(inventoryItem.getQuantity());
+      Inventory inventory = new Inventory(inventoryItem);
+
+      if (inventoryItem.getPricePerItem() == null) {
+        inventory.setPricePerItem(product.getRecommendedRetailPrice());
+      } else {
+        inventory.setPricePerItem(inventoryItem.getPricePerItem());
+      }
+      if (inventoryItem.getTotalPrice() == null) {
+        inventory.setTotalPrice(inventory.getPricePerItem() * inventory.getQuantity());
+      } else {
+        inventory.setTotalPrice(inventoryItem.getTotalPrice());
+      }
+      InventoryServiceValidation.priceValid(inventory.getTotalPrice());
+      inventoryDao.saveInventoryItem(inventory);
+
+      JSONObject response = new JSONObject();
+      response.appendField("inventoryItemId", inventory.getId());
+
+      return response;
+
+    } catch (UserNotFoundException | BusinessNotFoundException | ProductNotFoundException exc) {
+      throw new InventoryRegistrationException("User, business or product not found");
     }
-
-    Inventory inventory = new Inventory();
-    if (!InventoryServiceValidation.requiredFieldsNotEmpty(inventoryItem)) {
-      throw new InventoryRegistrationException("Expiry needs to be included");
-    };
-    InventoryServiceValidation.datesValid(inventoryItem, date);
-    InventoryServiceValidation.quantityValid(inventoryItem.getQuantity());
-
-    inventory.setProduct(product);
-    if (inventoryItem.getPricePerItem() == null) {
-      inventory.setPricePerItem(product.getRecommendedRetailPrice());
-    } else {
-      inventory.setPricePerItem(inventoryItem.getPricePerItem());
-    }
-    inventory.setBusiness(business);
-    inventory.setQuantity(inventoryItem.getQuantity());
-    if (inventoryItem.getTotalPrice() == null) {
-      inventory.setTotalPrice(inventory.getPricePerItem() * inventory.getQuantity());
-    } else {
-      inventory.setTotalPrice(inventoryItem.getTotalPrice());
-    }
-    InventoryServiceValidation.priceValid(inventory.getTotalPrice());
-    inventory.setExpires(inventoryItem.getExpires());
-    inventory.setManufactured(inventoryItem.getManufactured());
-    inventory.setSellBy(inventoryItem.getSellBy());
-    inventory.setBestBefore(inventoryItem.getBestBefore());
-
-    inventoryDao.saveInventoryItem(inventory);
-
-    JSONObject response = new JSONObject();
-    response.appendField("inventoryItemId", inventory.getId());
-
-    return response;
   }
 
   @Transactional
