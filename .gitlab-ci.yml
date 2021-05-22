@@ -40,7 +40,7 @@ junit:
     - ./gradlew test
   artifacts:
     paths:
-      - backend/jacoco
+      - backend/build/jacoco
 
 # Run acceptance (cucumber) tests
 # Uncomment after ATDD workshop (at the latest)
@@ -67,7 +67,6 @@ jest:
       - frontend/coverage
 
 # Export sonarqube (static code analysis) reports
-# Uncomment after ATDD workshop (at the latest)
 dev-sonarqube:
   stage: sonarqube
   cache:

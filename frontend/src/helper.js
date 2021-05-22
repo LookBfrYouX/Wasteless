@@ -144,18 +144,35 @@ export const helper = {
     return null;
   },
 
+  /**
+   * getCurrencyForBusiness with error handling
+   * @param {*} businessId
+   * @param {*} stateStore
+   * @returns currency, returns null when currency is not found or API request error
+   */
+  tryGetCurrencyForBusiness: async function(businessId, stateStore) {
+    try {
+      return await this.getCurrencyForBusiness(businessId, stateStore);
+    } catch(err) {
+      return null;
+    }
+  },
   
   /**
    * Given price and currency, return price with currency
-   * @param {*} price 
-   * @returns string in form SYMBOL PRICE (CODE)
+   * @param {*} price
+   * @param {*} currency currency the price is given in
+   * @param {Boolean} showCurrencyCode if false, currency code not given
+   * @returns string in form SYMBOL PRICE (CODE), or undefined if price is not a number
    */
-  makeCurrencyString(price, currency) {
+  makeCurrencyString(price, currency, showCurrencyCode = true) {
+    if (typeof price != "number") return;
+    price = price.toFixed(2);
     if (currency == null || currency == undefined) {
       return `${price} (unknown currency)`;
     }
     let str = `${currency.symbol}${price}`;
-    if (currency.code != null) {
+    if (currency.code != null && showCurrencyCode) {
       str += " " + currency.code;
     }
     return str;
@@ -199,5 +216,5 @@ export const helper = {
     } catch(err) {
       return null;
     }
-  }
+  },
 }
