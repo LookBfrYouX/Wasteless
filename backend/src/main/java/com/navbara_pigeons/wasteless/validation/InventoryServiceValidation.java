@@ -1,10 +1,7 @@
 package com.navbara_pigeons.wasteless.validation;
 
-import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Inventory;
-import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
-import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDate;
 
@@ -16,23 +13,34 @@ public class InventoryServiceValidation {
    * @param inventory item to validate
    * @return true if the product is valid
    */
-  public static boolean requiredFieldsNotEmpty(CreateInventoryItemDto inventory) {
-    return inventory.getExpires() != null;
+  public static void requiredFieldsNotEmpty(Inventory inventory) throws InventoryRegistrationException {
+    if (inventory.getExpires() == null) {
+      throw new InventoryRegistrationException("Expiry date is empty");
+    } else if ( inventory.getTotalPrice() == null ) {
+      throw new InventoryRegistrationException("Total price is empty");
+    } else if ( inventory.getPricePerItem() == null ) {
+      throw new InventoryRegistrationException("Price per item is empty");
+    }
   }
 
+  /**
+   * Checks if a date is after another. for checking the expiration is after current date.
+   *
+   * @param inventory item to validate
+   * @return true if the product is valid
+   */
   protected static boolean date1AfterDate2(LocalDate date1, LocalDate date2) {
     if (date1 == null || date2 == null) return false;
     return date1.isAfter(date2);
   }
 
   /**
-   * Checks if price is valid: positive and less than 10000
+   * Checks if date orders are valid, current date before expiry etc. passing
    *
-   * @param CreateInventoryItemDto
+   * @param inventory
    */
-  public static void datesValid(CreateInventoryItemDto inventory) throws InventoryRegistrationException {
+  public static void datesValid(Inventory inventory, LocalDate  currentDate) throws InventoryRegistrationException {
     // TODO how do we ensure local date is equal to date of the user?
-    LocalDate currentDate = LocalDate.now();
     if (InventoryServiceValidation.date1AfterDate2(inventory.getManufactured(), currentDate)) {
       throw new InventoryRegistrationException("Manufacture date must be before or equal to today");
     }
@@ -72,10 +80,18 @@ public class InventoryServiceValidation {
     if (quantity < 0) {
       throw new InventoryRegistrationException("quantity cannot be negative");
     }
-  }
-
-  public static boolean isInventoryItemValid(CreateInventoryItemDto inventoryItem) {
 
   }
-
+  /**
+   * performs all checks on Inventory item
+   *
+   * @param inventory user input and calculated fields to check
+   */
+  public static void isInventoryItemValid(Inventory inventory) throws InventoryRegistrationException {
+    LocalDate currentDate = LocalDate.now();
+    InventoryServiceValidation.requiredFieldsNotEmpty(inventory);
+    InventoryServiceValidation.datesValid(inventory, currentDate);
+    InventoryServiceValidation.priceValid(inventory.getPricePerItem());
+    InventoryServiceValidation.quantityValid(inventory.getQuantity());
+  }
 }

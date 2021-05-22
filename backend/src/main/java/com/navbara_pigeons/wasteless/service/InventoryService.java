@@ -13,8 +13,7 @@ public interface InventoryService {
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InventoryItemNotFoundException;
 
 
-  long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItem) throws InventoryRegistrationException,
-          InventoryItemForbiddenException, ProductNotFoundException, BusinessNotFoundException, UserNotFoundException;
+  long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItem) throws InventoryRegistrationException, ProductNotFoundException, BusinessNotFoundException, UserNotFoundException, InsufficientPrivilegesException;
 
 
 }

@@ -1,9 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +51,17 @@ public class ControllerExceptionHandler {
     }
 
     /**
+     * This is the exception handler for ProductNotFoundExceptions.
+     * @param exc The thrown exception
+     * @return ResponseEntity with the exception message
+     */
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> handleProductNotFound(ProductNotFoundException exc) {
+        log.error("PRODUCT NOT FOUND: 406 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
+    }
+
+    /**
      * This is the exception handler for InventoryRegistrationExceptions.
      * @param exc The thrown exception
      * @return ResponseEntity with the exception message
@@ -62,6 +71,4 @@ public class ControllerExceptionHandler {
         log.error("INVENTORY REGISTRATION EXCEPTION: 400 - " + exc.getMessage());
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
     }
-
-
 }

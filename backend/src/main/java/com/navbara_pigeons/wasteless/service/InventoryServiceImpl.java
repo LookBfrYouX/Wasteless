@@ -82,21 +82,21 @@ public class InventoryServiceImpl implements InventoryService {
    */
   @Override
   @Transactional
-  public long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItem) throws InventoryRegistrationException, InventoryItemForbiddenException, ProductNotFoundException, BusinessNotFoundException, UserNotFoundException {
+  public long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItem) throws InventoryRegistrationException, InsufficientPrivilegesException {
     Business business;
+    try {
       business = businessDao.getBusinessById(businessId);
-      if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
-        throw new InventoryItemForbiddenException(
-                "User does not have permission to add an inventory item to the business");
-      }
       Product product;
       long productId = inventoryItem.getProductId();
       product = productService.getProduct(productId);
-      if (!InventoryServiceValidation.isInventoryItemValid(inventoryItem)) {
-        throw new InventoryRegistrationException("Expiry needs to be included");
+      if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
+        throw new InsufficientPrivilegesException(
+                "User does not have permission to add an inventory item to the business");
       }
-
       Inventory inventory = new Inventory(inventoryItem);
+
+      inventory.setProduct(product);
+      inventory.setBusiness(business);
 
       if (inventoryItem.getPricePerItem() == null) {
         inventory.setPricePerItem(product.getRecommendedRetailPrice());
@@ -105,9 +105,16 @@ public class InventoryServiceImpl implements InventoryService {
       if (inventoryItem.getTotalPrice() == null) {
         inventory.setTotalPrice(inventory.getPricePerItem() * inventory.getQuantity());
       }
+      InventoryServiceValidation.isInventoryItemValid(inventory);
 
       inventoryDao.saveInventoryItem(inventory);
 
       return inventory.getId();
+
+    } catch (BusinessNotFoundException | ProductNotFoundException | UserNotFoundException exc) {
+      throw new InventoryRegistrationException("BUSINESS, PRODUCT OR USER NOT FOUND");
+    }
+
+
   }
 }

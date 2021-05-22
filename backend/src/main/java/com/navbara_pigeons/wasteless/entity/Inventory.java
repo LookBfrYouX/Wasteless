@@ -65,7 +65,6 @@ public class Inventory {
   private List<Listing> listings;
 
   public Inventory(BasicInventoryDto inventory) {
-    this.id = inventory.getId();
     this.product = new Product(inventory.getProduct());
     this.quantity = inventory.getQuantity();
     this.pricePerItem = inventory.getPricePerItem();
@@ -77,7 +76,6 @@ public class Inventory {
   }
 
   public Inventory(FullInventoryDto inventory) {
-    this.id = inventory.getId();
     this.product = new Product(inventory.getProduct());
     this.quantity = inventory.getQuantity();
     this.pricePerItem = inventory.getPrice();
@@ -89,7 +87,6 @@ public class Inventory {
   }
 
   public Inventory(CreateInventoryItemDto inventory) {
-    this.id = inventory.getProductId();
     this.quantity = inventory.getQuantity();
     this.pricePerItem = inventory.getPricePerItem();
     this.totalPrice = inventory.getTotalPrice();
