@@ -297,15 +297,6 @@ const ProductCatalogue = {
     displayedResults() {
       return this.paginate(this.sortedResults);
     },
-  },
-
-  watch: {
-    // /**
-    //  * Watch acting as is switched by clicking navbar dropdown
-    //  */
-    // businessId() {
-    //   this.$helper.goToProfile.bind(this)();
-    // }
   }
 };
 
