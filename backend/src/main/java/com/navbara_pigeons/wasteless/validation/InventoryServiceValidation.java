@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDate;
 
@@ -27,10 +28,11 @@ public class InventoryServiceValidation {
   /**
    * Checks if price is valid: positive and less than 10000
    *
-   * @param currentDate date to check
+   * @param CreateInventoryItemDto
    */
-  public static void datesValid(CreateInventoryItemDto inventory, LocalDate currentDate) throws InventoryRegistrationException {
+  public static void datesValid(CreateInventoryItemDto inventory) throws InventoryRegistrationException {
     // TODO how do we ensure local date is equal to date of the user?
+    LocalDate currentDate = LocalDate.now();
     if (InventoryServiceValidation.date1AfterDate2(inventory.getManufactured(), currentDate)) {
       throw new InventoryRegistrationException("Manufacture date must be before or equal to today");
     }
@@ -70,6 +72,10 @@ public class InventoryServiceValidation {
     if (quantity < 0) {
       throw new InventoryRegistrationException("quantity cannot be negative");
     }
+  }
+
+  public static boolean isInventoryItemValid(CreateInventoryItemDto inventoryItem) {
+
   }
 
 }

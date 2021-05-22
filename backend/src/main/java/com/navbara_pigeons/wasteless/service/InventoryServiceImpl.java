@@ -9,12 +9,10 @@ import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.navbara_pigeons.wasteless.validation.InventoryServiceValidation;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -83,9 +81,9 @@ public class InventoryServiceImpl implements InventoryService {
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
-  public JSONObject addInventoryItem(long businessId, CreateInventoryItemDto inventoryItem) throws InventoryRegistrationException, InventoryItemForbiddenException, ProductNotFoundException {
+  @Transactional
+  public long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItem) throws InventoryRegistrationException, InventoryItemForbiddenException, ProductNotFoundException, BusinessNotFoundException, UserNotFoundException {
     Business business;
-    try {
       business = businessDao.getBusinessById(businessId);
       if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
         throw new InventoryItemForbiddenException(
@@ -93,42 +91,23 @@ public class InventoryServiceImpl implements InventoryService {
       }
       Product product;
       long productId = inventoryItem.getProductId();
-      LocalDate date = LocalDate.now();
       product = productService.getProduct(productId);
-      if (!InventoryServiceValidation.requiredFieldsNotEmpty(inventoryItem)) {
+      if (!InventoryServiceValidation.isInventoryItemValid(inventoryItem)) {
         throw new InventoryRegistrationException("Expiry needs to be included");
       }
-      ;
-      InventoryServiceValidation.datesValid(inventoryItem, date);
-      InventoryServiceValidation.quantityValid(inventoryItem.getQuantity());
+
       Inventory inventory = new Inventory(inventoryItem);
 
       if (inventoryItem.getPricePerItem() == null) {
         inventory.setPricePerItem(product.getRecommendedRetailPrice());
-      } else {
-        inventory.setPricePerItem(inventoryItem.getPricePerItem());
       }
+
       if (inventoryItem.getTotalPrice() == null) {
         inventory.setTotalPrice(inventory.getPricePerItem() * inventory.getQuantity());
-      } else {
-        inventory.setTotalPrice(inventoryItem.getTotalPrice());
       }
-      InventoryServiceValidation.priceValid(inventory.getTotalPrice());
+
       inventoryDao.saveInventoryItem(inventory);
 
-      JSONObject response = new JSONObject();
-      response.appendField("inventoryItemId", inventory.getId());
-
-      return response;
-
-    } catch (UserNotFoundException | BusinessNotFoundException | ProductNotFoundException exc) {
-      throw new InventoryRegistrationException("User, business or product not found");
-    }
+      return inventory.getId();
   }
-
-  @Transactional
-  public void saveInventoryItem(Inventory inventory) {
-    this.inventoryDao.saveInventoryItem(inventory);
-  }
-
 }

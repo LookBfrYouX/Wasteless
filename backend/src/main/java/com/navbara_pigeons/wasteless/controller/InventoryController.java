@@ -57,10 +57,13 @@ public class InventoryController {
   }
 
   @PostMapping("/businesses/{id}/inventory")
-  public ResponseEntity<Object> addToBusinessInventory(@PathVariable long id, @RequestBody CreateInventoryItemDto inventoryDto) {
+  public ResponseEntity<JSONObject> addToBusinessInventory(@PathVariable long id, @RequestBody CreateInventoryItemDto inventoryDto) {
     try {
+      JSONObject response = new JSONObject();
+      response.appendField("inventoryItemId", inventoryService.addInventoryItem(id, inventoryDto));
+
       log.info("ADDED NEW INVENTORY ITEM FOR PRODUCT id: " + inventoryDto.getProductId() + " FOR BUSINESS: " + id);
-      return new ResponseEntity<>(this.inventoryService.addInventoryItem(id, inventoryDto), HttpStatus.valueOf(201));
+      return new ResponseEntity<>(response, HttpStatus.valueOf(201));
     } catch (InventoryRegistrationException exc) {
       log.info("ADDING NEW INVENTORY_ITEM, BUSINESS ID " + id + " ERROR " + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.valueOf(400),
@@ -71,9 +74,6 @@ public class InventoryController {
     } catch (ProductNotFoundException exc) {
       log.info("PRODUCT NOT FOUND WITH ID AND BUSINESS ID: " + id + " " + exc.getMessage());
       throw new ResponseStatusException(HttpStatus.valueOf(400), exc.getMessage());
-    } catch (Exception exc) {
-      log.info("EXCEPTION GETTING INVENTORY + " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
     }
   }
 // sorry Max we don't know how to cast these wizadry magic spells to do this have fun.
