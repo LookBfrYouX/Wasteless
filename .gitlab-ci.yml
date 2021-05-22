@@ -3,7 +3,7 @@ stages:
   - get-dependencies
   - build
   - test
-  - sonarqube
+#  - sonarqube
   - move-user-content
   - deploy-frontend
   - restore-user-content
