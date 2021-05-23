@@ -31,7 +31,7 @@ describe("Card section handling", () => {
     mountCard("BAD SECTION");
     await wrapper.vm.create();
     expect(Api.createCard.mock.calls.length).toBe(0);
-    expect(wrapper.vm.errorMessage).stringContaining("section");
+    expect(wrapper.vm.errorMessage).toEqual(expect.stringContaining("section"));
   });
 
   test("no initial section name", async () => {
