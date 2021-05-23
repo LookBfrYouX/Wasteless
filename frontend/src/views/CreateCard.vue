@@ -58,46 +58,46 @@
       <div class="row">
         <div class="col-12 form-group">
           <label for="tags">Tags</label>
-          <div class="d-flex flex-wrap">
-            <button
-              class="btn btn-primary"
-              v-if="!showSuggestions"
-              v-on:click="showSuggestionsInput"
+          <div class="d-flex flex-wrap align-items-center">
+            <span class="mr-2 mb-2">Currently selected tags:</span>
+            <div class="border border-primary d-flex rounded justify-content-center align-items-center slightly-transparent-white-background mr-2 mb-2"
+              v-for="keyword in keywords"
+              v-bind:key="keyword.id"
             >
-              + Tag
-            </button>
-            <suggestions
-              v-if="showSuggestions"
-              inputClasses="form-control"
-              name="tags"
-              id="tags"
-              placeholder="Add a Tag"
-              type="text"
-              ref="suggestionsInput"
-              v-bind:suggestions="keywordSuggestions"
-              v-bind:value="tempSuggestionValue"
-              v-on:input="keywordInput"
-              v-on:suggestion="keywordSuggestionSelected"
-              v-on:blur="showSuggestions = false"
-            />
-            <div class="d-flex">
-              <div class="border border-primary d-flex rounded justify-content-center align-items-center"
-                v-for="keyword in keywords"
-                v-bind:key="keyword.id"
+              <span class="mx-1">
+                {{keyword.name}}
+              </span>
+              <button
+                class="btn btn-outline-primary d-flex justify-content-center align-items-center p-0 m-1 rounded-circle"
+                type="button"
+                v-on:click="removeKeyword(keyword.id)"
               >
-                <span class="mx-1">
-                  {{keyword.name}}
-                </span>
-                <button
-                  class="btn btn-outline-primary d-flex justify-content-center align-items-center p-0 mx-1 rounded-circle"
-                  type="button"
-                  v-on:click="removeKeyword(keyword.id)"
-                >
-                  <span class="material-icons">close</span>
-                </button>
-              </div>
+                <span class="material-icons">close</span>
+              </button>
             </div>
-          </div> 
+          </div>
+          <button
+            class="btn btn-primary"
+            v-if="!showSuggestions"
+            v-on:click="showSuggestionsInput"
+          >
+            + Tag
+          </button>
+          <suggestions
+            v-if="showSuggestions"
+            inputClasses="form-control"
+            name="tags"
+            id="tags"
+            placeholder="Add a Tag"
+            type="text"
+            ref="suggestionsInput"
+            v-bind:liActiveClasses="{'bg-primary': true, 'text-light': true}"
+            v-bind:suggestions="keywordSuggestions"
+            v-bind:value="tempSuggestionValue"
+            v-on:input="keywordInput"
+            v-on:suggestion="keywordSuggestionSelected"
+            v-on:blur="showSuggestions = false"
+          />
         </div>
       </div>
       <div class="row">
