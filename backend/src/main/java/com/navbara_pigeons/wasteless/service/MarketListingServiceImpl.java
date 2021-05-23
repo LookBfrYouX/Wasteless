@@ -14,24 +14,24 @@ import java.util.List;
 @Service
 public class MarketListingServiceImpl implements MarketListingService {
 
-    private MarketListingDao marketListingDao;
+  private MarketListingDao marketListingDao;
 
-    public MarketListingServiceImpl(@Autowired MarketListingDao marketListingDao) {
-        this.marketListingDao = marketListingDao;
-    }
+  public MarketListingServiceImpl(@Autowired MarketListingDao marketListingDao) {
+    this.marketListingDao = marketListingDao;
+  }
 
-    @Override
-    @Transactional
-    public Long saveMarketListing(MarketListing marketListing) {
-        marketListing.setCreated(ZonedDateTime.now());
-        marketListing.setDisplayPeriodEnd(ZonedDateTime.now().plus(1, ChronoUnit.MONTHS));
-        this.marketListingDao.saveMarketListing(marketListing);
-        return marketListing.getId();
-    }
+  @Override
+  @Transactional
+  public Long saveMarketListing(MarketListing marketListing) {
+    marketListing.setCreated(ZonedDateTime.now());
+    marketListing.setDisplayPeriodEnd(ZonedDateTime.now().plus(1, ChronoUnit.MONTHS));
+    this.marketListingDao.saveMarketListing(marketListing);
+    return marketListing.getId();
+  }
 
-    @Override
-    @Transactional
-    public List<MarketListing> getMarketListings(String section) {
-        return marketListingDao.getMarketListing(section);
-    }
+  @Override
+  @Transactional
+  public List<MarketListing> getMarketListings(String section) {
+    return marketListingDao.getMarketListing(section);
+  }
 }

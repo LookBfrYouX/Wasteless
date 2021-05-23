@@ -14,38 +14,38 @@ import java.util.List;
 @Repository
 public class MarketListingDaoHibernateImpl implements MarketListingDao {
 
-    private final EntityManager entityManager;
+  private final EntityManager entityManager;
 
-    public MarketListingDaoHibernateImpl(@Autowired EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+  public MarketListingDaoHibernateImpl(@Autowired EntityManager entityManager) {
+    this.entityManager = entityManager;
+  }
 
-    @Override
-    public void saveMarketListing(MarketListing marketListing) {
-        Session currentSession = getSession();
-        currentSession.saveOrUpdate(marketListing);
-    }
+  @Override
+  public void saveMarketListing(MarketListing marketListing) {
+    Session currentSession = getSession();
+    currentSession.saveOrUpdate(marketListing);
+  }
 
-    @Override
-    public List<MarketListing> getMarketListing(String section) {
-        Session currentSession = getSession();
-        // CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
-        CriteriaQuery<MarketListing> criteriaQuery = HibernateCriteriaQueryBuilder
-                .parseListingQuery(currentSession, section);
+  @Override
+  public List<MarketListing> getMarketListing(String section) {
+    Session currentSession = getSession();
+    // CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+    CriteriaQuery<MarketListing> criteriaQuery = HibernateCriteriaQueryBuilder
+        .parseListingQuery(currentSession, section);
 
-        Query<MarketListing> query = currentSession.createQuery(criteriaQuery);
-        List<MarketListing> results = query.getResultList();
+    Query<MarketListing> query = currentSession.createQuery(criteriaQuery);
+    List<MarketListing> results = query.getResultList();
 
-        return results;
-    }
+    return results;
+  }
 
-    /**
-     * Get the entity manager session
-     *
-     * @return Instance of the Session class
-     */
-    private Session getSession() {
-        return this.entityManager.unwrap(Session.class);
-    }
+  /**
+   * Get the entity manager session
+   *
+   * @return Instance of the Session class
+   */
+  private Session getSession() {
+    return this.entityManager.unwrap(Session.class);
+  }
 
 }

@@ -24,30 +24,34 @@ import java.util.List;
 @RequestMapping("")
 public class MarketListingController {
 
-    private final UserService userService;
-    private final MarketListingService marketListingService;
+  private final UserService userService;
+  private final MarketListingService marketListingService;
 
-    public MarketListingController(@Autowired UserService userService, MarketListingService marketListingService) {
-        this.userService = userService;
-        this.marketListingService = marketListingService;
-    }
+  public MarketListingController(@Autowired UserService userService,
+      MarketListingService marketListingService) {
+    this.userService = userService;
+    this.marketListingService = marketListingService;
+  }
 
-    @PostMapping("/cards")
-    public ResponseEntity<JSONObject> addMarketListing(@RequestBody CreateMarketListingDto createMarketListingDto) throws UserNotFoundException, UnhandledException {
-        User creator = userService.getUserById(createMarketListingDto.getCreatorId());
-        MarketListing marketListing = new MarketListing(createMarketListingDto, creator);
-        JSONObject response = new JSONObject();
-        response.put("cardId", this.marketListingService.saveMarketListing(marketListing));
-        return new ResponseEntity<>(response, HttpStatus.valueOf(201));
-    }
+  @PostMapping("/cards")
+  public ResponseEntity<JSONObject> addMarketListing(
+      @RequestBody CreateMarketListingDto createMarketListingDto)
+      throws UserNotFoundException, UnhandledException {
+    User creator = userService.getUserById(createMarketListingDto.getCreatorId());
+    MarketListing marketListing = new MarketListing(createMarketListingDto, creator);
+    JSONObject response = new JSONObject();
+    response.put("cardId", this.marketListingService.saveMarketListing(marketListing));
+    return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+  }
 
-    @GetMapping("/cards")
-    public ResponseEntity<List<FullMarketListingDto>> getMarketListings(@RequestParam String section) {
-        List<FullMarketListingDto> marketListingDtos = new ArrayList<>();
-        for (MarketListing marketListing : this.marketListingService.getMarketListings(section)) {
-            marketListingDtos.add(new FullMarketListingDto(marketListing));
-        }
-        return new ResponseEntity<>(marketListingDtos, HttpStatus.OK);
+  @GetMapping("/cards")
+  public ResponseEntity<List<FullMarketListingDto>> getMarketListings(
+      @RequestParam String section) {
+    List<FullMarketListingDto> marketListingDtos = new ArrayList<>();
+    for (MarketListing marketListing : this.marketListingService.getMarketListings(section)) {
+      marketListingDtos.add(new FullMarketListingDto(marketListing));
     }
+    return new ResponseEntity<>(marketListingDtos, HttpStatus.OK);
+  }
 
 }

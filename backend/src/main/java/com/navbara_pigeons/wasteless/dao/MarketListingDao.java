@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface MarketListingDao {
 
-    void saveMarketListing(MarketListing marketListing);
+  void saveMarketListing(MarketListing marketListing);
 
-    List<MarketListing> getMarketListing(String section);
+  List<MarketListing> getMarketListing(String section);
 
 }
