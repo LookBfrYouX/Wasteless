@@ -177,8 +177,13 @@ export const router = new VueRouter({
       // Router to create listing component. TODO remove later
     {
       name: "createListing",
-      path: "/createlisting",
-      component: () => import("./components/CreateListing")
+      path: "/business/:businessId(\\d+)/listings/add",
+      meta: {
+        title: "Create New Listing | Wasteless",
+        requiresBusinessAdmin: true
+      },
+      component: () => import("./components/CreateListing"),
+      props: route => ({ businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "marketplace",

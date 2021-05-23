@@ -151,7 +151,6 @@ export default {
     businessId: {
       required: false,
       type: Number,
-      default: 1
     }
   },
 
