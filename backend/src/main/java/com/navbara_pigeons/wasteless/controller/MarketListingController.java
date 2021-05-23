@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.error.Mark;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +24,8 @@ import java.util.List;
 @RequestMapping("")
 public class MarketListingController {
 
-    private UserService userService;
-    private MarketListingService marketListingService;
+    private final UserService userService;
+    private final MarketListingService marketListingService;
 
     public MarketListingController(@Autowired UserService userService, MarketListingService marketListingService) {
         this.userService = userService;
@@ -34,10 +33,12 @@ public class MarketListingController {
     }
 
     @PostMapping("/cards")
-    public ResponseEntity<Long> addMarketListing(@RequestBody CreateMarketListingDto createMarketListingDto) throws UserNotFoundException, UnhandledException {
+    public ResponseEntity<JSONObject> addMarketListing(@RequestBody CreateMarketListingDto createMarketListingDto) throws UserNotFoundException, UnhandledException {
         User creator = userService.getUserById(createMarketListingDto.getCreatorId());
         MarketListing marketListing = new MarketListing(createMarketListingDto, creator);
-        return new ResponseEntity<>(this.marketListingService.saveMarketListing(marketListing), HttpStatus.valueOf(201));
+        JSONObject response = new JSONObject();
+        response.put("cardId", this.marketListingService.saveMarketListing(marketListing));
+        return new ResponseEntity<>(response, HttpStatus.valueOf(201));
     }
 
     @GetMapping("/cards")
