@@ -54,6 +54,53 @@
             required
           />
         </div>
+      </div>
+      <div class="row">
+        <div class="col-12 form-group">
+          <label for="tags">Tags</label>
+          <div class="d-flex flex-wrap">
+            <button
+              class="btn btn-primary"
+              v-if="!showSuggestions"
+              v-on:click="showSuggestionsInput"
+            >
+              + Tag
+            </button>
+            <suggestions
+              v-if="showSuggestions"
+              inputClasses="form-control"
+              name="tags"
+              id="tags"
+              placeholder="Add a Tag"
+              type="text"
+              ref="suggestionsInput"
+              v-bind:suggestions="keywordSuggestions"
+              v-bind:value="tempSuggestionValue"
+              v-on:input="keywordInput"
+              v-on:suggestion="keywordSuggestionSelected"
+              v-on:blur="showSuggestions = false"
+            />
+            <div class="d-flex">
+              <div class="border border-primary d-flex rounded justify-content-center align-items-center"
+                v-for="keyword in keywords"
+                v-bind:key="keyword.id"
+              >
+                <span class="mx-1">
+                  {{keyword.name}}
+                </span>
+                <button
+                  class="btn btn-outline-primary d-flex justify-content-center align-items-center p-0 mx-1 rounded-circle"
+                  type="button"
+                  v-on:click="removeKeyword(keyword.id)"
+                >
+                  <span class="material-icons">close</span>
+                </button>
+              </div>
+            </div>
+          </div> 
+        </div>
+      </div>
+      <div class="row">
         <div class="col-12 form-group">
           <label for="description">Description</label>
           <textarea
@@ -89,9 +136,12 @@
   </div>
 </template>
 <script>
+import Suggestions from "../components/Suggestions.vue";
+import {EditDistance} from "./../EditDistance";
 const { Api } = require("./../Api");
 
 export default {
+  components: { Suggestions },
   props: {
     /**
      * ID of user to create the card as
@@ -115,7 +165,39 @@ export default {
       section: Object.keys(this.$constants.MARKETPLACE.SECTIONS)[0],
       title: "",
       description: "",
-      errorMessage: null
+      errorMessage: null,
+      tempSuggestionValue: "",
+      showSuggestions: false,
+      keywords: []
+    }
+  },
+
+  computed: {
+    keywordSuggestions() {
+      const keywords = [ "Apple", "Orange", "Cake", "Portal", "Apple MacBook Pro", "Sulfur Nitrate", "Max is awesome"].map((keyword, i) => ({ name: keyword, id: i, toString: () => keyword }));
+
+      const { NUM_SUGGESTIONS, WORST_RATIO, INSERT_COST, DELETE_COST, SUBSTITUTE_COST } = this.$constants.MARKETPLACE.CREATE_CARD.TAG_SUGGESTIONS;
+
+      let suggestions = keywords.map(keyword => {
+        keyword.score = new EditDistance(
+          this.tempSuggestionValue.toLocaleLowerCase(),
+          keyword.name.toLocaleLowerCase(),
+          INSERT_COST,
+          DELETE_COST,
+          SUBSTITUTE_COST
+        ).calculate();
+
+        keyword.weightedScore = keyword.score / keyword.name.length;
+        keyword.toString = () => keyword.name + " " + keyword.weightedScore;
+        return keyword;
+      });
+
+      suggestions.sort((a, b) => a.weightedScore - b.weightedScore);
+      const selectedSuggestions = new Set(this.keywords.map(({id}) => id));
+      suggestions = suggestions.filter(({ id, weightedScore }) => weightedScore < WORST_RATIO && !selectedSuggestions.has(id));
+      // Don't return already selected suggestions
+      suggestions = suggestions.slice(0, NUM_SUGGESTIONS);
+      return suggestions;
     }
   },
 
@@ -124,6 +206,27 @@ export default {
   },
 
   methods: {
+    keywordInput: async function(inputValue) {
+      this.tempSuggestionValue = inputValue; 
+    },
+
+    keywordSuggestionSelected: async function(keyword) {
+      this.keywords.push(keyword);
+      this.tempSuggestionValue = "";
+    },
+
+    showSuggestionsInput() {
+      this.showSuggestions = true;
+      this.$nextTick(() => {
+        console.log(this.$refs.suggestionsInput.forceFocus());
+        this.$refs.suggestionsInput.$refs.input.focus()
+      });
+    },
+
+    removeKeyword(id) {
+      this.keywords = this.keywords.filter(keyword => keyword.id != id);
+    },
+
     /**
      * Pipeline triggered when user submits form; validates the data and if successful,
      * sends request to the server.
@@ -144,7 +247,7 @@ export default {
         section: this.section,
         title: this.title,
         description: this.description,
-        keywordIds: []
+        keywordIds: this.keywords.map(keyword => keyword.id)
       };
 
       try {
@@ -171,6 +274,6 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 
 </style>

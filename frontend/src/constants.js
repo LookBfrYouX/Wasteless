@@ -92,6 +92,16 @@ export const constants = {
        ForSale: "For Sale",
        Wanted: "Wanted",
        Exchange: "Exchange"
+    },
+
+    CREATE_CARD: {
+      TAG_SUGGESTIONS: {
+        NUM_SUGGESTIONS: 5,
+        WORST_RATIO: 2,
+        INSERT_COST: 1,
+        DELETE_COST: 50,
+        SUBSTITUTE_COST: 50,
+      },
     }
   }
 };

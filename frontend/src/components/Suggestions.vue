@@ -25,13 +25,13 @@ Notes:
   - These should all be objects
   - `liActiveClasses` is applied to the currently selected suggestion, if any
   - `liInactiveClasses` is applied to any unselected suggestions
-
+- Any attributes (e.g. class, type) are passed onto the input element
 -->
 <template>
   <div v-bind:class="divClasses">
     <input
         v-bind="$attrs"
-
+        ref="input"
         v-bind:class="inputClasses"
 
         v-bind:value="value"
@@ -164,6 +164,13 @@ export default {
         default:
           this.$emit("keydown", event);
       }
+    },
+
+    /**
+     * Hook that forces on the input element
+     */
+    forceFocus: function() {
+      this.$refs.input.focus();   
     },
 
     /**
