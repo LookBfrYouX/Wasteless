@@ -34,7 +34,8 @@ beforeEach(() => {
         bio: "returned user bio"
       })),
       ...globalStateMocks()
-    }
+    },
+    stubs: ["router-link"]
   });
 });
 

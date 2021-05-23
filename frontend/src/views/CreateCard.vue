@@ -130,7 +130,7 @@ export default {
      */
     create: async function() {
       if (!Object.keys(this.$constants.MARKETPLACE.SECTIONS).includes(this.section)) {
-        this.errorMessage = "You must select a category to list your card in";
+        this.errorMessage = "You must select a section to list your card in";
         return;
       }
 
