@@ -97,17 +97,10 @@ public class UserServiceImpl implements UserService {
     if (userDao.userExists(user.getEmail())) {
       throw new UserAlreadyExistsException("User already exists");
     }
-    // Validates the users DOB
-    if (!UserServiceValidation.isDobValid(user.getDateOfBirth())) {
-      throw new UserRegistrationException("Invalid date of birth");
-    }
     // Check user is over 13 years old
-    if (!LocalDate.parse(user.getDateOfBirth()).isBefore(LocalDate.now().minusYears(13))) {
+    if (!user.getDateOfBirth().isBefore(LocalDate.now().minusYears(13))) {
       throw new UserRegistrationException("Must be 13 years or older to register");
     }
-    user.setDateOfBirth(
-        LocalDate.parse(user.getDateOfBirth()).format(DateTimeFormatter.ISO_LOCAL_DATE));
-
     // Password and field validation
     if (!UserServiceValidation.isPasswordValid(user.getPassword())) {
       throw new UserRegistrationException("Password does not pass validation check");

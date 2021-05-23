@@ -6,6 +6,8 @@ import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ class UserDaoHibernateImplTest {
         .setMiddleName("")
         .setNickname("")
         .setEmail(testEmail)
-        .setDateOfBirth("2000-03-10")
+        .setDateOfBirth(LocalDate.parse("2000-03-10"))
         .setHomeAddress(mockAddress())
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("user")
@@ -70,7 +72,7 @@ class UserDaoHibernateImplTest {
         .setMiddleName("Neil")
         .setNickname("dnb36")
         .setEmail("fake@uclive.ac.nz")
-        .setDateOfBirth("2001-11-23")
+        .setDateOfBirth(LocalDate.parse("2001-11-23"))
         .setHomeAddress(mockAddress())
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("user")
@@ -101,7 +103,7 @@ class UserDaoHibernateImplTest {
         .setMiddleName("")
         .setNickname("Fman")
         .setEmail("fake1@uclive.ac.nz")
-        .setDateOfBirth("2001-11-23")
+        .setDateOfBirth(LocalDate.parse("2001-11-23"))
         .setHomeAddress(mockAddress())
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("user")
@@ -114,7 +116,7 @@ class UserDaoHibernateImplTest {
         .setMiddleName("John")
         .setNickname("Frodo")
         .setEmail("fake2@uclive.ac.nz")
-        .setDateOfBirth("2001-11-23")
+        .setDateOfBirth(LocalDate.parse("2001-11-23"))
         .setHomeAddress(mockAddress())
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("user")
@@ -127,7 +129,7 @@ class UserDaoHibernateImplTest {
         .setMiddleName("user")
         .setNickname("tt")
         .setEmail("fake3@uclive.ac.nz")
-        .setDateOfBirth("2001-11-23")
+        .setDateOfBirth(LocalDate.parse("2001-11-23"))
         .setHomeAddress(mockAddress())
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("user")
@@ -175,7 +177,7 @@ class UserDaoHibernateImplTest {
         .setLastName(lastName)
         .setNickname(nickname)
         .setEmail("John.Jono@uclive.ac.nz")
-        .setDateOfBirth("2001-11-23")
+        .setDateOfBirth(LocalDate.parse("2001-11-23"))
         .setHomeAddress(mockAddress())
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("ROLE_USER")
@@ -223,7 +225,7 @@ class UserDaoHibernateImplTest {
         .setLastName(lastName)
         .setNickname(nickname)
         .setEmail("William.Pitt@uclive.ac.nz")
-        .setDateOfBirth("2001-11-23")
+        .setDateOfBirth(LocalDate.parse("2001-11-23"))
         .setHomeAddress(mockAddress())
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("ROLE_USER")

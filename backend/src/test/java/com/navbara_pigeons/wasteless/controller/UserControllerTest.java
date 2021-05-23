@@ -7,6 +7,8 @@ import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.User;
+
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import org.junit.Before;
@@ -97,7 +99,7 @@ class UserControllerTest {
         .setMiddleName("Middle")
         .setNickname("Nick")
         .setEmail("test@example.com")
-        .setDateOfBirth("2000-03-10")
+        .setDateOfBirth(LocalDate.parse("2000-03-10"))
         .setPhoneNumber("+64123456789")
         .setHomeAddress(address)
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))

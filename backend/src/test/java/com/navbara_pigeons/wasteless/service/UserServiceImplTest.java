@@ -16,6 +16,8 @@ import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -63,12 +65,14 @@ public class UserServiceImplTest extends ServiceTestProvider {
   }
 
 
+  // This test has been changed as the LocalDate data type now stops incorrectly formatted data being supplied.
+  // This test now tests that users are of sufficient age.
   @Test
   public void saveUser_invalidDoB() {
-    String[] testValues = {"31-Dec-2000", "dfs", "2020/10/05", "20/1/1"};
+    String[] testValues = {"2034-11-11", "2020-10-05"};
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     for (String testValue : testValues) {
-      user.setDateOfBirth(testValue);
+      user.setDateOfBirth(LocalDate.parse(testValue));
       assertThrows(UserRegistrationException.class, () -> userService.saveUser(user));
     }
   }
