@@ -183,7 +183,7 @@ export default {
   methods: {
     async getInventory() {
       try {
-        this.inventory = (await Api.getBusinessInventory(1)).data;
+        this.inventory = (await Api.getBusinessInventory(this.businessId)).data;
         return true;
       } catch(err) {
         this.apiErrorMessage = err.userFacingErrorMessage;
@@ -192,7 +192,7 @@ export default {
     },
     async getListings() {
       try {
-        return (await Api.getBusinessListings(1)).data;
+        return (await Api.getBusinessListings(this.businessId)).data;
       } catch(err) {
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
@@ -208,11 +208,13 @@ export default {
         return inventoryItem;
       });
       const listings = await this.getListings();
-      listings.forEach(listing => {
-        const inventoryItem = inventory.find(({ id }) => id === listing.inventoryItem.id);
-        inventoryItem.quantityRemaining -= listing.quantity;
-      });
-      this.inventory = inventory;
+      if (listings !== undefined) {
+        listings.forEach(listing => {
+          const inventoryItem = inventory.find(({ id }) => id === listing.inventoryItem.id);
+          inventoryItem.quantityRemaining -= listing.quantity;
+        });
+        this.inventory = inventory;
+      }
     },
 
     setTodayDate() {
@@ -223,23 +225,26 @@ export default {
       this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
     },
 
-    async addListing() {
-      let dateTimeString;
+    formatString(closeDate, closeTime) {
       const defaultTime = "23:59";
-      if (this.closeDate && this.closeTime) {
-        dateTimeString = this.closeDate + "T" + this.closeTime + ":00Z";
-      } else if (this.closeDate && !this.closeTime) {
-        dateTimeString = this.closeDate +  "T" + defaultTime + ":00Z";
+      if (closeDate && closeTime) {
+        return closeDate + "T" + closeTime + ":00Z";
+      } else if (closeDate && !closeTime) {
+        return closeDate +  "T" + defaultTime + ":00Z";
       } else {
-        dateTimeString = null;
+        return null;
       }
+    },
+
+    async addListing() {
+      let closes = this.formatString(this.closeDate, this.closeTime);
       let priceFixedString = (parseFloat(this.price)).toFixed(2);
       const listing = {
         "inventoryItemId": this.selectedInventoryItem.id,
         "quantity": parseInt(this.quantity),
         "price": parseFloat(priceFixedString),
         "moreInfo": this.moreInfo,
-        "closes": dateTimeString
+        "closes": closes
       }
       await Api.addItemToInventory(this.businessId, listing)
       .catch((err) => {
@@ -265,8 +270,8 @@ export default {
     },
 
     defaultPrice() {
-      if (this.selectedInventoryItem == null || this.quantity <= 0 || this.quantity > this.maxQuantity) {
-        return 0;
+      if (this.selectedInventoryItem == null || this.quantity <= 0 || this.quantity > this.maxQuantity || this.selectedInventoryItem.totalPrice == null || this.selectedInventoryItem.pricePerItem == null) {
+        return "0.00";
       }
       const quantityInInventory = this.selectedInventoryItem.quantity;
       if (Number(this.quantity) === quantityInInventory) {
@@ -274,7 +279,6 @@ export default {
       } else {
         return (this.quantity * this.selectedInventoryItem.pricePerItem).toFixed(2);
       }
-
     }
   }
 }
