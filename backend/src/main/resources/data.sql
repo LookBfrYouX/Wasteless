@@ -1,5 +1,6 @@
 /* MAIN SCHEMA DEFINITION */
 
+DROP TABLE IF EXISTS marketplace CASCADE;
 DROP TABLE IF EXISTS listing CASCADE;
 DROP TABLE IF EXISTS inventory CASCADE;
 DROP TABLE IF EXISTS product_image CASCADE;
@@ -141,6 +142,17 @@ CREATE TABLE listing
     CLOSES       DATETIME,
     CONSTRAINT inventory_fk
         FOREIGN KEY (INVENTORY_ID) REFERENCES inventory (ID)
+);
+
+CREATE TABLE marketplace
+(
+    ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    CREATOR_ID BIGINT NOT NULL,
+    SECTION ENUM('ForSale','Wanted','Exchange') NOT NULL,
+    CREATED DATETIME,
+    DISPLAY_PERIOD_END DATETIME,
+    TITLE VARCHAR(50) NOT NULL,
+    DESCRIPTION VARCHAR(250)
 );
 
 
@@ -361,3 +373,7 @@ VALUES (1, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17', '2021-06
        (1, 3, 12.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (2, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (3, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
+
+INSERT INTO marketplace (CREATOR_ID, "SECTION", CREATED, DISPLAY_PERIOD_END, TITLE, DESCRIPTION)
+VALUES (2, 'ForSale', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Shoddy web app', 'Wanting to sell Wasteless, no longer needed or wanted.'),
+       (2, 'Wanted', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Fresh motivation', 'Will pay for motivation.');
