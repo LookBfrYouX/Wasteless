@@ -102,8 +102,8 @@ public class UserServiceImplTest extends ServiceTestProvider {
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
 
-    Object userObject = userService.getUserById(user.getId());
-    assertUserEquals(user, (FullUserDto) userObject);
+    User userObject = userService.getUserById(user.getId());
+    assertUserEquals(user, new FullUserDto(userObject));
   }
 
   @Test
@@ -113,8 +113,8 @@ public class UserServiceImplTest extends ServiceTestProvider {
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
 
-    Object userObject = userService.getUserById(user.getId());
-    assertUserEquals(user, (BasicUserDto) userObject);
+    User userObject = userService.getUserById(user.getId());
+    assertUserEquals(user, new BasicUserDto(userObject));
   }
 
   @Test
@@ -124,8 +124,8 @@ public class UserServiceImplTest extends ServiceTestProvider {
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
 
-    Object userObject = userService.getUserById(user.getId());
-    assertUserEquals(user, (FullUserDto) userObject);
+    User userObject = userService.getUserById(user.getId());
+    assertUserEquals(user, new FullUserDto(userObject));
   }
 
   @Test
@@ -149,9 +149,9 @@ public class UserServiceImplTest extends ServiceTestProvider {
 
     user1.addBusiness(business);
 
-    Object userObject = userService.getUserById(user1.getId());
+    User userObject = userService.getUserById(user1.getId());
 
-    assertUserEquals(user1, (FullUserDto) userObject);
+    assertUserEquals(user1, new FullUserDto(userObject));
   }
 
   @Test
@@ -174,9 +174,9 @@ public class UserServiceImplTest extends ServiceTestProvider {
     user1.addBusiness(business);
     user2.addBusiness(business);
 
-    Object userObject = userService.getUserById(user1.getId());
+    User userObject = userService.getUserById(user1.getId());
 
-    assertUserEquals(user1, (BasicUserDto) userObject);
+    assertUserEquals(user1, new BasicUserDto(userObject));
   }
 
 
