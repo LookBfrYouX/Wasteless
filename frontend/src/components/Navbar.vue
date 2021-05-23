@@ -27,10 +27,10 @@
           >
           <!-- List of links in XL only hidden if lg and more than 2 links -->
             <li
-              v-for="({name, click}, i) in navbarLinks"
+              v-for="({name, click, active}, i) in navbarLinks"
               v-bind:key="i"
               class="nav-item d-flex align-items-center text-center mx-lg-0"
-              v-bind:class="{'mx-4': i != 0}"
+              v-bind:class="{ 'mx-4': i != 0, active }"
             >
               <a
                 class="nav-link"
@@ -59,9 +59,10 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownBusinessLinks">
               <a
-                v-for="({name, click}, i) in navbarLinks"
+                v-for="({name, click, active}, i) in navbarLinks"
                 v-bind:key="i"
                 class="dropdown-item"
+                v-bind:class="{ active }"
                 href="javascript:"
                 v-on:click="click"
               >
@@ -200,35 +201,46 @@ export default {
 
     /**
      * Returns a list of navbar links depending on if they are acting as a business or user
-     * @return array with `name` string and `click` methods
+     * @return array of objects with properties:
+     *   name: {String} text value of item
+     *   click: {() => void`{} action to run when item clicked
+     *   active: {Boolean} if true, `active` class given to that item; the link for the page the user is currently on should show this
      */
     navbarLinks() {
+      const viewName = this.$route.name;
+
       if (!this.isLoggedIn) return [];
       if (!this.isActingAsBusiness) return [
         {
           name: "Profile",
-          click: this.profileClicked
+          click: this.profileClicked,
+          active: viewName == "profile",
         },
         {
           name: "Marketplace",
-          click: () => this.pushOrGo('marketplace')
+          click: () => this.pushOrGo('marketplace'),
+          active: viewName == "marketplace",
         }
       ];
 
       return [
         {
           name: "Business Profile",
-          click: this.profileClicked
+          click: this.profileClicked,
+          active: viewName == "businessProfile",
         },
         {
           name: "Product Catalogue",
-          click: () => this.pushOrGoToBusinessPage("productCatalogue")
+          click: () => this.pushOrGoToBusinessPage("productCatalogue"),
+          active: viewName == "productCatalogue",
         }, {
           name: "Inventory",
-          click: () => this.pushOrGoToBusinessPage("businessInventory")
+          click: () => this.pushOrGoToBusinessPage("businessInventory"),
+          active: viewName == "businessInventory",
         }, {
           name: "Listings",
-          click: () => this.pushOrGoToBusinessPage("businessListings")
+          click: () => this.pushOrGoToBusinessPage("businessListings"),
+          active: viewName == "businessListings"
         }
       ];
     },
@@ -397,5 +409,10 @@ nav {
 .search-container {
   max-width: 25em;
   flex-grow: 2;
+}
+
+nav .active {
+  /* For some reason, Bootstrap adds underline to the links. Doesn't show up on bootstrap example website */
+  text-decoration: inherit;
 }
 </style>
