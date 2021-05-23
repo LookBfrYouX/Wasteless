@@ -247,7 +247,17 @@ export default {
      * Sets today's date to restrict input in date picker.
      */
     setTodayDate() {
-      this.todayDate = new Date().toISOString().split("T")[0];
+      const today = new Date();
+      let dd = today.getDate();
+      let mm = today.getMonth() + 1;
+      let yyyy = today.getFullYear();
+      if (dd < 10) {
+        dd = '0' + dd
+      }
+      if (mm < 10) {
+        mm = '0' + mm
+      }
+      this.todayDate = yyyy + '-' + mm + '-' + dd;
     },
 
     /**
@@ -259,17 +269,28 @@ export default {
     },
 
     /**
-     * Formats date string and time string into one datetime string.
+     * Formats local date string and time string into one ISO datetime string.
      * @param closeDate Date string in "YYYY-MM-DD" format
      * @param closeTime Time string in "hh:mm" 24 format
      * @return {string|null} Datetime string in "YYYY-MM-DDThh:mm:00Z" format. When closeTime is not specified, sets the time to 23:59. When both closeDate and closeTime is null, returns null.
      */
-    formatString(closeDate, closeTime) {
-      const defaultTime = "23:59";
-      if (closeDate && closeTime) {
-        return closeDate + "T" + closeTime + ":00Z";
-      } else if (closeDate && !closeTime) {
-        return closeDate +  "T" + defaultTime + ":00Z";
+    toFormattedISOString(closeDate, closeTime) {
+      let hour;
+      let minute;
+      if (closeDate) {
+        const date = closeDate.split("-");
+        const year = parseInt(date[0], 10);
+        const month = parseInt(date[1], 10) - 1;
+        const day = parseInt(date[2], 10);
+        if (closeTime) {
+          const time = closeTime.split(":");
+          hour = parseInt(time[0], 10);
+          minute = parseInt(time[1], 10);
+        } else {
+          hour = "23";
+          minute = "59";
+        }
+        return new Date(year, month, day, hour, minute).toISOString();
       } else {
         return null;
       }
@@ -279,7 +300,7 @@ export default {
      * Called when form submit button is clicked. Calls Api to add listing to the business.
      */
     async addListing() {
-      let closes = this.formatString(this.closeDate, this.closeTime);
+      let closes = this.toFormattedISOString(this.closeDate, this.closeTime);
       let priceFixedString = (parseFloat(this.price)).toFixed(2);
       const listing = {
         "inventoryItemId": this.selectedInventoryItem.id,
@@ -290,7 +311,7 @@ export default {
       }
       await Api.addBusinessListings(this.businessId, listing)
       .catch((err) => {
-        this.errorMessage=err.userFacingErrorMessage
+        this.errorMessage = err.userFacingErrorMessage;
       });
     }
   },
