@@ -58,7 +58,7 @@ public class InventoryItem {
           CascadeType.REFRESH
       }
   )
-  @JoinColumn(name = "INVENTORY_ID")
+  @JoinColumn(name = "INVENTORY_ITEM_ID")
   private List<Listing> listings;
 
   public InventoryItem(BasicInventoryItemDto inventory) {

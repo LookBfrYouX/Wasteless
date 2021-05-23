@@ -70,7 +70,6 @@ public class InventoryServiceImpl implements InventoryService {
     Business business = businessDao.getBusinessById(businessId);
     List<InventoryItem> inventory = business.getInventory();
 
-
     for (InventoryItem inventoryItem: inventory) {
       if (inventoryItem.getId() == itemId) {
         return inventoryItem;
