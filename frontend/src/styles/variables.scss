@@ -66,3 +66,18 @@ $theme-colors: (
     light: $gray-100,
     dark: $gray-800
 );
+
+
+$colors: (
+    "blue": $blue,
+    "indigo": $indigo, // TODO
+    "purple": $purple,
+    "pink": $pink,
+    "red": $red,
+    "orange": $orange,
+    "yellow": $yellow,
+    "green": $green,
+    "teal": $teal,
+    "cyan": $cyan,
+    // TODO light exists? gray, gray-dark
+);

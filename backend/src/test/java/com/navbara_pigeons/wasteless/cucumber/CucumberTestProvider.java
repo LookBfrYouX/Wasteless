@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.controller.BusinessController;
 import com.navbara_pigeons.wasteless.controller.ProductController;
 import com.navbara_pigeons.wasteless.controller.UserController;
-import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.service.BasicUserDetailsServiceImpl;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
@@ -99,7 +100,7 @@ public class CucumberTestProvider extends MainTestProvider {
   /**
    * Logs in as admin using userController. See `login`, may or may not be exactly the same
    */
-  void adminLogin() {
+  void adminLogin() throws UserNotFoundException, UserAuthenticationException {
     UserCredentials credentials = new UserCredentials();
     credentials.setEmail("mbi47@uclive.ac.nz");
     credentials.setPassword("fun123");
