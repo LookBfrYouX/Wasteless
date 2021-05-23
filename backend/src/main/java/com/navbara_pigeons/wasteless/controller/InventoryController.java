@@ -37,23 +37,9 @@ public class InventoryController {
    * business.
    */
   @GetMapping("/businesses/{id}/inventory")
-  public ResponseEntity<Object> showBusinessInventory(@PathVariable long id) {
-    try {
-      log.info("RETRIEVED INVENTORY ITEMS FOR BUSINESS: " + id);
-      return new ResponseEntity<>(this.inventoryService.getInventory(id), HttpStatus.valueOf(200));
-    } catch (InsufficientPrivilegesException exc) {
-      log.info("INSUFFICIENT PRIVILEGES GETTING BUSINESS WITH ID: " + id + " " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient Privileges");
-    } catch (BusinessNotFoundException | UserNotFoundException exc) {
-      log.info("USER OR BUSINESS NOT FOUND: " + id + " " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (InventoryItemNotFoundException exc) {
-      log.info("PRODUCT NOT FOUND WITH ID AND BUSINESS ID: " + id + " " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (Exception exc) {
-      log.info("EXCEPTION GETTING INVENTORY " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
-    }
+  public ResponseEntity<Object> showBusinessInventory(@PathVariable long id) throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException, BusinessNotFoundException {
+    log.info("RETRIEVED INVENTORY ITEMS FOR BUSINESS: " + id);
+    return new ResponseEntity<>(this.inventoryService.getInventory(id), HttpStatus.valueOf(200));
   }
 
   @PostMapping("/businesses/{id}/inventory")

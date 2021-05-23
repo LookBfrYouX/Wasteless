@@ -109,14 +109,14 @@ public class CucumberTestProvider extends MainTestProvider {
   /**
    * Logs in as non admin user using userController. See `login`, may or may not be exactly the same
    */
-  void nonAdminLogin(String email) {
+  void nonAdminLogin(String email) throws UserNotFoundException, UserAuthenticationException {
     UserCredentials credentials = new UserCredentials();
     credentials.setEmail(email);
     credentials.setPassword("fun123");
     this.userController.login(credentials);
   }
 
-  void nonAdminLogin() {
+  void nonAdminLogin() throws UserNotFoundException, UserAuthenticationException {
     nonAdminLogin("fdi19@uclive.ac.nz");
   }
 
