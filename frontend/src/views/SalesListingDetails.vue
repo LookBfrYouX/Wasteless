@@ -12,14 +12,12 @@
             Back
           </button>
           <div class="mt-2">Description: {{ description }}</div>
-<!--          <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>-->
-<!--          <div class="mt-2">RRP: {{ $helper.makeCurrencyString(recommendedRetailPrice, currency) }}</div>-->
           <div class="mt-2">Quantity: {{ quantity }}</div>
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
           <div class="mt-2 mb-5" v-if="moreInfo">More Information: {{ moreInfo }}</div>
           <div class="d-flex flex-wrap justify-content-between mb-2">
-            <div class="mt-2" style="font-size: smaller; display:inline-block">Opened: {{ $helper.isoToDateString(listingCreated) }}</div>
-            <div class="mt-2" style="font-size: smaller; display:inline-block">Closes: {{ $helper.isoToDateString(listingCloses) }}</div>
+            <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated) }}</div>
+            <div class="date mt-2">Closes: {{ $helper.isoToDateString(listingCloses) }}</div>
           </div>
         </div>
         <div class="col-md-6">
@@ -33,10 +31,10 @@
       </div>
       <hr>
       <div class="d-flex flex-wrap justify-content-between mb-2">
-        <div class="mt-2" style="font-size: smaller; display:inline-block">Manufactured: {{ $helper.isoToDateString(manufactured) }}</div>
-        <div class="mt-2" style="font-size: smaller; display:inline-block">Sell By: {{ $helper.isoToDateString(sellBy) }}</div>
-        <div class="mt-2" style="font-size: smaller; display:inline-block">Best Before: {{ $helper.isoToDateString(bestBefore) }}</div>
-        <div class="mt-2" style="font-size: smaller; display:inline-block">Expires: {{ $helper.isoToDateString(expires) }}</div>
+        <div class="date mt-2">Manufactured: {{ $helper.isoToDateString(manufactured) }}</div>
+        <div class="date mt-2">Sell By: {{ $helper.isoToDateString(sellBy) }}</div>
+        <div class="date mt-2">Best Before: {{ $helper.isoToDateString(bestBefore) }}</div>
+        <div class="date mt-2">Expires: {{ $helper.isoToDateString(expires) }}</div>
       </div>
       <div class="row my-2">
         <div v-for="(image, index) in productImages"
@@ -94,8 +92,6 @@ export default {
     return {
       name: "",
       description: "",
-      recommendedRetailPrice: "",
-      created: "",
       productImages: [],
       quantity: null,
       price: null,
@@ -196,8 +192,6 @@ export default {
       }
       this.name = listing.inventoryItem.product.name;
       this.description = listing.inventoryItem.product.description;
-      this.recommendedRetailPrice = listing.inventoryItem.product.recommendedRetailPrice;
-      this.created = listing.inventoryItem.product.created;
       this.productImages = listing.inventoryItem.product.images;
       this.quantity = listing.quantity;
       this.price = listing.price;
@@ -213,3 +207,12 @@ export default {
 }
 
 </script>
+
+<style scoped>
+
+.date {
+  font-size: smaller;
+  display:inline-block
+}
+
+</style>
