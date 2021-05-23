@@ -288,7 +288,7 @@ export default {
         "moreInfo": this.moreInfo,
         "closes": closes
       }
-      await Api.addItemToInventory(this.businessId, listing)
+      await Api.addBusinessListings(this.businessId, listing)
       .catch((err) => {
         this.errorMessage=err.userFacingErrorMessage
       });

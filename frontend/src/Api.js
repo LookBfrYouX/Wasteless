@@ -303,7 +303,7 @@ export const Api = {
         `/businesses/${businessId}/inventory/`, item)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
-        400: "Bad request: Invalid data supplied",
+        400: error => `could not create listing: ${error.response.data.message}`,
         403: "Forbidden: Insufficient privileges"
       });
     });
