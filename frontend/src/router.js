@@ -86,6 +86,7 @@ export const router = new VueRouter({
       component: () => import("./components/CreateProduct.vue"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)}),
       meta: {
+        title: "Create Product | Wasteless",
         requiresSignIn: true,
         requiresBusinessAdmin: true
       }
@@ -96,6 +97,7 @@ export const router = new VueRouter({
       component: () => import("./components/ProductCatalogue.vue"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)}),
       meta: {
+        title: "Product Catalogue | Wasteless",
         requiresSignIn: true,
         requiresBusinessAdmin: true
       }
