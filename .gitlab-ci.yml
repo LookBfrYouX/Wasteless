@@ -3,7 +3,7 @@ stages:
   - get-dependencies
   - build
   - test
-#  - sonarqube
+  - sonarqube
   - move-user-content
   - deploy-frontend
   - restore-user-content
@@ -67,21 +67,20 @@ jest:
       - frontend/coverage
 
 # Export sonarqube (static code analysis) reports
-# Uncomment after ATDD workshop (at the latest)
-# dev-sonarqube:
-#   stage: sonarqube
-#   cache:
-#     key: node-modules
-#     paths:
-#       - frontend/node_modules
-#     policy: pull
-#   script:
-#     - cd frontend
-#     - npm run sonarqube
-#     - cd ../backend
-#     - ./gradlew sonarqube
-#   only:
-#     - dev
+dev-sonarqube:
+  stage: sonarqube
+  cache:
+    key: node-modules
+    paths:
+      - frontend/node_modules
+    policy: pull
+  script:
+    - cd frontend
+    - npm run sonarqube
+    - cd ../backend
+    - ./gradlew sonarqube
+  only:
+    - dev
 
 # builds all branches, except dev and master
 branch-build:

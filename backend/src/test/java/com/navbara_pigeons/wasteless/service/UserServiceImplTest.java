@@ -9,12 +9,7 @@ import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.AddressValidationException;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UnhandledException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import java.util.Collection;
 import org.junit.jupiter.api.Test;
@@ -54,7 +49,7 @@ public class UserServiceImplTest extends ServiceTestProvider {
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   public void saveUser_normal()
-      throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException {
+          throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException, UserAuthenticationException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     loginAuthenticationMock();
     when(encoder.encode(ArgumentMatchers.anyString())).thenReturn("HASH");
