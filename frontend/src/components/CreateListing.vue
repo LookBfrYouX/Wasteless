@@ -164,6 +164,10 @@ export default {
   },
 
   watch: {
+    /**
+     * When users select a different inventory item from the dropdown, resets maximum quantity and expiry date.
+     * When users select a different product, selectedInventoryItem is also set to null and quantity is set to 0.
+     */
     selectedInventoryItem: function (selectedInventoryItem) {
       if (selectedInventoryItem != null) {
         this.maxQuantity = selectedInventoryItem.quantityRemaining;
@@ -171,16 +175,28 @@ export default {
       }
       this.quantity = 0;
     },
+
+    /**
+     * When users select a different product in the dropdown, resets selectedInventoryItem and quantity to initial value.
+     */
     selectedProductId: function () {
       this.selectedInventoryItem = null;
       this.quantity = 0;
     },
+
+    /**
+     * When users change listing quantity, recomputes defaultPrice on price field.
+     */
     quantity: function () {
       this.price = this.defaultPrice;
     }
   },
 
   methods: {
+    /**
+     * Gets inventory of the business and sets the array as inventory data.
+     * @return boolean True when business inventory is successfully retrieved,
+     */
     async getInventory() {
       try {
         this.inventory = (await Api.getBusinessInventory(this.businessId)).data;
@@ -190,6 +206,11 @@ export default {
         return false;
       }
     },
+
+    /**
+     * Gets sales listings of the business.
+     * @returns Listings array if successful.
+     */
     async getListings() {
       try {
         return (await Api.getBusinessListings(this.businessId)).data;
@@ -199,8 +220,9 @@ export default {
     },
 
     /**
-     *
-     * @returns {Promise<void>}
+     * Maps inventory and adds quantityRemaining properties to each item which is set to the quantity of inventory item.
+     * It checks the listings if there are inventory items already listed.
+     * Subtracts quantityRemaining of inventory item if there are listings of it and updates inventory.
      */
     async getAvailableInventoryItem() {
       let inventory = this.inventory.map(inventoryItem => {
@@ -217,14 +239,27 @@ export default {
       }
     },
 
+    /**
+     * Sets today's date to restrict input in date picker.
+     */
     setTodayDate() {
       this.todayDate = new Date().toISOString().split("T")[0];
     },
 
+    /**
+     * Gets currency of the business.
+     * @return Currency object
+     */
     async getCurrency() {
       this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
     },
 
+    /**
+     * Formats date string and time string into one datetime string.
+     * @param closeDate Date string in "YYYY-MM-DD" format
+     * @param closeTime Time string in "hh:mm" 24 format
+     * @return {string|null} Datetime string in "YYYY-MM-DDThh:mm:00Z" format. When closeTime is not specified, sets the time to 23:59. When both closeDate and closeTime is null, returns null.
+     */
     formatString(closeDate, closeTime) {
       const defaultTime = "23:59";
       if (closeDate && closeTime) {
@@ -236,6 +271,9 @@ export default {
       }
     },
 
+    /**
+     * Called when form submit button is clicked. Calls Api to add listing to the business.
+     */
     async addListing() {
       let closes = this.formatString(this.closeDate, this.closeTime);
       let priceFixedString = (parseFloat(this.price)).toFixed(2);
@@ -254,6 +292,10 @@ export default {
   },
 
   computed: {
+    /**
+     * Get products from inventory of the business. Uses dictionary to eliminate duplicate product that has multiple inventory.
+     * @return Array of products.
+     */
     getProducts() {
       if (this.inventory == null) return [];
       let products = {};
@@ -264,11 +306,21 @@ export default {
       return Object.values(products);
     },
 
+    /**
+     * Filters in inventory item of a product which users chose in dropdown.
+     * @return Array of inventory items if inventory and selectedProductId is non-null. Returns empty array otherwise.
+     */
     filteredInventory() {
       if (this.inventory == null || this.selectedProductId == null) return [];
       return this.inventory.filter(inventoryItem => inventoryItem.product.id === this.selectedProductId);
     },
 
+    /**
+     * Sets default price on price input field once a user select inventory item and set a valid quantity.
+     * When user chose whole quantity in the inventory, returns totalPrice of the inventory item if it's non-null.
+     * When user chose partial quantity in the inventory, returns quantity times pricePerItem if pricePerItem is non-null.
+     * @return {string} Price string in "X.XX" format.
+     */
     defaultPrice() {
       if (this.selectedInventoryItem == null || this.quantity <= 0 || this.quantity > this.maxQuantity || this.selectedInventoryItem.totalPrice == null || this.selectedInventoryItem.pricePerItem == null) {
         return "0.00";
