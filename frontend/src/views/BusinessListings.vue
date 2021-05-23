@@ -9,9 +9,12 @@
         <h2>Listings for {{businessName? businessName: "business"}}</h2>
       </template>
       <template v-slot:item="slotProps">
-        <div class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded">
-        {{JSON.stringify(slotProps.item)}}
-        </div>
+        <listing-item-card
+            class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
+            v-bind:item="slotProps.item"
+            :businessId="businessId"
+            :currency="currency"
+        />
         <!--<business-listing v-bind:listing="slotProps.item"/> -->
       </template>
       <template v-slot:right-button>
@@ -32,31 +35,11 @@
 </template>
 <script>
 import SortedPaginatedItemList from '../components/SortedPaginatedItemList.vue';
+import ListingItemCard from "./../components/cards/ListingItemCard";
 import ErrorModal from "../components/Errors/ErrorModal";
 import { Api } from "../Api";
 
 import { helper } from "../helper";
-
-const sampleData = [{
-  id: 9,
-  name: "AAA"
-}, {
-  id: 15,
-  name: "BBBB"
-}, {
-  id: 3,
-  name: "CCCC"
-}, {
-  id: 17,
-  name: "ZZZ"
-}];
-
-for(let i = 0; i < 10; i++) {
-  sampleData.push({
-    id: i * 2 + 4,
-    name: btoa(Math.random().toString())
-  });
-}
 
 const sortOptions = [
   {
@@ -87,6 +70,7 @@ const sortOptions = [
 
 export default {
   components: {
+    ListingItemCard,
     SortedPaginatedItemList,
     ErrorModal
   },
@@ -100,16 +84,17 @@ export default {
 
   data() {
     return {
-      listings: sampleData,
+      listings: null,
       apiErrorMessage: null,
       sortOptions: sortOptions,
       currentSortOption: { ...sortOptions[0], reversed: false},
-      businessName: null
+      businessName: null,
+      currency: null
     };
   },
 
   beforeMount: async function() {
-    return Promise.allSettled([this.loadBusinessName(), this.getListingsPipeline()]);
+    return Promise.allSettled([this.loadBusinessName(), this.getListingsPipeline(), this.getCurrency()]);
   },
   
   methods: {
@@ -124,7 +109,15 @@ export default {
 
     loadBusinessName: async function() {
       this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
-    }
+    },
+
+    /**
+     * Gets currency object.
+     * @returns {Promise<void>} Currency object, null when the currency doesn't exist or API request error.
+     */
+    getCurrency: async function () {
+      this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
+    },
   },
 
   watch: {
