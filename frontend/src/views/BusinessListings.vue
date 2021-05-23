@@ -16,7 +16,8 @@
       </template>
       <template v-slot:right-button>
         <router-link :to="{ name: 'createListing', params: { businessId }}"
-                     class="btn btn-info">
+                     class="btn btn-info d-flex">
+          <span class="material-icons mr-1">add</span>
           Create Listing
         </router-link>
       </template>

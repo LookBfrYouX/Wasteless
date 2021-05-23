@@ -1,5 +1,10 @@
 <template>
   <div class="container">
+    <div class="text-center">
+      <h1>
+        Create new sales listing
+      </h1>
+    </div>
     <form
         v-on:submit.prevent="addListing"
         >
