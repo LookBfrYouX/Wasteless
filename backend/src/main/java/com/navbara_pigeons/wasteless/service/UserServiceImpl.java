@@ -5,11 +5,7 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.AddressValidationException;
-import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
@@ -86,7 +82,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public JSONObject saveUser(User user)
-      throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException {
+          throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException, UserAuthenticationException {
     // Email validation
     if (!UserServiceValidation.requiredFieldsNotEmpty(user)) {
       throw new UserRegistrationException("Required user fields cannot be null");
@@ -160,7 +156,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public JSONObject login(UserCredentials userCredentials)
-      throws AuthenticationException, UserNotFoundException {
+          throws AuthenticationException, UserNotFoundException, UserAuthenticationException {
     // Check for null in userCredentials
     if (userCredentials.getEmail() == null || userCredentials.getPassword() == null) {
       throw new BadCredentialsException("No username/password supplied.");
@@ -170,11 +166,15 @@ public class UserServiceImpl implements UserService {
         userCredentials.getEmail(),
         userCredentials.getPassword()
     );
-    // Perform authentication and get authentication object
-    Authentication auth = authenticationManagerBuilder.getOrBuild().authenticate(authReq);
-    // Set current security context with authentication
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    securityContext.setAuthentication(auth);
+    try {
+      // Perform authentication and get authentication object
+      Authentication auth = authenticationManagerBuilder.getOrBuild().authenticate(authReq);
+      // Set current security context with authentication
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      securityContext.setAuthentication(auth);
+    } catch (AuthenticationException exc) {
+      throw new UserAuthenticationException();
+    }
     // Build and return JSON response
     JSONObject response = new JSONObject();
     User user = userDao.getUserByEmail(userCredentials.getEmail());
