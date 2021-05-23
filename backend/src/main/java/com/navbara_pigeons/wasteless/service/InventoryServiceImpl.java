@@ -66,12 +66,14 @@ public class InventoryServiceImpl implements InventoryService {
    * @return inventory item or null
    */
   public InventoryItem getInventoryItemById(long businessId, long itemId)
-      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InventoryItemNotFoundException {
-    List<BasicInventoryItemDto> inventory = getInventory(businessId);
+      throws BusinessNotFoundException, InventoryItemNotFoundException {
+    Business business = businessDao.getBusinessById(businessId);
+    List<InventoryItem> inventory = business.getInventory();
 
-    for (BasicInventoryItemDto inventoryItemDto: inventory) {
-      if (inventoryItemDto.getId() == itemId) {
-        return new InventoryItem(inventoryItemDto);
+
+    for (InventoryItem inventoryItem: inventory) {
+      if (inventoryItem.getId() == itemId) {
+        return inventoryItem;
       }
     }
     throw new InventoryItemNotFoundException(itemId);

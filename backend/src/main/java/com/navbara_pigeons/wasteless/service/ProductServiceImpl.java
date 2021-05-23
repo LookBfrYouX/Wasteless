@@ -2,7 +2,6 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
-import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -23,7 +22,6 @@ import javax.transaction.Transactional;
 
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,14 +32,9 @@ public class ProductServiceImpl implements ProductService {
 
   private final BusinessDao businessDao;
   private final ProductDao productDao;
-  private final UserDao userDao;
   private final CountryDataFetcherService countryDataFetcherService;
   private final UserService userService;
   private final BusinessService businessService;
-
-
-  @Value("${public_path_prefix}")
-  private String publicPathPrefix;
 
   /**
    * ProductImplementation constructor that takes autowired parameters and sets up the service for
@@ -51,12 +44,11 @@ public class ProductServiceImpl implements ProductService {
    * @param countryDataFetcherService
    */
   @Autowired
-  public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao, UserDao userDao,
+  public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao,
       UserService userService, BusinessService businessService,
       CountryDataFetcherService countryDataFetcherService) {
     this.businessDao = businessDao;
     this.productDao = productDao;
-    this.userDao = userDao;
     this.userService = userService;
     this.businessService = businessService;
     this.countryDataFetcherService = countryDataFetcherService;
@@ -100,13 +92,13 @@ public class ProductServiceImpl implements ProductService {
   @Transactional
   public JSONObject addProduct(long businessId, BasicProductCreationDto basicProduct)
       throws ProductRegistrationException,
-      ForbiddenException {
+      InsufficientPrivilegesException {
     // Throw 400 if bad request, 403 if user is not business admin
     Business business;
     try {
       business = businessDao.getBusinessById(businessId);
       if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
-        throw new ForbiddenException(
+        throw new InsufficientPrivilegesException(
             "User does not have permission to add a product to the business");
       }
     } catch (UserNotFoundException | BusinessNotFoundException exc) {

@@ -20,7 +20,7 @@ public interface ProductService {
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException;
 
   JSONObject addProduct(long id, BasicProductCreationDto product) throws ProductRegistrationException,
-      ForbiddenException;
+      InsufficientPrivilegesException;
 
   Product getProduct(long productId) throws ProductNotFoundException;
 

@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,8 @@ public class ListingServiceImpl implements ListingService {
    * @throws BusinessNotFoundException        when no business with given id exists
    * @throws UserNotFoundException            this will be caught by spring first
    */
+  @Override
+  @Transactional
   public Long addListing(long businessId, long inventoryItemId, Listing listing)
       throws InsufficientPrivilegesException, BusinessNotFoundException, UserNotFoundException, ListingValidationException, InventoryItemNotFoundException {
     if (!userService.isAdmin() && !businessService.isBusinessAdmin(businessId)) {
@@ -76,6 +79,7 @@ public class ListingServiceImpl implements ListingService {
    * @throws BusinessNotFoundException
    * @throws UserNotFoundException
    */
+  @Override
   public List<FullListingDto> getListings(long businessId) throws BusinessNotFoundException, UserNotFoundException {
     Business business = businessService.getBusiness(businessId);
     ArrayList<FullListingDto> listings = new ArrayList<>();

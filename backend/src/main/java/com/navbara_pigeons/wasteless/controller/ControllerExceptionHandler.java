@@ -9,14 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
-
 import javax.management.InvalidAttributeValueException;
 
 /**
@@ -96,12 +92,6 @@ public class ControllerExceptionHandler {
     public ResponseEntity<String> handleNumberFormatException(NumberFormatException exc) {
         log.error("NUMBER FORMAT ERROR: 406 - " + exc.getMessage());
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
-    }
-
-    @ExceptionHandler(ProductForbiddenException.class)
-    public ResponseEntity<String> handleProductForbiddenException(ProductForbiddenException exc) {
-        log.error("PRODUCT ERROR: 403 - " + exc.getMessage());
-        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(403));
     }
 
     @ExceptionHandler(ProductRegistrationException.class)
