@@ -344,8 +344,7 @@ export const Api = {
   createCard: props => {
     return instance.post("/cards", props).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
-        // TODO
-        400: err => `Invalid information given; ${JSON.stringify(err.response)}`,
+        400: err => `Invalid information given; ${err.response.message}`,
         403: "You tried to create a card as another user; only an admin is allowed to do this"
       });
     })

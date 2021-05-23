@@ -86,9 +86,9 @@ export const constants = {
 
   MARKETPLACE: {
     /**
-     * Key is name of category that should be used internally, value is name that should be used externally
+     * Key is name of section that should be used internally, value is name that should be used externally
      */
-    CATEGORIES: {
+    SECTIONS: {
        ForSale: "For Sale",
        Wanted: "Wanted",
        Exchange: "Exchange"
