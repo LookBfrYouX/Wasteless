@@ -28,8 +28,8 @@ public class HibernateCriteriaQueryBuilder {
     // Setup
     Root<MarketListing> root = criteriaQuery.from(MarketListing.class);
     criteriaQuery.select(root);
-    // Create query
-    criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("SECTION"), listingSection));
+    // Create query - uses entity 'section'
+    criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("section"), listingSection));
     return criteriaQuery;
   }
 

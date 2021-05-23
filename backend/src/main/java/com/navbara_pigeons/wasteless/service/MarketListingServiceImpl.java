@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.entity.MarketListing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -20,16 +21,17 @@ public class MarketListingServiceImpl implements MarketListingService {
     }
 
     @Override
+    @Transactional
     public Long saveMarketListing(MarketListing marketListing) {
         marketListing.setCreated(ZonedDateTime.now());
         marketListing.setDisplayPeriodEnd(ZonedDateTime.now().plus(1, ChronoUnit.MONTHS));
-        this.marketListingDao.save(marketListing);
+        this.marketListingDao.saveMarketListing(marketListing);
         return marketListing.getId();
     }
 
     @Override
+    @Transactional
     public List<MarketListing> getMarketListings(String section) {
-        return new ArrayList<>();
-        // return this.marketListingDao.; Create DAO first
+        return marketListingDao.getMarketListing(section);
     }
 }

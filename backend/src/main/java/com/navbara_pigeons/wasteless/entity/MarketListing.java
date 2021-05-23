@@ -18,7 +18,7 @@ public class MarketListing {
     @Column(name = "ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "CREATOR_ID")
     private User creator;
 
@@ -36,6 +36,10 @@ public class MarketListing {
 
     @Column(name = "DESCRIPTION")
     private String description;
+
+    public MarketListing() {
+
+    }
 
     public MarketListing(CreateMarketListingDto marketListingDto, User user) {
         this.creator = user;

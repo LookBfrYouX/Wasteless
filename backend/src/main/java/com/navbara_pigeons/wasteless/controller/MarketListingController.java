@@ -15,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.error.Mark;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -39,8 +41,12 @@ public class MarketListingController {
     }
 
     @GetMapping("/cards")
-    public ResponseEntity<List<MarketListing>> getMarketListings(@RequestParam String section) {
-        return new ResponseEntity<>(this.marketListingService.getMarketListings(section), HttpStatus.OK);
+    public ResponseEntity<List<FullMarketListingDto>> getMarketListings(@RequestParam String section) {
+        List<FullMarketListingDto> marketListingDtos = new ArrayList<>();
+        for (MarketListing marketListing : this.marketListingService.getMarketListings(section)) {
+            marketListingDtos.add(new FullMarketListingDto(marketListing));
+        }
+        return new ResponseEntity<>(marketListingDtos, HttpStatus.OK);
     }
 
 }
