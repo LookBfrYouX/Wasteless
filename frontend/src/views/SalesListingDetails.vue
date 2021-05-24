@@ -24,7 +24,7 @@
           <div class="primary-image-wrapper">
             <img v-if="productImages.length !== 0" v-bind:src="productImages[0].filename"
                  alt="Primary images">
-            <img v-else src="assets/images/default-product-thumbnail.svg"
+            <img v-else src="./../../assets/images/default-product-thumbnail.svg"
                  alt="Default product image">
           </div>
         </div>
@@ -132,10 +132,6 @@ export default {
      * @return true on success
      */
     loadCurrencies: async function () {
-      // if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
-      //   return false;
-      // }
-
       try {
         this.currency = await this.$helper.getCurrencyForBusiness(this.businessId, this.$stateStore);
       } catch (err) {
@@ -154,9 +150,6 @@ export default {
      * Does not run pipeline if user should not be able to edit business
      */
     apiPipeline: async function () {
-      // if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
-      //   return false;
-      // }
       try {
         await this.parseApiResponse(this.callApi());
       } catch (err) {
@@ -173,10 +166,6 @@ export default {
      * Returns the promise, not the response
      */
     callApi: async function () {
-      if (this.businessId === null) {
-        //this error was copied from product, but is only thrown if you manage to load the page with a null businessId in the url
-        throw new ApiRequestError("You must be acting as a business to view the product.")
-      }
       return await Api.getBusinessListings(this.businessId);
     },
 
