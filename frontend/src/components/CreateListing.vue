@@ -43,7 +43,7 @@
             <option v-for="inventoryItem in filteredInventory"
                     :key="inventoryItem.id"
                     :value="inventoryItem"
-                    :disabled="inventoryItem.quantityRemaining === 0"
+                    :disabled="inventoryItem.quantityRemaining <= 0"
                     >
               Expires at {{ $helper.isoToDateString(inventoryItem.expires) }} (ID: {{ inventoryItem.id }}, {{ inventoryItem.quantityRemaining}}/{{ inventoryItem.quantity }} unlisted)
             </option>
@@ -54,7 +54,7 @@
           <input
               id="quantity"
               v-model="quantity"
-              :disabled="selectedInventoryItem == null || maxQuantity <= 0"
+              :disabled="selectedInventoryItem == null"
               :max="maxQuantity"
               class="form-control"
               name="quantity"
@@ -71,7 +71,7 @@
             <input
                 id="price"
                 v-model="price"
-                :disabled="quantity === 0"
+                :disabled="quantity === null"
                 type="number"
                 step="0.01"
                 min="0.01"
@@ -140,15 +140,13 @@ export default {
       inventory: null,
       selectedProductId: null,
       selectedInventoryItem: null,
-      quantity: 0,
-      maxQuantity: 0,
+      quantity: null,
       price: this.defaultPrice,
       currency: null,
       moreInfo: "",
       closeDate: null,
       closeTime: null,
       todayDate: null,
-      expiryDate: null,
     }
   },
 
@@ -173,11 +171,11 @@ export default {
      * When users select a different product, selectedInventoryItem is also set to null and quantity is set to 0.
      */
     selectedInventoryItem: function (selectedInventoryItem) {
-      if (selectedInventoryItem != null) {
-        this.maxQuantity = selectedInventoryItem.quantityRemaining;
-        this.expiryDate = selectedInventoryItem.expires;
+      if (selectedInventoryItem == null) {
+        this.quantity = null;
+      } else {
+        this.quantity = selectedInventoryItem.quantityRemaining;
       }
-      this.quantity = 0;
     },
 
     /**
@@ -185,7 +183,6 @@ export default {
      */
     selectedProductId: function () {
       this.selectedInventoryItem = null;
-      this.quantity = 0;
     },
 
     /**
@@ -301,14 +298,14 @@ export default {
      */
     async addListing() {
       let closes = this.toFormattedISOString(this.closeDate, this.closeTime);
-      let priceFixedString = (parseFloat(this.price)).toFixed(2);
       const listing = {
         "inventoryItemId": this.selectedInventoryItem.id,
-        "quantity": parseInt(this.quantity),
-        "price": parseFloat(priceFixedString),
+        "quantity": this.quantityAsNumber,
+        "price": parseFloat(this.price),
         "moreInfo": this.moreInfo,
         "closes": closes
       }
+
       await Api.addBusinessListings(this.businessId, listing)
       .catch((err) => {
         this.errorMessage = err.userFacingErrorMessage;
@@ -347,15 +344,48 @@ export default {
      * @return {string} Price string in "X.XX" format.
      */
     defaultPrice() {
-      if (this.selectedInventoryItem == null || this.quantity <= 0 || this.quantity > this.maxQuantity || this.selectedInventoryItem.totalPrice == null || this.selectedInventoryItem.pricePerItem == null) {
+      if (this.selectedInventoryItem == null ||
+          !Number.isInteger(this.quantityAsNumber) ||
+          this.quantityAsNumber <= 0 ||
+          this.quantityAsNumber > this.maxQuantity ||
+          this.selectedInventoryItem.totalPrice == null ||
+          this.selectedInventoryItem.pricePerItem == null
+      ) {
         return "0.00";
       }
+
       const quantityInInventory = this.selectedInventoryItem.quantity;
-      if (Number(this.quantity) === quantityInInventory) {
+      if (this.quantityAsNumber === quantityInInventory) {
         return (this.selectedInventoryItem.totalPrice).toFixed(2);
       } else {
-        return (this.quantity * this.selectedInventoryItem.pricePerItem).toFixed(2);
+        return (this.quantityAsNumber * this.selectedInventoryItem.pricePerItem).toFixed(2);
       }
+    },
+
+    /**
+     * Returns maximum quantity available for listing in the selected inventory item.
+     * @return Number if inventory is selected, null otherwise.
+     */
+    maxQuantity() {
+      if (this.selectedInventoryItem == null) return null;
+      return this.selectedInventoryItem.quantityRemaining;
+    },
+
+    /**
+     * Returns string of expiry date of selected inventory item.
+     * @return Date string in YYYY-MM-DD format if inventory item is selected, null otherwise.
+     */
+    expiryDate() {
+      if (this.selectedInventoryItem == null) return null;
+      return this.selectedInventoryItem.expires;
+    },
+
+    /**
+     * Quantity is bound to input element so it is a string
+     * @return {number} quantity as number, possibly NaN
+     */
+    quantityAsNumber() {
+      return parseInt(this.quantity, 10);
     }
   }
 }
