@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class BasicImageDto {
 
-  private int id;
+  private long id;
   private String filename;
   private String thumbnailFilename;
 
