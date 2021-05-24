@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,7 @@ public class ListingServiceImpl implements ListingService {
     if (!ListingServiceValidation.isListingValid(listing)) {
       throw new ListingValidationException("listing did not pass validation");
     }
+    listing.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     listingDao.save(listing);
     return listing.getId();
   }
