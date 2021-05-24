@@ -76,9 +76,9 @@ public class ListingServiceImpl implements ListingService {
       listing.setCloses(ZonedDateTime.of(listing.getInventoryItem().getExpires(), LocalTime.now(),
           ZoneId.systemDefault()));
     }
-    if (!ListingServiceValidation.isListingValid(listing)) {
-      throw new ListingValidationException("listing did not pass validation");
-    }
+    // Throws exception when validation does not pass
+    ListingServiceValidation.isListingValid(listing);
+
     listing.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     listingDao.save(listing);
     return listing.getId();

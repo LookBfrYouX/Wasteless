@@ -2,16 +2,17 @@ package com.navbara_pigeons.wasteless.validation;
 
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListingServiceValidation {
 
 
-  public static boolean isListingValid(Listing listing) {
+  public static void isListingValid(Listing listing) throws ListingValidationException {
     // Check the given id exists
     if (listing.getInventoryItem() == null) {
-      return false;
+      throw new ListingValidationException("Inventory item not found");
     }
 
     // Quantity must be above 0 and below the remaining quantity
@@ -25,8 +26,7 @@ public class ListingServiceValidation {
       }
     }
     if (listing.getQuantity() <= 0 || listing.getQuantity() > remainingQuantity) {
-      return false;
+      throw new ListingValidationException("Quantity must be less than or equal to the amount left in the inventory");
     }
-    return true;
   }
 }
