@@ -108,7 +108,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     Listing listing = new Listing();
     listing.setInventoryItem(inventoryItem);
     listing.setQuantity(4);
-    listing.setPrice(17.99f);
+    listing.setPrice(17.99);
     listing.setId(47);
 
     inventoryItem.addListing(listing);

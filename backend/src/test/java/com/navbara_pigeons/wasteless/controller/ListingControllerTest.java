@@ -36,9 +36,9 @@ public class ListingControllerTest extends ControllerTestProvider {
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   public void return201OnAddListing() throws Exception {
     CreateListingDto listing = new CreateListingDto();
-    listing.setInventoryItemId(1);
-    listing.setQuantity(1);
-    listing.setPrice(17.99f);
+    listing.setInventoryItemId(1L);
+    listing.setQuantity(1L);
+    listing.setPrice(17.99);
 
     mockMvc.perform(post("/businesses/1/listings")
         .contentType("application/json")
@@ -52,8 +52,8 @@ public class ListingControllerTest extends ControllerTestProvider {
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   public void throw400OnBadListing() throws Exception {
     CreateListingDto listing = new CreateListingDto();
-    listing.setInventoryItemId(1);
-    listing.setPrice(17.99f);
+    listing.setInventoryItemId(1L);
+    listing.setPrice(17.99);
 
     mockMvc.perform(post("/businesses/1/listings")
         .contentType("application/json")
@@ -66,8 +66,8 @@ public class ListingControllerTest extends ControllerTestProvider {
   @WithAnonymousUser
   public void throw401OnAddListingTest() throws Exception {
     Listing mockListing = new Listing();
-    mockListing.setQuantity(1);
-    mockListing.setPrice(17.99f);
+    mockListing.setQuantity(1L);
+    mockListing.setPrice(17.99);
 
     mockMvc.perform(post("/businesses/1/listings")
         .contentType("application/json")
@@ -80,8 +80,8 @@ public class ListingControllerTest extends ControllerTestProvider {
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
   public void throw403OnAddListingTest() throws Exception {
     Listing mockListing = new Listing();
-    mockListing.setQuantity(1);
-    mockListing.setPrice(17.99f);
+    mockListing.setQuantity(1L);
+    mockListing.setPrice(17.99);
 
     mockMvc.perform(post("/businesses/1/listings")
         .contentType("application/json")
@@ -100,9 +100,9 @@ public class ListingControllerTest extends ControllerTestProvider {
     businessService.saveBusiness(business);
 
     CreateListingDto listing = new CreateListingDto();
-    listing.setInventoryItemId(1);
-    listing.setQuantity(1);
-    listing.setPrice(17.99f);
+    listing.setInventoryItemId(1L);
+    listing.setQuantity(1L);
+    listing.setPrice(17.99);
 
     return listing;
   }

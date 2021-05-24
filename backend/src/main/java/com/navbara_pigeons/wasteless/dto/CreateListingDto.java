@@ -9,7 +9,7 @@ public class CreateListingDto {
   private long id;
   private long inventoryItemId;
   private long quantity;
-  private float price;
+  private Double price;
   private String moreInfo;
   private LocalDate created;
   private ZonedDateTime closes;

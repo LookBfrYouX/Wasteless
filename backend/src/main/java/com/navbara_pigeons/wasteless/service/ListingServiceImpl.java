@@ -66,12 +66,6 @@ public class ListingServiceImpl implements ListingService {
     // Add inventory item to listing from given id
     listing.setInventoryItem(inventoryService.getInventoryItemById(businessId, inventoryItemId));
 
-    // Price = quantity * price per item if quantity in listing is less than quantity in inventory (AC3)
-    if (listing.getQuantity() < listing.getInventoryItem().getQuantity()
-        && listing.getInventoryItem().getPricePerItem() != null) {
-      listing.setPrice(
-          (float) (listing.getInventoryItem().getPricePerItem() * listing.getQuantity()));
-    }
     if (listing.getCloses() == null) {
       listing.setCloses(ZonedDateTime.of(listing.getInventoryItem().getExpires(), LocalTime.now(),
           ZoneId.systemDefault()));

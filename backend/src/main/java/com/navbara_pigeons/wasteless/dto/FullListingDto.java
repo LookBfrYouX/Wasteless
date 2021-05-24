@@ -10,7 +10,7 @@ public class FullListingDto {
   private long id;
   private FullInventoryItemDto inventoryItem;
   private long quantity;
-  private double price;
+  private Double price;
   private String moreInfo;
   private ZonedDateTime created;
   private ZonedDateTime closes;
