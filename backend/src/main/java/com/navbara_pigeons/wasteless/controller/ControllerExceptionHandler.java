@@ -1,6 +1,5 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -24,7 +23,6 @@ import javax.management.InvalidAttributeValueException;
 @ControllerAdvice
 @Slf4j
 public class ControllerExceptionHandler {
-
     /**
      * This is the exception handler for InsufficientPrivilegesExceptions.
      * @param exc The thrown exception
@@ -68,15 +66,6 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>("File too large!", HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Whenever InventoryItemNotFoundException is thrown, this class will be run
-     *
-     * @return Response to the user (BAD_REQUEST)
-     */
-    @ExceptionHandler(InventoryItemNotFoundException.class)
-    public ResponseEntity<String> handleInventoryItemNotFound() {
-        return new ResponseEntity<>("Inventory item not found!", HttpStatus.BAD_REQUEST);
-    }
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException exc) {
         log.error("BAD CREDENTIALS: 403 - " + exc.getMessage());
@@ -129,8 +118,7 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
     }
 
-
-        @ExceptionHandler(InvalidAttributeValueException.class)
+    @ExceptionHandler(InvalidAttributeValueException.class)
     public ResponseEntity<String> handleInvalidAttributeValueException(InvalidAttributeValueException exc) {
         log.error("SEARCH QUERY ERROR: 500 - " + exc.getMessage());
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
@@ -179,4 +167,10 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
     }
 
+
+    @ExceptionHandler(ListingValidationException.class)
+    public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
+        log.error("BAD REQUEST: 400 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    }
 }

@@ -1,9 +1,8 @@
 package com.navbara_pigeons.wasteless.entity;
 
 import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
-import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
-import com.navbara_pigeons.wasteless.dto.FullInventoryDto;
+import com.navbara_pigeons.wasteless.dto.FullInventoryItemDto;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
@@ -76,7 +75,7 @@ public class InventoryItem {
     this.bestBefore = inventory.getBestBefore();
   }
 
-  public InventoryItem(FullInventoryDto inventory) {
+  public InventoryItem(FullInventoryItemDto inventory) {
     this.product = new Product(inventory.getProduct());
     this.quantity = inventory.getQuantity();
     this.pricePerItem = inventory.getPrice();

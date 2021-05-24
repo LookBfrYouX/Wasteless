@@ -1,13 +1,17 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
+import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,39 +101,35 @@ public class InventoryServiceImpl implements InventoryService {
    */
   @Override
   @Transactional
-  public long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItem) throws InventoryRegistrationException, InsufficientPrivilegesException {
+  public long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItemDto) throws InventoryRegistrationException, InsufficientPrivilegesException {
     Business business;
     try {
       business = businessDao.getBusinessById(businessId);
       Product product;
-      long productId = inventoryItem.getProductId();
+      long productId = inventoryItemDto.getProductId();
       product = productService.getProduct(productId);
       if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
         throw new InsufficientPrivilegesException(
                 "User does not have permission to add an inventory item to the business");
       }
-      Inventory inventory = new Inventory(inventoryItem);
-
-      inventory.setProduct(product);
-      inventory.setBusiness(business);
+      InventoryItem inventoryItem = new InventoryItem(inventoryItemDto);
+      inventoryItem.setProduct(product);
+      inventoryItem.setBusiness(business);
 
       if (inventoryItem.getPricePerItem() == null) {
-        inventory.setPricePerItem(product.getRecommendedRetailPrice());
+        inventoryItem.setPricePerItem(product.getRecommendedRetailPrice());
       }
-
       if (inventoryItem.getTotalPrice() == null) {
-        inventory.setTotalPrice(inventory.getPricePerItem() * inventory.getQuantity());
+        inventoryItem.setTotalPrice(inventoryItem.getPricePerItem() * inventoryItem.getQuantity());
       }
-      InventoryServiceValidation.isInventoryItemValid(inventory);
+      InventoryServiceValidation.isInventoryItemValid(inventoryItem);
 
-      inventoryDao.saveInventoryItem(inventory);
+      inventoryDao.saveInventoryItem(inventoryItem);
 
-      return inventory.getId();
+      return inventoryItem.getId();
 
     } catch (BusinessNotFoundException | ProductNotFoundException | UserNotFoundException exc) {
       throw new InventoryRegistrationException("BUSINESS, PRODUCT OR USER NOT FOUND");
     }
-
-
   }
 }

@@ -7,7 +7,6 @@ import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.entity.Inventory;
 import com.navbara_pigeons.wasteless.exception.*;
 
 import java.util.List;

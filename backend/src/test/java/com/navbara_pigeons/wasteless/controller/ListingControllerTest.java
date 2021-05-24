@@ -50,16 +50,17 @@ public class ListingControllerTest extends ControllerTestProvider {
 
   }
 
-  // Throw 400 on bad request to controller (name is required)
+  // Throw 400 on bad request to controller (quantity is required)
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   public void throw400OnBadListing() throws Exception {
-    Listing mockListing = new Listing();
-    mockListing.setPrice(17.99f);
+    CreateListingDto listing = new CreateListingDto();
+    listing.setInventoryItemId(1);
+    listing.setPrice(17.99f);
 
     mockMvc.perform(post("/businesses/1/listings")
         .contentType("application/json")
-        .content(objectMapper.writeValueAsString(mockListing)))
+        .content(objectMapper.writeValueAsString(listing)))
         .andExpect(status().isBadRequest());
   }
 

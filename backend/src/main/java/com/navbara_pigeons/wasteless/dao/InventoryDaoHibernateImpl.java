@@ -1,6 +1,6 @@
 package com.navbara_pigeons.wasteless.dao;
 
-import com.navbara_pigeons.wasteless.entity.Inventory;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class InventoryDaoHibernateImpl implements InventoryDao{
    * @param inventory The inventoryItem to be saved or updated.
    */
   @Override
-  public void saveInventoryItem(Inventory inventory) {
+  public void saveInventoryItem(InventoryItem inventory) {
     Session currentSession = getSession();
     currentSession.saveOrUpdate(inventory);
   }
@@ -40,9 +40,9 @@ public class InventoryDaoHibernateImpl implements InventoryDao{
    * @throws InventoryItemNotFoundException when no inventoryItem is found
    */
   @Override
-  public Inventory getInventoryItem(long inventoryId) throws InventoryItemNotFoundException {
+  public InventoryItem getInventoryItem(long inventoryId) throws InventoryItemNotFoundException {
     Session currentSession = getSession();
-    Inventory inventory = currentSession.get(Inventory.class, inventoryId);
+    InventoryItem inventory = currentSession.get(InventoryItem.class, inventoryId);
     if (inventory == null) {
       throw new InventoryItemNotFoundException(inventoryId);
     }
