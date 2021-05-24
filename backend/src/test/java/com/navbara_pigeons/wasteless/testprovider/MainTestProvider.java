@@ -3,16 +3,15 @@ package com.navbara_pigeons.wasteless.testprovider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.Inventory;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
-
+import com.navbara_pigeons.wasteless.service.BusinessService;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,11 +38,17 @@ public class MainTestProvider {
   @Autowired
   protected ObjectMapper objectMapper;
 
-  protected Inventory makeInventoryItem(Product product) {
-    Inventory inventoryItem = new Inventory();
+  @Autowired
+  protected BusinessService businessService;
+
+  protected InventoryItem makeInventoryItem(Product product, Business business) {
+    InventoryItem inventoryItem = new InventoryItem();
     inventoryItem.setProduct(product)
         .setExpires(LocalDate.now().plusDays(12))
-        .setQuantity(10);
+        .setQuantity(10)
+        .setPricePerItem(2.00)
+        .setPricePerItem(10.00)
+        .setBusiness(business);
     return inventoryItem;
   }
 

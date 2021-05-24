@@ -2,19 +2,22 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
-import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
+import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.Inventory;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.exception.*;
-
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.navbara_pigeons.wasteless.validation.InventoryServiceValidation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -30,9 +33,6 @@ public class InventoryServiceImpl implements InventoryService {
   private final BusinessService businessService;
   private final ProductService productService;
   private final InventoryDao inventoryDao;
-
-  @Value("${public_path_prefix}")
-  private String publicPathPrefix;
 
   /**
    * InventoryImplementation constructor that takes autowired parameters and sets up the service for
@@ -57,18 +57,37 @@ public class InventoryServiceImpl implements InventoryService {
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
-  public List<BasicInventoryDto> getInventory(long businessId)
+  public List<BasicInventoryItemDto> getInventory(long businessId)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
     if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
-      ArrayList<BasicInventoryDto> inventory = new ArrayList<>();
+      ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
       Business business = businessDao.getBusinessById(businessId);
-      for (Inventory inventoryItem : business.getInventory()) {
-        inventory.add(new BasicInventoryDto(inventoryItem, publicPathPrefix));
+      for (InventoryItem inventoryItem : business.getInventory()) {
+        inventory.add(new BasicInventoryItemDto(inventoryItem));
       }
       return inventory;
     } else {
       throw new InsufficientPrivilegesException("You are not permitted to modify this business");
     }
+  }
+
+  /**
+   * Returns an inventory item by a given id
+   * @param businessId business with inventory to query
+   * @param itemId id of the item to be retrieved
+   * @return inventory item or null
+   */
+  public InventoryItem getInventoryItemById(long businessId, long itemId)
+      throws BusinessNotFoundException, InventoryItemNotFoundException {
+    Business business = businessDao.getBusinessById(businessId);
+    List<InventoryItem> inventory = business.getInventory();
+
+    for (InventoryItem inventoryItem: inventory) {
+      if (inventoryItem.getId() == itemId) {
+        return inventoryItem;
+      }
+    }
+    throw new InventoryItemNotFoundException(itemId);
   }
 
   /**
@@ -82,39 +101,35 @@ public class InventoryServiceImpl implements InventoryService {
    */
   @Override
   @Transactional
-  public long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItem) throws InventoryRegistrationException, InsufficientPrivilegesException {
+  public long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItemDto) throws InventoryRegistrationException, InsufficientPrivilegesException {
     Business business;
     try {
       business = businessDao.getBusinessById(businessId);
       Product product;
-      long productId = inventoryItem.getProductId();
+      long productId = inventoryItemDto.getProductId();
       product = productService.getProduct(productId);
       if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
         throw new InsufficientPrivilegesException(
                 "User does not have permission to add an inventory item to the business");
       }
-      Inventory inventory = new Inventory(inventoryItem);
-
-      inventory.setProduct(product);
-      inventory.setBusiness(business);
+      InventoryItem inventoryItem = new InventoryItem(inventoryItemDto);
+      inventoryItem.setProduct(product);
+      inventoryItem.setBusiness(business);
 
       if (inventoryItem.getPricePerItem() == null) {
-        inventory.setPricePerItem(product.getRecommendedRetailPrice());
+        inventoryItem.setPricePerItem(product.getRecommendedRetailPrice());
       }
-
       if (inventoryItem.getTotalPrice() == null) {
-        inventory.setTotalPrice(inventory.getPricePerItem() * inventory.getQuantity());
+        inventoryItem.setTotalPrice(inventoryItem.getPricePerItem() * inventoryItem.getQuantity());
       }
-      InventoryServiceValidation.isInventoryItemValid(inventory);
+      InventoryServiceValidation.isInventoryItemValid(inventoryItem);
 
-      inventoryDao.saveInventoryItem(inventory);
+      inventoryDao.saveInventoryItem(inventoryItem);
 
-      return inventory.getId();
+      return inventoryItem.getId();
 
     } catch (BusinessNotFoundException | ProductNotFoundException | UserNotFoundException exc) {
       throw new InventoryRegistrationException("BUSINESS, PRODUCT OR USER NOT FOUND");
     }
-
-
   }
 }

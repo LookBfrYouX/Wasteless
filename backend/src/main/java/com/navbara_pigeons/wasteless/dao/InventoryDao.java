@@ -1,12 +1,11 @@
 package com.navbara_pigeons.wasteless.dao;
 
-import com.navbara_pigeons.wasteless.entity.Inventory;
-import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 
 public interface InventoryDao {
 
-  void saveInventoryItem(Inventory inventory);
+  void saveInventoryItem(InventoryItem inventory);
 
-  Inventory getInventoryItem(long InventoryId) throws InventoryItemNotFoundException;
+  InventoryItem getInventoryItem(long InventoryId) throws InventoryItemNotFoundException;
 }

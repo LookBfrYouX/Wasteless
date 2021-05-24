@@ -1,9 +1,8 @@
 package com.navbara_pigeons.wasteless.dto;
 
 
-import com.navbara_pigeons.wasteless.entity.Inventory;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import lombok.Data;
-
 import java.time.LocalDate;
 
 @Data
@@ -17,7 +16,7 @@ public class CreateInventoryItemDto {
   private LocalDate bestBefore;
   private LocalDate expires;
 
-  public CreateInventoryItemDto(Inventory inventoryItem) {
+  public CreateInventoryItemDto(InventoryItem inventoryItem) {
     this.productId = inventoryItem.getProduct().getId();
     this.quantity = inventoryItem.getQuantity();
     this.pricePerItem = inventoryItem.getPricePerItem();

@@ -5,9 +5,9 @@ import static org.mockito.Mockito.when;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
-import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
+import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.Inventory;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -65,17 +65,17 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
     business.addCatalogueProduct(product);
 
-    Inventory inventoryItem = makeInventoryItem(product);
+    InventoryItem inventoryItem = makeInventoryItem(product, business);
     inventoryItem.setId(103);
 
     business.getInventory().add(inventoryItem);
 
-    List<Inventory> inventoryItemList = new ArrayList<>();
-    inventoryItemList.add(inventoryItem);
+    List<InventoryItem> inventory = new ArrayList<>();
+    inventory.add(inventoryItem);
 
-    List<BasicInventoryDto> inventory = inventoryService.getInventory(business.getId());
+    List<BasicInventoryItemDto> inventoryDto = inventoryService.getInventory(business.getId());
 
-    assertInventoryListEquals(inventoryItemList, inventory);
+    assertInventoryListEquals(inventory, inventoryDto);
   }
 
   @Test
@@ -113,15 +113,15 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
     business.addCatalogueProduct(product);
 
-    Inventory inventoryItem = makeInventoryItem(product);
+    InventoryItem inventoryItem = makeInventoryItem(product, business);
     inventoryItem.setId(103);
 
     business.getInventory().add(inventoryItem);
 
-    List<Inventory> inventoryItemList = new ArrayList<>();
+    List<InventoryItem> inventoryItemList = new ArrayList<>();
     inventoryItemList.add(inventoryItem);
 
-    List<BasicInventoryDto> inventory = inventoryService.getInventory(business.getId());
+    List<BasicInventoryItemDto> inventory = inventoryService.getInventory(business.getId());
 
     assertInventoryListEquals(inventoryItemList, inventory);
   }
