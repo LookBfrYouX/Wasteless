@@ -197,6 +197,13 @@ export default {
       suggestions = suggestions.filter(({ id, weightedScore }) => weightedScore < WORST_RATIO && !selectedSuggestions.has(id));
       // Don't return already selected suggestions
       suggestions = suggestions.slice(0, NUM_SUGGESTIONS);
+
+      if (suggestions.length == 0) {
+        suggestions = [{
+          toString: () => "No suggestions",
+          disabled: true
+        }]
+      }
       return suggestions;
     }
   },
@@ -218,7 +225,6 @@ export default {
     showSuggestionsInput() {
       this.showSuggestions = true;
       this.$nextTick(() => {
-        console.log(this.$refs.suggestionsInput.forceFocus());
         this.$refs.suggestionsInput.$refs.input.focus()
       });
     },

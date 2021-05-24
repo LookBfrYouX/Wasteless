@@ -7,6 +7,7 @@ Notes:
   - Array of suggestions to show
   - The only required property
   - `toString` is called on the element to get the value to display
+  - Optional `disabled` boolean can be on the element
   - Currently, the key is the index
 - `value`: value of input element
   - Use `v-on:input` to receive the value (NOT the event) of the input when it changes
@@ -25,6 +26,7 @@ Notes:
   - These should all be objects
   - `liActiveClasses` is applied to the currently selected suggestion, if any
   - `liInactiveClasses` is applied to any unselected suggestions
+  - `liDisabledClasses` is applied if the suggestion is disabled
 - Any attributes (e.g. class, type) are passed onto the input element
 -->
 <template>
@@ -46,13 +48,9 @@ Notes:
       <li
           v-for="(suggestion, i) in suggestions"
           v-bind:key="i"
-          :data-index="i"
-          v-bind:class="{
-          ...(i == index? liActiveClasses: liInactiveClasses),
-          ...liClasses
-        }"
-          v-on:click="suggestionClick"
-          v-on:mouseover="suggestionMouseover"
+          v-bind:class="listItemClasses(suggestion, i)"
+          v-on:click="() => suggestionClick(i)"
+          v-on:mouseover="() => suggestionMouseover(i)"
       >
         {{ suggestion.toString() }}
       </li>
@@ -73,12 +71,21 @@ export default {
   inheritAttrs: false,
 
   props: {
+    /**
+     * Array of suggestions
+     * `toString()` used to display values
+     * If object and `disabled` is true, the suggestion appears disabled
+     */
     suggestions: {
       required: true,
       default: () => {
         return []
       }
     },
+
+    /**
+     * Current value of the text input. Use `v-on:input` to receive the value of the input (not an event)
+     */
     value: {
       default: ""
     },
@@ -115,10 +122,19 @@ export default {
           "active": true
         }
       }
-    }, liInactiveClasses: {
+    },
+    liInactiveClasses: {
       default: () => {
         return {
           "slightly-transparent-white-background": true
+        }
+      }
+    },
+    liDisabledClasses: {
+      default: () => {
+        return {
+          "slightly-transparent-white-background": true,
+          "disabled": true
         }
       }
     },
@@ -195,19 +211,20 @@ export default {
     },
 
     /**
-     * Sets the index to the clicked element, hides the suggestions and inputs an `input` event
+     * Sets the index to the given index, hides the suggestions and inputs an `input` event, but only if the element is not disabled
      */
-    suggestionClick: function (event) {
-      this.suggestionMouseover(event);
+    suggestionClick: function (i) {
+      if (this.isDisabled(this.suggestions[i])) return;
+      this.suggestionMouseover(i);
       this.suggestionSelected();
     },
 
     /**
-     * Sets the index to that of the index currently being selected
+     * Sets the index to that of the index currently being selected, but only if the element is not disabled
      */
-    suggestionMouseover: function (event) {
-      const index = event.target.getAttribute("data-index");
-      this.index = index;
+    suggestionMouseover: function (i) {
+      if (this.isDisabled(this.suggestions[i])) return;
+      this.index = i;
     },
 
     /**
@@ -220,6 +237,26 @@ export default {
         const suggestion = this.suggestions[this.index];
         this.$emit("input", suggestion.toString());
         this.$emit("suggestion", suggestion);
+      }
+    },
+
+    /**
+     * Given an element of an array, returns true if the `disabled` property exists and is true
+     */
+    isDisabled: function (el) {
+      return typeof el === "object" && el["disabled"] === true;
+    },
+
+    /**
+     * Returns object containing the classes the list element should have
+     */
+    listItemClasses: function(el, i) {
+      if (this.isDisabled(el)) {
+        return { ...this.liClasses, ...this.liDisabledClasses };
+      } else if (i == this.index) {
+        return { ...this.liClasses, ...this.liActiveClasses };
+      } else {
+        return { ...this.liClasses, ...this.liInactiveClasses };
       }
     }
   },
