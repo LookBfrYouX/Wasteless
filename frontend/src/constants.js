@@ -2,6 +2,10 @@
  * Module containing constants
  */
 export const constants = {
+  USER: {
+    ADMIN_ROLE: "ROLE_ADMIN"
+  },
+
   SIGN_UP: {
     MIN_AGE: 13
   },
@@ -53,15 +57,7 @@ export const constants = {
   SORTED_PAGINATED_ITEM_LIST: {
     RESULTS_PER_PAGE: 10
   },
-
-  SEARCH_RESULTS: {
-    RESULTS_PER_PAGE: 10
-  },
-
-  PRODUCT_CATALOG: {
-    RESULTS_PER_PAGE: 10
-  },
-
+  
   BUSINESSES: {
     TYPES: [
       "Accommodation and Food Services",

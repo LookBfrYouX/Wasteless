@@ -5,11 +5,7 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.AddressValidationException;
-import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
@@ -86,7 +82,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public JSONObject saveUser(User user)
-      throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException {
+          throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException, UserAuthenticationException {
     // Email validation
     if (!UserServiceValidation.requiredFieldsNotEmpty(user)) {
       throw new UserRegistrationException("Required user fields cannot be null");
@@ -97,17 +93,10 @@ public class UserServiceImpl implements UserService {
     if (userDao.userExists(user.getEmail())) {
       throw new UserAlreadyExistsException("User already exists");
     }
-    // Validates the users DOB
-    if (!UserServiceValidation.isDobValid(user.getDateOfBirth())) {
-      throw new UserRegistrationException("Invalid date of birth");
-    }
     // Check user is over 13 years old
-    if (!LocalDate.parse(user.getDateOfBirth()).isBefore(LocalDate.now().minusYears(13))) {
+    if (!user.getDateOfBirth().isBefore(LocalDate.now().minusYears(13))) {
       throw new UserRegistrationException("Must be 13 years or older to register");
     }
-    user.setDateOfBirth(
-        LocalDate.parse(user.getDateOfBirth()).format(DateTimeFormatter.ISO_LOCAL_DATE));
-
     // Password and field validation
     if (!UserServiceValidation.isPasswordValid(user.getPassword())) {
       throw new UserRegistrationException("Password does not pass validation check");
@@ -140,13 +129,8 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
-  public Object getUserById(long id) throws UserNotFoundException {
-    User user = userDao.getUserById(id);
-    if (isAdmin() || isSelf(user.getEmail())) {
-      return new FullUserDto(user);
-    } else {
-      return new BasicUserDto(user);
-    }
+  public User getUserById(long id) throws UserNotFoundException {
+    return userDao.getUserById(id);
   }
 
   /**
@@ -160,7 +144,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public JSONObject login(UserCredentials userCredentials)
-      throws AuthenticationException, UserNotFoundException {
+          throws AuthenticationException, UserNotFoundException, UserAuthenticationException {
     // Check for null in userCredentials
     if (userCredentials.getEmail() == null || userCredentials.getPassword() == null) {
       throw new BadCredentialsException("No username/password supplied.");
@@ -170,11 +154,15 @@ public class UserServiceImpl implements UserService {
         userCredentials.getEmail(),
         userCredentials.getPassword()
     );
-    // Perform authentication and get authentication object
-    Authentication auth = authenticationManagerBuilder.getOrBuild().authenticate(authReq);
-    // Set current security context with authentication
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    securityContext.setAuthentication(auth);
+    try {
+      // Perform authentication and get authentication object
+      Authentication auth = authenticationManagerBuilder.getOrBuild().authenticate(authReq);
+      // Set current security context with authentication
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      securityContext.setAuthentication(auth);
+    } catch (AuthenticationException exc) {
+      throw new UserAuthenticationException();
+    }
     // Build and return JSON response
     JSONObject response = new JSONObject();
     User user = userDao.getUserByEmail(userCredentials.getEmail());

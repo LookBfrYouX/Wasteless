@@ -8,6 +8,7 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -40,10 +41,8 @@ public class MainTestProvider {
 
   protected Inventory makeInventoryItem(Product product) {
     Inventory inventoryItem = new Inventory();
-    LocalDate date = LocalDate.now(ZoneOffset.UTC);
-    date = date.plusMonths(1);
     inventoryItem.setProduct(product)
-        .setExpires(date)
+        .setExpires(LocalDate.now().plusDays(12))
         .setQuantity(10);
     return inventoryItem;
   }
@@ -120,7 +119,7 @@ public class MainTestProvider {
         .setNickname("Nick")
         .setEmail(email)
         .setPhoneNumber("+6412345678")
-        .setDateOfBirth("2000-03-10")
+        .setDateOfBirth(LocalDate.parse("2000-03-10"))
         .setHomeAddress(makeAddress())
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole(isAdmin ? "ROLE_ADMIN" : "ROLE_USER")

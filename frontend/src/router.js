@@ -86,6 +86,7 @@ export const router = new VueRouter({
       component: () => import("./components/CreateProduct.vue"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)}),
       meta: {
+        title: "Create Product | Wasteless",
         requiresSignIn: true,
         requiresBusinessAdmin: true
       }
@@ -96,6 +97,7 @@ export const router = new VueRouter({
       component: () => import("./components/ProductCatalogue.vue"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)}),
       meta: {
+        title: "Product Catalogue | Wasteless",
         requiresSignIn: true,
         requiresBusinessAdmin: true
       }
@@ -238,14 +240,19 @@ export const router = new VueRouter({
  * To set title after navigate, use the `setDocumentTitle` prop passed to the router component in `App.vue`
  */
 router.afterEach((to) => {
-  
   // Navbar is static now so when the user clicks a link, close the navbar so it doesn't cover the new content
   if (document) {
     const hamburger = document.getElementById("hamburger-button");
-    if (hamburger && !hamburger.classList.contains("collapsed")) {
+    const supportedContent = document.getElementById("navbarSupportedContent");
+    // Sometimes hamburger has no 'collapsed' class but the navbar is still collapsed, so need to check if 'supportedContent' has the 'show' class too
+    if (hamburger && supportedContent && 
+        !hamburger.classList.contains("collapsed") &&
+        supportedContent.classList.contains("show")
+        ) {
       hamburger.click();
     }
   }
+  
   Vue.nextTick(() => {
     let title = "Wasteless";
     if (typeof to.meta.title == "string") {

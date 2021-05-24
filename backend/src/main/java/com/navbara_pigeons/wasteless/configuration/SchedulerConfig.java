@@ -78,7 +78,7 @@ public class SchedulerConfig {
     dgaa.setFirstName("Admin")
         .setLastName("Admin")
         .setEmail(this.dgaaEmail)
-        .setDateOfBirth(LocalDate.parse("2000-01-01").format(DateTimeFormatter.ISO_LOCAL_DATE))
+        .setDateOfBirth(LocalDate.parse("2000-01-01"))
         .setHomeAddress(address)
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole("ROLE_ADMIN")
