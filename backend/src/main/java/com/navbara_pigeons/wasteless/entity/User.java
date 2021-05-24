@@ -5,6 +5,8 @@ import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
+
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +56,7 @@ public class User {
   private String email;
 
   @Column(name = "DATE_OF_BIRTH")
-  private String dateOfBirth;
+  private LocalDate dateOfBirth;
 
   @Column(name = "PHONE_NUMBER")
   private String phoneNumber;

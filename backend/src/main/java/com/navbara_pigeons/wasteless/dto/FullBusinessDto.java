@@ -57,7 +57,7 @@ public class FullBusinessDto {
   private List<BasicProductDto> makeProductDto(List<Product> products, String publicPathPrefix) {
     ArrayList<BasicProductDto> productsDto = new ArrayList<BasicProductDto>();
     for (Product product : products) {
-      productsDto.add(new BasicProductDto(product, publicPathPrefix));
+      productsDto.add(new BasicProductDto(product));
     }
     return productsDto;
   }

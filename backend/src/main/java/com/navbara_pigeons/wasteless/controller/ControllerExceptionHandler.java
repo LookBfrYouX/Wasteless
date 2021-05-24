@@ -1,16 +1,18 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
-
 import javax.management.InvalidAttributeValueException;
 
 /**
@@ -21,7 +23,6 @@ import javax.management.InvalidAttributeValueException;
 @ControllerAdvice
 @Slf4j
 public class ControllerExceptionHandler {
-
     /**
      * This is the exception handler for InsufficientPrivilegesExceptions.
      * @param exc The thrown exception
@@ -55,6 +56,16 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
     }
 
+    /**
+     * Whenever MaxUploadSizeExceededException is thrown, this class will be run
+     *
+     * @return Response to the user (BAD_REQUEST)
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<String> handleMaxSizeException() {
+        return new ResponseEntity<>("File too large!", HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException exc) {
         log.error("BAD CREDENTIALS: 403 - " + exc.getMessage());
@@ -73,15 +84,37 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
     }
 
-    @ExceptionHandler(ProductForbiddenException.class)
-    public ResponseEntity<String> handleProductForbiddenException(ProductForbiddenException exc) {
-        log.error("PRODUCT ERROR: 403 - " + exc.getMessage());
-        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(403));
-    }
-
     @ExceptionHandler(ProductRegistrationException.class)
     public ResponseEntity<String> handleProductRegistrationException(ProductRegistrationException exc) {
         log.error("PRODUCT REGISTRATION ERROR: 400 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    }
+
+    @ExceptionHandler(InventoryItemNotFoundException.class)
+    public ResponseEntity<String> handleInventoryItemNotFoundException(InventoryItemNotFoundException exc) {
+        log.error("INVENTORY ITEM ERROR: 406 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
+    }
+
+    /**
+     * This is the exception handler for InventoryRegistrationExceptions.
+     * @param exc The thrown exception
+     * @return ResponseEntity with the exception message
+     */
+    @ExceptionHandler(InventoryRegistrationException.class)
+    public ResponseEntity<String> handleInventoryRegistrationException(InventoryRegistrationException exc) {
+        log.error("INVENTORY REGISTRATION EXCEPTION: 400 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    }
+
+    /**
+     * This is the exception handler for ProductNotFoundExceptions.
+     * @param exc The thrown exception
+     * @return ResponseEntity with the exception message
+     */
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> handleProductNotFound(ProductNotFoundException exc) {
+        log.error("PRODUCT NOT FOUND: 406 - " + exc.getMessage());
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
     }
 
@@ -134,4 +167,10 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
     }
 
+
+    @ExceptionHandler(ListingValidationException.class)
+    public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
+        log.error("BAD REQUEST: 400 - " + exc.getMessage());
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    }
 }

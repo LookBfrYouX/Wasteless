@@ -18,7 +18,7 @@ public interface UserService {
   JSONObject login(UserCredentials userCredentials)
           throws AuthenticationException, UserNotFoundException, UserAuthenticationException;
 
-  Object getUserById(long id) throws UserNotFoundException, UnhandledException;
+  User getUserById(long id) throws UserNotFoundException, UnhandledException;
 
   User getUserByEmail(String email) throws UserNotFoundException;
 

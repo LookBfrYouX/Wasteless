@@ -31,7 +31,6 @@ public class ProductServiceValidation {
    * @param price price to check
    * @return true if valid
    */
-  public static boolean priceIsValid(Double price) {
-    return !price.isNaN() && price > 0 && price < 10000;
+  public static boolean priceIsValid(Double price) { return price != null && !price.isNaN() && price > 0 && price <= 9999.99;
   }
 }

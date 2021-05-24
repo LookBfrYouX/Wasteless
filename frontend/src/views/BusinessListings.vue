@@ -9,7 +9,7 @@
         <h2>Listings for {{businessName? businessName: "business"}}</h2>
       </template>
       <template v-slot:item="slotProps">
-        <div class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded">
+        <div class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded" v-on:click="viewListing(slotProps.item.id)">
         {{JSON.stringify(slotProps.item)}}
         </div>
         <!--<business-listing v-bind:listing="slotProps.item"/> -->
@@ -128,6 +128,19 @@ export default {
 
     loadBusinessName: async function() {
       this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
+    },
+
+    /**
+     * Go to listing detail page by passing the listing id
+     */
+    viewListing(listingId) {
+      this.$router.push({
+        name: "salesListingDetail",
+        params: {
+          businessId: this.businessId,
+          listingId
+        }
+      });
     }
   },
 
