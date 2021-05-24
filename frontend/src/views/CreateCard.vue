@@ -62,6 +62,7 @@
             <span class="mr-2 mb-2">Currently selected tags:</span>
             <tag
               v-for="keyword in keywords"
+              class="mr-2 mb-2"
               v-bind:key="keyword.id"
               v-bind:xButton="true"
               v-on:xClick="removeKeyword(keyword.id)"

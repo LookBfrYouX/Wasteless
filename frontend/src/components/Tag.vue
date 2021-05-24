@@ -1,7 +1,9 @@
 <template>
   <div
-    class="border border-primary d-flex rounded justify-content-center align-items-center slightly-transparent-white-background mr-2 mb-2 px-1"
+    class="border border-primary d-flex rounded justify-content-center align-items-center slightly-transparent-white-background hover-white-bg bg-color-transition px-1"
+    v-bind:class="{ 'py-1': !xButton }"
   >
+  <!-- if there is no x button, tag gets a bit smaller. Heights are still different when it has and does not have the button but is pretty enough -->
     <slot/>
     <button
       class="btn btn-outline-primary d-flex justify-content-center align-items-center p-0 my-1 ml-1 rounded-circle"
