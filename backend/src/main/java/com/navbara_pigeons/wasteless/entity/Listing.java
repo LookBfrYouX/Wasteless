@@ -51,7 +51,7 @@ public class Listing {
   private ZonedDateTime created;
 
   @Column(name = "CLOSES")
-  private LocalDate closes;
+  private ZonedDateTime closes;
 
   public Listing(CreateListingDto createListingDto) {
     this.id = createListingDto.getId();

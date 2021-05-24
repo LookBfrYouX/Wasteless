@@ -13,7 +13,7 @@ public class FullListingDto {
   private double price;
   private String moreInfo;
   private ZonedDateTime created;
-  private LocalDate closes;
+  private ZonedDateTime closes;
 
   public FullListingDto(Listing listing) {
     id = listing.getId();

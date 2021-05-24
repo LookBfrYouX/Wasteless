@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.dto;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import lombok.Data;
 
 @Data
@@ -11,7 +12,7 @@ public class CreateListingDto {
   private float price;
   private String moreInfo;
   private LocalDate created;
-  private LocalDate closes;
+  private ZonedDateTime closes;
 
   public CreateListingDto() {
 

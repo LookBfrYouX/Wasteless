@@ -11,6 +11,9 @@ import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -69,7 +72,8 @@ public class ListingServiceImpl implements ListingService {
           (float) (listing.getInventoryItem().getPricePerItem() * listing.getQuantity()));
     }
     if (listing.getCloses() == null) {
-      listing.setCloses(listing.getInventoryItem().getExpires());
+      listing.setCloses(ZonedDateTime.of(listing.getInventoryItem().getExpires(), LocalTime.now(),
+          ZoneId.systemDefault()));
     }
     if (!ListingServiceValidation.isListingValid(listing)) {
       throw new ListingValidationException("listing did not pass validation");
