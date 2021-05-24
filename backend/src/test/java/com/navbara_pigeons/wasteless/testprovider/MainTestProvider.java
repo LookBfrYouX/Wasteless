@@ -119,7 +119,7 @@ public class MainTestProvider {
         .setNickname("Nick")
         .setEmail(email)
         .setPhoneNumber("+6412345678")
-        .setDateOfBirth("2000-03-10")
+        .setDateOfBirth(LocalDate.parse("2000-03-10"))
         .setHomeAddress(makeAddress())
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setRole(isAdmin ? "ROLE_ADMIN" : "ROLE_USER")
