@@ -71,6 +71,26 @@ const mockCards = [
         "id": 600,
         "name": "Vehicle",
         "created": "2021-07-15T05:10:00Z"
+      },
+      {
+        "id": 700,
+        "name": "Another Tag",
+        "created": "2021-07-15T05:10:00Z"
+      },
+      {
+        "id": 800,
+        "name": "Another Tag",
+        "created": "2021-07-15T05:10:00Z"
+      },
+      {
+        "id": 700,
+        "name": "Another Tag",
+        "created": "2021-07-15T05:10:00Z"
+      },
+      {
+        "id": 700,
+        "name": "Another Tag",
+        "created": "2021-07-15T05:10:00Z"
       }
     ]
   }
