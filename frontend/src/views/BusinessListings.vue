@@ -43,17 +43,8 @@ import { helper } from "../helper";
 
 const sortOptions = [
   {
-    name: "ID",
-    sortMethod: helper.sensibleSorter("id")
-  }, {
-    name: "Name TODO delete. Only this and ID work with the dummy data",
-    sortMethod: helper.sensibleSorter("name") 
-  }, {
     name: "Price",
     sortMethod: helper.sensibleSorter("price") 
-  }, {
-    name: "RRP",
-    sortMethod: helper.sensibleSorter(el => el.inventoryItem.recommendedRetailPrice)
   }, {
     name: "Name",
     sortMethod: helper.sensibleSorter(el => el.inventoryItem.product.name)
@@ -84,7 +75,7 @@ export default {
 
   data() {
     return {
-      listings: null,
+      listings: [],
       apiErrorMessage: null,
       sortOptions: sortOptions,
       currentSortOption: { ...sortOptions[0], reversed: false},
