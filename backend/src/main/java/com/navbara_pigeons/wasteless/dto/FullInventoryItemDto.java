@@ -10,7 +10,7 @@ public class FullInventoryItemDto {
   private long id;
   private BasicProductDto product;
   private long quantity;
-  private Double price;
+  private Double pricePerItem;
   private Double totalPrice;
   private LocalDate expires;
   private LocalDate manufactured;
@@ -21,7 +21,7 @@ public class FullInventoryItemDto {
     id = inventoryItem.getId();
     product = new BasicProductDto(inventoryItem.getProduct());
     quantity = inventoryItem.getQuantity();
-    price = inventoryItem.getPricePerItem();
+    pricePerItem = inventoryItem.getPricePerItem();
     totalPrice = inventoryItem.getTotalPrice();
     expires = inventoryItem.getExpires();
     manufactured = inventoryItem.getManufactured();

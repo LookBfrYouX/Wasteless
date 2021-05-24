@@ -22,6 +22,7 @@ public class FullListingDto {
     price = listing.getPrice();
     created = listing.getCreated();
     closes = listing.getCloses();
+    moreInfo = listing.getMoreInfo();
   }
 
   public FullListingDto() {

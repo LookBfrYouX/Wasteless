@@ -78,7 +78,7 @@ public class InventoryItem {
   public InventoryItem(FullInventoryItemDto inventory) {
     this.product = new Product(inventory.getProduct());
     this.quantity = inventory.getQuantity();
-    this.pricePerItem = inventory.getPrice();
+    this.pricePerItem = inventory.getPricePerItem();
     this.totalPrice = inventory.getTotalPrice();
     this.expires = inventory.getExpires();
     this.manufactured = inventory.getManufactured();
