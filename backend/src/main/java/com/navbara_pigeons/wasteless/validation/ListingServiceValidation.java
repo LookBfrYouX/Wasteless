@@ -18,8 +18,8 @@ public class ListingServiceValidation {
     long remainingQuantity = listing.getInventoryItem().getQuantity();
     List<InventoryItem> inventory = listing.getInventoryItem().getBusiness().getInventory();
     for (InventoryItem inventoryItem : inventory) {
-      for (Listing listing1 : inventoryItem.getListings()) {
-        if (listing1.getId() == listing.getId()) {
+      if (inventoryItem.getId() == listing.getInventoryItem().getId()) {
+        for (Listing listing1 : inventoryItem.getListings()) {
           remainingQuantity -= listing1.getQuantity();
         }
       }

@@ -6,17 +6,16 @@ import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.dto.FullAddressDto;
-import com.navbara_pigeons.wasteless.entity.Address;
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.Listing;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,13 +24,13 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
   private long businessId;
   private long productId;
   private long inventoryItemId;
+  private long listingId;
   private MvcResult responseOne;
   private MvcResult responseTwo;
 
   // ---------- AC2 ----------
   @Given("a user has a business {string} in {string}")
   public void a_user_has_a_business_in(String businessName, String countryName) throws Exception {
-    // Write code here that turns the phrase above into concrete actions
     login();
     CreateBusinessDto business = new CreateBusinessDto();
     business.setBusinessType("Retail Trade");
@@ -45,7 +44,6 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
 
   @And("the business has the product {string} with RRP of {double}")
   public void the_business_has_the_product_with_rrp_of(String name, Double rrp) throws Exception {
-    // Write code here that turns the phrase above into concrete actions
     BasicProductCreationDto product = new BasicProductCreationDto();
     product.setName(name);
     product.setManufacturer("Should be optional but might still be required");
@@ -56,17 +54,16 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
         status().isCreated()
     );
 
-    System.out.println("HERERER:" + response);
     productId = response.get("productId").asLong();
   }
 
   @And("my business has {int} of them in stock at {double}")
   public void myBusinessHasOfThemInStockAt(int quantity, double price) throws Exception {
-    // Write code here that turns the phrase above into concrete actions
     CreateInventoryItemDto inventoryItem = new CreateInventoryItemDto();
     inventoryItem.setQuantity(quantity);
     inventoryItem.setTotalPrice(price);
     inventoryItem.setProductId(productId);
+    inventoryItem.setExpires(LocalDate.now());
     JsonNode response = makePostRequestGetJson(
         "/businesses/" + businessId + "/inventory",
         inventoryItem,
@@ -76,28 +73,27 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     inventoryItemId = response.get("inventoryItemId").asLong();
   }
 
-  @And("a listing with quantity {int} and price {double} exists")
-  public void aListingWithQuantityAndPriceExists(int quantity, int price) throws Exception {
-    // Create listing
+  @And("a listing with quantity {int} and price {float} exists")
+  public void aListingWithQuantityAndPriceExists(int quantity, float price) throws Exception {
     CreateListingDto listing = new CreateListingDto();
     listing.setInventoryItemId(inventoryItemId);
     listing.setQuantity(quantity);
     listing.setPrice(price);
 
-    responseOne = mockMvc.perform(post("/businesses/")
+    responseOne = mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andReturn();
   }
 
-  @When("i create another listing with quantity {int} and price {double}")
-  public void iCreateAnotherListingWithQuantityAndPrice(int quantity, int price) throws Exception {
+  @When("i create another listing with quantity {int} and price {float}")
+  public void iCreateAnotherListingWithQuantityAndPrice(int quantity, float price) throws Exception {
     CreateListingDto listing = new CreateListingDto();
     listing.setInventoryItemId(inventoryItemId);
     listing.setQuantity(quantity);
     listing.setPrice(price);
 
-    responseTwo = mockMvc.perform(post("/businesses/")
+    responseTwo = mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andReturn();
@@ -105,10 +101,9 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
 
   @Then("appropriate error messages are shown")
   public void appropriateErrorMessagesAreShown() {
-    System.out.println(responseOne);
-    System.out.println(responseTwo);
-    // TODO: Assert these responses contain errors
-    Assertions.fail();
+    // First listing should be created, second shouldn't
+    Assertions.assertEquals(responseOne.getResponse().getStatus(), 201);
+    Assertions.assertEquals(responseTwo.getResponse().getStatus(), 400);
   }
 
 
@@ -120,15 +115,20 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setQuantity(quantity);
     listing.setPrice(0.00F);
 
-    responseOne = mockMvc.perform(post("/businesses/")
+    responseOne = mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andReturn();
+    listingId = Long.parseLong(responseOne.getResponse().getContentAsString());
   }
 
   @Then("i can see the price is generated by the inventory item price * the quantity in the listing")
-  public void iCanSeeThePriceIsGeneratedByTheInventoryItemPriceTheQuantityInTheListing() {
-    System.out.println(responseOne);
+  public void iCanSeeThePriceIsGeneratedByTheInventoryItemPriceTheQuantityInTheListing()
+      throws Exception {
+    MvcResult response = mockMvc.perform(get("/businesses/" + businessId + "/listings"))
+        .andReturn();
+
+    System.out.println(response.getResponse().getContentAsString());
     // TODO: Check the total price = price per item * quantity
     Assertions.fail();
   }
@@ -143,7 +143,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setPrice(0.00F);
     listing.setMoreInfo(moreInfo);
 
-    responseOne = mockMvc.perform(post("/businesses/")
+    responseOne = mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andReturn();
@@ -165,7 +165,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setQuantity(quantity);
     listing.setPrice(0.00F);
 
-    responseOne = mockMvc.perform(post("/businesses/")
+    responseOne = mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andReturn();

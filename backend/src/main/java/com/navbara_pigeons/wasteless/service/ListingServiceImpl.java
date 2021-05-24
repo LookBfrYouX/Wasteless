@@ -45,11 +45,11 @@ public class ListingServiceImpl implements ListingService {
    * Adds a given listing to a businesses listings
    *
    * @param businessId id of the business to add the listing to
-   * @param listing listing dto of the listing to be added tot the business
+   * @param listing    listing dto of the listing to be added tot the business
    * @return newly created listing id
-   * @throws InsufficientPrivilegesException  when a user is not admin nor business admin
-   * @throws BusinessNotFoundException        when no business with given id exists
-   * @throws UserNotFoundException            this will be caught by spring first
+   * @throws InsufficientPrivilegesException when a user is not admin nor business admin
+   * @throws BusinessNotFoundException       when no business with given id exists
+   * @throws UserNotFoundException           this will be caught by spring first
    */
   @Override
   @Transactional
@@ -62,11 +62,17 @@ public class ListingServiceImpl implements ListingService {
     // Add inventory item to listing from given id
     listing.setInventoryItem(inventoryService.getInventoryItemById(businessId, inventoryItemId));
 
+    // Price = quantity * price per item if quantity in listing is less than quantity in inventory (AC3)
+    if (listing.getQuantity() < listing.getInventoryItem().getQuantity()
+        && listing.getInventoryItem().getPricePerItem() != null) {
+      listing.setPrice(
+          (float) (listing.getInventoryItem().getPricePerItem() * listing.getQuantity()));
+    }
     if (listing.getCloses() == null) {
       listing.setCloses(listing.getInventoryItem().getExpires());
     }
     if (!ListingServiceValidation.isListingValid(listing)) {
-      throw new ListingValidationException();
+      throw new ListingValidationException("listing did not pass validation");
     }
     listingDao.save(listing);
     return listing.getId();
@@ -74,17 +80,19 @@ public class ListingServiceImpl implements ListingService {
 
   /**
    * Gets all listings for the given business
+   *
    * @param businessId id of business
    * @return listings in no guaranteed order
    * @throws BusinessNotFoundException
    * @throws UserNotFoundException
    */
   @Override
-  public List<FullListingDto> getListings(long businessId) throws BusinessNotFoundException, UserNotFoundException {
+  public List<FullListingDto> getListings(long businessId)
+      throws BusinessNotFoundException, UserNotFoundException {
     Business business = businessService.getBusiness(businessId);
     ArrayList<FullListingDto> listings = new ArrayList<>();
-    for (InventoryItem inventory: business.getInventory()) {
-      for (Listing listing: inventory.getListings()) {
+    for (InventoryItem inventory : business.getInventory()) {
+      for (Listing listing : inventory.getListings()) {
         listings.add(new FullListingDto(listing));
       }
     }
