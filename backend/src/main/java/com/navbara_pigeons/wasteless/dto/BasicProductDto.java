@@ -2,10 +2,13 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Image;
 import com.navbara_pigeons.wasteless.entity.Product;
+
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * Product DTO which returns all product information except `currency` and `primaryProductImage`
@@ -22,8 +25,10 @@ public class BasicProductDto {
   private ZonedDateTime created;
   private BasicImageDto primaryProductImage;
   private List<BasicImageDto> images;
+  @Value("${public_path_prefix}")
+  private String publicPathPrefix;
 
-  public BasicProductDto(Product product, String publicPathPrefix) {
+  public BasicProductDto(Product product) {
     this.id = product.getId();
     this.name = product.getName();
     this.description = product.getDescription();

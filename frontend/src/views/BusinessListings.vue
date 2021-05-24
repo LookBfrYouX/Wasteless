@@ -10,7 +10,7 @@
       </template>
       <template v-slot:item="slotProps">
         <listing-item-card
-            class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
+            class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded" v-on:click="viewListing(slotProps.item.id)"
             v-bind:item="slotProps.item"
             :businessId="businessId"
             :currency="currency"
@@ -18,7 +18,7 @@
         <!--<business-listing v-bind:listing="slotProps.item"/> -->
       </template>
       <template v-slot:right-button>
-        <button type="button" class="btn btn-info" v-on:click="() => showSortSidebar = true">Another button</button>
+        <button type="button" class="btn btn-info">Another button</button>
       </template>
     </sorted-paginated-item-list>
     <error-modal
@@ -109,6 +109,19 @@ export default {
     getCurrency: async function () {
       this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
     },
+
+    /**
+     * Go to listing detail page by passing the listing id
+     */
+    viewListing(listingId) {
+      this.$router.push({
+        name: "salesListingDetail",
+        params: {
+          businessId: this.businessId,
+          listingId
+        }
+      });
+    }
   },
 
   watch: {

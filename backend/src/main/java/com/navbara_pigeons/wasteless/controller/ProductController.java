@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.controller;
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.ProductService;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * This controller class provides the endpoints for dealing with products. All requests for products
@@ -59,11 +57,11 @@ public class ProductController {
    * @param id The business ID.
    * @param product The product to be added.
    * @return A ResponseEntity.
-   * @throws ProductForbiddenException Handled in ControllerExceptionHandler class.
+   * @throws InsufficientPrivilegesException Handled in ControllerExceptionHandler class.
    * @throws ProductRegistrationException Handled in ControllerExceptionHandler class.
    */
   @PostMapping("/businesses/{id}/products")
-  public ResponseEntity<Object> addToCatalogue(@PathVariable long id, @RequestBody BasicProductCreationDto product) throws ProductForbiddenException, ProductRegistrationException {
+  public ResponseEntity<Object> addToCatalogue(@PathVariable long id, @RequestBody BasicProductCreationDto product) throws InsufficientPrivilegesException, ProductRegistrationException {
       JSONObject response = productService.addProduct(id, product);
       log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());
       return new ResponseEntity<>(response, HttpStatus.valueOf(201));

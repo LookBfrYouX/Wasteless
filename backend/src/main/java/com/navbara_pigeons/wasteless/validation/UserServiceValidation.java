@@ -35,21 +35,6 @@ public class UserServiceValidation {
   }
 
   /**
-   * Returns true if a users date of birth is a valid date
-   *
-   * @param dob Users date of birth
-   */
-  public static boolean isDobValid(String dob) {
-    // Check date is received correctly
-    try {
-      LocalDate.parse(dob).format(DateTimeFormatter.ISO_LOCAL_DATE);
-    } catch (DateTimeParseException exc) {
-      return false;
-    }
-    return true;
-  }
-
-  /**
    * Returns false if required sql fields are null/empty
    *
    * @param user User
@@ -59,7 +44,7 @@ public class UserServiceValidation {
     for (String val : new String[]{
         user.getFirstName(), user.getLastName(),
         user.getEmail(), user.getPassword(),
-        user.getDateOfBirth()
+        user.getDateOfBirth().format(DateTimeFormatter.ISO_LOCAL_DATE)
     }) {
       if (ValidationHelper.isNullOrTrimmedEmpty(val)) {
         return false;
