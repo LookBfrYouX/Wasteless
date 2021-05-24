@@ -41,6 +41,17 @@ const mockInventory =
     "totalPrice": null,
     "expires": "2021-10-01"
   },
+    {
+      "id": 40,
+      "product": {
+        "id": "3",
+        "name": "Green tea",
+      },
+      "quantity": 9,
+      "pricePerItem": 6.0,
+      "totalPrice": 50.00,
+      "expires": "2021-10-01"
+    },
   ];
 
 const mockListings =
@@ -190,7 +201,7 @@ describe("getProducts computed", () => {
       inventory: mockInventory
     });
     let products = wrapper.vm.getProducts;
-    expect(products.length).toEqual(2);
+    expect(products.length).toEqual(3);
   });
 });
 
@@ -239,13 +250,14 @@ describe("defaultPrice computed", () => {
     expect(result).toEqual("0.00");
   });
 
-  test("User specified quantity more than maximum quantity", () => {
+  test("User specified quantity more than maximum quantity", async () => {
     let mockInventoryItem = mockInventory[0];
     let quantityExceeded = mockInventoryItem.quantity + 1;
     wrapper.setData({
       selectedInventoryItem: mockInventoryItem,
       quantity: quantityExceeded
     });
+    await wrapper.vm.$nextTick();
     let result = wrapper.vm.defaultPrice;
     expect(result).toEqual("0.00");
   });
@@ -256,7 +268,6 @@ describe("defaultPrice computed", () => {
     wrapper.setData({
       selectedInventoryItem: mockInventoryItem,
       quantity: quantityFullSize,
-      maxQuantity: quantityFullSize
     });
     let result = wrapper.vm.defaultPrice;
     expect(result).toEqual("0.00");
@@ -268,34 +279,35 @@ describe("defaultPrice computed", () => {
     wrapper.setData({
       selectedInventoryItem: mockInventoryItem,
       quantity: quantityFullSize - 1,
-      maxQuantity: quantityFullSize
     });
     let result = wrapper.vm.defaultPrice;
     expect(result).toEqual("0.00");
   })
 
-  test("Listing full quantity in the inventory", () => {
-    let mockInventoryItem = mockInventory[0];
+  test("Listing full quantity in the inventory", async () => {
+    let mockInventoryItem = mockInventory[3];
+    mockInventoryItem.quantityRemaining = 9;
     let quantityFullSize = mockInventoryItem.quantity;
     wrapper.setData({
       selectedInventoryItem: mockInventoryItem,
       quantity: quantityFullSize,
-      maxQuantity: quantityFullSize
     });
+    await wrapper.vm.$nextTick();
     let result = wrapper.vm.defaultPrice;
     let expected = (mockInventoryItem.totalPrice).toFixed(2);
     expect(result).toEqual(expected);
   });
 
-  test("Listing partial quantity in the inventory", () => {
-    let mockInventoryItem = mockInventory[0];
+  test("Listing partial quantity in the inventory", async () => {
+    let mockInventoryItem = mockInventory[1];
+    mockInventoryItem.quantityRemaining = 6;
     let quantityFullSize = mockInventoryItem.quantity;
     let quantityPartial = quantityFullSize - 1;
     wrapper.setData({
       selectedInventoryItem: mockInventoryItem,
       quantity: quantityPartial,
-      maxQuantity: quantityFullSize
     });
+    await wrapper.vm.$nextTick();
     let result = wrapper.vm.defaultPrice;
     let expected = (mockInventoryItem.pricePerItem * quantityPartial).toFixed(2);
     expect(result).toEqual(expected);
@@ -316,8 +328,8 @@ describe("addListing method", () => {
       quantity: "2",
       moreInfo: ""
     });
-    Api.addItemToInventory.mockResolvedValue(successfulResponse);
+    Api.addBusinessListings.mockResolvedValue(successfulResponse);
     await wrapper.vm.addListing();
-    expect(Api.addItemToInventory.mock.calls.length).toBe(1);
+    expect(Api.addBusinessListings.mock.calls.length).toBe(1);
   });
 });
