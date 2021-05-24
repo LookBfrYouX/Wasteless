@@ -94,7 +94,7 @@ public class Business {
       }
   )
   @JoinColumn(name = "BUSINESS_ID")
-  private List<Inventory> inventory = new ArrayList<>();
+  private List<InventoryItem> inventory = new ArrayList<>();
 
   public Business(FullBusinessDto business) {
     this.id = business.getId();
@@ -157,4 +157,15 @@ public class Business {
     this.productsCatalogue.add(product);
   }
 
+  /**
+   * This is a helper method for adding an inventory item to the business inventory.
+   *
+   * @param inventoryItem The product to be added.
+   */
+  public void addInventoryItem(InventoryItem inventoryItem) {
+    if (this.inventory == null) {
+      this.inventory = new ArrayList<>();
+    }
+    this.inventory.add(inventoryItem);
+  }
 }

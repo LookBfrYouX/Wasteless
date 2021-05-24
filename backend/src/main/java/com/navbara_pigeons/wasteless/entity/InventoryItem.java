@@ -1,20 +1,19 @@
 package com.navbara_pigeons.wasteless.entity;
 
-import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
+import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
-import com.navbara_pigeons.wasteless.dto.FullInventoryDto;
+import com.navbara_pigeons.wasteless.dto.FullInventoryItemDto;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
-@Table(name = "INVENTORY")
-public class Inventory {
+@Table(name = "INVENTORY_ITEM")
+public class InventoryItem {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +25,7 @@ public class Inventory {
   private Product product;
 
   @JsonIgnore
-  @OneToOne()
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "BUSINESS_ID")
   private Business business;
 
@@ -61,10 +60,11 @@ public class Inventory {
         CascadeType.REFRESH
     }
   )
-  @JoinColumn(name = "INVENTORY_ID")
+  @JoinColumn(name = "INVENTORY_ITEM_ID")
   private List<Listing> listings;
 
-  public Inventory(BasicInventoryDto inventory) {
+  public InventoryItem(BasicInventoryItemDto inventory) {
+    this.id = inventory.getId();
     this.product = new Product(inventory.getProduct());
     this.quantity = inventory.getQuantity();
     this.pricePerItem = inventory.getPricePerItem();
@@ -75,18 +75,8 @@ public class Inventory {
     this.bestBefore = inventory.getBestBefore();
   }
 
-  public Inventory(FullInventoryDto inventory) {
+  public InventoryItem(FullInventoryItemDto inventory) {
     this.product = new Product(inventory.getProduct());
-    this.quantity = inventory.getQuantity();
-    this.pricePerItem = inventory.getPrice();
-    this.totalPrice = inventory.getTotalPrice();
-    this.expires = inventory.getExpires();
-    this.manufactured = inventory.getManufactured();
-    this.sellBy = inventory.getSellBy();
-    this.bestBefore = inventory.getBestBefore();
-  }
-
-  public Inventory(CreateInventoryItemDto inventory) {
     this.quantity = inventory.getQuantity();
     this.pricePerItem = inventory.getPricePerItem();
     this.totalPrice = inventory.getTotalPrice();
@@ -96,17 +86,28 @@ public class Inventory {
     this.bestBefore = inventory.getBestBefore();
   }
 
-  public Inventory() {
+  public InventoryItem(CreateInventoryItemDto inventory) {
+    this.quantity = inventory.getQuantity();
+    this.pricePerItem = inventory.getPricePerItem();
+    this.totalPrice = inventory.getTotalPrice();
+    this.expires = inventory.getExpires();
+    this.manufactured = inventory.getManufactured();
+    this.sellBy = inventory.getSellBy();
+    this.bestBefore = inventory.getBestBefore();
+  }
+
+  public InventoryItem() {
   }
 
   /**
    * Helper method which adds a listing to a inventory item
+   *
    * @param listing
    */
   public void addListing(Listing listing) {
-      if (listings == null) {
-          listings = new ArrayList<>();
-      }
-      listings.add(listing);
+    if (listings == null) {
+      listings = new ArrayList<>();
+    }
+    listings.add(listing);
   }
 }

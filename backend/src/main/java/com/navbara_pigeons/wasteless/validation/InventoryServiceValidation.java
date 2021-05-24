@@ -1,6 +1,6 @@
 package com.navbara_pigeons.wasteless.validation;
 
-import com.navbara_pigeons.wasteless.entity.Inventory;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ public class InventoryServiceValidation {
    * @param inventory item to validate
    * @return true if the product is valid
    */
-  public static void requiredFieldsNotEmpty(Inventory inventory) throws InventoryRegistrationException {
+  public static void requiredFieldsNotEmpty(InventoryItem inventory) throws InventoryRegistrationException {
     if (inventory.getExpires() == null) {
       throw new InventoryRegistrationException("Expiry date is empty");
     } else if ( inventory.getTotalPrice() == null ) {
@@ -26,7 +26,6 @@ public class InventoryServiceValidation {
   /**
    * Checks if a date is after another. for checking the expiration is after current date.
    *
-   * @param inventory item to validate
    * @return true if the product is valid
    */
   protected static boolean date1AfterDate2(LocalDate date1, LocalDate date2) {
@@ -39,7 +38,7 @@ public class InventoryServiceValidation {
    *
    * @param inventory
    */
-  public static void datesValid(Inventory inventory, LocalDate  currentDate) throws InventoryRegistrationException {
+  public static void datesValid(InventoryItem inventory, LocalDate  currentDate) throws InventoryRegistrationException {
     // TODO how do we ensure local date is equal to date of the user?
     if (InventoryServiceValidation.date1AfterDate2(inventory.getManufactured(), currentDate)) {
       throw new InventoryRegistrationException("Manufacture date must be before or equal to today");
@@ -87,7 +86,7 @@ public class InventoryServiceValidation {
    *
    * @param inventory user input and calculated fields to check
    */
-  public static void isInventoryItemValid(Inventory inventory) throws InventoryRegistrationException {
+  public static void isInventoryItemValid(InventoryItem inventory) throws InventoryRegistrationException {
     LocalDate currentDate = LocalDate.now();
     InventoryServiceValidation.requiredFieldsNotEmpty(inventory);
     InventoryServiceValidation.datesValid(inventory, currentDate);
