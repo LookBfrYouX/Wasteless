@@ -57,41 +57,44 @@
       </div>
       <div class="row">
         <div class="col-12 form-group">
-          <label for="tags">Tags</label>
-          <div class="d-flex flex-wrap align-items-center">
-            <span class="mr-2 mb-2">Currently selected tags:</span>
+          <div class=" d-flex flex-wrap align-items-center">
+            <label for="tags" class="mr-2 mb-2 py-2">Tags: </label>
+            <span class="mr-2 mb-2 py-2" v-if="!tags.length">None</span>
             <tag
-              v-for="keyword in keywords"
+              v-else
+              v-for="tag in tags"
               class="mr-2 mb-2"
-              v-bind:key="keyword.id"
+              v-bind:key="tag.id"
               v-bind:xButton="true"
-              v-on:xClick="removeKeyword(keyword.id)"
+              v-on:xClick="removeTag(tag.id)"
             >
-              {{keyword.name}}
+              {{tag.name}}
             </tag>
           </div>
-          <button
-            class="btn btn-primary"
-            v-if="!showSuggestions"
-            v-on:click="showSuggestionsInput"
-          >
-            + Tag
-          </button>
-          <suggestions
-            v-if="showSuggestions"
-            inputClasses="form-control"
-            name="tags"
-            id="tags"
-            placeholder="Add a Tag"
-            type="text"
-            ref="suggestionsInput"
-            v-bind:liActiveClasses="{'bg-primary': true, 'text-light': true}"
-            v-bind:suggestions="keywordSuggestions"
-            v-bind:value="tempSuggestionValue"
-            v-on:input="keywordInput"
-            v-on:suggestion="keywordSuggestionSelected"
-            v-on:blur="showSuggestions = false"
-          />
+          <div class="add-tag-container">
+            <button
+              class="btn btn-primary w-100"
+              v-if="!showSuggestions"
+              v-on:click="showSuggestionsInput"
+            >
+              Add Tag 
+            </button>
+            <suggestions
+              v-else
+              inputClasses="form-control"
+              name="tags"
+              id="tags"
+              placeholder="Add a Tag"
+              type="text"
+              ref="suggestionsInput"
+              v-bind:liActiveClasses="{'bg-primary': true, 'text-light': true}"
+              v-bind:suggestions="tagSuggestions"
+              v-bind:value="tempSuggestionValue"
+              v-on:input="value => tempSuggestionValue = value"
+              v-on:suggestion="tagSuggestionSelected"
+              v-on:blur="showSuggestions = false"
+            />
+          </div>
         </div>
       </div>
       <div class="row">
@@ -129,6 +132,11 @@
     </form>
   </div>
 </template>
+<style scoped>
+.add-tag-container {
+  width: min(100%, 20em);
+}
+</style>
 <script>
 import Suggestions from "../components/Suggestions.vue";
 import Tag from "../components/Tag.vue";
@@ -157,47 +165,55 @@ export default {
 
   data() {
     return {
+      // Initialize section first section in the constants list 
       section: Object.keys(this.$constants.MARKETPLACE.SECTIONS)[0],
       title: "",
       description: "",
       errorMessage: null,
       tempSuggestionValue: "",
       showSuggestions: false,
-      keywords: []
+      tags: []
     }
   },
 
   computed: {
-    keywordSuggestions() {
-      const keywords = [ "Apple", "Orange", "Cake", "Portal", "Apple MacBook Pro", "Sulfur Nitrate", "Max is awesome"].map((keyword, i) => ({ name: keyword, id: i, toString: () => keyword }));
+    /**
+     * Computes the suggestions that should be shown to the user given the static list of suggestions
+     * and value of the add tag input field
+     */
+    tagSuggestions() {
+      const tags = [ "Apple", "Orange", "Cake", "Portal", "Apple MacBook Pro", "Sulfur Nitrate", "Max is awesome"].map((tag, i) => ({ name: tag, id: i, toString: () => tag }));
 
       const { NUM_SUGGESTIONS, WORST_RATIO, INSERT_COST, DELETE_COST, SUBSTITUTE_COST } = this.$constants.MARKETPLACE.CREATE_CARD.TAG_SUGGESTIONS;
 
-      let suggestions = keywords.map(keyword => {
-        keyword.score = new EditDistance(
+      let suggestions = tags.map(tag => {
+        tag.score = new EditDistance(
           this.tempSuggestionValue.toLocaleLowerCase(),
-          keyword.name.toLocaleLowerCase(),
+          tag.name.toLocaleLowerCase(),
           INSERT_COST,
           DELETE_COST,
           SUBSTITUTE_COST
         ).calculate();
 
-        keyword.weightedScore = keyword.score / keyword.name.length;
-        keyword.toString = () => keyword.name + " " + keyword.weightedScore;
-        return keyword;
+        tag.weightedScore = tag.score / tag.name.length;
+        // weighted score takes into account length of tag so that it doesn't prefer shorter suggestions
+        return tag;
       });
 
       suggestions.sort((a, b) => a.weightedScore - b.weightedScore);
-      const selectedSuggestions = new Set(this.keywords.map(({id}) => id));
+      const selectedSuggestions = new Set(this.tags.map(({id}) => id));
       suggestions = suggestions.filter(({ id, weightedScore }) => weightedScore < WORST_RATIO && !selectedSuggestions.has(id));
-      // Don't return already selected suggestions
+      // Filter out bad suggestions (scores too high) and already selected suggestions
+
       suggestions = suggestions.slice(0, NUM_SUGGESTIONS);
+      // If there are too many suggestions, only return the best few
 
       if (suggestions.length == 0) {
+        // If there are no suggestions add a disabled item to show this (makes it clear that the user needs to change the suggestion) 
         suggestions = [{
           toString: () => "No suggestions",
           disabled: true
-        }]
+        }];
       }
       return suggestions;
     }
@@ -208,24 +224,31 @@ export default {
   },
 
   methods: {
-    keywordInput: async function(inputValue) {
-      this.tempSuggestionValue = inputValue; 
-    },
-
-    keywordSuggestionSelected: async function(keyword) {
-      this.keywords.push(keyword);
+    /**
+     * When tag is selected clear the input field and add the tag to the list of selected tags
+     */
+    tagSuggestionSelected: async function(tag) {
+      this.tags.push(tag);
       this.tempSuggestionValue = "";
     },
 
+    /**
+     * When the add tag button is clicked, show the suggestion and force focus on the suggestions input element
+     */
     showSuggestionsInput() {
       this.showSuggestions = true;
       this.$nextTick(() => {
+        // Need to wait until next tick for the input element to be created on the DOM
+        // so that focus can be forced
         this.$refs.suggestionsInput.$refs.input.focus()
       });
     },
 
-    removeKeyword(id) {
-      this.keywords = this.keywords.filter(keyword => keyword.id != id);
+    /**
+     * Removes the tag with the given ID
+     */
+    removeTag(id) {
+      this.tags = this.tags.filter(tag => tag.id != id);
     },
 
     /**
@@ -248,20 +271,19 @@ export default {
         section: this.section,
         title: this.title,
         description: this.description,
-        keywordIds: this.keywords.map(keyword => keyword.id)
+        tagIds: this.tags.map(tag => tag.id)
       };
 
       try {
-        const { data } = await Api.createCard(cardData);
+        await Api.createCard(cardData);
         this.errorMessage = null;
         
-        this.errorMessage = `Card creation succeeded (ID ${data.cardId})`
-        // this.$router.push({
-        //   name: "card",
-        //   params: {
-        //     cardId: data.cardId
-        //   }
-        // });
+        this.$router.push({
+          name: "marketplace",
+          params: {
+            section: this.section
+          }
+        });
       } catch(err) {
         this.errorMessage = err.userFacingErrorMessage;
       }
@@ -269,6 +291,9 @@ export default {
   },
 
   watch: {
+    /**
+     * If initial section changes, update it
+     */
     initialSection() {
       if (this.initialSection) this.section = this.initialSection;
     }
