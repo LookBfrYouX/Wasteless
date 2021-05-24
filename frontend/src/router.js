@@ -269,7 +269,8 @@ router.afterEach((to) => {
       hamburger.click();
     }
   }
-
+  
+  
   Vue.nextTick(() => {
     let title = "Wasteless";
     if (typeof to.meta.title == "string") {

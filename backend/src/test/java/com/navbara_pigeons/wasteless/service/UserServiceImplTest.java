@@ -9,13 +9,10 @@ import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.AddressValidationException;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UnhandledException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -54,7 +51,7 @@ public class UserServiceImplTest extends ServiceTestProvider {
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   public void saveUser_normal()
-      throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException {
+          throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException, UserAuthenticationException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     loginAuthenticationMock();
     when(encoder.encode(ArgumentMatchers.anyString())).thenReturn("HASH");
@@ -63,12 +60,14 @@ public class UserServiceImplTest extends ServiceTestProvider {
   }
 
 
+  // This test has been changed as the LocalDate data type now stops incorrectly formatted data being supplied.
+  // This test now tests that users are of sufficient age.
   @Test
   public void saveUser_invalidDoB() {
-    String[] testValues = {"31-Dec-2000", "dfs", "2020/10/05", "20/1/1"};
+    String[] testValues = {"2034-11-11", "2020-10-05"};
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     for (String testValue : testValues) {
-      user.setDateOfBirth(testValue);
+      user.setDateOfBirth(LocalDate.parse(testValue));
       assertThrows(UserRegistrationException.class, () -> userService.saveUser(user));
     }
   }
@@ -103,8 +102,8 @@ public class UserServiceImplTest extends ServiceTestProvider {
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
 
-    Object userObject = userService.getUserById(user.getId());
-    assertUserEquals(user, (FullUserDto) userObject);
+    User userObject = userService.getUserById(user.getId());
+    assertUserEquals(user, new FullUserDto(userObject));
   }
 
   @Test
@@ -114,8 +113,8 @@ public class UserServiceImplTest extends ServiceTestProvider {
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
 
-    Object userObject = userService.getUserById(user.getId());
-    assertUserEquals(user, (BasicUserDto) userObject);
+    User userObject = userService.getUserById(user.getId());
+    assertUserEquals(user, new BasicUserDto(userObject));
   }
 
   @Test
@@ -125,8 +124,8 @@ public class UserServiceImplTest extends ServiceTestProvider {
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
 
-    Object userObject = userService.getUserById(user.getId());
-    assertUserEquals(user, (FullUserDto) userObject);
+    User userObject = userService.getUserById(user.getId());
+    assertUserEquals(user, new FullUserDto(userObject));
   }
 
   @Test
@@ -150,9 +149,9 @@ public class UserServiceImplTest extends ServiceTestProvider {
 
     user1.addBusiness(business);
 
-    Object userObject = userService.getUserById(user1.getId());
+    User userObject = userService.getUserById(user1.getId());
 
-    assertUserEquals(user1, (FullUserDto) userObject);
+    assertUserEquals(user1, new FullUserDto(userObject));
   }
 
   @Test
@@ -175,9 +174,9 @@ public class UserServiceImplTest extends ServiceTestProvider {
     user1.addBusiness(business);
     user2.addBusiness(business);
 
-    Object userObject = userService.getUserById(user1.getId());
+    User userObject = userService.getUserById(user1.getId());
 
-    assertUserEquals(user1, (BasicUserDto) userObject);
+    assertUserEquals(user1, new BasicUserDto(userObject));
   }
 
 

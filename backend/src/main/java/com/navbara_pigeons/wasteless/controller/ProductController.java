@@ -31,6 +31,10 @@ public class ProductController {
 
   private final ProductService productService;
 
+  /**
+   * This is the constructor for the ProductController.
+   * @param productService The product service that is used by this controller.
+   */
   @Autowired
   public ProductController(ProductService productService) {
     this.productService = productService;
@@ -38,52 +42,31 @@ public class ProductController {
 
   /**
    * This endpoint retrieves a list of all products listed by a particular business (id).
-   *
-   * @param id The ID of the business whose products are to be displayed
-   * @return response A JSONObject containing the product information of all products listed for the
-   * business.
+   * @param id The business ID.
+   * @return A list of products.
+   * @throws UserNotFoundException Handled in ControllerExceptionHandler class.
+   * @throws InsufficientPrivilegesException Handled in ControllerExceptionHandler class.
+   * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/products")
-  public ResponseEntity<Object> showBusinessCatalogue(@PathVariable long id) {
-    try {
-      log.info("RETRIEVED PRODUCTS FOR BUSINESS: " + id);
-      return new ResponseEntity<>(this.productService.getProducts(id), HttpStatus.valueOf(200));
-    } catch (InsufficientPrivilegesException exc) {
-      log.info("INSUFFICIENT PRIVILEGES GETTING BUSINESS WITH ID " + id + " " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(403), "Insufficient Privileges");
-    } catch (BusinessNotFoundException | UserNotFoundException exc) {
-      log.info("USER OR BUSINESS NOT FOUND: " + id + " " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(406), exc.getMessage());
-    } catch (Exception exc) {
-      log.info("EXCEPTION GETTING PRODUCT CATALOG + " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
-    }
+  public ResponseEntity<Object> showBusinessCatalogue(@PathVariable long id) throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+    log.info("RETRIEVED PRODUCTS FOR BUSINESS: " + id);
+    return new ResponseEntity<>(this.productService.getProducts(id), HttpStatus.valueOf(200));
   }
 
   /**
    * This endpoint is to add a product to the catalog
-   *
-   * @param id      The id of business
-   * @param product The product to be added
+   * @param id The business ID.
+   * @param product The product to be added.
+   * @return A ResponseEntity.
+   * @throws ProductForbiddenException Handled in ControllerExceptionHandler class.
+   * @throws ProductRegistrationException Handled in ControllerExceptionHandler class.
    */
   @PostMapping("/businesses/{id}/products")
-  public ResponseEntity<Object> addToCatalogue(@PathVariable long id,
-                                                   @RequestBody BasicProductCreationDto product) {
-    try {
+  public ResponseEntity<Object> addToCatalogue(@PathVariable long id, @RequestBody BasicProductCreationDto product) throws ProductForbiddenException, ProductRegistrationException {
       JSONObject response = productService.addProduct(id, product);
       log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());
       return new ResponseEntity<>(response, HttpStatus.valueOf(201));
-    } catch (ProductRegistrationException exc) {
-      log.info("ADDING NEW PRODUCT, BUSINESS ID " + id + " BAD INFO " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(400),
-          "There was some error with the data supplied by the user");
-    } catch (ProductForbiddenException exc) {
-      log.info("ADDING NEW PRODUCT, BUSINESS ID " + id + " FORBIDDEN " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(403), "Forbidden");
-    } catch (Exception exc) {
-      log.info("ADDING NEW PRODUCT, BUSINESS ID " + id + " ERROR " + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.valueOf(500), "Internal Error");
-    }
   }
 
 }

@@ -1,10 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.service.InventoryService;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -13,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * This controller class provides the endpoints for dealing with inventory items.
@@ -30,6 +28,7 @@ public class InventoryController {
     this.inventoryService = inventoryService;
   }
 
+
   /**
    * This endpoint retrieves a list of all products listed by a particular business (id).
    *
@@ -39,15 +38,15 @@ public class InventoryController {
    */
   @GetMapping("/businesses/{id}/inventory")
   public ResponseEntity<Object> showBusinessInventory(@PathVariable long id) throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException, BusinessNotFoundException {
-    ResponseEntity<Object> response = new ResponseEntity<>(this.inventoryService.getInventory(id), HttpStatus.valueOf(200));
     log.info("RETRIEVED INVENTORY ITEMS FOR BUSINESS: " + id);
-    return response;
+    return new ResponseEntity<>(this.inventoryService.getInventory(id), HttpStatus.valueOf(200));
   }
 
   @PostMapping("/businesses/{id}/inventory")
-  @ResponseStatus(value = HttpStatus.CREATED)
-  public void registerInventoryItem(@PathVariable long id, @RequestBody CreateInventoryItemDto inventoryItemDto) throws InsufficientPrivilegesException {
-    this.inventoryService.registerInventoryItem(inventoryItemDto);
+  public ResponseEntity<JSONObject> addToBusinessInventory(@PathVariable long id, @RequestBody CreateInventoryItemDto inventoryDto) throws InventoryRegistrationException, UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException {
+    JSONObject response = new JSONObject();
+    response.appendField("inventoryItemId", inventoryService.addInventoryItem(id, inventoryDto));
+    log.info("ADDED NEW INVENTORY ITEM FOR PRODUCT id: " + inventoryDto.getProductId() + " FOR BUSINESS: " + id);
+    return new ResponseEntity<>(response, HttpStatus.valueOf(201));
   }
-
 }
