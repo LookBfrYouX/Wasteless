@@ -1,6 +1,6 @@
 <template>
   <!-- this component produces the marketplace card component from the given props -->
-  <div class="container card item-card p-3">
+  <div class="container card item-card p-3 my-2">
     <div class="d-sm-flex align-items-center">
       <a v-on:click="$router.push({name: 'profile', params: {userId: $props.card.creator.id}})"
       href="javascript:void(0)">
@@ -24,12 +24,14 @@
         [$props.card.creator.homeAddress.suburb, $props.card.creator.homeAddress.city].join(', ')
       }}
     </div>
-    <div class="mt-3">
+    <div class="mt-3 rounded border p-2">
       <h2>{{ $props.card.title }}</h2>
       {{ $props.card.description }}
     </div>
     <div class="mt-2">
-      {{ keywords }}
+      <div v-for="keyword in $props.card.keywords" v-bind:key="keyword.id">
+        {{ keyword.name }}
+      </div>
     </div>
   </div>
 </template>
@@ -42,14 +44,7 @@ export default {
     card: Object
   },
   data() {
-    return {
-      keywords: []
-    };
-  },
-  mounted() {
-    this.keywords = this.$props.card.keywords.map((kw) => {
-      return kw.name
-    });
+    return {};
   }
 }
 </script>
