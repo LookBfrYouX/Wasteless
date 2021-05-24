@@ -28,6 +28,7 @@ Notes:
   - `liInactiveClasses` is applied to any unselected suggestions
   - `liDisabledClasses` is applied if the suggestion is disabled
 - Any attributes (e.g. class, type) are passed onto the input element
+- A `forceFocus` hook is available to force focus on the input element
 -->
 <template>
   <div v-bind:class="divClasses">
@@ -186,7 +187,7 @@ export default {
      * Hook that forces on the input element
      */
     forceFocus: function() {
-      this.$refs.input.focus();   
+      this.$refs.input.focus();
     },
 
     /**
