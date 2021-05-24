@@ -14,6 +14,10 @@ public class ListingServiceValidation {
     if (listing.getInventoryItem() == null) {
       throw new ListingValidationException("Inventory item not found");
     }
+    // Check price is not negative
+    if (listing.getPrice() <= 0) {
+      throw new ListingValidationException("Price must be greater than 0");
+    }
 
     // Quantity must be above 0 and below the remaining quantity
     long remainingQuantity = listing.getInventoryItem().getQuantity();
