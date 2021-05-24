@@ -60,21 +60,14 @@
           <label for="tags">Tags</label>
           <div class="d-flex flex-wrap align-items-center">
             <span class="mr-2 mb-2">Currently selected tags:</span>
-            <div class="border border-primary d-flex rounded justify-content-center align-items-center slightly-transparent-white-background mr-2 mb-2"
+            <tag
               v-for="keyword in keywords"
               v-bind:key="keyword.id"
+              v-bind:xButton="true"
+              v-on:xClick="removeKeyword(keyword.id)"
             >
-              <span class="mx-1">
-                {{keyword.name}}
-              </span>
-              <button
-                class="btn btn-outline-primary d-flex justify-content-center align-items-center p-0 m-1 rounded-circle"
-                type="button"
-                v-on:click="removeKeyword(keyword.id)"
-              >
-                <span class="material-icons">close</span>
-              </button>
-            </div>
+              {{keyword.name}}
+            </tag>
           </div>
           <button
             class="btn btn-primary"
@@ -137,11 +130,12 @@
 </template>
 <script>
 import Suggestions from "../components/Suggestions.vue";
+import Tag from "../components/Tag.vue";
 import {EditDistance} from "./../EditDistance";
 const { Api } = require("./../Api");
 
 export default {
-  components: { Suggestions },
+  components: { Suggestions, Tag },
   props: {
     /**
      * ID of user to create the card as
@@ -280,6 +274,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-
-</style>
