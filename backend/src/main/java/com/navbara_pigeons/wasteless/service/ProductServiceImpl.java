@@ -148,7 +148,7 @@ public class ProductServiceImpl implements ProductService {
 
   @Transactional
   public void saveProduct(Product product) {
-    this.productDao.saveProduct(product);
+    productDao.saveProduct(product);
   }
 
 }

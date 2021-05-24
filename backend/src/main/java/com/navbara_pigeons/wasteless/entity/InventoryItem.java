@@ -1,6 +1,9 @@
 package com.navbara_pigeons.wasteless.entity;
 
 import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
+import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
+import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.dto.FullInventoryDto;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
@@ -50,13 +53,13 @@ public class InventoryItem {
 
   @JsonIgnore
   @OneToMany(
-      fetch = FetchType.LAZY,
-      cascade = {
-          CascadeType.DETACH,
-          CascadeType.MERGE,
-          CascadeType.PERSIST,
-          CascadeType.REFRESH
-      }
+    fetch = FetchType.LAZY,
+    cascade = {
+        CascadeType.DETACH,
+        CascadeType.MERGE,
+        CascadeType.PERSIST,
+        CascadeType.REFRESH
+    }
   )
   @JoinColumn(name = "INVENTORY_ITEM_ID")
   private List<Listing> listings;
@@ -64,6 +67,27 @@ public class InventoryItem {
   public InventoryItem(BasicInventoryItemDto inventory) {
     this.id = inventory.getId();
     this.product = new Product(inventory.getProduct());
+    this.quantity = inventory.getQuantity();
+    this.pricePerItem = inventory.getPricePerItem();
+    this.totalPrice = inventory.getTotalPrice();
+    this.expires = inventory.getExpires();
+    this.manufactured = inventory.getManufactured();
+    this.sellBy = inventory.getSellBy();
+    this.bestBefore = inventory.getBestBefore();
+  }
+
+  public InventoryItem(FullInventoryDto inventory) {
+    this.product = new Product(inventory.getProduct());
+    this.quantity = inventory.getQuantity();
+    this.pricePerItem = inventory.getPrice();
+    this.totalPrice = inventory.getTotalPrice();
+    this.expires = inventory.getExpires();
+    this.manufactured = inventory.getManufactured();
+    this.sellBy = inventory.getSellBy();
+    this.bestBefore = inventory.getBestBefore();
+  }
+
+  public InventoryItem(CreateInventoryItemDto inventory) {
     this.quantity = inventory.getQuantity();
     this.pricePerItem = inventory.getPricePerItem();
     this.totalPrice = inventory.getTotalPrice();

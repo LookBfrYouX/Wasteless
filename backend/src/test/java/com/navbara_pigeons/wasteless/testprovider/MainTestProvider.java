@@ -8,6 +8,7 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -42,10 +43,8 @@ public class MainTestProvider {
 
   protected InventoryItem makeInventoryItem(Product product, Business business) {
     InventoryItem inventoryItem = new InventoryItem();
-    LocalDate date = LocalDate.now(ZoneOffset.UTC);
-    date = date.plusMonths(1);
     inventoryItem.setProduct(product)
-        .setExpires(date)
+        .setExpires(LocalDate.now().plusDays(12))
         .setQuantity(10)
         .setPricePerItem(2.00)
         .setPricePerItem(10.00)

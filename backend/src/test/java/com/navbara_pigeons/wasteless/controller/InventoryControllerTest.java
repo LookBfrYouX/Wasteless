@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
+import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -52,6 +53,20 @@ public class InventoryControllerTest extends ControllerTestProvider {
   }
 
   @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void addInventoryItemToBusinessInventory() throws Exception {
+    String endpointUrl = "/businesses/1/inventory";
+    CreateInventoryItemDto dto = new CreateInventoryItemDto();
+    dto.setProductId(1);
+    dto.setQuantity(2);
+    dto.setExpires(LocalDate.now());
+    mockMvc.perform(post(endpointUrl)
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isCreated());
+  }
+
+  @Test
   @WithUserDetails(value = "mbi47@uclive.ac.nz")
   void asUser_addInventoryItem_expectOk() throws Exception {
     String endpointUrl = "/businesses/2/inventory";
@@ -68,9 +83,37 @@ public class InventoryControllerTest extends ControllerTestProvider {
   }
 
   @Test
-  @WithAnonymousUser
-  void asAnon_addInventoryItem_expectForbidden() throws Exception {
-    String endpointUrl = "/businesses/2/inventory";
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void asUser_addInventoryItem_expect_InvalidBusinessId() throws Exception {
+    String endpointUrl = "/businesses/5/inventory";
+    CreateInventoryItemDto dto = new CreateInventoryItemDto();
+    dto.setProductId(1);
+    dto.setQuantity(2);
+    dto.setExpires(LocalDate.now());
+    mockMvc.perform(post(endpointUrl)
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().is(400));
+  }
+
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void addInventoryItemToBusinessInventoryInvalidProductId() throws Exception {
+    String endpointUrl = "/businesses/1/inventory";
+    CreateInventoryItemDto dto = new CreateInventoryItemDto();
+    dto.setProductId(7000);
+    dto.setQuantity(2);
+    dto.setExpires(LocalDate.now());
+    mockMvc.perform(post(endpointUrl)
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().is(400));
+  }
+
+  @Test
+  @WithMockUser
+  void asUser_addInventoryItemToNonExistingBusiness_expectNotFound() throws Exception {
+    String endpointUrl = "/businesses/200000/inventory";
     CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
     inventoryItemDto.setExpires(LocalDate.now());
     inventoryItemDto.setProductId(2);
@@ -80,19 +123,23 @@ public class InventoryControllerTest extends ControllerTestProvider {
     mockMvc.perform(post(endpointUrl)
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(inventoryItemDto)))
-            .andExpect(status().isUnauthorized());
+            .andExpect(status().is(400));
   }
 
   @Test
-  @WithMockUser
-  void asUser_addInventoryItemToNonExistingBusiness_expectNotFound() {
-    // TODO when service is created
-  }
-
-  @Test
-  @WithUserDetails(value = "mbi47@uclive.ac.nz")
-  void asSpecificUser_addInventoryItemToOtherUsersBusiness_expectForbidden() {
-    //TODO when service is created
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void asSpecificUser_addInventoryItemToOtherUsersBusiness_expectForbidden() throws Exception {
+    String endpointUrl = "/businesses/3/inventory";
+    CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
+    inventoryItemDto.setExpires(LocalDate.now());
+    inventoryItemDto.setProductId(2);
+    inventoryItemDto.setQuantity(15);
+    inventoryItemDto.setTotalPrice(220.00);
+    inventoryItemDto.setPricePerItem(20.00);
+    mockMvc.perform(post(endpointUrl)
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(inventoryItemDto)))
+            .andExpect(status().isForbidden());
   }
 
 }
