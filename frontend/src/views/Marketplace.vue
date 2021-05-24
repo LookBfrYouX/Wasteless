@@ -1,7 +1,9 @@
 <template>
-  <div class="w-100">
+  <div>
     <h2>Community Marketplace</h2>
-    <UCMTabularDisplay/>
+    <div class="w-70">
+      <UCMTabularDisplay/>
+    </div>
   </div>
 </template>
 
