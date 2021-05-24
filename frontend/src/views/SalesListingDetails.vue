@@ -132,6 +132,10 @@ export default {
      * @return true on success
      */
     loadCurrencies: async function () {
+      if (!this.$stateStore.getters.isLoggedIn()) {
+        return false;
+      }
+
       try {
         this.currency = await this.$helper.getCurrencyForBusiness(this.businessId, this.$stateStore);
       } catch (err) {
@@ -150,6 +154,10 @@ export default {
      * Does not run pipeline if user should not be able to edit business
      */
     apiPipeline: async function () {
+      if (!this.$stateStore.getters.isLoggedIn()) {
+        return false;
+      }
+
       try {
         await this.parseApiResponse(this.callApi());
       } catch (err) {
