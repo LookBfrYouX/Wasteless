@@ -18,8 +18,10 @@
         <!--<business-listing v-bind:listing="slotProps.item"/> -->
       </template>
       <template v-slot:right-button>
-        <router-link :to="{ name: 'createListing', params: { businessId }}"
-                     class="btn btn-info d-flex">
+        <router-link
+            :to="{ name: 'createListing', params: { businessId }}"
+            class="btn btn-info d-flex"
+            v-if="$stateStore.getters.canEditBusiness(businessId)">
           <span class="material-icons mr-1">add</span>
           Create Listing
         </router-link>
@@ -47,11 +49,15 @@ import { helper } from "../helper";
 
 const sortOptions = [
   {
+    name: "Name",
+    sortMethod: helper.sensibleSorter(el => el.inventoryItem.product.name)
+  },
+  {
     name: "Price",
     sortMethod: helper.sensibleSorter("price") 
   }, {
-    name: "Name",
-    sortMethod: helper.sensibleSorter(el => el.inventoryItem.product.name)
+    name: "Quantity",
+    sortMethod: helper.sensibleSorter("quantity")
   }, {
     name: "Listing Created",
     // Yes, you can sort dates as a string in this format
