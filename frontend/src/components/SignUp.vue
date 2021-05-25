@@ -282,6 +282,7 @@ export default {
       address: {
         streetNumber: "",
         streetName: "",
+        suburb: "",
         postcode: "",
         city: "",
         region: "",

@@ -59,6 +59,25 @@ The parent component must provide `address` prop. When the address is updated in
           v-on:suggestion="suggestionSelected"
       />
     </div>
+    <div class="form-group required col-12 col-md-9 ml-auto">
+      <label>Suburb</label>
+      <suggestions
+          autocomplete="suburb"
+          inputClasses="form-control"
+          maxlength="200"
+          name="suburb"
+          placeholder="Suburb"
+          required
+          type="text"
+
+          v-bind:suggestions="addressSuggestions"
+          v-bind:value="address.suburb"
+          v-on:focus="activeAddressInputName = 'suburb'"
+
+          v-on:input="onAddressInput"
+          v-on:suggestion="suggestionSelected"
+      />
+    </div>
     <div class="form-group required col-12 col-md-6">
       <label>City</label>
       <suggestions
@@ -152,7 +171,8 @@ const Suggestions = require("./Suggestions").default;
 
 // Fields in order of specificity
 // When updating this, ensure all address related functions and input properties are updated as well!
-export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "city", "region", "postcode",
+export const ADDRESS_SECTION_NAMES = ["streetNumber", "streetName", "suburb", "city", "region",
+  "postcode",
   "country"];
 Object.freeze(ADDRESS_SECTION_NAMES);
 // Can't move this to the constants file as it is too linked with HTML, props etc.
@@ -171,6 +191,7 @@ export default {
         streetNumber: "",
         streetName: "",
         city: "",
+        suburb: "",
         region: "",
         postcode: "",
         country: "",
@@ -208,9 +229,10 @@ export default {
     mapOSMPropertiesToAddressComponents: function (properties) {
       const {
         housenumber, // streetNumber
-        street, // streetName
-        county, // city
-        state, // region
+        street,      // streetName
+        district,    // suburb
+        county,      // city
+        state,       // region
         postcode,
         countrycode,
         country,
@@ -238,6 +260,7 @@ export default {
       const components = {
         streetNumber: housenumber,
         streetName: streetName,
+        suburb: district,
         city: county,
         region: state,
         postcode: postcode,
@@ -256,7 +279,7 @@ export default {
       // Was getting strange errors where sometimes a component would be undefined
       // Think its to do with accessing properties via this['someString'] so this
       // is a workaround
-      let {streetNumber, streetName, city, region, postcode, country} = this.address;
+      let {streetNumber, streetName, suburb, city, region, postcode, country} = this.address;
 
       if (convertCountryToOsmName && this.canonicalCountryNameToOsmCountryNameCache[country]
           !== undefined) {
@@ -266,6 +289,7 @@ export default {
       let components = {
         streetNumber,
         streetName,
+        suburb,
         city,
         region,
         postcode,
