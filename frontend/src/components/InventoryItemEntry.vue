@@ -220,12 +220,6 @@ export default {
       });
     },
     async addItem() {
-      let parsedQuantity = parseInt(this.quantity, 10);
-      if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
-        this.errorMessage = "Quantity must be a integer and be bigger than zero";
-        return;
-      }
-
       let data = {
         "productId": this.product.id,
         "quantity": this.quantity,
