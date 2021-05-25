@@ -18,7 +18,11 @@
         <!--<business-listing v-bind:listing="slotProps.item"/> -->
       </template>
       <template v-slot:right-button>
-        <button type="button" class="btn btn-info">Another button</button>
+        <router-link :to="{ name: 'createListing', params: { businessId }}"
+                     class="btn btn-info d-flex">
+          <span class="material-icons mr-1">add</span>
+          Create Listing
+        </router-link>
       </template>
     </sorted-paginated-item-list>
     <error-modal
