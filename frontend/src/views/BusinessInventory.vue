@@ -47,7 +47,7 @@ import InventoryItemCard from "./../components/cards/InventoryItemCard";
 
 const sortOptions = [
   {
-    name: "ID",
+    name: "Inventory Item ID",
     sortMethod: helper.sensibleSorter("id")
   }, {
     name: "Product ID",
