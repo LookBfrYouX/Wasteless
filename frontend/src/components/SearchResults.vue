@@ -43,20 +43,30 @@ import { helper } from "./../helper";
 import { Api } from "./../Api"
 
 
-// Sort options need to be in [{name, sortMethod}] format but since users are simple objects, it has been put in a more compact and easier to edit form and then immediately mapped to the required format
-const sortOptions = Object.entries({
-  firstName: 'First Name',
-  middleName: 'Middle Name',
-  lastName: 'Last Name',
-  nickname: 'Nickname',
-  region: 'Region',
-  city: 'City',
-  country: 'Country',
-}).map(([key, name]) => ({
-  name,
-  sortMethod: helper.sensibleSorter(key)
-}));
-
+const sortOptions = [
+  {
+    name: "First Name",
+    sortMethod: helper.sensibleSorter("firstName")
+  }, {
+    name: "Middle Name",
+    sortMethod: helper.sensibleSorter("middleName") 
+  }, {
+    name: "Last Name",
+    sortMethod: helper.sensibleSorter("lastName")
+  }, {
+    name: "Nickname",
+    sortMethod: helper.sensibleSorter("nickname") 
+  }, {
+    name: "City",
+    sortMethod: helper.sensibleSorter(user => user.homeAddress.city)
+  }, {
+    name: "Region",
+    sortMethod: helper.sensibleSorter(user => user.homeAddress.region)
+  }, {
+    name: "Country",
+    sortMethod: helper.sensibleSorter(user => user.homeAddress.country)
+  },
+];
 
 export default {
   name: "SearchResults",
