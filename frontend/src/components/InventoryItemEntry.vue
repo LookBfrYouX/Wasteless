@@ -208,11 +208,21 @@ export default {
       }
     },
     async addItem() {
+      let parsedPricePerItem = parseFloat(this.pricePerItem);
+      let parsedTotalPrice = parseFloat(this.totalPrice);
+      let parsedQuantity = parseInt(this.quantity, 10);
+      if (isNaN(parsedPricePerItem)) parsedPricePerItem = null;
+      if (isNaN(parsedTotalPrice)) parsedTotalPrice = null;
+      if (isNaN(parsedQuantity)) {
+        this.errorMessage = "You must enter a number for the quantity."
+        return;
+      }
+
       let data = {
         "productId": this.product.id,
-        "quantity": this.quantity,
-        "pricePerItem": this.pricePerItem,
-        "totalPrice": this.totalPrice,
+        "quantity": parsedQuantity,
+        "pricePerItem": parsedPricePerItem,
+        "totalPrice": parsedTotalPrice,
         "manufactured": this.manufactured,
         "sellBy": this.sellBy,
         "bestBefore": this.bestBefore,

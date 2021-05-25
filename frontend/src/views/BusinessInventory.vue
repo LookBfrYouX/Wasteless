@@ -62,6 +62,9 @@ const sortOptions = [
     name: "Price Per Item",
     sortMethod: helper.sensibleSorter("pricePerItem")
   }, {
+    name: "Total Price",
+    sortMethod: helper.sensibleSorter("totalPrice")
+  }, {
     name: "Manufacturing Date",
     sortMethod: helper.sensibleSorter("manufactured")
   }, {
