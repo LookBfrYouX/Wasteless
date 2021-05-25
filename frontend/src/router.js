@@ -207,7 +207,7 @@ export const router = new VueRouter({
         requiresNotBusinessAdmin: true,
         requiresSignIn: true,
       },
-      component: () => import("./views/CreateCard"),
+      component: () => import("./views/CreateMarketplaceCard"),
       props: route => ({ userId: parseInt(route.params.userId, 10) })
     },
     {
@@ -218,7 +218,7 @@ export const router = new VueRouter({
         requiresNotBusinessAdmin: true,
         requiresSignIn: true,
       },
-      component: () => import("./views/CreateCard"),
+      component: () => import("./views/CreateMarketplaceCard"),
       props: () => {
         const user = store.getters.getAuthUser();
         const userId = user? user.id: NaN; // If not logged in, should be redirected to a different page, so user id should never be NaN anyway

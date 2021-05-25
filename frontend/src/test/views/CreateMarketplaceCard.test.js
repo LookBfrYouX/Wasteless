@@ -1,7 +1,7 @@
-import CreateCard from "../../views/CreateCard";
+import CreateMarketplaceCard from "../../views/CreateMarketplaceCard";
 import { shallowMount } from "@vue/test-utils";
 
-import { constants } from "./../../constants";
+import { constants } from "../../constants";
 
 jest.mock("../../Api");
 import { Api } from "../../Api";
@@ -12,7 +12,7 @@ let wrapper;
 afterEach(() => wrapper.destroy());
 
 const mountCard = (initialSection, userId = 3, title = "TITLE") => {
-  wrapper = shallowMount(CreateCard, {
+  wrapper = shallowMount(CreateMarketplaceCard, {
     propsData: {
       userId,
       initialSection
@@ -93,8 +93,9 @@ describe("Test tag suggestions", () => {
 
   test("Suggestions are at least somewhat sensible", async () => {
     mountCard();
+    const tags = ["Cat", "Dog", "No code is good code", "Hydrofluoric Acid", "日常"].map((tag, i) => ({ name: tag, id: i }));
     wrapper.setData({
-      allTags: ["Cat", "Dog", "No code is good code", "Hydrofluoric Acid", "日常"],
+      allTags: tags,
       tagInputValue: "acid"
     });
 

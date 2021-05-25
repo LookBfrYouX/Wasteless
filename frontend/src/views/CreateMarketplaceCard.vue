@@ -140,8 +140,12 @@
 <script>
 import Suggestions from "../components/Suggestions.vue";
 import Tag from "../components/Tag.vue";
-import {EditDistance} from "./../EditDistance";
-const { Api } = require("./../Api");
+import {EditDistance} from "../EditDistance";
+
+// While there is no backend, use this static list of tags
+import temporaryTags from "./../assets/temporaryTags.json";
+
+const { Api } = require("../Api");
 
 export default {
   components: { Suggestions, Tag },
@@ -173,8 +177,8 @@ export default {
       tagInputValue: "",
       // Value of tag suggestions input field
       showSuggestions: false,
-      allTags: ["Apple", "Orange", "Cake", "Portal", "Apple MacBook Pro", "Sulfur Nitrate", "Max is awesome"],
-      // For now, allTags is just a string list of tags
+      allTags: temporaryTags,
+      // Array of objects { id: Number, name: String }
       tags: []
     }
   },
@@ -185,11 +189,9 @@ export default {
      * and value of the add tag input field
      */
     tagSuggestions() {
-      const tags = this.allTags.map((tag, i) => ({ name: tag, id: i, toString: () => tag }));
-
       const { NUM_SUGGESTIONS, WORST_RATIO, INSERT_COST, DELETE_COST, SUBSTITUTE_COST } = this.$constants.MARKETPLACE.CREATE_CARD.TAG_SUGGESTIONS;
 
-      let suggestions = tags.map(tag => {
+      let suggestions = this.allTags.map(tag => {
         tag.score = new EditDistance(
           this.tagInputValue.toLocaleLowerCase(),
           tag.name.toLocaleLowerCase(),
@@ -201,6 +203,8 @@ export default {
         tag.weightedScore = tag.score / tag.name.length;
         // weighted score takes into account length of tag so that it doesn't prefer shorter suggestions
         
+        tag.toString = () => tag.name; // toString used to show the suggestion
+
         return tag;
       });
 
