@@ -49,13 +49,14 @@ public class HibernateCriteriaQueryBuilder {
     // -- currently just using spaces
 
     List<String> tokens = new ArrayList<>();
-    Matcher matcher = Pattern.compile("([^\"]\\S*|\"[^>]++\")\\s*").matcher(searchQuery);
+    Matcher matcher = Pattern.compile("(\"[^\"]+\")|([^\"\\s]+)").matcher(searchQuery);
     while (matcher.find()) {
-      tokens.add(matcher.group(1));
+      tokens.add(matcher.group(0));
     }
 
     for (int i = 0; i < tokens.size(); i++) {
       String currentToken = tokens.get(i);
+      System.out.println(currentToken);
       if (currentToken.toUpperCase().matches("AND")) {
         // AND is default join for predicates so this is empty
       } else if (currentToken.toUpperCase().matches("OR")) {
