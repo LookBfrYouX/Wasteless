@@ -47,6 +47,7 @@
       async getCards() {
         this.cards = await this.getCardsFromAPI(this.section);
         this.sortResultsByCreated();
+        this.cards.reverse()
       },
 
       /**
