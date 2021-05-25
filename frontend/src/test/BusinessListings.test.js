@@ -11,7 +11,7 @@ let wrapper;
 beforeEach(() => {
   wrapper = mount(BusinessListings, {
     mocks: globalStateMocks(),
-    stubs: ["error-modal"], // Add the name of the business listings item component to here
+    stubs: ["error-modal", "router-link"], // Add the name of the business listings item component to here
     propsData: {
       businessId: 1
     }

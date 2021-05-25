@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100 d-flex pb-4">
+  <div class="w-100 d-flex my-3">
     <form
       autocomplete="on"
       class="container slightly-transparent-inputs"

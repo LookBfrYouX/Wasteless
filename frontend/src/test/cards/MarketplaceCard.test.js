@@ -39,6 +39,7 @@ describe("Test passing props to Marketplace card component", () => {
         card: cardItem
       },
       mocks: globalStateMocks(),
+      stubs: ["router-link"]
     })
     expect(wrapper.props().card.title).toEqual(cardTitle);
     expect(wrapper.props().card.description).toEqual(cardDesc);
@@ -50,7 +51,8 @@ describe("Test passing props to Marketplace card component", () => {
         card: cardItem
       },
       mocks: globalStateMocks(),
-    })
+      stubs: ["router-link"]
+    });
     expect(wrapper.text()).toContain('Created ' + globalStateMocks().$helper.isoToDateString(cardCreated));
     expect(wrapper.text()).toContain('Expires ' + globalStateMocks().$helper.isoToDateString(cardExpires));
   })
@@ -61,7 +63,8 @@ describe("Test passing props to Marketplace card component", () => {
         card: cardItem
       },
       mocks: globalStateMocks(),
-    })
+      stubs: ["router-link"]
+    });
     expect(wrapper.props().card.keywords).toHaveLength(1);
   })
 });
