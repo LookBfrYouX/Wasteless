@@ -25,11 +25,11 @@
         <div class="d-flex flex-wrap justify-content-between">
           <h4 class="pr-2">{{ item.quantity }} <small>units in stock</small></h4>
           <h4 class="pr-2">
-            {{ $helper.makeCurrencyString(item.pricePerItem, currency, false) }}
+            {{ $helper.makeCurrencyString(item.pricePerItem, currency) }}
             <small>per item</small>
           </h4>
           <h4 class="pr-2">
-            {{ $helper.makeCurrencyString(item.totalPrice, currency, false) }}
+            {{ $helper.makeCurrencyString(item.totalPrice, currency) }}
             <small>for whole</small>
           </h4>
         </div>

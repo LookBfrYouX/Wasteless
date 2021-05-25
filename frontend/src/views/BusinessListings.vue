@@ -9,17 +9,23 @@
         <h2>Listings for {{businessName? businessName: "business"}}</h2>
       </template>
       <template v-slot:item="slotProps">
-        <listing-item-card
-            class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded" v-on:click="viewListing(slotProps.item.id)"
-            v-bind:item="slotProps.item"
-            :businessId="businessId"
-            :currency="currency"
-        />
-        <!--<business-listing v-bind:listing="slotProps.item"/> -->
+        <router-link
+          v-bind:to="{ name: 'salesListingDetail', params: { businessId, listingId: slotProps.item.id }}"
+          class="text-decoration-none text-reset"
+        >
+          <listing-item-card
+              class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded" v-on:click="viewListing(slotProps.item.id)"
+              v-bind:item="slotProps.item"
+              :businessId="businessId"
+              :currency="currency"
+          />
+        </router-link>
       </template>
       <template v-slot:right-button>
-        <router-link :to="{ name: 'createListing', params: { businessId }}"
-                     class="btn btn-info d-flex">
+        <router-link
+            :to="{ name: 'createListing', params: { businessId }}"
+            class="btn btn-info d-flex"
+            v-if="$stateStore.getters.canEditBusiness(businessId)">
           <span class="material-icons mr-1">add</span>
           Create Listing
         </router-link>
@@ -47,11 +53,15 @@ import { helper } from "../helper";
 
 const sortOptions = [
   {
+    name: "Name",
+    sortMethod: helper.sensibleSorter(el => el.inventoryItem.product.name)
+  },
+  {
     name: "Price",
     sortMethod: helper.sensibleSorter("price") 
   }, {
-    name: "Name",
-    sortMethod: helper.sensibleSorter(el => el.inventoryItem.product.name)
+    name: "Quantity",
+    sortMethod: helper.sensibleSorter("quantity")
   }, {
     name: "Listing Created",
     // Yes, you can sort dates as a string in this format

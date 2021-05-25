@@ -140,8 +140,10 @@ export const Api = {
    * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
   registerBusiness: (props) => {
-    return instance.post("/businesses", props).catch(error => {
-      throw ApiRequestError.createFromMessageMap(error, {});
+    return instance.post("/businesses", props).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        400: error => `Could not create business: ${error.response.data.message}`
+      });
     });
   },
 
@@ -153,8 +155,9 @@ export const Api = {
    * @return promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
   createProduct: (id, props) => {
-    return instance.post(`/businesses/${id}/products`, props).catch(error => {
-      throw ApiRequestError.createFromMessageMap(error, {
+    return instance.post(`/businesses/${id}/products`, props).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        400: error => `Could not create product: ${error.response.data}`,
         403: "You don't have permission to add products to this business"
       });
     });
@@ -303,7 +306,7 @@ export const Api = {
         `/businesses/${businessId}/inventory/`, item)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
-        400: error => `could not create listing: ${error.response.data.message}`,
+        400: error => `Could not create listing: ${error.response.data}`,
         403: "Forbidden: Insufficient privileges"
       });
     });
@@ -352,7 +355,7 @@ export const Api = {
         `/businesses/${businessId}/listings`, listings)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
-        400: err => `An error creating the listing. ${err.response.statusText}`,
+        400: err => `An error occurred while creating the listing: ${err.response.data}`,
         403: "You don't have permission to add the listings"
       });
     });
