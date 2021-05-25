@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-3">
+      <div class="col-3 pr-0 mb-2">
         <img
             v-if="thumbnailPathIfExists != null"
             alt="Product Image"

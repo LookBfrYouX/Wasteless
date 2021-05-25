@@ -3,6 +3,8 @@ package com.navbara_pigeons.wasteless.dto;
 import com.navbara_pigeons.wasteless.entity.User;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 
 /**
  * User DTO which returns all user information except password
@@ -16,7 +18,7 @@ public class CreateUserDto {
   private String nickname;
   private String bio;
   private String email;
-  private String dateOfBirth;
+  private LocalDate dateOfBirth;
   private String phoneNumber;
   private String password;
   private FullAddressDto homeAddress;

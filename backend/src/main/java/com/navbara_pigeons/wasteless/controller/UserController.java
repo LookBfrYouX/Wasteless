@@ -1,6 +1,8 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
+import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
@@ -78,8 +80,12 @@ public class UserController {
   @GetMapping("/users/{id}")
   public ResponseEntity<Object> getUserById(@PathVariable String id) throws UserNotFoundException, UnhandledException {
     log.info("GETTING USER BY ID: " + id);
-    return new ResponseEntity<>(this.userService.getUserById(Long.parseLong(id)),
-        HttpStatus.valueOf(200));
+    User user = userService.getUserById(Long.parseLong(id));
+    if (userService.isAdmin() || userService.isSelf(user.getEmail())) {
+      return new ResponseEntity<>(new FullUserDto(user), HttpStatus.valueOf(200));
+    } else {
+      return new ResponseEntity<>(new BasicUserDto(user), HttpStatus.valueOf(200));
+    }
   }
 
   /**

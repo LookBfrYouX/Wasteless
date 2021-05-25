@@ -22,7 +22,7 @@ afterEach(() => wrapper.destroy());
 
 describe("API handling", () => {
   test("Items actually get set", async () => {
-    const listings = [{id: 20}, {id: 40}]
+    const listings = [{id: 20, inventoryItem: {product: { images: []}}}, {id: 40, inventoryItem: {product: { images: []}}}]
     Api.getBusinessListings.mockResolvedValue({
       data: listings
     });

@@ -1,4 +1,4 @@
-Feature: U22
+Feature: U22 List sale
 
 #  AC2: I can add a listing using an appropriate sequence of UI actions. This includes selecting
 #  an inventory entry: the application will then transfer the appropriate fields to the sale listing.
@@ -18,20 +18,24 @@ Feature: U22
 #  AC4: The price for the listing may be overridden. An optional field for further information
 #  (e.g. “seller may be willing to consider near offers”) is available.
 
-  Background:
+  Scenario: AC2 - Quantity must be above 0 and less than quantity of inventory entry - other listings of that item quantity
     Given a user has a business "Jovial Jerky" in "New Zealand"
-    # NB: test countryData.json only has NZ
     And the business has the product "Jenkin's Jerky" with RRP of 7.99
-#    And they have 40 in their inventory with a price of 4.50 expiring on "2022-04-13"
+    And my business has 40 of them in stock at 8.99
+    And a listing with quantity 20 and price 8.99 exists
+    When i create another listing with quantity 21 and price 150.00
+    Then appropriate error messages are shown
 
-#  Scenario: AC3 - less than amount in inventory
+  Scenario: AC4 - Listing has optional field: moreInfo
+    Given a user has a business "Jovial Jerky" in "New Zealand"
+    And the business has the product "Jenkin's Jerky" with RRP of 7.99
+    And my business has 40 of them in stock at 8.99
+    When i list 20 of these for sale mentioning "ONO" as more info on the listing
+    Then i can see the listing is created with this extra field "ONO"
 
-#
-#  Scenario: AC2 footnote, two listings below amount in inventory
-#    Given a listing with quantity 20 and price 150.00
-#    Then another listing with quantity 20 and price 150.00 succeeds
-#
-#  Scenario: AC2 footnote, two listings above amount in inventory
-#    Given a listing with quantity 20 and price 150.00
-#    Then another listing with quantity 21 and price 152.00 fails
-
+  Scenario: AC5 - Closing uses inventory entry expiry date as default when not supplied
+    Given a user has a business "Jovial Jerky" in "New Zealand"
+    And the business has the product "Jenkin's Jerky" with RRP of 7.99
+    And my business has 40 of them in stock at 8.99
+    When i list 20 of these for sale with no closing date supplied
+    Then i can see the listing is created with the expiry date as the closing date

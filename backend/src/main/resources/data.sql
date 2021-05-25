@@ -1,7 +1,8 @@
 /* MAIN SCHEMA DEFINITION */
 
+DROP TABLE IF EXISTS marketlisting CASCADE;
 DROP TABLE IF EXISTS listing CASCADE;
-DROP TABLE IF EXISTS inventory CASCADE;
+DROP TABLE IF EXISTS inventory_item CASCADE;
 DROP TABLE IF EXISTS product_image CASCADE;
 DROP TABLE IF EXISTS catalogue CASCADE;
 DROP TABLE IF EXISTS product CASCADE;
@@ -13,7 +14,7 @@ DROP TABLE IF EXISTS address CASCADE;
 
 CREATE TABLE address
 (
-    ID            INT AUTO_INCREMENT PRIMARY KEY,
+    ID            BIGINT AUTO_INCREMENT PRIMARY KEY,
     STREET_NUMBER VARCHAR(100),
     STREET_NAME   VARCHAR(200),
     POSTCODE      VARCHAR(30),
@@ -24,7 +25,7 @@ CREATE TABLE address
 
 CREATE TABLE user
 (
-    ID              INT AUTO_INCREMENT PRIMARY KEY,
+    ID              BIGINT AUTO_INCREMENT PRIMARY KEY,
     FIRST_NAME      VARCHAR(50) NOT NULL,
     LAST_NAME       VARCHAR(50) NOT NULL,
     MIDDLE_NAME     VARCHAR(50),
@@ -36,47 +37,47 @@ CREATE TABLE user
     IMAGE_NAME      VARCHAR(30),
     CREATED         DATETIME    NOT NULL,
     ROLE            VARCHAR(30) NOT NULL,
-    PASSWORD        CHAR(60)    NOT NULL,
-    HOME_ADDRESS_ID INT         NOT NULL,
+    PASSWORD        VARCHAR(60)    NOT NULL,
+    HOME_ADDRESS_ID BIGINT         NOT NULL,
     CONSTRAINT user_address_fk FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES address (ID)
 );
 
 CREATE TABLE business
 (
-    ID                       INT AUTO_INCREMENT PRIMARY KEY,
+    ID                       BIGINT AUTO_INCREMENT PRIMARY KEY,
     NAME                     VARCHAR(50) NOT NULL,
     DESCRIPTION              VARCHAR(250),
     BUSINESS_TYPE            VARCHAR(50) NOT NULL,
     CREATED                  DATETIME    NOT NULL,
-    PRIMARY_ADMINISTRATOR_ID INT         NOT NULL,
-    ADDRESS_ID               INT         NOT NULL,
+    PRIMARY_ADMINISTRATOR_ID BIGINT         NOT NULL,
+    ADDRESS_ID               BIGINT         NOT NULL,
     CONSTRAINT business_address_fk FOREIGN KEY (ADDRESS_ID) REFERENCES address (ID)
 );
 
 CREATE TABLE image
 (
-    ID                 INT AUTO_INCREMENT PRIMARY KEY,
+    ID                 BIGINT AUTO_INCREMENT PRIMARY KEY,
     FILENAME           VARCHAR(100) NOT NULL,
     THUMBNAIL_FILENAME VARCHAR(120) NOT NULL
 );
 
 CREATE TABLE product
 (
-    ID               INT AUTO_INCREMENT PRIMARY KEY,
+    ID               BIGINT AUTO_INCREMENT PRIMARY KEY,
     NAME             VARCHAR(100) NOT NULL,
     DESCRIPTION      VARCHAR(500),
     CURRENCY         VARCHAR(4),
     MANUFACTURER     VARCHAR(100),
-    RRP              DECIMAL(6, 2),
+    RRP              DOUBLE(6, 2),
     CREATED          DATETIME,
-    PRIMARY_IMAGE_ID INT,
+    PRIMARY_IMAGE_ID BIGINT,
     CONSTRAINT product_image_fk FOREIGN KEY (PRIMARY_IMAGE_ID) REFERENCES image (ID)
 );
 
 CREATE TABLE product_image
 (
-    PRODUCT_ID INT NOT NULL,
-    IMAGE_ID   INT NOT NULL,
+    PRODUCT_ID BIGINT NOT NULL,
+    IMAGE_ID   BIGINT NOT NULL,
     CONSTRAINT product_image_pk
         UNIQUE (PRODUCT_ID, IMAGE_ID),
     CONSTRAINT product_fk
@@ -87,8 +88,8 @@ CREATE TABLE product_image
 
 CREATE TABLE user_business
 (
-    USER_ID     INT NOT NULL,
-    BUSINESS_ID INT NOT NULL,
+    USER_ID     BIGINT NOT NULL,
+    BUSINESS_ID BIGINT NOT NULL,
     CONSTRAINT user_business_pk
         UNIQUE (USER_ID, BUSINESS_ID),
     CONSTRAINT user_business_user_fk
@@ -99,8 +100,8 @@ CREATE TABLE user_business
 
 CREATE TABLE catalogue
 (
-    PRODUCT_ID  INT NOT NULL,
-    BUSINESS_ID INT NOT NULL,
+    PRODUCT_ID  BIGINT NOT NULL,
+    BUSINESS_ID BIGINT NOT NULL,
     CONSTRAINT catalogue_pk
         UNIQUE (PRODUCT_ID, BUSINESS_ID),
     CONSTRAINT catalogue_product_fk
@@ -109,38 +110,50 @@ CREATE TABLE catalogue
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
 
-CREATE TABLE inventory
+CREATE TABLE inventory_item
 (
-    ID             INT AUTO_INCREMENT PRIMARY KEY,
-    PRODUCT_ID     INT           NOT NULL,
-    BUSINESS_ID    INT           NOT NULL,
+    ID             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    PRODUCT_ID     BIGINT           NOT NULL,
+    BUSINESS_ID    BIGINT           NOT NULL,
     -- WARNING: BUSINESS ID IS DUPLICATED DATA - CAN BE FOUND FROM PRODUCT
-    QUANTITY       INT           NOT NULL,
-    PRICE_PER_ITEM DECIMAL(6, 2) NOT NULL,
-    TOTAL_PRICE    DECIMAL(6, 2) NOT NULL,
+    QUANTITY       BIGINT           NOT NULL,
+    PRICE_PER_ITEM DOUBLE(6, 2) NOT NULL,
+    TOTAL_PRICE    DOUBLE(6, 2) NOT NULL,
     EXPIRES        DATE          NOT NULL,
     MANUFACTURED   DATE,
     SELL_BY        DATE,
     BEST_BEFORE    DATE,
 
-    CONSTRAINT inventory_product_fk
+    CONSTRAINT inventory_item_product_fk
         FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
-    CONSTRAINT inventory_business_fk
+    CONSTRAINT inventory_item_business_fk
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
 
 
 CREATE TABLE listing
 (
-    ID           INT AUTO_INCREMENT PRIMARY KEY,
-    INVENTORY_ID INT           NOT NULL,
-    QUANTITY     INT           NOT NULL,
-    PRICE        DECIMAL(6, 2) NOT NULL,
+    ID           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    INVENTORY_ITEM_ID BIGINT           NOT NULL,
+    QUANTITY     BIGINT           NOT NULL,
+    PRICE        DOUBLE(6, 2) NOT NULL,
     MORE_INFO    VARCHAR(50),
     CREATED      DATETIME,
     CLOSES       DATETIME,
-    CONSTRAINT inventory_fk
-        FOREIGN KEY (INVENTORY_ID) REFERENCES inventory (ID)
+    CONSTRAINT inventory_item_fk
+        FOREIGN KEY (INVENTORY_ITEM_ID) REFERENCES inventory_item (ID)
+);
+
+CREATE TABLE marketlisting
+(
+    ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    CREATOR_ID BIGINT NOT NULL,
+    SECTION ENUM('ForSale','Wanted','Exchange') NOT NULL,
+    CREATED DATETIME,
+    DISPLAY_PERIOD_END DATETIME,
+    TITLE VARCHAR(50) NOT NULL,
+    DESCRIPTION VARCHAR(250),
+    CONSTRAINT user_fk FOREIGN KEY (CREATOR_ID) REFERENCES user (ID)
 );
 
 
@@ -343,21 +356,25 @@ VALUES (1, 1),
        (5, 1),
        (6, 3);
 
--- Inserting inventory data
+-- Inserting inventory_item data
 
-INSERT INTO inventory (ID, PRODUCT_ID, BUSINESS_ID, QUANTITY, PRICE_PER_ITEM, TOTAL_PRICE,
+INSERT INTO inventory_item (ID, PRODUCT_ID, BUSINESS_ID, QUANTITY, PRICE_PER_ITEM, TOTAL_PRICE,
                        EXPIRES, MANUFACTURED, SELL_BY, BEST_BEFORE)
-VALUES (1, 1, 1, 5, 4.67, 20.00, '2021-08-16', '2021-08-13',
+VALUES (1, 1, 1, 20, 4.67, 20.00, '2021-08-16', '2021-08-13',
         '2021-08-15', '2021-08-16'),
-       (2, 2, 1, 10, 4.62, 20.00, '2021-08-16', '2021-08-13',
+       (2, 3, 1, 10, 4.62, 20.00, '2021-08-16', '2021-08-13',
         '2021-08-15', '2021-08-16'),
-       (3, 3, 1, 15, 3.00, 20.00, '2021-08-16', '2021-08-13',
+       (3, 5, 1, 15, 3.00, 20.00, '2021-08-16', '2021-08-13',
         '2021-08-15', '2021-08-16');
 
 -- Inserting listing data
 
-INSERT INTO listing (INVENTORY_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
+INSERT INTO listing (INVENTORY_ITEM_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
 VALUES (1, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (1, 3, 12.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (2, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (3, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
+
+INSERT INTO marketlisting (CREATOR_ID, SECTION, CREATED, DISPLAY_PERIOD_END, TITLE, DESCRIPTION)
+VALUES (2, 'ForSale', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Shoddy web app', 'Wanting to sell Wasteless, no longer needed or wanted.'),
+       (2, 'Wanted', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Fresh motivation', 'Will pay for motivation.');

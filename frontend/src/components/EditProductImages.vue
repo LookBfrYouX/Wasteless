@@ -60,7 +60,6 @@
 
       </div>
     </div>
-    <not-acting-as-business v-bind:businessId="businessId"/>
     <error-modal
         title="Error fetching product information"
         v-bind:goBack="false"
