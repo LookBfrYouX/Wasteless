@@ -30,14 +30,12 @@
             </div>
           </div>
 
-          <!-- up for discussion about setting a step price -->
           <div class="row">
             <div class="form-group required col px-3">
               <label>Price {{ currencyText }}</label>
               <input
                   v-model="price"
                   class="form-control"
-                  max="9999.99"
                   min="0.00"
                   name="price"
                   required
@@ -83,7 +81,7 @@
                   class="btn btn-block btn-primary"
                   type="submit"
                   value="Add Product"
-              /> <!-- v-on to be used for testing -->
+              />
             </div>
           </div>
 
@@ -197,8 +195,8 @@ export default {
         this.errorMessage = "Please enter a valid price";
       }
 
-      if (price <= 0 || price >= this.$constants.PRODUCTS.MAX_PRICE) {
-        this.errorMessage = "Please enter a valid price between 0 and `${this.$constants.PRODUCTS.MAX_PRICE}";
+      if (price <= 0) {
+        this.errorMessage = "Please enter a valid price greater than 0";
       } else if (this.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
       } else if (this.manufacturer.trim().length === 0) {

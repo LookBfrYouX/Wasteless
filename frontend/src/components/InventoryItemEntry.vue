@@ -50,7 +50,6 @@
               type="number"
               min="0.01"
               step="0.01"
-              max="9999.99"
               v-bind:placeholder="currencyText"
           />
         </div>
@@ -62,7 +61,6 @@
               class="form-control"
               name="totalPrice"
               type="number"
-              v-bind:max="pricePerItem * quantity"
               step="0.01"
               min="0.0"
               v-bind:placeholder="currencyText"

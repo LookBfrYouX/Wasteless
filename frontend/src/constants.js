@@ -78,9 +78,5 @@ export const constants = {
   API: {
     TIMEOUT_SHORT: 2500,
     TIMEOUT_LONG: 10000
-  },
-
-  PRODUCTS: {
-    MAX_PRICE: 10000
   }
 };
