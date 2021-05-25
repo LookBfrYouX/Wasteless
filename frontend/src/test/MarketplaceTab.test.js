@@ -12,7 +12,7 @@ beforeEach(() => {
     mocks: globalStateMocks(),
     stubs: ["error-modal", "marketplace-card"],
     propsData: {
-      section: ""
+      section: "",
     }
   });
 });
@@ -24,7 +24,7 @@ describe("API handling", () => {
   test("API returns error", async () => {
     const message = "It's a Mario!";
     Api.getMarketplaceCards.mockImplementation(() => Promise.reject(new ApiRequestError(message)));
-    await wrapper.vm.getCards();
+    await wrapper.vm.getCardsFromAPI("");
     expect(wrapper.vm.apiErrorMessage).toEqual(message);
   });
 });

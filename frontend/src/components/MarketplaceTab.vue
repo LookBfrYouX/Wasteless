@@ -31,32 +31,24 @@
         cards: [],
       };
     },
-    mounted() {
-        this.getCards()
+    mounted: async function() {
+        await this.getCardsFromAPI(this.section)
     },
     watch: {
-      section() {
-        this.getCards()
+      section: async function() {
+        await this.getCardsFromAPI(this.section)
       }
     },
     methods: {
-      /**
-       * Get the cards from the API and then sort into the 3 sections
-       * @returns {Promise<void>}
-       */
-      async getCards() {
-        this.cards = await this.getCardsFromAPI(this.section);
-        this.sortResultsByCreated();
-        this.cards.reverse()
-      },
-
       /**
        * Get the marketplace cards from the API for the specified section
        * @returns {Promise<T>} Promise containing a list of the cards
        */
       async getCardsFromAPI(section) {
         try {
-          return (await Api.getMarketplaceCards(section)).data;
+          const data = (await Api.getMarketplaceCards(section)).data;
+          this.cards = data;
+          this.cards.reverse();
         } catch (err) {
           if (await Api.handle401.call(this, err)) {
             return false;
@@ -64,9 +56,6 @@
           this.apiErrorMessage = err.userFacingErrorMessage;
         }
       },
-      sortResultsByCreated: function () {
-        this.cards.sort((a,b)=> a.created-b.created)
-      }
     }
   }
 </script>
