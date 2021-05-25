@@ -278,7 +278,8 @@ export default {
         creatorId: this.userId,
         section: this.section,
         title: this.title,
-        description: this.description,
+        description: this.description.trim(),
+        // remove extra newlines etc. at the start and end
         tagIds: this.tags.map(tag => tag.id)
       };
 
