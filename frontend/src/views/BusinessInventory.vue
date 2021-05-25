@@ -51,7 +51,7 @@ const sortOptions = [
     sortMethod: helper.sensibleSorter("id")
   }, {
     name: "Product ID",
-    sortMethod: helper.sensibleSorter("productId") 
+    sortMethod: helper.sensibleSorter(el => el.product.id)
   }, {
     name: "Product Name",
     sortMethod: helper.sensibleSorter(el => el.product.name) 
