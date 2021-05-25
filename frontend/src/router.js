@@ -8,6 +8,15 @@ export default [];
 
 Vue.use(VueRouter);
 
+/**
+ * Meta properties:
+ *   title: Page title; this is set on navigation
+ *   requiresSignIn: if true, only accessible to signed in users
+ *   adminOnly: only administrators can access this page
+ *   requiresBusinessAdmin: route has a `businessId` param and user is acting as that business 
+ *   requiresNotBusinessAdmin: user must not be acting as a business
+ */
+
 export const router = new VueRouter({
   hashbang: false,
   mode: "history",
@@ -203,8 +212,7 @@ export const router = new VueRouter({
       meta: {
         title: "Create Card | Wasteless",
         /* Only accessible if GAA */
-        requiresBusinessAdmin: true,
-        requiresNotBusinessAdmin: true,
+        adminOnly: true,
         requiresSignIn: true,
       },
       component: () => import("./views/CreateMarketplaceCard"),
@@ -308,10 +316,18 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresSignIn && !store.getters.isLoggedIn()) {
     next({name: 'error401' });
   }
+
   // Admins can do everything
   else if (store.getters.isAdmin()) {
     next()
   }
+
+  // If page is admin only and we get to this point, user is not admin
+  else if (to.meta.adminOnly) {
+    next({ name: "error403" });
+
+  }
+
   // If route requires user to be business admin
   else if (to.meta.requiresBusinessAdmin) {
     // Yes, it needs to be this explicit. You try it if you think your so smart
@@ -321,6 +337,7 @@ router.beforeEach(async (to, from, next) => {
       next({name: "error403"});
     }
   }
+
   // Preventing businesses from accessing RegisterBusiness.vue
   else if (to.meta.requiresNotBusinessAdmin && business) {
     next({name: "error403"});
