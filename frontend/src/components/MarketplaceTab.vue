@@ -46,6 +46,7 @@
        */
       async getCards() {
         this.cards = await this.getCardsFromAPI(this.section);
+        this.sortResultsByCreated();
       },
 
       /**
@@ -61,6 +62,9 @@
           }
           this.apiErrorMessage = err.userFacingErrorMessage;
         }
+      },
+      sortResultsByCreated: function () {
+        this.cards.sort((a,b)=> a.created-b.created)
       }
     }
   }
