@@ -120,21 +120,40 @@
           </small>
         </div>
       </div>
-      <div class="d-flex justify-content-end">
-        <input class="btn btn-primary" type="submit"/>
+      <div class="row">
+        <div class="col text-center">
+          <input class="btn btn-primary btn-block" type="submit" value="Add"/>
+        </div>
+      </div>
+      <div v-if="errorMessage" class="row mt-2">
+        <div class="col">
+          <p class="alert alert-warning">{{ errorMessage }}</p>
+        </div>
       </div>
     </form>
-    
+    <error-modal
+        title="Error fetching product, inventory or listings data"
+        v-bind:goBack="false"
+        v-bind:hideCallback="() => apiErrorMessage = null"
+        v-bind:refresh="true"
+        v-bind:retry="false"
+        v-bind:show="apiErrorMessage !== null"
+    >
+      <p>{{ apiErrorMessage }}</p>
+    </error-modal>
   </div>
 </template>
 
 <script>
 
 const {Api} = require("./../Api.js");
+import ErrorModal from "./Errors/ErrorModal";
 
 export default {
   name: "CreateListing",
-
+  components: {
+    ErrorModal
+  },
   data() {
     return {
       // Array of inventory items
@@ -148,6 +167,8 @@ export default {
       closeDate: null,
       closeTime: null,
       todayDate: null,
+      apiErrorMessage: null,
+      errorMessage: null,
     }
   },
 
@@ -295,6 +316,17 @@ export default {
     },
 
     /**
+     * Redirects user to listings page when a new listing is created successfully.
+     */
+    goToListings() {
+      this.$router.push({
+        name: 'businessListings',
+        params: {
+          businessId: this.businessId
+        }
+      });
+    },
+    /**
      * Called when form submit button is clicked. Calls Api to add listing to the business.
      */
     async addListing() {
@@ -307,10 +339,12 @@ export default {
         "closes": closes
       }
 
-      await Api.addBusinessListings(this.businessId, listing)
-      .catch((err) => {
+      try {
+        await Api.addBusinessListings(this.businessId, listing);
+        this.goToListings();
+      } catch(err) {
         this.errorMessage = err.userFacingErrorMessage;
-      });
+      }
     }
   },
 
