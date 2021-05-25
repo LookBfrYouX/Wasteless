@@ -3,107 +3,56 @@
     <div class="row">
       <div class="col-12">
         <h2>Community Marketplace</h2>
+
+        <h3>For Sale</h3>
         <div
             v-for="card in forSaleCards"
             v-bind:key="card.id"
         >
           <marketplace-card :card="card"/>
         </div>
+
+        <h3>Wanted</h3>
+        <div
+            v-for="card in wantedCards"
+            v-bind:key="card.id"
+        >
+          <marketplace-card :card="card"/>
+        </div>
+
+        <h3>Exchange</h3>
+        <div
+            v-for="card in exchangeCards"
+            v-bind:key="card.id"
+        >
+          <marketplace-card :card="card"/>
+        </div>
       </div>
     </div>
+    <error-modal
+        title="Error viewing inventory"
+        v-bind:goBack="false"
+        v-bind:hideCallback="() => apiErrorMessage = null"
+        v-bind:refresh="true"
+        v-bind:retry="this.getCards"
+        v-bind:show="apiErrorMessage !== null"
+    >
+      <p>{{ apiErrorMessage }}</p>
+    </error-modal>
   </div>
 </template>
 
 <script>
 import MarketplaceCard from "@/components/cards/MarketplaceCard";
-
-const mockCards = [
-  {
-    "id": 500,
-    "creator": {
-      "id": 100,
-      "firstName": "John",
-      "lastName": "Smith",
-      "middleName": "Hector",
-      "nickname": "Jonny",
-      "bio": "Likes long walks on the beach",
-      "email": "johnsmith99@gmail.com",
-      "dateOfBirth": "1999-04-27",
-      "phoneNumber": "+64 3 555 0129",
-      "homeAddress": {
-        "streetNumber": "3/24",
-        "streetName": "Ilam Road",
-        "suburb": "Upper Riccarton",
-        "city": "Christchurch",
-        "region": "Canterbury",
-        "country": "New Zealand",
-        "postcode": "90210"
-      },
-      "created": "2020-07-14T14:32:00Z",
-      "role": "user",
-      "businessesAdministered": [
-        {
-          "id": 100,
-          "administrators": [
-            "string"
-          ],
-          "primaryAdministratorId": 20,
-          "name": "Lumbridge General Store",
-          "description": "A one-stop shop for all your adventuring needs",
-          "address": {
-            "streetNumber": "3/24",
-            "streetName": "Ilam Road",
-            "suburb": "Upper Riccarton",
-            "city": "Christchurch",
-            "region": "Canterbury",
-            "country": "New Zealand",
-            "postcode": "90210"
-          },
-          "businessType": "Accommodation and Food Services",
-          "created": "2020-07-14T14:52:00Z"
-        }
-      ]
-    },
-    "section": "ForSale",
-    "created": "2021-07-15T05:10:00Z",
-    "displayPeriodEnd": "2021-07-29T05:10:00Z",
-    "title": "1982 Lada Samara",
-    "description": "Beige, suitable for a hen house. Fair condition. Some rust. As is, where is. Will swap for budgerigar.",
-    "keywords": [
-      {
-        "id": 600,
-        "name": "Vehicle",
-        "created": "2021-07-15T05:10:00Z"
-      },
-      {
-        "id": 700,
-        "name": "Another Tag",
-        "created": "2021-07-15T05:10:00Z"
-      },
-      {
-        "id": 800,
-        "name": "Another Tag",
-        "created": "2021-07-15T05:10:00Z"
-      },
-      {
-        "id": 700,
-        "name": "Another Tag",
-        "created": "2021-07-15T05:10:00Z"
-      },
-      {
-        "id": 700,
-        "name": "Another Tag",
-        "created": "2021-07-15T05:10:00Z"
-      }
-    ]
-  }
-];
+import {Api} from "@/Api";
+import ErrorModal from "../components/Errors/ErrorModal";
 
 export default {
-  components: {MarketplaceCard},
+  components: {MarketplaceCard, ErrorModal},
   props: {},
   data() {
     return {
+      apiErrorMessage: null,
       forSaleCards: [],
       wantedCards: [],
       exchangeCards: []
@@ -113,22 +62,30 @@ export default {
     this.getCards();
   },
   methods: {
-    getCards() {
-      // This method will be used to get the cards from the API, for now using mocked cards
-      const recvCards = mockCards;
-      this.sortCards(recvCards);
+
+    /**
+     * Get the cards from the API and then sort into the 3 sections
+     * @returns {Promise<void>}
+     */
+    async getCards() {
+      this.forSaleCards = await this.getCardsFromAPI('ForSale');
+      this.wantedCards = await this.getCardsFromAPI('Wanted');
+      this.exchangeCards = await this.getCardsFromAPI('Exchange');
     },
-    sortCards(cards) {
-      // Sort the received card into their own sections
-      this.forSaleCards = cards.filter((card) => {
-        return card.section === 'ForSale';
-      });
-      this.wantedCards = cards.filter((card) => {
-        return card.section === 'Wanted';
-      });
-      this.exchangeCards = cards.filter((card) => {
-        return card.section === 'Exchange';
-      });
+
+    /**
+     * Get the marketplace cards from the API for the specified section
+     * @returns {Promise<T>} Promise containing a list of the cards
+     */
+    async getCardsFromAPI(section) {
+      try {
+        return (await Api.getMarketplaceCards(section)).data;
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) {
+          return false;
+        }
+        this.apiErrorMessage = err.userFacingErrorMessage;
+      }
     }
   }
 }
