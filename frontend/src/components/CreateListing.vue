@@ -94,7 +94,7 @@
               type="text"
           />
         </div>
-        <div class="col-md-6">
+        <div class="form-group col-md-6">
           <label for="closeDate">Close this sale on</label>
           <input
               id="closeDate"
