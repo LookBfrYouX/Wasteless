@@ -29,6 +29,9 @@ public class Address {
   @Column(name = "STREET_NAME")
   private String streetName;
 
+  @Column(name = "SUBURB")
+  private String suburb;
+
   @Column(name = "POSTCODE")
   private String postcode;
 
