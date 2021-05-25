@@ -85,7 +85,6 @@ export default {
 
   data() {
     return {
-      responseSuccess: false,
       errorMessage: "",
       email: "",
       password: ""

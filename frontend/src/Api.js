@@ -303,7 +303,7 @@ export const Api = {
         `/businesses/${businessId}/inventory/`, item)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
-        400: "Bad request: Invalid data supplied",
+        400: error => `could not create listing: ${error.response.data.message}`,
         403: "Forbidden: Insufficient privileges"
       });
     });
@@ -334,5 +334,27 @@ export const Api = {
         406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
       });
     })
+  },
+
+  /**
+   * Get a list of all of the marketplace cards and their creators
+   * @returns {Promise<AxiosResponse<any>>} Promise containing the cards
+   */
+  getMarketplaceCards: (section) => {
+    return instance.get(`/cards?section=${section}`).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        400: "Oops, it looks like that section doesn't exist! Have another try."
+      });
+    })
+  },
+  addBusinessListings: (businessId, listings) => {
+    return instance.post(
+        `/businesses/${businessId}/listings`, listings)
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        400: err => `An error creating the listing. ${err.response.statusText}`,
+        403: "You don't have permission to add the listings"
+      });
+    });
   }
 }

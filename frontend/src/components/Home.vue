@@ -4,7 +4,7 @@
       <div class="col-md-3 card m-1">
         <h5 class="text-muted mt-3">Quick Links</h5>
         <div class="profile-buttons d-flex flex-wrap">
-          <button class="btn btn-white-bg-primary m-1 d-flex" v-on:click="goToMarketplace">
+          <button v-if="isActingAsUser" class="btn btn-white-bg-primary m-1 d-flex" v-on:click="goToMarketplace">
             <span class="material-icons mr-1">store</span>
             Marketplace
           </button>
@@ -23,6 +23,15 @@ export default {
   methods: {
     goToMarketplace() {
       this.$router.push({name: 'marketplace'});
+    }
+  },
+  computed: {
+    /**
+     * Checks if acting as a user
+     * @returns true if logged in and acting as user
+     */
+    isActingAsUser() {
+      return !this.$stateStore.getters.isActingAsBusiness();
     }
   }
 }
