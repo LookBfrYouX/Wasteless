@@ -15,6 +15,7 @@ beforeEach(() => {
       address: {
         streetNumber: "",
         streetName: "",
+        suburb: "",
         city: "",
         region: "",
         postcode: "",
@@ -40,6 +41,7 @@ const standardAddress = () => {
   return {
     streetNumber: "NUM",
     streetName: "STREET",
+    suburb: "SUBURB",
     city: "C",
     region: "REGION",
     postcode: "P",
@@ -51,6 +53,7 @@ const standardOSMAddress = () => {
   return {
     housenumber: "NUM", // streetNumber
     street: "STREET", // streetName
+    district: "SUBURB", // suburb
     county: "C", // city
     state: "REGION", // region
     postcode: "P",
@@ -109,7 +112,7 @@ describe("text entry", () => {
     const {toString, ...address} = events[0][0];
 
     let expected = standardAddress();
-    expected.streetNumber = expected.streetName = "";
+    expected.streetNumber = expected.streetName = expected.suburb = "";
     // Should only return city and up
 
     expect(address).toEqual(expected);
@@ -137,6 +140,7 @@ describe("text entry", () => {
     expect(address).toEqual({
       streetNumber: "",
       streetName: "",
+      suburb: "",
       postcode: postcode,
       city: "",
       region: "",
@@ -231,7 +235,7 @@ describe("generateAddressStringFromAddressComponents", () => {
   test("All sections", () => {
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
         standardAddress()
-    )).toEqual("NUM STREET, C, REGION, P, COUNTRY");
+    )).toEqual("NUM STREET, SUBURB, C, REGION, P, COUNTRY");
   });
 
   test("street number blank", () => {
@@ -240,7 +244,7 @@ describe("generateAddressStringFromAddressComponents", () => {
           ...standardAddress(),
           streetNumber: ""
         }
-    )).toEqual("STREET, C, REGION, P, COUNTRY");
+    )).toEqual("STREET, SUBURB, C, REGION, P, COUNTRY");
   });
 
   test("street name blank", () => {
@@ -249,7 +253,7 @@ describe("generateAddressStringFromAddressComponents", () => {
           ...standardAddress(),
           streetName: ""
         }
-    )).toEqual("C, REGION, P, COUNTRY");
+    )).toEqual("SUBURB, C, REGION, P, COUNTRY");
   });
 
   test("Blank section", () => {
@@ -257,7 +261,7 @@ describe("generateAddressStringFromAddressComponents", () => {
     address.streetName = "";
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
         address,
-    )).toEqual("C, REGION, P, COUNTRY");
+    )).toEqual("SUBURB, C, REGION, P, COUNTRY");
   });
 
   test("Postcode and up", () => {
@@ -271,7 +275,7 @@ describe("generateAddressStringFromAddressComponents", () => {
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
         standardAddress(),
         "INVALID"
-    )).toEqual("NUM STREET, C, REGION, P, COUNTRY");
+    )).toEqual("NUM STREET, SUBURB, C, REGION, P, COUNTRY");
   });
 
   test("Invalid section name + one undefined", () => {
@@ -279,7 +283,7 @@ describe("generateAddressStringFromAddressComponents", () => {
     expect(wrapper.vm.generateAddressStringFromAddressComponents(
         address,
         "INVALID"
-    )).toEqual("NUM STREET, C, REGION, P, COUNTRY");
+    )).toEqual("NUM STREET, SUBURB, C, REGION, P, COUNTRY");
   });
 
   test("Invalid section name + one undefined + failOnErr", () => {
