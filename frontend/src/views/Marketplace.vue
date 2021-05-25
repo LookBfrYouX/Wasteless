@@ -1,12 +1,15 @@
 <template>
-  <div class="w-100">
-    <h2>Community Marketplace</h2>
-
-    <div
-      v-for="card in forSaleCards"
-      v-bind:key="card.id.toString() + card.created"
-    >
-      <MarketplaceCard :card="card"/>
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2>Community Marketplace</h2>
+        <div
+            v-for="card in forSaleCards"
+            v-bind:key="card.id"
+        >
+          <marketplace-card :card="card"/>
+        </div>
+      </div>
     </div>
   </div>
 </template>
