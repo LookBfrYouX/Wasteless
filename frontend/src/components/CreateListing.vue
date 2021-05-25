@@ -136,7 +136,7 @@
         v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
-        v-bind:retry="false"
+        v-bind:retry="this.createForm"
         v-bind:show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
@@ -180,11 +180,7 @@ export default {
   },
 
   beforeMount: async function() {
-    let success = (await this.getInventory());
-    if (!success) return;
-    await this.getAvailableInventoryItem();
-    this.setTodayDate();
-    await this.getCurrency();
+    await this.createForm();
   },
 
   watch: {
@@ -216,6 +212,18 @@ export default {
   },
 
   methods: {
+    /**
+     * API requests other computation at the time of form creation.
+     * Called when the page is loaded or user hit retry button on the error modal.
+     */
+    async createForm() {
+      let success = (await this.getInventory());
+      if (!success) return;
+      await this.getAvailableInventoryItem();
+      this.setTodayDate();
+      await this.getCurrency();
+    },
+
     /**
      * Gets inventory of the business and sets the array as inventory data.
      * @return boolean True when business inventory is successfully retrieved,
