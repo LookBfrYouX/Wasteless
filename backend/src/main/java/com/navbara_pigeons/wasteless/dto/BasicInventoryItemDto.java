@@ -1,14 +1,13 @@
 package com.navbara_pigeons.wasteless.dto;
 
-import com.navbara_pigeons.wasteless.entity.Inventory;
-import com.navbara_pigeons.wasteless.entity.Product;
 
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 
 @Data
-public class BasicInventoryDto {
+public class BasicInventoryItemDto {
 
   private long id;
   private BasicProductDto product;
@@ -20,9 +19,9 @@ public class BasicInventoryDto {
   private LocalDate bestBefore;
   private LocalDate expires;
 
-  public BasicInventoryDto(Inventory inventoryItem, String publicPathPrefix) {
+  public BasicInventoryItemDto(InventoryItem inventoryItem) {
     this.id = inventoryItem.getId();
-    this.product = new BasicProductDto(inventoryItem.getProduct(), publicPathPrefix);
+    this.product = new BasicProductDto(inventoryItem.getProduct());
     this.quantity = inventoryItem.getQuantity();
     this.pricePerItem = inventoryItem.getPricePerItem();
     this.totalPrice = inventoryItem.getTotalPrice();

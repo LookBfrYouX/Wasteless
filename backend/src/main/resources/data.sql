@@ -2,7 +2,7 @@
 
 DROP TABLE IF EXISTS marketlisting CASCADE;
 DROP TABLE IF EXISTS listing CASCADE;
-DROP TABLE IF EXISTS inventory CASCADE;
+DROP TABLE IF EXISTS inventory_item CASCADE;
 DROP TABLE IF EXISTS product_image CASCADE;
 DROP TABLE IF EXISTS catalogue CASCADE;
 DROP TABLE IF EXISTS product CASCADE;
@@ -110,7 +110,7 @@ CREATE TABLE catalogue
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
 
-CREATE TABLE inventory
+CREATE TABLE inventory_item
 (
     ID             BIGINT AUTO_INCREMENT PRIMARY KEY,
     PRODUCT_ID     BIGINT           NOT NULL,
@@ -124,9 +124,9 @@ CREATE TABLE inventory
     SELL_BY        DATE,
     BEST_BEFORE    DATE,
 
-    CONSTRAINT inventory_product_fk
+    CONSTRAINT inventory_item_product_fk
         FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID),
-    CONSTRAINT inventory_business_fk
+    CONSTRAINT inventory_item_business_fk
         FOREIGN KEY (BUSINESS_ID) REFERENCES business (ID)
 );
 
@@ -134,14 +134,14 @@ CREATE TABLE inventory
 CREATE TABLE listing
 (
     ID           BIGINT AUTO_INCREMENT PRIMARY KEY,
-    INVENTORY_ID BIGINT           NOT NULL,
+    INVENTORY_ITEM_ID BIGINT           NOT NULL,
     QUANTITY     BIGINT           NOT NULL,
     PRICE        DOUBLE(6, 2) NOT NULL,
     MORE_INFO    VARCHAR(50),
     CREATED      DATETIME,
     CLOSES       DATETIME,
-    CONSTRAINT inventory_fk
-        FOREIGN KEY (INVENTORY_ID) REFERENCES inventory (ID)
+    CONSTRAINT inventory_item_fk
+        FOREIGN KEY (INVENTORY_ITEM_ID) REFERENCES inventory_item (ID)
 );
 
 CREATE TABLE marketlisting
@@ -356,11 +356,11 @@ VALUES (1, 1),
        (5, 1),
        (6, 3);
 
--- Inserting inventory data
+-- Inserting inventory_item data
 
-INSERT INTO inventory (ID, PRODUCT_ID, BUSINESS_ID, QUANTITY, PRICE_PER_ITEM, TOTAL_PRICE,
+INSERT INTO inventory_item (ID, PRODUCT_ID, BUSINESS_ID, QUANTITY, PRICE_PER_ITEM, TOTAL_PRICE,
                        EXPIRES, MANUFACTURED, SELL_BY, BEST_BEFORE)
-VALUES (1, 1, 1, 5, 4.67, 20.00, '2021-08-16', '2021-08-13',
+VALUES (1, 1, 1, 20, 4.67, 20.00, '2021-08-16', '2021-08-13',
         '2021-08-15', '2021-08-16'),
        (2, 3, 1, 10, 4.62, 20.00, '2021-08-16', '2021-08-13',
         '2021-08-15', '2021-08-16'),
@@ -369,7 +369,7 @@ VALUES (1, 1, 1, 5, 4.67, 20.00, '2021-08-16', '2021-08-13',
 
 -- Inserting listing data
 
-INSERT INTO listing (INVENTORY_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
+INSERT INTO listing (INVENTORY_ITEM_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
 VALUES (1, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (1, 3, 12.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (2, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),

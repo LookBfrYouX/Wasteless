@@ -2,10 +2,9 @@ package com.navbara_pigeons.wasteless.testprovider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-
 import com.navbara_pigeons.wasteless.dto.BasicAddressDto;
 import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
-import com.navbara_pigeons.wasteless.dto.BasicInventoryDto;
+import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.FullAddressDto;
@@ -13,7 +12,8 @@ import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.Inventory;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
@@ -72,9 +72,9 @@ public class ServiceTestProvider extends MainTestProvider {
    * @param inventory
    * @param inventoryDto
    */
-  protected void assertInventoryListEquals(List<Inventory> inventory, List<BasicInventoryDto> inventoryDto) {
-    inventory.sort(Comparator.comparing(Inventory::getId));
-    inventoryDto.sort(Comparator.comparing(BasicInventoryDto::getId));
+  protected void assertInventoryListEquals(List<InventoryItem> inventory, List<BasicInventoryItemDto> inventoryDto) {
+    inventory.sort(Comparator.comparing(InventoryItem::getId));
+    inventoryDto.sort(Comparator.comparing(BasicInventoryItemDto::getId));
     assertEquals(inventory.size(), inventoryDto.size());
     for (int i = 0; i < inventory.size(); i++) {
       assertInventoryEquals(inventory.get(i), inventoryDto.get(i));
@@ -87,7 +87,7 @@ public class ServiceTestProvider extends MainTestProvider {
    * @param inventory
    * @param inventoryDto
    */
-  protected void assertInventoryEquals(Inventory inventory, BasicInventoryDto inventoryDto) {
+  protected void assertInventoryEquals(InventoryItem inventory, BasicInventoryItemDto inventoryDto) {
     assertEquals(inventory.getId(), inventoryDto.getId());
     assertProductEquals(inventory.getProduct(), inventoryDto.getProduct());
     assertEquals(inventory.getQuantity(), inventoryDto.getQuantity());
@@ -288,21 +288,50 @@ public class ServiceTestProvider extends MainTestProvider {
     assertEquals(product.getRecommendedRetailPrice(), productDto.getRecommendedRetailPrice());
   }
 
-  /**
-   * Checks that products lists are equal
-   *
-   * @param products
-   * @param productDtos
-   */
-  protected void assertProductListsEqual(List<Product> products,
-      List<BasicProductDto> productDtos) {
-    products.sort(Comparator.comparing(prod -> prod.getId()));
-    productDtos.sort(Comparator.comparing(prod -> prod.getId()));
+  Product newProduct(long id, Business business) {
+    Product product = new Product();
+    business.addCatalogueProduct(product);
+    product.setId(id);
+    return product;
+  }
 
-    assertEquals(products.size(), productDtos.size(),
-        "product and product DTOs list different length");
-    for (int i = 0; i < products.size(); i++) {
-      assertProductEquals(products.get(i), productDtos.get(i));
-    }
+  InventoryItem newInventory(long id, Product product, Business business) {
+    InventoryItem inventory = new InventoryItem();
+    business.getInventory().add(inventory);
+    inventory.setProduct(product);
+    inventory.setId(id);
+    return inventory;
+  }
+
+  Listing newListing(long id, InventoryItem inventory) {
+    Listing listing = new Listing();
+    inventory.addListing(listing);
+    listing.setInventoryItem(inventory);
+    listing.setId(id);
+    return listing;
+  }
+
+  public Business getMockBusiness() {
+    /**
+     *                  B#1
+     *         p1#1 ---------p2#2
+     *    i1#1---i2#2         i1#3
+     *l1#1--l2#2  l1#3     l1#4 l2#5 l3#6
+     */
+    Business business = new Business();
+    business.setId(1);
+    Product p1 = newProduct(1, business);
+    InventoryItem i1 = newInventory(1, p1, business);
+    Listing l1 = newListing(1, i1);
+    Listing l2 = newListing(2, i1);
+    InventoryItem i2 = newInventory(2, p1, business);
+    Listing l3 = newListing(3, i2);
+
+    Product p2 = newProduct(2, business);
+    InventoryItem i3 = newInventory(3, p2, business);
+    Listing l4 = newListing(4, i3);
+    Listing l5 = newListing(5, i3);
+    Listing l6 = newListing(6, i3);
+    return business;
   }
 }

@@ -2,7 +2,6 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
-import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -10,7 +9,7 @@ import com.navbara_pigeons.wasteless.entity.Currency;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.ProductForbiddenException;
+import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -23,7 +22,6 @@ import javax.transaction.Transactional;
 
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,14 +32,9 @@ public class ProductServiceImpl implements ProductService {
 
   private final BusinessDao businessDao;
   private final ProductDao productDao;
-  private final UserDao userDao;
   private final CountryDataFetcherService countryDataFetcherService;
   private final UserService userService;
   private final BusinessService businessService;
-
-
-  @Value("${public_path_prefix}")
-  private String publicPathPrefix;
 
   /**
    * ProductImplementation constructor that takes autowired parameters and sets up the service for
@@ -51,12 +44,11 @@ public class ProductServiceImpl implements ProductService {
    * @param countryDataFetcherService
    */
   @Autowired
-  public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao, UserDao userDao,
+  public ProductServiceImpl(BusinessDao businessDao, ProductDao productDao,
       UserService userService, BusinessService businessService,
       CountryDataFetcherService countryDataFetcherService) {
     this.businessDao = businessDao;
     this.productDao = productDao;
-    this.userDao = userDao;
     this.userService = userService;
     this.businessService = businessService;
     this.countryDataFetcherService = countryDataFetcherService;
@@ -78,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
       Business business = businessDao.getBusinessById(businessId);
       ArrayList<BasicProductDto> products = new ArrayList<>();
       for (Product product : business.getProductsCatalogue()) {
-        products.add(new BasicProductDto(product, publicPathPrefix));
+        products.add(new BasicProductDto(product));
       }
       return products;
     } else {
@@ -92,20 +84,21 @@ public class ProductServiceImpl implements ProductService {
    * @param businessId   The ID of the business.
    * @param basicProduct basic product details for the product to be added.
    * @throws ProductRegistrationException If data supplied is not expected (bad request)
-   * @throws ProductForbiddenException    If user if not an admin of the business (forbidden)
+   * @throws ForbiddenException    If user if not an admin of the business (forbidden)
+   * @throws ForbiddenException    If user if not an admin of the business (forbidden)
    * @return JSONObject with `productId`
    */
   @Override
   @Transactional
   public JSONObject addProduct(long businessId, BasicProductCreationDto basicProduct)
       throws ProductRegistrationException,
-      ProductForbiddenException {
+      InsufficientPrivilegesException {
     // Throw 400 if bad request, 403 if user is not business admin
     Business business;
     try {
       business = businessDao.getBusinessById(businessId);
       if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
-        throw new ProductForbiddenException(
+        throw new InsufficientPrivilegesException(
             "User does not have permission to add a product to the business");
       }
     } catch (UserNotFoundException | BusinessNotFoundException exc) {
