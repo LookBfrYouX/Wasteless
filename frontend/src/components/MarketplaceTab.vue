@@ -1,6 +1,5 @@
 <template>
   <div class="overflow-auto">
-    <h3>{{this.$constants.MARKETPLACE.SECTIONS[section]}}</h3>
     <div
       v-for="card in cards"
       v-bind:key="card.id"

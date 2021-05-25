@@ -2,15 +2,23 @@
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <h2>Community Marketplace</h2>
-        <ul class="nav">
-          <li class="nav-item"  v-for="([sectionKey, sectionName]) in Object.entries($constants.MARKETPLACE.SECTIONS)"
+        <h2 class="text-center pt-4">Community Marketplace</h2>
+        <div
+            class="btn-group w-100"
+            v-bind:class="{
+            }"
+          >
+            <button
+              v-for="([sectionKey, sectionName]) in Object.entries($constants.MARKETPLACE.SECTIONS)"
               v-bind:key="sectionKey"
+              type="button"
+              class="btn btn-primary mb-0"
               v-bind:class="{ active: section == sectionKey }"
-              >
-            <a class="nav-link active" v-on:click="section = sectionKey">{{sectionName}}</a>
-          </li>
-        </ul>
+              v-on:click="section = sectionKey"
+            >
+              <h4 class="text-center mb-0">{{ sectionName }}</h4>
+            </button>
+          </div>
         <marketplace-tab v-bind:section="section"/>
       </div>
     </div>
