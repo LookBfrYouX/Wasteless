@@ -89,9 +89,9 @@ export const constants = {
      * Key is name of section that should be used internally, value is name that should be used externally
      */
     SECTIONS: {
-       ForSale: "For Sale",
-       Wanted: "Wanted",
-       Exchange: "Exchange"
+      ForSale: "For Sale",
+      Wanted: "Wanted",
+      Exchange: "Exchange"
     },
 
     CREATE_CARD: {

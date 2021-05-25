@@ -15,8 +15,6 @@
     </div>
     <div class="row">
       <div class="col-12">
-        <h2>Community Marketplace</h2>
-
         <h3>For Sale</h3>
         <div
             v-for="card in forSaleCards"
