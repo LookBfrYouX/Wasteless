@@ -181,7 +181,8 @@ export const router = new VueRouter({
       path: "/business/:businessId(\\d+)/inventory",
       meta: {
         title: "Business Inventory | Wasteless",
-        requiresSignIn: true
+        requiresSignIn: true,
+        requiresBusinessAdmin: true
       },
       component: () => import("./views/BusinessInventory"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)})
