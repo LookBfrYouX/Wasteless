@@ -144,6 +144,7 @@ public class MainTestProvider {
     Address address = new Address();
     address.setStreetNumber("3/24")
         .setStreetName("Ilam Road")
+        .setSuburb("Ilam")
         .setPostcode("90210")
         .setCity("Christchurch")
         .setRegion("Canterbury")

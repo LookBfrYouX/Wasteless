@@ -29,6 +29,7 @@ export const helper = {
 
     return [
       street,
+      address.suburb,
       address.city,
       address.region,
       address.postcode,

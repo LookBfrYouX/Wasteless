@@ -20,7 +20,7 @@
     </div>
     <div class="text-muted">
       {{
-        [card.creator.homeAddress.city, card.creator.homeAddress.region].join(', ')
+        [card.creator.homeAddress.suburb, card.creator.homeAddress.city].join(', ')
       }}
     </div>
     <div class="mt-2 rounded border p-2">
