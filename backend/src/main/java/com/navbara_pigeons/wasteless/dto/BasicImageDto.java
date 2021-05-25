@@ -16,8 +16,6 @@ public class BasicImageDto {
 
   public BasicImageDto(String publicPathPrefix, Image image) {
     this.id = image.getId();
-    // TODO get rid of double slash in a better way
-    // Path.of doesn't work on windows
     this.filename = publicPathPrefix + image.getPath().substring(1);
     System.out.println(this.filename);
     this.thumbnailFilename = publicPathPrefix + image.getThumbnailPath().substring(1);
