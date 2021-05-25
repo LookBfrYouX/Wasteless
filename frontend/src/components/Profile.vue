@@ -58,6 +58,13 @@
               <span class="material-icons mr-1">person</span>
               Revoke Admin
             </button>
+            <router-link
+              v-if="isAdmin"
+              v-bind:to="{ name: 'createCardAdmin', params: { userId: userInfo.id }}"
+              class="btn btn-white-bg-primary m-1 d-flex"
+            >
+              Create Marketplace Card
+            </router-link>
             <button
                 v-if="isLoggedIn && authUser.id === userInfo.id"
                 class="btn btn-white-bg-primary m-1 d-flex"

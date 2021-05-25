@@ -340,6 +340,20 @@ export const Api = {
   },
 
   /**
+   * Create a card to show on the marketplace
+   * @param {*} props card information
+   * @returns {Promise<AxiosResponse<any>>} if successful, response object containing cardId
+   */
+  createCard: props => {
+    return instance.post("/cards", props).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        400: err => `Invalid information given; ${err.response.message}`,
+        403: "You tried to create a card as another user; only an admin is allowed to do this"
+      });
+    })
+  },
+
+  /**
    * Get a list of all of the marketplace cards and their creators
    * @returns {Promise<AxiosResponse<any>>} Promise containing the cards
    */
