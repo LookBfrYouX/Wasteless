@@ -47,7 +47,7 @@
               <small>{{ meta.key }}:</small> <span class="text-nowrap">{{ meta.value }}</span></h4>
           </div>
           <div class="d-flex justify-content-end">
-            <router-link :to="{ name: 'productDetail', params: { businessId, productId: item.product.id }}"
+            <router-link :to="{ name: 'productDetail', params: { businessId: businessId, productId: item.product.id }}"
                          class="btn btn-success">
               View Product
             </router-link>
