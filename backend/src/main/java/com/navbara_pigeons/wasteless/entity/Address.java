@@ -53,6 +53,7 @@ public class Address {
   public Address(FullAddressDto address) {
     this.streetNumber = address.getStreetNumber();
     this.streetName = address.getStreetName();
+    this.suburb = address.getSuburb();
     this.postcode = address.getPostcode();
     this.city = address.getCity();
     this.region = address.getRegion();
