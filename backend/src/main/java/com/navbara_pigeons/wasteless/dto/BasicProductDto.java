@@ -25,10 +25,8 @@ public class BasicProductDto {
   private ZonedDateTime created;
   private BasicImageDto primaryProductImage;
   private List<BasicImageDto> images;
-  @Value("${public_path_prefix}")
-  private String publicPathPrefix;
 
-  public BasicProductDto(Product product) {
+  public BasicProductDto(Product product, String publicPathPrefix) {
     this.id = product.getId();
     this.name = product.getName();
     this.description = product.getDescription();
