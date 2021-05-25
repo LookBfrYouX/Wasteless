@@ -20,6 +20,7 @@ public class FullListingDto {
     inventoryItem = new FullInventoryItemDto(listing.getInventoryItem());
     quantity = listing.getQuantity();
     price = listing.getPrice();
+    moreInfo = listing.getMoreInfo();
     created = listing.getCreated();
     closes = listing.getCloses();
     moreInfo = listing.getMoreInfo();

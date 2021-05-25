@@ -335,6 +335,18 @@ export const Api = {
       });
     })
   },
+
+  /**
+   * Get a list of all of the marketplace cards and their creators
+   * @returns {Promise<AxiosResponse<any>>} Promise containing the cards
+   */
+  getMarketplaceCards: (section) => {
+    return instance.get(`/cards?section=${section}`).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        400: "Oops, it looks like that section doesn't exist! Have another try."
+      });
+    })
+  },
   addBusinessListings: (businessId, listings) => {
     return instance.post(
         `/businesses/${businessId}/listings`, listings)

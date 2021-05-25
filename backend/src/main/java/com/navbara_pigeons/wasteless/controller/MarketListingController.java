@@ -37,6 +37,7 @@ public class MarketListingController {
   public ResponseEntity<JSONObject> addMarketListing(
       @RequestBody CreateMarketListingDto createMarketListingDto)
       throws UserNotFoundException, UnhandledException {
+    log.info("CREATING A CARD WITH TITLE: " + createMarketListingDto.getTitle());
     User creator = userService.getUserById(createMarketListingDto.getCreatorId());
     MarketListing marketListing = new MarketListing(createMarketListingDto, creator);
     JSONObject response = new JSONObject();
@@ -47,6 +48,7 @@ public class MarketListingController {
   @GetMapping("/cards")
   public ResponseEntity<List<FullMarketListingDto>> getMarketListings(
       @RequestParam String section) {
+    log.info("GETTING CARDS FROM THE '" + section + "' SECTION");
     List<FullMarketListingDto> marketListingDtos = new ArrayList<>();
     for (MarketListing marketListing : this.marketListingService.getMarketListings(section)) {
       marketListingDtos.add(new FullMarketListingDto(marketListing));
