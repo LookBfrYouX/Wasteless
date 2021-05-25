@@ -18,7 +18,10 @@
       </div>
       <div class="col-9">
         <div class="d-flex flex-wrap justify-content-between">
-          <h4 class="card-title mb-0">{{ product.name }} (ID: <code>{{ product.id }}</code>)</h4>
+          <h4 class="card-title mb-0">
+            {{ product.name }} (ID: 
+            <code class="text-dark">{{ product.id }}</code>)
+          </h4>
         </div>
       </div>
     </div>

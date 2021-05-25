@@ -15,12 +15,12 @@
               {{ userInfo.lastName }}</h2>
             <!--Location data-->
             <div
-                v-if="userInfo.homeAddress && (userInfo.homeAddress.city || userInfo.homeAddress.country)"
+                v-if="userInfo.homeAddress && (userInfo.homeAddress.suburb || userInfo.homeAddress.city)"
                 class="d-flex align-items-center">
               <span class="material-icons md-dark md-inactive ml-2">location_on</span>
               <span class="text-muted">
                 {{
-                  [userInfo.homeAddress.city, userInfo.homeAddress.country].filter(Boolean).join(
+                  [userInfo.homeAddress.suburb, userInfo.homeAddress.city].filter(Boolean).join(
                       ', ')
                 }}
               </span>
@@ -58,6 +58,13 @@
               <span class="material-icons mr-1">person</span>
               Revoke Admin
             </button>
+            <router-link
+              v-if="isAdmin"
+              v-bind:to="{ name: 'createCardAdmin', params: { userId: userInfo.id }}"
+              class="btn btn-white-bg-primary m-1 d-flex"
+            >
+              Create Marketplace Card
+            </router-link>
             <button
                 v-if="isLoggedIn && authUser.id === userInfo.id"
                 class="btn btn-white-bg-primary m-1 d-flex"
@@ -85,7 +92,7 @@
             <li
                 v-for="(business, index) in userInfo.businessesAdministered"
                 v-bind:key="index"
-                class="list-group-item card text-wrap"
+                class="list-group-item card text-wrap mb-2 border"
             >
               <h5 class="business-name card-title card-link"
                   href="javascript:;"

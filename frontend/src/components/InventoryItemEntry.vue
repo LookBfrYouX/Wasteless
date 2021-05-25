@@ -11,11 +11,6 @@
           </h1>
         </div>
       </div>
-      <div v-if="errorMessage" class="row mt-2">
-          <div class="col">
-            <p class="alert alert-warning">{{ errorMessage }}</p>
-        </div>
-      </div>
       <div class="row">
         <div class="col-12 col-md-6 form-group required">
           <label for="productDropdown">Select product</label>
@@ -131,6 +126,11 @@
           <input class="btn btn-block btn-primary" type="submit" value="Add"/>
         </div>
       </div>
+      <div v-if="errorMessage" class="row mt-2">
+        <div class="col">
+          <p class="alert alert-warning">{{ errorMessage }}</p>
+        </div>
+      </div>
     </form>
     <error-modal
         title="Error fetching business products"
@@ -207,22 +207,46 @@ export default {
         }
       }
     },
+
+    /**
+     * Redirects a user to inventory page when a inventory item is successfully created.
+     */
+    goToInventory() {
+      this.$router.push({
+        name: 'businessInventory',
+        params: {
+          businessId: this.businessId
+        }
+      });
+    },
     async addItem() {
+      let parsedPricePerItem = parseFloat(this.pricePerItem);
+      let parsedTotalPrice = parseFloat(this.totalPrice);
+      let parsedQuantity = parseInt(this.quantity, 10);
+      if (isNaN(parsedPricePerItem)) parsedPricePerItem = null;
+      if (isNaN(parsedTotalPrice)) parsedTotalPrice = null;
+      if (isNaN(parsedQuantity)) {
+        this.errorMessage = "You must enter a number for the quantity."
+        return;
+      }
+
       let data = {
         "productId": this.product.id,
-        "quantity": this.quantity,
-        "pricePerItem": this.pricePerItem,
-        "totalPrice": this.totalPrice,
+        "quantity": parsedQuantity,
+        "pricePerItem": parsedPricePerItem,
+        "totalPrice": parsedTotalPrice,
         "manufactured": this.manufactured,
         "sellBy": this.sellBy,
         "bestBefore": this.bestBefore,
         "expires": this.expires,
       }
 
-      await Api.addItemToInventory(this.businessId, data)
-      .catch((error) => {
-        this.errorMessage=error.userFacingErrorMessage
-      });
+      try {
+        await Api.addItemToInventory(this.businessId, data);
+        this.goToInventory();
+      } catch(err) {
+        this.errorMessage = err.userFacingErrorMessage;
+      }
     },
     setDateInputs(today) {
       let dd = today.getDate();

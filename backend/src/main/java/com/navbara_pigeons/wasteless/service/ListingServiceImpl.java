@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,6 +32,8 @@ public class ListingServiceImpl implements ListingService {
   private final BusinessService businessService;
   private final ListingDao listingDao;
   private final InventoryService inventoryService;
+  @Value("${public_path_prefix}")
+  private String publicPathPrefix;
 
   /**
    * ListingService constructor that takes autowired parameters and sets up the service for
@@ -93,7 +96,7 @@ public class ListingServiceImpl implements ListingService {
     ArrayList<FullListingDto> listings = new ArrayList<>();
     for (InventoryItem inventory : business.getInventory()) {
       for (Listing listing : inventory.getListings()) {
-        listings.add(new FullListingDto(listing));
+        listings.add(new FullListingDto(listing, publicPathPrefix));
       }
     }
 

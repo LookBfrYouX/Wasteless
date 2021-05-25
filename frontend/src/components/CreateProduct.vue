@@ -190,11 +190,11 @@ export default {
      * @returns {Promise<void>} a promise
      */
     createProduct: async function () {
-      let price;
-      try {
-        price = parseFloat(this.price);
-      } catch (err) {
+      let price = parseFloat(this.price);
+
+      if (isNaN(price)) {
         this.errorMessage = "Please enter a valid price";
+        return;
       }
 
       if (price <= 0 || price >= this.$constants.PRODUCTS.MAX_PRICE) {

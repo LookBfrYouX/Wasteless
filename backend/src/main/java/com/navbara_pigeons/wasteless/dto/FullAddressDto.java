@@ -11,6 +11,7 @@ public class FullAddressDto {
 
   private String streetNumber;
   private String streetName;
+  private String suburb;
   private String postcode;
   private String city;
   private String region;
@@ -19,6 +20,7 @@ public class FullAddressDto {
   public FullAddressDto(Address address) {
     this.streetNumber = address.getStreetNumber();
     this.streetName = address.getStreetName();
+    this.suburb = address.getSuburb();
     this.postcode = address.getPostcode();
     this.city = address.getCity();
     this.region = address.getRegion();

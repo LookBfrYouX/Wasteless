@@ -1,10 +1,13 @@
 <template>
-  <div class="container mt-4">
+  <div class="container my-4">
     <div class="list-group-item card">
       <div class="row">
         <div class="col-md-6">
           <div class="d-flex flex-wrap justify-content-between mb-2">
-            <h2 class="card-title mb-0">{{ name }} (Id: {{ listingId }})</h2>
+            <h2 class="card-title mb-0">
+              {{ name }} (ID:
+              <code class="text-dark">{{ listingId }}</code>)
+            </h2>
           </div>
           <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
                   v-on:click="$router.go(-1)">
@@ -57,16 +60,6 @@
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
-    <error-modal
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => imageApiErrorMessage = null"
-        v-bind:refresh="true"
-        v-bind:retry="false"
-        v-bind:show="imageApiErrorMessage !== null"
-        v-bind:title="imageApiErrorTitle"
-    >
-      <p>{{ imageApiErrorMessage }}</p>
-    </error-modal>
   </div>
 </template>
 
@@ -103,8 +96,6 @@ export default {
       bestBefore: "",
       expires: "",
       apiErrorMessage: null,
-      imageApiErrorMessage: null,
-      imageApiErrorTitle: "",
       currency: null
     }
   },

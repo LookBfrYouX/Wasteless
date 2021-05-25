@@ -9,13 +9,26 @@
         <h2>Listings for {{businessName? businessName: "business"}}</h2>
       </template>
       <template v-slot:item="slotProps">
-        <div class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded" v-on:click="viewListing(slotProps.item.id)">
-        {{JSON.stringify(slotProps.item)}}
-        </div>
-        <!--<business-listing v-bind:listing="slotProps.item"/> -->
+        <router-link
+          v-bind:to="{ name: 'salesListingDetail', params: { businessId, listingId: slotProps.item.id }}"
+          class="text-decoration-none text-reset"
+        >
+          <listing-item-card
+              class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded" v-on:click="viewListing(slotProps.item.id)"
+              v-bind:item="slotProps.item"
+              :businessId="businessId"
+              :currency="currency"
+          />
+        </router-link>
       </template>
       <template v-slot:right-button>
-        <button type="button" class="btn btn-info">Another button</button>
+        <router-link
+            :to="{ name: 'createListing', params: { businessId }}"
+            class="btn btn-info d-flex"
+            v-if="$stateStore.getters.canEditBusiness(businessId)">
+          <span class="material-icons mr-1">add</span>
+          Create Listing
+        </router-link>
       </template>
     </sorted-paginated-item-list>
     <error-modal
@@ -32,48 +45,23 @@
 </template>
 <script>
 import SortedPaginatedItemList from '../components/SortedPaginatedItemList.vue';
+import ListingItemCard from "./../components/cards/ListingItemCard";
 import ErrorModal from "../components/Errors/ErrorModal";
 import { Api } from "../Api";
 
 import { helper } from "../helper";
 
-const sampleData = [{
-  id: 9,
-  name: "AAA"
-}, {
-  id: 15,
-  name: "BBBB"
-}, {
-  id: 3,
-  name: "CCCC"
-}, {
-  id: 17,
-  name: "ZZZ"
-}];
-
-for(let i = 0; i < 10; i++) {
-  sampleData.push({
-    id: i * 2 + 4,
-    name: btoa(Math.random().toString())
-  });
-}
-
 const sortOptions = [
   {
-    name: "ID",
-    sortMethod: helper.sensibleSorter("id")
-  }, {
-    name: "Name TODO delete. Only this and ID work with the dummy data",
-    sortMethod: helper.sensibleSorter("name") 
-  }, {
+    name: "Name",
+    sortMethod: helper.sensibleSorter(el => el.inventoryItem.product.name)
+  },
+  {
     name: "Price",
     sortMethod: helper.sensibleSorter("price") 
   }, {
-    name: "RRP",
-    sortMethod: helper.sensibleSorter(el => el.inventoryItem.recommendedRetailPrice)
-  }, {
-    name: "Name",
-    sortMethod: helper.sensibleSorter(el => el.inventoryItem.product.name)
+    name: "Quantity",
+    sortMethod: helper.sensibleSorter("quantity")
   }, {
     name: "Listing Created",
     // Yes, you can sort dates as a string in this format
@@ -87,6 +75,7 @@ const sortOptions = [
 
 export default {
   components: {
+    ListingItemCard,
     SortedPaginatedItemList,
     ErrorModal
   },
@@ -100,16 +89,17 @@ export default {
 
   data() {
     return {
-      listings: sampleData,
+      listings: [],
       apiErrorMessage: null,
       sortOptions: sortOptions,
       currentSortOption: { ...sortOptions[0], reversed: false},
-      businessName: null
+      businessName: null,
+      currency: null
     };
   },
 
   beforeMount: async function() {
-    return Promise.allSettled([this.loadBusinessName(), this.getListingsPipeline()]);
+    return Promise.allSettled([this.loadBusinessName(), this.getListingsPipeline(), this.getCurrency()]);
   },
   
   methods: {
@@ -124,6 +114,14 @@ export default {
 
     loadBusinessName: async function() {
       this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
+    },
+
+    /**
+     * Gets currency object.
+     * @returns {Promise<void>} Currency object, null when the currency doesn't exist or API request error.
+     */
+    getCurrency: async function () {
+      this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
     },
 
     /**

@@ -29,6 +29,9 @@ public class Address {
   @Column(name = "STREET_NAME")
   private String streetName;
 
+  @Column(name = "SUBURB")
+  private String suburb;
+
   @Column(name = "POSTCODE")
   private String postcode;
 
@@ -50,6 +53,7 @@ public class Address {
   public Address(FullAddressDto address) {
     this.streetNumber = address.getStreetNumber();
     this.streetName = address.getStreetName();
+    this.suburb = address.getSuburb();
     this.postcode = address.getPostcode();
     this.city = address.getCity();
     this.region = address.getRegion();
