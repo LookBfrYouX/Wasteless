@@ -29,7 +29,7 @@
           </select>
         </div>
         <div class="form-group required col-md-6">
-          <label for="inventory">Inventory to List</label>
+          <label for="inventory">Inventory item to list</label>
           <select
               id="inventory"
               class="form-control"
@@ -67,7 +67,7 @@
           </small>
         </div>
         <div class="form-group required col-md-6">
-          <label for="price">Price<span v-if="currency !== null"> in {{ currency.code }}</span></label>
+          <label for="price">Total price<span v-if="currency !== null"> in {{ currency.code }}</span></label>
             <input
                 id="price"
                 v-model="price"
@@ -137,6 +137,7 @@ export default {
 
   data() {
     return {
+      // Array of inventory items
       inventory: null,
       selectedProductId: null,
       selectedInventoryItem: null,
