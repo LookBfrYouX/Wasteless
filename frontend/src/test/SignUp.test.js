@@ -71,42 +71,48 @@ window.localStorage = {
 afterEach(() => wrapper.destroy());
 
 describe("Date of birth", () => {
-  const now = new Date(2020, 1, 22); // 2020-02-22
+  const dateMount = () => mountWithData(undefined, {propsData: {
+    currentDate: new Date(2020, 1, 22)
+  }});
   test("Too young by years", () => {
-    wrapper = mountWithData();
-    expect(wrapper.vm.validateDateOfBirth("2010-03-05", now)).toBeTruthy();
+    wrapper = dateMount();
+    expect(wrapper.vm.validateDateOfBirth("2010-03-05")).toBeTruthy();
   });
   test("Too young by months", () => {
-    wrapper = mountWithData();
-    expect(wrapper.vm.validateDateOfBirth("2007-03-05", now)).toBeTruthy();
+    wrapper = dateMount();
+    expect(wrapper.vm.validateDateOfBirth("2007-03-05")).toBeTruthy();
   });
   test("Too young by days", () => {
-    wrapper = mountWithData();
-    expect(wrapper.vm.validateDateOfBirth("2007-02-24", now)).toBeTruthy();
+    wrapper = dateMount();
+    expect(wrapper.vm.validateDateOfBirth("2007-02-24")).toBeTruthy();
   });
   test("13th birthday", () => {
-    wrapper = mountWithData();
-    expect(wrapper.vm.validateDateOfBirth("2007-02-22", now)).toBeFalsy();
+    wrapper = dateMount();
+    expect(wrapper.vm.validateDateOfBirth("2007-02-22")).toBeFalsy();
   });
   test("same year old enough", () => {
-    wrapper = mountWithData();
-    expect(wrapper.vm.validateDateOfBirth("2007-01-22", now)).toBeFalsy();
+    wrapper = dateMount();
+    expect(wrapper.vm.validateDateOfBirth("2007-01-22")).toBeFalsy();
+  });
+  test("too old", () => {
+    wrapper = dateMount();
+    expect(wrapper.vm.validateDateOfBirth("1900-01-22")).toBeTruthy();
   });
   test("bad format", () => {
-    wrapper = mountWithData();
-    expect(wrapper.vm.validateDateOfBirth("blaaa", now)).toBeTruthy();
+    wrapper = dateMount();
+    expect(wrapper.vm.validateDateOfBirth("blaaa")).toBeTruthy();
   });
   test("bad format", () => {
-    wrapper = mountWithData();
-    expect(wrapper.vm.validateDateOfBirth(undefined, now)).toBeTruthy();
+    wrapper = dateMount();
+    expect(wrapper.vm.validateDateOfBirth(undefined)).toBeTruthy();
   });
   test("bad format", () => {
-    wrapper = mountWithData();
-    expect(wrapper.vm.validateDateOfBirth("20202-53-52", now)).toBeTruthy();
+    wrapper = dateMount();
+    expect(wrapper.vm.validateDateOfBirth("20202-53-52")).toBeTruthy();
   });
   test("bad date", () => {
-    wrapper = mountWithData();
-    expect(wrapper.vm.validateDateOfBirth("2001-02-29", now)).toBeTruthy();
+    wrapper = dateMount();
+    expect(wrapper.vm.validateDateOfBirth("2001-02-29")).toBeTruthy();
   });
 });
 
