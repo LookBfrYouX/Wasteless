@@ -82,5 +82,26 @@ export const constants = {
 
   PRODUCTS: {
     MAX_PRICE: 10000
+  },
+
+  MARKETPLACE: {
+    /**
+     * Key is name of section that should be used internally, value is name that should be used externally
+     */
+    SECTIONS: {
+      ForSale: "For Sale",
+      Wanted: "Wanted",
+      Exchange: "Exchange"
+    },
+
+    CREATE_CARD: {
+      TAG_SUGGESTIONS: {
+        NUM_SUGGESTIONS: 5,
+        WORST_RATIO: 2,
+        INSERT_COST: 1,
+        DELETE_COST: 50,
+        SUBSTITUTE_COST: 50,
+      },
+    }
   }
 };

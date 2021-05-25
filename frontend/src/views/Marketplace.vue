@@ -1,9 +1,20 @@
 <template>
   <div class="container">
     <div class="row">
+      <h2 class="col-12">Community Marketplace</h2>
+    </div>
+    <div class="row">
       <div class="col-12">
-        <h2>Community Marketplace</h2>
-
+        <router-link
+          class="btn btn-primary"
+          v-bind:to="{ name: 'createCard' }"
+        >
+          Create a Card
+        </router-link>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
         <h3>For Sale</h3>
         <div
             v-for="card in forSaleCards"
