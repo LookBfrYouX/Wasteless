@@ -55,6 +55,7 @@ describe("Card section handling", () => {
   });
 });
 
+
 describe("API error handling", () => {
   test("API error", async () => {
     Api.createCard.mockClear();
@@ -62,5 +63,44 @@ describe("API error handling", () => {
     mountCard();
     await wrapper.vm.create();
     expect(wrapper.vm.errorMessage).toEqual("MESSAGE");
-  }) 
+  });
+
+
+  test("API succeeds", async () => {
+    Api.createCard.mockClear();
+    Api.createCard.mockResolvedValue({ cardId: 5 });
+    mountCard();
+    wrapper.vm.$router.push.mockClear();
+    await wrapper.vm.create();
+    expect(wrapper.vm.errorMessage).toBeNull();
+    expect(wrapper.vm.$router.push.mock.calls.length).toBe(1);
+  });
+});
+
+describe("Test tag suggestions", () => {
+  test("No suggestions", async () => {
+    mountCard();
+    wrapper.setData({
+      allTags: []
+    });
+
+    await wrapper.vm.$nextTick();
+    const suggestions = wrapper.vm.tagSuggestions;
+    expect(suggestions.length).toBe(1);
+    expect(suggestions[0].disabled).toBeTruthy();
+  });
+
+
+  test("Suggestions are at least somewhat sensible", async () => {
+    mountCard();
+    wrapper.setData({
+      allTags: ["Cat", "Dog", "No code is good code", "Hydrofluoric Acid", "日常"],
+      tagInputValue: "acid"
+    });
+
+    await wrapper.vm.$nextTick();
+    const suggestions = wrapper.vm.tagSuggestions;
+    expect(suggestions.length).toBe(1);
+    expect(suggestions[0].toString()).toBe("Hydrofluoric Acid");
+  });
 });

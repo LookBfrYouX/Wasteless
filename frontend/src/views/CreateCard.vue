@@ -89,8 +89,8 @@
               ref="suggestionsInput"
               v-bind:liActiveClasses="{'bg-primary': true, 'text-light': true}"
               v-bind:suggestions="tagSuggestions"
-              v-bind:value="tempSuggestionValue"
-              v-on:input="value => tempSuggestionValue = value"
+              v-bind:value="tagInputValue"
+              v-on:input="value => tagInputValue = value"
               v-on:suggestion="tagSuggestionSelected"
               v-on:blur="showSuggestions = false"
             />
@@ -170,8 +170,11 @@ export default {
       title: "",
       description: "",
       errorMessage: null,
-      tempSuggestionValue: "",
+      tagInputValue: "",
+      // Value of tag suggestions input field
       showSuggestions: false,
+      allTags: ["Apple", "Orange", "Cake", "Portal", "Apple MacBook Pro", "Sulfur Nitrate", "Max is awesome"],
+      // For now, allTags is just a string list of tags
       tags: []
     }
   },
@@ -182,21 +185,22 @@ export default {
      * and value of the add tag input field
      */
     tagSuggestions() {
-      const tags = [ "Apple", "Orange", "Cake", "Portal", "Apple MacBook Pro", "Sulfur Nitrate", "Max is awesome"].map((tag, i) => ({ name: tag, id: i, toString: () => tag }));
+      const tags = this.allTags.map((tag, i) => ({ name: tag, id: i, toString: () => tag }));
 
       const { NUM_SUGGESTIONS, WORST_RATIO, INSERT_COST, DELETE_COST, SUBSTITUTE_COST } = this.$constants.MARKETPLACE.CREATE_CARD.TAG_SUGGESTIONS;
 
       let suggestions = tags.map(tag => {
         tag.score = new EditDistance(
-          this.tempSuggestionValue.toLocaleLowerCase(),
+          this.tagInputValue.toLocaleLowerCase(),
           tag.name.toLocaleLowerCase(),
           INSERT_COST,
           DELETE_COST,
           SUBSTITUTE_COST
         ).calculate();
-
+        
         tag.weightedScore = tag.score / tag.name.length;
         // weighted score takes into account length of tag so that it doesn't prefer shorter suggestions
+        
         return tag;
       });
 
@@ -229,7 +233,7 @@ export default {
      */
     tagSuggestionSelected: async function(tag) {
       this.tags.push(tag);
-      this.tempSuggestionValue = "";
+      this.tagInputValue = "";
     },
 
     /**
