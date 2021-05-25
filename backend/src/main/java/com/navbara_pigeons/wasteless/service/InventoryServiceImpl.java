@@ -18,6 +18,7 @@ import java.util.List;
 
 import com.navbara_pigeons.wasteless.validation.InventoryServiceValidation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -33,6 +34,8 @@ public class InventoryServiceImpl implements InventoryService {
   private final BusinessService businessService;
   private final ProductService productService;
   private final InventoryDao inventoryDao;
+  @Value("${public_path_prefix}")
+  private String publicPathPrefix;
 
   /**
    * InventoryImplementation constructor that takes autowired parameters and sets up the service for
@@ -63,7 +66,7 @@ public class InventoryServiceImpl implements InventoryService {
       ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
       Business business = businessDao.getBusinessById(businessId);
       for (InventoryItem inventoryItem : business.getInventory()) {
-        inventory.add(new BasicInventoryItemDto(inventoryItem));
+        inventory.add(new BasicInventoryItemDto(inventoryItem, publicPathPrefix));
       }
       return inventory;
     } else {

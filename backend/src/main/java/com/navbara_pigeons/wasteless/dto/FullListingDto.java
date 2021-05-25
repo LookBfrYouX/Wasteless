@@ -15,11 +15,12 @@ public class FullListingDto {
   private ZonedDateTime created;
   private ZonedDateTime closes;
 
-  public FullListingDto(Listing listing) {
+  public FullListingDto(Listing listing, String publicPathPrefix) {
     id = listing.getId();
-    inventoryItem = new FullInventoryItemDto(listing.getInventoryItem());
+    inventoryItem = new FullInventoryItemDto(listing.getInventoryItem(), publicPathPrefix);
     quantity = listing.getQuantity();
     price = listing.getPrice();
+    moreInfo = listing.getMoreInfo();
     created = listing.getCreated();
     closes = listing.getCloses();
     moreInfo = listing.getMoreInfo();

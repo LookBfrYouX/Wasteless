@@ -190,10 +190,22 @@ export const router = new VueRouter({
       path: "/business/:businessId(\\d+)/inventory",
       meta: {
         title: "Business Inventory | Wasteless",
-        requiresSignIn: true
+        requiresSignIn: true,
+        requiresBusinessAdmin: true
       },
       component: () => import("./views/BusinessInventory"),
       props: route => ({businessId: parseInt(route.params.businessId, 10)})
+    },
+      // Router to create listing component. TODO remove later
+    {
+      name: "createListing",
+      path: "/business/:businessId(\\d+)/listings/add",
+      meta: {
+        title: "Create New Listing | Wasteless",
+        requiresBusinessAdmin: true
+      },
+      component: () => import("./components/CreateListing"),
+      props: route => ({ businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "marketplace",
