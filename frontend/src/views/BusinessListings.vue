@@ -9,13 +9,17 @@
         <h2>Listings for {{businessName? businessName: "business"}}</h2>
       </template>
       <template v-slot:item="slotProps">
-        <listing-item-card
-            class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded" v-on:click="viewListing(slotProps.item.id)"
-            v-bind:item="slotProps.item"
-            :businessId="businessId"
-            :currency="currency"
-        />
-        <!--<business-listing v-bind:listing="slotProps.item"/> -->
+        <router-link
+          v-bind:to="{ name: 'salesListingDetail', params: { businessId, listingId: slotProps.item.id }}"
+          class="text-decoration-none text-reset"
+        >
+          <listing-item-card
+              class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded" v-on:click="viewListing(slotProps.item.id)"
+              v-bind:item="slotProps.item"
+              :businessId="businessId"
+              :currency="currency"
+          />
+        </router-link>
       </template>
       <template v-slot:right-button>
         <router-link
