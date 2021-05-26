@@ -1,4 +1,4 @@
-import MarketplaceTab from "./../components/MarketplaceTab";
+import MarketplaceCardContainer from "./../components/MarketplaceCardContainer";
 import { shallowMount } from "@vue/test-utils";
 
 jest.mock("./../Api");
@@ -8,7 +8,7 @@ import {ApiRequestError} from "../ApiRequestError";
 
 let wrapper;
 beforeEach(() => {
-  wrapper = shallowMount(MarketplaceTab, {
+  wrapper = shallowMount(MarketplaceCardContainer, {
     mocks: globalStateMocks(),
     stubs: ["error-modal", "marketplace-card"],
     propsData: {
