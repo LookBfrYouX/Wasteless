@@ -198,7 +198,7 @@
                 name="phoneNumber"
                 placeholder="Phone number"
                 type="text"
-                maxlength="13"
+                maxlength="20"
                 v-bind:class="{'is-invalid': phoneErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ phoneErrorMessage }}</div>
@@ -405,8 +405,8 @@ export default {
         return;
       }
 
-      if (this.phoneNumber.trim().length >= 13) {
-        this.errorMessage = this.phoneErrorMessage = "Phone number is a maximum of 13 digits long";
+      if (this.phoneNumber.trim().length >= 20) {
+        this.errorMessage = this.phoneErrorMessage = "Phone number is a maximum of 20 digits long";
         this.$refs.countryCodeLabel.scrollIntoView();
         return;
       }
