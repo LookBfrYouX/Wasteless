@@ -95,7 +95,7 @@ export const helper = {
 
     if (actingAsBusiness == null) {
       args = {
-        name: "profile"
+        name: "UserDetail"
       }
 
       if ($route.name === args.name && $route.params.userId === undefined) {
@@ -104,13 +104,13 @@ export const helper = {
     } else {
       const businessId = actingAsBusiness.id;
       args = {
-        name: "businessProfile",
+        name: "BusinessDetail",
         params: {
           businessId
         }
       }
 
-      if ($route.name === "businessProfile" &&
+      if ($route.name === "BusinessDetail" &&
           $route.params.businessId == businessId) {
         reload = true;
       }
