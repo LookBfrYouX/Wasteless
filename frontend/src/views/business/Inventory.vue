@@ -22,7 +22,7 @@
           class="btn btn-info d-flex"
         >
           <span class="material-icons mr-1">add</span>
-          Add Product
+          Add Item to Inventory
         </router-link>
       </template>
     </sorted-paginated-item-list>

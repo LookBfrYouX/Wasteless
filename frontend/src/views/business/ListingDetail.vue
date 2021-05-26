@@ -19,8 +19,8 @@
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
           <div class="mt-2 mb-5" v-if="moreInfo">More Information: {{ moreInfo }}</div>
           <div class="d-flex flex-wrap justify-content-between mb-2">
-            <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated) }}</div>
-            <div class="date mt-2">Closes: {{ $helper.isoToDateString(listingCloses) }}</div>
+            <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated, true) }}</div>
+            <div class="date mt-2">Closes: {{ $helper.isoToDateString(listingCloses, true) }}</div>
           </div>
         </div>
         <div class="col-md-6">

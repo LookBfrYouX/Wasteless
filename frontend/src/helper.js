@@ -42,9 +42,10 @@ export const helper = {
   /**
    * Given ISO string, returns human-readable date string
    * @param {} dateString YYYY-MM-DDTHH:MM:SS.MSMSZ
+   * @param {boolean} includeTime if true, also returns time in format `, hh:mm p`
    * @returns date string in `dd MMM YYYY` format
    */
-  isoToDateString(dateString) {
+  isoToDateString(dateString, includeTime = false) {
     const timestamp = Date.parse(dateString);
     if (isNaN(timestamp)) {
       return null;
@@ -52,7 +53,9 @@ export const helper = {
     const date = new Date(timestamp);
     const day = date.getDate() < 10 ? `0${date.getDate()}`
         : date.getDate().toString();
-    return `${day} ${constants.MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
+    let result = `${day} ${constants.MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
+    if (includeTime) result += ", " + date.toLocaleTimeString("en-NZ", { hour: "numeric", minute: "2-digit", seconds: undefined });
+    return result;
   },
 
   /**
