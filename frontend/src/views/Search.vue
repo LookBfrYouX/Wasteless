@@ -10,7 +10,7 @@
       </template>
       <template v-slot:item="slotProps">
         <router-link
-          v-bind:to="{ name: 'profile', params: { userId: slotProps.item.id }}"
+          v-bind:to="{ name: 'Profile', params: { userId: slotProps.item.id }}"
           class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded"
         >
           <user-list-item
@@ -37,7 +37,7 @@
 <script>
 import ErrorModal from "../components/ErrorModal.vue";
 import SortedPaginatedItemList from "../components/SortedPaginatedItemList";
-import UserListItem from "../components/cards/UserItemCard";
+import UserListItem from "../components/cards/UserCard";
 
 import { helper } from "../helper";
 import { Api } from "../Api"
@@ -69,7 +69,7 @@ const sortOptions = [
 ];
 
 export default {
-  name: "SearchResults",
+  name: "Search",
   components: {
     ErrorModal,
     SortedPaginatedItemList,
@@ -120,7 +120,7 @@ export default {
     // When this is created, sends the query to the parent
     // Necessary as router.js is aware of the param but App.js,
     // which has the input field, is not
-    this.$emit("searchresultscreated", this.search);
+    this.$emit("initial-search-value", this.search);
   },
 };
 </script>

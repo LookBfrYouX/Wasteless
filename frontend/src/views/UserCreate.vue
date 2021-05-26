@@ -1,11 +1,11 @@
 <template>
-  <div class="w-100 d-flex justify-content-center signup-container gradient-background pb-4">
+  <div class="w-100 d-flex justify-content-center user-create-container gradient-background pb-4">
     <div class="container">
       <form
           autocomplete="on"
           class="slightly-transparent-inputs"
           method="POST"
-          v-on:submit.prevent="register"
+          v-on:submit.prevent="UserCreate"
       >
         <div class="row">
           <div class="col">
@@ -225,7 +225,7 @@
 
         <div class="row">
           <div class="col">
-            <input class="btn btn-block btn-primary" type="submit" value="Register"/>
+            <input class="btn btn-block btn-primary" type="submit" value="Sign Up"/>
           </div>
         </div>
 
@@ -240,7 +240,7 @@
 </template>
 
 <style scoped>
-.signup-container > div {
+.user-create-container > div {
   max-width: 50em;
 }
 </style>
@@ -251,7 +251,7 @@ const AddressForm = require("../components/AddressForm").default;
 const countryData = require("../assets/countryData.json");
 
 export default {
-  name: "SignUp",
+  name: "UserCreate",
 
   components: {
     "address-form": AddressForm
@@ -348,7 +348,7 @@ export default {
      * Wrapper which simply calls the sign up method of the api
      */
     callApi: function (data) {
-      return Api.signUp(data);
+      return Api.UserCreate(data);
     },
 
     /**
@@ -470,7 +470,7 @@ export default {
       delete userData.password;
       userData.id = response.data.userId;
       await this.$stateStore.actions.setAuthUser(userData);
-      await this.$router.push({name: "profile"});
+      await this.$router.push({ name: "UserDetail" });
     }
   }
 }

@@ -45,7 +45,7 @@
 </template>
 <script>
 import SortedPaginatedItemList from '../../components/SortedPaginatedItemList.vue';
-import ListingItemCard from "../../components/cards/ListingItemCard";
+import ListingItemCard from "../../components/cards/ListingCard";
 import ErrorModal from "../../components/ErrorModal";
 import { Api } from "../../Api";
 

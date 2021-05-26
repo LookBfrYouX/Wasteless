@@ -1,10 +1,10 @@
 <template>
-  <div class="w-100 d-flex justify-content-center login-container gradient-background pb-4">
+  <div class="w-100 d-flex justify-content-center sign-in-container gradient-background pb-4">
     <div class="container">
-      <form class="slightly-transparent-inputs" v-on:submit.prevent="login">
+      <form class="slightly-transparent-inputs" v-on:submit.prevent="signIn">
         <div class="row">
           <div class="col">
-            <h1>Login</h1>
+            <h1>Sign In</h1>
           </div>
         </div>
 
@@ -43,15 +43,14 @@
         <div class="row">
           <div class="col">
             <div class="d-flex justify-content-between">
-              <input id="loginSubmit" class="btn btn-primary" type="submit" value="Login"/>
-              <button
-                  id="signUp"
-                  class="btn btn-white-bg-primary"
+              <input id="submit" class="btn btn-primary" type="submit" value="Sign In"/>
+              <router-link
+                  class="btn btn-white-bg-primary hover-cursor-pointer"
                   type="button"
-                  v-on:click="signUp()"
+                  v-bind:to="{ name: 'SignUp' }"
               >
                 Sign Up
-              </button>
+              </router-link>
             </div>
           </div>
         </div>
@@ -67,7 +66,7 @@
 </template>
 
 <style scoped>
-.login-container > div {
+.sign-in-container > div {
   max-width: 40em;
 }
 </style>
@@ -80,7 +79,7 @@ export default {
   /* creates vue variables to be manipulates
      initilizes object with methods and data
   */
-  name: "Login",
+  name: "Sign In",
   components: {},
 
   data() {
@@ -92,11 +91,7 @@ export default {
   },
 
   methods: {
-    signUp() {
-      // redirects user to to the signup page
-      this.$router.push({name: "signUp"});
-    },
-    login: async function () {
+    signIn: async function () {
       // uses mock API to determine whether to allow user to login or be rejected
       let response;
 
@@ -119,7 +114,7 @@ export default {
       }
 
       this.errorMessage = "";
-      await this.$router.push({name: "home"});
+      await this.$router.push({ name: "Home" });
     },
   },
 };

@@ -1,5 +1,5 @@
 import {shallowMount} from "@vue/test-utils";
-import BusinessProfile from "../views/business/Profile";
+import BusinessProfile from "../views/business/Detail";
 import {globalStateMocks} from "./testHelper";
 
 jest.useFakeTimers();

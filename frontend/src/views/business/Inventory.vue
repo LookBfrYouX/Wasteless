@@ -43,7 +43,7 @@ import SortedPaginatedItemList from '../../components/SortedPaginatedItemList.vu
 import ErrorModal from "../../components/ErrorModal";
 import { Api } from "../../Api";
 import { helper } from "../../helper";
-import InventoryItemCard from "../../components/cards/InventoryItemCard";
+import InventoryItemCard from "../../components/cards/InventoryCard";
 
 const sortOptions = [
   {

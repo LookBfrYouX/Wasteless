@@ -150,10 +150,10 @@
                 Login
               </a>
             </li>
-            <li v-if="this.$route.name != 'signUp'" class="nav-item">
+            <li v-if="this.$route.name != 'SignUp'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
-                  v-on:click="pushOrGo('signUp')"
+                  v-on:click="pushOrGo('SignUp')"
               >
                 Sign Up
               </a>
@@ -304,9 +304,9 @@ export default {
      */
     homeButtonClicked() {
       if (this.$stateStore.getters.isLoggedIn()) {
-        this.pushOrGo('home');
+        this.pushOrGo('Home');
       } else {
-        this.pushOrGo('landing');
+        this.pushOrGo('Landing');
       }
     },
 
@@ -332,7 +332,7 @@ export default {
         this.logOutErrorMessage = err.userFacingErrorMessage;
         return;
       }
-      await this.pushOrGo("landing");
+      await this.pushOrGo("Landing");
       await this.$stateStore.actions.deleteAuthUser();
       // Some pages react badly if there is no auth user, so delete after navigating to landing page
       // For some reason error modal doesn't get disposed of properly
@@ -343,7 +343,7 @@ export default {
      * Navigates to search page with current query, or reloads page if on search page and query has not changed
      */
     search: async function () {
-      const searchName = "search";
+      const searchName = "UserSearch";
       let newQuery = this.$route.params.query;
 
       // If already on search with same query, refresh instead of reloading
