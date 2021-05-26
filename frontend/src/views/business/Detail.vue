@@ -94,7 +94,7 @@
 import ErrorModal from "../../components/ErrorModal.vue";
 import {ApiRequestError} from "../../ApiRequestError";
 
-const {Api} = require("../../Api.js");
+import { Api } from "@/Api";
 
 export default {
   name: 'businessProfile',

@@ -73,13 +73,10 @@
 
 <script>
 // grabs mock api
-const {Api} = require("../Api.js");
+import { Api } from "@/Api";
 
 export default {
-  /* creates vue variables to be manipulates
-     initilizes object with methods and data
-  */
-  name: "Sign In",
+  name: "SignIn",
   components: {},
 
   data() {

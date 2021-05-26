@@ -3,10 +3,10 @@ import { shallowMount } from "@vue/test-utils";
 
 import { constants } from "../../../constants";
 
-jest.mock("../../Api");
+jest.mock("@/Api");
 import { Api } from "../../../Api";
 import { ApiRequestError } from "../../../ApiRequestError";
-import { globalStateMocks } from "../../testHelper";
+import { globalStateMocks } from "@/test/testHelper";
 
 let wrapper;
 afterEach(() => wrapper.destroy());

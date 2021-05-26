@@ -1,6 +1,6 @@
 import {shallowMount} from "@vue/test-utils";
-import {globalStateMocks} from "../../testHelper";
-jest.mock("./../Api.js");
+import {globalStateMocks } from "@/test/testHelper";
+jest.mock("@/Api");
 const {Api} = require("../../../Api.js");
 
 import ProductDetail from "../../../views/business/ProductDetail";

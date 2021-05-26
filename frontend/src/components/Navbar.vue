@@ -177,7 +177,7 @@
 
 
 <script>
-const {Api} = require("./../Api.js");
+import { Api } from "@/Api";
 import ErrorModal from "./ErrorModal";
 
 export default {
@@ -326,7 +326,7 @@ export default {
     signOut: async function () {
       this.signOutErrorMessage = null;
       try {
-        await Api.signOut();
+        await Api.logOut();
       } catch (err) {
         // if (await Api.handle401.call(this, err)) return;
         this.signOutErrorMessage = err.userFacingErrorMessage;

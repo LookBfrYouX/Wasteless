@@ -10,7 +10,7 @@
       </template>
       <template v-slot:item="slotProps">
         <router-link
-          v-bind:to="{ name: 'Profile', params: { userId: slotProps.item.id }}"
+          v-bind:to="{ name: 'UserDetail', params: { userId: slotProps.item.id }}"
           class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded"
         >
           <user-list-item
@@ -40,7 +40,7 @@ import SortedPaginatedItemList from "../components/SortedPaginatedItemList";
 import UserListItem from "../components/cards/UserCard";
 
 import { helper } from "../helper";
-import { Api } from "../Api"
+import { Api } from "@/Api"
 
 
 const sortOptions = [

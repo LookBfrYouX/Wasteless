@@ -111,7 +111,7 @@
 import {ApiRequestError} from '../../ApiRequestError';
 import ErrorModal from "../../components/ErrorModal";
 
-const {Api} = require("../../Api.js");
+import { Api } from "@/Api";
 
 export default {
   components: {

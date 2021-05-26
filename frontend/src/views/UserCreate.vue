@@ -246,7 +246,7 @@
 </style>
 
 <script>
-const {Api} = require("../Api.js");
+import { Api } from "@/Api";
 const AddressForm = require("../components/AddressForm").default;
 const countryData = require("../assets/countryData.json");
 

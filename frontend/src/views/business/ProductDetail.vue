@@ -67,7 +67,7 @@
 import ErrorModal from "../../components/ErrorModal.vue";
 
 import {ApiRequestError} from "../../ApiRequestError";
-const { Api } = require("../../Api");
+import { Api } from "@/Api";
 
 export default {
   name: "productDetail",

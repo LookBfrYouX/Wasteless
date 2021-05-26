@@ -1,9 +1,9 @@
 import {shallowMount} from "@vue/test-utils";
 import CreateListing from "../../../views/business/ListingCreate";
-import {globalStateMocks} from "../../testHelper";
+import {globalStateMocks } from "@/test/testHelper";
 import { ApiRequestError } from "../../../ApiRequestError";
-import { Api } from "../../../Api";
-jest.mock("./../Api");
+import { Api } from "@/Api";
+jest.mock("@/Api");
 
 let wrapper;
 

@@ -1,9 +1,9 @@
 import {shallowMount} from '@vue/test-utils';
-import {GLOBAL_STATE, globalStateMocks} from "../testHelper";
+import {GLOBAL_STATE, globalStateMocks } from "@/test/testHelper";
 import Navbar from "../../components/Navbar";
 import {ApiRequestError} from '../../ApiRequestError';
 
-jest.mock("./../Api.js");
+jest.mock("@/Api");
 const {Api} = require("../../Api.js");
 
 let wrapper;
@@ -45,14 +45,14 @@ describe("State of acting as entity", () => {
   });
 });
 
-describe("logout", () => {
+describe("sign out", () => {
   test("logout called", async () => {
     wrapper = shallowMount(Navbar, {
       mocks: globalStateMocks()
     });
     const logOut = jest.fn(() => Promise.resolve());
     Api.logOut.mockImplementation(logOut);
-    await wrapper.vm.logOut();
+    await wrapper.vm.signOut();
     expect(logOut.mock.calls.length).toBe(1);
   });
 
@@ -62,7 +62,7 @@ describe("logout", () => {
     });
     const logOut = jest.fn(() => Promise.reject(new ApiRequestError("MSG")));
     Api.logOut.mockImplementation(logOut);
-    await wrapper.vm.logOut();
-    expect(wrapper.vm.logOutErrorMessage).toBe("MSG");
+    await wrapper.vm.signOut();
+    expect(wrapper.vm.signOutErrorMessage).toBe("MSG");
   });
 })

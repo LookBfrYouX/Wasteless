@@ -1,6 +1,6 @@
 import { ApiRequestError } from "../ApiRequestError";
-import { Api } from "./../Api";
-jest.mock("./../Api");
+import { Api } from "@/Api";
+jest.mock("@/Api");
 
 import { helper } from "./../helper";
 
@@ -24,7 +24,7 @@ describe("goToProfile", () => {
 
   const user$route = (id = undefined, keepParams = false) => {
     let path = {
-      name: "profile",
+      name: "UserDetail",
       params: {
         userId: id
       }
@@ -35,7 +35,7 @@ describe("goToProfile", () => {
   }
 
   const business$route = (id = 1) => ({
-    name: "businessProfile",
+    name: "BusinessDetail",
     params: {
       businessId: id
     }

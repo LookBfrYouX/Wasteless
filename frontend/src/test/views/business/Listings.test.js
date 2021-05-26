@@ -1,9 +1,9 @@
 import BusinessListings from "../../../views/business/Listings";
 import { mount } from "@vue/test-utils";
 
-jest.mock("./../Api");
-import { Api } from "../../../Api";
-import { globalStateMocks } from "../../testHelper";
+jest.mock("@/Api");
+import { Api } from "@/Api";
+import { globalStateMocks } from "@/test/testHelper";
 import SortedPaginatedItemList from "../../../components/SortedPaginatedItemList";
 import {ApiRequestError} from "../../../ApiRequestError";
 

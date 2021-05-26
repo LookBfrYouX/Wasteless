@@ -86,7 +86,7 @@
 </template>
 
 <script>
-const {Api} = require("../../Api.js");
+import { Api } from "@/Api";
 const AddressForm = require("../../components/AddressForm").default;
 
 export default {

@@ -145,7 +145,7 @@ import {EditDistance} from "../../EditDistance";
 // While there is no backend, use this static list of tags
 import temporaryTags from "../../assets/temporaryTags.json";
 
-const { Api } = require("../../Api");
+import { Api } from "@/Api";
 
 export default {
   components: { Suggestions, Tag },
