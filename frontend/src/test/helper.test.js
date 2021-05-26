@@ -1,4 +1,4 @@
-import { ApiRequestError } from "../ApiRequestError";
+import {ApiRequestError} from "@/ApiRequestError";
 import { Api } from "@/Api";
 jest.mock("@/Api");
 

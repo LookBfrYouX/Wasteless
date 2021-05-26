@@ -167,7 +167,7 @@ import {Api} from "@/Api";
 const {EditDistance} = require("./../EditDistance");
 const countryData = require("./../assets/countryData.json");
 
-const Suggestions = require("./Suggestions").default;
+import Suggestions from "./Suggestions";
 
 // Fields in order of specificity
 // When updating this, ensure all address related functions and input properties are updated as well!

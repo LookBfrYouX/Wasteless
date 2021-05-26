@@ -30,7 +30,7 @@
  */
 
 import axios from 'axios';
-import {ApiRequestError} from "./ApiRequestError";
+import {ApiRequestError} from "@/ApiRequestError";
 import {constants} from "./constants";
 
 const SERVER_URL = process.env.VUE_APP_SERVER_ADD;

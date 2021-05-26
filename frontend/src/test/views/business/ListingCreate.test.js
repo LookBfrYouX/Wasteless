@@ -1,7 +1,7 @@
 import {shallowMount} from "@vue/test-utils";
 import CreateListing from "../../../views/business/ListingCreate";
 import {globalStateMocks } from "@/test/testHelper";
-import { ApiRequestError } from "../../../ApiRequestError";
+import {ApiRequestError} from "@/ApiRequestError";
 import { Api } from "@/Api";
 jest.mock("@/Api");
 

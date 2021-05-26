@@ -1,6 +1,6 @@
 import InventoryItemEntry from "../../../views/business/InventoryCreate";
 import { shallowMount } from "@vue/test-utils";
-import {ApiRequestError} from "../../../ApiRequestError";
+import {ApiRequestError} from "@/ApiRequestError";
 
 jest.mock("@/Api");
 const {Api} = require("../../../Api");

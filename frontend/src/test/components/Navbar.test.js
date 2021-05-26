@@ -1,7 +1,7 @@
 import {shallowMount} from '@vue/test-utils';
 import {GLOBAL_STATE, globalStateMocks } from "@/test/testHelper";
 import Navbar from "../../components/Navbar";
-import {ApiRequestError} from '../../ApiRequestError';
+import {ApiRequestError} from "@/ApiRequestError";
 
 jest.mock("@/Api");
 const {Api} = require("../../Api.js");

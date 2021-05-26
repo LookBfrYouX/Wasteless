@@ -4,7 +4,7 @@ import { shallowMount } from "@vue/test-utils";
 jest.mock("@/Api");
 import { Api } from "@/Api";
 import { globalStateMocks } from "@/test/testHelper";
-import {ApiRequestError} from "../../ApiRequestError";
+import {ApiRequestError} from "@/ApiRequestError";
 
 let wrapper;
 beforeEach(() => {

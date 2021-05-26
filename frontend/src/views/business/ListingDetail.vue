@@ -72,7 +72,7 @@
 <script>
 import ErrorModal from "../../components/ErrorModal.vue";
 
-import {ApiRequestError} from "../../ApiRequestError";
+import {ApiRequestError} from "@/ApiRequestError";
 import { Api } from "@/Api";
 
 export default {

@@ -5,7 +5,7 @@ import { constants } from "../../../constants";
 
 jest.mock("@/Api");
 import { Api } from "../../../Api";
-import { ApiRequestError } from "../../../ApiRequestError";
+import {ApiRequestError} from "@/ApiRequestError";
 import { globalStateMocks } from "@/test/testHelper";
 
 let wrapper;

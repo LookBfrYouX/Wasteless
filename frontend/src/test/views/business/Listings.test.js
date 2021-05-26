@@ -5,7 +5,7 @@ jest.mock("@/Api");
 import { Api } from "@/Api";
 import { globalStateMocks } from "@/test/testHelper";
 import SortedPaginatedItemList from "../../../components/SortedPaginatedItemList";
-import {ApiRequestError} from "../../../ApiRequestError";
+import {ApiRequestError} from "@/ApiRequestError";
 
 let wrapper;
 beforeEach(() => {
