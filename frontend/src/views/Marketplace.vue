@@ -1,9 +1,16 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-12">
+      <div class="col-12 pt-2 d-flex flex-wrap justify-content-between align-items-baseline">
+        <div class="btn fake-button p-0">
+          Create Card
+          <!-- Want to center the marketplace text while having a create card button on the right. Having this div allows us to have something on the left that is the same width and hence keep the text centered -->
+        </div>
+        <h2>
+          Community Marketplace
+        </h2>
         <router-link
-          class="btn btn-primary"
+          class="btn btn-primary mb-2"
           v-bind:to="{ name: 'createCard' }"
         >
           Create a Card
@@ -12,9 +19,8 @@
     </div>
     <div class="row">
       <div class="col-12">
-        <h2 class="text-center pt-4">Community Marketplace</h2>
         <div
-            class="btn-group w-100"
+            class="btn-group w-100 d-flex flex-wrap"
             v-bind:class="{
             }"
           >
@@ -34,7 +40,20 @@
     </div>
   </div>
 </template>
+<style scoped>
+.fake-button {
+  visibility: hidden;
+  display: none;
+  height: 0;
+}
 
+@media(min-width: 768px) {
+  .fake-button {
+    display: inline;
+  }
+}
+
+</style>
 <script>
 import MarketplaceCardContainer from "@/components/MarketplaceCardContainer.vue";
 

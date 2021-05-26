@@ -11,7 +11,7 @@
         v-bind:goBack="false"
         v-bind:hideCallback="() => apiErrorMessage = null"
         v-bind:refresh="true"
-        v-bind:retry="this.getCards"
+        v-bind:retry="this.getCardsFromAPI"
         v-bind:show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
