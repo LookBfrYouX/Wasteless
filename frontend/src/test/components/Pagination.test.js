@@ -1,5 +1,5 @@
 import {mount} from "@vue/test-utils";
-import Pagination from "./../components/Pagination.vue";
+import Pagination from "../../components/Pagination.vue";
 
 let wrapper;
 

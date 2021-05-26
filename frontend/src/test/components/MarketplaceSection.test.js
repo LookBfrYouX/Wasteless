@@ -1,10 +1,10 @@
-import MarketplaceCardContainer from "../components/MarketplaceSection";
+import MarketplaceCardContainer from "../../components/MarketplaceSection";
 import { shallowMount } from "@vue/test-utils";
 
 jest.mock("./../Api");
-import { Api } from "./../Api";
-import { globalStateMocks } from "./testHelper";
-import {ApiRequestError} from "../ApiRequestError";
+import { Api } from "../../Api";
+import { globalStateMocks } from "../testHelper";
+import {ApiRequestError} from "../../ApiRequestError";
 
 let wrapper;
 beforeEach(() => {

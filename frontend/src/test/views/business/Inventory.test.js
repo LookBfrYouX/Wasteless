@@ -1,8 +1,8 @@
-import BusinessInventory from "../../views/business/Inventory";
+import BusinessInventory from "../../../views/business/Inventory";
 import {shallowMount} from "@vue/test-utils";
-import {Api} from "../../Api";
-import {ApiRequestError} from "../../ApiRequestError";
-import {globalStateMocks} from "../testHelper";
+import {Api} from "../../../Api";
+import {ApiRequestError} from "../../../ApiRequestError";
+import {globalStateMocks} from "../../testHelper";
 
 // The possible error messages that can the API can respond with
 const errorMessages = {

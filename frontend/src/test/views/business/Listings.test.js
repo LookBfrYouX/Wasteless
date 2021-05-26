@@ -1,11 +1,11 @@
-import BusinessListings from "../views/business/Listings";
+import BusinessListings from "../../../views/business/Listings";
 import { mount } from "@vue/test-utils";
 
 jest.mock("./../Api");
-import { Api } from "./../Api";
-import { globalStateMocks } from "./testHelper";
-import SortedPaginatedItemList from "../components/SortedPaginatedItemList";
-import {ApiRequestError} from "../ApiRequestError";
+import { Api } from "../../../Api";
+import { globalStateMocks } from "../../testHelper";
+import SortedPaginatedItemList from "../../../components/SortedPaginatedItemList";
+import {ApiRequestError} from "../../../ApiRequestError";
 
 let wrapper;
 beforeEach(() => {

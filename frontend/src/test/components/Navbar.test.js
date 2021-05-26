@@ -1,10 +1,10 @@
 import {shallowMount} from '@vue/test-utils';
-import {GLOBAL_STATE, globalStateMocks} from "./testHelper";
-import Navbar from "../components/Navbar";
-import {ApiRequestError} from '../ApiRequestError';
+import {GLOBAL_STATE, globalStateMocks} from "../testHelper";
+import Navbar from "../../components/Navbar";
+import {ApiRequestError} from '../../ApiRequestError';
 
 jest.mock("./../Api.js");
-const {Api} = require("./../Api.js");
+const {Api} = require("../../Api.js");
 
 let wrapper;
 
