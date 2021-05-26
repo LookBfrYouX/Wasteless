@@ -43,9 +43,9 @@
             <option v-for="inventoryItem in filteredInventory"
                     :key="inventoryItem.id"
                     :value="inventoryItem"
-                    :disabled="inventoryItem.quantityRemaining <= 0"
-                    >
-              Expires at {{ $helper.isoToDateString(inventoryItem.expires) }} (ID: {{ inventoryItem.id }}, {{ inventoryItem.quantityRemaining}}/{{ inventoryItem.quantity }} unlisted)
+                    :disabled="inventoryItem.quantityRemaining <= 0 ||inventoryItem.expires < todayDate"
+            >
+              Expire{{ (todayDate >= inventoryItem.expires )? "d": "s" }} on {{ $helper.isoToDateString(inventoryItem.expires) }} (ID: {{ inventoryItem.id }}, {{ inventoryItem.quantityRemaining}}/{{ inventoryItem.quantity }} unlisted)
             </option>
           </select>
         </div>
