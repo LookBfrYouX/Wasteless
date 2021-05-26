@@ -1,7 +1,7 @@
 <template>
   <div class="w-100">
     <div
-        class="w-100 d-flex justify-content-center product-page-container gradient-background pb-4"
+        class="w-100 d-flex justify-content-center product-page-container gradient-background my-3"
     >
       <div class="container">
         <form
