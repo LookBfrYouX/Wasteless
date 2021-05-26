@@ -1,4 +1,4 @@
-import CreateMarketplaceCard from "../../views/CreateMarketplaceCard";
+import CreateMarketplaceCard from "../../views/marketplace/CardCreate";
 import { shallowMount } from "@vue/test-utils";
 
 import { constants } from "../../constants";

@@ -1,4 +1,4 @@
-import BusinessInventory from "../../views/BusinessInventory";
+import BusinessInventory from "../../views/business/Inventory";
 import {shallowMount} from "@vue/test-utils";
 import {Api} from "../../Api";
 import {ApiRequestError} from "../../ApiRequestError";

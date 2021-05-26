@@ -97,10 +97,10 @@
 
 </style>
 <script>
-import ErrorModal from './Errors/ErrorModal.vue';
-import {ApiRequestError} from "./../ApiRequestError";
+import ErrorModal from '../../components/ErrorModal.vue';
+import {ApiRequestError} from "../../ApiRequestError";
 
-const {Api} = require("./../Api");
+const {Api} = require("../../Api");
 
 export default {
   name: 'editProductImages',
@@ -191,6 +191,7 @@ export default {
      */
     onFilePicked(event) {
       const files = event.target.files;
+      if (files.length == 0) return;
       Api.uploadProductImage(files[0], this.businessId, this.productId)
       .then(() => {
         return this.apiPipeline();

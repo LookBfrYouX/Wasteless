@@ -145,8 +145,8 @@
 </template>
 
 <script>
-const {Api} = require("./../Api.js");
-import ErrorModal from "./Errors/ErrorModal";
+const {Api} = require("../../Api.js");
+import ErrorModal from "../../components/ErrorModal";
 
 export default {
   name: "InventoryItemEntry",

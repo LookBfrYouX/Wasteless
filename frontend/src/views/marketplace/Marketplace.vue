@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-12 pt-2 d-flex flex-wrap justify-content-between align-items-baseline">
-        <div class="btn fake-button p-0">
+        <div class="btn fake-button py-0">
           Create Card
           <!-- Want to center the marketplace text while having a create card button on the right. Having this div allows us to have something on the left that is the same width and hence keep the text centered -->
         </div>
@@ -55,7 +55,7 @@
 
 </style>
 <script>
-import MarketplaceCardContainer from "@/components/MarketplaceCardContainer.vue";
+import MarketplaceCardContainer from "@/components/MarketplaceSection.vue";
 
 export default {
   components: {MarketplaceCardContainer},

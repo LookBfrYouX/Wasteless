@@ -35,12 +35,12 @@
   </div>
 </template>
 <script>
-import ErrorModal from "./Errors/ErrorModal.vue";
-import SortedPaginatedItemList from "./SortedPaginatedItemList";
-import UserListItem from "./UserListItem";
+import ErrorModal from "../components/ErrorModal.vue";
+import SortedPaginatedItemList from "../components/SortedPaginatedItemList";
+import UserListItem from "../components/cards/UserItemCard";
 
-import { helper } from "./../helper";
-import { Api } from "./../Api"
+import { helper } from "../helper";
+import { Api } from "../Api"
 
 
 const sortOptions = [

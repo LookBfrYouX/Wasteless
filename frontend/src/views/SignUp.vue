@@ -246,9 +246,9 @@
 </style>
 
 <script>
-const {Api} = require("./../Api.js");
-const AddressForm = require("./AddressForm").default;
-const countryData = require("./../assets/countryData.json");
+const {Api} = require("../Api.js");
+const AddressForm = require("../components/AddressForm").default;
+const countryData = require("../assets/countryData.json");
 
 export default {
   name: "SignUp",

@@ -178,7 +178,7 @@
 
 <script>
 const {Api} = require("./../Api.js");
-import ErrorModal from "./Errors/ErrorModal";
+import ErrorModal from "./ErrorModal";
 
 export default {
   name: "navbar",

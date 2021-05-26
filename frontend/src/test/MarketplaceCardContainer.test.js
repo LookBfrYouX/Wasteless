@@ -1,4 +1,4 @@
-import MarketplaceCardContainer from "./../components/MarketplaceCardContainer";
+import MarketplaceCardContainer from "../components/MarketplaceSection";
 import { shallowMount } from "@vue/test-utils";
 
 jest.mock("./../Api");

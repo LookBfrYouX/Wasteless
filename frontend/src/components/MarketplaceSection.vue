@@ -21,7 +21,7 @@
 <script>
   import MarketplaceCard from "./../components/cards/MarketplaceCard";
   import {Api} from "./../Api";
-  import ErrorModal from "../components/Errors/ErrorModal";
+  import ErrorModal from "./ErrorModal";
   export default {
     components: {MarketplaceCard, ErrorModal},
     props: ['section'],

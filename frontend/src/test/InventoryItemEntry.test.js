@@ -1,4 +1,4 @@
-import InventoryItemEntry from "./../components/InventoryItemEntry";
+import InventoryItemEntry from "../views/business/InventoryCreate";
 import { shallowMount } from "@vue/test-utils";
 import {ApiRequestError} from "../ApiRequestError";
 

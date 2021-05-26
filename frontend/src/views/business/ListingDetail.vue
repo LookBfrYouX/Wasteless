@@ -6,7 +6,7 @@
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <h2 class="card-title mb-0">
               {{ name }} (ID:
-              <code class="text-dark">{{ productId }}</code>)
+              <code class="text-dark">{{ listingId }}</code>)
             </h2>
           </div>
           <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
@@ -15,17 +15,29 @@
             Back
           </button>
           <div class="mt-2">Description: {{ description }}</div>
-          <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>
-          <div class="mt-2">RRP: {{ $helper.makeCurrencyString(recommendedRetailPrice, currency) }}</div>
+          <div class="mt-2">Quantity: {{ quantity }}</div>
+          <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
+          <div class="mt-2 mb-5" v-if="moreInfo">More Information: {{ moreInfo }}</div>
+          <div class="d-flex flex-wrap justify-content-between mb-2">
+            <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated) }}</div>
+            <div class="date mt-2">Closes: {{ $helper.isoToDateString(listingCloses) }}</div>
+          </div>
         </div>
         <div class="col-md-6">
           <div class="primary-image-wrapper">
             <img v-if="productImages.length !== 0" v-bind:src="productImages[0].filename"
                  alt="Primary images">
-            <img v-else src="./../../assets/images/default-product-thumbnail.svg"
+            <img v-else src="assets/images/default-product-thumbnail.svg"
                  alt="Default product image">
           </div>
         </div>
+      </div>
+      <hr>
+      <div class="d-flex flex-wrap justify-content-between mb-2">
+        <div class="date mt-2">Manufactured: {{ $helper.isoToDateString(manufactured) }}</div>
+        <div class="date mt-2">Sell By: {{ $helper.isoToDateString(sellBy) }}</div>
+        <div class="date mt-2">Best Before: {{ $helper.isoToDateString(bestBefore) }}</div>
+        <div class="date mt-2">Expires: {{ $helper.isoToDateString(expires) }}</div>
       </div>
       <div class="row my-2">
         <div v-for="(image, index) in productImages"
@@ -36,12 +48,6 @@
                class="img-fluid"
                alt="Product Image">
         </div>
-      </div>
-      <div class="d-flex justify-content-end">
-        <button class="btn btn-primary mr-0"
-                v-on:click="editProductImages(productId)">
-          Edit product images
-        </button>
       </div>
     </div>
     <error-modal
@@ -64,13 +70,13 @@
 }
 </style>
 <script>
-import ErrorModal from "./Errors/ErrorModal.vue";
+import ErrorModal from "../../components/ErrorModal.vue";
 
-import {ApiRequestError} from "../ApiRequestError";
-const { Api } = require("./../Api");
+import {ApiRequestError} from "../../ApiRequestError";
+const { Api } = require("../../Api");
 
 export default {
-  name: "productDetail",
+  name: "salesListingDetail",
   components: {
     ErrorModal,
   },
@@ -79,9 +85,16 @@ export default {
     return {
       name: "",
       description: "",
-      recommendedRetailPrice: null,
-      created: "",
       productImages: [],
+      quantity: null,
+      price: null,
+      moreInfo: "",
+      listingCreated: "",
+      listingCloses: "",
+      manufactured: "",
+      sellBy: "",
+      bestBefore: "",
+      expires: "",
       apiErrorMessage: null,
       currency: null
     }
@@ -91,13 +104,13 @@ export default {
       required: true,
       type: Number
     },
-    productId: {
+    listingId: {
       required: true,
       type: Number,
     }
   },
 
- 
+
   beforeMount: async function () {
     const success = await this.apiPipeline();
     if (success) await this.loadCurrencies();
@@ -110,7 +123,7 @@ export default {
      * @return true on success
      */
     loadCurrencies: async function () {
-      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+      if (!this.$stateStore.getters.isLoggedIn()) {
         return false;
       }
 
@@ -132,9 +145,10 @@ export default {
      * Does not run pipeline if user should not be able to edit business
      */
     apiPipeline: async function () {
-      if (!this.$stateStore.getters.canEditBusiness(this.businessId)) {
+      if (!this.$stateStore.getters.isLoggedIn()) {
         return false;
       }
+
       try {
         await this.parseApiResponse(this.callApi());
       } catch (err) {
@@ -151,43 +165,42 @@ export default {
      * Returns the promise, not the response
      */
     callApi: async function () {
-      if (this.businessId === null) {
-        throw new ApiRequestError("You must be acting as a business to view the product.")
-      }
-      return await Api.getProducts(this.businessId);
+      return await Api.getBusinessListings(this.businessId);
     },
 
     /**
      * Parses the API response given a promise to the request.
      */
     parseApiResponse: async function (apiCall) {
-      const products = (await apiCall).data;
-      const product = products.find(({id}) => id === this.productId);
-      if (product === undefined) {
+      const listings = (await apiCall).data;
+      const listing = listings.find(({id}) => id === this.listingId);
+      if (listing === undefined) {
         throw new ApiRequestError(
-            `Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
+            `Couldn't find listing with the ID ${this.listingId}.`);
       }
-      this.name = product.name;
-      this.description = product.description;
-      this.recommendedRetailPrice = product.recommendedRetailPrice;
-      this.created = product.created;
-      this.productImages = product.images;
-    },
-
-    /**
-     * Go to product image editing page.
-     * @param productId is an id of product currently viewing
-     */
-    editProductImages(productId) {
-      this.$router.push({
-        name: "editProductImages",
-        params: {
-          businessId: this.businessId,
-          productId
-        }
-      });
+      this.name = listing.inventoryItem.product.name;
+      this.description = listing.inventoryItem.product.description;
+      this.productImages = listing.inventoryItem.product.images;
+      this.quantity = listing.quantity;
+      this.price = listing.price;
+      this.moreInfo = listing.moreInfo;
+      this.listingCreated = listing.created;
+      this.listingCloses = listing.closes;
+      this.manufactured = listing.inventoryItem.manufactured;
+      this.sellBy = listing.inventoryItem.sellBy;
+      this.bestBefore = listing.inventoryItem.bestBefore;
+      this.expires = listing.inventoryItem.expires;
     }
   }
 }
 
 </script>
+
+<style scoped>
+
+.date {
+  font-size: smaller;
+  display:inline-block
+}
+
+</style>

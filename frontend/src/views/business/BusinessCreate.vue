@@ -86,8 +86,8 @@
 </template>
 
 <script>
-const {Api} = require("./../Api.js");
-const AddressForm = require("./AddressForm").default;
+const {Api} = require("../../Api.js");
+const AddressForm = require("../../components/AddressForm").default;
 
 export default {
   name: "RegisterBusiness",

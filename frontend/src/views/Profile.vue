@@ -5,7 +5,7 @@
       <div class="col-md-4 m-2 card">
 
         <img alt="Users profile image" class="my-3 rounded-circle"
-             src="./../../assets/images/default-user-thumbnail.svg">
+             src="assets/images/default-user-thumbnail.svg">
       </div>
       <div class="col-md-7 m-2 card">
         <div class="m-3">
@@ -182,10 +182,10 @@ th {
 }
 </style>
 <script>
-import ErrorModal from './Errors/ErrorModal.vue';
-import {ApiRequestError} from "./../ApiRequestError";
+import ErrorModal from '../components/ErrorModal.vue';
+import {ApiRequestError} from "../ApiRequestError";
 
-const {Api} = require("./../Api.js");
+const {Api} = require("../Api.js");
 
 export default {
   name: 'profile',

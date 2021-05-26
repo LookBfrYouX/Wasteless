@@ -1,5 +1,5 @@
 import {shallowMount} from "@vue/test-utils";
-import CreateListing from "../components/CreateListing";
+import CreateListing from "../views/business/ListingCreate";
 import {globalStateMocks} from "./testHelper";
 import { ApiRequestError } from "../ApiRequestError";
 import { Api } from "./../Api";

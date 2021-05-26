@@ -1,4 +1,4 @@
-import BusinessListings from "./../views/BusinessListings";
+import BusinessListings from "../views/business/Listings";
 import { mount } from "@vue/test-utils";
 
 jest.mock("./../Api");

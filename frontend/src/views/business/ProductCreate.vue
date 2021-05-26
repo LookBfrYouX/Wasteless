@@ -108,10 +108,10 @@
 </template>
 
 <script>
-import {ApiRequestError} from '../ApiRequestError';
-import ErrorModal from "./Errors/ErrorModal";
+import {ApiRequestError} from '../../ApiRequestError';
+import ErrorModal from "../../components/ErrorModal";
 
-const {Api} = require("./../Api.js");
+const {Api} = require("../../Api.js");
 
 export default {
   components: {

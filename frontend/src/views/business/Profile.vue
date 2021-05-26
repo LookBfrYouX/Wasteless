@@ -91,10 +91,10 @@
 </template>
 
 <script>
-import ErrorModal from "./Errors/ErrorModal.vue";
-import {ApiRequestError} from "./../ApiRequestError";
+import ErrorModal from "../../components/ErrorModal.vue";
+import {ApiRequestError} from "../../ApiRequestError";
 
-const {Api} = require("./../Api.js");
+const {Api} = require("../../Api.js");
 
 export default {
   name: 'businessProfile',

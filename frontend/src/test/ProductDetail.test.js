@@ -3,7 +3,7 @@ import {globalStateMocks} from "./testHelper";
 jest.mock("./../Api.js");
 const {Api} = require("./../Api.js");
 
-import ProductDetail from "../components/ProductDetail";
+import ProductDetail from "../views/business/ProductDetail";
 
 
 let wrapper;
