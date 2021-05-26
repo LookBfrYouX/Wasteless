@@ -137,3 +137,29 @@ describe("arrow behaviour", () => {
         expect(wrapper.vm.showSuggestions).toBe(true);
       });
 });
+
+describe("isDisabled", () => {
+  test("string given", () => {
+    expect(wrapper.vm.isDisabled("")).toBe(false);
+  });
+
+  test("undefined", () => {
+    expect(wrapper.vm.isDisabled()).toBe(false);
+  });
+
+  test("object given, no disabled", () => {
+    expect(wrapper.vm.isDisabled({ bla: "asfdf"})).toBe(false);
+  });
+
+  test("object given, disabled true", () => {
+    expect(wrapper.vm.isDisabled({ disabled: true})).toBe(true);
+  });
+
+  test("object given, disabled false", () => {
+    expect(wrapper.vm.isDisabled({ disabled: false})).toBe(false);
+  });
+
+  test("object given, disabled 1", () => {
+    expect(wrapper.vm.isDisabled({ disabled: 1})).toBe(false);
+  });
+});

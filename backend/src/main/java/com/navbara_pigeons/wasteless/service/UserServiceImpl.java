@@ -97,6 +97,9 @@ public class UserServiceImpl implements UserService {
     if (!user.getDateOfBirth().isBefore(LocalDate.now().minusYears(13))) {
       throw new UserRegistrationException("Must be 13 years or older to register");
     }
+    if (!user.getDateOfBirth().isAfter(LocalDate.now().minusYears(110))) {
+      throw new UserRegistrationException("Must be less than 110 years old to register");
+    }
     // Password and field validation
     if (!UserServiceValidation.isPasswordValid(user.getPassword())) {
       throw new UserRegistrationException("Password does not pass validation check");

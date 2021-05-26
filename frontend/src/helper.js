@@ -29,6 +29,7 @@ export const helper = {
 
     return [
       street,
+      address.suburb,
       address.city,
       address.region,
       address.postcode,
@@ -52,6 +53,18 @@ export const helper = {
     const day = date.getDate() < 10 ? `0${date.getDate()}`
         : date.getDate().toString();
     return `${day} ${constants.MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
+  },
+
+  /**
+   * Given year month and day, returns `yyyy-mm-dd` string
+   * @param {Number} year 
+   * @param {Number} month 
+   * @param {Number} day 
+   */
+  toYyyyMmDdString(year, month, day) {
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+    return `${year}-${month}-${day}`;
   },
 
   /**

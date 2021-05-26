@@ -7,7 +7,8 @@ export const constants = {
   },
 
   SIGN_UP: {
-    MIN_AGE: 13
+    MIN_AGE: 13,
+    MAX_AGE: 110,
   },
 
   ADDRESS_FORM: {
@@ -78,5 +79,26 @@ export const constants = {
   API: {
     TIMEOUT_SHORT: 2500,
     TIMEOUT_LONG: 10000
+  },
+
+  MARKETPLACE: {
+    /**
+     * Key is name of section that should be used internally, value is name that should be used externally
+     */
+    SECTIONS: {
+      ForSale: "For Sale",
+      Wanted: "Wanted",
+      Exchange: "Exchange"
+    },
+
+    CREATE_CARD: {
+      TAG_SUGGESTIONS: {
+        NUM_SUGGESTIONS: 5,
+        WORST_RATIO: 2,
+        INSERT_COST: 1,
+        DELETE_COST: 50,
+        SUBSTITUTE_COST: 50,
+      },
+    }
   }
 };

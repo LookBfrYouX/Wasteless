@@ -72,6 +72,10 @@ nav {
   box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.05);
 }
 
+.bg-color-transition {
+  transition: background-color 0.2s;
+}
+
 // Sets background to white on hover
 .hover-white-bg:hover {
   background-color: white;

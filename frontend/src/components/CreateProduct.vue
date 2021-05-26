@@ -1,7 +1,7 @@
 <template>
   <div class="w-100">
     <div
-        class="w-100 d-flex justify-content-center product-page-container gradient-background pb-4"
+        class="w-100 d-flex justify-content-center product-page-container gradient-background my-3"
     >
       <div class="container">
         <form
@@ -188,11 +188,11 @@ export default {
      * @returns {Promise<void>} a promise
      */
     createProduct: async function () {
-      let price;
-      try {
-        price = parseFloat(this.price);
-      } catch (err) {
+      let price = parseFloat(this.price);
+
+      if (isNaN(price)) {
         this.errorMessage = "Please enter a valid price";
+        return;
       }
 
       if (price <= 0) {

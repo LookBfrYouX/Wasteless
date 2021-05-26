@@ -152,6 +152,8 @@
                 class="form-control"
                 name="dateOfBirth"
                 placeholder="Date of birth"
+                v-bind:min="oldestBirthdateAsString"
+                v-bind:max="youngestBirthdateAsString"
                 required
                 type="date"
                 v-bind:class="{ 'is-invalid': dateOfBirthErrorMessage !== null }"
@@ -194,9 +196,9 @@
                 autocomplete="tel-national"
                 class="form-control"
                 name="phoneNumber"
-                pattern='^\d{5,13}$'
                 placeholder="Phone number"
-                type="tel"
+                type="text"
+                maxlength="13"
                 v-bind:class="{'is-invalid': phoneErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ phoneErrorMessage }}</div>
@@ -255,6 +257,17 @@ export default {
     "address-form": AddressForm
   },
 
+  props: {
+    /**
+     * Current date. used for date of birth validation
+     */
+    currentDate: {
+      required: false,
+      type: Date,
+      default: () => new Date()
+    }
+  },
+
   data() {
     return {
       emailErrorMessage: null, // If email address has already been registered
@@ -282,6 +295,7 @@ export default {
       address: {
         streetNumber: "",
         streetName: "",
+        suburb: "",
         postcode: "",
         city: "",
         region: "",
@@ -298,6 +312,27 @@ export default {
       countryData
     };
   },
+
+  computed: {
+    youngestBirthdate() {
+      return new Date(this.currentDate.getFullYear() -  this.$constants.SIGN_UP.MIN_AGE, this.currentDate.getMonth(), this.currentDate.getDate());
+    },
+
+    youngestBirthdateAsString() {
+      const date = this.youngestBirthdate;
+      return this.$helper.toYyyyMmDdString(date.getFullYear(), date.getMonth() + 1, date.getDate());
+    },
+
+    oldestBirthDate() {
+      return new Date(this.currentDate.getFullYear() - this.$constants.SIGN_UP.MAX_AGE, this.currentDate.getMonth(), this.currentDate.getDate());
+    },
+
+    oldestBirthdateAsString() {
+      const date = this.oldestBirthDate;
+      return this.$helper.toYyyyMmDdString(date.getFullYear(), date.getMonth() + 1, date.getDate());
+    }
+  },
+
   methods: {
     /**
      * Method which is called when update address event occurs on address form component
@@ -319,14 +354,9 @@ export default {
     /**
      * Validates date of birth, returning error message if invalid
      * @param{string} dateOfBirth
-     * @param{Date} currentDate. Uses Date.now if not given
      * @return {string|null} returns null if there is no error
      */
-    validateDateOfBirth: function (dateOfBirth, currentDate = undefined) {
-      if (currentDate == undefined) {
-        currentDate = new Date(Date.now());
-      }
-      const minAge = this.$constants.SIGN_UP.MIN_AGE;
+    validateDateOfBirth: function (dateOfBirth) {
       const regexp = /(\d{4})-(\d{2})-(\d{2})/;
       const result = regexp.exec(dateOfBirth);
       if (result === null) {
@@ -344,24 +374,15 @@ export default {
         return "Date of birth given bad date";
       }
 
-      const yearDelta = currentDate.getFullYear() - year;
-      if (yearDelta > minAge) {
-        return null;
-      } // More than 13 years old
-      if (yearDelta == minAge) {
-        const monthDelta = currentDate.getMonth() - monthIndex;
-        if (monthDelta > 0) {
-          return null;
-        }
-        if (monthDelta == 0) {
-          const dayDelta = currentDate.getDate() - day;
-          if (dayDelta >= 0) {
-            return null;
-          }
-        }
+      if (date.getTime() > this.youngestBirthdate.getTime()) {
+        return `You must be ${this.$constants.SIGN_UP.MIN_AGE} years or older to sign up`;
       }
 
-      return `You must be ${minAge} years or older to sign up`;
+      if (date.getTime() < this.oldestBirthDate.getTime()) {
+        return `You cannot be older than ${this.$constants.SIGN_UP.MAX_AGE} years to sign up`;
+      }
+
+      return null;
     },
 
     /**
@@ -381,6 +402,12 @@ export default {
         // scroll into view puts the element at the top of the screen
         // Hence more user friendly to scroll to password instead of confirm password
         // (at least on mobile)
+        return;
+      }
+
+      if (this.phoneNumber.trim().length >= 13) {
+        this.errorMessage = this.phoneErrorMessage = "Phone number is a maximum of 13 digits long";
+        this.$refs.countryCodeLabel.scrollIntoView();
         return;
       }
       const phoneNumberEntered = this.phoneNumber.trim().length > 0;

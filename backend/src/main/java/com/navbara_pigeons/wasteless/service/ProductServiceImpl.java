@@ -22,6 +22,7 @@ import javax.transaction.Transactional;
 
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,6 +36,8 @@ public class ProductServiceImpl implements ProductService {
   private final CountryDataFetcherService countryDataFetcherService;
   private final UserService userService;
   private final BusinessService businessService;
+  @Value("${public_path_prefix}")
+  private String publicPathPrefix;
 
   /**
    * ProductImplementation constructor that takes autowired parameters and sets up the service for
@@ -70,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
       Business business = businessDao.getBusinessById(businessId);
       ArrayList<BasicProductDto> products = new ArrayList<>();
       for (Product product : business.getProductsCatalogue()) {
-        products.add(new BasicProductDto(product));
+        products.add(new BasicProductDto(product, publicPathPrefix));
       }
       return products;
     } else {

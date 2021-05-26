@@ -17,9 +17,9 @@ public class FullInventoryItemDto {
   private LocalDate sellBy;
   private LocalDate bestBefore;
 
-  public FullInventoryItemDto(InventoryItem inventoryItem) {
+  public FullInventoryItemDto(InventoryItem inventoryItem, String publicPathPrefix) {
     id = inventoryItem.getId();
-    product = new BasicProductDto(inventoryItem.getProduct());
+    product = new BasicProductDto(inventoryItem.getProduct(), publicPathPrefix);
     quantity = inventoryItem.getQuantity();
     pricePerItem = inventoryItem.getPricePerItem();
     totalPrice = inventoryItem.getTotalPrice();
