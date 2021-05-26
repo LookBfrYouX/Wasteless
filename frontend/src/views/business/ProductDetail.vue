@@ -180,7 +180,7 @@ export default {
      */
     editProductImages(productId) {
       this.$router.push({
-        name: "editProductImages",
+        name: "BusinessProductImagesEdit",
         params: {
           businessId: this.businessId,
           productId

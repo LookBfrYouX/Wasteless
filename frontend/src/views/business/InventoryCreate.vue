@@ -212,7 +212,7 @@ export default {
      */
     goToInventory() {
       this.$router.push({
-        name: 'businessInventory',
+        name: "BusinessInventory",
         params: {
           businessId: this.businessId
         }

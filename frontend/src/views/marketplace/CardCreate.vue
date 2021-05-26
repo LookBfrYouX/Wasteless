@@ -288,7 +288,7 @@ export default {
         this.errorMessage = null;
         
         this.$router.push({
-          name: "marketplace",
+          name: "Marketplace",
           params: {
             section: this.section
           }

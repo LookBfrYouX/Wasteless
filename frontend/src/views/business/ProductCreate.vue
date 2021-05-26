@@ -217,7 +217,7 @@ export default {
           return;
         }
         await this.$router.push({
-          name: "productCatalogue",
+          name: "BusinessProducts",
           params: {
             businessId: this.businessId
           }

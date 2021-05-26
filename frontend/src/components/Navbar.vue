@@ -230,7 +230,7 @@ export default {
           active: viewName == "BusinessProducts",
         },
         {
-          name: "Product Catasignue",
+          name: "Product Catalogue",
           click: () => this.pushOrGoToBusinessPage("BusinessProducts"),
           active: viewName == "BusinessProducts",
         }, {
@@ -343,7 +343,7 @@ export default {
      * Navigates to search page with current query, or reloads page if on search page and query has not changed
      */
     search: async function () {
-      const searchName = "UserSearch";
+      const searchName = "Search";
       let newQuery = this.$route.params.query;
 
       // If already on search with same query, refresh instead of reloading
@@ -379,7 +379,7 @@ export default {
         return;
       }
       const params = {
-        name, 
+        name,
         params: {
           businessId: business.id
         }

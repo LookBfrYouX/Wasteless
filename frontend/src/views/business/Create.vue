@@ -189,7 +189,7 @@ export default {
       this.$stateStore.actions.setAuthUser(user); // Add business to state store
       this.$stateStore.actions.setActingAs(business.id);
       await this.$router.push({
-        name: "businessProfile",
+        name: "BusinessDetail",
         params: {
           businessId: business.id
         },

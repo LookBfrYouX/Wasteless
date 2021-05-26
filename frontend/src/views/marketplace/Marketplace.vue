@@ -11,7 +11,7 @@
         </h2>
         <router-link
           class="btn btn-primary mb-2"
-          v-bind:to="{ name: 'createCard' }"
+          v-bind:to="{ name: 'MarketplaceCardCreate' }"
         >
           Create a Card
         </router-link>

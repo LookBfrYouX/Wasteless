@@ -4,10 +4,14 @@
       <div class="col-md-3 card m-1">
         <h5 class="text-muted mt-3">Quick Links</h5>
         <div class="profile-buttons d-flex flex-wrap">
-          <button v-if="isActingAsUser" class="btn btn-white-bg-primary m-1 d-flex" v-on:click="goToMarketplace">
+          <router-link
+            v-if="isActingAsUser"
+            class="btn btn-white-bg-primary m-1 d-flex"
+            v-bind:to="{ name: 'Marketplace' }"
+          >
             <span class="material-icons mr-1">store</span>
             Marketplace
-          </button>
+          </router-link>
         </div>
       </div>
       <div class="col-md-8 card m-1">
@@ -20,11 +24,6 @@
 <script>
 export default {
   name: "home",
-  methods: {
-    goToMarketplace() {
-      this.$router.push({name: 'marketplace'});
-    }
-  },
   computed: {
     /**
      * Checks if acting as a user

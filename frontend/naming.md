@@ -10,8 +10,8 @@ When we look for the Vue files, we should able to quickly find what we are looki
 - Subfolders
 - Sortability
 
+This, however, does not fit well with names we want to show the user in the page title, buttons etc..: the names used internally and externally can be different.
 ### Hierarchy
-
 #### Views and Components
 
 - `views`: for pages a user visits
@@ -38,7 +38,7 @@ The name should be in the EntityVerb format (in PascalCase):
 
 - Entity: name of entity the page is viewing/modifying (e.g. `User`, `Listing`)
 - Verb: one of:
-  - `Create`: make a new entity (e.g. `UserCreate`)
+  - `Create`: make a new entity (e.g. `UserCreate`). Do NOT use `Register`, `Entry` or `Add`
   - `Detail`: view a single entity (e.g. `UserDetail`)
   - `Edit`: edit entity (e.g. `ProductImagesEdit`)
   - No verb, but plural: view a list of entities (e.g. `Listings`, `Products`)
@@ -55,13 +55,9 @@ Use lowercase for the whole path and do not use any separators (e.g. `SignIn` is
 
 The router name should be name the of the section + the name of the file. Plus optional modifier (e.g. admin has its own route)
 
-Listings:
-
-- Listings.vue: the list of business listings
-- /cards/ListingCard/: card to show in the list
-
 ### Exceptions
 
 - `SignIn`: we had no idea what to call this
-- Marketplace main page called 'Marketplace.vue' even though it is in the marketplace folder
+- Marketplace main page called `Marketplace.vue` even though it is in the marketplace folder
 - `MarkplaceCardCreate` has two routes: one for normal user and one for admins (as the admin must be able to do everything). The latter is called `MarketplaceCardCreateAdmin`
+- `ProductImagesEdit`: not sure if it should be plural or not

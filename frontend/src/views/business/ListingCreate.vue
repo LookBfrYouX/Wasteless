@@ -328,7 +328,7 @@ export default {
      */
     goToListings() {
       this.$router.push({
-        name: 'businessListings',
+        name: 'BusinessListings',
         params: {
           businessId: this.businessId
         }

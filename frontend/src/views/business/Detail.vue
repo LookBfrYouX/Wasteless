@@ -35,7 +35,7 @@
           >
               <router-link
                 class="admin-link hover-cursor-pointer text-decoration-none"
-                v-bind:to="{ name: 'profile', params: { userId: admin.id }}"
+                v-bind:to="{ name: 'UserDetail', params: { userId: admin.id }}"
               >
                 {{ admin.firstName }} {{ admin.lastName }}
               </router-link>
@@ -46,7 +46,7 @@
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
             v-if="canEditBusiness"
-            v-bind:to="{ name: 'createProduct', params: { businessId }}"
+            v-bind:to="{ name: 'BusinessProductCreate', params: { businessId }}"
         >
           <span class="material-icons mr-1">add</span>
           Add Product To Catalogue
@@ -54,7 +54,7 @@
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
             v-if="canEditBusiness"
-            v-bind:to="{ name: 'productCatalogue', params: { businessId }}"
+            v-bind:to="{ name: 'BusinessProducts', params: { businessId }}"
         >
           <span class="material-icons mr-1">list</span>
           View Catalogue
@@ -62,14 +62,14 @@
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
             v-if="canEditBusiness"
-            v-bind:to="{ name: 'businessInventory', params: { businessId }}"
+            v-bind:to="{ name: 'BusinessInventory', params: { businessId }}"
         >
           <span class="material-icons mr-1">inventory</span>
           View Inventory 
         </router-link>
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
-            v-bind:to="{ name: 'businessListings', params: { businessId }}"
+            v-bind:to="{ name: 'BusinessListings', params: { businessId }}"
         >
           <span class="material-icons mr-1">storefront</span>
           View Listings

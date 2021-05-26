@@ -79,7 +79,7 @@ export const router = new VueRouter({
     {
       name: "Search",
       path: "/search/:query(.*)",
-      component: () => import('./views/UserSearch.vue'),
+      component: () => import('./views/Search.vue'),
       meta: {
         title: route => `'${route.params.query}' | Search`,
       },

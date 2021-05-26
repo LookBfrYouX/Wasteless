@@ -60,7 +60,7 @@
             </button>
             <router-link
               v-if="isAdmin"
-              v-bind:to="{ name: 'createCardAdmin', params: { userId: userInfo.id }}"
+              v-bind:to="{ name: 'MarketplaceCardCreateAdmin', params: { userId: userInfo.id }}"
               class="btn btn-white-bg-primary m-1 d-flex"
             >
               Create Marketplace Card
@@ -94,10 +94,11 @@
                 v-bind:key="index"
                 class="list-group-item card text-wrap mb-2 border"
             >
-              <h5 class="business-name card-title card-link"
-                  href="javascript:;"
-                  v-on:click="viewBusiness(business.id)"
-              >{{ business.name }}</h5>
+              <router-link
+                v-bind:to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
+              >
+                <h5 class="business-name card-title card-link" >{{ business.name }}</h5>
+              </router-link>
               <h6 class="card-subtitle mb-2 text-muted">
                 {{ business.businessType }}
               </h6>
@@ -262,7 +263,7 @@ export default {
      * TODO: Add documentation
      */
     registerBusiness: function () {
-      this.$router.push({name: "registerBusiness"});
+      this.$router.push({ name: "BusinessCreate" });
     },
 
     /**
@@ -345,16 +346,6 @@ export default {
 
       return `${yearsText}, ${monthsText}`;
     },
-
-    viewBusiness(businessId) {
-      this.$router.push({
-        name: "businessProfile",
-        params: {
-          businessId,
-          showBackButton: true
-        },
-      });
-    }
   },
 
   computed: {

@@ -10,11 +10,10 @@
       </template>
       <template v-slot:item="slotProps">
         <router-link
-          v-bind:to="{ name: 'salesListingDetail', params: { businessId, listingId: slotProps.item.id }}"
+          v-bind:to="{ name: 'BusinessListingDetail', params: { businessId, listingId: slotProps.item.id }}"
           class="text-decoration-none text-reset"
         >
           <listing-item-card
-              class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded" v-on:click="viewListing(slotProps.item.id)"
               v-bind:item="slotProps.item"
               :businessId="businessId"
               :currency="currency"
@@ -23,7 +22,7 @@
       </template>
       <template v-slot:right-button>
         <router-link
-            :to="{ name: 'createListing', params: { businessId }}"
+            :to="{ name: 'BusinessListingCreate', params: { businessId }}"
             class="btn btn-info d-flex"
             v-if="$stateStore.getters.canEditBusiness(businessId)">
           <span class="material-icons mr-1">add</span>
@@ -123,19 +122,6 @@ export default {
     getCurrency: async function () {
       this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
     },
-
-    /**
-     * Go to listing detail page by passing the listing id
-     */
-    viewListing(listingId) {
-      this.$router.push({
-        name: "salesListingDetail",
-        params: {
-          businessId: this.businessId,
-          listingId
-        }
-      });
-    }
   },
 
   watch: {

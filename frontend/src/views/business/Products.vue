@@ -10,7 +10,7 @@
       </template>
       <template v-slot:right-button>
         <router-link
-          v-bind:to="{name: 'createProduct', params: { businessId }}"
+          v-bind:to="{name: 'BusinessProductCreate', params: { businessId }}"
           class="btn btn-info"
         >
           Create Product
@@ -18,7 +18,7 @@
       </template>
       <template v-slot:item="slotProps">
         <router-link
-          v-bind:to="{ name: 'productDetail', params: { businessId, productId: slotProps.item.id }}"
+          v-bind:to="{ name: 'BusinessProductDetail', params: { businessId, productId: slotProps.item.id }}"
           class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-2 p-3 rounded"
         >
           <product-catalogue-list-item

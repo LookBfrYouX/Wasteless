@@ -18,7 +18,7 @@
       </template>
       <template v-slot:right-button>
         <router-link
-          :to="{ name: 'inventoryItemEntry', params: { businessId }}"
+          :to="{ name: 'BusinessInventoryCreate', params: { businessId }}"
           class="btn btn-info d-flex"
         >
           <span class="material-icons mr-1">add</span>
