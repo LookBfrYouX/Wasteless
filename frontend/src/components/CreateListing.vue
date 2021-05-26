@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container my-3">
     <div class="text-center">
       <h1>
         Create new sales listing

@@ -7,7 +7,8 @@ export const constants = {
   },
 
   SIGN_UP: {
-    MIN_AGE: 13
+    MIN_AGE: 13,
+    MAX_AGE: 110,
   },
 
   ADDRESS_FORM: {
@@ -78,10 +79,6 @@ export const constants = {
   API: {
     TIMEOUT_SHORT: 2500,
     TIMEOUT_LONG: 10000
-  },
-
-  PRODUCTS: {
-    MAX_PRICE: 10000
   },
 
   MARKETPLACE: {

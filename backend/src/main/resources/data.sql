@@ -17,6 +17,7 @@ CREATE TABLE address
     ID            BIGINT AUTO_INCREMENT PRIMARY KEY,
     STREET_NUMBER VARCHAR(100),
     STREET_NAME   VARCHAR(200),
+    SUBURB        VARCHAR(200),
     POSTCODE      VARCHAR(30),
     CITY          VARCHAR(200),
     REGION        VARCHAR(200),
@@ -33,12 +34,12 @@ CREATE TABLE user
     BIO             VARCHAR(250),
     EMAIL           VARCHAR(50) NOT NULL UNIQUE,
     DATE_OF_BIRTH   DATE        NOT NULL,
-    PHONE_NUMBER    VARCHAR(18),
+    PHONE_NUMBER    VARCHAR(25),
     IMAGE_NAME      VARCHAR(30),
     CREATED         DATETIME    NOT NULL,
     ROLE            VARCHAR(30) NOT NULL,
-    PASSWORD        VARCHAR(60)    NOT NULL,
-    HOME_ADDRESS_ID BIGINT         NOT NULL,
+    PASSWORD        VARCHAR(60) NOT NULL,
+    HOME_ADDRESS_ID BIGINT      NOT NULL,
     CONSTRAINT user_address_fk FOREIGN KEY (HOME_ADDRESS_ID) REFERENCES address (ID)
 );
 
@@ -49,8 +50,8 @@ CREATE TABLE business
     DESCRIPTION              VARCHAR(250),
     BUSINESS_TYPE            VARCHAR(50) NOT NULL,
     CREATED                  DATETIME    NOT NULL,
-    PRIMARY_ADMINISTRATOR_ID BIGINT         NOT NULL,
-    ADDRESS_ID               BIGINT         NOT NULL,
+    PRIMARY_ADMINISTRATOR_ID BIGINT      NOT NULL,
+    ADDRESS_ID               BIGINT      NOT NULL,
     CONSTRAINT business_address_fk FOREIGN KEY (ADDRESS_ID) REFERENCES address (ID)
 );
 
@@ -68,7 +69,7 @@ CREATE TABLE product
     DESCRIPTION      VARCHAR(500),
     CURRENCY         VARCHAR(4),
     MANUFACTURER     VARCHAR(100),
-    RRP              DOUBLE(6, 2),
+    RRP              DOUBLE,
     CREATED          DATETIME,
     PRIMARY_IMAGE_ID BIGINT,
     CONSTRAINT product_image_fk FOREIGN KEY (PRIMARY_IMAGE_ID) REFERENCES image (ID)
@@ -113,13 +114,13 @@ CREATE TABLE catalogue
 CREATE TABLE inventory_item
 (
     ID             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    PRODUCT_ID     BIGINT           NOT NULL,
-    BUSINESS_ID    BIGINT           NOT NULL,
+    PRODUCT_ID     BIGINT       NOT NULL,
+    BUSINESS_ID    BIGINT       NOT NULL,
     -- WARNING: BUSINESS ID IS DUPLICATED DATA - CAN BE FOUND FROM PRODUCT
     QUANTITY       BIGINT           NOT NULL,
-    PRICE_PER_ITEM DOUBLE(6, 2) NOT NULL,
-    TOTAL_PRICE    DOUBLE(6, 2) NOT NULL,
-    EXPIRES        DATE          NOT NULL,
+    PRICE_PER_ITEM DOUBLE           NOT NULL,
+    TOTAL_PRICE    DOUBLE           NOT NULL,
+    EXPIRES        DATE             NOT NULL,
     MANUFACTURED   DATE,
     SELL_BY        DATE,
     BEST_BEFORE    DATE,
@@ -133,26 +134,26 @@ CREATE TABLE inventory_item
 
 CREATE TABLE listing
 (
-    ID           BIGINT AUTO_INCREMENT PRIMARY KEY,
-    INVENTORY_ITEM_ID BIGINT           NOT NULL,
-    QUANTITY     BIGINT           NOT NULL,
-    PRICE        DOUBLE(6, 2) NOT NULL,
-    MORE_INFO    VARCHAR(50),
-    CREATED      DATETIME,
-    CLOSES       DATETIME,
+    ID                BIGINT AUTO_INCREMENT PRIMARY KEY,
+    INVENTORY_ITEM_ID BIGINT        NOT NULL,
+    QUANTITY          BIGINT        NOT NULL,
+    PRICE             DOUBLE        NOT NULL,
+    MORE_INFO         VARCHAR(50),
+    CREATED           DATETIME,
+    CLOSES            DATETIME,
     CONSTRAINT inventory_item_fk
         FOREIGN KEY (INVENTORY_ITEM_ID) REFERENCES inventory_item (ID)
 );
 
 CREATE TABLE marketlisting
 (
-    ID BIGINT AUTO_INCREMENT PRIMARY KEY,
-    CREATOR_ID BIGINT NOT NULL,
-    SECTION ENUM('ForSale','Wanted','Exchange') NOT NULL,
-    CREATED DATETIME,
+    ID                 BIGINT AUTO_INCREMENT PRIMARY KEY,
+    CREATOR_ID         BIGINT                               NOT NULL,
+    SECTION            ENUM ('ForSale','Wanted','Exchange') NOT NULL,
+    CREATED            DATETIME,
     DISPLAY_PERIOD_END DATETIME,
-    TITLE VARCHAR(50) NOT NULL,
-    DESCRIPTION VARCHAR(250),
+    TITLE              VARCHAR(50)                          NOT NULL,
+    DESCRIPTION        VARCHAR(250),
     CONSTRAINT user_fk FOREIGN KEY (CREATOR_ID) REFERENCES user (ID)
 );
 
@@ -163,36 +164,42 @@ CREATE TABLE marketlisting
 
 INSERT INTO address(STREET_NUMBER,
                     STREET_NAME,
+                    SUBURB,
                     POSTCODE,
                     CITY,
                     REGION,
                     COUNTRY)
 VALUES ('10',
         'Downing Street',
+        'Ilam',
         'SW1A 2AA',
         'Westminster',
         'London',
         'United Kingdom'),
        ('99',
         'Waimari Road',
+        'Ilam',
         '8041',
         'Christchurch',
         'Canterbury',
         'New Zealand'),
        ('53',
         'Ilam Road',
+        'Ilam',
         '8041',
         'Christchurch',
         'Canterbury',
         'New Zealand'),
        ('123',
         'Fake Street',
+        'Ilam',
         '8041',
         'Christchurch',
         'Canterbury',
         'New Zealand'),
        ('79',
         'Place Road',
+        'Ilam',
         '8041',
         'Christchurch',
         'Canterbury',
@@ -359,7 +366,7 @@ VALUES (1, 1),
 -- Inserting inventory_item data
 
 INSERT INTO inventory_item (ID, PRODUCT_ID, BUSINESS_ID, QUANTITY, PRICE_PER_ITEM, TOTAL_PRICE,
-                       EXPIRES, MANUFACTURED, SELL_BY, BEST_BEFORE)
+                            EXPIRES, MANUFACTURED, SELL_BY, BEST_BEFORE)
 VALUES (1, 1, 1, 20, 4.67, 20.00, '2021-08-16', '2021-08-13',
         '2021-08-15', '2021-08-16'),
        (2, 3, 1, 10, 4.62, 20.00, '2021-08-16', '2021-08-13',
@@ -376,5 +383,7 @@ VALUES (1, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17', '2021-06
        (3, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
 
 INSERT INTO marketlisting (CREATOR_ID, SECTION, CREATED, DISPLAY_PERIOD_END, TITLE, DESCRIPTION)
-VALUES (2, 'ForSale', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Shoddy web app', 'Wanting to sell Wasteless, no longer needed or wanted.'),
-       (2, 'Wanted', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Fresh motivation', 'Will pay for motivation.');
+VALUES (2, 'ForSale', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Shoddy web app',
+        'Wanting to sell Wasteless, no longer needed or wanted.'),
+       (2, 'Wanted', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Fresh motivation',
+        'Will pay for motivation.');

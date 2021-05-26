@@ -110,6 +110,7 @@ export default {
       address: {
         streetNumber: "",
         streetName: "",
+        suburb: "",
         postcode: "",
         city: "",
         region: "",
@@ -157,6 +158,7 @@ export default {
         address: {
           streetNumber: this.address.streetNumber,
           streetName: this.address.streetName,
+          suburb: this.address.suburb,
           postcode: this.address.postcode,
           city: this.address.city,
           region: this.address.region,

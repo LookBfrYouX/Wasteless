@@ -20,12 +20,14 @@
     </div>
     <div class="text-muted">
       {{
-        [card.creator.homeAddress.city, card.creator.homeAddress.region].join(', ')
+        [card.creator.homeAddress.suburb, card.creator.homeAddress.city].join(', ')
       }}
     </div>
     <div class="mt-2 rounded border p-2">
       <h2>{{ card.title }}</h2>
-      {{ card.description }}
+      <div class="description">
+        {{ card.description }}
+      </div>
       <div class="mt-2 d-flex flex-wrap">
         <div v-for="keyword in card.keywords" v-bind:key="keyword.id">
           <tag :xButton="false" class="mr-2 mb-2">
@@ -60,5 +62,7 @@ export default {
 </script>
 
 <style scoped>
-
+.description {
+  white-space: pre-wrap;
+}
 </style>

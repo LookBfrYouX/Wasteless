@@ -45,7 +45,6 @@
               type="number"
               min="0.01"
               step="0.01"
-              max="9999.99"
               v-bind:placeholder="currencyText"
           />
         </div>

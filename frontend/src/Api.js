@@ -102,6 +102,7 @@ export const Api = {
   signUp: (props) => {
     return instance.post("/users", props).catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
+        400: err => `Sign up failed: ${err.response.data.message}`,
         409: "Your email address has already been registered"
       });
     });
