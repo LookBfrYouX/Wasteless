@@ -2,7 +2,7 @@
   <!-- this component produces the marketplace card component from the given props -->
   <div class="container card item-card pt-1 pl-3 pr-3 pb-3 my-2">
     <div class="d-sm-flex align-items-center">
-      <router-link class="text-decoration-none" v-bind:to="{ name: 'profile', params: {userId: card.creator.id }}">
+      <router-link class="text-decoration-none green-text-hover" v-bind:to="{ name: 'profile', params: {userId: card.creator.id }}">
         <img alt="User is acting as self"
              class="nav-picture rounded-circle border"
              src="./../../../assets/images/default-user-thumbnail.svg"

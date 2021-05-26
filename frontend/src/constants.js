@@ -58,7 +58,7 @@ export const constants = {
   SORTED_PAGINATED_ITEM_LIST: {
     RESULTS_PER_PAGE: 10
   },
-  
+
   BUSINESSES: {
     TYPES: [
       "Accommodation and Food Services",
