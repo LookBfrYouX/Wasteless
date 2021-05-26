@@ -69,7 +69,7 @@ CREATE TABLE product
     DESCRIPTION      VARCHAR(500),
     CURRENCY         VARCHAR(4),
     MANUFACTURER     VARCHAR(100),
-    RRP              DOUBLE(6, 2),
+    RRP              DOUBLE,
     CREATED          DATETIME,
     PRIMARY_IMAGE_ID BIGINT,
     CONSTRAINT product_image_fk FOREIGN KEY (PRIMARY_IMAGE_ID) REFERENCES image (ID)
@@ -117,10 +117,10 @@ CREATE TABLE inventory_item
     PRODUCT_ID     BIGINT       NOT NULL,
     BUSINESS_ID    BIGINT       NOT NULL,
     -- WARNING: BUSINESS ID IS DUPLICATED DATA - CAN BE FOUND FROM PRODUCT
-    QUANTITY       BIGINT       NOT NULL,
-    PRICE_PER_ITEM DOUBLE(6, 2) NOT NULL,
-    TOTAL_PRICE    DOUBLE(6, 2) NOT NULL,
-    EXPIRES        DATE         NOT NULL,
+    QUANTITY       BIGINT           NOT NULL,
+    PRICE_PER_ITEM DOUBLE           NOT NULL,
+    TOTAL_PRICE    DOUBLE           NOT NULL,
+    EXPIRES        DATE             NOT NULL,
     MANUFACTURED   DATE,
     SELL_BY        DATE,
     BEST_BEFORE    DATE,
@@ -135,9 +135,9 @@ CREATE TABLE inventory_item
 CREATE TABLE listing
 (
     ID                BIGINT AUTO_INCREMENT PRIMARY KEY,
-    INVENTORY_ITEM_ID BIGINT       NOT NULL,
-    QUANTITY          BIGINT       NOT NULL,
-    PRICE             DOUBLE(6, 2) NOT NULL,
+    INVENTORY_ITEM_ID BIGINT        NOT NULL,
+    QUANTITY          BIGINT        NOT NULL,
+    PRICE             DOUBLE        NOT NULL,
     MORE_INFO         VARCHAR(50),
     CREATED           DATETIME,
     CLOSES            DATETIME,

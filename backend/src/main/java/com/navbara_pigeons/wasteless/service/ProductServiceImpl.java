@@ -111,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
     if (!ProductServiceValidation.priceIsValid(basicProduct.getRecommendedRetailPrice())) {
       // Needs to be here as basicProduct stores Double; product stores double
       throw new ProductRegistrationException(
-          "Invalid price; must be a number between 0 and 10,000 exclusive");
+          "Invalid price; must be a number greater than 0");
     }
 
     Product product = new Product();

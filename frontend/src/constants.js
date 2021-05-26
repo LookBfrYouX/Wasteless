@@ -81,10 +81,6 @@ export const constants = {
     TIMEOUT_LONG: 10000
   },
 
-  PRODUCTS: {
-    MAX_PRICE: 10000
-  },
-
   MARKETPLACE: {
     /**
      * Key is name of section that should be used internally, value is name that should be used externally
