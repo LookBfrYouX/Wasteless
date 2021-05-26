@@ -56,6 +56,18 @@ export const helper = {
   },
 
   /**
+   * Given year month and day, returns `yyyy-mm-dd` string
+   * @param {Number} year 
+   * @param {Number} month 
+   * @param {Number} day 
+   */
+  toYyyyMmDdString(year, month, day) {
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+    return `${year}-${month}-${day}`;
+  },
+
+  /**
    * Navigates to profile page. Call using `goToProfile.bind(this)()` or `goToProfile(actingAsBusiness, router, route)`
    * If acting as business, goes to business profile. Otherwise, user profile.
    * If already on own profile page, reloads the page

@@ -7,7 +7,8 @@ export const constants = {
   },
 
   SIGN_UP: {
-    MIN_AGE: 13
+    MIN_AGE: 13,
+    MAX_AGE: 110,
   },
 
   ADDRESS_FORM: {
