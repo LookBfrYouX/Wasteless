@@ -1,9 +1,6 @@
 <template>
   <div class="container">
     <div class="row">
-      <h2 class="col-12">Community Marketplace</h2>
-    </div>
-    <div class="row">
       <div class="col-12">
         <router-link
           class="btn btn-primary"
@@ -32,17 +29,17 @@
               <h4 class="text-center mb-0">{{ sectionName }}</h4>
             </button>
           </div>
-        <marketplace-tab v-bind:section="section"/>
+        <marketplace-card-container v-bind:section="section"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import MarketplaceTab from "@/components/MarketplaceTab.vue";
+import MarketplaceCardContainer from "@/components/MarketplaceCardContainer.vue";
 
 export default {
-  components: {MarketplaceTab},
+  components: {MarketplaceCardContainer},
   data() {
     return {
       section:"ForSale"
