@@ -43,8 +43,16 @@
 <style scoped>
 .fake-button {
   visibility: hidden;
+  display: none;
   height: 0;
 }
+
+@media(min-width: 768px) {
+  .fake-button {
+    display: inline;
+  }
+}
+
 </style>
 <script>
 import MarketplaceCardContainer from "@/components/MarketplaceCardContainer.vue";
