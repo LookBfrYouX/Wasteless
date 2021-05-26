@@ -28,7 +28,7 @@ export default {
   computed: {
     /**
      * Checks if acting as a user
-     * @returns true if logged in and acting as user
+     * @returns true if signed in and acting as user
      */
     isActingAsUser() {
       return !this.$stateStore.getters.isActingAsBusiness();

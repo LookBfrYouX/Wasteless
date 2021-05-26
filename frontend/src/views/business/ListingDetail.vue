@@ -123,7 +123,7 @@ export default {
      * @return true on success
      */
     loadCurrencies: async function () {
-      if (!this.$stateStore.getters.isLoggedIn()) {
+      if (!this.$stateStore.getters.isSignedIn()) {
         return false;
       }
 
@@ -145,7 +145,7 @@ export default {
      * Does not run pipeline if user should not be able to edit business
      */
     apiPipeline: async function () {
-      if (!this.$stateStore.getters.isLoggedIn()) {
+      if (!this.$stateStore.getters.isSignedIn()) {
         return false;
       }
 

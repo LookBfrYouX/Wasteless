@@ -165,7 +165,7 @@ export default {
       const product = products.find(({id}) => id === this.productId);
       if (product === undefined) {
         throw new ApiRequestError(
-            `Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
+            `Couldn't find product with the ID ${this.productId}. Check if you are signed into the correct business`);
       }
       this.name = product.name;
       this.description = product.description;

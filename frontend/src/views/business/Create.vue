@@ -147,7 +147,7 @@ export default {
     register: async function () {
       const user = this.authUser;
       if (user == null) {
-        this.errorMessage = "You must be logged in to create a business";
+        this.errorMessage = "You must be signed in to create a business";
         return;
       }
 

@@ -177,7 +177,7 @@ export default {
     callApi: function (data) {
       if (this.businessId == null) {
         throw new ApiRequestError(
-            "Must be logged in as a business before making the request");
+            "Must be signed in as a business before making the request");
       }
       return Api.createProduct(this.businessId, data);
     },

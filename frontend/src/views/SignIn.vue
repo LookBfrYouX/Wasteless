@@ -99,7 +99,7 @@ export default {
         // Attempt to login and get the userId
         response = await Api.login({email: this.email, password: this.password});
         const userId = response.data.userId;
-        // Get and set the current logged in user information
+        // Get and set the current signed in user information
 
         response = await Api.profile(userId);
         const authUser = response.data;

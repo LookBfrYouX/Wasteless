@@ -72,7 +72,7 @@
         </li>
 
           <!-- Center group: search input and button -->
-          <li v-if="isLoggedIn" class="navbar-item d-flex search-container w-100">
+          <li v-if="isSignedIn" class="navbar-item d-flex search-container w-100">
             <form class="input-group navbar-center form-inline" v-on:submit.prevent="search">
               <div class="input-group w-100">
                 <div class="input-group-prepend h-100">
@@ -92,7 +92,7 @@
           </li>
 
           <!-- Right group: User and acting as -->
-          <li v-if="isLoggedIn" class="nav-item dropdown">
+          <li v-if="isSignedIn" class="nav-item dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
                aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
                data-toggle="dropdown"
@@ -136,12 +136,12 @@
                   </span>
               </a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="javascript:" v-on:click="signOut">Log out</a>
+              <a class="dropdown-item" href="javascript:" v-on:click="signOut">Sign out</a>
             </div>
           </li>
 
           <!-- Right group (if not signed in) -->
-          <div v-if="!isLoggedIn" class="d-lg-flex ml-lg-auto">
+          <div v-if="!isSignedIn" class="d-lg-flex ml-lg-auto">
             <li v-if="this.$route.name != 'SignIn'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
@@ -209,7 +209,7 @@ export default {
     navbarLinks() {
       const viewName = this.$route.name;
 
-      if (!this.isLoggedIn) return [];
+      if (!this.isSignedIn) return [];
       if (!this.isActingAsBusiness) return [
         {
           name: "UserProfile",
@@ -248,8 +248,8 @@ export default {
     /**
      * Checks if a user is signed in or not
      */
-    isLoggedIn() {
-      return this.$stateStore.getters.isLoggedIn();
+    isSignedIn() {
+      return this.$stateStore.getters.isSignedIn();
     },
 
     /**
@@ -261,7 +261,7 @@ export default {
     },
 
     /**
-     * True if admin, false if not OR IF NOT LOGGED IN
+     * True if admin, false if not OR IF NOT SIGNED IN
      */
     isAdmin() {
       return this.$stateStore.getters.isAdmin();
@@ -303,7 +303,7 @@ export default {
      * Redirects to 'home' if signed in, '/' otherwise
      */
     homeButtonClicked() {
-      if (this.$stateStore.getters.isLoggedIn()) {
+      if (this.$stateStore.getters.isSignedIn()) {
         this.pushOrGo('Home');
       } else {
         this.pushOrGo('Landing');

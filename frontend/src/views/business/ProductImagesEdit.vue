@@ -172,7 +172,7 @@ export default {
       // find the product the correct id
       if (product === undefined) {
         throw new ApiRequestError(
-            `Couldn't find product with the ID ${this.productId}. Check if you are logged into the correct business`);
+            `Couldn't find product with the ID ${this.productId}. Check if you are signed into the correct business`);
       }
       this.name = product.name;
       this.images = product.images;

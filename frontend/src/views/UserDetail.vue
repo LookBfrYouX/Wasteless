@@ -66,7 +66,7 @@
               Create Marketplace Card
             </router-link>
             <button
-                v-if="isLoggedIn && authUser.id === userInfo.id"
+                v-if="isSignedIn && authUser.id === userInfo.id"
                 class="btn btn-white-bg-primary m-1 d-flex"
                 type="button"
                 v-on:click="registerBusiness()"
@@ -361,8 +361,8 @@ export default {
     authUser() {
       return this.$stateStore.getters.getAuthUser()
     },
-    isLoggedIn() {
-      return this.$stateStore.getters.isLoggedIn()
+    isSignedIn() {
+      return this.$stateStore.getters.isSignedIn()
     },
     isAdmin() {
       return this.$stateStore.getters.isAdmin()
