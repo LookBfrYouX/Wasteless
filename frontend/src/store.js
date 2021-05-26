@@ -65,9 +65,9 @@ export const store = {
     },
 
     /**
-     * Checks if a user is logged in or not
+     * Checks if a user is signed or not
      */
-    isLoggedIn() {
+    isSignedIn() {
       return state.authUser !== null && state.authUser !== undefined;
     },
 
@@ -90,7 +90,7 @@ export const store = {
      * @returns {boolean} true if they should be able to edit the business
      */
     canEditBusiness(businessId) {
-      if (!store.getters.isLoggedIn()) {
+      if (!store.getters.isSignedIn()) {
         return false;
       }
       const business = store.getters.getActingAs();

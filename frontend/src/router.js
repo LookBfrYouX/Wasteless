@@ -41,7 +41,7 @@ export const router = new VueRouter({
       }
     },
     {
-      name: "Sign In",
+      name: "SignIn",
       path: "/signin",
       component: () => import("./views/SignIn.vue"),
       meta: {
@@ -59,15 +59,14 @@ export const router = new VueRouter({
       }
     },
     {
-      name: "Profile",
+      name: "UserDetail",
       path: "/profile/:userId(\\d+)?",
       component: () => import("./views/UserDetail.vue"),
       props: route => {
         let userId = route.params.userId ? parseInt(route.params.userId, 10)
             : NaN;
         // Using \d so parseInt should never fail
-        if (isNaN(userId)
-            && store.getters.isLoggedIn()) {
+        if (isNaN(userId) && store.getters.isSignedIn()) {
           userId = store.getters.getAuthUser().id;
         }
         return {userId};
@@ -334,7 +333,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.anyone) next();
 
   if (to.meta.noAuthOnly) {
-    if (store.getters.isLoggedIn()) next();
+    if (store.getters.isSignedIn()) next();
     else to401(); // TODO change this since 401 is authorization required - we want no authorization required
   }
 
