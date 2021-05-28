@@ -63,13 +63,12 @@ export const router = new VueRouter({
       path: "/profile/:userId(\\d+)?",
       component: () => import("./views/UserDetail.vue"),
       props: route => {
-        let userId = route.params.userId ? parseInt(route.params.userId, 10)
-            : NaN;
+        let userId = route.params.userId ? parseInt(route.params.userId, 10): NaN;
         // Using \d so parseInt should never fail
         if (isNaN(userId) && store.getters.isSignedIn()) {
           userId = store.getters.getAuthUser().id;
         }
-        return {userId};
+        return { userId };
       },
       meta: {
         title: "Profile | Wasteless"
@@ -84,6 +83,9 @@ export const router = new VueRouter({
       },
       props: route => ({search: route.params.query}),
     },
+
+
+
     {
       name: "BusinessCreate",
       path: "/business/create",
@@ -94,10 +96,27 @@ export const router = new VueRouter({
       component: () => import("./views/business/Create.vue"),
     },
     {
+      name: "BusinessDetail",
+      path: "/business/:businessId(\\d+)",
+      meta: {
+        title: "Business Profile | Wasteless",
+      },
+      component: () => import("./views/business/Detail.vue"),
+      props: route => {
+        // If business ID is optional, user can switch back to acting as user in navbar, causing page to fail
+        let businessId = parseInt(route.params.businessId, 10);
+        const showBackButton = route.params.showBackButton; // Optional
+        return { businessId, showBackButton };
+      },
+    },
+
+
+
+    {
       name: "BusinessProductCreate",
       path: "/business/:businessId(\\d+)/product/create",
       component: () => import("./views/business/ProductCreate.vue"),
-      props: route => ({businessId: parseInt(route.params.businessId, 10)}),
+      props: route => ({ businessId: parseInt(route.params.businessId, 10) }),
       meta: {
         title: "Create Product | Wasteless",
         requiresBusinessAdmin: true
@@ -107,7 +126,7 @@ export const router = new VueRouter({
       name: "BusinessProducts",
       path: "/business/:businessId(\\d+)/product",
       component: () => import("./views/business/Products.vue"),
-      props: route => ({businessId: parseInt(route.params.businessId, 10)}),
+      props: route => ({ businessId: parseInt(route.params.businessId, 10) }),
       meta: {
         title: "Product Catalogue | Wasteless",
         requiresBusinessAdmin: true
@@ -139,20 +158,9 @@ export const router = new VueRouter({
         requiresBusinessAdmin: true
       }
     },
-    {
-      name: "BusinessDetail",
-      path: "/business/:businessId(\\d+)",
-      meta: {
-        title: "Business Profile | Wasteless",
-      },
-      component: () => import("./views/business/Detail.vue"),
-      props: route => {
-        // If business ID is optional, user can switch back to acting as user in navbar, causing page to fail
-        let businessId = parseInt(route.params.businessId, 10);
-        const showBackButton = route.params.showBackButton; // Optional
-        return { businessId, showBackButton };
-      },
-    },
+
+
+
     {
       name: "BusinessInventoryCreate",
       path: "/business/:businessId(\\d+)/inventory/create",
@@ -161,7 +169,30 @@ export const router = new VueRouter({
         requiresBusinessAdmin: true
       },
       component: () => import("./views/business/InventoryCreate.vue"),
-      props: route => ({businessId: parseInt(route.params.businessId, 10)})
+      props: route => ({businessId: parseInt(route.params.businessId, 10) })
+    },
+    {
+      name: "BusinessInventory",
+      path: "/business/:businessId(\\d+)/inventory",
+      meta: {
+        title: "Business Inventory | Wasteless",
+        requiresBusinessAdmin: true
+      },
+      component: () => import("./views/business/Inventory"),
+      props: route => ({ businessId: parseInt(route.params.businessId, 10) })
+    },
+
+
+
+    {
+      name: "BusinessListingCreate",
+      path: "/business/:businessId(\\d+)/listing/create",
+      meta: {
+        title: "Create New Listing | Wasteless",
+        requiresBusinessAdmin: true
+      },
+      component: () => import("./views/business/ListingCreate"),
+      props: route => ({ businessId: parseInt(route.params.businessId, 10) })
     },
     {
       name: "BusinessListings",
@@ -170,7 +201,7 @@ export const router = new VueRouter({
         title: "Business Listings | Wasteless",
       },
       component: () => import("./views/business/Listings.vue"),
-      props: route => ({ businessId: parseInt(route.params.businessId, 10)})
+      props: route => ({ businessId: parseInt(route.params.businessId, 10) })
     },
     {
       name: "BusinessListingDetail",
@@ -184,26 +215,6 @@ export const router = new VueRouter({
         title: "Business Listing | Wasteless"
       }
     },
-    {
-      name: "BusinessInventory",
-      path: "/business/:businessId(\\d+)/inventory",
-      meta: {
-        title: "Business Inventory | Wasteless",
-        requiresBusinessAdmin: true
-      },
-      component: () => import("./views/business/Inventory"),
-      props: route => ({ businessId: parseInt(route.params.businessId, 10) })
-    },
-    {
-      name: "BusinessListingCreate",
-      path: "/business/:businessId(\\d+)/listing/create",
-      meta: {
-        title: "Create New Listing | Wasteless",
-        requiresBusinessAdmin: true
-      },
-      component: () => import("./views/business/ListingCreate"),
-      props: route => ({ businessId: parseInt(route.params.businessId, 10) })
-    },
 
 
 
@@ -216,18 +227,6 @@ export const router = new VueRouter({
         requiresNotBusinessAdmin: true,
       },
       component: () => import("./views/marketplace/Marketplace")
-    },
-    {
-      name: "MarketplaceCardCreateAdmin",
-      // GAA can create card acting as any user
-      path: "/marketplace/admin/:userId(\\d+)/create",
-      meta: {
-        title: "Create Card | Wasteless",
-        /* Only accessible if GAA */
-        adminOnly: true,
-      },
-      component: () => import("./views/marketplace/CardCreate"),
-      props: route => ({ userId: parseInt(route.params.userId, 10) })
     },
     {
       name: "MarketplaceCardCreate",
@@ -244,12 +243,26 @@ export const router = new VueRouter({
       }
     },
     {
+      name: "MarketplaceCardCreateAdmin",
+      // GAA can create card acting as any user
+      path: "/marketplace/admin/:userId(\\d+)/create",
+      meta: {
+        title: "Create Card | Wasteless",
+        /* Only accessible if GAA */
+        adminOnly: true,
+      },
+      component: () => import("./views/marketplace/CardCreate"),
+      props: route => ({ userId: parseInt(route.params.userId, 10) })
+    },
+
+
+
+    {
       name: "Error",
       path: "/error",
       meta: {
         title: "Error 😢 | Wasteless",
         anyone: true
-        
       },
       component: () => import("./views/errors/Error.vue")
     },
@@ -279,7 +292,7 @@ export const router = new VueRouter({
         anyone: true
       },
       component: () => import("./views/errors/Error404.vue"),
-      props: route => ({path: route.fullPath})
+      props: route => ({ path: route.fullPath })
     }
   ],
 });
@@ -324,8 +337,8 @@ router.afterEach((to) => {
 router.beforeEach(async (to, from, next) => {
   // Only load page if user passes check
 
-  const business = await store.getters.getActingAs()
-  const businessId = await parseInt(to.params.businessId, 10);
+  const business = await store.getters.getActingAs();
+  const businessId = parseInt(to.params.businessId, 10);
 
   const to401 = () => next({ name: "Error401" });
   const to403 = () => next({ name: "Error403" });
@@ -334,7 +347,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.meta.noAuthOnly) {
     if (store.getters.isSignedIn()) next();
-    else to401(); // TODO change this since 401 is authorization required - we want no authorization required
+    else next({ name: "Home" });
   }
 
   // Admins can do everything
