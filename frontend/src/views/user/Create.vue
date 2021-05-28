@@ -5,7 +5,7 @@
           autocomplete="on"
           class="slightly-transparent-inputs"
           method="POST"
-          v-on:submit.prevent="UserCreate"
+          v-on:submit.prevent="register"
       >
         <div class="row">
           <div class="col">
@@ -229,7 +229,7 @@
           </div>
         </div>
 
-        <div v-if="errorMessage.length > 0" class="row mt-2">
+        <div v-if="errorMessage" class="row mt-2">
           <div class="col">
             <p class="alert alert-warning">{{ errorMessage }}</p>
           </div>
@@ -247,8 +247,8 @@
 
 <script>
 import { Api } from "@/Api";
-const AddressForm = require("../components/AddressForm").default;
-const countryData = require("../assets/countryData.json");
+const AddressForm = require("../../components/AddressForm").default;
+const countryData = require("../../assets/countryData.json");
 
 export default {
   name: "UserCreate",
@@ -278,7 +278,7 @@ export default {
       phoneErrorMessage: null, // If country code entered but not phone
       countryCodeErrorMessage: null, // If phone entered but not country code
 
-      errorMessage: "",
+      errorMessage: null,
 
       firstName: "",
       middleName: "",
@@ -348,7 +348,7 @@ export default {
      * Wrapper which simply calls the sign up method of the api
      */
     callApi: function (data) {
-      return Api.UserCreate(data);
+      return Api.signUp(data);
     },
 
     /**
@@ -461,7 +461,7 @@ export default {
         return;
       }
 
-      this.errorMessage = "";
+      this.errorMessage = null;
       this.emailErrorMessage = null;
       this.confirmPasswordErrorMessage = null;
       this.dateOfBirthErrorMessage = null;

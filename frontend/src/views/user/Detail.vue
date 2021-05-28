@@ -5,7 +5,7 @@
       <div class="col-md-4 m-2 card">
 
         <img alt="Users profile image" class="my-3 rounded-circle"
-             src="assets/images/default-user-thumbnail.svg">
+             src="@/../assets/images/default-user-thumbnail.svg">
       </div>
       <div class="col-md-7 m-2 card">
         <div class="m-3">
@@ -96,6 +96,7 @@
             >
               <router-link
                 v-bind:to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
+                class="text-reset"
               >
                 <h5 class="business-name card-title card-link" >{{ business.name }}</h5>
               </router-link>
@@ -183,7 +184,7 @@ th {
 }
 </style>
 <script>
-import ErrorModal from '../components/ErrorModal.vue';
+import ErrorModal from '../../components/ErrorModal.vue';
 import {ApiRequestError} from "@/ApiRequestError";
 
 import { Api } from "@/Api";

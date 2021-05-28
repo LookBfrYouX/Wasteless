@@ -45,7 +45,7 @@ export const router = new VueRouter({
     {
       name: "SignIn",
       path: "/signin",
-      component: () => import("./views/SignIn.vue"),
+      component: () => import("./views/user/SignIn.vue"),
       meta: {
         title: "Sign In | Wasteless",
         noAuthOnly: true
@@ -54,7 +54,7 @@ export const router = new VueRouter({
     {
       name: "UserCreate",
       path: "/signup",
-      component: () => import("./views/UserCreate.vue"),
+      component: () => import("./views/user/Create.vue"),
       meta: {
         title: "Sign Up | Wasteless",
         noAuthOnly: true
@@ -63,7 +63,7 @@ export const router = new VueRouter({
     {
       name: "UserDetail",
       path: "/profile/:userId(\\d+)?",
-      component: () => import("./views/UserDetail.vue"),
+      component: () => import("./views/user/Detail.vue"),
       props: route => {
         let userId = route.params.userId ? parseInt(route.params.userId, 10): NaN;
         // Using \d so parseInt should never fail
@@ -79,7 +79,7 @@ export const router = new VueRouter({
     {
       name: "Search",
       path: "/search/:query(.*)",
-      component: () => import('./views/Search.vue'),
+      component: () => import('./views/user/Search.vue'),
       meta: {
         title: route => `'${route.params.query}' | Search`,
       },
@@ -347,16 +347,13 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.meta.anyone) next();
 
-  if (to.meta.noAuthOnly) {
-    if (store.getters.isSignedIn()) next();
-    else next({ name: "Home" });
+  else if (to.meta.noAuthOnly) {
+    if (store.getters.isSignedIn()) next({ name: "Home" });
+    else next();
   }
 
-  else if (
-    !store.getters.isSignedIn() && (
-    to.meta.requiresBusinessAdmin || to.meta.requiresNotBusinessAdmin || to.meta.adminOnly
-  )) to401();
-  // Throw 401 instead of 403 if not signed in and requires auth
+  // Signed out users: only `anyone` or `noAuthOnly` can allow them through
+  else if (!store.getters.isSignedIn()) to401();
 
   // Admins can do everything
   else if (store.getters.isAdmin()) next();
