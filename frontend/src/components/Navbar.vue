@@ -167,7 +167,7 @@
         v-bind:goBack="false"
         v-bind:hideCallback="() => signOutErrorMessage = null"
         v-bind:refresh="false"
-        v-bind:retry="this.signOut"
+        v-bind:retry="signOut"
         v-bind:show="signOutErrorMessage !== null"
     >
       <p>{{ signOutErrorMessage }}</p>
@@ -328,7 +328,6 @@ export default {
       try {
         await Api.logOut();
       } catch (err) {
-        // if (await Api.handle401.call(this, err)) return;
         this.signOutErrorMessage = err.userFacingErrorMessage;
         return;
       }

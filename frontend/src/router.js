@@ -31,7 +31,7 @@ export const router = new VueRouter({
       component: Landing,
       meta: {
         title: "Welcome to Wasteless",
-        noAuthOnly: true
+        anyone: true
       }
     },
     {
