@@ -16,6 +16,8 @@ Vue.use(VueRouter);
  *   adminOnly: only administrators can access this page
  *   requiresBusinessAdmin: route has a `businessId` param and user is acting as that business 
  *   requiresNotBusinessAdmin: user must not be acting as a business
+ * 
+ * No auth properties means must be logged in
  */
 
 export const router = new VueRouter({
@@ -349,6 +351,12 @@ router.beforeEach(async (to, from, next) => {
     if (store.getters.isSignedIn()) next();
     else next({ name: "Home" });
   }
+
+  else if (
+    !store.getters.isSignedIn() && (
+    to.meta.requiresBusinessAdmin || to.meta.requiresNotBusinessAdmin || to.meta.adminOnly
+  )) to401();
+  // Throw 401 instead of 403 if not signed in and requires auth
 
   // Admins can do everything
   else if (store.getters.isAdmin()) next();
