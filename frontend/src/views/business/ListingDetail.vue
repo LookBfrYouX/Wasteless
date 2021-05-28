@@ -27,7 +27,7 @@
           <div class="primary-image-wrapper">
             <img v-if="productImages.length !== 0" v-bind:src="productImages[0].filename"
                  alt="Primary images">
-            <img v-else src="assets/images/default-product-thumbnail.svg"
+            <img v-else src="@/../assets/images/default-product-thumbnail.svg"
                  alt="Default product image">
           </div>
         </div>

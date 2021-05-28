@@ -100,12 +100,12 @@
               <img v-if="isActingAsBusiness"
                    alt="User is acting as business"
                    class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-business-thumbnail.svg"
+                   src="@/../assets/images/default-business-thumbnail.svg"
               >
               <img v-else
                    alt="User is acting as self"
                    class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-user-thumbnail.svg"
+                   src="@/../assets/images/default-user-thumbnail.svg"
               >
               <div class="d-flex flex-column mx-1">
               <span class="m-0 p-0 text-dark">
@@ -212,7 +212,7 @@ export default {
       if (!this.isSignedIn) return [];
       if (!this.isActingAsBusiness) return [
         {
-          name: "UserProfile",
+          name: "Profile",
           click: this.profileClicked,
           active: viewName == "UserProfile",
         },

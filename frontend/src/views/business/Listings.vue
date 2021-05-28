@@ -14,6 +14,7 @@
           class="text-decoration-none text-reset"
         >
           <listing-item-card
+              class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
               v-bind:item="slotProps.item"
               :businessId="businessId"
               :currency="currency"

@@ -13,7 +13,7 @@
             v-else
             alt="Product Image"
             class="image-fluid w-100 rounded-circle mb-2"
-            src="./../../../assets/images/default-product-thumbnail.svg"
+            src="@/../assets/images/default-product-thumbnail.svg"
         >
       </div>
       <div class="col-sm-8">

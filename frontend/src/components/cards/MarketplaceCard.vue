@@ -8,7 +8,7 @@
       >
         <img alt="User is acting as self"
              class="nav-picture rounded-circle border"
-             src="./../../../assets/images/default-user-thumbnail.svg"
+             src="@/../assets/images/default-user-thumbnail.svg"
         >
         {{ card.creator.firstName }} {{ card.creator.lastName }}
       </router-link>
