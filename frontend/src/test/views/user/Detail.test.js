@@ -2,6 +2,9 @@ import {shallowMount} from "@vue/test-utils";
 import Profile from "../../../views/user/Detail";
 import {globalStateMocks } from "@/test/testHelper";
 
+jest.mock("@/Api");
+import { Api } from "@/Api";
+
 jest.useFakeTimers();
 
 let wrapper;
@@ -141,7 +144,7 @@ describe("months since registration", () => {
   test("0 months", () => {
     expect(wrapper.vm.generateTimeSinceRegistrationText(
         new Date(2020, 1, 1), new Date(2020, 1, 28)
-    )).toEqual("1 month");
+    )).toEqual("0 months");
   });
 
   test("1 month", () => {

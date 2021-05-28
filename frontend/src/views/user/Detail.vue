@@ -65,15 +65,15 @@
             >
               Create Marketplace Card
             </router-link>
-            <button
+            <router-link
                 v-if="isSignedIn && authUser.id === userInfo.id"
                 class="btn btn-white-bg-primary m-1 d-flex"
                 type="button"
-                v-on:click="registerBusiness()"
+                v-bind:to="{ name: 'BusinessCreate' }"
             >
               <span class="material-icons mr-1">business</span>
               Register Business
-            </button>
+            </router-link>
           </div>
           <div v-if="statusMessage.length > 0" class="row mt-2">
             <div class="col">
@@ -210,9 +210,11 @@ export default {
     }
   },
 
-  beforeMount: function () {
-    // gets user information from api
-    this.apiPipeline();
+  /**
+   * Gets user information from the API
+   */
+  beforeMount: async function() {
+    await this.apiPipeline();
   },
 
   methods: {
@@ -261,17 +263,10 @@ export default {
     },
 
     /**
-     * TODO: Add documentation
-     */
-    registerBusiness: function () {
-      this.$router.push({ name: "BusinessCreate" });
-    },
-
-    /**
      * Calls the API and updates the component's data with the result
      */
-    apiPipeline: function () {
-      this.parseApiResponse(this.callApi(this.userId));
+    apiPipeline: async function () {
+      await this.parseApiResponse(this.callApi(this.userId));
     },
 
     /**
@@ -335,10 +330,6 @@ export default {
 
       const yearsText = `${years} year${years == 1 ? "" : "s"}`;
 
-      if (timeDiffInMonth == 0) {
-        months = 1;
-      }
-      // If it was created this month, don't want to show '0 months' but '1' month instead
       const monthsText = `${months} month${months == 1 ? "" : "s"}`;
 
       if (years == 0) {
@@ -398,7 +389,7 @@ export default {
     userInfo() {
       if (this.userInfo
           !== null) {
-        document.title = `${this.userInfo.firstName} ${this.userInfo.firstName} | Profile`;
+        document.title = `${this.userInfo.firstName} ${this.userInfo.lastName} | Profile`;
       }
       // If switch user profile and request fails will be stuck with old title
     }
