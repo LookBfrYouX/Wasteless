@@ -47,7 +47,7 @@
               <router-link
                   class="btn btn-white-bg-primary hover-cursor-pointer"
                   type="button"
-                  v-bind:to="{ name: 'SignUp' }"
+                  v-bind:to="{ name: 'UserCreate' }"
               >
                 Sign Up
               </router-link>

@@ -96,7 +96,7 @@
             >
               <router-link
                 v-bind:to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
-                class="text-reset"
+                class="text-reset text-decoration-none"
               >
                 <h5 class="business-name card-title card-link" >{{ business.name }}</h5>
               </router-link>
