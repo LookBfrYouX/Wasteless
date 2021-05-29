@@ -266,7 +266,7 @@ export const router = new VueRouter({
         title: "Error 😢 | Wasteless",
         anyone: true
       },
-      component: () => import("./views/errors/Error.vue")
+      component: () => import("./views/error/Error.vue")
     },
     {
       name: "Error401",
@@ -275,7 +275,7 @@ export const router = new VueRouter({
         title: "401 Not Authorized | Wasteless",
         anyone: true
       },
-      component: () => import("./views/errors/Error401.vue")
+      component: () => import("./views/error/Error401.vue")
     },
     {
       name: "Error403",
@@ -284,7 +284,7 @@ export const router = new VueRouter({
         title: "403 Forbidden | Wasteless",
         anyone: true
       },
-      component: () => import("./views/errors/Error403.vue")
+      component: () => import("./views/error/Error403.vue")
     },
     {
       name: "Error404",
@@ -293,7 +293,7 @@ export const router = new VueRouter({
         title: "Not Found 😢 | Wasteless",
         anyone: true
       },
-      component: () => import("./views/errors/Error404.vue"),
+      component: () => import("./views/error/Error404.vue"),
       props: route => ({ path: route.fullPath })
     }
   ],
