@@ -1,5 +1,5 @@
 import {shallowMount} from '@vue/test-utils';
-import {GLOBAL_STATE, globalStateMocks } from "../testHelper";
+import {GLOBAL_STATE, globalStateMocks } from "#/testHelper";
 import Navbar from "@/components/Navbar";
 import {ApiRequestError} from "@/ApiRequestError";
 

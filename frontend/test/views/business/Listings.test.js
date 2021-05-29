@@ -3,7 +3,7 @@ import { mount } from "@vue/test-utils";
 
 jest.mock("@/Api");
 import { Api } from "@/Api";
-import { globalStateMocks } from "../../testHelper";
+import { globalStateMocks } from "#/testHelper";
 import SortedPaginatedItemList from "@/components/SortedPaginatedItemList";
 import {ApiRequestError} from "@/ApiRequestError";
 

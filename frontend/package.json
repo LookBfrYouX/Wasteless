@@ -73,7 +73,8 @@
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
     },
     "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
+      "^@/(.*)$": "<rootDir>/src/$1",
+      "^#/(.*)$": "<rootDir>/test/$1"
     }
   },
   "jestSonar": {

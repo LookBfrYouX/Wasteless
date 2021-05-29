@@ -11,7 +11,9 @@ When we look for the Vue files, we should able to quickly find what we are looki
 - Sortability
 
 This, however, does not fit well with names we want to show the user in the page title, buttons etc..: the names used internally and externally can be different.
+
 ### Hierarchy
+
 #### Views and Components
 
 - `views`: for pages a user visits

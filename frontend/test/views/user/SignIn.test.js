@@ -1,5 +1,5 @@
 import {mount} from "@vue/test-utils";
-import {globalStateMocks } from "../../testHelper";
+import {globalStateMocks } from "#/testHelper";
 import SignIn from "@/views/user/SignIn";
 jest.mock("@/Api");
 const { Api } = require("@/Api.js");

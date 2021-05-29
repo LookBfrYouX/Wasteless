@@ -1,5 +1,5 @@
 import { shallowMount } from "@vue/test-utils";
-import { globalStateMocks } from "../testHelper";
+import { globalStateMocks } from "#/testHelper";
 import SortedPaginatedItemList from "@/components/SortedPaginatedItemList.vue";
 
 let wrapper;
