@@ -191,7 +191,7 @@ export default {
      */
     onFilePicked(event) {
       const files = event.target.files;
-      if (files.length == 0) return;
+      if (files.length === 0) return;
       Api.uploadProductImage(files[0], this.businessId, this.productId)
       .then(() => {
         return this.apiPipeline();
