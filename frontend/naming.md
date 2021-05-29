@@ -15,9 +15,9 @@ This, however, does not fit well with names we want to show the user in the page
 #### Views and Components
 
 - `views`: for pages a user visits
-- `components`: for files used within one or more views (e.g. Pagination)
+- `components`: for files used within one or more views (e.g. `Pagination`)
 
-Views may be in subfolders, called **subsections**:
+Views may be in subfolders (sections).
 
 Components should be in subfolders (kebab-case) as you see fit. However, **the component should start with the name of the subfolder** as when the component is imported, you only the see the name of the file.
 
@@ -25,10 +25,11 @@ For example, the `cards` folder contains card components that will be displayed 
 
 #### Component Sections
 
-For big chunks of the app. Currently there are two:
+For big chunks of the app. Currently there are:
 
 - `business`: business-related views
 - `marketplace`: marketplace-related views
+- `user`: user-related views
 
 Use kebab-case for component names.
 
@@ -57,7 +58,12 @@ The router name should be name the of the section + the name of the file. Plus o
 
 ### Exceptions
 
-- `SignIn`: we had no idea what to call this
+- `SignIn`: in the user folder but the route name is just `SignIn`
+- `Search`: route name is `Search`, not `UserSearch` - this may change later
 - Marketplace main page called `Marketplace.vue` even though it is in the marketplace folder
 - `MarkplaceCardCreate` has two routes: one for normal user and one for admins (as the admin must be able to do everything). The latter is called `MarketplaceCardCreateAdmin`
 - `ProductImagesEdit`: not sure if it should be plural or not
+
+### Sign in
+
+Using sign in/sign out since its more consistent. Will probably change it back since the backend endpoints are called differently.
