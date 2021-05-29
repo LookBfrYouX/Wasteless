@@ -1,6 +1,6 @@
 import {shallowMount} from "@vue/test-utils";
-import MarketplaceCard from "../../components/cards/MarketplaceCard";
-import {globalStateMocks } from "@/test/testHelper";
+import MarketplaceCard from "@/components/cards/MarketplaceCard";
+import {globalStateMocks } from "../testHelper";
 
 const cardTitle = '1982 Lada Samara';
 const cardDesc = 'Beige, suitable for a hen house. Fair condition. Some rust. As is, where is. Will swap for budgerigar.';

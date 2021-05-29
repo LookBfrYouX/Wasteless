@@ -19,8 +19,8 @@
   </div>
 </template>
 <script>
-  import MarketplaceCard from "./../components/cards/MarketplaceCard";
-  import {Api} from "./../Api";
+  import MarketplaceCard from "@/components/cards/MarketplaceCard";
+  import {Api} from "@/Api";
   import ErrorModal from "./ErrorModal";
   export default {
     components: {MarketplaceCard, ErrorModal},

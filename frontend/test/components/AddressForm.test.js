@@ -1,9 +1,9 @@
 import {shallowMount} from "@vue/test-utils";
-import AddressForm from "../../components/AddressForm";
-import {globalStateMocks } from "@/test/testHelper";
+import AddressForm from "@/components/AddressForm";
+import {globalStateMocks } from "../testHelper";
 
 jest.mock("@/Api");
-const {Api} = require("../../Api");
+const {Api} = require("@/Api");
 
 let wrapper;
 

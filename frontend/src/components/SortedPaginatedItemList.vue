@@ -103,7 +103,7 @@ To use this component:
 </template>
 <script>
 import Pagination from "./Pagination"
-import { constants } from "./../constants"
+import { constants } from "@/constants"
 import SortSidebar from './SortSidebar.vue';
 
 

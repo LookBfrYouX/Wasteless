@@ -247,8 +247,8 @@
 
 <script>
 import { Api } from "@/Api";
-const AddressForm = require("../../components/AddressForm").default;
-const countryData = require("../../assets/countryData.json");
+import AddressForm from "@/components/AddressForm";
+import countryData from "@/assets/countryData.json";
 
 export default {
   name: "UserCreate",

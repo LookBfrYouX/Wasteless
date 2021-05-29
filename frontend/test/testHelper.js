@@ -1,6 +1,6 @@
-import {helper} from "./../helper";
-import {constants} from "./../constants";
-import {store} from "./../store";
+import {helper} from "@/helper";
+import {constants} from "@/constants";
+import {store} from "@/store";
 
 export const GLOBAL_STATE = {
   authUser: {

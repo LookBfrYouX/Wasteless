@@ -146,7 +146,7 @@
 
 <script>
 import { Api } from "@/Api";
-import ErrorModal from "../../components/ErrorModal";
+import ErrorModal from "@/components/ErrorModal";
 
 export default {
   name: "InventoryItemEntry",

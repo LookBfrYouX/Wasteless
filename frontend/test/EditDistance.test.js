@@ -1,4 +1,4 @@
-import {EditDistance} from "./../EditDistance";
+import EditDistance from "@/EditDistance";
 
 describe("Edit distance", () => {
   test("Equal", () => {

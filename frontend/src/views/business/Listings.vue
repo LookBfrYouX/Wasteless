@@ -45,11 +45,11 @@
 </template>
 <script>
 import SortedPaginatedItemList from '../../components/SortedPaginatedItemList.vue';
-import ListingItemCard from "../../components/cards/ListingCard";
-import ErrorModal from "../../components/ErrorModal";
+import ListingItemCard from "@/components/cards/ListingCard";
+import ErrorModal from "@/components/ErrorModal";
 import { Api } from "@/Api";
 
-import { helper } from "../../helper";
+import { helper } from "@/helper";
 
 const sortOptions = [
   {

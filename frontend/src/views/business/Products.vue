@@ -44,11 +44,11 @@
   </div>
 </template>
 <script>
-import ErrorModal from "../../components/ErrorModal.vue";
-import SortedPaginatedItemList from "../../components/SortedPaginatedItemList";
-import ProductCatalogueListItem from "../../components/cards/ProductCatalogueCard";
+import ErrorModal from "@/components/ErrorModal.vue";
+import SortedPaginatedItemList from "@/components/SortedPaginatedItemList";
+import ProductCatalogueListItem from "@/components/cards/ProductCatalogueCard";
 
-import { helper } from "../../helper";
+import { helper } from "@/helper";
 import { Api } from "@/Api";
 
 // Sort options need to be in [{name, sortMethod}] format but since product is a simple object, it has been put in a more compact and easier to edit form and then immediately mapped to the required format

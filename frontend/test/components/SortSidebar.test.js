@@ -1,5 +1,5 @@
 import {mount} from "@vue/test-utils";
-import SortSidebar from "../../components/SortSidebar.vue";
+import SortSidebar from "@/components/SortSidebar.vue";
 
 let wrapper;
 

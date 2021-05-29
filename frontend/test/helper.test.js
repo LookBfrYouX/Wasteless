@@ -2,7 +2,7 @@ import {ApiRequestError} from "@/ApiRequestError";
 import { Api } from "@/Api";
 jest.mock("@/Api");
 
-import { helper } from "./../helper";
+import { helper } from "@/helper";
 
 describe("tryGetBusinessName", () => {
   test("200 response", async () => {

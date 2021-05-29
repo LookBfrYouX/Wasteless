@@ -164,8 +164,8 @@ The parent component must provide `address` prop. When the address is updated in
 <script>
 
 import {Api} from "@/Api";
-const {EditDistance} = require("./../EditDistance");
-const countryData = require("./../assets/countryData.json");
+import EditDistance from "@/EditDistance";
+import countryData from "@/assets/countryData.json";
 
 import Suggestions from "./Suggestions";
 

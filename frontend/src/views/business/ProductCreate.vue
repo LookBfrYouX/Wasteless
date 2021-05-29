@@ -109,7 +109,7 @@
 
 <script>
 import {ApiRequestError} from "@/ApiRequestError";
-import ErrorModal from "../../components/ErrorModal";
+import ErrorModal from "@/components/ErrorModal";
 
 import { Api } from "@/Api";
 

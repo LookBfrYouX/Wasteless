@@ -138,9 +138,9 @@
 }
 </style>
 <script>
-import Suggestions from "../../components/Suggestions.vue";
-import Tag from "../../components/Tag.vue";
-import {EditDistance} from "../../EditDistance";
+import Suggestions from "@/components/Suggestions.vue";
+import Tag from "@/components/Tag.vue";
+import EditDistance from "@/EditDistance";
 
 // While there is no backend, use this static list of tags
 import temporaryTags from "../../assets/temporaryTags.json";

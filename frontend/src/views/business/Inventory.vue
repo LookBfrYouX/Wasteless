@@ -40,10 +40,10 @@
 </template>
 <script>
 import SortedPaginatedItemList from '../../components/SortedPaginatedItemList.vue';
-import ErrorModal from "../../components/ErrorModal";
+import ErrorModal from "@/components/ErrorModal";
 import { Api } from "@/Api";
-import { helper } from "../../helper";
-import InventoryItemCard from "../../components/cards/InventoryCard";
+import { helper } from "@/helper";
+import InventoryItemCard from "@/components/cards/InventoryCard";
 
 const sortOptions = [
   {

@@ -87,7 +87,7 @@
 
 <script>
 import { Api } from "@/Api";
-const AddressForm = require("../../components/AddressForm").default;
+import AddressForm from "@/components/AddressForm";
 
 export default {
   name: "RegisterBusiness",

@@ -35,11 +35,11 @@
   </div>
 </template>
 <script>
-import ErrorModal from "../../components/ErrorModal.vue";
-import SortedPaginatedItemList from "../../components/SortedPaginatedItemList";
-import UserListItem from "../../components/cards/UserCard";
+import ErrorModal from "@/components/ErrorModal.vue";
+import SortedPaginatedItemList from "@/components/SortedPaginatedItemList";
+import UserListItem from "@/components/cards/UserCard";
 
-import { helper } from "../../helper";
+import { helper } from "@/helper";
 import { Api } from "@/Api"
 
 
