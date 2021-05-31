@@ -217,7 +217,7 @@ export default {
       // If there are too many suggestions, only return the best few
 
       if (suggestions.length == 0) {
-        // If there are no suggestions add a disabled item to show this (makes it clear that the user needs to change the suggestion) 
+        // If there are no suggestions add a disabled item to show this (makes it clear that the user needs to change the suggestion)
         suggestions = [{
           toString: () => "No suggestions",
           disabled: true
