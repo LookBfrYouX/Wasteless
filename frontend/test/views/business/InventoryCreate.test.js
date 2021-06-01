@@ -1,5 +1,5 @@
 import InventoryItemEntry from "@/views/business/InventoryCreate";
-import { shallowMount } from "@vue/test-utils";
+import {shallowMount} from "@vue/test-utils";
 import {ApiRequestError} from "@/ApiRequestError";
 
 jest.mock("@/Api");
@@ -19,13 +19,13 @@ beforeEach(async () => {
 });
 
 const products = [];
-for(let i = 0; i < 100; i++) {
+for (let i = 0; i < 100; i++) {
   products.push({
     id: i,
     name: Math.random().toString()
   });
 }
-Api.getProducts.mockResolvedValue({ data: products });
+Api.getProducts.mockResolvedValue({data: products});
 
 describe("Correct today date", () => {
   test("Jan 1", () => {
@@ -44,20 +44,22 @@ test("Products list gets populated", async () => {
   const optionEls = wrapper.find("#productDropdown").findAll("option");
   expect(optionEls.length).toBe(products.length);
 
-  for(let i = 0; i < optionEls.length; i++) {
+  for (let i = 0; i < optionEls.length; i++) {
     const optionEl = optionEls.at(i);
     expect(optionEl.text()).toEqual(products[i].name);
   }
 });
 
 test("Error modal shows", async () => {
-  Api.getProducts.mockImplementation( () => Promise.reject(new ApiRequestError("Anything")));
+  Api.getProducts.mockImplementation(
+      () => Promise.reject(new ApiRequestError("Anything")));
   await wrapper.vm.populateDropdown();
   expect(wrapper.vm.apiErrorMessage).not.toBeNull()
 })
 
 test("Error message shows", async () => {
-  Api.addItemToInventory.mockImplementation( () => Promise.reject(new ApiRequestError("Anything")));
+  Api.addItemToInventory.mockImplementation(
+      () => Promise.reject(new ApiRequestError("Anything")));
   await wrapper.setData({
     product: {
       id: 214

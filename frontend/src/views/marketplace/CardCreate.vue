@@ -1,10 +1,10 @@
 <template>
   <div class="w-100 d-flex my-3">
     <form
-      autocomplete="on"
-      class="container slightly-transparent-inputs"
-      method="POST"
-      @submit.prevent="create"
+        autocomplete="on"
+        class="container slightly-transparent-inputs"
+        method="POST"
+        @submit.prevent="create"
     >
       <div class="row">
         <div class="col">
@@ -18,26 +18,26 @@
             The section your card will be listed in
           </span>
           <div
-            class="btn-group"
-            :class="{
+              :class="{
             }"
+              class="btn-group"
           >
             <button
-              v-for="([sectionKey, sectionName]) in Object.entries($constants.MARKETPLACE.SECTIONS)"
-              :key="sectionKey"
-              type="button"
-              class="btn btn-primary"
-              :class="{ active: section == sectionKey }"
-              @click="section = sectionKey"
+                v-for="([sectionKey, sectionName]) in Object.entries($constants.MARKETPLACE.SECTIONS)"
+                :key="sectionKey"
+                :class="{ active: section == sectionKey }"
+                class="btn btn-primary"
+                type="button"
+                @click="section = sectionKey"
             >
               {{ sectionName }}
             </button>
           </div>
           <div
-            class="invalid-feedback"
-            :class="{
+              :class="{
               'd-block': !Object.keys($constants.MARKETPLACE.SECTIONS).includes(section)
             }"
+              class="invalid-feedback"
           >
             You must select a section
           </div>
@@ -45,54 +45,54 @@
         <div class="col-12 form-group required">
           <label class="form-label" for="title">Title</label>
           <input
-            type="text"
-            name="title"
-            id="title"
-            class="form-control"
-            v-model="title"
-            placeholder="Title"
-            required
+              id="title"
+              v-model="title"
+              class="form-control"
+              name="title"
+              placeholder="Title"
+              required
+              type="text"
           />
         </div>
       </div>
       <div class="row">
         <div class="col-12 form-group">
           <div class=" d-flex flex-wrap align-items-center">
-            <label for="tags" class="mr-2 mb-2 py-2">Tags: </label>
-            <span class="mr-2 mb-2 py-2" v-if="!tags.length">None</span>
+            <label class="mr-2 mb-2 py-2" for="tags">Tags: </label>
+            <span v-if="!tags.length" class="mr-2 mb-2 py-2">None</span>
             <tag
-              v-else
-              v-for="tag in tags"
-              class="mr-2 mb-2"
-              :key="tag.id"
-              :xButton="true"
-              @xClick="removeTag(tag.id)"
+                v-for="tag in tags"
+                v-else
+                :key="tag.id"
+                :xButton="true"
+                class="mr-2 mb-2"
+                @xClick="removeTag(tag.id)"
             >
-              {{tag.name}}
+              {{ tag.name }}
             </tag>
           </div>
           <div class="add-tag-container">
             <button
-              class="btn btn-primary w-100"
-              v-if="!showSuggestions"
-              @click="showSuggestionsInput"
+                v-if="!showSuggestions"
+                class="btn btn-primary w-100"
+                @click="showSuggestionsInput"
             >
-              Add Tag 
+              Add Tag
             </button>
             <suggestions
-              v-else
-              inputClasses="form-control"
-              name="tags"
-              id="tags"
-              placeholder="Add a Tag"
-              type="text"
-              ref="suggestionsInput"
-              :liActiveClasses="{'bg-primary': true, 'text-light': true}"
-              :suggestions="tagSuggestions"
-              :value="tagInputValue"
-              @input="value => tagInputValue = value"
-              @suggestion="tagSuggestionSelected"
-              @blur="showSuggestions = false"
+                v-else
+                id="tags"
+                ref="suggestionsInput"
+                :liActiveClasses="{'bg-primary': true, 'text-light': true}"
+                :suggestions="tagSuggestions"
+                :value="tagInputValue"
+                inputClasses="form-control"
+                name="tags"
+                placeholder="Add a Tag"
+                type="text"
+                @blur="showSuggestions = false"
+                @input="value => tagInputValue = value"
+                @suggestion="tagSuggestionSelected"
             />
           </div>
         </div>
@@ -101,29 +101,29 @@
         <div class="col-12 form-group">
           <label for="description">Description</label>
           <textarea
-            id="description"
-            v-model="description"
-            class="form-control"
-            maxlength="500"
-            name="description"
-            placeholder="Description"
-            rows="5"
+              id="description"
+              v-model="description"
+              class="form-control"
+              maxlength="500"
+              name="description"
+              placeholder="Description"
+              rows="5"
           />
         </div>
       </div>
       <div class="row">
         <div
-          class="col-12"
-          v-if="errorMessage != null"
+            v-if="errorMessage != null"
+            class="col-12"
         >
           <div class="alert alert-warning">
-            {{errorMessage}}
+            {{ errorMessage }}
           </div>
         </div>
         <div class="col-12">
           <button
-            type="submit"
-            class="btn btn-primary"
+              class="btn btn-primary"
+              type="submit"
           >
             Create card
           </button>
@@ -145,10 +145,10 @@ import EditDistance from "@/EditDistance";
 // While there is no backend, use this static list of tags
 import temporaryTags from "../../assets/temporaryTags.json";
 
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 
 export default {
-  components: { Suggestions, Tag },
+  components: {Suggestions, Tag},
   props: {
     /**
      * ID of user to create the card as
@@ -189,20 +189,26 @@ export default {
      * and value of the add tag input field
      */
     tagSuggestions() {
-      const { NUM_SUGGESTIONS, WORST_RATIO, INSERT_COST, DELETE_COST, SUBSTITUTE_COST } = this.$constants.MARKETPLACE.CREATE_CARD.TAG_SUGGESTIONS;
+      const {
+        NUM_SUGGESTIONS,
+        WORST_RATIO,
+        INSERT_COST,
+        DELETE_COST,
+        SUBSTITUTE_COST
+      } = this.$constants.MARKETPLACE.CREATE_CARD.TAG_SUGGESTIONS;
 
       let suggestions = this.allTags.map(tag => {
         tag.score = new EditDistance(
-          this.tagInputValue.toLocaleLowerCase(),
-          tag.name.toLocaleLowerCase(),
-          INSERT_COST,
-          DELETE_COST,
-          SUBSTITUTE_COST
+            this.tagInputValue.toLocaleLowerCase(),
+            tag.name.toLocaleLowerCase(),
+            INSERT_COST,
+            DELETE_COST,
+            SUBSTITUTE_COST
         ).calculate();
-        
+
         tag.weightedScore = tag.score / tag.name.length;
         // weighted score takes into account length of tag so that it doesn't prefer shorter suggestions
-        
+
         tag.toString = () => tag.name; // toString used to show the suggestion
 
         return tag;
@@ -210,7 +216,8 @@ export default {
 
       suggestions.sort((a, b) => a.weightedScore - b.weightedScore);
       const selectedSuggestions = new Set(this.tags.map(({id}) => id));
-      suggestions = suggestions.filter(({ id, weightedScore }) => weightedScore < WORST_RATIO && !selectedSuggestions.has(id));
+      suggestions = suggestions.filter(
+          ({id, weightedScore}) => weightedScore < WORST_RATIO && !selectedSuggestions.has(id));
       // Filter out bad suggestions (scores too high) and already selected suggestions
 
       suggestions = suggestions.slice(0, NUM_SUGGESTIONS);
@@ -228,14 +235,16 @@ export default {
   },
 
   beforeMount() {
-    if (this.initialSection) this.section = this.initialSection;
+    if (this.initialSection) {
+      this.section = this.initialSection;
+    }
   },
 
   methods: {
     /**
      * When tag is selected clear the input field and add the tag to the list of selected tags
      */
-    tagSuggestionSelected: async function(tag) {
+    tagSuggestionSelected: async function (tag) {
       this.tags.push(tag);
       this.tagInputValue = "";
     },
@@ -263,7 +272,7 @@ export default {
      * Pipeline triggered when user submits form; validates the data and if successful,
      * sends request to the server.
      */
-    create: async function() {
+    create: async function () {
       if (!Object.keys(this.$constants.MARKETPLACE.SECTIONS).includes(this.section)) {
         this.errorMessage = "You must select a section to list your card in";
         return;
@@ -286,14 +295,14 @@ export default {
       try {
         await Api.createCard(cardData);
         this.errorMessage = null;
-        
+
         this.$router.push({
           name: "Marketplace",
           params: {
             section: this.section
           }
         });
-      } catch(err) {
+      } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
       }
     }
@@ -304,7 +313,9 @@ export default {
      * If initial section changes, update it
      */
     initialSection() {
-      if (this.initialSection) this.section = this.initialSection;
+      if (this.initialSection) {
+        this.section = this.initialSection;
+      }
     }
   }
 }

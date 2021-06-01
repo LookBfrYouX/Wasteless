@@ -14,9 +14,9 @@ Vue.use(VueRouter);
  *   anyone: accessible to everyone
  *   noAuthOnly: if true, only accessible users that are not signed in
  *   adminOnly: only administrators can access this page
- *   requiresBusinessAdmin: route has a `businessId` param and user is acting as that business 
+ *   requiresBusinessAdmin: route has a `businessId` param and user is acting as that business
  *   requiresNotBusinessAdmin: user must not be acting as a business
- * 
+ *
  * No auth properties means must be logged in
  */
 
@@ -65,12 +65,13 @@ export const router = new VueRouter({
       path: "/profile/:userId(\\d+)?",
       component: () => import("./views/user/Detail.vue"),
       props: route => {
-        let userId = route.params.userId ? parseInt(route.params.userId, 10): NaN;
+        let userId = route.params.userId ? parseInt(route.params.userId, 10)
+            : NaN;
         // Using \d so parseInt should never fail
         if (isNaN(userId) && store.getters.isSignedIn()) {
           userId = store.getters.getAuthUser().id;
         }
-        return { userId };
+        return {userId};
       },
       meta: {
         title: "Profile | Wasteless"
@@ -85,8 +86,6 @@ export const router = new VueRouter({
       },
       props: route => ({search: route.params.query}),
     },
-
-
 
     {
       name: "BusinessCreate",
@@ -108,17 +107,15 @@ export const router = new VueRouter({
         // If business ID is optional, user can switch back to acting as user in navbar, causing page to fail
         let businessId = parseInt(route.params.businessId, 10);
         const showBackButton = route.params.showBackButton; // Optional
-        return { businessId, showBackButton };
+        return {businessId, showBackButton};
       },
     },
-
-
 
     {
       name: "BusinessProductCreate",
       path: "/business/:businessId(\\d+)/product/create",
       component: () => import("./views/business/ProductCreate.vue"),
-      props: route => ({ businessId: parseInt(route.params.businessId, 10) }),
+      props: route => ({businessId: parseInt(route.params.businessId, 10)}),
       meta: {
         title: "Create Product | Wasteless",
         requiresBusinessAdmin: true
@@ -128,7 +125,7 @@ export const router = new VueRouter({
       name: "BusinessProducts",
       path: "/business/:businessId(\\d+)/product",
       component: () => import("./views/business/Products.vue"),
-      props: route => ({ businessId: parseInt(route.params.businessId, 10) }),
+      props: route => ({businessId: parseInt(route.params.businessId, 10)}),
       meta: {
         title: "Product Catalogue | Wasteless",
         requiresBusinessAdmin: true
@@ -161,8 +158,6 @@ export const router = new VueRouter({
       }
     },
 
-
-
     {
       name: "BusinessInventoryCreate",
       path: "/business/:businessId(\\d+)/inventory/create",
@@ -171,7 +166,7 @@ export const router = new VueRouter({
         requiresBusinessAdmin: true
       },
       component: () => import("./views/business/InventoryCreate.vue"),
-      props: route => ({businessId: parseInt(route.params.businessId, 10) })
+      props: route => ({businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "BusinessInventory",
@@ -181,10 +176,8 @@ export const router = new VueRouter({
         requiresBusinessAdmin: true
       },
       component: () => import("./views/business/Inventory"),
-      props: route => ({ businessId: parseInt(route.params.businessId, 10) })
+      props: route => ({businessId: parseInt(route.params.businessId, 10)})
     },
-
-
 
     {
       name: "BusinessListingCreate",
@@ -194,7 +187,7 @@ export const router = new VueRouter({
         requiresBusinessAdmin: true
       },
       component: () => import("./views/business/ListingCreate"),
-      props: route => ({ businessId: parseInt(route.params.businessId, 10) })
+      props: route => ({businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "BusinessListings",
@@ -203,7 +196,7 @@ export const router = new VueRouter({
         title: "Business Listings | Wasteless",
       },
       component: () => import("./views/business/Listings.vue"),
-      props: route => ({ businessId: parseInt(route.params.businessId, 10) })
+      props: route => ({businessId: parseInt(route.params.businessId, 10)})
     },
     {
       name: "BusinessListingDetail",
@@ -217,9 +210,6 @@ export const router = new VueRouter({
         title: "Business Listing | Wasteless"
       }
     },
-
-
-
 
     {
       name: "Marketplace",
@@ -240,8 +230,8 @@ export const router = new VueRouter({
       component: () => import("./views/marketplace/CardCreate"),
       props: () => {
         const user = store.getters.getAuthUser();
-        const userId = user? user.id: NaN; // If not logged in, should be redirected to a different page, so user id should never be NaN anyway
-        return { userId };
+        const userId = user ? user.id : NaN; // If not logged in, should be redirected to a different page, so user id should never be NaN anyway
+        return {userId};
       }
     },
     {
@@ -254,10 +244,8 @@ export const router = new VueRouter({
         adminOnly: true,
       },
       component: () => import("./views/marketplace/CardCreate"),
-      props: route => ({ userId: parseInt(route.params.userId, 10) })
+      props: route => ({userId: parseInt(route.params.userId, 10)})
     },
-
-
 
     {
       name: "Error",
@@ -294,11 +282,10 @@ export const router = new VueRouter({
         anyone: true
       },
       component: () => import("./views/error/Error404.vue"),
-      props: route => ({ path: route.fullPath })
+      props: route => ({path: route.fullPath})
     }
   ],
 });
-
 
 /**
  * Sets page title on navigate
@@ -312,15 +299,14 @@ router.afterEach((to) => {
     const hamburger = document.getElementById("hamburger-button");
     const supportedContent = document.getElementById("navbarSupportedContent");
     // Sometimes hamburger has no 'collapsed' class but the navbar is still collapsed, so need to check if 'supportedContent' has the 'show' class too
-    if (hamburger && supportedContent && 
+    if (hamburger && supportedContent &&
         !hamburger.classList.contains("collapsed") &&
         supportedContent.classList.contains("show")
-        ) {
+    ) {
       hamburger.click();
     }
   }
-  
-  
+
   Vue.nextTick(() => {
     let title = "Wasteless";
     if (typeof to.meta.title == "string") {
@@ -342,35 +328,43 @@ router.beforeEach(async (to, from, next) => {
   const business = await store.getters.getActingAs();
   const businessId = parseInt(to.params.businessId, 10);
 
-  const to401 = () => next({ name: "Error401" });
-  const to403 = () => next({ name: "Error403" });
+  const to401 = () => next({name: "Error401"});
+  const to403 = () => next({name: "Error403"});
 
-  if (to.meta.anyone) next();
-
-  else if (to.meta.noAuthOnly) {
-    if (store.getters.isSignedIn()) next({ name: "Home" });
-    else next();
+  if (to.meta.anyone) {
+    next();
+  } else if (to.meta.noAuthOnly) {
+    if (store.getters.isSignedIn()) {
+      next({name: "Home"});
+    } else {
+      next();
+    }
   }
 
   // Signed out users: only `anyone` or `noAuthOnly` can allow them through
-  else if (!store.getters.isSignedIn()) to401();
-
-  // Admins can do everything
-  else if (store.getters.isAdmin()) next();
-
-  // If page is admin only and we get to this point, user is not admin
-  else if (to.meta.adminOnly) to403();
-
-  // If route requires user to be business admin
+  else if (!store.getters.isSignedIn()) {
+    to401();
+  }// Admins can do everything
+  else if (store.getters.isAdmin()) {
+    next();
+  }// If page is admin only and we get to this point, user is not admin
+  else if (to.meta.adminOnly) {
+    to403();
+  }// If route requires user to be business admin
   else if (to.meta.requiresBusinessAdmin) {
     // Yes, it needs to be this explicit. You try it if you think your so smart
-    if (business && businessId && business.id === businessId) next();
-    else to403();
+    if (business && businessId && business.id === businessId) {
+      next();
+    } else {
+      to403();
+    }
   }
 
   // Preventing businesses from accessing Create.vue
-  else if (to.meta.requiresNotBusinessAdmin && business) to403();
-  
-  // If user passes all other checks
-  else next();
+  else if (to.meta.requiresNotBusinessAdmin && business) {
+    to403();
+  }// If user passes all other checks
+  else {
+    next();
+  }
 });

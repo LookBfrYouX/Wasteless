@@ -1,9 +1,8 @@
 import {shallowMount} from "@vue/test-utils";
 import Profile from "@/views/user/Detail";
-import {globalStateMocks } from "#/testHelper";
+import {globalStateMocks} from "#/testHelper";
 
 jest.mock("@/Api");
-import { Api } from "@/Api";
 
 jest.useFakeTimers();
 

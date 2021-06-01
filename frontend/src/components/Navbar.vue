@@ -5,6 +5,7 @@
       <a class="navbar-brand" href="javascript:" @click="homeButtonClicked()">Navbara Pigeon</a>
       <!-- Hamburger button -->
       <button
+          id="hamburger-button"
           aria-controls="navbarSupportedContent"
           aria-expanded="false"
           aria-label="Toggle navigation"
@@ -12,7 +13,6 @@
           data-target="#navbarSupportedContent"
           data-toggle="collapse"
           type="button"
-          id="hamburger-button"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -22,54 +22,54 @@
         <!-- Left group: links to profile and business -->
         <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
           <div
-            class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center"
-            :class="{'d-lg-none': navbarLinks.length > 2}"
+              :class="{'d-lg-none': navbarLinks.length > 2}"
+              class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center"
           >
-          <!-- List of links in XL only hidden if lg and more than 2 links -->
+            <!-- List of links in XL only hidden if lg and more than 2 links -->
             <li
-              v-for="({name, click, active}, i) in navbarLinks"
-              :key="i"
-              class="nav-item d-flex align-items-center text-center mx-lg-0"
-              :class="{ 'mx-4': i != 0, active }"
+                v-for="({name, click, active}, i) in navbarLinks"
+                :key="i"
+                :class="{ 'mx-4': i != 0, active }"
+                class="nav-item d-flex align-items-center text-center mx-lg-0"
             >
               <a
-                class="nav-link"
-                href="javascript:"
-                @click="click"
-              > {{name}}
+                  class="nav-link"
+                  href="javascript:"
+                  @click="click"
+              > {{ name }}
               </a>
             </li>
           </div>
 
           <li
-            class="navbar-item dropdown d-none d-xl-none p-absolute"
-            :class="{'d-lg-block': navbarLinks.length > 2}"
+              :class="{'d-lg-block': navbarLinks.length > 2}"
+              class="navbar-item dropdown d-none d-xl-none p-absolute"
           >
             <!-- dropdown menu for the business/profile links only if lg AND if more than 2 links-->
             <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="navbarDropdownBusinessLinks"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
+                id="navbarDropdownBusinessLinks"
+                aria-expanded="false"
+                aria-haspopup="true"
+                class="nav-link dropdown-toggle"
+                data-toggle="dropdown"
+                href="#"
+                role="button"
             >
               Quick Links
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownBusinessLinks">
+            <div aria-labelledby="navbarDropdownBusinessLinks" class="dropdown-menu">
               <a
-                v-for="({name, click, active}, i) in navbarLinks"
-                :key="i"
-                class="dropdown-item"
-                :class="{ active }"
-                href="javascript:"
-                @click="click"
+                  v-for="({name, click, active}, i) in navbarLinks"
+                  :key="i"
+                  :class="{ active }"
+                  class="dropdown-item"
+                  href="javascript:"
+                  @click="click"
               >
-                {{name}}
+                {{ name }}
               </a>
             </div>
-        </li>
+          </li>
 
           <!-- Center group: search input and button -->
           <li v-if="isSignedIn" class="navbar-item d-flex search-container w-100">
@@ -81,10 +81,10 @@
                   </span>
                 </div>
                 <input
+                    :value="query"
                     class=" form-control mr-sm-2 h-100"
                     placeholder="Search"
                     type="text"
-                    :value="query"
                     @input="event => $emit('input', event)"
                 />
               </div>
@@ -124,7 +124,7 @@
                   &#10003;
                 </span>
               </a>
-            <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
+              <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
               <a v-for="business in actingAsEntities" :key="business.id"
                  class="dropdown-item"
                  href="javascript:"
@@ -163,12 +163,12 @@
       </div>
     </nav>
     <error-modal
-        title="Couldn't sign you out"
         :goBack="false"
         :hideCallback="() => signOutErrorMessage = null"
         :refresh="false"
         :retry="signOut"
         :show="signOutErrorMessage !== null"
+        title="Couldn't sign you out"
     >
       <p>{{ signOutErrorMessage }}</p>
     </error-modal>
@@ -177,7 +177,7 @@
 
 
 <script>
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 import ErrorModal from "./ErrorModal";
 
 export default {
@@ -209,19 +209,23 @@ export default {
     navbarLinks() {
       const viewName = this.$route.name;
 
-      if (!this.isSignedIn) return [];
-      if (!this.isActingAsBusiness) return [
-        {
-          name: "Profile",
-          click: this.profileClicked,
-          active: viewName == "UserProfile",
-        },
-        {
-          name: "Marketplace",
-          click: () => this.pushOrGo('Marketplace'),
-          active: viewName == "Marketplace",
-        }
-      ];
+      if (!this.isSignedIn) {
+        return [];
+      }
+      if (!this.isActingAsBusiness) {
+        return [
+          {
+            name: "Profile",
+            click: this.profileClicked,
+            active: viewName == "UserProfile",
+          },
+          {
+            name: "Marketplace",
+            click: () => this.pushOrGo('Marketplace'),
+            active: viewName == "Marketplace",
+          }
+        ];
+      }
 
       return [
         {
@@ -292,7 +296,7 @@ export default {
      * Switch acting as wrapper
      * Redirects to profile page
      */
-    switchActingAs: async function(business) {
+    switchActingAs: async function (business) {
       this.$helper.goToProfile(business, this.$router, this.$route);
       this.$stateStore.actions.setActingAs(business);
       // Must set business after redirecting as some pages do not like it if a 
@@ -372,7 +376,7 @@ export default {
      * Goes to business page, given the user is acting as a business
      * @param name name of page to go to
      */
-    pushOrGoToBusinessPage: async function(name) {
+    pushOrGoToBusinessPage: async function (name) {
       const business = this.$stateStore.getters.getActingAs();
       if (business == null) {
         return;
@@ -396,6 +400,7 @@ export default {
 nav {
   z-index: 10;
 }
+
 .dropdown-menu {
   z-index: 900000;
 }

@@ -2,9 +2,11 @@
   <div ref="modal" class="modal fade">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <button class="btn btn-danger d-flex p-0 justify-content-center align-items-center rounded-circle close-button" type="button" @click="hideCallback">
-        <span class="material-icons">close</span>
-      </button>
+        <button
+            class="btn btn-danger d-flex p-0 justify-content-center align-items-center rounded-circle close-button"
+            type="button" @click="hideCallback">
+          <span class="material-icons">close</span>
+        </button>
         <div class="modal-header">
           <h4 class="modal-title">{{ title }}</h4>
         </div>
@@ -95,7 +97,7 @@ export default {
      * Synchronizes modal visibility with state
      */
     updateModalVisibility: function () {
-      this.show ? this.modal.modal("show"): this.modal.modal("hide");
+      this.show ? this.modal.modal("show") : this.modal.modal("hide");
     },
 
     /**
@@ -156,12 +158,12 @@ export default {
     try {
       this.modal.modal("hide"); // If navigation occurs while modal open, modal disapears but body has the modal open class
       this.modal.modal("dispose"); // dipose of the modal
-    } catch(err) {
+    } catch (err) {
       console.warn("Modal destroy failed. Removing it manually...")
       document.body.classList.remove("modal-open");
       document.body.style.paddingRight = "inherit";
       const backdrops = document.body.querySelectorAll(".modal-backdrop");
-      backdrops.forEach( backdrop => backdrop.remove());
+      backdrops.forEach(backdrop => backdrop.remove());
     }
   }
 

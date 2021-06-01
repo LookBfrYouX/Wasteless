@@ -3,8 +3,8 @@
   <div class="container card item-card pt-1 pl-3 pr-3 pb-3 my-2">
     <div class="d-sm-flex align-items-center">
       <router-link
-        class="text-decoration-none green-text-hover"
-        :to="{ name: 'UserDetail', params: {userId: card.creator.id }}"
+          :to="{ name: 'UserDetail', params: {userId: card.creator.id }}"
+          class="text-decoration-none green-text-hover"
       >
         <img alt="User is acting as self"
              class="nav-picture rounded-circle border"

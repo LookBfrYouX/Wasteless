@@ -29,60 +29,60 @@
         <dl class="row">
           <dt class="col-md label">Administrator:</dt>
           <dd
-            v-for="admin in businessInfo.administrators"
-            :key="admin.id"
-            class="col-md value"
+              v-for="admin in businessInfo.administrators"
+              :key="admin.id"
+              class="col-md value"
           >
-              <router-link
-                class="admin-link hover-cursor-pointer text-decoration-none"
+            <router-link
                 :to="{ name: 'UserDetail', params: { userId: admin.id }}"
-              >
-                {{ admin.firstName }} {{ admin.lastName }}
-              </router-link>
+                class="admin-link hover-cursor-pointer text-decoration-none"
+            >
+              {{ admin.firstName }} {{ admin.lastName }}
+            </router-link>
           </dd>
         </dl>
       </ul>
       <div class="d-flex flex-wrap justify-content-space">
         <router-link
-            class="btn btn-white-bg-primary m-1 d-flex"
             v-if="canEditBusiness"
             :to="{ name: 'BusinessProductCreate', params: { businessId }}"
+            class="btn btn-white-bg-primary m-1 d-flex"
         >
           <span class="material-icons mr-1">add</span>
           Add Product To Catalogue
         </router-link>
         <router-link
-            class="btn btn-white-bg-primary m-1 d-flex"
             v-if="canEditBusiness"
             :to="{ name: 'BusinessProducts', params: { businessId }}"
+            class="btn btn-white-bg-primary m-1 d-flex"
         >
           <span class="material-icons mr-1">list</span>
           View Catalogue
         </router-link>
         <router-link
-            class="btn btn-white-bg-primary m-1 d-flex"
             v-if="canEditBusiness"
             :to="{ name: 'BusinessInventory', params: { businessId }}"
+            class="btn btn-white-bg-primary m-1 d-flex"
         >
           <span class="material-icons mr-1">inventory</span>
-          View Inventory 
+          View Inventory
         </router-link>
         <router-link
-            class="btn btn-white-bg-primary m-1 d-flex"
             :to="{ name: 'BusinessListings', params: { businessId }}"
+            class="btn btn-white-bg-primary m-1 d-flex"
         >
           <span class="material-icons mr-1">storefront</span>
           View Listings
         </router-link>
-        
+
       </div>
       <error-modal
-          title="Error fetching business details"
           :goBack="true"
           :hideCallback="() => (apiErrorMessage = null)"
           :refresh="false"
           :retry="false"
           :show="apiErrorMessage !== null"
+          title="Error fetching business details"
       >
         <p>{{ apiErrorMessage }}</p>
       </error-modal>
@@ -94,7 +94,7 @@
 import ErrorModal from "@/components/ErrorModal.vue";
 import {ApiRequestError} from "@/ApiRequestError";
 
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 
 export default {
   name: 'businessProfile',

@@ -1,5 +1,5 @@
 import {mount} from "@vue/test-utils";
-import {globalStateMocks } from "#/testHelper";
+import {globalStateMocks} from "#/testHelper";
 import {ApiRequestError} from "@/ApiRequestError";
 import SignUp from "@/views/user/Create";
 
@@ -71,9 +71,11 @@ window.localStorage = {
 afterEach(() => wrapper.destroy());
 
 describe("Date of birth", () => {
-  const dateMount = () => mountWithData(undefined, {propsData: {
-    currentDate: new Date(2020, 1, 22)
-  }});
+  const dateMount = () => mountWithData(undefined, {
+    propsData: {
+      currentDate: new Date(2020, 1, 22)
+    }
+  });
   test("Too young by years", () => {
     wrapper = dateMount();
     expect(wrapper.vm.validateDateOfBirth("2010-03-05")).toBeTruthy();

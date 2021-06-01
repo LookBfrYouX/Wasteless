@@ -1,6 +1,6 @@
 import {shallowMount} from "@vue/test-utils";
 import MarketplaceCard from "@/components/cards/MarketplaceCard";
-import {globalStateMocks } from "#/testHelper";
+import {globalStateMocks} from "#/testHelper";
 
 const cardTitle = '1982 Lada Samara';
 const cardDesc = 'Beige, suitable for a hen house. Fair condition. Some rust. As is, where is. Will swap for budgerigar.';
@@ -53,8 +53,10 @@ describe("Test passing props to Marketplace card component", () => {
       mocks: globalStateMocks(),
       stubs: ["router-link"]
     });
-    expect(wrapper.text()).toContain('Created ' + globalStateMocks().$helper.isoToDateString(cardCreated));
-    expect(wrapper.text()).toContain('Expires ' + globalStateMocks().$helper.isoToDateString(cardExpires));
+    expect(wrapper.text()).toContain(
+        'Created ' + globalStateMocks().$helper.isoToDateString(cardCreated));
+    expect(wrapper.text()).toContain(
+        'Expires ' + globalStateMocks().$helper.isoToDateString(cardExpires));
   })
 
   test("Receives the passed in keywords", () => {

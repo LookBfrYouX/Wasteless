@@ -81,6 +81,7 @@
             <input
                 id="email"
                 v-model="email"
+                :class="{'is-invalid': emailErrorMessage !== null }"
                 autocomplete="email"
                 class="form-control"
                 maxlength="50"
@@ -90,7 +91,6 @@
                 required
                 title="You must enter a valid email address. Dotless domains are not supported"
                 type="email"
-                :class="{'is-invalid': emailErrorMessage !== null }"
             />
             <!-- regexp from https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type%3Demail), but modified to disallow dot-less domains -->
             <div class="invalid-feedback">{{ emailErrorMessage }}</div>
@@ -127,6 +127,7 @@
             <input
                 id="confirmPassword"
                 v-model="confirmPassword"
+                :class="{'is-invalid': confirmPasswordErrorMessage !== null }"
                 autocomplete="new-password"
                 class="form-control"
                 maxlength="50"
@@ -135,7 +136,6 @@
                 placeholder="Confirm password"
                 required
                 type="password"
-                :class="{'is-invalid': confirmPasswordErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ confirmPasswordErrorMessage }}</div>
           </div>
@@ -148,15 +148,15 @@
             <input
                 id="dateOfBirth"
                 v-model="dateOfBirth"
+                :class="{ 'is-invalid': dateOfBirthErrorMessage !== null }"
+                :max="youngestBirthdateAsString"
+                :min="oldestBirthdateAsString"
                 autocomplete="bday"
                 class="form-control"
                 name="dateOfBirth"
                 placeholder="Date of birth"
-                :min="oldestBirthdateAsString"
-                :max="youngestBirthdateAsString"
                 required
                 type="date"
-                :class="{ 'is-invalid': dateOfBirthErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ dateOfBirthErrorMessage }}</div>
           </div>
@@ -171,10 +171,10 @@
             <select
                 id="countryCode"
                 v-model="countryCode"
+                :class="{ 'is-invalid': countryCodeErrorMessage !== null }"
                 autocomplete="tel-country-code"
                 class="form-control"
                 name="countryCode"
-                :class="{ 'is-invalid': countryCodeErrorMessage !== null }"
             >
               <!---Add blank element to country code list so that user can choose not to enter phone-->
               <option value=""></option>
@@ -193,13 +193,13 @@
             <input
                 id="phoneNumber"
                 v-model="phoneNumber"
+                :class="{'is-invalid': phoneErrorMessage !== null }"
                 autocomplete="tel-national"
                 class="form-control"
+                maxlength="20"
                 name="phoneNumber"
                 placeholder="Phone number"
                 type="text"
-                maxlength="20"
-                :class="{'is-invalid': phoneErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ phoneErrorMessage }}</div>
           </div>
@@ -246,7 +246,7 @@
 </style>
 
 <script>
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 import AddressForm from "@/components/AddressForm";
 import countryData from "@/assets/countryData.json";
 
@@ -315,7 +315,8 @@ export default {
 
   computed: {
     youngestBirthdate() {
-      return new Date(this.currentDate.getFullYear() -  this.$constants.SIGN_UP.MIN_AGE, this.currentDate.getMonth(), this.currentDate.getDate());
+      return new Date(this.currentDate.getFullYear() - this.$constants.SIGN_UP.MIN_AGE,
+          this.currentDate.getMonth(), this.currentDate.getDate());
     },
 
     youngestBirthdateAsString() {
@@ -324,7 +325,8 @@ export default {
     },
 
     oldestBirthDate() {
-      return new Date(this.currentDate.getFullYear() - this.$constants.SIGN_UP.MAX_AGE, this.currentDate.getMonth(), this.currentDate.getDate());
+      return new Date(this.currentDate.getFullYear() - this.$constants.SIGN_UP.MAX_AGE,
+          this.currentDate.getMonth(), this.currentDate.getDate());
     },
 
     oldestBirthdateAsString() {
@@ -470,7 +472,7 @@ export default {
       delete userData.password;
       userData.id = response.data.userId;
       await this.$stateStore.actions.setAuthUser(userData);
-      await this.$router.push({ name: "UserDetail" });
+      await this.$router.push({name: "UserDetail"});
     }
   }
 }

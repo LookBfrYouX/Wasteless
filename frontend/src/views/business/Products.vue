@@ -1,29 +1,29 @@
 <template>
   <div class="w-100">
     <sorted-paginated-item-list
-      :items="products"
-      :sortOptions="sortOptions"
-      :currentSortOption.sync="currentSortOption"
+        :currentSortOption.sync="currentSortOption"
+        :items="products"
+        :sortOptions="sortOptions"
     >
       <template v-slot:title>
-        <h2>Product Catalogue {{businessName? `for ${businessName}`: ""}}</h2>
+        <h2>Product Catalogue {{ businessName ? `for ${businessName}` : "" }}</h2>
       </template>
       <template v-slot:right-button>
         <router-link
-          :to="{name: 'BusinessProductCreate', params: { businessId }}"
-          class="btn btn-info"
+            :to="{name: 'BusinessProductCreate', params: { businessId }}"
+            class="btn btn-info"
         >
           Create Product
         </router-link>
       </template>
       <template v-slot:item="slotProps">
         <router-link
-          :to="{ name: 'BusinessProductDetail', params: { businessId, productId: slotProps.item.id }}"
-          class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-2 p-3 rounded"
+            :to="{ name: 'BusinessProductDetail', params: { businessId, productId: slotProps.item.id }}"
+            class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-2 p-3 rounded"
         >
           <product-catalogue-list-item
-            :product="slotProps.item"
-            :currency="currency"
+              :currency="currency"
+              :product="slotProps.item"
           />
         </router-link>
       </template>
@@ -32,12 +32,12 @@
       </template>
     </sorted-paginated-item-list>
     <error-modal
-        title="Error viewing business catalog"
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="true"
         :retry="this.query"
         :show="apiErrorMessage !== null"
+        title="Error viewing business catalog"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -48,8 +48,8 @@ import ErrorModal from "@/components/ErrorModal.vue";
 import SortedPaginatedItemList from "@/components/SortedPaginatedItemList";
 import ProductCatalogueListItem from "@/components/cards/ProductCatalogueCard";
 
-import { helper } from "@/helper";
-import { Api } from "@/Api";
+import {helper} from "@/helper";
+import {Api} from "@/Api";
 
 // Sort options need to be in [{name, sortMethod}] format but since product is a simple object, it has been put in a more compact and easier to edit form and then immediately mapped to the required format
 const sortOptions = Object.entries({
@@ -86,7 +86,7 @@ export default {
       currency: null,
       sortOptions,
       // use first sort option as default
-      currentSortOption: { ...sortOptions[0], reversed: false },
+      currentSortOption: {...sortOptions[0], reversed: false},
       apiErrorMessage: null,
       businessName: null
     }
@@ -94,7 +94,9 @@ export default {
 
   beforeMount: async function () {
     const success = await this.query();
-    if (success) await Promise.allSettled([this.loadCurrencies(), this.loadBusinessName()]);
+    if (success) {
+      await Promise.allSettled([this.loadCurrencies(), this.loadBusinessName()]);
+    }
   },
 
   methods: {
@@ -147,14 +149,16 @@ export default {
     /*
      * Attempts to update the business name
      */
-    loadBusinessName: async function() {
+    loadBusinessName: async function () {
       this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
     }
   },
 
   watch: {
     businessName() {
-      if (this.businessName != null) document.title = `Product Catalogue for ${this.businessName}`
+      if (this.businessName != null) {
+        document.title = `Product Catalogue for ${this.businessName}`
+      }
     }
   }
 };

@@ -4,9 +4,9 @@
       <div class="col-3 pr-0 mb-2">
         <img
             v-if="thumbnailPathIfExists != null"
+            :src="thumbnailPathIfExists"
             alt="Product Image"
             class="image-fluid w-100 rounded-circle"
-            :src="thumbnailPathIfExists"
         >
         <!-- using v-else instead of settings the src because I have a feeling that Vue needs the image src to be static for it copy it as a static asset when we build the frontend. -->
         <img
@@ -19,7 +19,7 @@
       <div class="col-9">
         <div class="d-flex flex-wrap justify-content-between">
           <h4 class="card-title mb-0">
-            {{ product.name }} (ID: 
+            {{ product.name }} (ID:
             <code class="text-dark">{{ product.id }}</code>)
           </h4>
         </div>
