@@ -72,7 +72,7 @@
         </li>
 
           <!-- Center group: search input and button -->
-          <li v-if="isLoggedIn" class="navbar-item d-flex search-container w-100">
+          <li v-if="isSignedIn" class="navbar-item d-flex search-container w-100">
             <form class="input-group navbar-center form-inline" v-on:submit.prevent="search">
               <div class="input-group w-100">
                 <div class="input-group-prepend h-100">
@@ -92,7 +92,7 @@
           </li>
 
           <!-- Right group: User and acting as -->
-          <li v-if="isLoggedIn" class="nav-item dropdown">
+          <li v-if="isSignedIn" class="nav-item dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
                aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
                data-toggle="dropdown"
@@ -100,12 +100,12 @@
               <img v-if="isActingAsBusiness"
                    alt="User is acting as business"
                    class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-business-thumbnail.svg"
+                   src="@/../assets/images/default-business-thumbnail.svg"
               >
               <img v-else
                    alt="User is acting as self"
                    class="nav-picture rounded-circle"
-                   src="./../../assets/images/default-user-thumbnail.svg"
+                   src="@/../assets/images/default-user-thumbnail.svg"
               >
               <div class="d-flex flex-column mx-1">
               <span class="m-0 p-0 text-dark">
@@ -136,24 +136,24 @@
                   </span>
               </a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="javascript:" v-on:click="logOut">Log out</a>
+              <a class="dropdown-item" href="javascript:" v-on:click="signOut">Sign out</a>
             </div>
           </li>
 
-          <!-- Right group (if not logged in) -->
-          <div v-if="!isLoggedIn" class="d-lg-flex ml-lg-auto">
-            <li v-if="this.$route.name != 'login'" class="nav-item">
+          <!-- Right group (if not signed in) -->
+          <div v-if="!isSignedIn" class="d-lg-flex ml-lg-auto">
+            <li v-if="this.$route.name != 'SignIn'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
-                  v-on:click="pushOrGo('login')"
+                  v-on:click="pushOrGo('SignIn')"
               >
-                Login
+                Sign In
               </a>
             </li>
-            <li v-if="this.$route.name != 'signUp'" class="nav-item">
+            <li v-if="this.$route.name != 'UserCreate'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
-                  v-on:click="pushOrGo('signUp')"
+                  v-on:click="pushOrGo('UserCreate')"
               >
                 Sign Up
               </a>
@@ -163,22 +163,22 @@
       </div>
     </nav>
     <error-modal
-        title="Couldn't log you out"
+        title="Couldn't sign you out"
         v-bind:goBack="false"
-        v-bind:hideCallback="() => logOutErrorMessage = null"
+        v-bind:hideCallback="() => signOutErrorMessage = null"
         v-bind:refresh="false"
-        v-bind:retry="this.logOut"
-        v-bind:show="logOutErrorMessage !== null"
+        v-bind:retry="signOut"
+        v-bind:show="signOutErrorMessage !== null"
     >
-      <p>{{ logOutErrorMessage }}</p>
+      <p>{{ signOutErrorMessage }}</p>
     </error-modal>
   </div>
 </template>
 
 
 <script>
-const {Api} = require("./../Api.js");
-import ErrorModal from "./Errors/ErrorModal";
+import { Api } from "@/Api";
+import ErrorModal from "./ErrorModal";
 
 export default {
   name: "navbar",
@@ -186,7 +186,7 @@ export default {
   components: {ErrorModal},
   data() {
     return {
-      logOutErrorMessage: null
+      signOutErrorMessage: null
     }
   },
   computed: {
@@ -209,17 +209,17 @@ export default {
     navbarLinks() {
       const viewName = this.$route.name;
 
-      if (!this.isLoggedIn) return [];
+      if (!this.isSignedIn) return [];
       if (!this.isActingAsBusiness) return [
         {
           name: "Profile",
           click: this.profileClicked,
-          active: viewName == "profile",
+          active: viewName == "UserProfile",
         },
         {
           name: "Marketplace",
-          click: () => this.pushOrGo('marketplace'),
-          active: viewName == "marketplace",
+          click: () => this.pushOrGo('Marketplace'),
+          active: viewName == "Marketplace",
         }
       ];
 
@@ -227,41 +227,41 @@ export default {
         {
           name: "Business Profile",
           click: this.profileClicked,
-          active: viewName == "businessProfile",
+          active: viewName == "BusinessProducts",
         },
         {
           name: "Product Catalogue",
-          click: () => this.pushOrGoToBusinessPage("productCatalogue"),
-          active: viewName == "productCatalogue",
+          click: () => this.pushOrGoToBusinessPage("BusinessProducts"),
+          active: viewName == "BusinessProducts",
         }, {
           name: "Inventory",
-          click: () => this.pushOrGoToBusinessPage("businessInventory"),
-          active: viewName == "businessInventory",
+          click: () => this.pushOrGoToBusinessPage("BusinessInventory"),
+          active: viewName == "BusinessInventory",
         }, {
           name: "Listings",
-          click: () => this.pushOrGoToBusinessPage("businessListings"),
-          active: viewName == "businessListings"
+          click: () => this.pushOrGoToBusinessPage("BusinessListings"),
+          active: viewName == "BusinessListings"
         }
       ];
     },
 
     /**
-     * Checks if a user is logged in or not
+     * Checks if a user is signed in or not
      */
-    isLoggedIn() {
-      return this.$stateStore.getters.isLoggedIn();
+    isSignedIn() {
+      return this.$stateStore.getters.isSignedIn();
     },
 
     /**
      * Checks if user is acting as a business
-     * @returns true if logged in and acting as business
+     * @returns true if signed in and acting as business
      */
     isActingAsBusiness() {
       return this.$stateStore.getters.isActingAsBusiness();
     },
 
     /**
-     * True if admin, false if not OR IF NOT LOGGED IN
+     * True if admin, false if not OR IF NOT SIGNED IN
      */
     isAdmin() {
       return this.$stateStore.getters.isAdmin();
@@ -269,7 +269,7 @@ export default {
 
     /**
      * Returns a list of business
-     * @return {Business[]} empty list if user not logged in or has no businesses
+     * @return {Business[]} empty list if user not signed in or has no businesses
      */
     actingAsEntities() {
       return this.authUser.businessesAdministered;
@@ -300,13 +300,13 @@ export default {
     },
 
     /**
-     * Redirects to 'home' if logged in, '/' otherwise
+     * Redirects to 'home' if signed in, '/' otherwise
      */
     homeButtonClicked() {
-      if (this.$stateStore.getters.isLoggedIn()) {
-        this.pushOrGo('home');
+      if (this.$stateStore.getters.isSignedIn()) {
+        this.pushOrGo('Home');
       } else {
-        this.pushOrGo('landing');
+        this.pushOrGo('Landing');
       }
     },
 
@@ -321,18 +321,17 @@ export default {
 
     /**
      * Removes authorized user and redirects to home,
-     * or error page if log out fails
+     * or error page if sign out fails
      */
-    logOut: async function () {
-      this.logOutErrorMessage = null;
+    signOut: async function () {
+      this.signOutErrorMessage = null;
       try {
         await Api.logOut();
       } catch (err) {
-        // if (await Api.handle401.call(this, err)) return;
-        this.logOutErrorMessage = err.userFacingErrorMessage;
+        this.signOutErrorMessage = err.userFacingErrorMessage;
         return;
       }
-      await this.pushOrGo("landing");
+      await this.pushOrGo("Landing");
       await this.$stateStore.actions.deleteAuthUser();
       // Some pages react badly if there is no auth user, so delete after navigating to landing page
       // For some reason error modal doesn't get disposed of properly
@@ -343,7 +342,7 @@ export default {
      * Navigates to search page with current query, or reloads page if on search page and query has not changed
      */
     search: async function () {
-      const searchName = "search";
+      const searchName = "Search";
       let newQuery = this.$route.params.query;
 
       // If already on search with same query, refresh instead of reloading
@@ -379,7 +378,7 @@ export default {
         return;
       }
       const params = {
-        name, 
+        name,
         params: {
           businessId: business.id
         }

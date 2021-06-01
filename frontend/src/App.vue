@@ -6,7 +6,7 @@
     />
     <div class="w-100 main-content d-flex justify-content-center gradient-background">
       <router-view
-          v-on:searchresultscreated="updateInput"
+          v-on:initial-search-value="updateInput"
       ></router-view>
     </div>
     <footer class="info">

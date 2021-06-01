@@ -2,7 +2,7 @@
  * Calculates edit distance between two strings - Levenshtein distance
  * Weights for insertion/deletion/substitution cost can be customized
  */
-export class EditDistance {
+export default class EditDistance {
   original = "";
   modified = "";
   cache = {};

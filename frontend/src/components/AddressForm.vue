@@ -163,11 +163,11 @@ The parent component must provide `address` prop. When the address is updated in
 </template>
 <script>
 
-const {Api} = require("./../Api");
-const {EditDistance} = require("./../EditDistance");
-const countryData = require("./../assets/countryData.json");
+import {Api} from "@/Api";
+import EditDistance from "@/EditDistance";
+import countryData from "@/assets/countryData.json";
 
-const Suggestions = require("./Suggestions").default;
+import Suggestions from "./Suggestions";
 
 // Fields in order of specificity
 // When updating this, ensure all address related functions and input properties are updated as well!
