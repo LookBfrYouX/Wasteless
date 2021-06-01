@@ -2,7 +2,7 @@
   <div id="navbar">
     <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
       <!-- Title -->
-      <a class="navbar-brand" href="javascript:" v-on:click="homeButtonClicked()">Navbara Pigeon</a>
+      <a class="navbar-brand" href="javascript:" @click="homeButtonClicked()">Navbara Pigeon</a>
       <!-- Hamburger button -->
       <button
           aria-controls="navbarSupportedContent"
@@ -23,19 +23,19 @@
         <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
           <div
             class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center"
-            v-bind:class="{'d-lg-none': navbarLinks.length > 2}"
+            :class="{'d-lg-none': navbarLinks.length > 2}"
           >
           <!-- List of links in XL only hidden if lg and more than 2 links -->
             <li
               v-for="({name, click, active}, i) in navbarLinks"
-              v-bind:key="i"
+              :key="i"
               class="nav-item d-flex align-items-center text-center mx-lg-0"
-              v-bind:class="{ 'mx-4': i != 0, active }"
+              :class="{ 'mx-4': i != 0, active }"
             >
               <a
                 class="nav-link"
                 href="javascript:"
-                v-on:click="click"
+                @click="click"
               > {{name}}
               </a>
             </li>
@@ -43,7 +43,7 @@
 
           <li
             class="navbar-item dropdown d-none d-xl-none p-absolute"
-            v-bind:class="{'d-lg-block': navbarLinks.length > 2}"
+            :class="{'d-lg-block': navbarLinks.length > 2}"
           >
             <!-- dropdown menu for the business/profile links only if lg AND if more than 2 links-->
             <a
@@ -60,11 +60,11 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdownBusinessLinks">
               <a
                 v-for="({name, click, active}, i) in navbarLinks"
-                v-bind:key="i"
+                :key="i"
                 class="dropdown-item"
-                v-bind:class="{ active }"
+                :class="{ active }"
                 href="javascript:"
-                v-on:click="click"
+                @click="click"
               >
                 {{name}}
               </a>
@@ -73,7 +73,7 @@
 
           <!-- Center group: search input and button -->
           <li v-if="isSignedIn" class="navbar-item d-flex search-container w-100">
-            <form class="input-group navbar-center form-inline" v-on:submit.prevent="search">
+            <form class="input-group navbar-center form-inline" @submit.prevent="search">
               <div class="input-group w-100">
                 <div class="input-group-prepend h-100">
                   <span class="input-group-text">
@@ -84,8 +84,8 @@
                     class=" form-control mr-sm-2 h-100"
                     placeholder="Search"
                     type="text"
-                    v-bind:value="query"
-                    v-on:input="event => $emit('input', event)"
+                    :value="query"
+                    @input="event => $emit('input', event)"
                 />
               </div>
             </form>
@@ -118,7 +118,7 @@
             <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
               <div class="h4 dropdown-header">Act as</div>
               <a class="dropdown-item" href="javascript:"
-                 v-on:click="switchActingAs(null)">
+                 @click="switchActingAs(null)">
                 {{ authUser.firstName }} {{ authUser.lastName }}
                 <span v-if="currentActingAs === null">
                   &#10003;
@@ -128,7 +128,7 @@
               <a v-for="business in actingAsEntities" :key="business.id"
                  class="dropdown-item"
                  href="javascript:"
-                 v-on:click="switchActingAs(business)">
+                 @click="switchActingAs(business)">
                 {{ business.name }}
                 <span v-if="business === currentActingAs">
 
@@ -136,7 +136,7 @@
                   </span>
               </a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="javascript:" v-on:click="signOut">Sign out</a>
+              <a class="dropdown-item" href="javascript:" @click="signOut">Sign out</a>
             </div>
           </li>
 
@@ -145,7 +145,7 @@
             <li v-if="this.$route.name != 'SignIn'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
-                  v-on:click="pushOrGo('SignIn')"
+                  @click="pushOrGo('SignIn')"
               >
                 Sign In
               </a>
@@ -153,7 +153,7 @@
             <li v-if="this.$route.name != 'UserCreate'" class="nav-item">
               <a
                   class="btn btn-outline-success my-1 my-sm-0 mr-sm-1"
-                  v-on:click="pushOrGo('UserCreate')"
+                  @click="pushOrGo('UserCreate')"
               >
                 Sign Up
               </a>
@@ -164,11 +164,11 @@
     </nav>
     <error-modal
         title="Couldn't sign you out"
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => signOutErrorMessage = null"
-        v-bind:refresh="false"
-        v-bind:retry="signOut"
-        v-bind:show="signOutErrorMessage !== null"
+        :goBack="false"
+        :hideCallback="() => signOutErrorMessage = null"
+        :refresh="false"
+        :retry="signOut"
+        :show="signOutErrorMessage !== null"
     >
       <p>{{ signOutErrorMessage }}</p>
     </error-modal>

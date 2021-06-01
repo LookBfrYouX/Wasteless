@@ -8,7 +8,7 @@
     <div class="row">
       <div class="ml-3 d-flex justify-content-end">
         <button class="btn btn-success"
-                v-on:click="$router.go(-1)">
+                @click="$router.go(-1)">
           Go Back
         </button>
       </div>
@@ -16,26 +16,26 @@
     <div class="row">
       <div
           v-for="(img, i) in images"
-          v-bind:key="img.id"
+          :key="img.id"
           class="col-12 col-sm-6 col-md-4 col-lg-3 p-2 d-flex flex-column justify-content-end"
       >
         <!-- align buttons on the bottom -->
         <div class="d-flex justify-content-center">
           <img
               class="img-fluid w-100"
-              v-bind:alt="`Product image ${i + 1}`"
-              v-bind:src="img.filename"
+              :alt="`Product image ${i + 1}`"
+              :src="img.filename"
           />
         </div>
         <div class="d-flex flex-wrap justify-content-center">
           <button v-if="i !== 0"
                   class="btn btn-sm btn-info m-1"
-                  v-on:click="setAsPrimary(img.id)">
+                  @click="setAsPrimary(img.id)">
             Set as primary
           </button>
           <!--          Primary image is the first image in the array. -->
           <button class="btn btn-sm btn-danger m-1"
-                  v-on:click="deleteImage(img.id)">Delete
+                  @click="deleteImage(img.id)">Delete
           </button>
         </div>
       </div>
@@ -62,23 +62,23 @@
     </div>
     <error-modal
         title="Error fetching product information"
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => {
+        :goBack="false"
+        :hideCallback="() => {
           apiErrorMessage = null;
         }"
-        v-bind:refresh="true"
-        v-bind:retry="this.apiPipeline"
-        v-bind:show="apiErrorMessage !== null"
+        :refresh="true"
+        :retry="this.apiPipeline"
+        :show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
     <error-modal
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => imageApiErrorMessage = null"
-        v-bind:refresh="true"
-        v-bind:retry="false"
-        v-bind:show="imageApiErrorMessage !== null"
-        v-bind:title="imageApiErrorTitle"
+        :goBack="false"
+        :hideCallback="() => imageApiErrorMessage = null"
+        :refresh="true"
+        :retry="false"
+        :show="imageApiErrorMessage !== null"
+        :title="imageApiErrorTitle"
     >
       <p>{{ imageApiErrorMessage }}</p>
     </error-modal>

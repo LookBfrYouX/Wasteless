@@ -6,7 +6,7 @@
       </h1>
     </div>
     <form
-        v-on:submit.prevent="addListing"
+        @submit.prevent="addListing"
         >
       <div class="row">
         <div class="form-group required col-md-6">
@@ -22,7 +22,7 @@
                     selected> -- Select product to list -- </option>
             <option v-for="product in getProducts"
                     :key="product.id"
-                    v-bind:value="product.id"
+                    :value="product.id"
             >
               {{ product.name }}
             </option>
@@ -133,11 +133,11 @@
     </form>
     <error-modal
         title="Error fetching product, inventory or listings data"
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => apiErrorMessage = null"
-        v-bind:refresh="true"
-        v-bind:retry="this.createForm"
-        v-bind:show="apiErrorMessage !== null"
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="true"
+        :retry="this.createForm"
+        :show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>

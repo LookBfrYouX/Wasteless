@@ -2,7 +2,7 @@
 To use this component:
 
 <sorted-paginated-item-list
-  v-bind:items="myItems"
+  :items="myItems"
 >
   <template v-slot:title>
     <h2>My Component List</h2>
@@ -18,7 +18,7 @@ To use this component:
   <template>
 
   <template v-slot:item="slotProps"
-    <my-component v-bind:my-item="slotProps.item"/>
+    <my-component :my-item="slotProps.item"/>
   </template>
 
 </sorted-paginated-item-list>
@@ -28,16 +28,16 @@ To use this component:
     <sort-sidebar
       class="sort-sidebar bottom-padding-navbar-height overflow-auto"
       v-if="showSortSidebar"
-      v-bind:sortOptions="sortOptions"
-      v-bind:currentSortOption="currentSortOption"
-      v-bind:closeClicked="() => showSortSidebar = !showSortSidebar"
-      v-on:update:currentSortOption="currentSortOption => $emit('update:currentSortOption', currentSortOption)"
+      :sortOptions="sortOptions"
+      :currentSortOption="currentSortOption"
+      :closeClicked="() => showSortSidebar = !showSortSidebar"
+      @update:currentSortOption="currentSortOption => $emit('update:currentSortOption', currentSortOption)"
     />
     <!-- If the screen is large enough, then you can interact with both the sort options and list items at the same time. Otherwise, this will act as a background where clicking anywhere causes it to close -->
     <div
       v-if="showSortSidebar"
       class="sidebar-behind-close d-block d-lg-none"
-      v-on:click="() => showSortSidebar = false"
+      @click="() => showSortSidebar = false"
     ></div>
 
     <div class="container">
@@ -52,7 +52,7 @@ To use this component:
             type="button"
             class="btn btn-info"
             v-if="items.length"
-            v-on:click="() => showSortSidebar = !showSortSidebar"
+            @click="() => showSortSidebar = !showSortSidebar"
           >
             Sort
           </button>
@@ -83,17 +83,17 @@ To use this component:
           <ul class="list-unstyled">
             <li
               v-for="item in itemsToDisplay"
-              v-bind:key="getItemId(item)"
+              :key="getItemId(item)"
             >
-              <slot name="item" v-bind:item="item">item.id</slot>
+              <slot name="item" :item="item">item.id</slot>
             </li>
           </ul>
           <div class="w-100 mt-3 d-flex justify-content-center">
             <!-- Currently have a dummy div that shifts the content right when sidebar is open and user can iteract with items, so the pagination needs to be in the same row -->
             <pagination
-              v-bind:current="page"
-              v-bind:end="numPages"
-              v-bind:setPage="newPage => page = newPage">
+              :current="page"
+              :end="numPages"
+              :setPage="newPage => page = newPage">
             </pagination>
           </div>
         </div>

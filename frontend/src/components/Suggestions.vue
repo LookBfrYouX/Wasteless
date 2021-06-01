@@ -10,7 +10,7 @@ Notes:
   - Optional `disabled` boolean can be on the element
   - Currently, the key is the index
 - `value`: value of input element
-  - Use `v-on:input` to receive the value (NOT the event) of the input when it changes
+  - Use `@input` to receive the value (NOT the event) of the input when it changes
     - This component does NOT set the value of the input itself, even when a suggestion is clicked
   - When a suggestion is selected, a `suggestion` event is emitted. This passes an element of the array (not necessarily a string)
 - Props are passed to the input element EXCEPT for the `class` property, which is passed
@@ -31,27 +31,27 @@ Notes:
 - A ref to the input element is available via `$refs.input`
 -->
 <template>
-  <div v-bind:class="divClasses">
+  <div :class="divClasses">
     <input
         v-bind="$attrs"
         ref="input"
-        v-bind:class="inputClasses"
+        :class="inputClasses"
 
-        v-bind:value="value"
-        v-on:blur="blur"
-        v-on:focus="focus"
-        v-on:input="args => $emit('input', args.target.value)"
-        v-on:keydown="keydown"
+        :value="value"
+        @blur="blur"
+        @focus="focus"
+        @input="args => $emit('input', args.target.value)"
+        @keydown="keydown"
     />
     <ul v-if="showSuggestions"
-        v-bind:class="ulClasses"
+        :class="ulClasses"
     >
       <li
           v-for="(suggestion, i) in suggestions"
-          v-bind:key="i"
-          v-bind:class="listItemClasses(suggestion, i)"
-          v-on:click="() => suggestionClick(i)"
-          v-on:mouseover="() => suggestionMouseover(i)"
+          :key="i"
+          :class="listItemClasses(suggestion, i)"
+          @click="() => suggestionClick(i)"
+          @mouseover="() => suggestionMouseover(i)"
       >
         {{ suggestion.toString() }}
       </li>
@@ -85,7 +85,7 @@ export default {
     },
 
     /**
-     * Current value of the text input. Use `v-on:input` to receive the value of the input (not an event)
+     * Current value of the text input. Use `@input` to receive the value of the input (not an event)
      */
     value: {
       default: ""

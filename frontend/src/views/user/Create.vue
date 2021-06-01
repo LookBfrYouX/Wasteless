@@ -5,7 +5,7 @@
           autocomplete="on"
           class="slightly-transparent-inputs"
           method="POST"
-          v-on:submit.prevent="register"
+          @submit.prevent="register"
       >
         <div class="row">
           <div class="col">
@@ -90,7 +90,7 @@
                 required
                 title="You must enter a valid email address. Dotless domains are not supported"
                 type="email"
-                v-bind:class="{'is-invalid': emailErrorMessage !== null }"
+                :class="{'is-invalid': emailErrorMessage !== null }"
             />
             <!-- regexp from https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type%3Demail), but modified to disallow dot-less domains -->
             <div class="invalid-feedback">{{ emailErrorMessage }}</div>
@@ -135,7 +135,7 @@
                 placeholder="Confirm password"
                 required
                 type="password"
-                v-bind:class="{'is-invalid': confirmPasswordErrorMessage !== null }"
+                :class="{'is-invalid': confirmPasswordErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ confirmPasswordErrorMessage }}</div>
           </div>
@@ -152,17 +152,17 @@
                 class="form-control"
                 name="dateOfBirth"
                 placeholder="Date of birth"
-                v-bind:min="oldestBirthdateAsString"
-                v-bind:max="youngestBirthdateAsString"
+                :min="oldestBirthdateAsString"
+                :max="youngestBirthdateAsString"
                 required
                 type="date"
-                v-bind:class="{ 'is-invalid': dateOfBirthErrorMessage !== null }"
+                :class="{ 'is-invalid': dateOfBirthErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ dateOfBirthErrorMessage }}</div>
           </div>
         </div>
 
-        <address-form v-bind:address="address" v-on:addressupdate="addressUpdate"/>
+        <address-form :address="address" @addressupdate="addressUpdate"/>
 
         <div class="form-row">
           <div class="col-12 col-md-3 mb-3">
@@ -174,14 +174,14 @@
                 autocomplete="tel-country-code"
                 class="form-control"
                 name="countryCode"
-                v-bind:class="{ 'is-invalid': countryCodeErrorMessage !== null }"
+                :class="{ 'is-invalid': countryCodeErrorMessage !== null }"
             >
               <!---Add blank element to country code list so that user can choose not to enter phone-->
               <option value=""></option>
               <option
                   v-for="country in countryData"
-                  v-bind:key="country.code"
-                  v-bind:value="country.phoneExtensionCode"
+                  :key="country.code"
+                  :value="country.phoneExtensionCode"
               >
                 {{ country.name }} (+{{ country.phoneExtensionCode }})
               </option>
@@ -199,7 +199,7 @@
                 placeholder="Phone number"
                 type="text"
                 maxlength="20"
-                v-bind:class="{'is-invalid': phoneErrorMessage !== null }"
+                :class="{'is-invalid': phoneErrorMessage !== null }"
             />
             <div class="invalid-feedback">{{ phoneErrorMessage }}</div>
           </div>

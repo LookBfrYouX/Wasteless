@@ -6,7 +6,7 @@
       <form
           class="slightly-transparent-inputs"
           method="POST"
-          v-on:submit.prevent="register"
+          @submit.prevent="register"
       >
         <div class="row">
           <div class="col">
@@ -35,7 +35,7 @@
                 class="form-control"
                 name="type"
                 required
-                v-bind:class="{ 'is-invalid': typeRequired }"
+                :class="{ 'is-invalid': typeRequired }"
             >
               <option v-for="code in types" :key="code.message">
                 {{ code }}
@@ -45,8 +45,8 @@
         </div>
 
         <address-form
-            v-bind:address="address"
-            v-on:addressupdate="addressUpdate"
+            :address="address"
+            @addressupdate="addressUpdate"
         />
 
         <div class="row>">

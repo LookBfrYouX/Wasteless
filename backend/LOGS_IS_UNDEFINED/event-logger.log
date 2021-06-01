@@ -1,0 +1,22 @@
+2021-06-01 22:24:09,155 INFO org.springframework.boot.StartupInfoLogger [main] Starting Main using Java 15.0.2 on RIO-SPECTRE with PID 2096 (C:\Users\rioog\Documents\GitHub\seng302\backend\build\classes\java\main started by rioog in C:\Users\rioog\Documents\GitHub\seng302\backend)
+2021-06-01 22:24:09,158 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2021-06-01 22:24:20,295 INFO org.springframework.boot.StartupInfoLogger [main] Started Main in 12.029 seconds (JVM running for 12.977)
+2021-06-01 22:24:20,300 INFO com.navbara_pigeons.wasteless.MainApplicationRunner [main] Startup application with org.springframework.boot.DefaultApplicationArguments@1a3a6216
+2021-06-01 22:24:35,603 INFO com.navbara_pigeons.wasteless.configuration.SchedulerConfig [scheduling-1] Inserted DGAA user
+2021-06-01 22:24:51,897 INFO com.navbara_pigeons.wasteless.controller.UserController [http-nio-9499-exec-4] SUCCESSFUL LOGIN: dnb36@uclive.ac.nz
+2021-06-01 22:24:51,964 INFO com.navbara_pigeons.wasteless.controller.UserController [http-nio-9499-exec-5] GETTING USER BY ID: 4
+2021-06-01 22:24:53,511 INFO com.navbara_pigeons.wasteless.controller.MarketListingController [http-nio-9499-exec-6] GETTING CARDS FROM THE 'ForSale' SECTION
+2021-06-01 22:25:02,736 INFO com.navbara_pigeons.wasteless.controller.MarketListingController [http-nio-9499-exec-8] CREATING A CARD WITH TITLE: Rio
+2021-06-01 22:25:02,788 INFO com.navbara_pigeons.wasteless.controller.MarketListingController [http-nio-9499-exec-9] GETTING CARDS FROM THE 'ForSale' SECTION
+2021-06-01 22:25:05,348 INFO com.navbara_pigeons.wasteless.controller.BusinessController [http-nio-9499-exec-2] GETTING BUSINESS BY ID: 1
+2021-06-01 22:25:06,484 INFO com.navbara_pigeons.wasteless.controller.BusinessController [http-nio-9499-exec-3] GETTING BUSINESS BY ID: 1
+2021-06-01 22:25:06,487 INFO com.navbara_pigeons.wasteless.controller.ListingController [http-nio-9499-exec-4] GETTING LISTINGS FOR BUSINESS WITH ID 1
+2021-06-01 22:25:07,430 INFO com.navbara_pigeons.wasteless.controller.ProductController [http-nio-9499-exec-5] RETRIEVED PRODUCTS FOR BUSINESS: 1
+2021-06-01 22:25:07,484 INFO com.navbara_pigeons.wasteless.controller.BusinessController [http-nio-9499-exec-6] GETTING BUSINESS BY ID: 1
+2021-06-01 22:25:08,211 INFO com.navbara_pigeons.wasteless.controller.ProductController [http-nio-9499-exec-7] RETRIEVED PRODUCTS FOR BUSINESS: 1
+2021-06-01 22:25:09,302 INFO com.navbara_pigeons.wasteless.controller.ProductController [http-nio-9499-exec-8] RETRIEVED PRODUCTS FOR BUSINESS: 1
+2021-06-01 22:25:13,268 INFO com.navbara_pigeons.wasteless.controller.ImageController [http-nio-9499-exec-9] PRODUCT 1 SUCCESSFULLY UPLOADED IMAGE defective-turrent.png TO BUSINESS 1
+2021-06-01 22:25:13,293 INFO com.navbara_pigeons.wasteless.controller.ProductController [http-nio-9499-exec-1] RETRIEVED PRODUCTS FOR BUSINESS: 1
+2021-06-01 22:25:14,764 INFO com.navbara_pigeons.wasteless.controller.ProductController [http-nio-9499-exec-3] RETRIEVED PRODUCTS FOR BUSINESS: 1
+2021-06-01 22:25:15,715 INFO com.navbara_pigeons.wasteless.controller.ProductController [http-nio-9499-exec-4] RETRIEVED PRODUCTS FOR BUSINESS: 1
+2021-06-01 22:25:15,739 INFO com.navbara_pigeons.wasteless.controller.BusinessController [http-nio-9499-exec-5] GETTING BUSINESS BY ID: 1

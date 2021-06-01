@@ -4,7 +4,7 @@
     <div class="d-sm-flex align-items-center">
       <router-link
         class="text-decoration-none green-text-hover"
-        v-bind:to="{ name: 'UserDetail', params: {userId: card.creator.id }}"
+        :to="{ name: 'UserDetail', params: {userId: card.creator.id }}"
       >
         <img alt="User is acting as self"
              class="nav-picture rounded-circle border"
@@ -32,7 +32,7 @@
         {{ card.description }}
       </div>
       <div class="mt-2 d-flex flex-wrap">
-        <div v-for="keyword in card.keywords" v-bind:key="keyword.id">
+        <div v-for="keyword in card.keywords" :key="keyword.id">
           <tag :xButton="false" class="mr-2 mb-2">
             {{ keyword.name }}
           </tag>

@@ -43,7 +43,7 @@
                 id="makeAdmin"
                 class="btn btn-white-bg-primary m-1 d-flex"
                 type="button"
-                v-on:click="makeAdmin(userId)"
+                @click="makeAdmin(userId)"
             >
               <span class="material-icons mr-1">person</span>
               Make Admin
@@ -53,14 +53,14 @@
                 id="revokeAdmin"
                 class="btn btn-white-bg-primary m-1 d-flex"
                 type="button"
-                v-on:click="revokeAdmin(userId)"
+                @click="revokeAdmin(userId)"
             >
               <span class="material-icons mr-1">person</span>
               Revoke Admin
             </button>
             <router-link
               v-if="isAdmin"
-              v-bind:to="{ name: 'MarketplaceCardCreateAdmin', params: { userId: userInfo.id }}"
+              :to="{ name: 'MarketplaceCardCreateAdmin', params: { userId: userInfo.id }}"
               class="btn btn-white-bg-primary m-1 d-flex"
             >
               Create Marketplace Card
@@ -69,7 +69,7 @@
                 v-if="isSignedIn && authUser.id === userInfo.id"
                 class="btn btn-white-bg-primary m-1 d-flex"
                 type="button"
-                v-bind:to="{ name: 'BusinessCreate' }"
+                :to="{ name: 'BusinessCreate' }"
             >
               <span class="material-icons mr-1">business</span>
               Register Business
@@ -91,11 +91,11 @@
           <ul class="profile-business-info list-unstyled">
             <li
                 v-for="(business, index) in userInfo.businessesAdministered"
-                v-bind:key="index"
+                :key="index"
                 class="list-group-item card text-wrap mb-2 border"
             >
               <router-link
-                v-bind:to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
+                :to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
                 class="text-reset text-decoration-none"
               >
                 <h5 class="business-name card-title card-link" >{{ business.name }}</h5>
@@ -162,11 +162,11 @@
     </div>
     <error-modal
         title="Error fetching user details"
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => apiErrorMessage = null"
-        v-bind:refresh="true"
-        v-bind:retry="this.apiPipeline"
-        v-bind:show="apiErrorMessage !== null"
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="true"
+        :retry="this.apiPipeline"
+        :show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>

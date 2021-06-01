@@ -31,12 +31,12 @@ The parent component must provide `address` prop. When the address is updated in
           placeholder="Street number"
           type="text"
 
-          v-bind:suggestions="[]"
-          v-bind:value="address.streetNumber"
-          v-on:focus="activeAddressInputName = 'streetNumber'"
+          :suggestions="[]"
+          :value="address.streetNumber"
+          @focus="activeAddressInputName = 'streetNumber'"
 
-          v-on:input="onAddressInput"
-          v-on:suggestion="suggestionSelected"
+          @input="onAddressInput"
+          @suggestion="suggestionSelected"
       />
       <!-- No suggestions for street number -->
     </div>
@@ -51,12 +51,12 @@ The parent component must provide `address` prop. When the address is updated in
           required
           type="text"
 
-          v-bind:suggestions="addressSuggestions"
-          v-bind:value="address.streetName"
-          v-on:focus="activeAddressInputName = 'streetName'"
+          :suggestions="addressSuggestions"
+          :value="address.streetName"
+          @focus="activeAddressInputName = 'streetName'"
 
-          v-on:input="onAddressInput"
-          v-on:suggestion="suggestionSelected"
+          @input="onAddressInput"
+          @suggestion="suggestionSelected"
       />
     </div>
     <div class="form-group required col-12 col-md-9 ml-auto">
@@ -70,12 +70,12 @@ The parent component must provide `address` prop. When the address is updated in
           required
           type="text"
 
-          v-bind:suggestions="addressSuggestions"
-          v-bind:value="address.suburb"
-          v-on:focus="activeAddressInputName = 'suburb'"
+          :suggestions="addressSuggestions"
+          :value="address.suburb"
+          @focus="activeAddressInputName = 'suburb'"
 
-          v-on:input="onAddressInput"
-          v-on:suggestion="suggestionSelected"
+          @input="onAddressInput"
+          @suggestion="suggestionSelected"
       />
     </div>
     <div class="form-group required col-12 col-md-6">
@@ -89,12 +89,12 @@ The parent component must provide `address` prop. When the address is updated in
           required
           type="text"
 
-          v-bind:suggestions="addressSuggestions"
-          v-bind:value="address.city"
-          v-on:focus="activeAddressInputName = 'city'"
+          :suggestions="addressSuggestions"
+          :value="address.city"
+          @focus="activeAddressInputName = 'city'"
 
-          v-on:input="onAddressInput"
-          v-on:suggestion="suggestionSelected"
+          @input="onAddressInput"
+          @suggestion="suggestionSelected"
       />
     </div>
     <div class="form-group required col-12 col-md-6">
@@ -108,12 +108,12 @@ The parent component must provide `address` prop. When the address is updated in
           required
           type="text"
 
-          v-bind:suggestions="addressSuggestions"
-          v-bind:value="address.region"
-          v-on:focus="activeAddressInputName = 'region'"
+          :suggestions="addressSuggestions"
+          :value="address.region"
+          @focus="activeAddressInputName = 'region'"
 
-          v-on:input="onAddressInput"
-          v-on:suggestion="suggestionSelected"
+          @input="onAddressInput"
+          @suggestion="suggestionSelected"
       />
     </div>
 
@@ -128,12 +128,12 @@ The parent component must provide `address` prop. When the address is updated in
           required
           type="text"
 
-          v-bind:suggestions="addressSuggestions"
-          v-bind:value="address.postcode"
-          v-on:focus="activeAddressInputName = 'postcode'"
+          :suggestions="addressSuggestions"
+          :value="address.postcode"
+          @focus="activeAddressInputName = 'postcode'"
 
-          v-on:input="onAddressInput"
-          v-on:suggestion="suggestionSelected"
+          @input="onAddressInput"
+          @suggestion="suggestionSelected"
       />
     </div>
     <div class="form-group required col-12 col-md-6">
@@ -145,17 +145,17 @@ The parent component must provide `address` prop. When the address is updated in
           name="country"
           placeholder="Country"
           required
-          v-bind:suggestions="addressSuggestions"
-          v-bind:value="address.country"
-          v-on:focus="activeAddressInputName = 'country'"
-          v-on:input="event => onAddressInput(event.target.value)"
-          v-on:suggestion="suggestionSelected"
+          :suggestions="addressSuggestions"
+          :value="address.country"
+          @focus="activeAddressInputName = 'country'"
+          @input="event => onAddressInput(event.target.value)"
+          @suggestion="suggestionSelected"
       >
         <!-- countryCodes is key-value map from code to name. Get array of codes, convert to {code, name} object array then sort by name -->
         <option
             v-for="country in countryData"
-            v-bind:key="country.code"
-            v-bind:value="country.name">{{ country.name }}
+            :key="country.code"
+            :value="country.name">{{ country.name }}
         </option>
       </select>
     </div>

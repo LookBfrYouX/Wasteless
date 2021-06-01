@@ -6,7 +6,7 @@
             v-if="thumbnailPathIfExists != null"
             alt="Product Image"
             class="image-fluid w-100 rounded-circle"
-            v-bind:src="thumbnailPathIfExists"
+            :src="thumbnailPathIfExists"
         >
         <!-- using v-else instead of settings the src because I have a feeling that Vue needs the image src to be static for it copy it as a static asset when we build the frontend. -->
         <img

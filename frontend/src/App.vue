@@ -1,12 +1,12 @@
 <template>
   <div id="app">
     <navbar
-        v-bind:query="query"
-        v-on:input="event => this.query = event.target.value"
+        :query="query"
+        @input="event => this.query = event.target.value"
     />
     <div class="w-100 main-content d-flex justify-content-center gradient-background">
       <router-view
-          v-on:initial-search-value="updateInput"
+          @initial-search-value="updateInput"
       ></router-view>
     </div>
     <footer class="info">

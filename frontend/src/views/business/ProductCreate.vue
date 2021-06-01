@@ -7,7 +7,7 @@
         <form
             class="slightly-transparent-inputs"
             method="POST"
-            v-on:submit.prevent="createProduct"
+            @submit.prevent="createProduct"
         >
           <div class="row">
             <div class="col">
@@ -41,7 +41,7 @@
                   required
                   step="0.01"
                   type="number"
-                  v-bind:placeholder="currencyText"
+                  :placeholder="currencyText"
               />
             </div>
           </div>
@@ -96,11 +96,11 @@
     <error-modal
         class="p-absolute w-100"
         title="Could not retrieve business data"
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => apiErrorMessage = null"
-        v-bind:refresh="false"
-        v-bind:retry="currencyPipeline"
-        v-bind:show="apiErrorMessage != null"
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="false"
+        :retry="currencyPipeline"
+        :show="apiErrorMessage != null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>

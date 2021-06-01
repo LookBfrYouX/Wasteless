@@ -1,9 +1,9 @@
 <template>
   <div class="w-100">
     <sorted-paginated-item-list
-      v-bind:items="listings"
-      v-bind:sortOptions="sortOptions"
-      v-bind:currentSortOption.sync="currentSortOption"
+      :items="listings"
+      :sortOptions="sortOptions"
+      :currentSortOption.sync="currentSortOption"
     >
       <template v-slot:title>
         <h2>Inventory for {{businessName? businessName: "business"}}</h2>
@@ -11,7 +11,7 @@
       <template v-slot:item="slotProps">
         <inventory-item-card
             class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
-            v-bind:item="slotProps.item"
+            :item="slotProps.item"
             :businessId="businessId"
             :currency="currency"
         />
@@ -28,11 +28,11 @@
     </sorted-paginated-item-list>
     <error-modal
       title="Error viewing inventory"
-      v-bind:goBack="false"
-      v-bind:hideCallback="() => apiErrorMessage = null"
-      v-bind:refresh="true"
-      v-bind:retry="this.getInventory"
-      v-bind:show="apiErrorMessage !== null"
+      :goBack="false"
+      :hideCallback="() => apiErrorMessage = null"
+      :refresh="true"
+      :retry="this.getInventory"
+      :show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>

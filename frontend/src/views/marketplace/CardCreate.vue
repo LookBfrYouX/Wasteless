@@ -4,7 +4,7 @@
       autocomplete="on"
       class="container slightly-transparent-inputs"
       method="POST"
-      v-on:submit.prevent="create"
+      @submit.prevent="create"
     >
       <div class="row">
         <div class="col">
@@ -19,23 +19,23 @@
           </span>
           <div
             class="btn-group"
-            v-bind:class="{
+            :class="{
             }"
           >
             <button
               v-for="([sectionKey, sectionName]) in Object.entries($constants.MARKETPLACE.SECTIONS)"
-              v-bind:key="sectionKey"
+              :key="sectionKey"
               type="button"
               class="btn btn-primary"
-              v-bind:class="{ active: section == sectionKey }"
-              v-on:click="section = sectionKey"
+              :class="{ active: section == sectionKey }"
+              @click="section = sectionKey"
             >
               {{ sectionName }}
             </button>
           </div>
           <div
             class="invalid-feedback"
-            v-bind:class="{
+            :class="{
               'd-block': !Object.keys($constants.MARKETPLACE.SECTIONS).includes(section)
             }"
           >
@@ -64,9 +64,9 @@
               v-else
               v-for="tag in tags"
               class="mr-2 mb-2"
-              v-bind:key="tag.id"
-              v-bind:xButton="true"
-              v-on:xClick="removeTag(tag.id)"
+              :key="tag.id"
+              :xButton="true"
+              @xClick="removeTag(tag.id)"
             >
               {{tag.name}}
             </tag>
@@ -75,7 +75,7 @@
             <button
               class="btn btn-primary w-100"
               v-if="!showSuggestions"
-              v-on:click="showSuggestionsInput"
+              @click="showSuggestionsInput"
             >
               Add Tag 
             </button>
@@ -87,12 +87,12 @@
               placeholder="Add a Tag"
               type="text"
               ref="suggestionsInput"
-              v-bind:liActiveClasses="{'bg-primary': true, 'text-light': true}"
-              v-bind:suggestions="tagSuggestions"
-              v-bind:value="tagInputValue"
-              v-on:input="value => tagInputValue = value"
-              v-on:suggestion="tagSuggestionSelected"
-              v-on:blur="showSuggestions = false"
+              :liActiveClasses="{'bg-primary': true, 'text-light': true}"
+              :suggestions="tagSuggestions"
+              :value="tagInputValue"
+              @input="value => tagInputValue = value"
+              @suggestion="tagSuggestionSelected"
+              @blur="showSuggestions = false"
             />
           </div>
         </div>

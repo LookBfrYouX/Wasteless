@@ -2,7 +2,7 @@
   <div ref="modal" class="modal fade">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <button class="btn btn-danger d-flex p-0 justify-content-center align-items-center rounded-circle close-button" type="button" v-on:click="hideCallback">
+        <button class="btn btn-danger d-flex p-0 justify-content-center align-items-center rounded-circle close-button" type="button" @click="hideCallback">
         <span class="material-icons">close</span>
       </button>
         <div class="modal-header">
@@ -12,13 +12,13 @@
           <slot></slot>
         </div>
         <div class="modal-footer">
-          <button v-if="retry" class="btn btn-primary" type="button" v-on:click="retryClicked">
+          <button v-if="retry" class="btn btn-primary" type="button" @click="retryClicked">
             Retry
           </button>
-          <button v-if="refresh" class="btn btn-primary" type="button" v-on:click="refreshClicked">
+          <button v-if="refresh" class="btn btn-primary" type="button" @click="refreshClicked">
             Refresh Page
           </button>
-          <button v-if="goBack" class="btn btn-primary" type="button" v-on:click="goBackClicked">
+          <button v-if="goBack" class="btn btn-primary" type="button" @click="goBackClicked">
             Go back
           </button>
         </div>

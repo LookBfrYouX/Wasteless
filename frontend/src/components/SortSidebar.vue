@@ -2,20 +2,20 @@
   <div class="sort-results bg-light">
     <div class="p-3">
       <h3 class="d-inline">Sort By:</h3>
-      <button class="float-right btn btn-light d-flex" type="button" v-on:click="closeClicked()">
+      <button class="float-right btn btn-light d-flex" type="button" @click="closeClicked()">
         <span class="material-icons">clear</span>
       </button>
       <ul
         id="search-headers"
         class="list-unstyled w-100 mt-2"
-        v-bind:class="{'table-reversed': currentSortOption.reversed}"
+        :class="{'table-reversed': currentSortOption.reversed}"
       >
         <li
             v-for="(sortOption, i) in sortOptions"
-            v-bind:key="sortOption.name"
+            :key="sortOption.name"
             class="w-100"
-            v-bind:class='{"current-sort": currentSortOption.name == sortOption.name}'
-            v-on:click="sortByClicked(sortOption)"
+            :class='{"current-sort": currentSortOption.name == sortOption.name}'
+            @click="sortByClicked(sortOption)"
         > 
         <!--
             Currently selected item (found by comparing names, so name must be unique within the list of

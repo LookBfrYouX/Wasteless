@@ -1,7 +1,7 @@
 <template>
   <div class="w-100 d-flex justify-content-center sign-in-container gradient-background pb-4">
     <div class="container">
-      <form class="slightly-transparent-inputs" v-on:submit.prevent="signIn">
+      <form class="slightly-transparent-inputs" @submit.prevent="signIn">
         <div class="row">
           <div class="col">
             <h1>Sign In</h1>
@@ -47,7 +47,7 @@
               <router-link
                   class="btn btn-white-bg-primary hover-cursor-pointer"
                   type="button"
-                  v-bind:to="{ name: 'UserCreate' }"
+                  :to="{ name: 'UserCreate' }"
               >
                 Sign Up
               </router-link>

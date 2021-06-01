@@ -2,12 +2,12 @@
   <ul class="d-flex pagination">
     <li
       v-for="({pageNum, key, text}) in pages"
-      v-bind:key="key"
-      v-bind:class="{disabled: pageNum == current}"
+      :key="key"
+      :class="{disabled: pageNum == current}"
       class="page-item"
     >
       <a
-        v-on:click="setPage(pageNum)"
+        @click="setPage(pageNum)"
         class="page-link hover-cursor-pointer"
       >
         {{text}}

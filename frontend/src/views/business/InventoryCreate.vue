@@ -2,7 +2,7 @@
   <div class="container mt-2">
     <form class="slightly-transparent-inputs"
           method="POST"
-          v-on:submit.prevent="addItem"
+          @submit.prevent="addItem"
     >
       <div class="row">
         <div class="col text-center">
@@ -15,7 +15,7 @@
         <div class="col-12 col-md-6 form-group required">
           <label for="productDropdown">Select product</label>
           <select required class="form-control" id="productDropdown" v-model="product">
-            <option v-for="product in products" :key="product.id" v-bind:value="product">
+            <option v-for="product in products" :key="product.id" :value="product">
               {{ product.name }}
             </option>
           </select>
@@ -45,7 +45,7 @@
               type="number"
               min="0.01"
               step="0.01"
-              v-bind:placeholder="currencyText"
+              :placeholder="currencyText"
           />
         </div>
         <div class="col-12 col-md-6 form-group">
@@ -56,10 +56,10 @@
               class="form-control"
               name="totalPrice"
               type="number"
-              v-bind:max="pricePerItem * quantity"
+              :max="pricePerItem * quantity"
               step="0.01"
               min="0.0"
-              v-bind:placeholder="currencyText"
+              :placeholder="currencyText"
           />
         </div>
       </div>
@@ -71,7 +71,7 @@
               v-model="manufactured"
               class="form-control"
               maxlength="30"
-              v-bind:max="todayDate"
+              :max="todayDate"
               name="manufactured"
               placeholder="Manufactured"
               type="date"
@@ -84,7 +84,7 @@
               v-model="sellBy"
               class="form-control"
               maxlength="30"
-              v-bind:min="todayDate"
+              :min="todayDate"
               name="sellBy"
               placeholder="Sell By"
               type="date"
@@ -99,7 +99,7 @@
               v-model="bestBefore"
               class="form-control"
               maxlength="30"
-              v-bind:min="todayDate"
+              :min="todayDate"
               name="bestBefore"
               placeholder="Best before"
               type="date"
@@ -112,7 +112,7 @@
               v-model="expires"
               class="form-control"
               maxlength="30"
-              v-bind:min="todayDate"
+              :min="todayDate"
               name="expires"
               required
               placeholder="Expires"
@@ -133,11 +133,11 @@
     </form>
     <error-modal
         title="Error fetching business products"
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => apiErrorMessage = null"
-        v-bind:refresh="true"
-        v-bind:retry="this.populateDropdown"
-        v-bind:show="apiErrorMessage !== null"
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="true"
+        :retry="this.populateDropdown"
+        :show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>

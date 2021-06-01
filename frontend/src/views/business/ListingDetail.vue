@@ -10,7 +10,7 @@
             </h2>
           </div>
           <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
-                  v-on:click="$router.go(-1)">
+                  @click="$router.go(-1)">
             <span class="material-icons mr-1">arrow_back</span>
             Back
           </button>
@@ -25,7 +25,7 @@
         </div>
         <div class="col-md-6">
           <div class="primary-image-wrapper">
-            <img v-if="productImages.length !== 0" v-bind:src="productImages[0].filename"
+            <img v-if="productImages.length !== 0" :src="productImages[0].filename"
                  alt="Primary images">
             <img v-else src="@/../assets/images/default-product-thumbnail.svg"
                  alt="Default product image">
@@ -41,10 +41,10 @@
       </div>
       <div class="row my-2">
         <div v-for="(image, index) in productImages"
-             v-bind:key="image.id"
+             :key="image.id"
              class="col-12 col-md-6 col-lg-4 p-2"
              :class="{ 'd-none': index === 0}">
-          <img v-bind:src="image.filename"
+          <img :src="image.filename"
                class="img-fluid"
                alt="Product Image">
         </div>
@@ -52,11 +52,11 @@
     </div>
     <error-modal
         title="Error fetching product information"
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => apiErrorMessage = null"
-        v-bind:refresh="true"
-        v-bind:retry="this.apiPipeline"
-        v-bind:show="apiErrorMessage !== null"
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="true"
+        :retry="this.apiPipeline"
+        :show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>

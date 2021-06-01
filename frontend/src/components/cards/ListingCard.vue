@@ -7,7 +7,7 @@
             v-if="item.inventoryItem.product.images.length"
             alt="Product Image"
             class="image-fluid w-100 rounded-circle mb-2"
-            v-bind:src="item.inventoryItem.product.images[0].thumbnailFilename"
+            :src="item.inventoryItem.product.images[0].thumbnailFilename"
         >
         <img
             v-else

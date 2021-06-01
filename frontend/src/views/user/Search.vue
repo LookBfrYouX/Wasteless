@@ -1,20 +1,20 @@
 <template>
   <div class="w-100">
     <sorted-paginated-item-list
-      v-bind:items="results"
-      v-bind:sortOptions="sortOptions"
-      v-bind:currentSortOption.sync="currentSortOption"
+      :items="results"
+      :sortOptions="sortOptions"
+      :currentSortOption.sync="currentSortOption"
     >
       <template v-slot:title>
         <h2>Search Results</h2>
       </template>
       <template v-slot:item="slotProps">
         <router-link
-          v-bind:to="{ name: 'UserDetail', params: { userId: slotProps.item.id }}"
+          :to="{ name: 'UserDetail', params: { userId: slotProps.item.id }}"
           class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 p-3 rounded"
         >
           <user-list-item
-            v-bind:user="slotProps.item"
+            :user="slotProps.item"
           />
         </router-link>
       </template>
@@ -24,11 +24,11 @@
     </sorted-paginated-item-list>
     <error-modal
         title="Error making search request"
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => apiErrorMessage = null"
-        v-bind:refresh="true"
-        v-bind:retry="this.query"
-        v-bind:show="apiErrorMessage !== null"
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="true"
+        :retry="this.query"
+        :show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>

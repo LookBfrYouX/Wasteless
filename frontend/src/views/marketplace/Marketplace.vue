@@ -11,7 +11,7 @@
         </h2>
         <router-link
           class="btn btn-primary mb-2"
-          v-bind:to="{ name: 'MarketplaceCardCreate' }"
+          :to="{ name: 'MarketplaceCardCreate' }"
         >
           Create a Card
         </router-link>
@@ -21,21 +21,21 @@
       <div class="col-12">
         <div
             class="btn-group w-100 d-flex flex-wrap"
-            v-bind:class="{
+            :class="{
             }"
           >
             <button
               v-for="([sectionKey, sectionName]) in Object.entries($constants.MARKETPLACE.SECTIONS)"
-              v-bind:key="sectionKey"
+              :key="sectionKey"
               type="button"
               class="btn btn-primary mb-0"
-              v-bind:class="{ active: section == sectionKey }"
-              v-on:click="section = sectionKey"
+              :class="{ active: section == sectionKey }"
+              @click="section = sectionKey"
             >
               <h4 class="text-center mb-0">{{ sectionName }}</h4>
             </button>
           </div>
-        <marketplace-card-container v-bind:section="section"/>
+        <marketplace-card-container :section="section"/>
       </div>
     </div>
   </div>

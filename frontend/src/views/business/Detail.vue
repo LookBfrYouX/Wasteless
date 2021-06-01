@@ -4,7 +4,7 @@
       <h1 class="title">Business Information</h1>
       <button v-if="showBackButton"
               class="btn btn-white-bg-primary mr-1 d-flex align-items-end mb-3"
-              type="button" v-on:click="$router.go(-1)">
+              type="button" @click="$router.go(-1)">
         <span class="material-icons mr-1">arrow_back</span>
         Go back
       </button>
@@ -30,12 +30,12 @@
           <dt class="col-md label">Administrator:</dt>
           <dd
             v-for="admin in businessInfo.administrators"
-            v-bind:key="admin.id"
+            :key="admin.id"
             class="col-md value"
           >
               <router-link
                 class="admin-link hover-cursor-pointer text-decoration-none"
-                v-bind:to="{ name: 'UserDetail', params: { userId: admin.id }}"
+                :to="{ name: 'UserDetail', params: { userId: admin.id }}"
               >
                 {{ admin.firstName }} {{ admin.lastName }}
               </router-link>
@@ -46,7 +46,7 @@
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
             v-if="canEditBusiness"
-            v-bind:to="{ name: 'BusinessProductCreate', params: { businessId }}"
+            :to="{ name: 'BusinessProductCreate', params: { businessId }}"
         >
           <span class="material-icons mr-1">add</span>
           Add Product To Catalogue
@@ -54,7 +54,7 @@
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
             v-if="canEditBusiness"
-            v-bind:to="{ name: 'BusinessProducts', params: { businessId }}"
+            :to="{ name: 'BusinessProducts', params: { businessId }}"
         >
           <span class="material-icons mr-1">list</span>
           View Catalogue
@@ -62,14 +62,14 @@
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
             v-if="canEditBusiness"
-            v-bind:to="{ name: 'BusinessInventory', params: { businessId }}"
+            :to="{ name: 'BusinessInventory', params: { businessId }}"
         >
           <span class="material-icons mr-1">inventory</span>
           View Inventory 
         </router-link>
         <router-link
             class="btn btn-white-bg-primary m-1 d-flex"
-            v-bind:to="{ name: 'BusinessListings', params: { businessId }}"
+            :to="{ name: 'BusinessListings', params: { businessId }}"
         >
           <span class="material-icons mr-1">storefront</span>
           View Listings
@@ -78,11 +78,11 @@
       </div>
       <error-modal
           title="Error fetching business details"
-          v-bind:goBack="true"
-          v-bind:hideCallback="() => (apiErrorMessage = null)"
-          v-bind:refresh="false"
-          v-bind:retry="false"
-          v-bind:show="apiErrorMessage !== null"
+          :goBack="true"
+          :hideCallback="() => (apiErrorMessage = null)"
+          :refresh="false"
+          :retry="false"
+          :show="apiErrorMessage !== null"
       >
         <p>{{ apiErrorMessage }}</p>
       </error-modal>

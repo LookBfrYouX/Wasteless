@@ -7,7 +7,7 @@
           <router-link
             v-if="isActingAsUser"
             class="btn btn-white-bg-primary m-1 d-flex"
-            v-bind:to="{ name: 'Marketplace' }"
+            :to="{ name: 'Marketplace' }"
           >
             <span class="material-icons mr-1">store</span>
             Marketplace

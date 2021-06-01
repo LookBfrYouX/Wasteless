@@ -2,17 +2,17 @@
   <div class="overflow-auto">
     <div
       v-for="card in cards"
-      v-bind:key="card.id"
+      :key="card.id"
       >
       <marketplace-card :card="card"/>
     </div>
     <error-modal
         title="Error viewing inventory"
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => apiErrorMessage = null"
-        v-bind:refresh="true"
-        v-bind:retry="this.getCardsFromAPI"
-        v-bind:show="apiErrorMessage !== null"
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="true"
+        :retry="this.getCardsFromAPI"
+        :show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>

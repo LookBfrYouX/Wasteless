@@ -1,16 +1,16 @@
 <template>
   <div class="w-100">
     <sorted-paginated-item-list
-      v-bind:items="products"
-      v-bind:sortOptions="sortOptions"
-      v-bind:currentSortOption.sync="currentSortOption"
+      :items="products"
+      :sortOptions="sortOptions"
+      :currentSortOption.sync="currentSortOption"
     >
       <template v-slot:title>
         <h2>Product Catalogue {{businessName? `for ${businessName}`: ""}}</h2>
       </template>
       <template v-slot:right-button>
         <router-link
-          v-bind:to="{name: 'BusinessProductCreate', params: { businessId }}"
+          :to="{name: 'BusinessProductCreate', params: { businessId }}"
           class="btn btn-info"
         >
           Create Product
@@ -18,12 +18,12 @@
       </template>
       <template v-slot:item="slotProps">
         <router-link
-          v-bind:to="{ name: 'BusinessProductDetail', params: { businessId, productId: slotProps.item.id }}"
+          :to="{ name: 'BusinessProductDetail', params: { businessId, productId: slotProps.item.id }}"
           class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-2 p-3 rounded"
         >
           <product-catalogue-list-item
-            v-bind:product="slotProps.item"
-            v-bind:currency="currency"
+            :product="slotProps.item"
+            :currency="currency"
           />
         </router-link>
       </template>
@@ -33,11 +33,11 @@
     </sorted-paginated-item-list>
     <error-modal
         title="Error viewing business catalog"
-        v-bind:goBack="false"
-        v-bind:hideCallback="() => apiErrorMessage = null"
-        v-bind:refresh="true"
-        v-bind:retry="this.query"
-        v-bind:show="apiErrorMessage !== null"
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="true"
+        :retry="this.query"
+        :show="apiErrorMessage !== null"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>

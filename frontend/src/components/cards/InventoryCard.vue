@@ -2,7 +2,7 @@
   <!-- this component produces the item card component from the given props -->
   <div class="container card item-card collapsed"
        data-toggle="collapse"
-       v-bind:data-target="'#' + idPrefix + item.id"
+       :data-target="'#' + idPrefix + item.id"
        >
     <div class="row card-body">
       <div class="col-2 p-0">
@@ -10,7 +10,7 @@
             v-if="item.product.images.length"
             alt="Product Image"
             class="image-fluid w-100 rounded-circle"
-            v-bind:src="item.product.images[0].thumbnailFilename"
+            :src="item.product.images[0].thumbnailFilename"
         >
         <img
             v-else
@@ -39,9 +39,9 @@
         </h4>
 
         <div class="collapse"
-             v-bind:id="idPrefix + item.id">
+             :id="idPrefix + item.id">
           <div v-for="(meta, index) in metaValues"
-               v-bind:key="index">
+               :key="index">
             <h4 v-if="index !== 0"
                 >
               <small>{{ meta.key }}:</small> <span class="text-nowrap">{{ meta.value }}</span></h4>
