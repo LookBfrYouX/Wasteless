@@ -21,7 +21,8 @@ public class HibernateCriteriaQueryBuilder {
 
   }
 
-  public static CriteriaQuery<MarketListing> parseListingQuery(Session currentSession, String listingSection) {
+  public static CriteriaQuery<MarketListing> parseListingQuery(Session currentSession,
+      String listingSection) {
     // Create Builder
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<MarketListing> criteriaQuery = criteriaBuilder.createQuery(MarketListing.class);

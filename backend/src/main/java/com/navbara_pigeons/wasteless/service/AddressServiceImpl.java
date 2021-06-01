@@ -36,7 +36,8 @@ public class AddressServiceImpl implements AddressService {
     }
 
     if (!isCountryValid(address.getCountry())) {
-      throw new AddressValidationException("Country does not exist or is not known: " + address.getCountry());
+      throw new AddressValidationException(
+          "Country does not exist or is not known: " + address.getCountry());
     }
 
     addressDao.saveAddress(address);

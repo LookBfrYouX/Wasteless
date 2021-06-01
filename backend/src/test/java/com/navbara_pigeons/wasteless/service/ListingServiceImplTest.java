@@ -1,5 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
@@ -7,36 +9,31 @@ import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import java.util.List;
 import org.springframework.security.test.context.support.WithMockUser;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 public class ListingServiceImplTest extends ServiceTestProvider {
 
-  @InjectMocks
-  private ListingServiceImpl listingService;
-  @Mock
-  private BusinessService businessService;
+  private final String email = "tony@tony.tony";
+  private final String password = "tonyTony1";
   @Mock
   ListingDao listingDao;
   @Mock
   UserService userService;
   @Mock
   InventoryService inventoryService;
-
-  private final String email = "tony@tony.tony";
-  private final String password = "tonyTony1";
+  @InjectMocks
+  private ListingServiceImpl listingService;
+  @Mock
+  private BusinessService businessService;
   private Long userId;
   private Long businessId;
 

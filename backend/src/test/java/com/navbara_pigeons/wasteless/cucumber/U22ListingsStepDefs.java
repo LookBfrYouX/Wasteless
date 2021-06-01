@@ -1,5 +1,8 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
@@ -10,16 +13,9 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class U22ListingsStepDefs extends CucumberTestProvider {
 
@@ -156,8 +152,10 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
         .andReturn();
     int expiresIndex = response.getResponse().getContentAsString().indexOf("expires");
     int closesIndex = response.getResponse().getContentAsString().indexOf("closes");
-    String expires = response.getResponse().getContentAsString().substring(expiresIndex+10, expiresIndex+20);
-    String closes = response.getResponse().getContentAsString().substring(closesIndex+9, closesIndex+19);
+    String expires = response.getResponse().getContentAsString()
+        .substring(expiresIndex + 10, expiresIndex + 20);
+    String closes = response.getResponse().getContentAsString()
+        .substring(closesIndex + 9, closesIndex + 19);
 
     Assertions.assertEquals(expires, closes);
   }

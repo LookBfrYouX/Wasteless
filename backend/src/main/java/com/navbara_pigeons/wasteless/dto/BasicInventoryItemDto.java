@@ -4,7 +4,6 @@ package com.navbara_pigeons.wasteless.dto;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import java.time.LocalDate;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 
 @Data
 public class BasicInventoryItemDto {

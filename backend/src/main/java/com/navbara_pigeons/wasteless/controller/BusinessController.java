@@ -2,7 +2,11 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -42,7 +46,8 @@ public class BusinessController {
    * @throws ResponseStatusException Unknown Error.
    */
   @PostMapping("/businesses")
-  public ResponseEntity<JSONObject> registerBusiness(@RequestBody CreateBusinessDto business) throws UserNotFoundException, AddressValidationException, BusinessTypeException, BusinessRegistrationException {
+  public ResponseEntity<JSONObject> registerBusiness(@RequestBody CreateBusinessDto business)
+      throws UserNotFoundException, AddressValidationException, BusinessTypeException, BusinessRegistrationException {
     JSONObject businessId = businessService.saveBusiness(new Business(business));
     log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
     return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));
@@ -56,7 +61,8 @@ public class BusinessController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/businesses/{id}")
-  public ResponseEntity<Object> getBusinessById(@PathVariable String id) throws UserNotFoundException, BusinessNotFoundException {
+  public ResponseEntity<Object> getBusinessById(@PathVariable String id)
+      throws UserNotFoundException, BusinessNotFoundException {
     log.info("GETTING BUSINESS BY ID: " + id);
     return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)),
         HttpStatus.valueOf(200));

@@ -1,13 +1,16 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
+import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.controller.BusinessController;
 import com.navbara_pigeons.wasteless.controller.ProductController;
 import com.navbara_pigeons.wasteless.controller.UserController;
 import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.security.service.BasicUserDetailsServiceImpl;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
+import com.navbara_pigeons.wasteless.security.service.BasicUserDetailsServiceImpl;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +19,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
-
-import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @CucumberContextConfiguration
 public class CucumberTestProvider extends MainTestProvider {
@@ -45,7 +44,8 @@ public class CucumberTestProvider extends MainTestProvider {
     SecurityContextHolder.getContext().setAuthentication(
         new UsernamePasswordAuthenticationToken(
             basicUserDetailsService.loadUserByUsername(email),
-            basicUserDetailsService.loadUserByUsername(email), // This one is probably wrong but no one cares
+            basicUserDetailsService.loadUserByUsername(email),
+            // This one is probably wrong but no one cares
             createAuthorityList("ADMIN")
         )
     );
@@ -60,38 +60,48 @@ public class CucumberTestProvider extends MainTestProvider {
   }
 
   /**
-   * Make post request to endpoint with JSON data, expecting some status code and expected some JSON to get returned
+   * Make post request to endpoint with JSON data, expecting some status code and expected some JSON
+   * to get returned
+   *
    * @param endpoint
-   * @param data Java object
-   * @param expect e.g. status.getCreated(). can be null
+   * @param data     Java object
+   * @param expect   e.g. status.getCreated(). can be null
    * @return
    * @throws Exception
    */
-  protected JsonNode makePostRequestGetJson(String endpoint, Object data, ResultMatcher expect) throws Exception {
+  protected JsonNode makePostRequestGetJson(String endpoint, Object data, ResultMatcher expect)
+      throws Exception {
     ResultActions result = mockMvc.perform(
         post(endpoint)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(data))
     );
 
-    if (expect != null) result = result.andExpect(expect);
+    if (expect != null) {
+      result = result.andExpect(expect);
+    }
     String response = result.andReturn().getResponse().getContentAsString();
 
     return objectMapper.readTree(response);
   }
+
   /**
-   * Make get request to endpoint, expecting some status code and expected some JSON to get returned
+   * Make get request to endpoint, expecting some status code and expected some JSON to get
+   * returned
+   *
    * @param endpoint
-   * @param expect e.g. status.getCreated(). can be null
+   * @param expect   e.g. status.getCreated(). can be null
    * @return objectMapped response
    * @throws Exception
    */
   protected JsonNode makeGetRequestGetJson(String endpoint, ResultMatcher expect) throws Exception {
     ResultActions result = mockMvc.perform(
-            get(endpoint).contentType(MediaType.APPLICATION_JSON)
+        get(endpoint).contentType(MediaType.APPLICATION_JSON)
     );
 
-    if (expect != null) result = result.andExpect(expect);
+    if (expect != null) {
+      result = result.andExpect(expect);
+    }
     String response = result.andReturn().getResponse().getContentAsString();
 
     return objectMapper.readTree(response);
@@ -106,8 +116,10 @@ public class CucumberTestProvider extends MainTestProvider {
     credentials.setPassword("fun123");
     this.userController.login(credentials);
   }
+
   /**
-   * Logs in as non admin user using userController. See `login`, may or may not be exactly the same
+   * Logs in as non admin user using userController. See `login`, may or may not be exactly the
+   * same
    */
   void nonAdminLogin(String email) throws UserNotFoundException, UserAuthenticationException {
     UserCredentials credentials = new UserCredentials();

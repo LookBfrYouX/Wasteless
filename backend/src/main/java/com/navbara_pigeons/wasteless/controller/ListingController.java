@@ -3,8 +3,10 @@ package com.navbara_pigeons.wasteless.controller;
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.ListingService;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -37,7 +39,7 @@ public class ListingController {
    * Adds an inventory item to a businesses inventory
    *
    * @param businessId Id of the business to add the listing to
-   * @param listingDto    listing to add to the business
+   * @param listingDto listing to add to the business
    * @return Returns the newly created listing id and 201 status code in a ResponseEntity
    */
   @PostMapping("/businesses/{businessId}/listings")
@@ -45,7 +47,8 @@ public class ListingController {
       @RequestBody CreateListingDto listingDto)
       throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ListingValidationException, InventoryItemNotFoundException {
 
-    Long listingId = listingService.addListing(businessId, listingDto.getInventoryItemId(), new Listing(listingDto));
+    Long listingId = listingService
+        .addListing(businessId, listingDto.getInventoryItemId(), new Listing(listingDto));
     log.info("LISTING CREATED SUCCESSFULLY: " + listingId + " FOR BUSINESS " + businessId);
     JSONObject response = new JSONObject();
     response.appendField("listingId", listingId);
@@ -54,13 +57,15 @@ public class ListingController {
 
   /**
    * This controller endpoint is used to retrieve businesses listings from a specified business.
+   *
    * @param id The business ID
    * @return A ResponseEntity with a list of listings.
-   * @throws UserNotFoundException Handled in ControllerExceptionHandler class.
+   * @throws UserNotFoundException     Handled in ControllerExceptionHandler class.
    * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/listings")
-  public ResponseEntity<Object> getBusinessById(@PathVariable long id) throws UserNotFoundException, BusinessNotFoundException {
+  public ResponseEntity<Object> getBusinessById(@PathVariable long id)
+      throws UserNotFoundException, BusinessNotFoundException {
     log.info("GETTING LISTINGS FOR BUSINESS WITH ID " + id);
     return new ResponseEntity<>(listingService.getListings(id),
         HttpStatus.valueOf(200));

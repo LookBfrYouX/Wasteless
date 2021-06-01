@@ -13,15 +13,13 @@ import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.validation.InventoryServiceValidation;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.navbara_pigeons.wasteless.validation.InventoryServiceValidation;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 /**
  * Class for dealing with all business logic to do with Inventories
@@ -42,7 +40,8 @@ public class InventoryServiceImpl implements InventoryService {
    * interacting with all business related services.
    */
   @Autowired
-  public InventoryServiceImpl(BusinessDao businessDao, UserService userService, BusinessService businessService, ProductService productService, InventoryDao inventoryDao) {
+  public InventoryServiceImpl(BusinessDao businessDao, UserService userService,
+      BusinessService businessService, ProductService productService, InventoryDao inventoryDao) {
     this.businessDao = businessDao;
     this.userService = userService;
     this.businessService = businessService;
@@ -76,8 +75,9 @@ public class InventoryServiceImpl implements InventoryService {
 
   /**
    * Returns an inventory item by a given id
+   *
    * @param businessId business with inventory to query
-   * @param itemId id of the item to be retrieved
+   * @param itemId     id of the item to be retrieved
    * @return inventory item or null
    */
   public InventoryItem getInventoryItemById(long businessId, long itemId)
@@ -85,7 +85,7 @@ public class InventoryServiceImpl implements InventoryService {
     Business business = businessDao.getBusinessById(businessId);
     List<InventoryItem> inventory = business.getInventory();
 
-    for (InventoryItem inventoryItem: inventory) {
+    for (InventoryItem inventoryItem : inventory) {
       if (inventoryItem.getId() == itemId) {
         return inventoryItem;
       }
@@ -98,13 +98,13 @@ public class InventoryServiceImpl implements InventoryService {
    * ProductDao given the business ID.
    *
    * @param businessId, Create The ID of the business whose products are to be retrieved.
-   * @return  A List<Product> of products that are in the business product
-   * catalogue.
+   * @return A List<Product> of products that are in the business product catalogue.
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
   @Transactional
-  public long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItemDto) throws InventoryRegistrationException, InsufficientPrivilegesException {
+  public long addInventoryItem(long businessId, CreateInventoryItemDto inventoryItemDto)
+      throws InventoryRegistrationException, InsufficientPrivilegesException {
     Business business;
     try {
       business = businessDao.getBusinessById(businessId);
@@ -113,7 +113,7 @@ public class InventoryServiceImpl implements InventoryService {
       product = productService.getProduct(productId);
       if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
         throw new InsufficientPrivilegesException(
-                "User does not have permission to add an inventory item to the business");
+            "User does not have permission to add an inventory item to the business");
       }
       InventoryItem inventoryItem = new InventoryItem(inventoryItemDto);
       inventoryItem.setProduct(product);

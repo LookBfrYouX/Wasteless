@@ -43,7 +43,8 @@ public class U19CreateInventoryStepDefs extends CucumberTestProvider {
   }
 
   @Given("{string} administers a business {string} with an inventory item {string}")
-  public void aUserWithNameHasABusinessWithAnInventoryItem(String email, String business, String inventoryItem)
+  public void aUserWithNameHasABusinessWithAnInventoryItem(String email, String business,
+      String inventoryItem)
       throws Exception {
     //cant get to work
   }

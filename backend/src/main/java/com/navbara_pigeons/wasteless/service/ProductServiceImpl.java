@@ -8,8 +8,8 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Currency;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -19,7 +19,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
-
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,10 +85,10 @@ public class ProductServiceImpl implements ProductService {
    *
    * @param businessId   The ID of the business.
    * @param basicProduct basic product details for the product to be added.
-   * @throws ProductRegistrationException If data supplied is not expected (bad request)
-   * @throws ForbiddenException    If user if not an admin of the business (forbidden)
-   * @throws ForbiddenException    If user if not an admin of the business (forbidden)
    * @return JSONObject with `productId`
+   * @throws ProductRegistrationException If data supplied is not expected (bad request)
+   * @throws ForbiddenException           If user if not an admin of the business (forbidden)
+   * @throws ForbiddenException           If user if not an admin of the business (forbidden)
    */
   @Override
   @Transactional

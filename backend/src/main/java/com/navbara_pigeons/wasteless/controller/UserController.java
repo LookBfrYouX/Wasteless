@@ -4,7 +4,13 @@ import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
+import com.navbara_pigeons.wasteless.exception.UnhandledException;
+import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
+import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.service.UserService;
 import javax.management.InvalidAttributeValueException;
@@ -13,7 +19,6 @@ import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +53,8 @@ public class UserController {
    * @throws ResponseStatusException HTTP 400 exception.
    */
   @PostMapping("/login")
-  public ResponseEntity<JSONObject> login(@RequestBody UserCredentials userCredentials) throws UserNotFoundException, AuthenticationException, UserAuthenticationException {
+  public ResponseEntity<JSONObject> login(@RequestBody UserCredentials userCredentials)
+      throws UserNotFoundException, AuthenticationException, UserAuthenticationException {
     // Attempt to login and return JSON userId if successful
     JSONObject response = userService.login(userCredentials);
     log.info("SUCCESSFUL LOGIN: " + userCredentials.getEmail());
@@ -64,7 +70,8 @@ public class UserController {
    * @throws ResponseStatusException HTTP 400, 409 exceptions.
    */
   @PostMapping("/users")
-  public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user) throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException, UserAuthenticationException {
+  public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user)
+      throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException, UserAuthenticationException {
     JSONObject createdUserId = userService.saveUser(new User(user));
     log.info("ACCOUNT CREATED SUCCESSFULLY: " + user.getEmail());
     return new ResponseEntity<>(createdUserId, HttpStatus.valueOf(201));
@@ -78,7 +85,8 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/users/{id}")
-  public ResponseEntity<Object> getUserById(@PathVariable String id) throws UserNotFoundException, UnhandledException {
+  public ResponseEntity<Object> getUserById(@PathVariable String id)
+      throws UserNotFoundException, UnhandledException {
     log.info("GETTING USER BY ID: " + id);
     User user = userService.getUserById(Long.parseLong(id));
     if (userService.isAdmin() || userService.isSelf(user.getEmail())) {
@@ -96,7 +104,8 @@ public class UserController {
    * @throws ResponseStatusException Unknown Error
    */
   @GetMapping("/users/search")
-  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery) throws InvalidAttributeValueException {
+  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery)
+      throws InvalidAttributeValueException {
     return new ResponseEntity<>(this.userService.searchUsers(searchQuery),
         HttpStatus.valueOf(200));
   }
@@ -107,7 +116,8 @@ public class UserController {
    * @param id The unique identifier of the user being given GAA rights.
    */
   @PutMapping("/users/{id}/makeAdmin")
-  public ResponseEntity<String> makeUserAdmin(@PathVariable String id) throws UserNotFoundException {
+  public ResponseEntity<String> makeUserAdmin(@PathVariable String id)
+      throws UserNotFoundException {
     userService.makeUserAdmin(Integer.parseInt(id));
     log.info("ADMIN PRIVILEGES GRANTED TO: " + id);
     return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));
@@ -121,7 +131,8 @@ public class UserController {
    * @return HttpStatus 406 for Invalid ID format or User Doesn't Exist exception.
    */
   @PutMapping("/users/{id}/revokeAdmin")
-  public ResponseEntity<String> revokeAdminPermissions(@PathVariable long id) throws NotAcceptableException, UserNotFoundException {
+  public ResponseEntity<String> revokeAdminPermissions(@PathVariable long id)
+      throws NotAcceptableException, UserNotFoundException {
     userService.revokeAdmin(id);
     log.info("ADMIN PRIVILEGES REVOKED FROM: " + id);
     return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));

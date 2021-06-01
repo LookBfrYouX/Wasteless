@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.validation;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListingServiceValidation {
@@ -30,7 +29,8 @@ public class ListingServiceValidation {
       }
     }
     if (listing.getQuantity() <= 0 || listing.getQuantity() > remainingQuantity) {
-      throw new ListingValidationException("Quantity must be less than or equal to the amount left in the inventory and greater than 0");
+      throw new ListingValidationException(
+          "Quantity must be less than or equal to the amount left in the inventory and greater than 0");
     }
   }
 }

@@ -114,13 +114,13 @@ CREATE TABLE catalogue
 CREATE TABLE inventory_item
 (
     ID             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    PRODUCT_ID     BIGINT       NOT NULL,
-    BUSINESS_ID    BIGINT       NOT NULL,
+    PRODUCT_ID     BIGINT NOT NULL,
+    BUSINESS_ID    BIGINT NOT NULL,
     -- WARNING: BUSINESS ID IS DUPLICATED DATA - CAN BE FOUND FROM PRODUCT
-    QUANTITY       BIGINT           NOT NULL,
-    PRICE_PER_ITEM DOUBLE           NOT NULL,
-    TOTAL_PRICE    DOUBLE           NOT NULL,
-    EXPIRES        DATE             NOT NULL,
+    QUANTITY       BIGINT NOT NULL,
+    PRICE_PER_ITEM DOUBLE NOT NULL,
+    TOTAL_PRICE    DOUBLE NOT NULL,
+    EXPIRES        DATE   NOT NULL,
     MANUFACTURED   DATE,
     SELL_BY        DATE,
     BEST_BEFORE    DATE,
@@ -135,9 +135,9 @@ CREATE TABLE inventory_item
 CREATE TABLE listing
 (
     ID                BIGINT AUTO_INCREMENT PRIMARY KEY,
-    INVENTORY_ITEM_ID BIGINT        NOT NULL,
-    QUANTITY          BIGINT        NOT NULL,
-    PRICE             DOUBLE        NOT NULL,
+    INVENTORY_ITEM_ID BIGINT NOT NULL,
+    QUANTITY          BIGINT NOT NULL,
+    PRICE             DOUBLE NOT NULL,
     MORE_INFO         VARCHAR(50),
     CREATED           DATETIME,
     CLOSES            DATETIME,
@@ -148,11 +148,11 @@ CREATE TABLE listing
 CREATE TABLE marketlisting
 (
     ID                 BIGINT AUTO_INCREMENT PRIMARY KEY,
-    CREATOR_ID         BIGINT                               NOT NULL,
+    CREATOR_ID         BIGINT      NOT NULL,
     SECTION            ENUM ('ForSale','Wanted','Exchange') NOT NULL,
     CREATED            DATETIME,
     DISPLAY_PERIOD_END DATETIME,
-    TITLE              VARCHAR(50)                          NOT NULL,
+    TITLE              VARCHAR(50) NOT NULL,
     DESCRIPTION        VARCHAR(250),
     CONSTRAINT user_fk FOREIGN KEY (CREATOR_ID) REFERENCES user (ID)
 );

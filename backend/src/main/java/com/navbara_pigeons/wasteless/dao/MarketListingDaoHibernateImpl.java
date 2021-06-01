@@ -1,15 +1,13 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.MarketListing;
-import com.navbara_pigeons.wasteless.entity.User;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaQuery;
-import java.util.List;
 
 @Repository
 public class MarketListingDaoHibernateImpl implements MarketListingDao {

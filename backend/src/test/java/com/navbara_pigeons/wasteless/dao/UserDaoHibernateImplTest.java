@@ -1,12 +1,10 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;

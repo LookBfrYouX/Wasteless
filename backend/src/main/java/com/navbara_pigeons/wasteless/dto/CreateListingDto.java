@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class CreateListingDto {
+
   private long id;
   private long inventoryItemId;
   private long quantity;

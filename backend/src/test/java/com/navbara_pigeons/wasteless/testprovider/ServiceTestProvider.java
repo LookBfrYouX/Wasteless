@@ -72,7 +72,8 @@ public class ServiceTestProvider extends MainTestProvider {
    * @param inventory
    * @param inventoryDto
    */
-  protected void assertInventoryListEquals(List<InventoryItem> inventory, List<BasicInventoryItemDto> inventoryDto) {
+  protected void assertInventoryListEquals(List<InventoryItem> inventory,
+      List<BasicInventoryItemDto> inventoryDto) {
     inventory.sort(Comparator.comparing(InventoryItem::getId));
     inventoryDto.sort(Comparator.comparing(BasicInventoryItemDto::getId));
     assertEquals(inventory.size(), inventoryDto.size());
@@ -87,7 +88,8 @@ public class ServiceTestProvider extends MainTestProvider {
    * @param inventory
    * @param inventoryDto
    */
-  protected void assertInventoryEquals(InventoryItem inventory, BasicInventoryItemDto inventoryDto) {
+  protected void assertInventoryEquals(InventoryItem inventory,
+      BasicInventoryItemDto inventoryDto) {
     assertEquals(inventory.getId(), inventoryDto.getId());
     assertProductEquals(inventory.getProduct(), inventoryDto.getProduct());
     assertEquals(inventory.getQuantity(), inventoryDto.getQuantity());

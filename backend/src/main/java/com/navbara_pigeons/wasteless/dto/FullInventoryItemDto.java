@@ -1,12 +1,12 @@
 package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
-import lombok.Data;
-
 import java.time.LocalDate;
+import lombok.Data;
 
 @Data
 public class FullInventoryItemDto {
+
   private long id;
   private BasicProductDto product;
   private long quantity;
@@ -31,5 +31,7 @@ public class FullInventoryItemDto {
 
   public FullInventoryItemDto() {
 
-  };
+  }
+
+  ;
 }

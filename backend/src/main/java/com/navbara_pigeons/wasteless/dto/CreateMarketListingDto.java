@@ -1,6 +1,5 @@
 package com.navbara_pigeons.wasteless.dto;
 
-import com.navbara_pigeons.wasteless.entity.MarketListing;
 import lombok.Data;
 
 @Data

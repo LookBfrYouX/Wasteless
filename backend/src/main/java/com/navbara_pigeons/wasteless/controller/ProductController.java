@@ -31,6 +31,7 @@ public class ProductController {
 
   /**
    * This is the constructor for the ProductController.
+   *
    * @param productService The product service that is used by this controller.
    */
   @Autowired
@@ -40,31 +41,36 @@ public class ProductController {
 
   /**
    * This endpoint retrieves a list of all products listed by a particular business (id).
+   *
    * @param id The business ID.
    * @return A list of products.
-   * @throws UserNotFoundException Handled in ControllerExceptionHandler class.
+   * @throws UserNotFoundException           Handled in ControllerExceptionHandler class.
    * @throws InsufficientPrivilegesException Handled in ControllerExceptionHandler class.
-   * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
+   * @throws BusinessNotFoundException       Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/products")
-  public ResponseEntity<Object> showBusinessCatalogue(@PathVariable long id) throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+  public ResponseEntity<Object> showBusinessCatalogue(@PathVariable long id)
+      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
     log.info("RETRIEVED PRODUCTS FOR BUSINESS: " + id);
     return new ResponseEntity<>(this.productService.getProducts(id), HttpStatus.valueOf(200));
   }
 
   /**
    * This endpoint is to add a product to the catalog
-   * @param id The business ID.
+   *
+   * @param id      The business ID.
    * @param product The product to be added.
    * @return A ResponseEntity.
    * @throws InsufficientPrivilegesException Handled in ControllerExceptionHandler class.
-   * @throws ProductRegistrationException Handled in ControllerExceptionHandler class.
+   * @throws ProductRegistrationException    Handled in ControllerExceptionHandler class.
    */
   @PostMapping("/businesses/{id}/products")
-  public ResponseEntity<Object> addToCatalogue(@PathVariable long id, @RequestBody BasicProductCreationDto product) throws InsufficientPrivilegesException, ProductRegistrationException {
-      JSONObject response = productService.addProduct(id, product);
-      log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());
-      return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+  public ResponseEntity<Object> addToCatalogue(@PathVariable long id,
+      @RequestBody BasicProductCreationDto product)
+      throws InsufficientPrivilegesException, ProductRegistrationException {
+    JSONObject response = productService.addProduct(id, product);
+    log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());
+    return new ResponseEntity<>(response, HttpStatus.valueOf(201));
   }
 
 }

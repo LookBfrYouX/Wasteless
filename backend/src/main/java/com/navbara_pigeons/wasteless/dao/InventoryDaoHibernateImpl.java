@@ -2,14 +2,14 @@ package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import javax.persistence.EntityManager;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-
 @Service
-public class InventoryDaoHibernateImpl implements InventoryDao{
+public class InventoryDaoHibernateImpl implements InventoryDao {
+
   private final EntityManager entityManager;
 
   /**

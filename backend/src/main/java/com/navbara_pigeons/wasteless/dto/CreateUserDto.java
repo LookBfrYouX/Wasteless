@@ -1,9 +1,8 @@
 package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.User;
-import lombok.Data;
-
 import java.time.LocalDate;
+import lombok.Data;
 
 
 /**

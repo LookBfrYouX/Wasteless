@@ -2,11 +2,12 @@ package com.navbara_pigeons.wasteless.dto;
 
 
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
-import lombok.Data;
 import java.time.LocalDate;
+import lombok.Data;
 
 @Data
 public class CreateInventoryItemDto {
+
   private long productId;
   private long quantity;
   private Double pricePerItem;
@@ -27,5 +28,8 @@ public class CreateInventoryItemDto {
     this.expires = inventoryItem.getExpires();
   }
 
-  public CreateInventoryItemDto() {};
+  public CreateInventoryItemDto() {
+  }
+
+  ;
 }

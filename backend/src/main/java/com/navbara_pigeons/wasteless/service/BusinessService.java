@@ -8,8 +8,6 @@ import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import net.minidev.json.JSONObject;
 
-import javax.transaction.Transactional;
-
 public interface BusinessService {
 
   JSONObject saveBusiness(Business business)

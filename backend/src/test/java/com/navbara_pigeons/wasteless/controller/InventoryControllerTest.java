@@ -3,17 +3,13 @@ package com.navbara_pigeons.wasteless.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
-import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
+import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
-
-import java.time.LocalDate;
 
 public class InventoryControllerTest extends ControllerTestProvider {
 
@@ -61,9 +57,9 @@ public class InventoryControllerTest extends ControllerTestProvider {
     dto.setQuantity(2);
     dto.setExpires(LocalDate.now());
     mockMvc.perform(post(endpointUrl)
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(dto)))
-            .andExpect(status().isCreated());
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(dto)))
+        .andExpect(status().isCreated());
   }
 
   @Test
@@ -77,9 +73,9 @@ public class InventoryControllerTest extends ControllerTestProvider {
     inventoryItemDto.setTotalPrice(220.00);
     inventoryItemDto.setPricePerItem(20.00);
     mockMvc.perform(post(endpointUrl)
-    .contentType("application/json")
-    .content(objectMapper.writeValueAsString(inventoryItemDto)))
-            .andExpect(status().isCreated());
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(inventoryItemDto)))
+        .andExpect(status().isCreated());
   }
 
   @Test
@@ -91,9 +87,9 @@ public class InventoryControllerTest extends ControllerTestProvider {
     dto.setQuantity(2);
     dto.setExpires(LocalDate.now());
     mockMvc.perform(post(endpointUrl)
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(dto)))
-            .andExpect(status().is(400));
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(dto)))
+        .andExpect(status().is(400));
   }
 
   @Test
@@ -105,9 +101,9 @@ public class InventoryControllerTest extends ControllerTestProvider {
     dto.setQuantity(2);
     dto.setExpires(LocalDate.now());
     mockMvc.perform(post(endpointUrl)
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(dto)))
-            .andExpect(status().is(400));
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(dto)))
+        .andExpect(status().is(400));
   }
 
   @Test
@@ -121,9 +117,9 @@ public class InventoryControllerTest extends ControllerTestProvider {
     inventoryItemDto.setTotalPrice(220.00);
     inventoryItemDto.setPricePerItem(20.00);
     mockMvc.perform(post(endpointUrl)
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(inventoryItemDto)))
-            .andExpect(status().is(400));
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(inventoryItemDto)))
+        .andExpect(status().is(400));
   }
 
   @Test
@@ -137,9 +133,9 @@ public class InventoryControllerTest extends ControllerTestProvider {
     inventoryItemDto.setTotalPrice(220.00);
     inventoryItemDto.setPricePerItem(20.00);
     mockMvc.perform(post(endpointUrl)
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(inventoryItemDto)))
-            .andExpect(status().isForbidden());
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(inventoryItemDto)))
+        .andExpect(status().isForbidden());
   }
 
 }

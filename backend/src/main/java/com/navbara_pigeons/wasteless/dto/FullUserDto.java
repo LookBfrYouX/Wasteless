@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
-
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;

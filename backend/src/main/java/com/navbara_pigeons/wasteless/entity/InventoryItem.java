@@ -1,14 +1,25 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.FullInventoryItemDto;
-import lombok.Data;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import lombok.Data;
 
 @Data
 @Entity
@@ -52,13 +63,13 @@ public class InventoryItem {
 
   @JsonIgnore
   @OneToMany(
-    fetch = FetchType.LAZY,
-    cascade = {
-        CascadeType.DETACH,
-        CascadeType.MERGE,
-        CascadeType.PERSIST,
-        CascadeType.REFRESH
-    }
+      fetch = FetchType.LAZY,
+      cascade = {
+          CascadeType.DETACH,
+          CascadeType.MERGE,
+          CascadeType.PERSIST,
+          CascadeType.REFRESH
+      }
   )
   @JoinColumn(name = "INVENTORY_ITEM_ID")
   private List<Listing> listings;
