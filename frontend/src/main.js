@@ -37,6 +37,9 @@ import {constants} from "./constants";
 import "bootstrap";
 import "./styles/main.scss";
 import VueLogger from 'vuejs-logger';
+import vuetify from '@/plugins/vuetify' // path to vuetify export
+
+
 
 Vue.config.productionTip = false
 
@@ -60,6 +63,7 @@ Vue.prototype.$constants = constants;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  vuetify,
   router,
   render: h => h(App)
 });
