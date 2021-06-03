@@ -45,9 +45,9 @@
             <div class="d-flex justify-content-between">
               <input id="submit" class="btn btn-primary" type="submit" value="Sign In"/>
               <router-link
+                  :to="{ name: 'UserCreate' }"
                   class="btn btn-white-bg-primary hover-cursor-pointer"
                   type="button"
-                  :to="{ name: 'UserCreate' }"
               >
                 Sign Up
               </router-link>
@@ -73,7 +73,7 @@
 
 <script>
 // grabs mock api
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 
 export default {
   name: "SignIn",
@@ -111,7 +111,7 @@ export default {
       }
 
       this.errorMessage = "";
-      await this.$router.push({ name: "Home" });
+      await this.$router.push({name: "Home"});
     },
   },
 };

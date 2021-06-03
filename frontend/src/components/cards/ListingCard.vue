@@ -5,9 +5,9 @@
       <div class="col-sm-4 p-0">
         <img
             v-if="item.inventoryItem.product.images.length"
+            :src="item.inventoryItem.product.images[0].thumbnailFilename"
             alt="Product Image"
             class="image-fluid w-100 rounded-circle mb-2"
-            :src="item.inventoryItem.product.images[0].thumbnailFilename"
         >
         <img
             v-else
@@ -19,11 +19,15 @@
       <div class="col-sm-8">
         <h2 class="card-title">{{ item.inventoryItem.product.name }}</h2>
         <h4>
-          {{ $helper.makeCurrencyString(item.price, currency, false) }} <small> for </small> {{ item.quantity }}
+          {{ $helper.makeCurrencyString(item.price, currency, false) }} <small> for </small>
+          {{ item.quantity }}
         </h4>
         <h6 v-if="item.moreInfo"> About this price: {{ item.moreInfo }}</h6>
         <div class="d-flex flex-wrap">
-          <div class="mr-3 text-nowrap"> Listed on: {{ $helper.isoToDateString(item.created) }}</div>
+          <div class="mr-3 text-nowrap"> Listed on: {{
+              $helper.isoToDateString(item.created)
+            }}
+          </div>
           <div class="text-nowrap"> Closes on: {{ $helper.isoToDateString(item.closes) }}</div>
         </div>
       </div>

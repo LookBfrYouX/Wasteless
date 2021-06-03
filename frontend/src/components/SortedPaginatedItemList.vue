@@ -26,18 +26,18 @@ To use this component:
 <template>
   <div class="w-100">
     <sort-sidebar
-      class="sort-sidebar bottom-padding-navbar-height overflow-auto"
-      v-if="showSortSidebar"
-      :sortOptions="sortOptions"
-      :currentSortOption="currentSortOption"
-      :closeClicked="() => showSortSidebar = !showSortSidebar"
-      @update:currentSortOption="currentSortOption => $emit('update:currentSortOption', currentSortOption)"
+        v-if="showSortSidebar"
+        :closeClicked="() => showSortSidebar = !showSortSidebar"
+        :currentSortOption="currentSortOption"
+        :sortOptions="sortOptions"
+        class="sort-sidebar bottom-padding-navbar-height overflow-auto"
+        @update:currentSortOption="currentSortOption => $emit('update:currentSortOption', currentSortOption)"
     />
     <!-- If the screen is large enough, then you can interact with both the sort options and list items at the same time. Otherwise, this will act as a background where clicking anywhere causes it to close -->
     <div
-      v-if="showSortSidebar"
-      class="sidebar-behind-close d-block d-lg-none"
-      @click="() => showSortSidebar = false"
+        v-if="showSortSidebar"
+        class="sidebar-behind-close d-block d-lg-none"
+        @click="() => showSortSidebar = false"
     ></div>
 
     <div class="container">
@@ -49,15 +49,17 @@ To use this component:
         <!-- sort by only appears when there are any items but the right button will always appear, and the slot is optional. So that the buttons always stay left/right, need to wrap them in divs -->
         <div>
           <button
-            type="button"
-            class="btn btn-info"
-            v-if="items.length"
-            @click="() => showSortSidebar = !showSortSidebar"
+              v-if="items.length"
+              class="btn btn-info"
+              type="button"
+              @click="() => showSortSidebar = !showSortSidebar"
           >
             Sort
           </button>
         </div>
-        <div><slot name="right-button"/></div>
+        <div>
+          <slot name="right-button"/>
+        </div>
       </div>
 
       <div v-if="!items.length" class="row mt-2">
@@ -68,12 +70,13 @@ To use this component:
       <div v-else class="row justify-content-center mt-2">
         <!-- Shift the items right if the sidebar is open to prevent overlap when the overlay isn't visible and the screen isn't too big. Not great as it doesn't shift the page title -->
         <div
-          v-if="showSortSidebar"
-          class="col-3 d-xl-none"
+            v-if="showSortSidebar"
+            class="col-3 d-xl-none"
         ></div>
         <div class="col-12 col-md-8 col-lg-6">
-          <div> 
-            Displaying results {{ firstResultIndex + 1 }} - {{ lastResultIndex }} out of {{ items.length }}
+          <div>
+            Displaying results {{ firstResultIndex + 1 }} - {{ lastResultIndex }} out of
+            {{ items.length }}
 
             <!--
               Add 1 to `firstResultIndex` as zero-based indexing used internally (first item should be item 1, not 0).
@@ -82,18 +85,18 @@ To use this component:
           </div>
           <ul class="list-unstyled">
             <li
-              v-for="item in itemsToDisplay"
-              :key="getItemId(item)"
+                v-for="item in itemsToDisplay"
+                :key="getItemId(item)"
             >
-              <slot name="item" :item="item">item.id</slot>
+              <slot :item="item" name="item">item.id</slot>
             </li>
           </ul>
           <div class="w-100 mt-3 d-flex justify-content-center">
             <!-- Currently have a dummy div that shifts the content right when sidebar is open and user can iteract with items, so the pagination needs to be in the same row -->
             <pagination
-              :current="page"
-              :end="numPages"
-              :setPage="newPage => page = newPage">
+                :current="page"
+                :end="numPages"
+                :setPage="newPage => page = newPage">
             </pagination>
           </div>
         </div>
@@ -103,14 +106,13 @@ To use this component:
 </template>
 <script>
 import Pagination from "./Pagination"
-import { constants } from "@/constants"
+import {constants} from "@/constants"
 import SortSidebar from './SortSidebar.vue';
-
 
 export default {
   components: {
     Pagination,
-    SortSidebar 
+    SortSidebar
   },
 
   props: {
@@ -125,7 +127,7 @@ export default {
     /**
      * Way to get unique identifier for each item instead of using the default `item.id`.
      * If string, uses that as the key for the item.
-     * If function, it should take in the item as an argument and return a key 
+     * If function, it should take in the item as an argument and return a key
      */
     itemIdentifier: {
       required: false,
@@ -138,7 +140,7 @@ export default {
     resultsPerPage: {
       required: false,
       type: Number,
-      default: constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_PAGE 
+      default: constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_PAGE
     },
 
     /**
@@ -171,7 +173,7 @@ export default {
   data() {
     return {
       page: 1, // 1-based indexing
-      showSortSidebar: false 
+      showSortSidebar: false
 
     }
   },
@@ -204,7 +206,9 @@ export default {
     itemsToDisplay() {
       // copy array to not mutate original array
       const sortedItems = [...this.items].sort(this.currentSortOption.sortMethod);
-      if (this.currentSortOption.reversed) sortedItems.reverse();
+      if (this.currentSortOption.reversed) {
+        sortedItems.reverse();
+      }
       return sortedItems.slice(this.firstResultIndex, this.lastResultIndex);
     }
   },
@@ -214,7 +218,9 @@ export default {
      * Gets the key for the given item - can be either a string or a function
      */
     getItemId(item) {
-      if (this.itemIdentifier instanceof Function) return this.itemIdentifier(item);
+      if (this.itemIdentifier instanceof Function) {
+        return this.itemIdentifier(item);
+      }
       return item[this.itemIdentifier];
     },
   },

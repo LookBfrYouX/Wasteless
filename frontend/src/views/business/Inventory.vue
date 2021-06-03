@@ -1,25 +1,25 @@
 <template>
   <div class="w-100">
     <sorted-paginated-item-list
-      :items="listings"
-      :sortOptions="sortOptions"
-      :currentSortOption.sync="currentSortOption"
+        :currentSortOption.sync="currentSortOption"
+        :items="listings"
+        :sortOptions="sortOptions"
     >
       <template v-slot:title>
-        <h2>Inventory for {{businessName? businessName: "business"}}</h2>
+        <h2>Inventory for {{ businessName ? businessName : "business" }}</h2>
       </template>
       <template v-slot:item="slotProps">
         <inventory-item-card
-            class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
-            :item="slotProps.item"
             :businessId="businessId"
             :currency="currency"
+            :item="slotProps.item"
+            class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
         />
       </template>
       <template v-slot:right-button>
         <router-link
-          :to="{ name: 'BusinessInventoryCreate', params: { businessId }}"
-          class="btn btn-info d-flex"
+            :to="{ name: 'BusinessInventoryCreate', params: { businessId }}"
+            class="btn btn-info d-flex"
         >
           <span class="material-icons mr-1">add</span>
           Add Item to Inventory
@@ -27,12 +27,12 @@
       </template>
     </sorted-paginated-item-list>
     <error-modal
-      title="Error viewing inventory"
-      :goBack="false"
-      :hideCallback="() => apiErrorMessage = null"
-      :refresh="true"
-      :retry="this.getInventory"
-      :show="apiErrorMessage !== null"
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="true"
+        :retry="this.getInventory"
+        :show="apiErrorMessage !== null"
+        title="Error viewing inventory"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -41,8 +41,8 @@
 <script>
 import SortedPaginatedItemList from '../../components/SortedPaginatedItemList.vue';
 import ErrorModal from "@/components/ErrorModal";
-import { Api } from "@/Api";
-import { helper } from "@/helper";
+import {Api} from "@/Api";
+import {helper} from "@/helper";
 import InventoryItemCard from "@/components/cards/InventoryCard";
 
 const sortOptions = [
@@ -54,10 +54,10 @@ const sortOptions = [
     sortMethod: helper.sensibleSorter(el => el.product.id)
   }, {
     name: "Product Name",
-    sortMethod: helper.sensibleSorter(el => el.product.name) 
+    sortMethod: helper.sensibleSorter(el => el.product.name)
   }, {
     name: "Quantity",
-    sortMethod: helper.sensibleSorter("quantity") 
+    sortMethod: helper.sensibleSorter("quantity")
   }, {
     name: "Price Per Item",
     sortMethod: helper.sensibleSorter("pricePerItem")
@@ -79,7 +79,6 @@ const sortOptions = [
   }
 ];
 
-
 export default {
   components: {
     InventoryItemCard,
@@ -99,22 +98,24 @@ export default {
       listings: [],
       apiErrorMessage: null,
       sortOptions,
-      currentSortOption: { ...sortOptions[0], reversed: false},
+      currentSortOption: {...sortOptions[0], reversed: false},
       businessName: null,
       currency: null,
     };
   },
 
-  beforeMount: async function() {
+  beforeMount: async function () {
     return Promise.allSettled([this.getInventory(), this.updateBusinessName(), this.getCurrency()]);
   },
-  
+
   methods: {
-    getInventory: async function() {
+    getInventory: async function () {
       try {
         this.listings = (await Api.getBusinessInventory(this.businessId)).data;
-      } catch(err) {
-        if (await Api.handle401.call(this, err)) return false;
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) {
+          return false;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
@@ -124,17 +125,20 @@ export default {
      * @returns {Promise<void>} Currency object, null when the currency doesn't exist or API request error.
      */
     getCurrency: async function () {
-      this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
+      this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId,
+          this.$stateStore);
     },
 
-    updateBusinessName: async function() {
+    updateBusinessName: async function () {
       this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
     },
   },
 
   watch: {
     businessName() {
-      if (this.businessName != null) document.title = `Inventory for ${this.businessName}`
+      if (this.businessName != null) {
+        document.title = `Inventory for ${this.businessName}`
+      }
     }
   }
 }

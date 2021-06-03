@@ -33,8 +33,8 @@ Notes:
 <template>
   <div :class="divClasses">
     <input
-        v-bind="$attrs"
         ref="input"
+        v-bind="$attrs"
         :class="inputClasses"
 
         :value="value"
@@ -208,7 +208,9 @@ export default {
      * Sets the index to the given index, hides the suggestions and inputs an `input` event, but only if the element is not disabled
      */
     suggestionClick: function (i) {
-      if (this.isDisabled(this.suggestions[i])) return;
+      if (this.isDisabled(this.suggestions[i])) {
+        return;
+      }
       this.suggestionMouseover(i);
       this.suggestionSelected();
     },
@@ -217,7 +219,9 @@ export default {
      * Sets the index to that of the index currently being selected, but only if the element is not disabled
      */
     suggestionMouseover: function (i) {
-      if (this.isDisabled(this.suggestions[i])) return;
+      if (this.isDisabled(this.suggestions[i])) {
+        return;
+      }
       this.index = i;
     },
 
@@ -244,13 +248,13 @@ export default {
     /**
      * Returns object containing the classes the list element should have
      */
-    listItemClasses: function(el, i) {
+    listItemClasses: function (el, i) {
       if (this.isDisabled(el)) {
-        return { ...this.liClasses, ...this.liDisabledClasses };
+        return {...this.liClasses, ...this.liDisabledClasses};
       } else if (i == this.index) {
-        return { ...this.liClasses, ...this.liActiveClasses };
+        return {...this.liClasses, ...this.liActiveClasses};
       } else {
-        return { ...this.liClasses, ...this.liInactiveClasses };
+        return {...this.liClasses, ...this.liInactiveClasses};
       }
     }
   },

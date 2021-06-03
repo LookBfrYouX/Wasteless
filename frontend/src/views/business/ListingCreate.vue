@@ -7,19 +7,20 @@
     </div>
     <form
         @submit.prevent="addListing"
-        >
+    >
       <div class="row">
         <div class="form-group required col-md-6">
           <label for="product">Find product</label>
           <select
               id="product"
+              v-model="selectedProductId"
               class="form-control"
               required
-              v-model="selectedProductId"
-              >
-            <option disabled
-                    :value="null"
-                    selected> -- Select product to list -- </option>
+          >
+            <option :value="null"
+                    disabled
+                    selected> -- Select product to list --
+            </option>
             <option v-for="product in getProducts"
                     :key="product.id"
                     :value="product.id"
@@ -32,20 +33,23 @@
           <label for="inventory">Inventory item to list</label>
           <select
               id="inventory"
-              class="form-control"
-              required
               v-model="selectedInventoryItem"
               :disabled="filteredInventory.length === 0"
-              >
-            <option disabled
-                    :value="null"
-                    selected> -- Select inventory to list -- </option>
+              class="form-control"
+              required
+          >
+            <option :value="null"
+                    disabled
+                    selected> -- Select inventory to list --
+            </option>
             <option v-for="inventoryItem in filteredInventory"
                     :key="inventoryItem.id"
-                    :value="inventoryItem"
                     :disabled="inventoryItem.quantityRemaining <= 0 ||inventoryItem.expires < todayDate"
+                    :value="inventoryItem"
             >
-              Expire{{ (todayDate >= inventoryItem.expires )? "d": "s" }} on {{ $helper.isoToDateString(inventoryItem.expires) }} (ID: {{ inventoryItem.id }}, {{ inventoryItem.quantityRemaining}}/{{ inventoryItem.quantity }} unlisted)
+              Expire{{ (todayDate >= inventoryItem.expires) ? "d" : "s" }} on
+              {{ $helper.isoToDateString(inventoryItem.expires) }} (ID: {{ inventoryItem.id }},
+              {{ inventoryItem.quantityRemaining }}/{{ inventoryItem.quantity }} unlisted)
             </option>
           </select>
         </div>
@@ -57,28 +61,31 @@
               :disabled="selectedInventoryItem == null"
               :max="maxQuantity"
               class="form-control"
+              min="1"
               name="quantity"
               required
-              type="number"
-              min="1">
+              type="number">
           <small v-if="selectedInventoryItem"
-               class="text-muted">
-            You can list {{selectedInventoryItem.quantityRemaining}} items out of {{selectedInventoryItem.quantity}} in the inventory.
+                 class="text-muted">
+            You can list {{ selectedInventoryItem.quantityRemaining }} items out of
+            {{ selectedInventoryItem.quantity }} in the inventory.
           </small>
         </div>
         <div class="form-group required col-md-6">
-          <label for="price">Total price<span v-if="currency !== null"> in {{ currency.code }}</span></label>
-            <input
-                id="price"
-                v-model="price"
-                :disabled="quantity === null"
-                type="number"
-                step="0.01"
-                min="0.01"
-                class="form-control"
-                name="price"
-                required
-            >
+          <label for="price">Total price<span v-if="currency !== null"> in {{
+              currency.code
+            }}</span></label>
+          <input
+              id="price"
+              v-model="price"
+              :disabled="quantity === null"
+              class="form-control"
+              min="0.01"
+              name="price"
+              required
+              step="0.01"
+              type="number"
+          >
         </div>
         <div class="form-group col-md-6">
           <label for="moreInfo">More information</label>
@@ -88,9 +95,9 @@
               :disabled="price === 0"
               class="form-control"
               maxlength="200"
-              rows="4"
               name="moreInfo"
               placeholder="Extra information about the price"
+              rows="4"
               type="text"
           />
         </div>
@@ -100,9 +107,9 @@
               id="closeDate"
               v-model="closeDate"
               :disabled="selectedInventoryItem == null || maxQuantity <= 0"
-              class="form-control"
-              :min="todayDate"
               :max="expiryDate"
+              :min="todayDate"
+              class="form-control"
               name="expires"
               type="date"
           />
@@ -116,7 +123,8 @@
           >
           <small v-if="selectedInventoryItem && maxQuantity > 0"
                  class="text-muted">
-            Closing date and time will be set to 23:59 on the expiry date ({{ $helper.isoToDateString(expiryDate) }}) if not specified.
+            Closing date and time will be set to 23:59 on the expiry date
+            ({{ $helper.isoToDateString(expiryDate) }}) if not specified.
           </small>
         </div>
       </div>
@@ -132,12 +140,12 @@
       </div>
     </form>
     <error-modal
-        title="Error fetching product, inventory or listings data"
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="true"
         :retry="this.createForm"
         :show="apiErrorMessage !== null"
+        title="Error fetching product, inventory or listings data"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -146,7 +154,7 @@
 
 <script>
 
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 import ErrorModal from "@/components/ErrorModal";
 
 export default {
@@ -179,7 +187,7 @@ export default {
     }
   },
 
-  beforeMount: async function() {
+  beforeMount: async function () {
     await this.createForm();
   },
 
@@ -218,7 +226,9 @@ export default {
      */
     async createForm() {
       let success = (await this.getInventory());
-      if (!success) return;
+      if (!success) {
+        return;
+      }
       await this.getAvailableInventoryItem();
       this.setTodayDate();
       await this.getCurrency();
@@ -232,7 +242,7 @@ export default {
       try {
         this.inventory = (await Api.getBusinessInventory(this.businessId)).data;
         return true;
-      } catch(err) {
+      } catch (err) {
         this.apiErrorMessage = err.userFacingErrorMessage;
         return false;
       }
@@ -245,7 +255,7 @@ export default {
     async getListings() {
       try {
         return (await Api.getBusinessListings(this.businessId)).data;
-      } catch(err) {
+      } catch (err) {
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
@@ -263,7 +273,7 @@ export default {
       const listings = await this.getListings();
       if (listings !== undefined) {
         listings.forEach(listing => {
-          const inventoryItem = inventory.find(({ id }) => id === listing.inventoryItem.id);
+          const inventoryItem = inventory.find(({id}) => id === listing.inventoryItem.id);
           inventoryItem.quantityRemaining -= listing.quantity;
         });
         this.inventory = inventory;
@@ -292,7 +302,8 @@ export default {
      * @return Currency object
      */
     async getCurrency() {
-      this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId, this.$stateStore);
+      this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId,
+          this.$stateStore);
     },
 
     /**
@@ -350,7 +361,7 @@ export default {
       try {
         await Api.addBusinessListings(this.businessId, listing);
         this.goToListings();
-      } catch(err) {
+      } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
       }
     }
@@ -362,7 +373,9 @@ export default {
      * @return Array of products.
      */
     getProducts() {
-      if (this.inventory == null) return [];
+      if (this.inventory == null) {
+        return [];
+      }
       let products = {};
       this.inventory.forEach(inventoryItem => {
         const product = inventoryItem.product;
@@ -376,8 +389,11 @@ export default {
      * @return Array of inventory items if inventory and selectedProductId is non-null. Returns empty array otherwise.
      */
     filteredInventory() {
-      if (this.inventory == null || this.selectedProductId == null) return [];
-      return this.inventory.filter(inventoryItem => inventoryItem.product.id === this.selectedProductId);
+      if (this.inventory == null || this.selectedProductId == null) {
+        return [];
+      }
+      return this.inventory.filter(
+          inventoryItem => inventoryItem.product.id === this.selectedProductId);
     },
 
     /**
@@ -410,7 +426,9 @@ export default {
      * @return Number if inventory is selected, null otherwise.
      */
     maxQuantity() {
-      if (this.selectedInventoryItem == null) return null;
+      if (this.selectedInventoryItem == null) {
+        return null;
+      }
       return this.selectedInventoryItem.quantityRemaining;
     },
 
@@ -419,7 +437,9 @@ export default {
      * @return Date string in YYYY-MM-DD format if inventory item is selected, null otherwise.
      */
     expiryDate() {
-      if (this.selectedInventoryItem == null) return null;
+      if (this.selectedInventoryItem == null) {
+        return null;
+      }
       return this.selectedInventoryItem.expires;
     },
 

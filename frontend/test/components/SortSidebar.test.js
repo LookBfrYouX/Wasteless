@@ -7,7 +7,7 @@ beforeEach(() => {
   wrapper = mount(SortSidebar, {
     propsData: {
       sortOptions: ["A", "B", "C"].map(name => ({name})),
-      currentSortOption: { name: "B", reversed: true },
+      currentSortOption: {name: "B", reversed: true},
       closeClicked: jest.fn(),
     }
   });

@@ -32,10 +32,10 @@
             <label>Type</label>
             <select
                 v-model="type"
+                :class="{ 'is-invalid': typeRequired }"
                 class="form-control"
                 name="type"
                 required
-                :class="{ 'is-invalid': typeRequired }"
             >
               <option v-for="code in types" :key="code.message">
                 {{ code }}
@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 import AddressForm from "@/components/AddressForm";
 
 export default {

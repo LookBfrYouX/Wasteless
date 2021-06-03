@@ -10,8 +10,8 @@
           Community Marketplace
         </h2>
         <router-link
-          class="btn btn-primary mb-2"
-          :to="{ name: 'MarketplaceCardCreate' }"
+            :to="{ name: 'MarketplaceCardCreate' }"
+            class="btn btn-primary mb-2"
         >
           Create a Card
         </router-link>
@@ -20,21 +20,21 @@
     <div class="row">
       <div class="col-12">
         <div
-            class="btn-group w-100 d-flex flex-wrap"
             :class="{
             }"
-          >
-            <button
+            class="btn-group w-100 d-flex flex-wrap"
+        >
+          <button
               v-for="([sectionKey, sectionName]) in Object.entries($constants.MARKETPLACE.SECTIONS)"
               :key="sectionKey"
-              type="button"
-              class="btn btn-primary mb-0"
               :class="{ active: section == sectionKey }"
+              class="btn btn-primary mb-0"
+              type="button"
               @click="section = sectionKey"
-            >
-              <h4 class="text-center mb-0">{{ sectionName }}</h4>
-            </button>
-          </div>
+          >
+            <h4 class="text-center mb-0">{{ sectionName }}</h4>
+          </button>
+        </div>
         <marketplace-card-container :section="section"/>
       </div>
     </div>
@@ -47,7 +47,7 @@
   height: 0;
 }
 
-@media(min-width: 768px) {
+@media (min-width: 768px) {
   .fake-button {
     display: inline;
   }
@@ -61,7 +61,7 @@ export default {
   components: {MarketplaceCardContainer},
   data() {
     return {
-      section:"ForSale"
+      section: "ForSale"
     };
   }
 }

@@ -14,7 +14,7 @@
       <div class="row">
         <div class="col-12 col-md-6 form-group required">
           <label for="productDropdown">Select product</label>
-          <select required class="form-control" id="productDropdown" v-model="product">
+          <select id="productDropdown" v-model="product" class="form-control" required>
             <option v-for="product in products" :key="product.id" :value="product">
               {{ product.name }}
             </option>
@@ -26,11 +26,11 @@
               id="quantity"
               v-model="quantity"
               class="form-control"
+              min="1"
               name="quantity"
               placeholder="Quantity"
               required
               type="number"
-              min="1"
           />
         </div>
       </div>
@@ -40,12 +40,12 @@
           <input
               id="pricePerItem"
               v-model="pricePerItem"
-              class="form-control"
-              name="pricePerItem"
-              type="number"
-              min="0.01"
-              step="0.01"
               :placeholder="currencyText"
+              class="form-control"
+              min="0.01"
+              name="pricePerItem"
+              step="0.01"
+              type="number"
           />
         </div>
         <div class="col-12 col-md-6 form-group">
@@ -53,13 +53,13 @@
           <input
               id="totalPrice"
               v-model="totalPrice"
-              class="form-control"
-              name="totalPrice"
-              type="number"
               :max="pricePerItem * quantity"
-              step="0.01"
-              min="0.0"
               :placeholder="currencyText"
+              class="form-control"
+              min="0.0"
+              name="totalPrice"
+              step="0.01"
+              type="number"
           />
         </div>
       </div>
@@ -69,9 +69,9 @@
           <input
               id="manufactured"
               v-model="manufactured"
+              :max="todayDate"
               class="form-control"
               maxlength="30"
-              :max="todayDate"
               name="manufactured"
               placeholder="Manufactured"
               type="date"
@@ -82,9 +82,9 @@
           <input
               id="sellBy"
               v-model="sellBy"
+              :min="todayDate"
               class="form-control"
               maxlength="30"
-              :min="todayDate"
               name="sellBy"
               placeholder="Sell By"
               type="date"
@@ -97,9 +97,9 @@
           <input
               id="bestBefore"
               v-model="bestBefore"
+              :min="todayDate"
               class="form-control"
               maxlength="30"
-              :min="todayDate"
               name="bestBefore"
               placeholder="Best before"
               type="date"
@@ -110,12 +110,12 @@
           <input
               id="expires"
               v-model="expires"
+              :min="todayDate"
               class="form-control"
               maxlength="30"
-              :min="todayDate"
               name="expires"
-              required
               placeholder="Expires"
+              required
               type="date"
           />
         </div>
@@ -132,12 +132,12 @@
       </div>
     </form>
     <error-modal
-        title="Error fetching business products"
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="true"
         :retry="this.populateDropdown"
         :show="apiErrorMessage !== null"
+        title="Error fetching business products"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -145,7 +145,7 @@
 </template>
 
 <script>
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 import ErrorModal from "@/components/ErrorModal";
 
 export default {
@@ -178,7 +178,7 @@ export default {
     },
   },
 
-  beforeMount: async function() {
+  beforeMount: async function () {
     this.setDateInputs(new Date());
     await this.populateDropdown();
     await this.currencyPipeline();
@@ -222,8 +222,12 @@ export default {
       let parsedPricePerItem = parseFloat(this.pricePerItem);
       let parsedTotalPrice = parseFloat(this.totalPrice);
       let parsedQuantity = parseInt(this.quantity, 10);
-      if (isNaN(parsedPricePerItem)) parsedPricePerItem = null;
-      if (isNaN(parsedTotalPrice)) parsedTotalPrice = null;
+      if (isNaN(parsedPricePerItem)) {
+        parsedPricePerItem = null;
+      }
+      if (isNaN(parsedTotalPrice)) {
+        parsedTotalPrice = null;
+      }
       if (isNaN(parsedQuantity)) {
         this.errorMessage = "You must enter a number for the quantity."
         return;
@@ -243,7 +247,7 @@ export default {
       try {
         await Api.addItemToInventory(this.businessId, data);
         this.goToInventory();
-      } catch(err) {
+      } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
       }
     },

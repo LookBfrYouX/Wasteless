@@ -1,17 +1,18 @@
 import {ApiRequestError} from "@/ApiRequestError";
-import { Api } from "@/Api";
-jest.mock("@/Api");
+import {Api} from "@/Api";
+import {helper} from "@/helper";
 
-import { helper } from "@/helper";
+jest.mock("@/Api");
 
 describe("tryGetBusinessName", () => {
   test("200 response", async () => {
-    Api.businessProfile.mockResolvedValue({ data: { name: "Bla" }});
+    Api.businessProfile.mockResolvedValue({data: {name: "Bla"}});
     expect(await helper.tryGetBusinessName(1)).toEqual("Bla");
   });
 
   test("bad response", async () => {
-    Api.businessProfile.mockImplementation(() => Promise.reject(new ApiRequestError("FAIL")));
+    Api.businessProfile.mockImplementation(
+        () => Promise.reject(new ApiRequestError("FAIL")));
     expect(await helper.tryGetBusinessName(1)).toEqual(null);
   });
 });
@@ -30,7 +31,9 @@ describe("goToProfile", () => {
       }
     };
 
-    if (id == undefined && !keepParams) delete path.params;
+    if (id == undefined && !keepParams) {
+      delete path.params;
+    }
     return path;
   }
 
@@ -48,7 +51,7 @@ describe("goToProfile", () => {
       businessId: 592
     }
   })
-  
+
   const business = {
     id: 1
   };
@@ -65,7 +68,6 @@ describe("goToProfile", () => {
     expect(router.push).toHaveBeenCalledWith(user$route());
   });
 
-
   test("on other user page, acting as user", async () => {
     const router = $router();
     await helper.goToProfile(null, router, user$route(122358));
@@ -77,13 +79,13 @@ describe("goToProfile", () => {
     await helper.goToProfile(business, router, business$route(4));
     expect(router.push).toHaveBeenCalledWith(business$route());
   });
-  
+
   test("on own user page, acting as user", async () => {
     const router = $router();
     await helper.goToProfile(null, router, user$route(undefined, true));
     expect(router.go).toHaveBeenCalled();
   });
-  
+
   test("on own business page, acting as business", async () => {
     const router = $router();
     await helper.goToProfile(business, router, business$route());

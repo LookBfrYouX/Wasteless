@@ -1,7 +1,6 @@
 // this file is for saving country data from rest countries in both front end and back end for correct matching of currencies and country validation
 // needs to be in pipeline before java gets compiled. So that we guarantee that the backend always has country data available
 
-
 const https = require("https");
 const fs = require("fs");
 
@@ -44,20 +43,21 @@ const downloadCountryData = (temporaryFilePath) => {
  * also checks for null fields
  */
 const filterData = data => data
-  .filter(country => country.callingCodes.length != 0 && country.callingCodes[0].length != 0)
-  .map(country => {
-    // Phone codes is an array of strings
-    const phoneCode = parseInt(country.callingCodes[0], 10);
-     // Some have null currency codes, so filter those out
-    const currency = country.currencies.find(currency => currency.code != null);
-    return {
-      name: country.name,
-      phoneExtensionCode: phoneCode,
-      code: country.alpha2Code,
-      currency
-    }
-     // After filtering currencies, there may be no currency left
-  }).filter(country => country.currency !== undefined);
+.filter(country => country.callingCodes.length != 0
+    && country.callingCodes[0].length != 0)
+.map(country => {
+  // Phone codes is an array of strings
+  const phoneCode = parseInt(country.callingCodes[0], 10);
+  // Some have null currency codes, so filter those out
+  const currency = country.currencies.find(currency => currency.code != null);
+  return {
+    name: country.name,
+    phoneExtensionCode: phoneCode,
+    code: country.alpha2Code,
+    currency
+  }
+  // After filtering currencies, there may be no currency left
+}).filter(country => country.currency !== undefined);
 
 /*
  * pipeline runs individual methods together
@@ -67,7 +67,8 @@ const pipeline = () => {
   downloadCountryData(temporaryFilePath)
   .then(() => {
     console.log("Country data downloaded");
-    const data = JSON.parse(fs.readFileSync(temporaryFilePath, { encoding: "utf8"}));
+    const data = JSON.parse(
+        fs.readFileSync(temporaryFilePath, {encoding: "utf8"}));
     const filteredData = filterData(data);
     console.log(filteredData);
     console.log(`Filtering data. ${filteredData.length} countries found`);

@@ -1,5 +1,5 @@
-import { shallowMount } from "@vue/test-utils";
-import { globalStateMocks } from "#/testHelper";
+import {shallowMount} from "@vue/test-utils";
+import {globalStateMocks} from "#/testHelper";
 import SortedPaginatedItemList from "@/components/SortedPaginatedItemList.vue";
 
 let wrapper;
@@ -32,18 +32,21 @@ const standardSortOptions = () => {
     sortMethod: (a, b) => a.id - b.id
   }, {
     name: "Name",
-    sortMethod: (a, b) => a.name == b.name? 0: (a.name > b.name? 1: -1)
+    sortMethod: (a, b) => a.name == b.name ? 0 : (a.name > b.name ? 1 : -1)
   }]
 }
 
-const standardCurrentSortOption = () => ({...standardSortOptions()[0], reversed: false});
+const standardCurrentSortOption = () => ({
+  ...standardSortOptions()[0],
+  reversed: false
+});
 
 const standardResultsPerPage = 2;
 
 /**
  * Mounts the SortedPaginatedItemList with some default or given props
  * @param {*} propsData props data; this will override defaults (IDs ascending)
- * @returns 
+ * @returns
  */
 const mountWithProps = (propsData = {}) => {
   wrapper = shallowMount(SortedPaginatedItemList, {
@@ -90,7 +93,8 @@ describe("Pagination", () => {
       currentSortOption: standardSortOptions()[1]
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.itemsToDisplay.map(el => el.name)).toEqual(["a", "b", "c", "d", "e"]);
+    expect(wrapper.vm.itemsToDisplay.map(el => el.name)).toEqual(
+        ["a", "b", "c", "d", "e"]);
   });
 
   test("page 1 of 3", async () => {
@@ -105,7 +109,7 @@ describe("Pagination", () => {
     await mountWithProps({
       resultsPerPage: 2
     });
-    await wrapper.setData({ page: 2 });
+    await wrapper.setData({page: 2});
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.itemsToDisplay.map(el => el.id)).toEqual([3, 4]);
   });
@@ -114,7 +118,7 @@ describe("Pagination", () => {
     await mountWithProps({
       resultsPerPage: 2
     });
-    await wrapper.setData({ page: 3 });
+    await wrapper.setData({page: 3});
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.itemsToDisplay.map(el => el.id)).toEqual([5]);
   });
@@ -136,7 +140,7 @@ describe("custom item identifier for list", () => {
     // https://stackoverflow.com/questions/55515179/jest-how-to-test-that-console-error-is-called
     consoleSpy.mockClear();
     await mountWithProps({
-      items: [standardItems(), { ...standardItems()[0], name: "asdf"}], // id duplicated but not name
+      items: [standardItems(), {...standardItems()[0], name: "asdf"}], // id duplicated but not name
       itemIdentifier: "name"
     });
     await wrapper.vm.$nextTick();
@@ -147,7 +151,7 @@ describe("custom item identifier for list", () => {
     // https://stackoverflow.com/questions/55515179/jest-how-to-test-that-console-error-is-called
     consoleSpy.mockClear();
     await mountWithProps({
-      items: [standardItems(), { ...standardItems()[0], name: "asdf"}], // id duplicated but not name
+      items: [standardItems(), {...standardItems()[0], name: "asdf"}], // id duplicated but not name
       itemIdentifier: item => item.id
     });
     await wrapper.vm.$nextTick();

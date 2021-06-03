@@ -17,7 +17,7 @@
           <div class="mt-2">Description: {{ description }}</div>
           <div class="mt-2">Quantity: {{ quantity }}</div>
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
-          <div class="mt-2 mb-5" v-if="moreInfo">More Information: {{ moreInfo }}</div>
+          <div v-if="moreInfo" class="mt-2 mb-5">More Information: {{ moreInfo }}</div>
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated, true) }}</div>
             <div class="date mt-2">Closes: {{ $helper.isoToDateString(listingCloses, true) }}</div>
@@ -27,8 +27,8 @@
           <div class="primary-image-wrapper">
             <img v-if="productImages.length !== 0" :src="productImages[0].filename"
                  alt="Primary images">
-            <img v-else src="@/../assets/images/default-product-thumbnail.svg"
-                 alt="Default product image">
+            <img v-else alt="Default product image"
+                 src="@/../assets/images/default-product-thumbnail.svg">
           </div>
         </div>
       </div>
@@ -42,21 +42,21 @@
       <div class="row my-2">
         <div v-for="(image, index) in productImages"
              :key="image.id"
-             class="col-12 col-md-6 col-lg-4 p-2"
-             :class="{ 'd-none': index === 0}">
+             :class="{ 'd-none': index === 0}"
+             class="col-12 col-md-6 col-lg-4 p-2">
           <img :src="image.filename"
-               class="img-fluid"
-               alt="Product Image">
+               alt="Product Image"
+               class="img-fluid">
         </div>
       </div>
     </div>
     <error-modal
-        title="Error fetching product information"
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="true"
         :retry="this.apiPipeline"
         :show="apiErrorMessage !== null"
+        title="Error fetching product information"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -73,7 +73,7 @@
 import ErrorModal from "@/components/ErrorModal.vue";
 
 import {ApiRequestError} from "@/ApiRequestError";
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 
 export default {
   name: "salesListingDetail",
@@ -110,10 +110,11 @@ export default {
     }
   },
 
-
   beforeMount: async function () {
     const success = await this.apiPipeline();
-    if (success) await this.loadCurrencies();
+    if (success) {
+      await this.loadCurrencies();
+    }
   },
 
   methods: {
@@ -128,7 +129,8 @@ export default {
       }
 
       try {
-        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId, this.$stateStore);
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+            this.$stateStore);
       } catch (err) {
         // If can't get currency not that big of a deal
         if (await Api.handle401.call(this, err)) {
@@ -138,7 +140,6 @@ export default {
       }
       return true;
     },
-
 
     /**
      * Calls the API and updates the component's data with the result
@@ -152,7 +153,9 @@ export default {
       try {
         await this.parseApiResponse(this.callApi());
       } catch (err) {
-        if (await Api.handle401.call(this, err)) return;
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
         return false;
       }
@@ -200,7 +203,7 @@ export default {
 
 .date {
   font-size: smaller;
-  display:inline-block
+  display: inline-block
 }
 
 </style>

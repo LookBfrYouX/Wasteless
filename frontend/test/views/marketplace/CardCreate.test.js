@@ -1,12 +1,12 @@
 import CreateMarketplaceCard from "@/views/marketplace/CardCreate";
-import { shallowMount } from "@vue/test-utils";
+import {shallowMount} from "@vue/test-utils";
 
-import { constants } from "@/constants";
+import {constants} from "@/constants";
+import {Api} from "@/Api";
+import {ApiRequestError} from "@/ApiRequestError";
+import {globalStateMocks} from "#/testHelper";
 
 jest.mock("@/Api");
-import { Api } from "@/Api";
-import {ApiRequestError} from "@/ApiRequestError";
-import { globalStateMocks } from "#/testHelper";
 
 let wrapper;
 afterEach(() => wrapper.destroy());
@@ -27,7 +27,7 @@ const mountCard = (initialSection, userId = 3, title = "TITLE") => {
 describe("Card section handling", () => {
   test("bad initial section name", async () => {
     Api.createCard.mockClear();
-    Api.createCard.mockResolvedValue({ cardId: 4 });
+    Api.createCard.mockResolvedValue({cardId: 4});
     mountCard("BAD SECTION");
     await wrapper.vm.create();
     expect(Api.createCard.mock.calls.length).toBe(0);
@@ -36,7 +36,7 @@ describe("Card section handling", () => {
 
   test("no initial section name", async () => {
     Api.createCard.mockClear();
-    Api.createCard.mockResolvedValue({ cardId: 4 });
+    Api.createCard.mockResolvedValue({cardId: 4});
     mountCard();
     await wrapper.vm.create();
     expect(Api.createCard.mock.calls.length).toBe(1);
@@ -45,7 +45,7 @@ describe("Card section handling", () => {
 
   test("valid initial section name", async () => {
     Api.createCard.mockClear();
-    Api.createCard.mockResolvedValue({ cardId: 4 });
+    Api.createCard.mockResolvedValue({cardId: 4});
     const sectionName = Object.keys(constants.MARKETPLACE.SECTIONS)[1];
     mountCard(sectionName);
     await wrapper.vm.create();
@@ -55,20 +55,19 @@ describe("Card section handling", () => {
   });
 });
 
-
 describe("API error handling", () => {
   test("API error", async () => {
     Api.createCard.mockClear();
-    Api.createCard.mockImplementation(() => Promise.reject(new ApiRequestError("MESSAGE")));
+    Api.createCard.mockImplementation(
+        () => Promise.reject(new ApiRequestError("MESSAGE")));
     mountCard();
     await wrapper.vm.create();
     expect(wrapper.vm.errorMessage).toEqual("MESSAGE");
   });
 
-
   test("API succeeds", async () => {
     Api.createCard.mockClear();
-    Api.createCard.mockResolvedValue({ cardId: 5 });
+    Api.createCard.mockResolvedValue({cardId: 5});
     mountCard();
     wrapper.vm.$router.push.mockClear();
     await wrapper.vm.create();
@@ -90,10 +89,10 @@ describe("Test tag suggestions", () => {
     expect(suggestions[0].disabled).toBeTruthy();
   });
 
-
   test("Suggestions are at least somewhat sensible", async () => {
     mountCard();
-    const tags = ["Cat", "Dog", "No code is good code", "Hydrofluoric Acid", "日常"].map((tag, i) => ({ name: tag, id: i }));
+    const tags = ["Cat", "Dog", "No code is good code", "Hydrofluoric Acid",
+      "日常"].map((tag, i) => ({name: tag, id: i}));
     wrapper.setData({
       allTags: tags,
       tagInputValue: "acid"

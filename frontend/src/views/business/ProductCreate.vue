@@ -35,13 +35,13 @@
               <label>Price {{ currencyText }}</label>
               <input
                   v-model="price"
+                  :placeholder="currencyText"
                   class="form-control"
                   min="0.00"
                   name="price"
                   required
                   step="0.01"
                   type="number"
-                  :placeholder="currencyText"
               />
             </div>
           </div>
@@ -94,13 +94,13 @@
       </div>
     </div>
     <error-modal
-        class="p-absolute w-100"
-        title="Could not retrieve business data"
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="false"
         :retry="currencyPipeline"
         :show="apiErrorMessage != null"
+        class="p-absolute w-100"
+        title="Could not retrieve business data"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -111,7 +111,7 @@
 import {ApiRequestError} from "@/ApiRequestError";
 import ErrorModal from "@/components/ErrorModal";
 
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 
 export default {
   components: {

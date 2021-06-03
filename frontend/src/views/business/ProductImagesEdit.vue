@@ -22,9 +22,9 @@
         <!-- align buttons on the bottom -->
         <div class="d-flex justify-content-center">
           <img
-              class="img-fluid w-100"
               :alt="`Product image ${i + 1}`"
               :src="img.filename"
+              class="img-fluid w-100"
           />
         </div>
         <div class="d-flex flex-wrap justify-content-center">
@@ -61,7 +61,6 @@
       </div>
     </div>
     <error-modal
-        title="Error fetching product information"
         :goBack="false"
         :hideCallback="() => {
           apiErrorMessage = null;
@@ -69,6 +68,7 @@
         :refresh="true"
         :retry="this.apiPipeline"
         :show="apiErrorMessage !== null"
+        title="Error fetching product information"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -100,7 +100,7 @@
 import ErrorModal from '../../components/ErrorModal.vue';
 import {ApiRequestError} from "@/ApiRequestError";
 
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 
 export default {
   name: 'editProductImages',
@@ -191,7 +191,9 @@ export default {
      */
     onFilePicked(event) {
       const files = event.target.files;
-      if (files.length === 0) return;
+      if (files.length === 0) {
+        return;
+      }
       Api.uploadProductImage(files[0], this.businessId, this.productId)
       .then(() => {
         return this.apiPipeline();

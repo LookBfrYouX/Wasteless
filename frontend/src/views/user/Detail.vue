@@ -59,17 +59,17 @@
               Revoke Admin
             </button>
             <router-link
-              v-if="isAdmin"
-              :to="{ name: 'MarketplaceCardCreateAdmin', params: { userId: userInfo.id }}"
-              class="btn btn-white-bg-primary m-1 d-flex"
+                v-if="isAdmin"
+                :to="{ name: 'MarketplaceCardCreateAdmin', params: { userId: userInfo.id }}"
+                class="btn btn-white-bg-primary m-1 d-flex"
             >
               Create Marketplace Card
             </router-link>
             <router-link
                 v-if="isSignedIn && authUser.id === userInfo.id"
+                :to="{ name: 'BusinessCreate' }"
                 class="btn btn-white-bg-primary m-1 d-flex"
                 type="button"
-                :to="{ name: 'BusinessCreate' }"
             >
               <span class="material-icons mr-1">business</span>
               Register Business
@@ -95,10 +95,10 @@
                 class="list-group-item card text-wrap mb-2 border"
             >
               <router-link
-                :to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
-                class="text-reset text-decoration-none"
+                  :to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
+                  class="text-reset text-decoration-none"
               >
-                <h5 class="business-name card-title card-link" >{{ business.name }}</h5>
+                <h5 class="business-name card-title card-link">{{ business.name }}</h5>
               </router-link>
               <h6 class="card-subtitle mb-2 text-muted">
                 {{ business.businessType }}
@@ -139,7 +139,8 @@
               <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
             </tr>
             <tr>
-            <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5></td>
+              <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
+              </td>
             </tr>
             <tr v-if="userInfo.email" scope="row">
               <th class="pl-0 pl-md-2">Email Address:</th>
@@ -161,12 +162,12 @@
       </div>
     </div>
     <error-modal
-        title="Error fetching user details"
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="true"
         :retry="this.apiPipeline"
         :show="apiErrorMessage !== null"
+        title="Error fetching user details"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -187,7 +188,7 @@ th {
 import ErrorModal from '../../components/ErrorModal.vue';
 import {ApiRequestError} from "@/ApiRequestError";
 
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 
 export default {
   name: 'profile',
@@ -213,7 +214,7 @@ export default {
   /**
    * Gets user information from the API
    */
-  beforeMount: async function() {
+  beforeMount: async function () {
     await this.apiPipeline();
   },
 

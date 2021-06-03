@@ -25,14 +25,14 @@ The parent component must provide `address` prop. When the address is updated in
     <div class="form-group col-12 col-md-3">
       <label>Street number</label>
       <suggestions
+          :suggestions="[]"
+          :value="address.streetNumber"
           inputClasses="form-control"
           maxlength="50"
           name="streetnumber"
+
           placeholder="Street number"
           type="text"
-
-          :suggestions="[]"
-          :value="address.streetNumber"
           @focus="activeAddressInputName = 'streetNumber'"
 
           @input="onAddressInput"
@@ -43,16 +43,16 @@ The parent component must provide `address` prop. When the address is updated in
     <div class="form-group required col-12 col-md-9">
       <label>Street name</label>
       <suggestions
+          :suggestions="addressSuggestions"
+          :value="address.streetName"
           autocomplete="street-address"
           inputClasses="form-control"
           maxlength="200"
           name="streetName"
           placeholder="Street name"
+
           required
           type="text"
-
-          :suggestions="addressSuggestions"
-          :value="address.streetName"
           @focus="activeAddressInputName = 'streetName'"
 
           @input="onAddressInput"
@@ -62,16 +62,16 @@ The parent component must provide `address` prop. When the address is updated in
     <div class="form-group required col-12 col-md-9 ml-auto">
       <label>Suburb</label>
       <suggestions
+          :suggestions="addressSuggestions"
+          :value="address.suburb"
           autocomplete="suburb"
           inputClasses="form-control"
           maxlength="200"
           name="suburb"
           placeholder="Suburb"
+
           required
           type="text"
-
-          :suggestions="addressSuggestions"
-          :value="address.suburb"
           @focus="activeAddressInputName = 'suburb'"
 
           @input="onAddressInput"
@@ -81,16 +81,16 @@ The parent component must provide `address` prop. When the address is updated in
     <div class="form-group required col-12 col-md-6">
       <label>City</label>
       <suggestions
+          :suggestions="addressSuggestions"
+          :value="address.city"
           autocomplete="address-level2"
           inputClasses="form-control"
           maxlength="100"
           name="city"
           placeholder="City"
+
           required
           type="text"
-
-          :suggestions="addressSuggestions"
-          :value="address.city"
           @focus="activeAddressInputName = 'city'"
 
           @input="onAddressInput"
@@ -100,16 +100,16 @@ The parent component must provide `address` prop. When the address is updated in
     <div class="form-group required col-12 col-md-6">
       <label>Region</label>
       <suggestions
+          :suggestions="addressSuggestions"
+          :value="address.region"
           autocomplete="address-level1"
           inputClasses="form-control"
           maxlength="100"
           name="region"
           placeholder="Region"
+
           required
           type="text"
-
-          :suggestions="addressSuggestions"
-          :value="address.region"
           @focus="activeAddressInputName = 'region'"
 
           @input="onAddressInput"
@@ -120,16 +120,16 @@ The parent component must provide `address` prop. When the address is updated in
     <div class="form-group required col-12 col-md-6">
       <label>Post code</label>
       <suggestions
+          :suggestions="addressSuggestions"
+          :value="address.postcode"
           autocomplete="postal-code"
           inputClasses="form-control"
           maxlength="10"
           name="postcode"
           placeholder="Post code"
+
           required
           type="text"
-
-          :suggestions="addressSuggestions"
-          :value="address.postcode"
           @focus="activeAddressInputName = 'postcode'"
 
           @input="onAddressInput"
@@ -139,14 +139,14 @@ The parent component must provide `address` prop. When the address is updated in
     <div class="form-group required col-12 col-md-6">
       <label>Country</label>
       <select
+          :suggestions="addressSuggestions"
+          :value="address.country"
           autocomplete="country-name"
           class="form-control"
           maxlength="50"
           name="country"
           placeholder="Country"
           required
-          :suggestions="addressSuggestions"
-          :value="address.country"
           @focus="activeAddressInputName = 'country'"
           @input="event => onAddressInput(event.target.value)"
           @suggestion="suggestionSelected"

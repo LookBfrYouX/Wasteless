@@ -1,106 +1,107 @@
 import {shallowMount} from "@vue/test-utils";
 import CreateListing from "@/views/business/ListingCreate";
-import {globalStateMocks } from "#/testHelper";
+import {globalStateMocks} from "#/testHelper";
 import {ApiRequestError} from "@/ApiRequestError";
-import { Api } from "@/Api";
+import {Api} from "@/Api";
+
 jest.mock("@/Api");
 
 let wrapper;
 
 const mockInventory =
-  [{
-    "id": 10,
-    "product": {
-      "id": "1",
-      "name": "Earl Grey",
-    },
-    "quantity": 4,
-    "pricePerItem": 7.0,
-    "totalPrice": 25.00,
-    "expires": "2021-08-03"
-  },
-  {
-    "id": 20,
-    "product": {
-      "id": "2",
-      "name": "English Breakfast",
-    },
-    "quantity": 10,
-    "pricePerItem": null,
-    "totalPrice": 40.00,
-    "expires": "2021-09-02"
-  },
-  {
-    "id": 30,
-    "product": {
-      "id": "2",
-      "name": "English Breakfast",
-    },
-    "quantity": 7,
-    "pricePerItem": 10.0,
-    "totalPrice": null,
-    "expires": "2021-10-01"
-  },
-    {
-      "id": 40,
+    [{
+      "id": 10,
       "product": {
-        "id": "3",
-        "name": "Green tea",
+        "id": "1",
+        "name": "Earl Grey",
       },
-      "quantity": 9,
-      "pricePerItem": 6.0,
-      "totalPrice": 50.00,
-      "expires": "2021-10-01"
+      "quantity": 4,
+      "pricePerItem": 7.0,
+      "totalPrice": 25.00,
+      "expires": "2021-08-03"
     },
-  ];
+      {
+        "id": 20,
+        "product": {
+          "id": "2",
+          "name": "English Breakfast",
+        },
+        "quantity": 10,
+        "pricePerItem": null,
+        "totalPrice": 40.00,
+        "expires": "2021-09-02"
+      },
+      {
+        "id": 30,
+        "product": {
+          "id": "2",
+          "name": "English Breakfast",
+        },
+        "quantity": 7,
+        "pricePerItem": 10.0,
+        "totalPrice": null,
+        "expires": "2021-10-01"
+      },
+      {
+        "id": 40,
+        "product": {
+          "id": "3",
+          "name": "Green tea",
+        },
+        "quantity": 9,
+        "pricePerItem": 6.0,
+        "totalPrice": 50.00,
+        "expires": "2021-10-01"
+      },
+    ];
 
 const mockListings =
-  [{
-    "id": 100,
-    "inventoryItem": {
-      "id": 10,
-      "product": {
-        "id": "1",
-        "name": "Earl Grey",
+    [{
+      "id": 100,
+      "inventoryItem": {
+        "id": 10,
+        "product": {
+          "id": "1",
+          "name": "Earl Grey",
+        },
+        "quantity": 4,
+        "pricePerItem": 7.0,
+        "totalPrice": 25.00,
+        "expires": "2021-05-22"
       },
-      "quantity": 4,
-      "pricePerItem": 7.0,
-      "totalPrice": 25.00,
-      "expires": "2021-05-22"
+      "quantity": 3,
     },
-    "quantity": 3,
-  },
-  {
-    "id": 200,
-    "inventoryItem": {
-      "id": 10,
-      "product": {
-        "id": "1",
-        "name": "Earl Grey",
+      {
+        "id": 200,
+        "inventoryItem": {
+          "id": 10,
+          "product": {
+            "id": "1",
+            "name": "Earl Grey",
+          },
+          "quantity": 4,
+          "pricePerItem": 7.0,
+          "totalPrice": 25.00,
+          "expires": "2021-05-22"
+        },
+        "quantity": 1,
       },
-      "quantity": 4,
-      "pricePerItem": 7.0,
-      "totalPrice": 25.00,
-      "expires": "2021-05-22"
-    },
-    "quantity": 1,
-  },
-  {
-    "id": 300,
-    "inventoryItem": {
-      "id": 20,
-      "product": {
-        "id": "3",
-        "name": "English Breakfast",
+      {
+        "id": 300,
+        "inventoryItem": {
+          "id": 20,
+          "product": {
+            "id": "3",
+            "name": "English Breakfast",
+          },
+          "quantity": 10,
+          "pricePerItem": 5.0,
+          "totalPrice": 40.00,
+          "expires": "2021-09-22"
+        },
+        "quantity": 4,
       },
-      "quantity": 10,
-      "pricePerItem": 5.0,
-      "totalPrice": 40.00,
-      "expires": "2021-09-22"
-    },
-    "quantity": 4,
-  },
-  ];
+    ];
 
 beforeEach(() => {
   wrapper = shallowMount(CreateListing, {
@@ -126,7 +127,8 @@ describe("getInventory method", () => {
   });
 
   test("Get inventory failed", async () => {
-    Api.getBusinessInventory.mockImplementation(() => Promise.reject(new ApiRequestError("Request Failed")));
+    Api.getBusinessInventory.mockImplementation(
+        () => Promise.reject(new ApiRequestError("Request Failed")));
     let isSuccessfulResponse = await wrapper.vm.getInventory();
     expect(isSuccessfulResponse).toEqual(false);
   });
@@ -143,7 +145,8 @@ describe("getListings method", () => {
   });
 
   test("Get listings failed", async () => {
-    Api.getBusinessListings.mockImplementation(() => Promise.reject(new ApiRequestError("Request Failed")));
+    Api.getBusinessListings.mockImplementation(
+        () => Promise.reject(new ApiRequestError("Request Failed")));
     let response = await wrapper.vm.getListings();
     expect(response).toEqual(undefined);
   });
@@ -159,7 +162,8 @@ describe("getAvailableInventoryItem method", () => {
     };
     Api.getBusinessListings.mockResolvedValue(mockListingsResponse);
     await wrapper.vm.getAvailableInventoryItem();
-    expect(wrapper.vm.inventory[2].quantityRemaining).toEqual(wrapper.vm.inventory[2].quantity);
+    expect(wrapper.vm.inventory[2].quantityRemaining).toEqual(
+        wrapper.vm.inventory[2].quantity);
   });
 
   test("Inventory with already one listing exits", async () => {
@@ -309,7 +313,8 @@ describe("defaultPrice computed", () => {
     });
     await wrapper.vm.$nextTick();
     let result = wrapper.vm.defaultPrice;
-    let expected = (mockInventoryItem.pricePerItem * quantityPartial).toFixed(2);
+    let expected = (mockInventoryItem.pricePerItem * quantityPartial).toFixed(
+        2);
     expect(result).toEqual(expected);
   });
 });

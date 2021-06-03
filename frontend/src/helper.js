@@ -54,19 +54,26 @@ export const helper = {
     const day = date.getDate() < 10 ? `0${date.getDate()}`
         : date.getDate().toString();
     let result = `${day} ${constants.MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
-    if (includeTime) result += ", " + date.toLocaleTimeString("en-NZ", { hour: "numeric", minute: "2-digit", seconds: undefined });
+    if (includeTime) {
+      result += ", " + date.toLocaleTimeString("en-NZ",
+          {hour: "numeric", minute: "2-digit", seconds: undefined});
+    }
     return result;
   },
 
   /**
    * Given year month and day, returns `yyyy-mm-dd` string
-   * @param {Number} year 
-   * @param {Number} month 
-   * @param {Number} day 
+   * @param {Number} year
+   * @param {Number} month
+   * @param {Number} day
    */
   toYyyyMmDdString(year, month, day) {
-    if (month < 10) month = "0" + month;
-    if (day < 10) day = "0" + day;
+    if (month < 10) {
+      month = "0" + month;
+    }
+    if (day < 10) {
+      day = "0" + day;
+    }
     return `${year}-${month}-${day}`;
   },
 
@@ -77,19 +84,27 @@ export const helper = {
    * @param {*} actingAsBusiness business you want to act as. Use null if acting as self
    * @param {*} $router router
    * @param {*} $route  route
-   * @returns 
+   * @returns
    */
-  goToProfile: async function (actingAsBusiness = undefined, $router = undefined, $route = undefined) {
+  goToProfile: async function (actingAsBusiness = undefined,
+      $router = undefined, $route = undefined) {
     if ($route == undefined && this.$route === undefined) {
       console.warn(
           "[helper.js, goToProfile]: this needs to be passed using `.call(this)` or passed as argument");
       return false;
     }
 
-    if (actingAsBusiness === undefined) actingAsBusiness = this.$stateStore.getters.getActingAs();
-    if ($router === undefined) $router = this.$router;
-    if ($route  === undefined) $route  = this.$route;
-    
+    if (actingAsBusiness
+        === undefined) {
+      actingAsBusiness = this.$stateStore.getters.getActingAs();
+    }
+    if ($router === undefined) {
+      $router = this.$router;
+    }
+    if ($route === undefined) {
+      $route = this.$route;
+    }
+
     let reload = false;
     let args;
 
@@ -131,7 +146,10 @@ export const helper = {
    * @returns
    */
   getBusinessCountry: async function (businessId, stateStore) {
-    if (isNaN(businessId)) console.warn("Business ID not given; getBusinessCountry");
+    if (isNaN(businessId)) {
+      console.warn(
+          "Business ID not given; getBusinessCountry");
+    }
     const actingAsBusiness = stateStore.getters.getActingAs();
     if (actingAsBusiness == null) {
       // const user = stateStore.getters.getAuthUser();
@@ -140,7 +158,7 @@ export const helper = {
       const {data} = await Api.businessProfile(businessId);
       return data.address.country;
     }
-    
+
     return actingAsBusiness.address.country;
   },
 
@@ -153,7 +171,8 @@ export const helper = {
    */
   getCurrencyForBusiness: async function (businessId, stateStore) {
     const countryName = await this.getBusinessCountry(businessId, stateStore);
-    const country = countryData.find(countryEl => countryEl.name == countryName);
+    const country = countryData.find(
+        countryEl => countryEl.name == countryName);
     if (country) {
       return country.currency;
     }
@@ -166,14 +185,14 @@ export const helper = {
    * @param {*} stateStore
    * @returns currency, returns null when currency is not found or API request error
    */
-  tryGetCurrencyForBusiness: async function(businessId, stateStore) {
+  tryGetCurrencyForBusiness: async function (businessId, stateStore) {
     try {
       return await this.getCurrencyForBusiness(businessId, stateStore);
-    } catch(err) {
+    } catch (err) {
       return null;
     }
   },
-  
+
   /**
    * Given price and currency, return price with currency
    * @param {*} price
@@ -182,7 +201,9 @@ export const helper = {
    * @returns string in form SYMBOL PRICE (CODE), or undefined if price is not a number
    */
   makeCurrencyString(price, currency, showCurrencyCode = true) {
-    if (typeof price != "number") return;
+    if (typeof price != "number") {
+      return;
+    }
     price = price.toFixed(2);
     if (currency == null || currency == undefined) {
       return `${price} (unknown currency)`;
@@ -194,19 +215,20 @@ export const helper = {
     return str;
   },
 
-  
   /**
    * Method which returns sort method for a string or numeric property of an object
    * @param{Function|String} key object key to sort by, or lambda which extracts key from an object
    */
-   sensibleSorter: (key) => {
+  sensibleSorter: (key) => {
     /**
      * Gets property from an object given key or lambda
      * @param {Object} obj object to extract property from
      * @param {Function|String} key Key is either a key to an object or a lambda which takes in an object and returns a key
      */
     const getProp = (obj, key) => {
-      if (key instanceof Function) return key(obj);
+      if (key instanceof Function) {
+        return key(obj);
+      }
       return obj[key];
     }
 
@@ -214,22 +236,24 @@ export const helper = {
       a = getProp(a, key);
       b = getProp(b, key);
       // For number can use a - b, but this works with both strings and numbers
-      if (a === b) return 0;
-      return a > b? 1: -1;
+      if (a === b) {
+        return 0;
+      }
+      return a > b ? 1 : -1;
     }
   },
 
   /**
    * Attempts to get business name.
-   * 
+   *
    * @param {Number} id business id
    * @return null if could not get it, string otherwise
    */
-  tryGetBusinessName: async function(id) {
+  tryGetBusinessName: async function (id) {
     try {
       const {data} = await Api.businessProfile(id);
       return data.name;
-    } catch(err) {
+    } catch (err) {
       return null;
     }
   },

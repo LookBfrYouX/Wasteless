@@ -1,10 +1,10 @@
 import MarketplaceCardContainer from "@/components/MarketplaceSection";
-import { shallowMount } from "@vue/test-utils";
+import {shallowMount} from "@vue/test-utils";
+import {Api} from "@/Api";
+import {globalStateMocks} from "#/testHelper";
+import {ApiRequestError} from "@/ApiRequestError";
 
 jest.mock("@/Api");
-import { Api } from "@/Api";
-import { globalStateMocks } from "#/testHelper";
-import {ApiRequestError} from "@/ApiRequestError";
 
 let wrapper;
 beforeEach(() => {
@@ -23,7 +23,8 @@ describe("API handling", () => {
 
   test("API returns error", async () => {
     const message = "It's a Mario!";
-    Api.getMarketplaceCards.mockImplementation(() => Promise.reject(new ApiRequestError(message)));
+    Api.getMarketplaceCards.mockImplementation(
+        () => Promise.reject(new ApiRequestError(message)));
     await wrapper.vm.getCardsFromAPI("");
     expect(wrapper.vm.apiErrorMessage).toEqual(message);
   });
