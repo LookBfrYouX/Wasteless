@@ -1,11 +1,20 @@
 <template>
   <div class="overflow-auto">
-    <div
-        v-for="card in cards"
-        :key="card.id"
+    <sorted-paginated-item-list
+        :currentSortOption.sync="currentSortOption"
+        :items="cards"
+        :sortOptions="sortOptions"
     >
-      <marketplace-card :card="card"/>
-    </div>
+      <template v-slot:title>
+        <h2>Cards</h2>
+      </template>
+      <template v-slot:item="slotProps">
+        <marketplace-card
+            :card="slotProps.item"
+            class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
+        />
+      </template>
+    </sorted-paginated-item-list>
     <error-modal
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
@@ -22,13 +31,19 @@
 import MarketplaceCard from "@/components/cards/MarketplaceCard";
 import {Api} from "@/Api";
 import ErrorModal from "./ErrorModal";
+import SortedPaginatedItemList from "@/components/SortedPaginatedItemList";
+
+const sortOptions = [
+];
 
 export default {
-  components: {MarketplaceCard, ErrorModal},
+  components: {SortedPaginatedItemList, MarketplaceCard, ErrorModal},
   props: ['section'],
   data() {
     return {
       apiErrorMessage: null,
+      sortOptions,
+      currentSortOption: {...sortOptions[0], reversed: false},
       cards: [],
     };
   },
