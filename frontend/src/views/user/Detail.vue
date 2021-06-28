@@ -130,9 +130,9 @@
               <th class="pl-0 pl-md-2">Nickname:</th>
               <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
             </tr>
-            <tr v-if="memberSinceText" scope="row">
+            <tr scope="row">
               <th class="pl-0 pl-md-2">Member since:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ memberSinceText }}</p></td>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ this.$helper.memberSinceText(userInfo.created) }}</p></td>
             </tr>
             <tr v-if="dateOfBirthText" scope="row">
               <th class="pl-0 pl-md-2">Date of Birth:</th>
@@ -304,41 +304,6 @@ export default {
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
-
-    /**
-     * Formats the date as a D MMMM YYYY string
-     * @param date date object, or something that can be passed to the constructor
-     */
-    formatDate: function (date) {
-      if (!(date instanceof Date)) {
-        date = new Date(date);
-      }
-      return `${date.getDate()} ${this.$constants.MONTH_NAMES[date.getMonth()]}, ${date.getFullYear()}`;
-    },
-
-    /**
-     * Calculates the time since registration and returns it as a string
-     * @return string in format 'y years, m months'
-     */
-    generateTimeSinceRegistrationText: function (registrationDate, currentDate) {
-      const yearDiff = currentDate.getFullYear() - registrationDate.getFullYear();
-      const monthDiff = currentDate.getMonth() - registrationDate.getMonth();
-
-      const timeDiffInMonth = yearDiff * 12 + monthDiff;
-
-      const years = Math.floor(timeDiffInMonth / 12);
-      let months = timeDiffInMonth % 12;
-
-      const yearsText = `${years} year${years == 1 ? "" : "s"}`;
-
-      const monthsText = `${months} month${months == 1 ? "" : "s"}`;
-
-      if (years == 0) {
-        return monthsText;
-      }
-
-      return `${yearsText}, ${monthsText}`;
-    },
   },
 
   computed: {
@@ -359,25 +324,8 @@ export default {
       if (isNaN(Date.parse(this.userInfo.dateOfBirth))) {
         return "Unknown";
       }
-      return this.formatDate(this.userInfo.dateOfBirth);
+      return this.$helper.formatDate(this.userInfo.dateOfBirth);
     },
-
-    /**
-     * Formatted text for member since text
-     */
-    memberSinceText: function () {
-      if (isNaN(Date.parse(this.userInfo.created))) {
-        return "Unknown";
-      }
-      const created = new Date(this.userInfo.created);
-      const dateOfRegistration = this.formatDate(created);
-      const monthsSinceRegistration = this.generateTimeSinceRegistrationText(
-          created,
-          new Date()
-      );
-
-      return `${dateOfRegistration} (${monthsSinceRegistration})`;
-    }
   },
 
   watch: {
