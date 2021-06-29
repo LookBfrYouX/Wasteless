@@ -76,10 +76,10 @@ public class BusinessController {
    * @param userId the id of the user to add to the list of admins
    */
   @PutMapping("/businesses/{businessId}/makeAdministrator")
-  public ResponseEntity<String> addBusinessAdmin(@PathVariable long businessId,
-      @RequestBody long userId) {
+  public ResponseEntity<String> addBusinessAdmin(@PathVariable String businessId,
+      @RequestBody String userId) {
     log.info("ADDING USER WITH ID " + userId + " AS ADMIN TO BUSINESS WITH ID: " + businessId);
-    businessService.addBusinessAdmin(businessId, userId);
+    businessService.addBusinessAdmin(Long.parseLong(businessId), Long.parseLong(userId));
     return new ResponseEntity<>("Individual added as an administrator successfully", HttpStatus.valueOf(200));
   }
 }
