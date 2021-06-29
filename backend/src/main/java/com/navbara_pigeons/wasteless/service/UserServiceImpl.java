@@ -34,6 +34,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * A UserService implementation.
@@ -187,18 +188,27 @@ public class UserServiceImpl implements UserService {
     return userDao.getUserByEmail(email);
   }
 
-
   /**
    * Calls the userDao to search for users using the given username
    *
-   * @param searchQuery the name being searched for
+   * @param searchQuery The name being searched for
+   * @param pagStartIndex The start index of the list to return, implemented for pagination
+   * @param pagEndIndex The stop index of the list to return, implemented for pagination
    * @return A list containing all the users whose names/nickname match the username
+   * @throws InvalidAttributeValueException
    */
   @Override
   @Transactional
-  public List<BasicUserDto> searchUsers(String searchQuery) throws InvalidAttributeValueException {
+  public List<BasicUserDto> searchUsers(String searchQuery, @RequestParam Integer pagStartIndex,
+      @RequestParam Integer pagEndIndex) throws InvalidAttributeValueException {
+    List<User> paginatedResults;
+    if (pagStartIndex == null || pagEndIndex == null) {
+      paginatedResults = userDao.searchUsers(searchQuery);
+    } else {
+      // TODO: Implement pagination search
+    }
     List<BasicUserDto> results = new ArrayList<>();
-    for (User user : userDao.searchUsers(searchQuery)) {
+    for (User user : paginatedResults) {
       results.add(new BasicUserDto(user));
     }
     return results;
