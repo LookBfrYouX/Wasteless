@@ -100,13 +100,17 @@ public class UserController {
    * Search for a user based of nickname or name(firstName, middleName, lastName)
    *
    * @param searchQuery name being searched for
+   * @param pagStartIndex The start index of the list to return, implemented for pagination
+   * @param pagEndIndex The stop index of the list to return, implemented for pagination
    * @return List of all users matching the searchQuery
    * @throws ResponseStatusException Unknown Error
    */
   @GetMapping("/users/search")
-  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery)
+  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery,
+      @RequestParam Integer pagStartIndex, @RequestParam Integer pagEndIndex)
       throws InvalidAttributeValueException {
-    return new ResponseEntity<>(this.userService.searchUsers(searchQuery),
+    return new ResponseEntity<>(
+        this.userService.searchUsers(searchQuery, pagStartIndex, pagEndIndex),
         HttpStatus.valueOf(200));
   }
 
