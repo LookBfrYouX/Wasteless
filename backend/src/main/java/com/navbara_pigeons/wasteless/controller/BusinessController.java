@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
@@ -66,5 +67,19 @@ public class BusinessController {
     log.info("GETTING BUSINESS BY ID: " + id);
     return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)),
         HttpStatus.valueOf(200));
+  }
+
+  /**
+   * Add a specific user to the list of administrators for a business
+   *
+   * @param businessId unique identifier of the business being searched for
+   * @param userId the id of the user to add to the list of admins
+   */
+  @PutMapping("/businesses/{businessId}/makeAdministrator")
+  public ResponseEntity<String> addBusinessAdmin(@PathVariable long businessId,
+      @RequestBody long userId) {
+    log.info("ADDING USER WITH ID " + userId + " AS ADMIN TO BUSINESS WITH ID: " + businessId);
+    businessService.addBusinessAdmin(businessId, userId);
+    return new ResponseEntity<>("Individual added as an administrator successfully", HttpStatus.valueOf(200));
   }
 }

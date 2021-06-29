@@ -139,4 +139,8 @@ public class BusinessServiceImpl implements BusinessService {
     }
     return false;
   }
+
+  public void addBusinessAdmin(long businessId, long userId) {
+    ;
+  }
 }

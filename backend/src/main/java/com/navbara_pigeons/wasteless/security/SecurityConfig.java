@@ -76,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .authenticated()
         .antMatchers(HttpMethod.GET, "/users/{id}/images").permitAll()
         .antMatchers(HttpMethod.POST, "/businesses/{id}/listings").authenticated()
+        .antMatchers(HttpMethod.PUT, "/businesses/{businessId}/makeAdministrator").authenticated()
         .anyRequest().authenticated()
         .and()
         .httpBasic() // comment out to prevent login prompts appearing on API calls when logged out
