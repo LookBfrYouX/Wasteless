@@ -27,6 +27,10 @@
           <dd class="col-md value"> {{ businessInfo.businessType }}</dd>
         </dl>
         <dl class="row">
+          <dt class="col-md label">Registered since:</dt>
+          <dd class="col-md value"> {{ this.$helper.memberSinceText(businessInfo.created) }}</dd>
+        </dl>
+        <dl class="row">
           <dt class="col-md label">Administrator:</dt>
           <dd
               v-for="admin in businessInfo.administrators"
