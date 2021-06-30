@@ -205,7 +205,9 @@ public class UserServiceImpl implements UserService {
     if (pagStartIndex == null || pagEndIndex == null) {
       paginatedResults = userDao.searchUsers(searchQuery);
     } else {
-      // TODO: Implement pagination search
+      if (pagStartIndex > pagEndIndex) {
+        throw new InvalidAttributeValueException("The pagination 'start index' must be smaller than the 'end index'");
+      }
     }
     List<BasicUserDto> results = new ArrayList<>();
     for (User user : paginatedResults) {
