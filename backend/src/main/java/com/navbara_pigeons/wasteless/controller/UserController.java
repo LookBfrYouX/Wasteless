@@ -108,10 +108,11 @@ public class UserController {
   @GetMapping("/users/search")
   public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery,
       @RequestParam(required = false) Integer pagStartIndex,
-      @RequestParam(required = false) Integer pagEndIndex)
+      @RequestParam(required = false) Integer pagEndIndex,
+      @RequestParam(required = false) String sortBy)
       throws InvalidAttributeValueException {
     return new ResponseEntity<>(
-        this.userService.searchUsers(searchQuery, pagStartIndex, pagEndIndex),
+        this.userService.searchUsers(searchQuery, pagStartIndex, pagEndIndex, sortBy),
         HttpStatus.valueOf(200));
   }
 

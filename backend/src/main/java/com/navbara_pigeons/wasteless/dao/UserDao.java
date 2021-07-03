@@ -18,9 +18,11 @@ public interface UserDao {
 
   boolean userExists(String email);
 
-  List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException;
+  List<User> searchUsers(String searchQuery)
+      throws InvalidAttributeValueException;
 
-  List<User> searchUsers(String searchQuery, Integer pagStartIndex, Integer pagEndIndex)
+  List<User> searchUsers(String searchQuery, Integer pagStartIndex, Integer pagEndIndex,
+      String sortField, boolean sortAscending)
       throws InvalidAttributeValueException;
 
 }

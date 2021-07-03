@@ -118,7 +118,7 @@ public class UserDaoHibernateImpl implements UserDao {
   public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
     Session currentSession = getSession();
     CriteriaQuery<User> criteriaQuery = HibernateCriteriaQueryBuilder
-        .parseUserSearchQuery(currentSession, searchQuery);
+        .parseUserSearchQuery(currentSession, searchQuery, "id", true);
 
     Query<User> query = currentSession.createQuery(criteriaQuery);
     List<User> results = query.getResultList();
@@ -127,11 +127,13 @@ public class UserDaoHibernateImpl implements UserDao {
   }
 
   @Override
-  public List<User> searchUsers(String searchQuery, Integer pagStartIndex, Integer pagEndIndex)
+  public List<User> searchUsers(String searchQuery, Integer pagStartIndex, Integer pagEndIndex,
+      String sortField, boolean sortAscending)
       throws InvalidAttributeValueException {
     Session currentSession = getSession();
     TypedQuery<User> query = HibernateCriteriaQueryBuilder
-        .parseUserSearchQuery(currentSession, searchQuery, pagStartIndex, pagEndIndex);
+        .parseUserSearchQuery(currentSession, searchQuery, pagStartIndex, pagEndIndex,
+            sortField, sortAscending);
 
     return query.getResultList();
   }

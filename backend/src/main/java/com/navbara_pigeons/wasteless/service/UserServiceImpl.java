@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -34,7 +35,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * A UserService implementation.
@@ -194,13 +194,15 @@ public class UserServiceImpl implements UserService {
    * @param searchQuery   The name being searched for
    * @param pagStartIndex The start index of the list to return, implemented for pagination
    * @param pagEndIndex   The stop index of the list to return, implemented for pagination
+   * @param sortBy        Defines any user sorting needed and the direction (ascending or
+   *                      descending)
    * @return A list containing all the users whose names/nickname match the username
    * @throws InvalidAttributeValueException
    */
   @Override
   @Transactional
-  public List<BasicUserDto> searchUsers(String searchQuery, @RequestParam Integer pagStartIndex,
-      @RequestParam Integer pagEndIndex) throws InvalidAttributeValueException {
+  public List<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex,
+      Integer pagEndIndex, String sortBy) throws InvalidAttributeValueException {
     List<User> serverResults;
 
     if (pagStartIndex != null && pagEndIndex != null) {
@@ -208,7 +210,29 @@ public class UserServiceImpl implements UserService {
         throw new InvalidAttributeValueException(
             "The pagination 'start index' must be smaller than the 'end index'");
       }
-      serverResults = userDao.searchUsers(searchQuery, pagStartIndex, pagEndIndex);
+
+      // Defining default sorting parameters
+      String sortField = "id";
+      boolean sortAscending = true;
+
+      // SortBy string is in the format "fieldName-<acs/desc>" where fieldName is a property name from the class
+      if (sortBy != null) {
+        String[] splitSortBy = sortBy.split("-");
+        if (splitSortBy.length == 2) {
+          for (Field field : User.class.getDeclaredFields()) {
+            if (field.getName().equals(splitSortBy[0])) {
+              sortField = field.getName();
+              break;
+            }
+          }
+          if (splitSortBy[1].equals("desc")) {
+            sortAscending = false;
+          }
+        }
+      }
+
+      serverResults = userDao
+          .searchUsers(searchQuery, pagStartIndex, pagEndIndex, sortField, sortAscending);
     } else {
       serverResults = userDao.searchUsers(searchQuery);
     }

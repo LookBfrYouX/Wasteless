@@ -15,7 +15,6 @@ import javax.management.InvalidAttributeValueException;
 import net.minidev.json.JSONObject;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.RequestParam;
 
 public interface UserService {
 
@@ -31,7 +30,8 @@ public interface UserService {
 
   void revokeAdmin(long id) throws UserNotFoundException, NotAcceptableException;
 
-  List<BasicUserDto> searchUsers(String searchQuery, @RequestParam Integer pagStartIndex, @RequestParam Integer pagEndIndex) throws InvalidAttributeValueException;
+  List<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex, Integer pagEndIndex,
+      String sortBy) throws InvalidAttributeValueException;
 
   void makeUserAdmin(long id) throws UserNotFoundException, BadCredentialsException;
 

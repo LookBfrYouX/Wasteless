@@ -11,6 +11,8 @@ import javax.management.InvalidAttributeValueException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
@@ -43,16 +45,18 @@ public class HibernateCriteriaQueryBuilder {
   }
 
   public static TypedQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery,
-      Integer pagStartIndex, Integer pagEndIndex)
+      Integer pagStartIndex, Integer pagEndIndex, String sortField, boolean sortAscending)
       throws InvalidAttributeValueException {
-    CriteriaQuery<User> select = parseUserSearchQuery(currentSession, searchQuery);
+    CriteriaQuery<User> select = parseUserSearchQuery(currentSession, searchQuery, sortField,
+        sortAscending);
 
     TypedQuery<User> typedQuery = currentSession.createQuery(select);
     typedQuery.setFirstResult(pagStartIndex).setMaxResults(pagEndIndex - pagStartIndex + 1);
     return typedQuery;
   }
 
-  public static CriteriaQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery)
+  public static CriteriaQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery,
+      String sortField, boolean sortAscending)
       throws InvalidAttributeValueException {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
@@ -99,8 +103,13 @@ public class HibernateCriteriaQueryBuilder {
     }
 
     // Selecting query
-    CriteriaQuery<User> select = criteriaQuery.select(root)
+    criteriaQuery.select(root)
         .where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+
+    // Sorting query
+    Path<Object> path = root.get(sortField);
+    Order order = sortAscending ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
+    criteriaQuery.orderBy(order);
 
     // Returning the query
     return criteriaQuery;
