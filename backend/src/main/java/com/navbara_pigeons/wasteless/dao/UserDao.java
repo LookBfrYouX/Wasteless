@@ -20,4 +20,7 @@ public interface UserDao {
 
   List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException;
 
+  List<User> searchUsers(String searchQuery, Integer pagStartIndex, Integer pagEndIndex)
+      throws InvalidAttributeValueException;
+
 }

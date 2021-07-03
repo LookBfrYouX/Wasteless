@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.management.InvalidAttributeValueException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -21,6 +22,13 @@ public class HibernateCriteriaQueryBuilder {
 
   }
 
+  private static Long getEntityCountQuery(Session currentSession, Object entity) {
+    CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+    CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+    countQuery.select(criteriaBuilder.count(countQuery.from((Class<?>) entity)));
+    return currentSession.createQuery(countQuery).getSingleResult();
+  }
+
   public static CriteriaQuery<MarketListing> parseListingQuery(Session currentSession,
       String listingSection) {
     // Create Builder
@@ -32,6 +40,16 @@ public class HibernateCriteriaQueryBuilder {
     // Create query - uses entity 'section'
     criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("section"), listingSection));
     return criteriaQuery;
+  }
+
+  public static TypedQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery,
+      Integer pagStartIndex, Integer pagEndIndex)
+      throws InvalidAttributeValueException {
+    CriteriaQuery<User> select = parseUserSearchQuery(currentSession, searchQuery);
+
+    TypedQuery<User> typedQuery = currentSession.createQuery(select);
+    typedQuery.setFirstResult(pagStartIndex).setMaxResults(pagEndIndex - pagStartIndex + 1);
+    return typedQuery;
   }
 
   public static CriteriaQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery)
@@ -81,7 +99,8 @@ public class HibernateCriteriaQueryBuilder {
     }
 
     // Selecting query
-    criteriaQuery.select(root).where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+    CriteriaQuery<User> select = criteriaQuery.select(root)
+        .where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
     // Returning the query
     return criteriaQuery;

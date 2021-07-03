@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -116,7 +117,6 @@ public class UserDaoHibernateImpl implements UserDao {
   @Override
   public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
     Session currentSession = getSession();
-    // CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<User> criteriaQuery = HibernateCriteriaQueryBuilder
         .parseUserSearchQuery(currentSession, searchQuery);
 
@@ -124,6 +124,16 @@ public class UserDaoHibernateImpl implements UserDao {
     List<User> results = query.getResultList();
 
     return results;
+  }
+
+  @Override
+  public List<User> searchUsers(String searchQuery, Integer pagStartIndex, Integer pagEndIndex)
+      throws InvalidAttributeValueException {
+    Session currentSession = getSession();
+    TypedQuery<User> query = HibernateCriteriaQueryBuilder
+        .parseUserSearchQuery(currentSession, searchQuery, pagStartIndex, pagEndIndex);
+
+    return query.getResultList();
   }
 
   /**

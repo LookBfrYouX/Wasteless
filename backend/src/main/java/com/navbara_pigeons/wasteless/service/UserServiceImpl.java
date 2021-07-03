@@ -191,9 +191,9 @@ public class UserServiceImpl implements UserService {
   /**
    * Calls the userDao to search for users using the given username
    *
-   * @param searchQuery The name being searched for
+   * @param searchQuery   The name being searched for
    * @param pagStartIndex The start index of the list to return, implemented for pagination
-   * @param pagEndIndex The stop index of the list to return, implemented for pagination
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination
    * @return A list containing all the users whose names/nickname match the username
    * @throws InvalidAttributeValueException
    */
@@ -201,19 +201,23 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public List<BasicUserDto> searchUsers(String searchQuery, @RequestParam Integer pagStartIndex,
       @RequestParam Integer pagEndIndex) throws InvalidAttributeValueException {
-    List<User> paginatedResults;
-    if (pagStartIndex == null || pagEndIndex == null) {
-      paginatedResults = userDao.searchUsers(searchQuery);
-    } else {
+    List<User> serverResults;
+
+    if (pagStartIndex != null && pagEndIndex != null) {
       if (pagStartIndex > pagEndIndex) {
-        throw new InvalidAttributeValueException("The pagination 'start index' must be smaller than the 'end index'");
+        throw new InvalidAttributeValueException(
+            "The pagination 'start index' must be smaller than the 'end index'");
       }
+      serverResults = userDao.searchUsers(searchQuery, pagStartIndex, pagEndIndex);
+    } else {
+      serverResults = userDao.searchUsers(searchQuery);
     }
-    List<BasicUserDto> results = new ArrayList<>();
-    for (User user : paginatedResults) {
-      results.add(new BasicUserDto(user));
+
+    List<BasicUserDto> clientResults = new ArrayList<>();
+    for (User user : serverResults) {
+      clientResults.add(new BasicUserDto(user));
     }
-    return results;
+    return clientResults;
   }
 
   /**
@@ -303,10 +307,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean isSelf(String userEmail) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    if (userEmail.equals(auth.getName())) {
-      return true;
-    }
-    return false;
+    return userEmail.equals(auth.getName());
   }
 
   /**
