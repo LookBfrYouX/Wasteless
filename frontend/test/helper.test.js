@@ -98,3 +98,62 @@ describe("goToProfile", () => {
     expect(router.push).toHaveBeenCalledWith(business$route());
   });
 });
+
+describe("months since registration", () => {
+  test("0 months", () => {
+    expect(helper.generateTimeSinceRegistrationText(
+        new Date(2020, 1, 1), new Date(2020, 1, 28)
+    )).toEqual("0 months");
+  });
+
+  test("1 month", () => {
+    expect(helper.generateTimeSinceRegistrationText(
+        new Date(2020, 1, 1), new Date(2020, 2, 1)
+    )).toEqual("1 month");
+  });
+
+  test("5 months", () => {
+    expect(helper.generateTimeSinceRegistrationText(
+        new Date(2020, 1, 1), new Date(2020, 6, 28)
+    )).toEqual("5 months");
+  });
+
+  test("1 year", () => {
+    expect(helper.generateTimeSinceRegistrationText(
+        new Date(2020, 1, 1), new Date(2021, 1, 28)
+    )).toEqual("1 year, 0 months");
+  });
+
+  test("13 months", () => {
+    expect(helper.generateTimeSinceRegistrationText(
+        new Date(2020, 1, 1), new Date(2021, 2, 28)
+    )).toEqual("1 year, 1 month");
+  });
+
+  test("2 years and a few months", () => {
+    expect(helper.generateTimeSinceRegistrationText(
+        new Date(2020, 1, 1), new Date(2022, 8, 28)
+    )).toEqual("2 years, 7 months");
+  });
+});
+
+describe("Date string format", () => {
+  test("standard jan", () => {
+    expect(helper.formatDate(new Date(2000, 0, 1))).toEqual(
+        "1 January, 2000");
+  });
+
+  test("standard dec", () => {
+    expect(helper.formatDate(new Date(2000, 11, 31))).toEqual(
+        "31 December, 2000");
+  });
+
+  test("ISO string", () => {
+    expect(helper.formatDate("2021-03-02T05:35:03")).toEqual(
+        "2 March, 2021");
+  });
+
+  test("ISO string no time", () => {
+    expect(helper.formatDate("1949-05-09")).toEqual("9 May, 1949");
+  });
+});
