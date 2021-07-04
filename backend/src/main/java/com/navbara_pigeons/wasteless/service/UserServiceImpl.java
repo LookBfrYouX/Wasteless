@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService {
    * @param pagStartIndex The start index of the list to return, implemented for pagination
    * @param pagEndIndex   The stop index of the list to return, implemented for pagination
    * @param sortBy        Defines any user sorting needed and the direction (ascending or
-   *                      descending)
+   *                      descending). In the format "fieldName-<acs/desc>"
    * @return A list containing all the users whose names/nickname match the username
    * @throws InvalidAttributeValueException
    */

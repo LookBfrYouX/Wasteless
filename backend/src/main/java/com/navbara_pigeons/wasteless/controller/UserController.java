@@ -102,6 +102,8 @@ public class UserController {
    * @param searchQuery   name being searched for
    * @param pagStartIndex The start index of the list to return, implemented for pagination
    * @param pagEndIndex   The stop index of the list to return, implemented for pagination
+   * @param sortBy        Defines any user sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>"
    * @return List of all users matching the searchQuery
    * @throws ResponseStatusException Unknown Error
    */
