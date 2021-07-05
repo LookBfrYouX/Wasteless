@@ -13,11 +13,10 @@ import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.validation.InventoryServiceValidation;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import javax.management.InvalidAttributeValueException;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,51 +62,28 @@ public class InventoryServiceImpl implements InventoryService {
   @Override
   public List<BasicInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, String sortBy)
-      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InvalidAttributeValueException {
-    List<InventoryItem> serverResults;
-
-    if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
-      ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
-      Business business = businessDao.getBusinessById(businessId);
-
-      if (pagStartIndex != null && pagEndIndex != null) {
-        if (pagStartIndex > pagEndIndex) {
-          throw new InvalidAttributeValueException(
-              "The pagination 'start index' must be smaller than the 'end index'");
-        }
-
-        // Defining default sorting parameters
-        String sortField = "id";
-        boolean sortAscending = true;
-
-        // SortBy string is in the format "fieldName-<acs/desc>" where fieldName is a property name from the class
-        if (sortBy != null) {
-          String[] splitSortBy = sortBy.split("-");
-          if (splitSortBy.length == 2) {
-            for (Field field : InventoryItem.class.getDeclaredFields()) {
-              if (field.getName().equals(splitSortBy[0])) {
-                sortField = field.getName();
-                break;
-              }
-            }
-            if (splitSortBy[1].equals("desc")) {
-              sortAscending = false;
-            }
-          }
-        }
-
-        serverResults = business.getInventory();
-      } else {
-        serverResults = business.getInventory();
-      }
-
-      for (InventoryItem inventoryItem : serverResults) {
-        inventory.add(new BasicInventoryItemDto(inventoryItem, publicPathPrefix));
-      }
-      return inventory;
-    } else {
+      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
+    if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
       throw new InsufficientPrivilegesException("You are not permitted to modify this business");
     }
+
+    Business business = businessDao.getBusinessById(businessId);
+    List<InventoryItem> serverResults;
+
+    PaginationBuilder pagBuilder = new PaginationBuilder(InventoryItem.class, "id");
+    pagBuilder.withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex)
+        .withSortByString(sortBy);
+
+    serverResults = inventoryDao
+        .getInventoryItems(business, pagBuilder);
+
+    ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
+    for (InventoryItem inventoryItem : serverResults) {
+      inventory.add(new BasicInventoryItemDto(inventoryItem, publicPathPrefix));
+    }
+    return inventory;
+
   }
 
   /**

@@ -1,8 +1,11 @@
 package com.navbara_pigeons.wasteless.dao;
 
 
+import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -42,6 +45,30 @@ public class HibernateCriteriaQueryBuilder {
     // Create query - uses entity 'section'
     criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("section"), listingSection));
     return criteriaQuery;
+  }
+
+  public static TypedQuery<InventoryItem> listPaginatedAndSortedBusinessInventory(
+      Session currentSession, Business business, PaginationBuilder pagBuilder) {
+    // Setup
+    CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+    CriteriaQuery<InventoryItem> criteriaQuery = criteriaBuilder.createQuery(InventoryItem.class);
+
+    Root<InventoryItem> root = criteriaQuery.from(InventoryItem.class);
+
+    criteriaQuery.where(criteriaBuilder.equal(root.get("business"), business));
+
+    // Sorting query
+    Path<Object> path = root.get(pagBuilder.getSortField());
+    Order order =
+        pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
+    criteriaQuery.orderBy(order);
+
+    TypedQuery<InventoryItem> typedQuery = currentSession.createQuery(criteriaQuery);
+    typedQuery.setFirstResult(pagBuilder.getPagStartIndex());
+    if (pagBuilder.getPagEndIndex() != null) {
+      typedQuery.setMaxResults(pagBuilder.getPagEndIndex() - pagBuilder.getPagStartIndex() + 1);
+    }
+    return typedQuery;
   }
 
   public static TypedQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery,

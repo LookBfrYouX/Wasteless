@@ -1,8 +1,12 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
+import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +23,14 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
    */
   public InventoryDaoHibernateImpl(@Autowired EntityManager entityManager) {
     this.entityManager = entityManager;
+  }
+
+  @Override
+  public List<InventoryItem> getInventoryItems(Business business, PaginationBuilder pagBuilder) {
+    Session currentSession = getSession();
+    TypedQuery<InventoryItem> query = HibernateCriteriaQueryBuilder
+        .listPaginatedAndSortedBusinessInventory(currentSession, business, pagBuilder);
+    return query.getResultList();
   }
 
   /**
