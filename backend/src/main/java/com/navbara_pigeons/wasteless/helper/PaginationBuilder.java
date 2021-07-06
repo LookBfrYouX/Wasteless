@@ -27,7 +27,8 @@ public class PaginationBuilder {
     return this;
   }
 
-  public PaginationBuilder withPagStartIndex(Integer pagStartIndex) {
+  public PaginationBuilder withPagStartIndex(Integer pagStartIndex)
+      throws IllegalArgumentException {
     if (pagStartIndex != null) {
       if (pagStartIndex < 0) {
         throw new IllegalArgumentException(
@@ -42,7 +43,7 @@ public class PaginationBuilder {
     return this;
   }
 
-  public PaginationBuilder withPagEndIndex(Integer pagEndIndex) {
+  public PaginationBuilder withPagEndIndex(Integer pagEndIndex) throws IllegalArgumentException {
     if (pagEndIndex != null) {
       if (this.pagStartIndex > pagEndIndex) {
         throw new IllegalArgumentException(
@@ -63,7 +64,7 @@ public class PaginationBuilder {
     return this;
   }
 
-  private void parseSortByString(String sortByString) {
+  private void parseSortByString(String sortByString) throws IllegalArgumentException {
     String[] splitSortBy = sortByString.split("-");
 
     if (splitSortBy.length != 2) {

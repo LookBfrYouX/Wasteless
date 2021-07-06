@@ -72,19 +72,8 @@ public class HibernateCriteriaQueryBuilder {
   }
 
   public static TypedQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery,
-      Integer pagStartIndex, Integer pagEndIndex, String sortField, boolean sortAscending)
-      throws InvalidAttributeValueException {
-    CriteriaQuery<User> select = parseUserSearchQuery(currentSession, searchQuery, sortField,
-        sortAscending);
+      PaginationBuilder pagBuilder) throws InvalidAttributeValueException {
 
-    TypedQuery<User> typedQuery = currentSession.createQuery(select);
-    typedQuery.setFirstResult(pagStartIndex).setMaxResults(pagEndIndex - pagStartIndex + 1);
-    return typedQuery;
-  }
-
-  public static CriteriaQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery,
-      String sortField, boolean sortAscending)
-      throws InvalidAttributeValueException {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
@@ -134,12 +123,17 @@ public class HibernateCriteriaQueryBuilder {
         .where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
     // Sorting query
-    Path<Object> path = root.get(sortField);
-    Order order = sortAscending ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
+    Path<Object> path = root.get(pagBuilder.getSortField());
+    Order order =
+        pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
     criteriaQuery.orderBy(order);
 
-    // Returning the query
-    return criteriaQuery;
+    TypedQuery<User> typedQuery = currentSession.createQuery(criteriaQuery);
+    typedQuery.setFirstResult(pagBuilder.getPagStartIndex());
+    if (pagBuilder.getPagEndIndex() != null) {
+      typedQuery.setMaxResults(pagBuilder.getPagEndIndex() - pagBuilder.getPagStartIndex() + 1);
+    }
+    return typedQuery;
   }
 
   private static Predicate makePredicate(String token, CriteriaBuilder criteriaBuilder,

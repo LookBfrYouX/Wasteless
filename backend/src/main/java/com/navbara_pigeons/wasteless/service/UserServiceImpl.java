@@ -10,10 +10,10 @@ import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -202,40 +202,16 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public List<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex,
-      Integer pagEndIndex, String sortBy) throws InvalidAttributeValueException {
+      Integer pagEndIndex, String sortBy)
+      throws InvalidAttributeValueException, IllegalArgumentException {
     List<User> serverResults;
 
-    if (pagStartIndex != null && pagEndIndex != null) {
-      if (pagStartIndex > pagEndIndex) {
-        throw new InvalidAttributeValueException(
-            "The pagination 'start index' must be smaller than the 'end index'");
-      }
+    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, "id");
+    pagBuilder.withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex)
+        .withSortByString(sortBy);
 
-      // Defining default sorting parameters
-      String sortField = "id";
-      boolean sortAscending = true;
-
-      // SortBy string is in the format "fieldName-<acs/desc>" where fieldName is a property name from the class
-      if (sortBy != null) {
-        String[] splitSortBy = sortBy.split("-");
-        if (splitSortBy.length == 2) {
-          for (Field field : User.class.getDeclaredFields()) {
-            if (field.getName().equals(splitSortBy[0])) {
-              sortField = field.getName();
-              break;
-            }
-          }
-          if (splitSortBy[1].equals("desc")) {
-            sortAscending = false;
-          }
-        }
-      }
-
-      serverResults = userDao
-          .searchUsers(searchQuery, pagStartIndex, pagEndIndex, sortField, sortAscending);
-    } else {
-      serverResults = userDao.searchUsers(searchQuery);
-    }
+    serverResults = userDao.searchUsers(searchQuery, pagBuilder);
 
     List<BasicUserDto> clientResults = new ArrayList<>();
     for (User user : serverResults) {

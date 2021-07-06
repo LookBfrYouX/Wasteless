@@ -2,12 +2,12 @@ package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,24 +116,16 @@ public class UserDaoHibernateImpl implements UserDao {
 
   @Override
   public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
-    Session currentSession = getSession();
-    CriteriaQuery<User> criteriaQuery = HibernateCriteriaQueryBuilder
-        .parseUserSearchQuery(currentSession, searchQuery, "id", true);
-
-    Query<User> query = currentSession.createQuery(criteriaQuery);
-    List<User> results = query.getResultList();
-
-    return results;
+    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, "id");
+    return searchUsers(searchQuery, pagBuilder);
   }
 
   @Override
-  public List<User> searchUsers(String searchQuery, Integer pagStartIndex, Integer pagEndIndex,
-      String sortField, boolean sortAscending)
+  public List<User> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
       throws InvalidAttributeValueException {
     Session currentSession = getSession();
     TypedQuery<User> query = HibernateCriteriaQueryBuilder
-        .parseUserSearchQuery(currentSession, searchQuery, pagStartIndex, pagEndIndex,
-            sortField, sortAscending);
+        .parseUserSearchQuery(currentSession, searchQuery, pagBuilder);
 
     return query.getResultList();
   }

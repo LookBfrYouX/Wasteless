@@ -62,7 +62,8 @@ public class InventoryServiceImpl implements InventoryService {
   @Override
   public List<BasicInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, String sortBy)
-      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
+      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, IllegalArgumentException {
+
     if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
       throw new InsufficientPrivilegesException("You are not permitted to modify this business");
     }
@@ -75,8 +76,7 @@ public class InventoryServiceImpl implements InventoryService {
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);
 
-    serverResults = inventoryDao
-        .getInventoryItems(business, pagBuilder);
+    serverResults = inventoryDao.getInventoryItems(business, pagBuilder);
 
     ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
     for (InventoryItem inventoryItem : serverResults) {

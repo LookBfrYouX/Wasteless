@@ -1,8 +1,11 @@
 package com.navbara_pigeons.wasteless.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
+import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
@@ -15,6 +18,7 @@ import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +43,9 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
   @Mock
   ProductDao productDaoMock;
+
+  @Mock
+  InventoryDao inventoryDaoMock;
 
   @InjectMocks
   InventoryServiceImpl inventoryService;
@@ -73,7 +80,11 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     List<InventoryItem> inventory = new ArrayList<>();
     inventory.add(inventoryItem);
 
-    List<BasicInventoryItemDto> inventoryDto = inventoryService.getInventory(business.getId());
+    when(inventoryDaoMock.getInventoryItems(any(Business.class), any(PaginationBuilder.class)))
+        .thenReturn(inventory);
+
+    List<BasicInventoryItemDto> inventoryDto = inventoryService
+        .getInventory(business.getId(), null, null, null);
 
     assertInventoryListEquals(inventory, inventoryDto);
   }
@@ -81,7 +92,8 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   @Test
   @WithMockUser(username = EMAIL_2)
   public void getInventory_isNotBusinessAdmin() {
-    assertThrows(InsufficientPrivilegesException.class, () -> inventoryService.getInventory(1));
+    assertThrows(InsufficientPrivilegesException.class,
+        () -> inventoryService.getInventory(1, null, null, null));
   }
 
   @Test
@@ -121,7 +133,11 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     List<InventoryItem> inventoryItemList = new ArrayList<>();
     inventoryItemList.add(inventoryItem);
 
-    List<BasicInventoryItemDto> inventory = inventoryService.getInventory(business.getId());
+    when(inventoryDaoMock.getInventoryItems(any(Business.class), any(PaginationBuilder.class)))
+        .thenReturn(inventoryItemList);
+
+    List<BasicInventoryItemDto> inventory = inventoryService
+        .getInventory(business.getId(), null, null, null);
 
     assertInventoryListEquals(inventoryItemList, inventory);
   }
@@ -131,6 +147,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   public void getInventory_notFound() throws BusinessNotFoundException, UserNotFoundException {
     when(userServiceMock.isAdmin()).thenReturn(false);
     when(businessServiceMock.isBusinessAdmin(1000)).thenThrow(BusinessNotFoundException.class);
-    assertThrows(BusinessNotFoundException.class, () -> inventoryService.getInventory(1000));
+    assertThrows(BusinessNotFoundException.class,
+        () -> inventoryService.getInventory(1000, null, null, null));
   }
 }
