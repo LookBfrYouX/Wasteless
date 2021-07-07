@@ -58,7 +58,6 @@ public class HibernateCriteriaQueryBuilder {
     CriteriaQuery<Listing> criteriaQuery = criteriaBuilder.createQuery(Listing.class);
 
     Metamodel model = entityManager.getMetamodel();
-//    EntityType<Listing> Listing_ = model.entity(Listing.class);
 
     Root<Listing> listing = criteriaQuery.from(Listing.class);
     Join<Listing, InventoryItem> inventoryItem = listing.join("inventoryItem");
@@ -66,7 +65,7 @@ public class HibernateCriteriaQueryBuilder {
     criteriaQuery.where(criteriaBuilder.equal(inventoryItem.get("business"), business));
 
     // Sorting query
-    Path<Object> path = inventoryItem.get(pagBuilder.getSortField());
+    Path<Object> path = listing.get(pagBuilder.getSortField());
     Order order =
         pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
     criteriaQuery.orderBy(order);
