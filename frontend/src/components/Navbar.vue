@@ -23,17 +23,18 @@
         <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
           <div
               :class="{'d-lg-none': navbarLinks.length > 2}"
-              class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center"
+              class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center nav-link-list"
           >
             <!-- List of links in XL only hidden if lg and more than 2 links -->
             <li
                 v-for="({name, click, active}, i) in navbarLinks"
                 :key="i"
                 :class="{ 'mx-4': i != 0, active }"
-                class="nav-item d-flex align-items-center text-center mx-lg-0 nav-link-list"
+                class="nav-item d-flex align-items-center text-center mx-lg-0"
+                aria-label="Quick links"
             >
               <a
-                  class="nav-link"
+                  class="nav-link py-1"
                   href="javascript:"
                   @click="click"
               > {{ name }}
@@ -94,7 +95,7 @@
           <!-- Right group: User and acting as -->
           <li v-if="isSignedIn" class="nav-item dropdown acting-as-dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
-               aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center justify-content-lg-end"
+               aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
                data-toggle="dropdown"
                href="javascript:" role="button">
               <img v-if="isActingAsBusiness"
@@ -108,14 +109,15 @@
                    src="@/../assets/images/default-user-thumbnail.svg"
               >
               <div class="d-flex flex-column mx-1 current-acting-as-wrapper">
-              <span class="m-0 p-0 text-dark">
+                <!-- title attribute will show full name in case it is too long to fit -->
+              <span class="m-0 p-0 text-dark" v-bind:title="printCurrentActingAs">
                   {{ printCurrentActingAs }}
                 </span>
                 <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
               </div>
             </a>
 
-            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute w-100">
+            <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu position-absolute">
               <div class="h4 dropdown-header">Act as</div>
               <a class="dropdown-item" href="javascript:"
                  @click="switchActingAs(null)">
@@ -128,6 +130,7 @@
               <a v-for="business in actingAsEntities" :key="business.id"
                  class="dropdown-item"
                  href="javascript:"
+                 v-bind:title="business.name"
                  @click="switchActingAs(business)">
                 {{ business.name }}
                 <span v-if="business === currentActingAs">
@@ -431,28 +434,28 @@ nav .active {
 }
 
 .acting-as-dropdown {
-  /* The 30em is to prevent the name from getting far too big on big wide screens */
-  /* Dropdown navbar item content is justified right (on desktop) so when the current acting as is short
-     it is still on the right edge.
-     
-     This makes it look like the width of the navbar item and dropdown are different when the current
-     acting as is short but there are some long names in the dropdown
-   */
-  width: min(30em, 100%);
+  /* The 20em is to prevent the name from getting far too big on big wide screens */
+  max-width: min(100%, 20em);
 }
 
 
-.dropdown-menu {
+.acting-as-dropdown .dropdown-menu {
+  /* Dropdown. Set it to be 90% of the screen width or 30em, whichever is smaller
+     On small screens with a long name, it will look bad if it is almost full size but not quite,
+     so use 100% to make it full width.
+  
+  */
+  width: min(20em, max(100%, 90vw));
   overflow-y: auto;
+
   /* Thinking that on mobile devices navbar will be max ~20rem tall (acting as business, iPhone 5s screen size)
-     To ensure it doesn't go negative, the minimum height is 4em
+     To ensure it doesn't go negative, there is also a minimum height
      Then ensure it isn't ridiculously tall on desktop screens
   */
-  max-height: min(25em, max(4em, calc(100vh - 20rem)));
+  max-height: min(25em, max(4em, calc(100vh - 22rem)));
 }
 
 .nav-link-list {
-  /* Ensure list of links doesn't get too big - leads to there being not enough space for the dropdown menu */
   overflow-y: auto;
   max-height: 25vh;
 }
