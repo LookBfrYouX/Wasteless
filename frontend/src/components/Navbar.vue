@@ -30,7 +30,7 @@
                 v-for="({name, click, active}, i) in navbarLinks"
                 :key="i"
                 :class="{ 'mx-4': i != 0, active }"
-                class="nav-item d-flex align-items-center text-center mx-lg-0"
+                class="nav-item d-flex align-items-center text-center mx-lg-0 nav-link-list"
             >
               <a
                   class="nav-link"
@@ -94,7 +94,7 @@
           <!-- Right group: User and acting as -->
           <li v-if="isSignedIn" class="nav-item dropdown acting-as-dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
-               aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
+               aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center justify-content-lg-end"
                data-toggle="dropdown"
                href="javascript:" role="button">
               <img v-if="isActingAsBusiness"
@@ -432,6 +432,28 @@ nav .active {
 
 .acting-as-dropdown {
   /* The 30em is to prevent the name from getting far too big on big wide screens */
-  max-width: min(30em, 100%);
+  /* Dropdown navbar item content is justified right (on desktop) so when the current acting as is short
+     it is still on the right edge.
+     
+     This makes it look like the width of the navbar item and dropdown are different when the current
+     acting as is short but there are some long names in the dropdown
+   */
+  width: min(30em, 100%);
+}
+
+
+.dropdown-menu {
+  overflow-y: auto;
+  /* Thinking that on mobile devices navbar will be max ~20rem tall (acting as business, iPhone 5s screen size)
+     To ensure it doesn't go negative, the minimum height is 4em
+     Then ensure it isn't ridiculously tall on desktop screens
+  */
+  max-height: min(25em, max(4em, calc(100vh - 20rem)));
+}
+
+.nav-link-list {
+  /* Ensure list of links doesn't get too big - leads to there being not enough space for the dropdown menu */
+  overflow-y: auto;
+  max-height: 25vh;
 }
 </style>
