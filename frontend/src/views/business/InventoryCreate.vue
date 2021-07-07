@@ -13,12 +13,12 @@
       </div>
       <div class="row">
         <div class="col-12 col-md-6 form-group required">
-          <label for="productDropdown">Select product</label>
-          <select id="productDropdown" v-model="product" class="form-control" required>
-            <option v-for="product in products" :key="product.id" :value="product">
-              {{ product.name }}
-            </option>
-          </select>
+          <v-autocomplete
+            :items="products"
+            v-model="product"
+            label="Product"
+            solo
+          />
         </div>
         <div class="col-12 col-md-6 form-group required">
           <label for="quantity">Quantity</label>
@@ -135,7 +135,7 @@
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="true"
-        :retry="this.populateDropdown"
+        :retry="this.populateProducts"
         :show="apiErrorMessage !== null"
         title="Error fetching business products"
     >
@@ -166,7 +166,7 @@ export default {
       sellBy: null,
       bestBefore: null,
       expires: null,
-      products: null,
+      products: [],
       currency: null,
       errorMessage: null,
     }
@@ -180,7 +180,7 @@ export default {
 
   beforeMount: async function () {
     this.setDateInputs(new Date());
-    await this.populateDropdown();
+    await this.populateProducts();
     await this.currencyPipeline();
   },
 
@@ -190,6 +190,12 @@ export default {
         return "(Unknown currency)";
       }
       return `${this.currency.symbol} (${this.currency.code})`;
+    }
+  },
+
+  watch: {
+    value: function() {
+      console.log(this.value)
     }
   },
   methods: {
@@ -263,7 +269,7 @@ export default {
       }
       this.todayDate = yyyy + '-' + mm + '-' + dd;
     },
-    async populateDropdown() {
+    async populateProducts() {
       await Api.getProducts(this.businessId)
       .then(({data}) => this.products = data)
       .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
