@@ -18,7 +18,7 @@
       </button>
 
       <!-- Overflow content -->
-      <div id="navbarSupportedContent" class="collapse navbar-collapse">
+      <div id="navbarSupportedContent" class="collapse navbar-collapse w-100">
         <!-- Left group: links to profile and business -->
         <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
           <div
@@ -92,7 +92,7 @@
           </li>
 
           <!-- Right group: User and acting as -->
-          <li v-if="isSignedIn" class="nav-item dropdown">
+          <li v-if="isSignedIn" class="nav-item dropdown acting-as-dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
                aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
                data-toggle="dropdown"
@@ -107,7 +107,7 @@
                    class="nav-picture rounded-circle"
                    src="@/../assets/images/default-user-thumbnail.svg"
               >
-              <div class="d-flex flex-column mx-1">
+              <div class="d-flex flex-column mx-1 current-acting-as-wrapper">
               <span class="m-0 p-0 text-dark">
                   {{ printCurrentActingAs }}
                 </span>
@@ -115,7 +115,7 @@
               </div>
             </a>
 
-            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
+            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute w-100">
               <div class="h4 dropdown-header">Act as</div>
               <a class="dropdown-item" href="javascript:"
                  @click="switchActingAs(null)">
@@ -418,5 +418,20 @@ nav {
 nav .active {
   /* For some reason, Bootstrap adds underline to the links. Doesn't show up on bootstrap example website */
   text-decoration: inherit;
+}
+
+.current-acting-as-wrapper {
+  min-width: 0; /* Needed to truncate text in a flex box */
+}
+
+.current-acting-as-wrapper span, .dropdown-item {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.acting-as-dropdown {
+  /* The 30em is to prevent the name from getting far too big on big wide screens */
+  max-width: min(30em, 100%);
 }
 </style>
