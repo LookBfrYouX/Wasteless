@@ -3,13 +3,13 @@ package com.navbara_pigeons.wasteless.service;
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -77,27 +77,37 @@ public class ListingServiceImpl implements ListingService {
     ListingServiceValidation.isListingValid(listing);
 
     listing.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
-    listingDao.save(listing);
+    listingDao.saveListing(listing);
     return listing.getId();
   }
 
   /**
    * Gets all listings for the given business
    *
-   * @param businessId id of business
+   * @param businessId    id of business
+   * @param pagStartIndex The start index of the list to return, implemented for pagination
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination
+   * @param sortBy        Defines any listing sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>"
    * @return listings in no guaranteed order
    * @throws BusinessNotFoundException
    * @throws UserNotFoundException
    */
   @Override
-  public List<FullListingDto> getListings(long businessId)
-      throws BusinessNotFoundException, UserNotFoundException {
+  public List<FullListingDto> getListings(long businessId, Integer pagStartIndex,
+      Integer pagEndIndex, String sortBy) throws BusinessNotFoundException, UserNotFoundException {
     Business business = businessService.getBusiness(businessId);
+
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, "id");
+    pagBuilder.withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex)
+        .withSortByString(sortBy);
+
+    List<Listing> serverResults = listingDao.getListings(business, pagBuilder);
+
     ArrayList<FullListingDto> listings = new ArrayList<>();
-    for (InventoryItem inventory : business.getInventory()) {
-      for (Listing listing : inventory.getListings()) {
-        listings.add(new FullListingDto(listing, publicPathPrefix));
-      }
+    for (Listing listing : serverResults) {
+      listings.add(new FullListingDto(listing, publicPathPrefix));
     }
 
     return listings;

@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
@@ -11,13 +12,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.management.InvalidAttributeValueException;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.Metamodel;
 import org.hibernate.Session;
 
 
@@ -45,6 +49,35 @@ public class HibernateCriteriaQueryBuilder {
     // Create query - uses entity 'section'
     criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("section"), listingSection));
     return criteriaQuery;
+  }
+
+  public static TypedQuery<Listing> listPaginatedAndSortedBusinessListings(Session currentSession,
+      EntityManager entityManager, Business business, PaginationBuilder pagBuilder) {
+    // Setup
+    CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+    CriteriaQuery<Listing> criteriaQuery = criteriaBuilder.createQuery(Listing.class);
+
+    Metamodel model = entityManager.getMetamodel();
+//    EntityType<Listing> Listing_ = model.entity(Listing.class);
+
+    Root<Listing> listing = criteriaQuery.from(Listing.class);
+    Join<Listing, InventoryItem> inventoryItem = listing.join("inventoryItem");
+
+    criteriaQuery.where(criteriaBuilder.equal(inventoryItem.get("business"), business));
+
+    // Sorting query
+    Path<Object> path = inventoryItem.get(pagBuilder.getSortField());
+    Order order =
+        pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
+    criteriaQuery.orderBy(order);
+
+    TypedQuery<Listing> typedQuery = currentSession.createQuery(criteriaQuery);
+    typedQuery.setFirstResult(pagBuilder.getPagStartIndex());
+    if (pagBuilder.getPagEndIndex() != null) {
+      typedQuery.setMaxResults(pagBuilder.getPagEndIndex() - pagBuilder.getPagStartIndex() + 1);
+    }
+    return typedQuery;
+
   }
 
   public static TypedQuery<InventoryItem> listPaginatedAndSortedBusinessInventory(
@@ -169,5 +202,4 @@ public class HibernateCriteriaQueryBuilder {
             .like(criteriaBuilder.lower(root.get("lastName")), "%" + token.toLowerCase() + "%")
     );
   }
-
 }

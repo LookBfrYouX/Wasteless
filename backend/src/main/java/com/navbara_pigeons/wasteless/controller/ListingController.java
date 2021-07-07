@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * This controller class provides the endpoints for dealing with business listings
@@ -58,16 +59,23 @@ public class ListingController {
   /**
    * This controller endpoint is used to retrieve businesses listings from a specified business.
    *
-   * @param id The business ID
+   * @param id            The business ID
+   * @param pagStartIndex The start index of the list to return, implemented for pagination
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination
+   * @param sortBy        Defines any listing sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>"
    * @return A ResponseEntity with a list of listings.
    * @throws UserNotFoundException     Handled in ControllerExceptionHandler class.
    * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/listings")
-  public ResponseEntity<Object> getBusinessById(@PathVariable long id)
+  public ResponseEntity<Object> getBusinessById(@PathVariable long id,
+      @RequestParam(required = false) Integer pagStartIndex,
+      @RequestParam(required = false) Integer pagEndIndex,
+      @RequestParam(required = false) String sortBy)
       throws UserNotFoundException, BusinessNotFoundException {
     log.info("GETTING LISTINGS FOR BUSINESS WITH ID " + id);
-    return new ResponseEntity<>(listingService.getListings(id),
+    return new ResponseEntity<>(listingService.getListings(id, pagStartIndex, pagEndIndex, sortBy),
         HttpStatus.valueOf(200));
   }
 }

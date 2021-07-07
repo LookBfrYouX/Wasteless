@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
@@ -55,8 +56,9 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   void getListings_one_product_multiple_inventory_multiple_listings() throws Exception {
     when(businessService.getBusiness(Mockito.anyLong())).thenReturn(getMockBusiness());
     Assertions.assertArrayEquals(
-        listingService.getListings(1).stream().map(listing -> listing.getId()).toArray(),
-        List.of(1, 2, 3, 4, 5, 6).stream().map(id -> Long.valueOf(id)).toArray()
+        listingService.getListings(1, null, null, null)
+            .stream().map(listing -> listing.getId())
+            .toArray(), List.of(1, 2, 3, 4, 5, 6).stream().map(id -> Long.valueOf(id)).toArray()
     );
   }
 

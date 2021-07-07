@@ -1,8 +1,13 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
-import org.springframework.data.repository.CrudRepository;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
+import java.util.List;
 
-public interface ListingDao extends CrudRepository<Listing, Long> {
+public interface ListingDao {
 
+  List<Listing> getListings(Business business, PaginationBuilder pagBuilder);
+
+  void saveListing(Listing listing);
 }

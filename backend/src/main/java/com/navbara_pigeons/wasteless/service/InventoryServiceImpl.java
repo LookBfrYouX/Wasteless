@@ -69,14 +69,13 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     Business business = businessDao.getBusinessById(businessId);
-    List<InventoryItem> serverResults;
 
     PaginationBuilder pagBuilder = new PaginationBuilder(InventoryItem.class, "id");
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);
 
-    serverResults = inventoryDao.getInventoryItems(business, pagBuilder);
+    List<InventoryItem> serverResults = inventoryDao.getInventoryItems(business, pagBuilder);
 
     ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
     for (InventoryItem inventoryItem : serverResults) {

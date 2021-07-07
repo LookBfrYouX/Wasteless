@@ -14,6 +14,6 @@ public interface ListingService {
   Long addListing(long businessId, long inventoryItemId, Listing listing)
       throws BusinessNotFoundException, UserNotFoundException, ListingValidationException, InsufficientPrivilegesException, InventoryItemNotFoundException;
 
-  List<FullListingDto> getListings(long businessId)
-      throws BusinessNotFoundException, UserNotFoundException;
+  List<FullListingDto> getListings(long businessId, Integer pagStartIndex, Integer pagEndIndex,
+      String sortBy) throws BusinessNotFoundException, UserNotFoundException;
 }
