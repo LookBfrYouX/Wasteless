@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
+import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
@@ -11,6 +12,7 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -26,11 +28,11 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   private final String email = "tony@tony.tony";
   private final String password = "tonyTony1";
   @Mock
-  ListingDao listingDao;
-  @Mock
   UserService userService;
   @Mock
   InventoryService inventoryService;
+  @Mock
+  ListingDao listingDao;
   @InjectMocks
   private ListingServiceImpl listingService;
   @Mock
@@ -49,16 +51,20 @@ public class ListingServiceImplTest extends ServiceTestProvider {
 
     when(userService.isAdmin()).thenReturn(false);
     when(businessService.isBusinessAdmin(businessId)).thenReturn(true);
-    when(listingDao.save(any(Listing.class))).thenReturn(null);
   }
 
   @Test
   void getListings_one_product_multiple_inventory_multiple_listings() throws Exception {
-    when(businessService.getBusiness(Mockito.anyLong())).thenReturn(getMockBusiness());
+    Business mockBusiness = getMockBusiness();
+    when(businessService.getBusiness(Mockito.anyLong())).thenReturn(mockBusiness);
+    when(listingDao.getListings(any(Business.class), any(PaginationBuilder.class)))
+        .thenReturn(getMockBusinessListings(mockBusiness));
+
     Assertions.assertArrayEquals(
-        listingService.getListings(1, null, null, null)
-            .stream().map(listing -> listing.getId())
-            .toArray(), List.of(1, 2, 3, 4, 5, 6).stream().map(id -> Long.valueOf(id)).toArray()
+        List.of(1, 2, 3, 4, 5, 6).stream().map(Long::valueOf).toArray(),
+        listingService.getListings(mockBusiness.getId(), null, null, null)
+            .stream().map(FullListingDto::getId)
+            .toArray()
     );
   }
 
