@@ -15,7 +15,7 @@ public interface BusinessService {
 
   Object getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException;
 
-  Business getBusiness(long id) throws BusinessNotFoundException, UserNotFoundException;
+  Business getBusiness(long id) throws BusinessNotFoundException;
 
   boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException;
 
