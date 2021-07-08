@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
+import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.management.InvalidAttributeValueException;
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,7 +21,6 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.Metamodel;
 import org.hibernate.Session;
 
 
@@ -52,12 +51,10 @@ public class HibernateCriteriaQueryBuilder {
   }
 
   public static TypedQuery<Listing> listPaginatedAndSortedBusinessListings(Session currentSession,
-      EntityManager entityManager, Business business, PaginationBuilder pagBuilder) {
+      Business business, PaginationBuilder pagBuilder) {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<Listing> criteriaQuery = criteriaBuilder.createQuery(Listing.class);
-
-    Metamodel model = entityManager.getMetamodel();
 
     Root<Listing> listing = criteriaQuery.from(Listing.class);
     Join<Listing, InventoryItem> inventoryItem = listing.join("inventoryItem");
@@ -71,6 +68,23 @@ public class HibernateCriteriaQueryBuilder {
     criteriaQuery.orderBy(order);
 
     TypedQuery<Listing> typedQuery = currentSession.createQuery(criteriaQuery);
+    typedQuery.setFirstResult(pagBuilder.getPagStartIndex());
+    if (pagBuilder.getPagEndIndex() != null) {
+      typedQuery.setMaxResults(pagBuilder.getPagEndIndex() - pagBuilder.getPagStartIndex() + 1);
+    }
+    return typedQuery;
+
+  }
+
+  public static TypedQuery<Product> listPaginatedAndSortedBusinessProducts(Session currentSession,
+      Business business, PaginationBuilder pagBuilder) {
+    // Setup
+    String HQL =
+        "SELECT bpc FROM Business b JOIN b.productsCatalogue bpc WHERE b.id=:business_id ORDER BY bpc."
+            + pagBuilder.getSortField();
+    HQL += pagBuilder.isSortAscending() ? " ASC" : " DESC";
+    TypedQuery<Product> typedQuery = currentSession.createQuery(HQL, Product.class)
+        .setParameter("business_id", business.getId());
     typedQuery.setFirstResult(pagBuilder.getPagStartIndex());
     if (pagBuilder.getPagEndIndex() != null) {
       typedQuery.setMaxResults(pagBuilder.getPagEndIndex() - pagBuilder.getPagStartIndex() + 1);

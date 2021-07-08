@@ -28,7 +28,7 @@ public class ListingDaoHibernateImpl implements ListingDao {
   public List<Listing> getListings(Business business, PaginationBuilder pagBuilder) {
     Session currentSession = getSession();
     TypedQuery<Listing> query = HibernateCriteriaQueryBuilder
-        .listPaginatedAndSortedBusinessListings(currentSession, entityManager, business,
+        .listPaginatedAndSortedBusinessListings(currentSession, business,
             pagBuilder);
     return query.getResultList();
   }

@@ -14,7 +14,8 @@ import net.minidev.json.JSONObject;
 
 public interface ProductService {
 
-  List<BasicProductDto> getProducts(long businessId)
+  List<BasicProductDto> getProducts(long businessId, Integer pagStartIndex, Integer pagEndIndex,
+      String sortBy)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException;
 
   JSONObject addProduct(long id, BasicProductCreationDto product)

@@ -54,7 +54,11 @@ public class InventoryServiceImpl implements InventoryService {
    * This method retrieves a list of all the products listed by a specific business from the
    * ProductDao given the business ID.
    *
-   * @param businessId The ID of the business whose products are to be retrieved.
+   * @param businessId    The ID of the business whose products are to be retrieved.
+   * @param pagStartIndex The start index of the list to return, implemented for pagination
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination
+   * @param sortBy        Defines any inventory item sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>"
    * @return productCatalogue A List<Product> of products that are in the business product
    * catalogue.
    * @throws BusinessNotFoundException If the business is not listed in the database.

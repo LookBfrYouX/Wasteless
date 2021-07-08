@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.validation.ProductServiceValidation;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -60,24 +61,37 @@ public class ProductServiceImpl implements ProductService {
    * This method retrieves a list of all the products listed by a specific business from the
    * ProductDao given the business ID.
    *
-   * @param businessId The ID of the business whose products are to be retrieved.
+   * @param businessId    The ID of the business whose products are to be retrieved.
+   * @param pagStartIndex The start index of the list to return, implemented for pagination
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination
+   * @param sortBy        Defines any product sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>"
    * @return productCatalogue A List<Product> of products that are in the business product
    * catalogue.
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
-  public List<BasicProductDto> getProducts(long businessId)
+  public List<BasicProductDto> getProducts(long businessId, Integer pagStartIndex,
+      Integer pagEndIndex, String sortBy)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
-    if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
-      Business business = businessDao.getBusinessById(businessId);
-      ArrayList<BasicProductDto> products = new ArrayList<>();
-      for (Product product : business.getProductsCatalogue()) {
-        products.add(new BasicProductDto(product, publicPathPrefix));
-      }
-      return products;
-    } else {
+    if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
       throw new InsufficientPrivilegesException("You are not permitted to modify this business");
     }
+
+    Business business = businessDao.getBusinessById(businessId);
+
+    PaginationBuilder pagBuilder = new PaginationBuilder(Product.class, "id");
+    pagBuilder.withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex)
+        .withSortByString(sortBy);
+
+    List<Product> serverResults = productDao.getProducts(business, pagBuilder);
+
+    ArrayList<BasicProductDto> products = new ArrayList<>();
+    for (Product product : serverResults) {
+      products.add(new BasicProductDto(product, publicPathPrefix));
+    }
+    return products;
   }
 
   /**
