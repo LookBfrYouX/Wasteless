@@ -17,8 +17,11 @@
           <v-autocomplete
           solo
           dense
-          :items="stuff"
+          item-text="name"
+          item-value="id"
+          :items="products"
           v-model="product"
+
           ></v-autocomplete>
           </div>
         <div class="col-12 col-md-6 form-group required">
@@ -170,7 +173,6 @@ export default {
       products: [],
       currency: null,
       errorMessage: null,
-      stuff: ["a","b","c"]
     }
   },
   props: {
@@ -236,7 +238,7 @@ export default {
       }
 
       let data = {
-        "productId": this.product.id,
+        "productId": this.product,
         "quantity": parsedQuantity,
         "pricePerItem": parsedPricePerItem,
         "totalPrice": parsedTotalPrice,
