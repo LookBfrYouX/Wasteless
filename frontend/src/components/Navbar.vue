@@ -9,18 +9,22 @@
           aria-controls="navbarSupportedContent"
           aria-expanded="false"
           aria-label="Toggle navigation"
-          class="navbar-toggler"
+          class="navbar-toggler pr-4"
           data-target="#navbarSupportedContent"
           data-toggle="collapse"
           type="button"
       >
+      <!-- mr-4 allows there to be space between icon and content. By default the navbar content
+      has padding left but on small screens where the hamburger button is on its own line, the padding
+      eats up some of the screen width
+      -->
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <!-- Overflow content -->
       <div id="navbarSupportedContent" class="collapse navbar-collapse w-100">
         <!-- Left group: links to profile and business -->
-        <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
+        <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start pl-0">
           <div
               :class="{'d-lg-none': navbarLinks.length > 2}"
               class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center nav-link-list"
@@ -440,12 +444,13 @@ nav .active {
 
 
 .acting-as-dropdown .dropdown-menu {
-  /* Dropdown. Set it to be 90% of the screen width or 30em, whichever is smaller
-     On small screens with a long name, it will look bad if it is almost full size but not quite,
+  /* Dropdown. Set it to be full screen width(*) or 30em, whichever is smaller
      so use 100% to make it full width.
-  
+     (*) Subtract 3rem since the navbar has 1.5rem of padding on left and right and hence, the dropdown
+     is positioned 1.5rem from the edge of the screen. Subtract 3rem to ensure even margins on both sides
+     If the scroll bar appears it doesn't look great, but can't do much about it with CSS
   */
-  width: min(20em, max(100%, 90vw));
+  width: min(20em, calc(100vw - 3rem));
   overflow-y: auto;
 
   /* Thinking that on mobile devices navbar will be max ~20rem tall (acting as business, iPhone 5s screen size)
