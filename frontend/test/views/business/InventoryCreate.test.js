@@ -39,17 +39,6 @@ describe("Correct today date", () => {
   });
 });
 
-test("Products list gets populated", async () => {
-  await wrapper.vm.$nextTick();
-  const optionEls = wrapper.find("#productDropdown").findAll("option");
-  expect(optionEls.length).toBe(products.length);
-
-  for (let i = 0; i < optionEls.length; i++) {
-    const optionEl = optionEls.at(i);
-    expect(optionEl.text()).toEqual(products[i].name);
-  }
-});
-
 test("Error modal shows", async () => {
   Api.getProducts.mockImplementation(
       () => Promise.reject(new ApiRequestError("Anything")));

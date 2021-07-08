@@ -14,12 +14,13 @@
       <div class="row">
         <div class="col-12 col-md-6 form-group required">
           <label for="productDropdown">Select product</label>
-          <select id="productDropdown" v-model="product" class="form-control" required>
-            <option v-for="product in products" :key="product.id" :value="product">
-              {{ product.name }}
-            </option>
-          </select>
-        </div>
+          <v-autocomplete
+          solo
+          dense
+          :items="stuff"
+          v-model="product"
+          ></v-autocomplete>
+          </div>
         <div class="col-12 col-md-6 form-group required">
           <label for="quantity">Quantity</label>
           <input
@@ -166,9 +167,10 @@ export default {
       sellBy: null,
       bestBefore: null,
       expires: null,
-      products: null,
+      products: [],
       currency: null,
       errorMessage: null,
+      stuff: ["a","b","c"]
     }
   },
   props: {

@@ -22,6 +22,12 @@ h3 {
   cursor: pointer;
 }
 
+.theme--light.v-application {
+  // Vuetify overrides background, so disable this
+  background: initial;
+  background-color: initial;
+}
+
 .green-text-hover {
   color:$dark;
 }
