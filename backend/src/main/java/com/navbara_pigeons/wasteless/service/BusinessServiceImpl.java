@@ -107,12 +107,28 @@ public class BusinessServiceImpl implements BusinessService {
    * @param id the id of the business
    * @return a business
    * @throws BusinessNotFoundException when business with given id does not exist
-   * @throws UserNotFoundException     should never be thrown. If is thrown, return 500 status code
    */
   @Override
   @Transactional
-  public Business getBusiness(long id) throws BusinessNotFoundException, UserNotFoundException {
+  public Business getBusiness(long id) throws BusinessNotFoundException {
     return businessDao.getBusinessById(id);
+  }
+
+  /**
+   * Adds user with given ID to list of business admins
+   *
+   * @param userId     of the user that will be added to the list of business admins
+   * @param businessId of the business to add the admin to
+   */
+  @Override
+  @Transactional
+  public void addBusinessAdmin(long businessId, long userId)
+      throws UserNotFoundException, BusinessNotFoundException {
+    User user = userService.getUserById(userId);
+    Business business = getBusiness(businessId);
+
+    business.addAdministrator(user);
+    businessDao.saveBusiness(business);
   }
 
   /**

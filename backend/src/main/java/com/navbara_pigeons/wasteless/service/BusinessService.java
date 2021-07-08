@@ -19,4 +19,6 @@ public interface BusinessService {
 
   boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException;
 
+  void addBusinessAdmin(long businessId, long userId)
+      throws UserNotFoundException, BusinessNotFoundException;
 }
