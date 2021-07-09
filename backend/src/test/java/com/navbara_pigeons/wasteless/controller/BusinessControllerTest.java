@@ -78,16 +78,6 @@ public class BusinessControllerTest extends ControllerTestProvider {
   }
 
   @Test
-  @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  void addAdmin_expectBadRequest() throws Exception {
-    // dnb36 is already an admin of this business so we should expect a 400 response
-    mockMvc.perform(put("/businesses/1/makeAdministrator")
-        .contentType("application/json")
-        .content(objectMapper.writeValueAsString(DNB36USERID)))
-        .andExpect(status().isBadRequest());
-  }
-
-  @Test
   @WithAnonymousUser
   void addAdmin_expectUnauthorized() throws Exception {
     mockMvc.perform(put("/businesses/1/makeAdministrator")
@@ -97,12 +87,12 @@ public class BusinessControllerTest extends ControllerTestProvider {
   }
 
   @Test
-  @WithUserDetails(value = "amf133@uclive.ac.nz")
+  @WithUserDetails(value = "fdi19@uclive.ac.nz")
   void addAdmin_expectForbidden() throws Exception {
     mockMvc.perform(put("/businesses/1/makeAdministrator")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(RANDOMUSERID)))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isForbidden());
   }
 
   @Test
