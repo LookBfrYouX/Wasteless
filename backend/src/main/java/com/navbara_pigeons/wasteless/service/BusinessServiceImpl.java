@@ -8,6 +8,7 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
 import java.time.ZoneOffset;
@@ -123,10 +124,12 @@ public class BusinessServiceImpl implements BusinessService {
   @Override
   @Transactional
   public void addBusinessAdmin(long businessId, long userId)
-      throws UserNotFoundException, BusinessNotFoundException {
+      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException {
     User user = userService.getUserById(userId);
     Business business = getBusiness(businessId);
-
+    if (!isBusinessPrimaryAdmin(businessId) && !userService.isAdmin()) {
+      throw new InsufficientPrivilegesException("Must be the primary business admin to use this feature!");
+    }
     business.addAdministrator(user);
     businessDao.saveBusiness(business);
   }
@@ -152,6 +155,26 @@ public class BusinessServiceImpl implements BusinessService {
       if (authUser.getId() == user.getId()) {
         return true;
       }
+    }
+    return false;
+  }
+
+  /**
+   * This helper method tests if the currently logged in user is the primary administrator of the
+   * business with the given ID
+   *
+   * @param businessId The business to test against.
+   * @return True if the current user is the primary admin
+   * @throws BusinessNotFoundException The business does not exist
+   * @throws UserNotFoundException     The user does not exist
+   */
+  public boolean isBusinessPrimaryAdmin(long businessId)
+      throws BusinessNotFoundException, UserNotFoundException {
+    Business business = this.businessDao.getBusinessById(businessId);
+    User authUser = this.userService.getLoggedInUser();
+
+    if (business.getPrimaryAdministratorId() == authUser.getId()) {
+      return true;
     }
     return false;
   }
