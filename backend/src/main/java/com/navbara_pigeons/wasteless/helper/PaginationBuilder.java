@@ -55,13 +55,34 @@ public class PaginationBuilder {
   }
 
   public PaginationBuilder withSortField(String sortField) {
-    this.sortField = sortField;
+    if (isValidFieldName(sortField)) {
+      this.sortField = sortField;
+    }
     return this;
   }
 
   public PaginationBuilder withSortAscending(boolean sortAscending) {
     this.sortAscending = sortAscending;
     return this;
+  }
+
+  private boolean isValidFieldName(String fieldName) throws IllegalArgumentException{
+    boolean validField = false;
+
+    for (Field field : ((Class) entity).getDeclaredFields()) {
+      if (field.getName().equals(fieldName)) {
+        validField = true;
+        break;
+      }
+    }
+
+    if (!validField) {
+      throw new IllegalArgumentException(
+              "The passed in field to sort by does not exist in the " + ((Class) this.entity).getName()
+                      + " class");
+    }
+
+    return true;
   }
 
   private void parseSortByString(String sortByString) throws IllegalArgumentException {
@@ -75,20 +96,10 @@ public class PaginationBuilder {
     String passedSortField = splitSortBy[0];
     String passedSortAscending = splitSortBy[1];
 
-    boolean validField = false;
-    for (Field field : ((Class) entity).getDeclaredFields()) {
-      if (field.getName().equals(passedSortField)) {
-        this.sortField = field.getName();
-        validField = true;
-        break;
-      }
+    if (isValidFieldName(passedSortField)) {
+      this.sortField = passedSortField;
     }
 
-    if (!validField) {
-      throw new IllegalArgumentException(
-          "The passed in field to sort by does not exist in the " + ((Class) this.entity).getName()
-              + " class");
-    }
 
     if (passedSortAscending.equals("desc")) {
       this.sortAscending = false;
