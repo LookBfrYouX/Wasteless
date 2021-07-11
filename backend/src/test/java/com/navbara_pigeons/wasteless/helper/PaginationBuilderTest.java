@@ -72,6 +72,24 @@ public class PaginationBuilderTest {
   }
 
   @Test
+  public void testInvalidPaginationIndexes() {
+    // Arrange
+    Object entity = Product.class;
+    String defaultSortField = "name";
+    Integer pagStartIndex = 2;
+    Integer pagEndIndex = pagStartIndex - 1;
+
+    // Act
+    PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField)
+            .withPagStartIndex(pagStartIndex);
+
+    // Assert
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      paginationBuilder.withPagEndIndex(pagEndIndex);
+    });
+  }
+
+  @Test
   public void changingToValidSortField() {
     // Arrange
     Object entity = User.class;
