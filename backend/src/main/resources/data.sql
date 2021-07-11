@@ -165,6 +165,18 @@ CREATE TABLE keyword
     CREATED            DATETIME NOT NULL
 );
 
+CREATE TABLE marketlisting_keyword
+(
+    MARKETLISTING_ID  BIGINT NOT NULL,
+    KEYWORD_ID BIGINT NOT NULL,
+    CONSTRAINT marketlisting_keyword_pk
+        UNIQUE (MARKETLISTING_ID, KEYWORD_ID),
+    CONSTRAINT marketlisting_keyword_fk
+        FOREIGN KEY (MARKETLISTING_ID) REFERENCES marketlisting (ID),
+    CONSTRAINT keyword_marketlisting_fk
+        FOREIGN KEY (KEYWORD_ID) REFERENCES keyword (ID)
+);
+
 
 -- INSERTING TEST DATA BELOW
 
