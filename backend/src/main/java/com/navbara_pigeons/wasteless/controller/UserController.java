@@ -100,10 +100,10 @@ public class UserController {
    * Search for a user based of nickname or name(firstName, middleName, lastName)
    *
    * @param searchQuery   name being searched for
-   * @param pagStartIndex The start index of the list to return, implemented for pagination
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
    * @param sortBy        Defines any user sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>"
+   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return List of all users matching the searchQuery
    * @throws ResponseStatusException Unknown Error
    */

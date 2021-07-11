@@ -24,6 +24,13 @@ public class ListingDaoHibernateImpl implements ListingDao {
     this.entityManager = entityManager;
   }
 
+  /**
+   * Get a list of Listings for a specific Business.
+   *
+   * @param business The specific business to get the information from
+   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and paginating items
+   * @return A paginated and sorted list of Listings
+   */
   @Override
   public List<Listing> getListings(Business business, PaginationBuilder pagBuilder) {
     Session currentSession = getSession();

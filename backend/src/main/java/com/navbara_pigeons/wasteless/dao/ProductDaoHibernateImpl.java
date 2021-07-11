@@ -29,6 +29,14 @@ public class ProductDaoHibernateImpl implements ProductDao {
     this.entityManager = entityManager;
   }
 
+  /**
+   * Gets a list of the products for a specific business. Also returns results in a paginated
+   * form which is configured from the Pagination Builder.
+   *
+   * @param business The specific business to get the information from
+   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and paginating items
+   * @return A paginated and sorted list of Products
+   */
   @Override
   public List<Product> getProducts(Business business, PaginationBuilder pagBuilder) {
     Session currentSession = getSession();

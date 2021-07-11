@@ -44,10 +44,10 @@ public class ProductController {
    * This endpoint retrieves a list of all products listed by a particular business (id).
    *
    * @param id            The business ID.
-   * @param pagStartIndex The start index of the list to return, implemented for pagination
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
    * @param sortBy        Defines any product sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>"
+   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return A list of products.
    * @throws UserNotFoundException           Handled in ControllerExceptionHandler class.
    * @throws InsufficientPrivilegesException Handled in ControllerExceptionHandler class.

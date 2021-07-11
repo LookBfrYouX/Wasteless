@@ -120,6 +120,12 @@ public class UserDaoHibernateImpl implements UserDao {
     return searchUsers(searchQuery, pagBuilder);
   }
 
+  /**
+   * Search for a list of users.
+   * @param searchQuery Search query ( can include AND, OR's )
+   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and paginating items
+   * @return A paginated and sorted list of Users that match the search query
+   */
   @Override
   public List<User> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
       throws InvalidAttributeValueException {

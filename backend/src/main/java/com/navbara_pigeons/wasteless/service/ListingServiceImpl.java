@@ -85,10 +85,10 @@ public class ListingServiceImpl implements ListingService {
    * Gets all listings for the given business
    *
    * @param businessId    id of business
-   * @param pagStartIndex The start index of the list to return, implemented for pagination
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
    * @param sortBy        Defines any listing sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>"
+   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return listings in no guaranteed order
    * @throws BusinessNotFoundException
    * @throws UserNotFoundException

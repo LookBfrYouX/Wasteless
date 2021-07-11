@@ -60,10 +60,10 @@ public class ListingController {
    * This controller endpoint is used to retrieve businesses listings from a specified business.
    *
    * @param id            The business ID
-   * @param pagStartIndex The start index of the list to return, implemented for pagination
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
    * @param sortBy        Defines any listing sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>"
+   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return A ResponseEntity with a list of listings.
    * @throws UserNotFoundException     Handled in ControllerExceptionHandler class.
    * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
