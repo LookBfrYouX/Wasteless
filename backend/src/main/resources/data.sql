@@ -407,3 +407,10 @@ VALUES (2, 'ForSale', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Shoddy web 
         'Wanting to sell Wasteless, no longer needed or wanted.'),
        (2, 'Wanted', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Fresh motivation',
         'Will pay for motivation.');
+
+
+INSERT INTO keyword (NAME, CREATED)
+VALUES ('Tea', '2021-04-23 15:34:20'),
+       ('Electronic', '2021-04-23 15:34:20'),
+       ('Supplement', '2021-04-23 15:34:20'),
+       ('Dairy', '2021-04-23 15:34:20');
