@@ -39,6 +39,7 @@
               <v-list-item-title>Name:{{item.product.name}}</v-list-item-title>
               <v-list-item-subtitle>Quantity:{{item.quantity}}</v-list-item-subtitle>
               <v-list-item-subtitle>Expires:{{item.expires}}</v-list-item-subtitle>
+              <v-list-item-subtitle>Number Available:{{item.quantityRemaining}}</v-list-item-subtitle>
             </v-list-item-content>
           </template>
         </v-autocomplete>
