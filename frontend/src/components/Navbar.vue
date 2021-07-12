@@ -129,8 +129,8 @@
                  v-bind:title="authUser.firstName + ' ' + authUser.lastName"
                  @click="switchActingAs(null)"
               >
-              <!-- d-flex used on the a so that the tick for active items is visible
-              when the name is long and overflows -->
+              <!-- d-flex used on the a so that space is made for the the tick
+               (added via an ::after) for active items when the name is long and overflows -->
                 <span class="ellipsis-overflow">
                   {{ authUser.firstName }} {{ authUser.lastName }}
                 </span>
