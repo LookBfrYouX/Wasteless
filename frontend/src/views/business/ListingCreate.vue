@@ -292,9 +292,8 @@ export default {
           const inventoryItem = inventory.find(({id}) => id === listing.inventoryItem.id);
           inventoryItem.quantityRemaining -= listing.quantity;
         });
-        this.inventory = inventory;
-
       }
+      this.inventory = inventory;
     },
 
     /**
@@ -368,7 +367,7 @@ export default {
     async addListing() {
       let closes = this.toFormattedISOString(this.closeDate, this.closeTime);
       const listing = {
-        "inventoryItemId": this.selectedInventoryItem.id,
+        "inventoryItemId": this.selectedInventoryItem,
         "quantity": this.quantityAsNumber,
         "price": parseFloat(this.price),
         "moreInfo": this.moreInfo,
