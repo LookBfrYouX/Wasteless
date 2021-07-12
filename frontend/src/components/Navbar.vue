@@ -26,7 +26,7 @@
         <!-- Left group: links to profile and business -->
         <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start pl-0">
           <div
-              :class="{'d-lg-none': navbarLinks.length > 2}"
+              :class="{'d-lg-none d-md-none': navbarLinks.length > 2}"
               class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center nav-link-list"
           >
             <!-- List of links in XL only hidden if lg and more than 2 links -->
@@ -47,7 +47,7 @@
           </div>
 
           <li
-              :class="{'d-lg-block': navbarLinks.length > 2}"
+              :class="{'d-lg-block d-md-block': navbarLinks.length > 2}"
               class="navbar-item dropdown d-none d-xl-none p-absolute"
           >
             <!-- dropdown menu for the business/profile links only if lg AND if more than 2 links-->
@@ -114,7 +114,7 @@
               >
               <div class="d-flex flex-column mx-1 current-acting-as-wrapper">
                 <!-- title attribute will show full name in case it is too long to fit -->
-              <span class="m-0 p-0 text-dark" v-bind:title="printCurrentActingAs">
+              <span class="m-0 p-0 text-dark ellipsis-overflow" v-bind:title="printCurrentActingAs">
                   {{ printCurrentActingAs }}
                 </span>
                 <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
@@ -123,24 +123,29 @@
 
             <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu position-absolute">
               <div class="h4 dropdown-header">Act as</div>
-              <a class="dropdown-item" href="javascript:"
-                 @click="switchActingAs(null)">
-                {{ authUser.firstName }} {{ authUser.lastName }}
-                <span v-if="currentActingAs === null">
-                  &#10003;
+              <a class="dropdown-item d-flex"
+                 v-bind:class="{'currently-acting-as': currentActingAs == null}"
+                 href="javascript:"
+                 v-bind:title="authUser.firstName + ' ' + authUser.lastName"
+                 @click="switchActingAs(null)"
+              >
+              <!-- d-flex used on the a so that the tick for active items is visible
+              when the name is long and overflows -->
+                <span class="ellipsis-overflow">
+                  {{ authUser.firstName }} {{ authUser.lastName }}
                 </span>
               </a>
               <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
               <a v-for="business in actingAsEntities" :key="business.id"
-                 class="dropdown-item"
+                 class="dropdown-item d-flex"
+                 v-bind:class="{'currently-acting-as': currentActingAs == business}"
                  href="javascript:"
                  v-bind:title="business.name"
-                 @click="switchActingAs(business)">
-                {{ business.name }}
-                <span v-if="business === currentActingAs">
-
-                  &#10003;
-                  </span>
+                 @click="switchActingAs(business)"
+              >
+                <span class="ellipsis-overflow">
+                  {{ business.name }}
+                </span>
               </a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="javascript:" @click="signOut">Sign out</a>
@@ -431,10 +436,15 @@ nav .active {
   min-width: 0; /* Needed to truncate text in a flex box */
 }
 
-.current-acting-as-wrapper span, .dropdown-item {
+.ellipsis-overflow {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.currently-acting-as::after {
+  /* Checkmark next to currently acting user/business */
+  content: "\2713";
 }
 
 .acting-as-dropdown {
