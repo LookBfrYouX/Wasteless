@@ -194,9 +194,9 @@ describe("getAvailableInventoryItem method", () => {
 describe("getProducts computed", () => {
   test("Inventory is not ready yet", () => {
     wrapper.setData({
-      inventory: null
+      inventory: []
     });
-    let products = wrapper.vm.getProducts;
+    let products = wrapper.vm.products;
     expect(products).toEqual([]);
   });
 
@@ -204,15 +204,16 @@ describe("getProducts computed", () => {
     wrapper.setData({
       inventory: mockInventory
     });
-    let products = wrapper.vm.getProducts;
-    expect(products.length).toEqual(3);
+    wrapper.vm.getProducts();
+    let productsLength = wrapper.vm.products.length;
+    expect(productsLength).toEqual(4);
   });
 });
 
 describe("filteredInventory computed", () => {
   test("Inventory is not ready yet", () => {
     wrapper.setData({
-      inventory: null
+      inventory: []
     });
     let filteredInventoryArray = wrapper.vm.filteredInventory;
     expect(filteredInventoryArray).toEqual([]);
@@ -231,6 +232,7 @@ describe("filteredInventory computed", () => {
       inventory: mockInventory,
       selectedProductId: "2"
     });
+    wrapper.vm.filterInventory();
     let filteredInventoryArray = wrapper.vm.filteredInventory;
     expect(filteredInventoryArray.length).toEqual(2);
   });
