@@ -16,33 +16,34 @@
             dense
             item-text="name"
             item-value="id"
-            :items="products"
+            :items="getProducts"
             v-model="selectedProductId"
           >
         </v-autocomplete>
         </div>
         <div class="form-group required col-md-6">
           <label for="inventory">Inventory item to list</label>
-          <v-autocomplete
-            solo
-            dense
-            item-text="id"
-            item-value="id"
-            :items="filteredInventory"
-            v-model="selectedInventoryItem"
+          <select
+              id="inventory"
+              v-model="selectedInventoryItem"
+              :disabled="filteredInventory.length === 0"
+              class="form-control"
+              required
           >
-          <template v-slot:selection="{item}">
-            {{item.product.name}}, {{item.quantity}}, {{item.expires}}
-          </template>
-          <template v-slot:item="{ item }">
-            <v-list-item-content>
-              <v-list-item-title>Name:{{item.product.name}}</v-list-item-title>
-              <v-list-item-subtitle>Quantity:{{item.quantity}}</v-list-item-subtitle>
-              <v-list-item-subtitle>Expires:{{item.expires}}</v-list-item-subtitle>
-              <v-list-item-subtitle>Number Available:{{item.quantityRemaining}}</v-list-item-subtitle>
-            </v-list-item-content>
-          </template>
-        </v-autocomplete>
+            <option :value="null"
+                    disabled
+                    selected> -- Select inventory to list --
+            </option>
+            <option v-for="inventoryItem in filteredInventory"
+                    :key="inventoryItem.id"
+                    :disabled="inventoryItem.quantityRemaining <= 0 ||inventoryItem.expires < todayDate"
+                    :value="inventoryItem"
+            >
+              Expire{{ (todayDate >= inventoryItem.expires) ? "d" : "s" }} on
+              {{ $helper.isoToDateString(inventoryItem.expires) }} (ID: {{ inventoryItem.id }},
+              {{ inventoryItem.quantityRemaining }}/{{ inventoryItem.quantity }} unlisted)
+            </option>
+          </select>
         </div>
         <div class="form-group required col-md-6">
           <label for="quantity">Quantity</label>
@@ -85,7 +86,7 @@
               v-model="moreInfo"
               :disabled="price === 0"
               class="form-control"
-              maxlength="200"
+              maxlength="50"
               name="moreInfo"
               placeholder="Extra information about the price"
               rows="4"
@@ -156,7 +157,7 @@ export default {
   data() {
     return {
       // Array of inventory items
-      inventory: [],
+      inventory: null,
       selectedProductId: null,
       selectedInventoryItem: null,
       quantity: null,
@@ -168,8 +169,6 @@ export default {
       todayDate: null,
       apiErrorMessage: null,
       errorMessage: null,
-      products:[],
-      filteredInventory:[]
     }
   },
 
@@ -182,7 +181,6 @@ export default {
 
   beforeMount: async function () {
     await this.createForm();
-    await this.getProducts();
   },
 
   watch: {
@@ -202,7 +200,6 @@ export default {
      * When users select a different product in the dropdown, resets selectedInventoryItem and quantity to initial value.
      */
     selectedProductId: function () {
-      this.filterInventory()
       this.selectedInventoryItem = null;
     },
 
@@ -216,18 +213,6 @@ export default {
 
   methods: {
     /**
-     * Filters in inventory item of a product which users chose in dropdown.
-     * @return Array of inventory items if inventory and selectedProductId is non-null. Returns empty array otherwise.
-     */
-    async filterInventory() {
-      if (this.inventory == [] || this.selectedProductId == null) {
-        return [];
-      }
-      this.filteredInventory = this.inventory.filter(
-          inventoryItem => inventoryItem.product.id === this.selectedProductId);
-    },
-
-    /**
      * API requests other computation at the time of form creation.
      * Called when the page is loaded or user hit retry button on the error modal.
      */
@@ -239,16 +224,6 @@ export default {
       await this.getAvailableInventoryItem();
       this.setTodayDate();
       await this.getCurrency();
-    },
-
-    async getProducts() {
-      let products = [];
-      this.inventory.forEach(inventoryItem => {
-        const product = inventoryItem.product;
-        products.push(product)
-      });
-      this.products=products
-
     },
 
     /**
@@ -293,8 +268,8 @@ export default {
           const inventoryItem = inventory.find(({id}) => id === listing.inventoryItem.id);
           inventoryItem.quantityRemaining -= listing.quantity;
         });
+        this.inventory = inventory;
       }
-      this.inventory = inventory;
     },
 
     /**
@@ -368,7 +343,7 @@ export default {
     async addListing() {
       let closes = this.toFormattedISOString(this.closeDate, this.closeTime);
       const listing = {
-        "inventoryItemId": this.selectedInventoryItem,
+        "inventoryItemId": this.selectedInventoryItem.id,
         "quantity": this.quantityAsNumber,
         "price": parseFloat(this.price),
         "moreInfo": this.moreInfo,
@@ -385,6 +360,34 @@ export default {
   },
 
   computed: {
+    /**
+     * Get products from inventory of the business. Uses dictionary to eliminate duplicate product that has multiple inventory.
+     * @return Array of products.
+     */
+    getProducts() {
+      if (this.inventory == null) {
+        return [];
+      }
+      let products = {};
+      this.inventory.forEach(inventoryItem => {
+        const product = inventoryItem.product;
+        products[product.id] = product;
+      });
+      return Object.values(products);
+    },
+
+    /**
+     * Filters in inventory item of a product which users chose in dropdown.
+     * @return Array of inventory items if inventory and selectedProductId is non-null. Returns empty array otherwise.
+     */
+    filteredInventory() {
+      if (this.inventory == null || this.selectedProductId == null) {
+        return [];
+      }
+      return this.inventory.filter(
+          inventoryItem => inventoryItem.product.id === this.selectedProductId);
+    },
+
     /**
      * Sets default price on price input field once a user select inventory item and set a valid quantity.
      * When user chose whole quantity in the inventory, returns totalPrice of the inventory item if it's non-null.
