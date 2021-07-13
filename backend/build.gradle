@@ -60,6 +60,14 @@ dependencies {
     implementation 'org.springframework.security:spring-security-test'
     // connector to mariadb (mysql) database
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
+
+    // Testing Swagger2 Dependency
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger2'
+    implementation 'io.springfox:springfox-swagger-ui'
+//    implementation 'org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE'
+//    implementation 'org.springframework.plugin:spring-plugin-core:1.2.0.RELEASE'
+
     // ability to use in-memory database (for testing only)
     runtimeOnly 'com.h2database:h2'
 
