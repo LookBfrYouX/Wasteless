@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
@@ -30,7 +31,7 @@ public interface UserService {
 
   void revokeAdmin(long id) throws UserNotFoundException, NotAcceptableException;
 
-  List<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex, Integer pagEndIndex,
+  PaginationDto<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex, Integer pagEndIndex,
       String sortBy) throws InvalidAttributeValueException, IllegalArgumentException;
 
   void makeUserAdmin(long id) throws UserNotFoundException, BadCredentialsException;
