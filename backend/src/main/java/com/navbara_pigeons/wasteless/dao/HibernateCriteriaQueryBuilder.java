@@ -30,7 +30,7 @@ public class HibernateCriteriaQueryBuilder {
 
   }
 
-  private static Long getEntityCountQuery(Session currentSession, Object entity) {
+  public static Long getEntityCountQuery(Session currentSession, Object entity) {
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
     countQuery.select(criteriaBuilder.count(countQuery.from((Class<?>) entity)));

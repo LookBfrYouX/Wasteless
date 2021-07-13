@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
@@ -24,6 +25,7 @@ import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -201,23 +203,22 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
-  public List<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex,
+  public PaginationDto<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex,
       Integer pagEndIndex, String sortBy)
       throws InvalidAttributeValueException, IllegalArgumentException {
-    List<User> serverResults;
 
     PaginationBuilder pagBuilder = new PaginationBuilder(User.class, "id");
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);
 
-    serverResults = userDao.searchUsers(searchQuery, pagBuilder);
+    Pair<List<User>, Long> dataAndTotalCount = userDao.searchUsers(searchQuery, pagBuilder);
 
     List<BasicUserDto> clientResults = new ArrayList<>();
-    for (User user : serverResults) {
+    for (User user : dataAndTotalCount.getFirst()) {
       clientResults.add(new BasicUserDto(user));
     }
-    return clientResults;
+    return new PaginationDto<>(clientResults, dataAndTotalCount.getSecond());
   }
 
   /**

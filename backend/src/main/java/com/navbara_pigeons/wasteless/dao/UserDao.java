@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
+import org.springframework.data.util.Pair;
 
 public interface UserDao {
 
@@ -22,7 +23,7 @@ public interface UserDao {
   List<User> searchUsers(String searchQuery)
       throws InvalidAttributeValueException;
 
-  List<User> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
+  Pair<List<User>, Long> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
       throws InvalidAttributeValueException;
 
 }

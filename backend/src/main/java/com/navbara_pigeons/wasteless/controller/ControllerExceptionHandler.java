@@ -191,7 +191,6 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(Exception.class)
   public ResponseEntity<String> handleGeneralException(Exception exc) {
     log.error("CRITICAL ERROR: 500 - " + exc.getMessage());
-    exc.printStackTrace();
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
   }
 

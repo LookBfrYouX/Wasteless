@@ -11,6 +11,7 @@ import javax.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -117,23 +118,27 @@ public class UserDaoHibernateImpl implements UserDao {
   @Override
   public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
     PaginationBuilder pagBuilder = new PaginationBuilder(User.class, "id");
-    return searchUsers(searchQuery, pagBuilder);
+    return searchUsers(searchQuery, pagBuilder).getFirst();
   }
 
   /**
    * Search for a list of users.
+   *
    * @param searchQuery Search query ( can include AND, OR's )
-   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and paginating items
+   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and
+   *     paginating items
    * @return A paginated and sorted list of Users that match the search query
    */
   @Override
-  public List<User> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
+  public Pair<List<User>, Long> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
       throws InvalidAttributeValueException {
     Session currentSession = getSession();
-    TypedQuery<User> query = HibernateCriteriaQueryBuilder
-        .parseUserSearchQuery(currentSession, searchQuery, pagBuilder);
+    TypedQuery<User> query =
+        HibernateCriteriaQueryBuilder.parseUserSearchQuery(currentSession, searchQuery, pagBuilder);
+    Long totalCount =
+        HibernateCriteriaQueryBuilder.getEntityCountQuery(currentSession, User.class);
 
-    return query.getResultList();
+    return Pair.of(query.getResultList(), totalCount);
   }
 
   /**
@@ -144,5 +149,4 @@ public class UserDaoHibernateImpl implements UserDao {
   private Session getSession() {
     return this.entityManager.unwrap(Session.class);
   }
-
 }
