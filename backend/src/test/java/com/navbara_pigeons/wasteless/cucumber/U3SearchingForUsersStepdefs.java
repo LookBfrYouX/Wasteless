@@ -8,7 +8,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
@@ -100,8 +104,11 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
   }
 
   @Then("No user records are returned")
-  public void noUserRecordsAreReturned() throws UnsupportedEncodingException {
-    assertEquals("[]", this.mvcResult.getResponse().getContentAsString());
+  public void noUserRecordsAreReturned()
+      throws UnsupportedEncodingException, JsonProcessingException {
+    String json = this.mvcResult.getResponse().getContentAsString();
+    PaginationDto<User> paginationDto = new ObjectMapper().readValue(json, PaginationDto.class);
+    assertEquals("[]", paginationDto.getData().toString());
     System.out.println("NO USERS RETURNED -> " + this.mvcResult.getResponse().getContentAsString());
   }
 
