@@ -192,12 +192,6 @@ export default {
       return `${this.currency.symbol} (${this.currency.code})`;
     }
   },
-
-  watch: {
-    value: function() {
-      console.log(this.value)
-    }
-  },
   methods: {
     /**
      * Pipeline that sets currency data
