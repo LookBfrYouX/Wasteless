@@ -1,6 +1,5 @@
 package com.navbara_pigeons.wasteless.dao;
 
-
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
@@ -22,13 +21,11 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
-
+import org.hibernate.query.Query;
 
 public class HibernateCriteriaQueryBuilder {
 
-  private HibernateCriteriaQueryBuilder() {
-
-  }
+  private HibernateCriteriaQueryBuilder() {}
 
   public static Long getEntityCountQuery(Session currentSession, Object entity) {
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
@@ -37,8 +34,8 @@ public class HibernateCriteriaQueryBuilder {
     return currentSession.createQuery(countQuery).getSingleResult();
   }
 
-  public static CriteriaQuery<MarketListing> parseListingQuery(Session currentSession,
-      String listingSection) {
+  public static CriteriaQuery<MarketListing> parseListingQuery(
+      Session currentSession, String listingSection) {
     // Create Builder
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<MarketListing> criteriaQuery = criteriaBuilder.createQuery(MarketListing.class);
@@ -50,15 +47,27 @@ public class HibernateCriteriaQueryBuilder {
     return criteriaQuery;
   }
 
-  public static TypedQuery<Listing> listPaginatedAndSortedBusinessListings(Session currentSession,
-      Business business, PaginationBuilder pagBuilder) {
+  public static Query<Long> createTotalListingsCountQuery(
+      Session currentSession, Business business) {
+    CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+    CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+    Root<Listing> listing = countQuery.from(Listing.class);
+    Join<Listing, InventoryItem> inventoryItem = listing.join("inventoryItem");
+    countQuery.where(criteriaBuilder.equal(inventoryItem.get("business"), business));
+    countQuery.select(criteriaBuilder.count(inventoryItem));
+
+    return currentSession.createQuery(countQuery);
+  }
+
+  public static TypedQuery<Listing> listPaginatedAndSortedBusinessListings(
+      Session currentSession, Business business, PaginationBuilder pagBuilder) {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
-    CriteriaQuery<Listing> criteriaQuery = criteriaBuilder.createQuery(Listing.class);
 
+    // Listings Query
+    CriteriaQuery<Listing> criteriaQuery = criteriaBuilder.createQuery(Listing.class);
     Root<Listing> listing = criteriaQuery.from(Listing.class);
     Join<Listing, InventoryItem> inventoryItem = listing.join("inventoryItem");
-
     criteriaQuery.where(criteriaBuilder.equal(inventoryItem.get("business"), business));
 
     // Sorting query
@@ -67,30 +76,31 @@ public class HibernateCriteriaQueryBuilder {
         pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
     criteriaQuery.orderBy(order);
 
+    // Pagination
     TypedQuery<Listing> typedQuery = currentSession.createQuery(criteriaQuery);
     typedQuery.setFirstResult(pagBuilder.getPagStartIndex());
     if (pagBuilder.getPagEndIndex() != null) {
       typedQuery.setMaxResults(pagBuilder.getPagEndIndex() - pagBuilder.getPagStartIndex() + 1);
     }
     return typedQuery;
-
   }
 
-  public static TypedQuery<Product> listPaginatedAndSortedBusinessProducts(Session currentSession,
-      Business business, PaginationBuilder pagBuilder) {
+  public static TypedQuery<Product> listPaginatedAndSortedBusinessProducts(
+      Session currentSession, Business business, PaginationBuilder pagBuilder) {
     // Setup
     String HQL =
         "SELECT bpc FROM Business b JOIN b.productsCatalogue bpc WHERE b.id=:business_id ORDER BY bpc."
             + pagBuilder.getSortField();
     HQL += pagBuilder.isSortAscending() ? " ASC" : " DESC";
-    TypedQuery<Product> typedQuery = currentSession.createQuery(HQL, Product.class)
-        .setParameter("business_id", business.getId());
+    TypedQuery<Product> typedQuery =
+        currentSession
+            .createQuery(HQL, Product.class)
+            .setParameter("business_id", business.getId());
     typedQuery.setFirstResult(pagBuilder.getPagStartIndex());
     if (pagBuilder.getPagEndIndex() != null) {
       typedQuery.setMaxResults(pagBuilder.getPagEndIndex() - pagBuilder.getPagStartIndex() + 1);
     }
     return typedQuery;
-
   }
 
   public static TypedQuery<InventoryItem> listPaginatedAndSortedBusinessInventory(
@@ -117,8 +127,9 @@ public class HibernateCriteriaQueryBuilder {
     return typedQuery;
   }
 
-  public static TypedQuery<User> parseUserSearchQuery(Session currentSession, String searchQuery,
-      PaginationBuilder pagBuilder) throws InvalidAttributeValueException {
+  public static TypedQuery<User> parseUserSearchQuery(
+      Session currentSession, String searchQuery, PaginationBuilder pagBuilder)
+      throws InvalidAttributeValueException {
 
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
@@ -147,8 +158,9 @@ public class HibernateCriteriaQueryBuilder {
         // Check it is in a legit place
         if (i > 0 && (i + 1) < tokens.size() && !predicates.isEmpty()) {
           Predicate lastPredicate = predicates.remove(predicates.size() - 1);
-          Predicate newPredicate = criteriaBuilder
-              .or(lastPredicate, makePredicate(tokens.get(i + 1), criteriaBuilder, root));
+          Predicate newPredicate =
+              criteriaBuilder.or(
+                  lastPredicate, makePredicate(tokens.get(i + 1), criteriaBuilder, root));
           predicates.add(newPredicate);
           i++; // Extra increment so the attribute isn't added again!
         } else {
@@ -165,8 +177,7 @@ public class HibernateCriteriaQueryBuilder {
     }
 
     // Selecting query
-    criteriaQuery.select(root)
-        .where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+    criteriaQuery.select(root).where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
     // Sorting query
     Path<Object> path = root.get(pagBuilder.getSortField());
@@ -182,8 +193,8 @@ public class HibernateCriteriaQueryBuilder {
     return typedQuery;
   }
 
-  private static Predicate makePredicate(String token, CriteriaBuilder criteriaBuilder,
-      Root<User> root) {
+  private static Predicate makePredicate(
+      String token, CriteriaBuilder criteriaBuilder, Root<User> root) {
     if (token.matches("\"\\S*.+?\"")) {
       String newToken = token.replace("\"", "");
       return buildNameFullMatchPredicate(newToken, criteriaBuilder, root);
@@ -192,27 +203,25 @@ public class HibernateCriteriaQueryBuilder {
     }
   }
 
-  private static Predicate buildNameFullMatchPredicate(String token,
-      CriteriaBuilder criteriaBuilder, Root<User> root) {
+  private static Predicate buildNameFullMatchPredicate(
+      String token, CriteriaBuilder criteriaBuilder, Root<User> root) {
     return criteriaBuilder.or(
         criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")), token.toLowerCase()),
         criteriaBuilder.like(criteriaBuilder.lower(root.get("nickname")), token.toLowerCase()),
         criteriaBuilder.like(criteriaBuilder.lower(root.get("middleName")), token.toLowerCase()),
-        criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")), token.toLowerCase())
-    );
+        criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")), token.toLowerCase()));
   }
 
-  private static Predicate buildNamePartialMatchPredicate(String token,
-      CriteriaBuilder criteriaBuilder, Root<User> root) {
+  private static Predicate buildNamePartialMatchPredicate(
+      String token, CriteriaBuilder criteriaBuilder, Root<User> root) {
     return criteriaBuilder.or(
-        criteriaBuilder
-            .like(criteriaBuilder.lower(root.get("firstName")), "%" + token.toLowerCase() + "%"),
-        criteriaBuilder
-            .like(criteriaBuilder.lower(root.get("nickname")), "%" + token.toLowerCase() + "%"),
-        criteriaBuilder
-            .like(criteriaBuilder.lower(root.get("middleName")), "%" + token.toLowerCase() + "%"),
-        criteriaBuilder
-            .like(criteriaBuilder.lower(root.get("lastName")), "%" + token.toLowerCase() + "%")
-    );
+        criteriaBuilder.like(
+            criteriaBuilder.lower(root.get("firstName")), "%" + token.toLowerCase() + "%"),
+        criteriaBuilder.like(
+            criteriaBuilder.lower(root.get("nickname")), "%" + token.toLowerCase() + "%"),
+        criteriaBuilder.like(
+            criteriaBuilder.lower(root.get("middleName")), "%" + token.toLowerCase() + "%"),
+        criteriaBuilder.like(
+            criteriaBuilder.lower(root.get("lastName")), "%" + token.toLowerCase() + "%"));
   }
 }

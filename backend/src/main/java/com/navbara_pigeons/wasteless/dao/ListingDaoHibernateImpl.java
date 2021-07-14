@@ -37,12 +37,15 @@ public class ListingDaoHibernateImpl implements ListingDao {
   @Override
   public Pair<List<Listing>, Long> getListings(Business business, PaginationBuilder pagBuilder) {
     Session currentSession = getSession();
-    TypedQuery<Listing> query =
+
+    List<Listing> serverResult =
         HibernateCriteriaQueryBuilder.listPaginatedAndSortedBusinessListings(
-            currentSession, business, pagBuilder);
+            currentSession, business, pagBuilder).getResultList();
     Long totalCount =
-        HibernateCriteriaQueryBuilder.getEntityCountQuery(currentSession, Listing.class);
-    return Pair.of(query.getResultList(), totalCount);
+        HibernateCriteriaQueryBuilder.createTotalListingsCountQuery(currentSession, business)
+            .getSingleResult();
+
+    return Pair.of(serverResult, totalCount);
   }
 
   /**
