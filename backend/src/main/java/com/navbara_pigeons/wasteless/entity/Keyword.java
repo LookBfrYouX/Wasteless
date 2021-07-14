@@ -1,6 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
-import com.navbara_pigeons.wasteless.dto.BasicKeywordDto;
+import com.navbara_pigeons.wasteless.dto.CreateKeywordDto;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -22,7 +22,7 @@ public class Keyword {
   @Column(name = "CREATED")
   private ZonedDateTime created;
 
-  public Keyword(BasicKeywordDto keywordDto) {
+  public Keyword(CreateKeywordDto keywordDto) {
     this.name = keywordDto.getName();
   }
 
