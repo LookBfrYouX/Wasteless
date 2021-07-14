@@ -2,7 +2,7 @@
   <div class="container my-4">
     <div class="list-group-item card">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-12">
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <h2 class="card-title mb-0">
               {{ name }} (ID:
@@ -14,30 +14,37 @@
             <span class="material-icons mr-1">arrow_back</span>
             Back
           </button>
-          <div class="mt-2">Description: {{ description }}</div>
+        <v-carousel
+          class="my-2"
+          v-model=currentImage
+        >
+          <v-carousel-item
+            v-for="(image) in (productImages.length? productImages: [{
+              filename: require('@/../assets/images/default-product-thumbnail.svg') 
+            }])"
+            :key="image.id"
+          >
+          <!-- If there are no images, add the default image -->
+          <div class="h-100 d-flex">
+            <v-img
+              :src="image.filename"
+              :lazy-src="image.thumbnailFilename"
+              contain
+            >
+            <!-- Lazy src loads the thumbnail first, then the full image later
+            Not sure it we should keep it - the thumbnail is square so it is a bit
+            jarring when it switches to the full image
+             -->
+            </v-img>
+          </div>
+          </v-carousel-item>
+        </v-carousel>
+          <div class="mt-2">{{ description }}</div>
           <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>
           <div class="mt-2">RRP: {{
               $helper.makeCurrencyString(recommendedRetailPrice, currency)
             }}
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="primary-image-wrapper">
-            <img v-if="productImages.length !== 0" :src="productImages[0].filename"
-                 alt="Primary images">
-            <img v-else alt="Default product image"
-                 src="@/../assets/images/default-product-thumbnail.svg">
-          </div>
-        </div>
-      </div>
-      <div class="row my-2">
-        <div v-for="(image, index) in productImages"
-             :key="image.id"
-             :class="{ 'd-none': index === 0}"
-             class="col-12 col-md-6 col-lg-4 p-2">
-          <img :src="image.filename"
-               alt="Product Image"
-               class="img-fluid">
         </div>
       </div>
       <div class="d-flex justify-content-end">
@@ -85,6 +92,7 @@ export default {
       recommendedRetailPrice: null,
       created: "",
       productImages: [],
+      currentImage: null,
       apiErrorMessage: null,
       currency: null
     }
