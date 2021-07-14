@@ -27,7 +27,6 @@ public class MarketListingDaoHibernateImpl implements MarketListingDao {
   @Override
   public List<MarketListing> getMarketListing(String section) {
     Session currentSession = getSession();
-    // CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<MarketListing> criteriaQuery = HibernateCriteriaQueryBuilder
         .parseListingQuery(currentSession, section);
 

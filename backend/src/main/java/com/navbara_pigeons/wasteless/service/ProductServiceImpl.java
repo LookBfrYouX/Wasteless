@@ -4,6 +4,8 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Currency;
 import com.navbara_pigeons.wasteless.entity.Product;
@@ -23,6 +25,7 @@ import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 /**
@@ -71,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
-  public List<BasicProductDto> getProducts(long businessId, Integer pagStartIndex,
+  public PaginationDto<BasicProductDto> getProducts(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, String sortBy)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
     if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
@@ -85,13 +88,13 @@ public class ProductServiceImpl implements ProductService {
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);
 
-    List<Product> serverResults = productDao.getProducts(business, pagBuilder);
+    Pair<List<Product>, Long> dataAndTotalCount = productDao.getProducts(business, pagBuilder);
 
     ArrayList<BasicProductDto> products = new ArrayList<>();
-    for (Product product : serverResults) {
+    for (Product product : dataAndTotalCount.getFirst()) {
       products.add(new BasicProductDto(product, publicPathPrefix));
     }
-    return products;
+    return new PaginationDto<>(products, dataAndTotalCount.getSecond());
   }
 
   /**

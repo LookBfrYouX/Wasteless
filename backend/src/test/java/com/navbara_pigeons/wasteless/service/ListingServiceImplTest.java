@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.data.util.Pair;
 import org.springframework.security.test.context.support.WithMockUser;
 
 public class ListingServiceImplTest extends ServiceTestProvider {
@@ -58,11 +59,12 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     Business mockBusiness = getMockBusiness();
     when(businessService.getBusiness(Mockito.anyLong())).thenReturn(mockBusiness);
     when(listingDao.getListings(any(Business.class), any(PaginationBuilder.class)))
-        .thenReturn(getMockBusinessListings(mockBusiness));
+        .thenReturn(Pair.of(getMockBusinessListings(mockBusiness), 0L));
 
     Assertions.assertArrayEquals(
         List.of(1, 2, 3, 4, 5, 6).stream().map(Long::valueOf).toArray(),
         listingService.getListings(mockBusiness.getId(), null, null, null)
+            .getData()
             .stream().map(FullListingDto::getId)
             .toArray()
     );

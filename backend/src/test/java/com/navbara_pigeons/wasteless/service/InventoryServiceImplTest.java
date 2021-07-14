@@ -25,6 +25,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.util.Pair;
 import org.springframework.security.test.context.support.WithMockUser;
 
 public class InventoryServiceImplTest extends ServiceTestProvider {
@@ -81,10 +82,10 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     inventory.add(inventoryItem);
 
     when(inventoryDaoMock.getInventoryItems(any(Business.class), any(PaginationBuilder.class)))
-        .thenReturn(inventory);
+        .thenReturn(Pair.of(inventory, 0L));
 
     List<BasicInventoryItemDto> inventoryDto = inventoryService
-        .getInventory(business.getId(), null, null, null);
+        .getInventory(business.getId(), null, null, null).getData();
 
     assertInventoryListEquals(inventory, inventoryDto);
   }
@@ -134,10 +135,10 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     inventoryItemList.add(inventoryItem);
 
     when(inventoryDaoMock.getInventoryItems(any(Business.class), any(PaginationBuilder.class)))
-        .thenReturn(inventoryItemList);
+        .thenReturn(Pair.of(inventoryItemList, 0L));
 
     List<BasicInventoryItemDto> inventory = inventoryService
-        .getInventory(business.getId(), null, null, null);
+        .getInventory(business.getId(), null, null, null).getData();
 
     assertInventoryListEquals(inventoryItemList, inventory);
   }

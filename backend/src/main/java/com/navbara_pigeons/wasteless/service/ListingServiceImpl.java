@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -20,6 +21,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 /**
@@ -94,7 +96,7 @@ public class ListingServiceImpl implements ListingService {
    * @throws UserNotFoundException
    */
   @Override
-  public List<FullListingDto> getListings(long businessId, Integer pagStartIndex,
+  public PaginationDto<FullListingDto> getListings(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, String sortBy) throws BusinessNotFoundException, UserNotFoundException {
     Business business = businessService.getBusiness(businessId);
 
@@ -103,13 +105,13 @@ public class ListingServiceImpl implements ListingService {
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);
 
-    List<Listing> serverResults = listingDao.getListings(business, pagBuilder);
+    Pair<List<Listing>, Long> dataAndTotalCount = listingDao.getListings(business, pagBuilder);
 
     ArrayList<FullListingDto> listings = new ArrayList<>();
-    for (Listing listing : serverResults) {
+    for (Listing listing : dataAndTotalCount.getFirst()) {
       listings.add(new FullListingDto(listing, publicPathPrefix));
     }
 
-    return listings;
+    return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
 }

@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -28,16 +29,20 @@ public class ListingDaoHibernateImpl implements ListingDao {
    * Get a list of Listings for a specific Business.
    *
    * @param business The specific business to get the information from
-   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and paginating items
-   * @return A paginated and sorted list of Listings
+   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and
+   *     paginating items
+   * @return A paginated and sorted list of Listings and the total count of the entity (used for
+   *     client side pagination)
    */
   @Override
-  public List<Listing> getListings(Business business, PaginationBuilder pagBuilder) {
+  public Pair<List<Listing>, Long> getListings(Business business, PaginationBuilder pagBuilder) {
     Session currentSession = getSession();
-    TypedQuery<Listing> query = HibernateCriteriaQueryBuilder
-        .listPaginatedAndSortedBusinessListings(currentSession, business,
-            pagBuilder);
-    return query.getResultList();
+    TypedQuery<Listing> query =
+        HibernateCriteriaQueryBuilder.listPaginatedAndSortedBusinessListings(
+            currentSession, business, pagBuilder);
+    Long totalCount =
+        HibernateCriteriaQueryBuilder.getEntityCountQuery(currentSession, Listing.class);
+    return Pair.of(query.getResultList(), totalCount);
   }
 
   /**

@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
+import org.springframework.data.util.Pair;
 
 public interface InventoryDao {
 
@@ -12,5 +13,5 @@ public interface InventoryDao {
 
   InventoryItem getInventoryItem(long InventoryId) throws InventoryItemNotFoundException;
 
-  List<InventoryItem> getInventoryItems(Business business, PaginationBuilder pagBuilder);
+  Pair<List<InventoryItem>, Long> getInventoryItems(Business business, PaginationBuilder pagBuilder);
 }

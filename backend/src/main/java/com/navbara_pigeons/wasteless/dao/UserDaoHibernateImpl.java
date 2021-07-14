@@ -127,7 +127,8 @@ public class UserDaoHibernateImpl implements UserDao {
    * @param searchQuery Search query ( can include AND, OR's )
    * @param pagBuilder The Pagination Builder that holds this configurations for sorting and
    *     paginating items
-   * @return A paginated and sorted list of Users that match the search query
+   * @return A paginated and sorted list of Users and the total count of the entity (used for
+   *     client side pagination)
    */
   @Override
   public Pair<List<User>, Long> searchUsers(String searchQuery, PaginationBuilder pagBuilder)

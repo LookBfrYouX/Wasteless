@@ -4,9 +4,11 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
@@ -20,6 +22,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 /**
@@ -64,7 +67,7 @@ public class InventoryServiceImpl implements InventoryService {
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
-  public List<BasicInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
+  public PaginationDto<BasicInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, String sortBy)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, IllegalArgumentException {
 
@@ -79,13 +82,13 @@ public class InventoryServiceImpl implements InventoryService {
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);
 
-    List<InventoryItem> serverResults = inventoryDao.getInventoryItems(business, pagBuilder);
+    Pair<List<InventoryItem>, Long> dataAndTotalCount = inventoryDao.getInventoryItems(business, pagBuilder);
 
     ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
-    for (InventoryItem inventoryItem : serverResults) {
+    for (InventoryItem inventoryItem : dataAndTotalCount.getFirst()) {
       inventory.add(new BasicInventoryItemDto(inventoryItem, publicPathPrefix));
     }
-    return inventory;
+    return new PaginationDto<>(inventory, dataAndTotalCount.getSecond());
 
   }
 

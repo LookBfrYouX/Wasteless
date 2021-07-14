@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -32,15 +33,18 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
    *
    * @param business The specific business to get the information from
    * @param pagBuilder The Pagination Builder that holds this configurations for sorting and paginating items
-   * @return A paginated and sorted list of Inventory Items
+   * @return A paginated and sorted list of Inventory items and the total count of the entity (used for
+   *     client side pagination)
    */
   @Override
-  public List<InventoryItem> getInventoryItems(Business business, PaginationBuilder pagBuilder) {
+  public Pair<List<InventoryItem>, Long> getInventoryItems(Business business, PaginationBuilder pagBuilder) {
     Session currentSession = getSession();
     TypedQuery<InventoryItem> query =
         HibernateCriteriaQueryBuilder.listPaginatedAndSortedBusinessInventory(
             currentSession, business, pagBuilder);
-    return query.getResultList();
+    Long totalCount =
+        HibernateCriteriaQueryBuilder.getEntityCountQuery(currentSession, InventoryItem.class);
+    return Pair.of(query.getResultList(), totalCount);
   }
 
   /**

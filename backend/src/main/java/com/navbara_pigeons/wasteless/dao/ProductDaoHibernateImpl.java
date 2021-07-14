@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -35,14 +37,17 @@ public class ProductDaoHibernateImpl implements ProductDao {
    *
    * @param business The specific business to get the information from
    * @param pagBuilder The Pagination Builder that holds this configurations for sorting and paginating items
-   * @return A paginated and sorted list of Products
+   * @return A paginated and sorted list of Listings and the total count of the entity (used for
+   *     client side pagination)
    */
   @Override
-  public List<Product> getProducts(Business business, PaginationBuilder pagBuilder) {
+  public Pair<List<Product>, Long> getProducts(Business business, PaginationBuilder pagBuilder) {
     Session currentSession = getSession();
     TypedQuery<Product> query = HibernateCriteriaQueryBuilder
         .listPaginatedAndSortedBusinessProducts(currentSession, business, pagBuilder);
-    return query.getResultList();
+    Long totalCount =
+        HibernateCriteriaQueryBuilder.getEntityCountQuery(currentSession, Product.class);
+    return Pair.of(query.getResultList(), totalCount);
   }
 
   /**

@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
+import org.springframework.data.util.Pair;
 
 
 public interface ProductDao {
@@ -13,5 +14,5 @@ public interface ProductDao {
 
   Product getProduct(long productId) throws ProductNotFoundException;
 
-  List<Product> getProducts(Business business, PaginationBuilder pagBuilder);
+  Pair<List<Product>, Long> getProducts(Business business, PaginationBuilder pagBuilder);
 }
