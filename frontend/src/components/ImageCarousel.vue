@@ -13,12 +13,11 @@
     <div class="h-100 d-flex">
       <v-img
         :src="image.filename"
-        :lazy-src="image.thumbnailFilename"
         contain
       >
-      <!-- Lazy src loads the thumbnail first, then the full image later
-      Not sure it we should keep it - the thumbnail is square so it is a bit
-      jarring when it switches to the full image
+      <!-- lazy-src can be bound to thumbnailFilename,
+      but thumbnails are square so it is quite jarring when it switches from
+      the thumbnail to the full image. Hence, it is not being used
         -->
       </v-img>
     </div>
