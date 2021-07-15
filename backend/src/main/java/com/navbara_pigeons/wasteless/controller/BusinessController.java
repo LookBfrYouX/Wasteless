@@ -14,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This controller class provides the endpoints for dealing with businesses. All requests for
@@ -46,8 +48,8 @@ public class BusinessController {
    * @throws ResponseStatusException Unknown Error.
    */
   @PostMapping("/businesses")
-  public ResponseEntity<JSONObject> registerBusiness(@RequestBody CreateBusinessDto business)
-      throws UserNotFoundException, AddressValidationException, BusinessTypeException, BusinessRegistrationException {
+  public ResponseEntity<JSONObject> registerBusiness(@Valid @RequestBody CreateBusinessDto business)
+          throws UserNotFoundException, AddressValidationException, BusinessTypeException, BusinessRegistrationException {
     JSONObject businessId = businessService.saveBusiness(new Business(business));
     log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
     return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));
@@ -62,9 +64,9 @@ public class BusinessController {
    */
   @GetMapping("/businesses/{id}")
   public ResponseEntity<Object> getBusinessById(@PathVariable String id)
-      throws UserNotFoundException, BusinessNotFoundException {
+          throws UserNotFoundException, BusinessNotFoundException {
     log.info("GETTING BUSINESS BY ID: " + id);
     return new ResponseEntity<>(businessService.getBusinessById(Long.parseLong(id)),
-        HttpStatus.valueOf(200));
+            HttpStatus.valueOf(200));
   }
 }

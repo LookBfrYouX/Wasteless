@@ -14,6 +14,8 @@ import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.service.UserService;
 import javax.management.InvalidAttributeValueException;
+import javax.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +72,7 @@ public class UserController {
    * @throws ResponseStatusException HTTP 400, 409 exceptions.
    */
   @PostMapping("/users")
-  public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user)
+  public ResponseEntity<JSONObject> registerUser(@Valid @RequestBody CreateUserDto user)
       throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException, UserAuthenticationException {
     JSONObject createdUserId = userService.saveUser(new User(user));
     log.info("ACCOUNT CREATED SUCCESSFULLY: " + user.getEmail());

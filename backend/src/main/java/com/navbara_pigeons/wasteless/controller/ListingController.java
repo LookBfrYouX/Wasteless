@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
+
 /**
  * This controller class provides the endpoints for dealing with business listings
  */
@@ -44,7 +46,7 @@ public class ListingController {
    */
   @PostMapping("/businesses/{businessId}/listings")
   public ResponseEntity<JSONObject> addListing(@PathVariable long businessId,
-      @RequestBody CreateListingDto listingDto)
+      @Valid @RequestBody CreateListingDto listingDto)
       throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, ListingValidationException, InventoryItemNotFoundException {
 
     Long listingId = listingService

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
+
 /**
  * This controller class provides the endpoints for dealing with products. All requests for products
  * listed by businesses are received here.
@@ -66,7 +68,7 @@ public class ProductController {
    */
   @PostMapping("/businesses/{id}/products")
   public ResponseEntity<Object> addToCatalogue(@PathVariable long id,
-      @RequestBody BasicProductCreationDto product)
+      @Valid @RequestBody BasicProductCreationDto product)
       throws InsufficientPrivilegesException, ProductRegistrationException {
     JSONObject response = productService.addProduct(id, product);
     log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());

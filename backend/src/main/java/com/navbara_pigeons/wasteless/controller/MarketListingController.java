@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
+
 @Controller
 @Slf4j
 @RequestMapping("")
@@ -38,7 +40,7 @@ public class MarketListingController {
 
   @PostMapping("/cards")
   public ResponseEntity<JSONObject> addMarketListing(
-      @RequestBody CreateMarketListingDto createMarketListingDto)
+      @Valid @RequestBody CreateMarketListingDto createMarketListingDto)
       throws UserNotFoundException, UnhandledException {
     log.info("CREATING A CARD WITH TITLE: " + createMarketListingDto.getTitle());
     User creator = userService.getUserById(createMarketListingDto.getCreatorId());
