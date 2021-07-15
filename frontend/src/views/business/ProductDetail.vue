@@ -14,31 +14,7 @@
             <span class="material-icons mr-1">arrow_back</span>
             Back
           </button>
-        <v-carousel
-          class="my-2"
-          v-model=currentImage
-        >
-          <v-carousel-item
-            v-for="(image) in (productImages.length? productImages: [{
-              filename: require('@/../assets/images/default-product-thumbnail.svg') 
-            }])"
-            :key="image.id"
-          >
-          <!-- If there are no images, add the default image -->
-          <div class="h-100 d-flex">
-            <v-img
-              :src="image.filename"
-              :lazy-src="image.thumbnailFilename"
-              contain
-            >
-            <!-- Lazy src loads the thumbnail first, then the full image later
-            Not sure it we should keep it - the thumbnail is square so it is a bit
-            jarring when it switches to the full image
-             -->
-            </v-img>
-          </div>
-          </v-carousel-item>
-        </v-carousel>
+          <image-carousel :images="productImages"/>
           <div class="mt-2">{{ description }}</div>
           <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>
           <div class="mt-2">RRP: {{
@@ -48,10 +24,14 @@
         </div>
       </div>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-primary mr-0"
-                @click="editProductImages(productId)">
+        <router-link class="btn btn-primary mr-0"
+          :to="{ name: 'BusinessProductImagesEdit', params: {
+              businessId: this.businessId,
+              productId
+          }}"
+        >
           Edit product images
-        </button>
+        </router-link>
       </div>
     </div>
     <error-modal
@@ -66,23 +46,18 @@
     </error-modal>
   </div>
 </template>
-
-<style>
-.primary-image-wrapper img {
-  width: 100%;
-  border: #1ec996 solid 2px;
-}
-</style>
 <script>
 import ErrorModal from "@/components/ErrorModal.vue";
 
 import {ApiRequestError} from "@/ApiRequestError";
 import {Api} from "@/Api";
+import ImageCarousel from '../../components/ImageCarousel.vue';
 
 export default {
   name: "productDetail",
   components: {
     ErrorModal,
+    ImageCarousel,
   },
 
   data() {
@@ -92,7 +67,6 @@ export default {
       recommendedRetailPrice: null,
       created: "",
       productImages: [],
-      currentImage: null,
       apiErrorMessage: null,
       currency: null
     }
@@ -203,5 +177,4 @@ export default {
     }
   }
 }
-
 </script>
