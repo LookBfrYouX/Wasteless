@@ -1,6 +1,6 @@
 <template>
   <v-carousel
-    class="my-2"
+    class="my-2 image-carousel-container"
     v-model=currentImage
     :hide-delimiters="carouselImages.length < 2"
     :show-arrows="carouselImages.length >= 2"
@@ -25,6 +25,7 @@
   </v-carousel>
 </template>
 <script>
+// Pretty sure I can't use import for this since its an image
 const defaultImage = require("@/../assets/images/default-product-thumbnail.svg");
 
 export default {
@@ -63,8 +64,8 @@ export default {
 }
 </script>
 <style>
-/* Don't know why but this rule isn't in Vuetify already */
-.v-window__next {
+/* On Safari on macOS, I had to apply this rule manually, don't know why but this rule isn't in Vuetify already */
+.image-carousel-container .v-window__next {
   right: 0;
 }
 </style>

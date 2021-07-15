@@ -1,6 +1,6 @@
 <template>
   <div class="container my-4">
-    <div class="list-group-item card">
+    <div class="p-3 bg-white rounded">
       <div class="row">
         <div class="col-12">
           <div class="d-flex flex-wrap justify-content-between mb-2">
