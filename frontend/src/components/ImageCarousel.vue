@@ -4,6 +4,7 @@
     v-model=currentImage
     :hide-delimiters="carouselImages.length < 2"
     :show-arrows="carouselImages.length >= 2"
+    :key="carouselKey"
   >
     <v-carousel-item
       v-for="image in carouselImages"
@@ -45,7 +46,8 @@ export default {
 
   data() {
     return {
-      currentImage: null
+      currentImage: null,
+      carouselKey: 0
     }
   },
 
@@ -59,6 +61,21 @@ export default {
         filename: defaultImage,
         id: 1
       }];
+    }
+  },
+
+  watch: {
+    /**
+     * https://github.com/vuetifyjs/vuetify/issues/12949
+     * Order seems to be partially dependent on ID - from the issue, this
+     * occurs after the list of elements is updated, so use key to create a new 
+     * instance of carousel each time the image list is updated
+     * 
+     * To replicate the issue, upload a few images and pick the last image as the
+     * primary image (and remove this method)
+     */
+    images() {
+      this.carouselKey = (this.carouselKey + 1) % 2;
     }
   }
 }
