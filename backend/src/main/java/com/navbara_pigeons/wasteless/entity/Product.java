@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.navbara_pigeons.wasteless.dto.BasicImageDto;
+import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import java.time.ZonedDateTime;
@@ -98,6 +99,13 @@ public class Product {
         this.productImages.add(new Image(image));
       }
     }
+  }
+
+  public Product(BasicProductCreationDto product) {
+    this.name = product.getName();
+    this.description = product.getDescription();
+    this.manufacturer = product.getManufacturer();
+    this.recommendedRetailPrice = product.getRecommendedRetailPrice();
   }
 
   public Product() {

@@ -87,12 +87,6 @@ public class UserServiceImpl implements UserService {
   public JSONObject saveUser(User user)
       throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException, UserAuthenticationException {
     // Email validation
-    if (!UserServiceValidation.requiredFieldsNotEmpty(user)) {
-      throw new UserRegistrationException("Required user fields cannot be null");
-    }
-    if (!UserServiceValidation.isEmailValid(user.getEmail())) {
-      throw new UserRegistrationException("Invalid email");
-    }
     if (userDao.userExists(user.getEmail())) {
       throw new UserAlreadyExistsException("User already exists");
     }

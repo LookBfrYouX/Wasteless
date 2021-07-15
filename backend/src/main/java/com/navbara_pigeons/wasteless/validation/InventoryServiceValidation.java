@@ -5,24 +5,6 @@ import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import java.time.LocalDate;
 
 public class InventoryServiceValidation {
-
-  /**
-   * Checks if the required fields are not empty
-   *
-   * @param inventory item to validate
-   * @return true if the product is valid
-   */
-  public static void requiredFieldsNotEmpty(InventoryItem inventory)
-      throws InventoryRegistrationException {
-    if (inventory.getExpires() == null) {
-      throw new InventoryRegistrationException("Expiry date is empty");
-    } else if (inventory.getTotalPrice() == null) {
-      throw new InventoryRegistrationException("Total price is empty");
-    } else if (inventory.getPricePerItem() == null) {
-      throw new InventoryRegistrationException("Price per item is empty");
-    }
-  }
-
   /**
    * Checks if a date is after another. for checking the expiration is after current date.
    *
@@ -97,7 +79,6 @@ public class InventoryServiceValidation {
   public static void isInventoryItemValid(InventoryItem inventory)
       throws InventoryRegistrationException {
     LocalDate currentDate = LocalDate.now();
-    InventoryServiceValidation.requiredFieldsNotEmpty(inventory);
     InventoryServiceValidation.datesValid(inventory, currentDate);
     InventoryServiceValidation.priceValid(inventory.getPricePerItem());
     InventoryServiceValidation.quantityValid(inventory.getQuantity());

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
+
 /**
  * This controller class provides the endpoints for dealing with inventory items. All requests for
  * inventory items listed by businesses are received here.
@@ -53,7 +55,7 @@ public class InventoryController {
 
   @PostMapping("/businesses/{id}/inventory")
   public ResponseEntity<JSONObject> addToBusinessInventory(@PathVariable long id,
-      @RequestBody CreateInventoryItemDto inventoryDto)
+      @Valid @RequestBody CreateInventoryItemDto inventoryDto)
       throws InventoryRegistrationException, UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException {
     JSONObject response = new JSONObject();
     response.appendField("inventoryItemId", inventoryService.addInventoryItem(id, inventoryDto));

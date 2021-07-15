@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
+import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
@@ -70,7 +71,7 @@ public class ProductController {
   public ResponseEntity<Object> addToCatalogue(@PathVariable long id,
       @Valid @RequestBody BasicProductCreationDto product)
       throws InsufficientPrivilegesException, ProductRegistrationException {
-    JSONObject response = productService.addProduct(id, product);
+    JSONObject response = productService.addProduct(id, new Product(product));
     log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());
     return new ResponseEntity<>(response, HttpStatus.valueOf(201));
   }

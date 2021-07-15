@@ -17,7 +17,7 @@ public interface ProductService {
   List<BasicProductDto> getProducts(long businessId)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException;
 
-  JSONObject addProduct(long id, BasicProductCreationDto product)
+  JSONObject addProduct(long id, Product product)
       throws ProductRegistrationException,
       InsufficientPrivilegesException;
 

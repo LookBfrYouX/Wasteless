@@ -4,9 +4,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import lombok.Data;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 @Data
 public class CreateListingDto {
@@ -16,10 +14,14 @@ public class CreateListingDto {
   @NotNull(message = "Inventory Item Id cannot be Null")
   private long inventoryItemId;
 
+
   @NotNull(message = "Quantity cannot be Null")
+  @Min(message = "Quantity Has To Be Positive", value = 0)
   private long quantity;
 
+
   @NotNull(message = "Price cannot be Null")
+  @Min(message = "Quantity Has To Be Positive", value = 0)
   private Double price;
 
   @Max(message = "More Info has to be less than or equal to 50 Characters", value = 50)
