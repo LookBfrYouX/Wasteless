@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * Business DTO which returns all user details except catalog and administrators list
  */
@@ -15,10 +19,19 @@ import lombok.Data;
 public class FullBusinessDto {
 
   private long id;
+  @NotNull(message = "Primary Administrator Id cannot be Null")
   private long primaryAdministratorId;
+
+  @Max(message = "Name has to be less than or equal to 50 Characters", value = 50)
+  @NotBlank(message = "Name is Required")
   private String name;
+
+  @Max(message = "Description has to be less than or equal to 250 Characters", value = 250)
   private String description;
   private FullAddressDto address;
+
+  @NotNull(message = "Business Type is Required")
+  @Max(message = "Business Type has to be less than or equal to 50 Characters", value = 50)
   private String businessType;
   private ZonedDateTime created;
   private List<BasicUserDto> administrators;

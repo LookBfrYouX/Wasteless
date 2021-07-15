@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+
 /**
  * User DTO which does not return coarse address, email, date of birth and phone number
  */
@@ -15,10 +18,21 @@ import lombok.Data;
 public class BasicUserDto {
 
   private long id;
+
+  @NotBlank(message = "First Name is Required")
+  @Max(message = "First Name has to be less than or equal to 50 Characters", value = 50)
   private String firstName;
+
+  @NotBlank(message = "Last Name is Required")
+  @Max(message = "Last Name has to be less than or equal to 50 Characters", value = 50)
   private String lastName;
+
+  @Max(message = "Middle Name has to be less than or equal to 50 Characters", value = 50)
   private String middleName;
+
+  @Max(message = "Nickname has to be less than or equal to 50 Characters", value = 50)
   private String nickname;
+  @Max(message = "Bio has to be less than or equal to 250 Characters", value = 250)
   private String bio;
   private BasicAddressDto homeAddress;
   private ZonedDateTime created;

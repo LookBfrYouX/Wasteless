@@ -5,16 +5,22 @@ import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import java.time.LocalDate;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 public class CreateInventoryItemDto {
 
   private long productId;
+
+  @NotNull(message = "Quantity Cannot Be Null")
   private long quantity;
   private Double pricePerItem;
   private Double totalPrice;
   private LocalDate manufactured;
   private LocalDate sellBy;
   private LocalDate bestBefore;
+
+  @NotNull(message = "Expiry Date Cannot Be Null")
   private LocalDate expires;
 
   public CreateInventoryItemDto(InventoryItem inventoryItem) {

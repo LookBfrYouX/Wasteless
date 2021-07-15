@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * Product DTO which returns all product information except `currency` and `primaryProductImage`
  * (returned as the first element in the image list)
@@ -15,8 +19,15 @@ import lombok.Data;
 public class BasicProductDto {
 
   private long id;
+
+  @NotBlank(message = "Name is Required")
+  @Max(message = "Name has to be less than or equal to 100 Characters", value = 100)
   private String name;
+
+  @Max(message = "Description has to be less than or equal to 500 Characters", value = 500)
   private String description;
+
+  @Max(message = "Manufacturer has to be less than or equal to 100 Characters", value = 100)
   private String manufacturer;
   private Double recommendedRetailPrice;
   private ZonedDateTime created;

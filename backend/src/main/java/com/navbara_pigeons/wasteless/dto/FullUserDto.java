@@ -8,6 +8,12 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
+import org.hibernate.validator.constraints.UniqueElements;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * User DTO which returns all user information except password
@@ -16,16 +22,40 @@ import lombok.Data;
 public class FullUserDto {
 
   private long id;
+
+  @NotBlank(message = "First Name is Required")
+  @Max(message = "First Name has to be less than or equal to 50 Characters", value = 50)
   private String firstName;
+
+  @NotBlank(message = "Last Name is Required")
+  @Max(message = "Last Name has to be less than or equal to 50 Characters", value = 50)
   private String lastName;
+
+  @Max(message = "Middle Name has to be less than or equal to 50 Characters", value = 50)
   private String middleName;
+
+  @Max(message = "Nickname has to be less than or equal to 50 Characters", value = 50)
   private String nickname;
+
+  @Max(message = "Bio has to be less than or equal to 250 Characters", value = 250)
   private String bio;
+
+  @Email(message = "Email has to be Valid")
+  @UniqueElements(message = "Email has to be Unique")
+  @Max(message = "Email has to be less than or equal to 50 Characters", value = 50)
   private String email;
+
+  @NotNull(message = "Date Of Birth cannot be Null")
   private LocalDate dateOfBirth;
+
+  @Max(message = "Phone Number has to be less than or equal to 25 Characters", value = 25)
   private String phoneNumber;
   private FullAddressDto homeAddress;
+
+  //Calculated Value
   private ZonedDateTime created;
+
+  //Calculated Value
   private String role;
   @JsonProperty("businessesAdministered")
   private List<BasicBusinessDto> businesses;
