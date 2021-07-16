@@ -34,19 +34,6 @@ public class HibernateCriteriaQueryBuilder {
     return currentSession.createQuery(countQuery).getSingleResult();
   }
 
-  public static CriteriaQuery<MarketListing> parseListingQuery(
-      Session currentSession, String listingSection) {
-    // Create Builder
-    CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
-    CriteriaQuery<MarketListing> criteriaQuery = criteriaBuilder.createQuery(MarketListing.class);
-    // Setup
-    Root<MarketListing> root = criteriaQuery.from(MarketListing.class);
-    criteriaQuery.select(root);
-    // Create query - uses entity 'section'
-    criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("section"), listingSection));
-    return criteriaQuery;
-  }
-
   public static Query<Long> createTotalMarketListingsCountQuery(
       Session currentSession, String section) {
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
