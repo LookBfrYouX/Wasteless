@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
@@ -20,19 +21,20 @@ public class BasicUserDto {
   private long id;
 
   @NotBlank(message = "First Name is Required")
-  @Max(message = "First Name has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "First Name has to be less than or equal to 50 Characters")
   private String firstName;
 
   @NotBlank(message = "Last Name is Required")
-  @Max(message = "Last Name has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "Last Name has to be less than or equal to 50 Characters")
   private String lastName;
 
-  @Max(message = "Middle Name has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "Middle Name has to be less than or equal to 50 Characters")
   private String middleName;
 
-  @Max(message = "Nickname has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "Nick Name has to be less than or equal to 50 Characters")
   private String nickname;
-  @Max(message = "Bio has to be less than or equal to 250 Characters", value = 250)
+
+  @Length(max=50, message = "Bio has to be less than or equal to 250 Characters")
   private String bio;
   private BasicAddressDto homeAddress;
   private ZonedDateTime created;

@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.validation.constraints.Email;
@@ -24,31 +25,31 @@ public class FullUserDto {
   private long id;
 
   @NotBlank(message = "First Name is Required")
-  @Max(message = "First Name has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "First Name has to be less than or equal to 50 Characters")
   private String firstName;
 
   @NotBlank(message = "Last Name is Required")
-  @Max(message = "Last Name has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "Last Name has to be less than or equal to 50 Characters")
   private String lastName;
 
-  @Max(message = "Middle Name has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "Middle Name has to be less than or equal to 50 Characters")
   private String middleName;
 
-  @Max(message = "Nickname has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "Nickname has to be less than or equal to 50 Characters")
   private String nickname;
 
-  @Max(message = "Bio has to be less than or equal to 250 Characters", value = 250)
+  @Length(max=250, message = "Bio has to be less than or equal to 250 Characters")
   private String bio;
 
   @Email(message = "Email has to be Valid")
   @UniqueElements(message = "Email has to be Unique")
-  @Max(message = "Email has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "Email has to be less than or equal to 50 Characters")
   private String email;
 
   @NotNull(message = "Date Of Birth cannot be Null")
   private LocalDate dateOfBirth;
 
-  @Max(message = "Phone Number has to be less than or equal to 25 Characters", value = 25)
+  @Length(max=25, message = "Phone Number has to be less than or equal to 25 Characters")
   private String phoneNumber;
   private FullAddressDto homeAddress;
 

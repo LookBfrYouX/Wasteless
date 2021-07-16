@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import java.time.LocalDate;
 import lombok.Data;
 
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -12,7 +13,9 @@ public class BasicInventoryItemDto {
 
   private long id;
   private BasicProductDto product;
+
   @NotNull(message = "Quantity Cannot Be Null")
+  @DecimalMin(inclusive = false, value = "0", message = "Quantity has to be greater than 0")
   private long quantity;
   private Double pricePerItem;
   private Double totalPrice;

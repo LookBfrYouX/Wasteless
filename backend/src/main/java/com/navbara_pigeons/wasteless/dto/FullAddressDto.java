@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Address;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
@@ -12,25 +13,25 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class FullAddressDto {
 
-  @Max(message = "Street Number has to be less than or equal to 100 Characters", value = 100)
+  @Length(max=100, message = "Street Number has to be less than or equal to 100 Characters")
   private String streetNumber;
 
-  @Max(message = "Street Name has to be less than or equal to 200 Characters", value = 200)
+  @Length(max=200, message = "Street Name has to be less than or equal to 200 Characters")
   private String streetName;
 
-  @Max(message = "Suburb has to be less than or equal to 200 Characters", value = 200)
+  @Length(max=200, message = "Suburb has to be less than or equal to 200 Characters")
   private String suburb;
 
-  @Max(message = "Postcode has to be less than or equal to 30 Characters", value = 30)
+  @Length(max=30, message = "Postcode has to be less than or equal to 30 Characters")
   private String postcode;
 
-  @Max(message = "City has to be less than or equal to 200 Characters", value = 200)
+  @Length(max=200, message = "City has to be less than or equal to 200 Characters")
   private String city;
 
-  @Max(message = "Region has to be less than or equal to 200 Characters", value = 200)
+  @Length(max=200, message = "Region has to be less than or equal to 200 Characters")
   private String region;
 
-  @Max(message = "Country has to be less than or equal to 100 Characters", value = 100)
+  @Length(max=100, message = "Country has to be less than or equal to 100 Characters")
   @NotBlank(message = "Country is Required")
   private String country;
 

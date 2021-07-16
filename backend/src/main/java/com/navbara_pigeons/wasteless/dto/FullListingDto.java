@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.dto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import java.time.ZonedDateTime;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
@@ -19,7 +20,7 @@ public class FullListingDto {
   @NotNull(message = "Price cannot be Null")
   private Double price;
 
-  @Max(message = "More Info has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "More Info has to be less than or equal to 50 Characters")
   private String moreInfo;
   private ZonedDateTime created;
   private ZonedDateTime closes;

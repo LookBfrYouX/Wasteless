@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.dto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import java.time.ZonedDateTime;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
@@ -18,16 +19,16 @@ public class BasicBusinessDto {
   @NotNull(message = "Primary Administrator Id cannot be Null")
   private long primaryAdministratorId;
 
-  @Max(message = "Name has to be less than or equal to 50 Characters", value = 50)
   @NotBlank(message = "Name is Required")
+  @Length(max=50, message = "Name has to be less than or equal to 50 Characters")
   private String name;
 
-  @Max(message = "Description has to be less than or equal to 250 Characters", value = 250)
+  @Length(max=250, message = "Description has to be less than or equal to 250 Characters")
   private String description;
   private FullAddressDto address;
 
   @NotNull(message = "Business Type is Required")
-  @Max(message = "Business Type has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "Business Type has to be less than or equal to 50 Characters")
   private String businessType;
   private ZonedDateTime created;
 

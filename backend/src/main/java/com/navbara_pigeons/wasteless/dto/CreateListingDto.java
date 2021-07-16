@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.dto;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 
@@ -16,15 +17,15 @@ public class CreateListingDto {
 
 
   @NotNull(message = "Quantity cannot be Null")
-  @Min(message = "Quantity Has To Be Positive", value = 0)
+  @DecimalMin(inclusive = false, value = "0")
   private long quantity;
 
 
   @NotNull(message = "Price cannot be Null")
-  @Min(message = "Quantity Has To Be Positive", value = 0)
+  @Min(message = "Price Has To Be Positive", value = 0)
   private Double price;
 
-  @Max(message = "More Info has to be less than or equal to 50 Characters", value = 50)
+  @Length(max=50, message = "More Info has to be less than or equal to 50 Characters")
   private String moreInfo;
   private LocalDate created;
   private ZonedDateTime closes;

@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -22,13 +23,13 @@ public class BasicProductDto {
   private long id;
 
   @NotBlank(message = "Name is Required")
-  @Max(message = "Name has to be less than or equal to 100 Characters", value = 100)
+  @Length(max=100, message = "Name has to be less than or equal to 100 Characters")
   private String name;
 
-  @Max(message = "Description has to be less than or equal to 500 Characters", value = 500)
+  @Length(max=50, message = "Description has to be less than or equal to 500 Characters")
   private String description;
 
-  @Max(message = "Manufacturer has to be less than or equal to 100 Characters", value = 100)
+  @Length(max=100, message = "Manufacturer has to be less than or equal to 100 Characters")
   private String manufacturer;
 
   @Min(message = "Recommended Retail Price must be Positive", value = 0)

@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Address;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Max;
@@ -11,14 +12,14 @@ import javax.validation.constraints.Max;
 @Data
 public class BasicAddressDto {
 
-  @Max(message = "City has to be less than or equal to 200 Characters", value = 200)
+  @Length(max=200, message = "City has to be less than or equal to 100 Characters")
   private String city;
 
-  @Max(message = "Region has to be less than or equal to 200 Characters", value = 200)
+  @Length(max=200, message = "Region has to be less than or equal to 100 Characters")
   private String region;
 
-  @Max(message = "Country has to be less than or equal to 100 Characters", value = 100)
   @NotBlank(message = "Country is Required")
+  @Length(max=100, message = "Country has to be less than or equal to 100 Characters")
   private String country;
 
   public BasicAddressDto(Address address) {

@@ -2,10 +2,12 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Product;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * Product DTO which contains only information required when creating a product
@@ -14,13 +16,14 @@ import javax.validation.constraints.NotBlank;
 public class BasicProductCreationDto {
 
   @NotBlank(message = "Name is Required")
-  @Max(message = "Name has to be less than or equal to 100 Characters", value = 100)
+  @NotNull(message = "Name cannot be Null")
+  @Length(max=100, message = "Name has to be less than or equal to 100 Characters")
   private String name;
 
-  @Max(message = "Description has to be less than or equal to 500 Characters", value = 500)
+  @Length(max=500, message = "Description has to be less than or equal to 500 Characters")
   private String description;
 
-  @Max(message = "Manufacturer has to be less than or equal to 100 Characters", value = 100)
+  @Length(max=100, message = "Manufacturer has to be less than or equal to 100 Characters")
   private String manufacturer;
 
   @Min(message = "Recommended Retail Price must be Positive", value = 0)
