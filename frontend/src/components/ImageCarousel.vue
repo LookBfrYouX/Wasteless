@@ -1,7 +1,7 @@
 <template>
   <v-carousel
     class="my-2 image-carousel-container"
-    v-model=currentImage
+    v-model="currentImage"
     :hide-delimiters="carouselImages.length < 2"
     :show-arrows="carouselImages.length >= 2"
     :key="carouselKey"
@@ -25,8 +25,8 @@
   </v-carousel>
 </template>
 <script>
-// Pretty sure I can't use import for this since its an image
-const defaultImage = require("@/../assets/images/default-product-thumbnail.svg");
+// Importing image allows Vue to copy the file to /public on build
+import defaultImage from "@/../assets/images/default-product-thumbnail.svg";
 
 export default {
   name: "ImageCarousel",
