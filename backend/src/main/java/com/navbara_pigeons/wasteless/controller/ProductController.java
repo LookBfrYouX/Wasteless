@@ -11,18 +11,18 @@ import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller class provides the endpoints for dealing with products. All requests for products
  * listed by businesses are received here.
  */
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("")
 public class ProductController {
@@ -44,9 +44,9 @@ public class ProductController {
    *
    * @param id The business ID.
    * @return A list of products.
-   * @throws UserNotFoundException           Handled in ControllerExceptionHandler class.
+   * @throws UserNotFoundException Handled in ControllerExceptionHandler class.
    * @throws InsufficientPrivilegesException Handled in ControllerExceptionHandler class.
-   * @throws BusinessNotFoundException       Handled in ControllerExceptionHandler class.
+   * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/products")
   public ResponseEntity<Object> showBusinessCatalogue(@PathVariable long id)
@@ -58,19 +58,18 @@ public class ProductController {
   /**
    * This endpoint is to add a product to the catalog
    *
-   * @param id      The business ID.
+   * @param id The business ID.
    * @param product The product to be added.
    * @return A ResponseEntity.
    * @throws InsufficientPrivilegesException Handled in ControllerExceptionHandler class.
-   * @throws ProductRegistrationException    Handled in ControllerExceptionHandler class.
+   * @throws ProductRegistrationException Handled in ControllerExceptionHandler class.
    */
   @PostMapping("/businesses/{id}/products")
-  public ResponseEntity<Object> addToCatalogue(@PathVariable long id,
-      @RequestBody BasicProductCreationDto product)
+  public ResponseEntity<Object> addToCatalogue(
+      @PathVariable long id, @RequestBody BasicProductCreationDto product)
       throws InsufficientPrivilegesException, ProductRegistrationException {
     JSONObject response = productService.addProduct(id, product);
     log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());
     return new ResponseEntity<>(response, HttpStatus.valueOf(201));
   }
-
 }

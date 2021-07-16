@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,12 +27,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-/**
- * @author Maximilian Birzer, Dawson Berry, Alec Fox
- */
-@Controller
+/** @author Maximilian Birzer, Dawson Berry, Alec Fox */
+@RestController
 @Slf4j
 @RequestMapping("")
 public class UserController {
@@ -71,7 +69,8 @@ public class UserController {
    */
   @PostMapping("/users")
   public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user)
-      throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException, UserAuthenticationException {
+      throws UserNotFoundException, AddressValidationException, UserRegistrationException,
+          UserAlreadyExistsException, UserAuthenticationException {
     JSONObject createdUserId = userService.saveUser(new User(user));
     log.info("ACCOUNT CREATED SUCCESSFULLY: " + user.getEmail());
     return new ResponseEntity<>(createdUserId, HttpStatus.valueOf(201));
@@ -106,8 +105,7 @@ public class UserController {
   @GetMapping("/users/search")
   public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery)
       throws InvalidAttributeValueException {
-    return new ResponseEntity<>(this.userService.searchUsers(searchQuery),
-        HttpStatus.valueOf(200));
+    return new ResponseEntity<>(this.userService.searchUsers(searchQuery), HttpStatus.valueOf(200));
   }
 
   /**

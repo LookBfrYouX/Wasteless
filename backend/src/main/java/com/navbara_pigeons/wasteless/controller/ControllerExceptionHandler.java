@@ -176,7 +176,9 @@ public class ControllerExceptionHandler {
   }
 
   @ExceptionHandler(UserAuthenticationException.class)
-  @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Failed login attempt, email or password incorrect")
+  @ResponseStatus(
+      code = HttpStatus.BAD_REQUEST,
+      reason = "Failed login attempt, email or password incorrect")
   public void handleUserAuthenticationException(UserAuthenticationException exc) {
     log.error("FAILED LOGIN: 400 - " + exc.getMessage());
   }
@@ -187,7 +189,6 @@ public class ControllerExceptionHandler {
     exc.printStackTrace();
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
   }
-
 
   @ExceptionHandler(ListingValidationException.class)
   public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {

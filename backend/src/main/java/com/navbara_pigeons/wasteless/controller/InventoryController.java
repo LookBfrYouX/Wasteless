@@ -13,18 +13,18 @@ import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller class provides the endpoints for dealing with inventory items. All requests for
  * inventory items listed by businesses are received here.
  */
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("")
 public class InventoryController {
@@ -36,29 +36,33 @@ public class InventoryController {
     this.inventoryService = inventoryService;
   }
 
-
   /**
    * This endpoint retrieves a list of all products listed by a particular business (id).
    *
    * @param id The ID of the business whose inventory is to be displayed
    * @return response A JSONObject containing the information of all inventory items listed for the
-   * business.
+   *     business.
    */
   @GetMapping("/businesses/{id}/inventory")
   public ResponseEntity<Object> showBusinessInventory(@PathVariable long id)
-      throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException, BusinessNotFoundException {
+      throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException,
+          BusinessNotFoundException {
     log.info("RETRIEVED INVENTORY ITEMS FOR BUSINESS: " + id);
     return new ResponseEntity<>(this.inventoryService.getInventory(id), HttpStatus.valueOf(200));
   }
 
   @PostMapping("/businesses/{id}/inventory")
-  public ResponseEntity<JSONObject> addToBusinessInventory(@PathVariable long id,
-      @RequestBody CreateInventoryItemDto inventoryDto)
-      throws InventoryRegistrationException, UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException {
+  public ResponseEntity<JSONObject> addToBusinessInventory(
+      @PathVariable long id, @RequestBody CreateInventoryItemDto inventoryDto)
+      throws InventoryRegistrationException, UserNotFoundException, BusinessNotFoundException,
+          ProductNotFoundException, InsufficientPrivilegesException {
     JSONObject response = new JSONObject();
     response.appendField("inventoryItemId", inventoryService.addInventoryItem(id, inventoryDto));
-    log.info("ADDED NEW INVENTORY ITEM FOR PRODUCT id: " + inventoryDto.getProductId()
-        + " FOR BUSINESS: " + id);
+    log.info(
+        "ADDED NEW INVENTORY ITEM FOR PRODUCT id: "
+            + inventoryDto.getProductId()
+            + " FOR BUSINESS: "
+            + id);
     return new ResponseEntity<>(response, HttpStatus.valueOf(201));
   }
 }
