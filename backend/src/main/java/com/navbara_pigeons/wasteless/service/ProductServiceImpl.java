@@ -11,6 +11,7 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -64,8 +65,10 @@ public class ProductServiceImpl implements ProductService {
    * ProductDao given the business ID.
    *
    * @param businessId    The ID of the business whose products are to be retrieved.
-   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null
    * @param sortBy        Defines any product sorting needed and the direction (ascending or
    *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return productCatalogue A List<Product> of products that are in the business product
@@ -75,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
   @Override
   public PaginationDto<BasicProductDto> getProducts(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, String sortBy)
-      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
+      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InvalidPaginationInputException {
     if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
       throw new InsufficientPrivilegesException("You are not permitted to modify this business");
     }

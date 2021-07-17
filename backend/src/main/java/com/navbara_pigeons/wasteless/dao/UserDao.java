@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.dao;
 
 
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
@@ -21,7 +22,7 @@ public interface UserDao {
   boolean userExists(String email);
 
   List<User> searchUsers(String searchQuery)
-      throws InvalidAttributeValueException;
+      throws InvalidAttributeValueException, InvalidPaginationInputException;
 
   Pair<List<User>, Long> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
       throws InvalidAttributeValueException;

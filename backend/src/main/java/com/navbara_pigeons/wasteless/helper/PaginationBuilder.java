@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.helper;
 
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import java.lang.reflect.Field;
 import lombok.Getter;
 
@@ -26,7 +27,8 @@ public class PaginationBuilder {
    * @param entity           The class of entity that the Pagination/Sorting is for
    * @param defaultSortField A String value of the Java field name from the Entity class
    */
-  public PaginationBuilder(Class<?> entity, String defaultSortField) {
+  public PaginationBuilder(Class<?> entity, String defaultSortField)
+      throws InvalidPaginationInputException {
     this.entity = entity;
     // Use the parse method as it checks if the sort field exists in the entity
     if (defaultSortField != null) {
@@ -38,10 +40,11 @@ public class PaginationBuilder {
    * Parse a Sort By String from the Client.
    *
    * @param sortByString Defines the field to sort by and the direction (ascending or descending).
-   *     In the format "fieldName-<acs/desc>"
+   *                     In the format "fieldName-<acs/desc>"
    * @return The Pagination Builder Object, used for chaining methods
    */
-  public PaginationBuilder withSortByString(String sortByString) {
+  public PaginationBuilder withSortByString(String sortByString)
+      throws InvalidPaginationInputException {
     if (sortByString != null) {
       parseSortByString(sortByString);
     }
@@ -53,16 +56,18 @@ public class PaginationBuilder {
    *
    * @param pagStartIndex The Integer of the index of the first item to be returned
    * @return The Pagination Builder Object, used for chaining methods
-   * @throws IllegalArgumentException Invalid Pagination value, breaks rule startIndex <= endIndex
+   * @throws InvalidPaginationInputException Invalid Pagination value, breaks rule startIndex <=
+   *                                         endIndex
    */
   public PaginationBuilder withPagStartIndex(Integer pagStartIndex)
-      throws IllegalArgumentException {
+      throws InvalidPaginationInputException {
     if (pagStartIndex != null) {
       if (pagStartIndex < 0) {
-        throw new IllegalArgumentException("The pagination start index must be greater than zero");
+        throw new InvalidPaginationInputException(
+            "The pagination start index must be greater than zero");
       }
       if (this.pagEndIndex != null && pagStartIndex > this.pagEndIndex) {
-        throw new IllegalArgumentException(
+        throw new InvalidPaginationInputException(
             "The pagination start index must be smaller or equal to the pagination end index");
       }
       this.pagStartIndex = pagStartIndex;
@@ -75,12 +80,14 @@ public class PaginationBuilder {
    *
    * @param pagEndIndex The Integer of the index of the last item to be returned
    * @return The Pagination Builder Object, used for chaining methods
-   * @throws IllegalArgumentException Invalid Pagination value, breaks rule startIndex <= endIndex
+   * @throws InvalidPaginationInputException Invalid Pagination value, breaks rule startIndex <=
+   *                                         endIndex
    */
-  public PaginationBuilder withPagEndIndex(Integer pagEndIndex) throws IllegalArgumentException {
+  public PaginationBuilder withPagEndIndex(Integer pagEndIndex)
+      throws InvalidPaginationInputException {
     if (pagEndIndex != null) {
       if (this.pagStartIndex > pagEndIndex) {
-        throw new IllegalArgumentException(
+        throw new InvalidPaginationInputException(
             "The pagination start index must be smaller or equal to the pagination end index");
       }
       this.pagEndIndex = pagEndIndex;
@@ -94,7 +101,7 @@ public class PaginationBuilder {
    * @param sortField The new sort Field value
    * @return The Pagination Builder Object, used for chaining methods
    */
-  public PaginationBuilder withSortField(String sortField) {
+  public PaginationBuilder withSortField(String sortField) throws InvalidPaginationInputException {
     if (isValidFieldName(sortField)) {
       this.sortField = sortField;
     }
@@ -117,9 +124,9 @@ public class PaginationBuilder {
    *
    * @param fieldName The field name in question
    * @return True if the field name in in the entity, False if otherwise
-   * @throws IllegalArgumentException If the value is invalid
+   * @throws InvalidPaginationInputException If the value is invalid
    */
-  private boolean isValidFieldName(String fieldName) throws IllegalArgumentException {
+  private boolean isValidFieldName(String fieldName) throws InvalidPaginationInputException {
     boolean validField = false;
 
     for (Field field : entity.getDeclaredFields()) {
@@ -130,7 +137,7 @@ public class PaginationBuilder {
     }
 
     if (!validField) {
-      throw new IllegalArgumentException(
+      throw new InvalidPaginationInputException(
           "The passed in field to sort by does not exist in the "
               + entity.getName()
               + " class");
@@ -141,18 +148,17 @@ public class PaginationBuilder {
 
   /**
    * Parse a SortBy string sent from the client. Check that it is in the correct format and then set
-   * the sort field and its direction (sort ascending).
-   * Note: Any sort string that does not match "desc" will by default be Ascending
-   *
+   * the sort field and its direction (sort ascending). Note: Any sort string that does not match
+   * "desc" will by default be Ascending
    *
    * @param sortByString The SortBy string to parse
-   * @throws IllegalArgumentException SortBy string has an invalid format
+   * @throws InvalidPaginationInputException SortBy string has an invalid format
    */
-  private void parseSortByString(String sortByString) throws IllegalArgumentException {
+  private void parseSortByString(String sortByString) throws InvalidPaginationInputException {
     String[] splitSortBy = sortByString.split("-");
 
     if (splitSortBy.length != 2) {
-      throw new IllegalArgumentException(
+      throw new InvalidPaginationInputException(
           "SortByString must be in 'entityFieldName-<acs/desc>' format");
     }
 

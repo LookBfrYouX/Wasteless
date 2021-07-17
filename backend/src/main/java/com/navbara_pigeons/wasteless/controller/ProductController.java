@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.controller;
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.ProductService;
@@ -58,7 +59,7 @@ public class ProductController {
       @RequestParam(required = false) Integer pagStartIndex,
       @RequestParam(required = false) Integer pagEndIndex,
       @RequestParam(required = false) String sortBy)
-      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InvalidPaginationInputException {
     log.info("RETRIEVED PRODUCTS FOR BUSINESS: " + id);
     return new ResponseEntity<>(
         this.productService.getProducts(id, pagStartIndex, pagEndIndex, sortBy),

@@ -7,17 +7,18 @@ import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import java.util.List;
 import net.minidev.json.JSONObject;
 
 public interface ProductService {
 
-  PaginationDto<BasicProductDto> getProducts(long businessId, Integer pagStartIndex, Integer pagEndIndex,
+  PaginationDto<BasicProductDto> getProducts(long businessId, Integer pagStartIndex,
+      Integer pagEndIndex,
       String sortBy)
-      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException;
+      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InvalidPaginationInputException;
 
   JSONObject addProduct(long id, BasicProductCreationDto product)
       throws ProductRegistrationException,

@@ -7,6 +7,7 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -87,8 +88,10 @@ public class ListingServiceImpl implements ListingService {
    * Gets all listings for the given business
    *
    * @param businessId    id of business
-   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null
    * @param sortBy        Defines any listing sorting needed and the direction (ascending or
    *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return listings in no guaranteed order
@@ -97,7 +100,8 @@ public class ListingServiceImpl implements ListingService {
    */
   @Override
   public PaginationDto<FullListingDto> getListings(long businessId, Integer pagStartIndex,
-      Integer pagEndIndex, String sortBy) throws BusinessNotFoundException, UserNotFoundException {
+      Integer pagEndIndex, String sortBy)
+      throws BusinessNotFoundException, UserNotFoundException, InvalidPaginationInputException {
     Business business = businessService.getBusiness(businessId);
 
     String defaultSortField = Listing.class.getDeclaredFields()[0].getName();

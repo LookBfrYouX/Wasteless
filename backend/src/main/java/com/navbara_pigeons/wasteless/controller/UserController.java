@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
@@ -112,7 +113,7 @@ public class UserController {
       @RequestParam(required = false) Integer pagStartIndex,
       @RequestParam(required = false) Integer pagEndIndex,
       @RequestParam(required = false) String sortBy)
-      throws InvalidAttributeValueException, IllegalArgumentException {
+      throws InvalidAttributeValueException, InvalidPaginationInputException {
     return new ResponseEntity<>(
         this.userService.searchUsers(searchQuery, pagStartIndex, pagEndIndex, sortBy),
         HttpStatus.valueOf(200));

@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.ArrayList;
@@ -117,7 +118,8 @@ public class UserDaoHibernateImpl implements UserDao {
   }
 
   @Override
-  public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
+  public List<User> searchUsers(String searchQuery)
+      throws InvalidAttributeValueException, InvalidPaginationInputException {
     String defaultSortField = InventoryItem.class.getDeclaredFields()[0].getName();
     PaginationBuilder pagBuilder = new PaginationBuilder(User.class, defaultSortField);
     return searchUsers(searchQuery, pagBuilder).getFirst();

@@ -10,6 +10,7 @@ import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
@@ -70,7 +71,7 @@ public class InventoryServiceImpl implements InventoryService {
   @Override
   public PaginationDto<BasicInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, String sortBy)
-      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, IllegalArgumentException {
+      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, IllegalArgumentException, InvalidPaginationInputException {
 
     if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
       throw new InsufficientPrivilegesException("You are not permitted to modify this business");
