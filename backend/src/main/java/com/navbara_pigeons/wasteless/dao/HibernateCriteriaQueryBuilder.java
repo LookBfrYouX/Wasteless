@@ -45,7 +45,30 @@ public class HibernateCriteriaQueryBuilder {
     return currentSession.createQuery(countQuery);
   }
 
+  public static Query<Long> createTotalProductsCountQuery(
+      Session currentSession, Business business) {
+    CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+    CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+    Root<Business> businessRoot = countQuery.from(Business.class);
+    Join<Business, Product> productsCatalogue = businessRoot.join("productsCatalogue");
+    countQuery.where(criteriaBuilder.equal(businessRoot.get("id"), business.getId()));
+    countQuery.select(criteriaBuilder.count(productsCatalogue));
+
+    return currentSession.createQuery(countQuery);
+  }
+
   public static Query<Long> createTotalListingsCountQuery(
+      Session currentSession, Business business) {
+    CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+    CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+    Root<InventoryItem> inventoryItemRoot = countQuery.from(InventoryItem.class);
+    countQuery.where(criteriaBuilder.equal(inventoryItemRoot.get("business"), business));
+    countQuery.select(criteriaBuilder.count(inventoryItemRoot));
+
+    return currentSession.createQuery(countQuery);
+  }
+
+  public static Query<Long> createTotalInventoryCountQuery(
       Session currentSession, Business business) {
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);

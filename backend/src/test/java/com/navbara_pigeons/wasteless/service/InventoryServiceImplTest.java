@@ -15,7 +15,7 @@ import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
@@ -54,7 +54,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   public void getInventory_isBusinessAdmin()
-      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException {
+      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException, InvalidPaginationInputException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
@@ -107,7 +107,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   @Test
   @WithMockUser(authorities = {"ADMIN"})
   public void getInventory_isAdmin()
-      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException {
+      throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException, InvalidPaginationInputException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
