@@ -1,164 +1,160 @@
 <template>
-  <div class="container">
-    <div class="row mt-2">
-      <!--User profile image card-->
-      <div class="col-md-4 m-2 card">
+  <div class="container my-4">
+    <div class="profile-image-container card">
 
-        <img alt="Users profile image" class="my-3 rounded-circle"
-             src="@/../assets/images/default-user-thumbnail.svg">
-      </div>
-      <div class="col-md-7 m-2 card">
-        <div class="m-3">
-          <div class="d-flex align-items-center">
-            <!--Users name-->
-            <h2 class="mb-0 float-left">{{ userInfo.firstName }} {{ userInfo.middleName }}
-              {{ userInfo.lastName }}</h2>
-            <!--Location data-->
-            <div
-                v-if="userInfo.homeAddress && (userInfo.homeAddress.suburb || userInfo.homeAddress.city)"
-                class="d-flex align-items-center">
-              <span class="material-icons md-dark md-inactive ml-2">location_on</span>
-              <span class="text-muted">
-                {{
-                  [userInfo.homeAddress.suburb, userInfo.homeAddress.city].filter(Boolean).join(
-                      ', ')
-                }}
-              </span>
-            </div>
-
+      <img alt="Users profile image" class="my-3 rounded-circle"
+            src="@/../assets/images/default-user-thumbnail.svg">
+    </div>
+    <div class="user-info-container card">
+      <div class="m-3">
+        <div class="d-flex align-items-center">
+          <!--Users name-->
+          <h2 class="mb-0 float-left">{{ userInfo.firstName }} {{ userInfo.middleName }}
+            {{ userInfo.lastName }}</h2>
+          <!--Location data-->
+          <div
+              v-if="userInfo.homeAddress && (userInfo.homeAddress.suburb || userInfo.homeAddress.city)"
+              class="d-flex align-items-center">
+            <span class="material-icons md-dark md-inactive ml-2">location_on</span>
+            <span class="text-muted">
+              {{
+                [userInfo.homeAddress.suburb, userInfo.homeAddress.city].filter(Boolean).join(
+                    ', ')
+              }}
+            </span>
           </div>
 
-          <span class="text-muted">{{
-              userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : ''
-            }}</span>
-          <p>{{ userInfo.bio }}</p>
+        </div>
 
-          <br>
-          <div class="profile-buttons d-flex flex-wrap justify-content-center">
-            <button class="btn btn-white-bg-primary m-1 d-flex" disabled><span
-                class="material-icons mr-1">send</span>Send Message
-            </button>
-            <button
-                v-if="isAdmin && userInfo.role != 'ROLE_ADMIN'"
-                id="makeAdmin"
-                class="btn btn-white-bg-primary m-1 d-flex"
-                type="button"
-                @click="makeAdmin(userId)"
-            >
-              <span class="material-icons mr-1">person</span>
-              Make Admin
-            </button>
-            <button
-                v-if="isAdmin && userInfo.role == 'ROLE_ADMIN'"
-                id="revokeAdmin"
-                class="btn btn-white-bg-primary m-1 d-flex"
-                type="button"
-                @click="revokeAdmin(userId)"
-            >
-              <span class="material-icons mr-1">person</span>
-              Revoke Admin
-            </button>
-            <router-link
-                v-if="isAdmin"
-                :to="{ name: 'MarketplaceCardCreateAdmin', params: { userId: userInfo.id }}"
-                class="btn btn-white-bg-primary m-1 d-flex"
-            >
-              Create Marketplace Card
-            </router-link>
-            <router-link
-                v-if="isSignedIn && authUser.id === userInfo.id"
-                :to="{ name: 'BusinessCreate' }"
-                class="btn btn-white-bg-primary m-1 d-flex"
-                type="button"
-            >
-              <span class="material-icons mr-1">business</span>
-              Register Business
-            </router-link>
-          </div>
-          <div v-if="statusMessage.length > 0" class="row mt-2">
-            <div class="col">
-              <p class="alert alert-warning">{{ statusMessage }}</p>
-            </div>
+        <span class="text-muted">{{
+            userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : ''
+          }}</span>
+        <p>{{ userInfo.bio }}</p>
+
+        <br>
+        <div class="profile-buttons d-flex flex-wrap justify-content-center">
+          <button class="btn btn-white-bg-primary m-1 d-flex" disabled><span
+              class="material-icons mr-1">send</span>Send Message
+          </button>
+          <button
+              v-if="isAdmin && userInfo.role != 'ROLE_ADMIN'"
+              id="makeAdmin"
+              class="btn btn-white-bg-primary m-1 d-flex"
+              type="button"
+              @click="makeAdmin(userId)"
+          >
+            <span class="material-icons mr-1">person</span>
+            Make Admin
+          </button>
+          <button
+              v-if="isAdmin && userInfo.role == 'ROLE_ADMIN'"
+              id="revokeAdmin"
+              class="btn btn-white-bg-primary m-1 d-flex"
+              type="button"
+              @click="revokeAdmin(userId)"
+          >
+            <span class="material-icons mr-1">person</span>
+            Revoke Admin
+          </button>
+          <router-link
+              v-if="isAdmin"
+              :to="{ name: 'MarketplaceCardCreateAdmin', params: { userId: userInfo.id }}"
+              class="btn btn-white-bg-primary m-1 d-flex"
+          >
+            Create Marketplace Card
+          </router-link>
+          <router-link
+              v-if="isSignedIn && authUser.id === userInfo.id"
+              :to="{ name: 'BusinessCreate' }"
+              class="btn btn-white-bg-primary m-1 d-flex"
+              type="button"
+          >
+            <span class="material-icons mr-1">business</span>
+            Register Business
+          </router-link>
+        </div>
+        <div v-if="statusMessage.length > 0" class="row mt-2">
+          <div class="col">
+            <p class="alert alert-warning">{{ statusMessage }}</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-4 order-2 order-md-1 m-2 card">
-        <h5 class="text-muted mt-3">Businesses</h5>
-        <div
-            v-if="Array.isArray(userInfo.businessesAdministered) && userInfo.businessesAdministered.length !== 0">
-          <ul class="profile-business-info list-unstyled">
-            <li
-                v-for="(business, index) in userInfo.businessesAdministered"
-                :key="index"
-                class="list-group-item card text-wrap mb-2 border"
+        
+    <div class="card businesses-container overflow-auto">
+      <h5 class="text-muted mt-3">Businesses</h5>
+      <div
+          v-if="Array.isArray(userInfo.businessesAdministered) && userInfo.businessesAdministered.length !== 0">
+        <ul class="profile-business-info list-unstyled">
+          <li
+              v-for="(business, index) in userInfo.businessesAdministered"
+              :key="index"
+              class="list-group-item card text-wrap mb-2 border"
+          >
+            <router-link
+                :to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
+                class="text-reset text-decoration-none"
             >
-              <router-link
-                  :to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
-                  class="text-reset text-decoration-none"
-              >
-                <h5 class="business-name card-title card-link">{{ business.name }}</h5>
-              </router-link>
-              <h6 class="card-subtitle mb-2 text-muted">
-                {{ business.businessType }}
-              </h6>
-              <p class="card-text">{{ business.description }}</p>
-            </li>
-          </ul>
-        </div>
-        <div v-else>
-          No businesses
-        </div>
-      </div>
-      <div class="col-md-7 order-1 order-md-2 m-2 card">
-        <ul class="nav nav-tabs mt-2">
-          <li class="nav-item">
-            <a aria-current="page" class="nav-link active">Details</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled">Future Tab</a>
+              <h5 class="business-name card-title card-link">{{ business.name }}</h5>
+            </router-link>
+            <h6 class="card-subtitle mb-2 text-muted">
+              {{ business.businessType }}
+            </h6>
+            <p class="card-text">{{ business.description }}</p>
           </li>
         </ul>
-        <div class="m-md-4">
-          <table class="table table-hover">
-            <tbody>
-            <tr>
-              <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
-            </tr>
-            <tr v-if="userInfo.nickname" scope="row">
-              <th class="pl-0 pl-md-2">Nickname:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
-            </tr>
-            <tr scope="row">
-              <th class="pl-0 pl-md-2">Member since:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ this.$helper.memberSinceText(userInfo.created) }}</p></td>
-            </tr>
-            <tr v-if="dateOfBirthText" scope="row">
-              <th class="pl-0 pl-md-2">Date of Birth:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
-            </tr>
-            <tr>
-              <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
-              </td>
-            </tr>
-            <tr v-if="userInfo.email" scope="row">
-              <th class="pl-0 pl-md-2">Email Address:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
-            </tr>
-            <tr v-if="userInfo.phoneNumber" scope="row">
-              <th class="pl-0 pl-md-2">Phone Number:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
-            </tr>
-            <tr v-if="userInfo.homeAddress" scope="row">
-              <th class="pl-0 pl-md-2">Address:</th>
-              <td class="pr-0 pr-md-2 col-md value">
-                <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
+      </div>
+      <div v-else>
+        No businesses
+      </div>
+    </div>
+    <div class="card user-details-container">
+      <ul class="nav nav-tabs mt-2">
+        <li class="nav-item">
+          <a aria-current="page" class="nav-link active">Details</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled">Future Tab</a>
+        </li>
+      </ul>
+      <div class="m-md-4">
+        <table class="table table-hover">
+          <tbody>
+          <tr>
+            <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
+          </tr>
+          <tr v-if="userInfo.nickname" scope="row">
+            <th class="pl-0 pl-md-2">Nickname:</th>
+            <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
+          </tr>
+          <tr scope="row">
+            <th class="pl-0 pl-md-2">Member since:</th>
+            <td class="pr-0 pr-md-2 col-md value"><p>{{ this.$helper.memberSinceText(userInfo.created) }}</p></td>
+          </tr>
+          <tr v-if="dateOfBirthText" scope="row">
+            <th class="pl-0 pl-md-2">Date of Birth:</th>
+            <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
+          </tr>
+          <tr>
+            <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
+            </td>
+          </tr>
+          <tr v-if="userInfo.email" scope="row">
+            <th class="pl-0 pl-md-2">Email Address:</th>
+            <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
+          </tr>
+          <tr v-if="userInfo.phoneNumber" scope="row">
+            <th class="pl-0 pl-md-2">Phone Number:</th>
+            <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
+          </tr>
+          <tr v-if="userInfo.homeAddress" scope="row">
+            <th class="pl-0 pl-md-2">Address:</th>
+            <td class="pr-0 pr-md-2 col-md value">
+              <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <error-modal
@@ -178,6 +174,22 @@
 .business-name:hover {
   cursor: pointer;
   color: #1ec996;
+}
+
+/* Using CSS Grid instead of standard bootstrap as we need to 
+limit the height of the businesses administered list. Height of the 
+businesses and user details container need to be equal, so thought this
+would be the easiest option
+*/
+.container {
+  display: grid;
+  grid-template-rows: auto minmax(100px, 500px);
+  grid-template-columns: 4fr 8fr;
+  grid-gap: 1rem;
+}
+
+.container > div {
+  padding: 1rem;
 }
 
 th {
@@ -275,12 +287,49 @@ export default {
      * Returns the promise, not the response
      */
     callApi: function (userId) {
-      if (typeof userId != "number" || isNaN(userId)) {
-        const err = new ApiRequestError(
-            "Cannot load profile page (no profile given). You may need to log in");
-        return Promise.reject(err);
+    const testActingAs = (shortName = false, numBusinesses = 20, isAdmin = true) => {
+      const user = {
+        id: userId,
+        firstName: shortName? "FN": "A-Very-Long-First-Name",
+        middleName: shortName? "MN": "Ulysses-Archibald",
+        lastName: shortName? "LN": "A-Very-Long-Last-Name",
+        role: isAdmin? "ROLE_ADMIN": "ROLE_USER",
+        businessesAdministered: [],
+        homeAddress: {
+          streetNumber: "10",
+          streetName: "Downing Street",
+          suburb: "Covent Garden",
+          postcode: "SW1A 2AB",
+          city: "London",
+          region: "England",
+          country: "United Kingdom"
+        },
+        created: "1970-01-01T00:00:00Z",
+        dateOfBirth: "2000-12-31T23:59:59Z",
+        email: "email@email.com"
+      };
+
+      for (let i = 0; i < numBusinesses; i++) {
+        user.businessesAdministered.push({
+          id: i,
+          primaryAdministrator: 1,
+          name: shortName? `B${i}`: `The Very Good Business, Business Number #${i}`,
+          businessType: "Retail",
+          description: "This is a description of the business.\n\nA new line!"
+        });
       }
-      return Api.profile(userId);
+      return user;
+    }
+    console.log(ApiRequestError);
+    return Promise.resolve({
+      data: testActingAs(false)
+    });
+      // if (typeof userId != "number" || isNaN(userId)) {
+      //   const err = new jpiRequestError(
+      //       "Cannot load profile page (no profile given). You may need to log in");
+      //   return Promise.reject(err);
+      // }
+      // return Api.profile(userId);
     },
 
     /**
