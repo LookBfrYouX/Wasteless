@@ -17,12 +17,7 @@
                 class="d-flex align-items-center">
               <span class="material-icons md-dark md-inactive ml-2">location_on</span>
               <span class="text-muted">
-                {{ $helper.addressToString({
-                    suburb: userInfo.homeAddress.suburb,
-                    city: userInfo.homeAddress.city,
-                    region: userInfo.homeAddress.region,
-                    country: userInfo.homeAddress.country
-                }) }}
+                {{ $helper.addressToString(userInfo.homeAddress, true) }}
               </span>
             </div>
 
