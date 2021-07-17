@@ -1,36 +1,23 @@
 <template>
-  <div class="w-100">
-    <sorted-paginated-item-list
-        :currentSortOption.sync="currentSortOption"
-        :items="products"
-        :sortOptions="sortOptions"
-    >
-      <template v-slot:title>
-        <h2>Product Catalogue {{ businessName ? `for ${businessName}` : "" }}</h2>
-      </template>
-      <template v-slot:right-button>
+  <div class="w-100 col-12 col-md-8 col-lg-6">
+    <div>
+      Displaying page {{ this.page }} out of
+      {{ this.totalPages }}
+    </div>
+    <ul class="list-unstyled">
+      <li v-for="product in products" :key="product.id">
         <router-link
-            :to="{name: 'BusinessProductCreate', params: { businessId }}"
-            class="btn btn-info"
-        >
-          Create Product
-        </router-link>
-      </template>
-      <template v-slot:item="slotProps">
-        <router-link
-            :to="{ name: 'BusinessProductDetail', params: { businessId, productId: slotProps.item.id }}"
+            :to="{ name: 'BusinessProductDetail', params: { businessId, productId: product.id }}"
             class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-2 p-3 rounded"
         >
           <product-catalogue-list-item
               :currency="currency"
-              :product="slotProps.item"
+              :product="product"
           />
         </router-link>
-      </template>
-      <template v-slot:no-items>
-        <p>No products found. Why not add one?</p>
-      </template>
-    </sorted-paginated-item-list>
+      </li>
+    </ul>
+    <v-pagination v-model="page" :length="6" />
     <error-modal
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
@@ -45,32 +32,16 @@
 </template>
 <script>
 import ErrorModal from "@/components/ErrorModal.vue";
-import SortedPaginatedItemList from "@/components/SortedPaginatedItemList";
 import ProductCatalogueListItem from "@/components/cards/ProductCatalogueCard";
 
-import {helper} from "@/helper";
 import {Api} from "@/Api";
 
-// Sort options need to be in [{name, sortMethod}] format but since product is a simple object, it has been put in a more compact and easier to edit form and then immediately mapped to the required format
-const sortOptions = Object.entries({
-  id: 'Product Code',
-  name: 'Name',
-  manufacturer: 'Manufacturer',
-  recommendedRetailPrice: 'RRP',
-  created: 'Date Created',
-  // Dates can be sorted as strings in ISO8601 format
-  description: 'Description'
-}).map(([key, name]) => ({
-  name,
-  sortMethod: helper.sensibleSorter(key)
-}));
 
 export default {
   name: "ProductCatalogue",
   components: {
     ErrorModal,
-    SortedPaginatedItemList,
-    ProductCatalogueListItem
+    ProductCatalogueListItem,
   },
 
   props: {
@@ -82,11 +53,10 @@ export default {
 
   data() {
     return {
+      page: 1,
+      totalPages: 10,
       products: [],
       currency: null,
-      sortOptions,
-      // use first sort option as default
-      currentSortOption: {...sortOptions[0], reversed: false},
       apiErrorMessage: null,
       businessName: null
     }
@@ -142,7 +112,6 @@ export default {
         this.apiErrorMessage = err.userFacingErrorMessage;
         return false;
       }
-
       return true;
     },
 
