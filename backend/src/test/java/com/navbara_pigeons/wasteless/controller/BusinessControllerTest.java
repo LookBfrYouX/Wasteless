@@ -13,8 +13,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 
 public class BusinessControllerTest extends ControllerTestProvider {
 
-  long RANDOMUSERID = 1;
-  long DNB36USERID = 3;
+  long RANDOMUSERID = 2;
 
   @Test
   @WithUserDetails(value = "amf133@uclive.ac.nz")

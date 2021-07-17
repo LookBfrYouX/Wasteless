@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import lombok.extern.slf4j.Slf4j;
@@ -73,13 +74,15 @@ public class BusinessController {
    * Add a specific user to the list of administrators for a business
    *
    * @param businessId unique identifier of the business being searched for
-   * @param userId the id of the user to add to the list of admins
+   * @param userId     the id of the user to add to the list of admins
    */
   @PutMapping("/businesses/{businessId}/makeAdministrator")
   public ResponseEntity<String> addBusinessAdmin(@PathVariable String businessId,
-      @RequestBody String userId) {
+      @RequestBody String userId)
+      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
     log.info("ADDING USER WITH ID " + userId + " AS ADMIN TO BUSINESS WITH ID: " + businessId);
     businessService.addBusinessAdmin(Long.parseLong(businessId), Long.parseLong(userId));
-    return new ResponseEntity<>("Individual added as an administrator successfully", HttpStatus.valueOf(200));
+    return new ResponseEntity<>("Individual added as an administrator successfully",
+        HttpStatus.valueOf(200));
   }
 }
