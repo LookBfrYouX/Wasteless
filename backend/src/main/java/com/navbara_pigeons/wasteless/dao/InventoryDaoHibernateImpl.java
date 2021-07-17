@@ -4,14 +4,13 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import java.util.List;
 
 @Service
 public class InventoryDaoHibernateImpl implements InventoryDao {
@@ -31,19 +30,22 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
    * Gets a list of the inventory items for a specific business. Also returns results in a paginated
    * form which is configured from the Pagination Builder.
    *
-   * @param business The specific business to get the information from
-   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and paginating items
-   * @return A paginated and sorted list of Inventory items and the total count of the entity (used for
-   *     client side pagination)
+   * @param business   The specific business to get the information from
+   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and
+   *                   paginating items
+   * @return A paginated and sorted list of Inventory items and the total count of the entity (used
+   * for client side pagination)
    */
   @Override
-  public Pair<List<InventoryItem>, Long> getInventoryItems(Business business, PaginationBuilder pagBuilder) {
+  public Pair<List<InventoryItem>, Long> getInventoryItems(Business business,
+      PaginationBuilder pagBuilder) {
     Session currentSession = getSession();
     TypedQuery<InventoryItem> query =
         HibernateCriteriaQueryBuilder.listPaginatedAndSortedBusinessInventory(
             currentSession, business, pagBuilder);
     Long totalCount =
-        HibernateCriteriaQueryBuilder.getEntityCountQuery(currentSession, InventoryItem.class);
+        HibernateCriteriaQueryBuilder.createTotalListingsCountQuery(currentSession, business)
+            .getSingleResult();
     return Pair.of(query.getResultList(), totalCount);
   }
 

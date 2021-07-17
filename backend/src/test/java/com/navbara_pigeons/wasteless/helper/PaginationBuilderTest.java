@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.helper;
 
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -14,11 +15,13 @@ public class PaginationBuilderTest {
     String defaultSortField = "firstName";
 
     // Act
-    PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField);
+    Assertions.assertDoesNotThrow(() -> {
+      PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField);
 
-    // Assert
-    Assertions.assertEquals(entity, paginationBuilder.getEntity());
-    Assertions.assertEquals(defaultSortField, paginationBuilder.getSortField());
+      // Assert
+      Assertions.assertEquals(entity, paginationBuilder.getEntity());
+      Assertions.assertEquals(defaultSortField, paginationBuilder.getSortField());
+    });
   }
 
   @Test
@@ -28,7 +31,7 @@ public class PaginationBuilderTest {
     String defaultSortField = "nonExistingField";
 
     // Act & Assert
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    Assertions.assertThrows(InvalidPaginationInputException.class, () -> {
       new PaginationBuilder(entity, defaultSortField);
     });
   }
@@ -42,9 +45,14 @@ public class PaginationBuilderTest {
     Integer pagEndIndex = 0;
 
     // Act
-    PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField)
-        .withPagStartIndex(pagStartIndex)
-        .withPagEndIndex(pagEndIndex);
+    PaginationBuilder paginationBuilder = null;
+    try {
+      paginationBuilder = new PaginationBuilder(entity, defaultSortField)
+          .withPagStartIndex(pagStartIndex)
+          .withPagEndIndex(pagEndIndex);
+    } catch (InvalidPaginationInputException e) {
+      e.printStackTrace();
+    }
 
     // Assert
     Assertions.assertEquals(pagStartIndex, paginationBuilder.getPagStartIndex());
@@ -63,7 +71,12 @@ public class PaginationBuilderTest {
     Integer defaultPagEndIndex = null;
 
     // Act
-    PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField);
+    PaginationBuilder paginationBuilder = null;
+    try {
+      paginationBuilder = new PaginationBuilder(entity, defaultSortField);
+    } catch (InvalidPaginationInputException e) {
+      e.printStackTrace();
+    }
 
     // Assert
     Assertions.assertEquals(defaultSortAscending, paginationBuilder.isSortAscending());
@@ -80,12 +93,18 @@ public class PaginationBuilderTest {
     Integer pagEndIndex = pagStartIndex - 1;
 
     // Act
-    PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField)
-            .withPagStartIndex(pagStartIndex);
+    PaginationBuilder paginationBuilder = null;
+    try {
+      paginationBuilder = new PaginationBuilder(entity, defaultSortField)
+          .withPagStartIndex(pagStartIndex);
+    } catch (InvalidPaginationInputException e) {
+      e.printStackTrace();
+    }
 
     // Assert
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      paginationBuilder.withPagEndIndex(pagEndIndex);
+    PaginationBuilder finalPaginationBuilder = paginationBuilder;
+    Assertions.assertThrows(InvalidPaginationInputException.class, () -> {
+      finalPaginationBuilder.withPagEndIndex(pagEndIndex);
     });
   }
 
@@ -95,11 +114,20 @@ public class PaginationBuilderTest {
     Class<User> entity = User.class;
     String defaultSortField = "firstName";
     String newValidSortField = "lastName";
-    PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField);
+    PaginationBuilder paginationBuilder = null;
+    try {
+      paginationBuilder = new PaginationBuilder(entity, defaultSortField);
+    } catch (InvalidPaginationInputException e) {
+      e.printStackTrace();
+    }
 
     // Act & Assert
     Assertions.assertEquals(defaultSortField, paginationBuilder.getSortField());
-    paginationBuilder.withSortField(newValidSortField);
+    try {
+      paginationBuilder.withSortField(newValidSortField);
+    } catch (InvalidPaginationInputException e) {
+      e.printStackTrace();
+    }
     Assertions.assertEquals(newValidSortField, paginationBuilder.getSortField());
   }
 
@@ -109,12 +137,18 @@ public class PaginationBuilderTest {
     Class<User> entity = User.class;
     String defaultSortField = "firstName";
     String newInvalidSortField = "nonExistingField";
-    PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField);
+    PaginationBuilder paginationBuilder = null;
+    try {
+      paginationBuilder = new PaginationBuilder(entity, defaultSortField);
+    } catch (InvalidPaginationInputException e) {
+      e.printStackTrace();
+    }
 
     // Act & Assert
     Assertions.assertEquals(defaultSortField, paginationBuilder.getSortField());
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      paginationBuilder.withSortField(newInvalidSortField);
+    PaginationBuilder finalPaginationBuilder = paginationBuilder;
+    Assertions.assertThrows(InvalidPaginationInputException.class, () -> {
+      finalPaginationBuilder.withSortField(newInvalidSortField);
     });
   }
 
@@ -126,8 +160,13 @@ public class PaginationBuilderTest {
     Boolean newValidSortAscending = false;
 
     // Act
-    PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField)
-            .withSortAscending(newValidSortAscending);
+    PaginationBuilder paginationBuilder = null;
+    try {
+      paginationBuilder = new PaginationBuilder(entity, defaultSortField)
+          .withSortAscending(newValidSortAscending);
+    } catch (InvalidPaginationInputException e) {
+      e.printStackTrace();
+    }
 
     // Assert
     Assertions.assertEquals(newValidSortAscending, paginationBuilder.isSortAscending());

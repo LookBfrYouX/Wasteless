@@ -1,9 +1,11 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -156,7 +158,7 @@ class UserDaoHibernateImplTest {
       assertEquals(results4.size(), 1);
       assertEquals(results4.get(0).getId(), testUser2.getId());
       assertEquals(results4.get(0).getEmail(), testUser2.getEmail());
-    } catch (InvalidAttributeValueException e) {
+    } catch (InvalidAttributeValueException | InvalidPaginationInputException e) {
       e.printStackTrace();
     }
   }
@@ -199,7 +201,7 @@ class UserDaoHibernateImplTest {
       assertEquals(userToSearch.getId(), validLnameQuery.get(0).getId());
       assertEquals(userToSearch.getId(), validNnameQuery.get(0).getId());
       assertEquals(userToSearch.getId(), validFullNameQuery.get(0).getId());
-    } catch (InvalidAttributeValueException e) {
+    } catch (InvalidAttributeValueException | InvalidPaginationInputException e) {
       e.printStackTrace();
     }
   }
@@ -248,7 +250,7 @@ class UserDaoHibernateImplTest {
       assertEquals(expectedResult, invalidLnameQuery);
       assertEquals(expectedResult, invalidNnameQuery);
       assertEquals(expectedResult, invalidFullNameQuery);
-    } catch (InvalidAttributeValueException e) {
+    } catch (InvalidAttributeValueException | InvalidPaginationInputException e) {
       e.printStackTrace();
     }
   }

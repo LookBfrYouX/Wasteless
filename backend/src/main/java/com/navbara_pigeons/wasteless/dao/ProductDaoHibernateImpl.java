@@ -31,13 +31,14 @@ public class ProductDaoHibernateImpl implements ProductDao {
   }
 
   /**
-   * Gets a list of the products for a specific business. Also returns results in a paginated
-   * form which is configured from the Pagination Builder.
+   * Gets a list of the products for a specific business. Also returns results in a paginated form
+   * which is configured from the Pagination Builder.
    *
-   * @param business The specific business to get the information from
-   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and paginating items
+   * @param business   The specific business to get the information from
+   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and
+   *                   paginating items
    * @return A paginated and sorted list of Listings and the total count of the entity (used for
-   *     client side pagination)
+   * client side pagination)
    */
   @Override
   public Pair<List<Product>, Long> getProducts(Business business, PaginationBuilder pagBuilder) {
@@ -45,7 +46,8 @@ public class ProductDaoHibernateImpl implements ProductDao {
     TypedQuery<Product> query = HibernateCriteriaQueryBuilder
         .listPaginatedAndSortedBusinessProducts(currentSession, business, pagBuilder);
     Long businessProductsCount =
-        HibernateCriteriaQueryBuilder.getEntityCountQuery(currentSession, Product.class);
+        HibernateCriteriaQueryBuilder.createTotalProductsCountQuery(currentSession, business)
+            .getSingleResult();
     return Pair.of(query.getResultList(), businessProductsCount);
   }
 
