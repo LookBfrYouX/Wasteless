@@ -94,7 +94,7 @@
               v-model="moreInfo"
               :disabled="price === 0"
               class="form-control"
-              maxlength="200"
+              maxlength="50"
               name="moreInfo"
               placeholder="Extra information about the price"
               rows="4"
