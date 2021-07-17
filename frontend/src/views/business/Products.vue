@@ -104,7 +104,11 @@ export default {
       }
 
       try {
-        this.products = (await Api.getProducts(this.businessId)).data;
+        const response = (await Api.getProducts(this.businessId)).data;
+        this.products = response.results;
+        this.totalResults = response.totalCount;
+        //console.log(this.products);
+        console.log(this.totalResults);
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
