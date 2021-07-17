@@ -168,7 +168,7 @@ public class BusinessServiceImpl implements BusinessService {
    * @throws BusinessNotFoundException The business does not exist
    * @throws UserNotFoundException     The user does not exist
    */
-  public boolean isBusinessPrimaryAdmin(long businessId)
+  private boolean isBusinessPrimaryAdmin(long businessId)
       throws BusinessNotFoundException, UserNotFoundException {
     Business business = this.businessDao.getBusinessById(businessId);
     User authUser = this.userService.getLoggedInUser();
