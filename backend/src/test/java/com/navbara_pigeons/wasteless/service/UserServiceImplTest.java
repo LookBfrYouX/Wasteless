@@ -84,18 +84,6 @@ public class UserServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  public void saveUser_invalidPassword() {
-    String[] testValues = {"pwrd", "", "password",
-        "passw rd", "pasWrd", "passwoRd", "passwo8d",
-        "PASSW8RD"};
-    User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    for (String testValue : testValues) {
-      user.setPassword(testValue);
-      assertThrows(UserRegistrationException.class, () -> userService.saveUser(user));
-    }
-  }
-
-  @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   public void getUserById_self() throws UserNotFoundException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
