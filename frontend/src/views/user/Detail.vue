@@ -1,160 +1,165 @@
 <template>
   <div class="container my-4">
-    <div class="profile-image-container card">
+    <div class="w-100 grid-container">
+      <div class="profile-image-container card">
+        <img alt="User's profile image" class="my-3 rounded-circle"
+              src="@/../assets/images/default-user-thumbnail.svg">
+      </div>
+      <div class="user-info-container card p-3">
+        <div class="m-3">
+          <div class="d-flex align-items-center flex-column flex-sm-row">
+            <!--Users name-->
+            <h2 class="mb-0 float-left">{{ userInfo.firstName }} {{ userInfo.middleName }}
+              {{ userInfo.lastName }}</h2>
+            <!--Location data-->
+            <div
+                v-if="userInfo.homeAddress && (userInfo.homeAddress.suburb || userInfo.homeAddress.city)"
+                class="d-flex align-items-center">
+              <span class="material-icons md-dark md-inactive ml-2">location_on</span>
+              <span class="text-muted">
+                {{ $helper.addressToString({
+                    suburb: userInfo.homeAddress.suburb,
+                    city: userInfo.homeAddress.city,
+                    region: userInfo.homeAddress.region,
+                    country: userInfo.homeAddress.country
+                }) }}
+              </span>
+            </div>
 
-      <img alt="Users profile image" class="my-3 rounded-circle"
-            src="@/../assets/images/default-user-thumbnail.svg">
-    </div>
-    <div class="user-info-container card">
-      <div class="m-3">
-        <div class="d-flex align-items-center">
-          <!--Users name-->
-          <h2 class="mb-0 float-left">{{ userInfo.firstName }} {{ userInfo.middleName }}
-            {{ userInfo.lastName }}</h2>
-          <!--Location data-->
-          <div
-              v-if="userInfo.homeAddress && (userInfo.homeAddress.suburb || userInfo.homeAddress.city)"
-              class="d-flex align-items-center">
-            <span class="material-icons md-dark md-inactive ml-2">location_on</span>
-            <span class="text-muted">
-              {{
-                [userInfo.homeAddress.suburb, userInfo.homeAddress.city].filter(Boolean).join(
-                    ', ')
-              }}
-            </span>
           </div>
 
-        </div>
+          <span class="text-muted">{{
+              userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : ''
+            }}</span>
+          <p>{{ userInfo.bio }}</p>
 
-        <span class="text-muted">{{
-            userInfo.role && userInfo.role === 'ROLE_ADMIN' ? 'Admin' : ''
-          }}</span>
-        <p>{{ userInfo.bio }}</p>
-
-        <br>
-        <div class="profile-buttons d-flex flex-wrap justify-content-center">
-          <button class="btn btn-white-bg-primary m-1 d-flex" disabled><span
-              class="material-icons mr-1">send</span>Send Message
-          </button>
-          <button
-              v-if="isAdmin && userInfo.role != 'ROLE_ADMIN'"
-              id="makeAdmin"
-              class="btn btn-white-bg-primary m-1 d-flex"
-              type="button"
-              @click="makeAdmin(userId)"
-          >
-            <span class="material-icons mr-1">person</span>
-            Make Admin
-          </button>
-          <button
-              v-if="isAdmin && userInfo.role == 'ROLE_ADMIN'"
-              id="revokeAdmin"
-              class="btn btn-white-bg-primary m-1 d-flex"
-              type="button"
-              @click="revokeAdmin(userId)"
-          >
-            <span class="material-icons mr-1">person</span>
-            Revoke Admin
-          </button>
-          <router-link
-              v-if="isAdmin"
-              :to="{ name: 'MarketplaceCardCreateAdmin', params: { userId: userInfo.id }}"
-              class="btn btn-white-bg-primary m-1 d-flex"
-          >
-            Create Marketplace Card
-          </router-link>
-          <router-link
-              v-if="isSignedIn && authUser.id === userInfo.id"
-              :to="{ name: 'BusinessCreate' }"
-              class="btn btn-white-bg-primary m-1 d-flex"
-              type="button"
-          >
-            <span class="material-icons mr-1">business</span>
-            Register Business
-          </router-link>
-        </div>
-        <div v-if="statusMessage.length > 0" class="row mt-2">
-          <div class="col">
-            <p class="alert alert-warning">{{ statusMessage }}</p>
+          <br>
+          <div class="profile-buttons d-flex flex-wrap justify-content-center">
+            <button class="btn btn-white-bg-primary m-1 d-flex" disabled><span
+                class="material-icons mr-1">send</span>Send Message
+            </button>
+            <button
+                v-if="isAdmin && userInfo.role != 'ROLE_ADMIN'"
+                id="makeAdmin"
+                class="btn btn-white-bg-primary m-1 d-flex"
+                type="button"
+                @click="makeAdmin(userId)"
+            >
+              <span class="material-icons mr-1">person</span>
+              Make Admin
+            </button>
+            <button
+                v-if="isAdmin && userInfo.role == 'ROLE_ADMIN'"
+                id="revokeAdmin"
+                class="btn btn-white-bg-primary m-1 d-flex"
+                type="button"
+                @click="revokeAdmin(userId)"
+            >
+              <span class="material-icons mr-1">person</span>
+              Revoke Admin
+            </button>
+            <router-link
+                v-if="isAdmin"
+                :to="{ name: 'MarketplaceCardCreateAdmin', params: { userId: userInfo.id }}"
+                class="btn btn-white-bg-primary m-1 d-flex"
+            >
+              Create Marketplace Card
+            </router-link>
+            <router-link
+                v-if="isSignedIn && authUser.id === userInfo.id"
+                :to="{ name: 'BusinessCreate' }"
+                class="btn btn-white-bg-primary m-1 d-flex"
+                type="button"
+            >
+              <span class="material-icons mr-1">business</span>
+              Register Business
+            </router-link>
+          </div>
+          <div v-if="statusMessage.length > 0" class="row mt-2">
+            <div class="col">
+              <p class="alert alert-warning">{{ statusMessage }}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-        
-    <div class="card businesses-container overflow-auto">
-      <h5 class="text-muted mt-3">Businesses</h5>
-      <div
-          v-if="Array.isArray(userInfo.businessesAdministered) && userInfo.businessesAdministered.length !== 0">
-        <ul class="profile-business-info list-unstyled">
-          <li
-              v-for="(business, index) in userInfo.businessesAdministered"
-              :key="index"
-              class="list-group-item card text-wrap mb-2 border"
-          >
-            <router-link
-                :to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
-                class="text-reset text-decoration-none"
+          
+      <div class="card businesses-container p-3 overflow-auto">
+        <h5 class="text-muted">Businesses</h5>
+        <div
+            v-if="Array.isArray(userInfo.businessesAdministered) && userInfo.businessesAdministered.length !== 0">
+          <ul class="profile-business-info list-unstyled">
+            <li
+                v-for="(business, index) in userInfo.businessesAdministered"
+                :key="index"
+                class="list-group-item card text-wrap mb-2 border"
             >
-              <h5 class="business-name card-title card-link">{{ business.name }}</h5>
-            </router-link>
-            <h6 class="card-subtitle mb-2 text-muted">
-              {{ business.businessType }}
-            </h6>
-            <p class="card-text">{{ business.description }}</p>
+              <router-link
+                  :to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
+                  class="text-reset text-decoration-none"
+              >
+                <h5 class="business-name card-title card-link green-text-hover">
+                  {{ business.name }}
+                </h5>
+              </router-link>
+              <h6 class="card-subtitle mb-2 text-muted">
+                {{ business.businessType }}
+              </h6>
+              <p class="card-text">{{ business.description }}</p>
+            </li>
+          </ul>
+        </div>
+        <div v-else>
+          No businesses
+        </div>
+      </div>
+      <div class="card user-details-container p-3">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a aria-current="page" class="nav-link active">Details</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled">Future Tab</a>
           </li>
         </ul>
-      </div>
-      <div v-else>
-        No businesses
-      </div>
-    </div>
-    <div class="card user-details-container">
-      <ul class="nav nav-tabs mt-2">
-        <li class="nav-item">
-          <a aria-current="page" class="nav-link active">Details</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled">Future Tab</a>
-        </li>
-      </ul>
-      <div class="m-md-4">
-        <table class="table table-hover">
-          <tbody>
-          <tr>
-            <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
-          </tr>
-          <tr v-if="userInfo.nickname" scope="row">
-            <th class="pl-0 pl-md-2">Nickname:</th>
-            <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
-          </tr>
-          <tr scope="row">
-            <th class="pl-0 pl-md-2">Member since:</th>
-            <td class="pr-0 pr-md-2 col-md value"><p>{{ this.$helper.memberSinceText(userInfo.created) }}</p></td>
-          </tr>
-          <tr v-if="dateOfBirthText" scope="row">
-            <th class="pl-0 pl-md-2">Date of Birth:</th>
-            <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
-          </tr>
-          <tr>
-            <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
-            </td>
-          </tr>
-          <tr v-if="userInfo.email" scope="row">
-            <th class="pl-0 pl-md-2">Email Address:</th>
-            <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
-          </tr>
-          <tr v-if="userInfo.phoneNumber" scope="row">
-            <th class="pl-0 pl-md-2">Phone Number:</th>
-            <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
-          </tr>
-          <tr v-if="userInfo.homeAddress" scope="row">
-            <th class="pl-0 pl-md-2">Address:</th>
-            <td class="pr-0 pr-md-2 col-md value">
-              <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="m-md-4">
+          <table class="table table-hover">
+            <tbody>
+            <tr>
+              <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
+            </tr>
+            <tr v-if="userInfo.nickname" scope="row">
+              <th class="pl-0 pl-md-2">Nickname:</th>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
+            </tr>
+            <tr scope="row">
+              <th class="pl-0 pl-md-2">Member since:</th>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ this.$helper.memberSinceText(userInfo.created) }}</p></td>
+            </tr>
+            <tr v-if="dateOfBirthText" scope="row">
+              <th class="pl-0 pl-md-2">Date of Birth:</th>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
+            </tr>
+            <tr>
+              <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
+              </td>
+            </tr>
+            <tr v-if="userInfo.email" scope="row">
+              <th class="pl-0 pl-md-2">Email Address:</th>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
+            </tr>
+            <tr v-if="userInfo.phoneNumber" scope="row">
+              <th class="pl-0 pl-md-2">Phone Number:</th>
+              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
+            </tr>
+            <tr v-if="userInfo.homeAddress" scope="row">
+              <th class="pl-0 pl-md-2">Address:</th>
+              <td class="pr-0 pr-md-2 col-md value">
+                <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <error-modal
@@ -171,25 +176,48 @@
 </template>
 
 <style>
-.business-name:hover {
-  cursor: pointer;
-  color: #1ec996;
-}
+</style>
+<style lang="scss" scoped>
+@import "~/src/styles/grid-breakpoints.scss";
 
 /* Using CSS Grid instead of standard bootstrap as we need to 
 limit the height of the businesses administered list. Height of the 
 businesses and user details container need to be equal, so thought this
 would be the easiest option
 */
-.container {
+.grid-container {
   display: grid;
-  grid-template-rows: auto minmax(100px, 500px);
+  // Auto height for first row, don't know what the second row is doing but
+  // it seems to be working
+  grid-template-rows: auto min-content;
+  // First column takes up a third, second takes up two thirds 
   grid-template-columns: 4fr 8fr;
   grid-gap: 1rem;
 }
 
-.container > div {
-  padding: 1rem;
+.businesses-container {
+  // Sets max height for the entire row
+  max-height: 35em;
+}
+
+.user-details-container {
+  min-height: 0;
+}
+
+@media (max-width: map-get($grid-breakpoints, "md")) {
+  .grid-container {
+    grid-template-columns: auto;
+    grid-template-rows: repeat(4, auto);
+  }
+  
+  .user-details-container {
+    // Switch order: user details is the third row, before businesses list
+    grid-row: 3/4;
+  }
+
+  .businesses-container {
+    max-height: initial;
+  }
 }
 
 th {
