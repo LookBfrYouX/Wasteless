@@ -4,7 +4,6 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
-import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Currency;
@@ -82,8 +81,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     Business business = businessDao.getBusinessById(businessId);
-
-    PaginationBuilder pagBuilder = new PaginationBuilder(Product.class, "id");
+    String defaultSortField = Product.class.getDeclaredFields()[0].getName();
+    PaginationBuilder pagBuilder = new PaginationBuilder(Product.class, defaultSortField);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);

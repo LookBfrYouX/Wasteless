@@ -8,7 +8,6 @@ import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
@@ -58,8 +57,10 @@ public class InventoryServiceImpl implements InventoryService {
    * ProductDao given the business ID.
    *
    * @param businessId    The ID of the business whose products are to be retrieved.
-   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null
    * @param sortBy        Defines any inventory item sorting needed and the direction (ascending or
    *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return productCatalogue A List<Product> of products that are in the business product
@@ -77,12 +78,14 @@ public class InventoryServiceImpl implements InventoryService {
 
     Business business = businessDao.getBusinessById(businessId);
 
-    PaginationBuilder pagBuilder = new PaginationBuilder(InventoryItem.class, "id");
+    String defaultSortField = InventoryItem.class.getDeclaredFields()[0].getName();
+    PaginationBuilder pagBuilder = new PaginationBuilder(InventoryItem.class, defaultSortField);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);
 
-    Pair<List<InventoryItem>, Long> dataAndTotalCount = inventoryDao.getInventoryItems(business, pagBuilder);
+    Pair<List<InventoryItem>, Long> dataAndTotalCount = inventoryDao
+        .getInventoryItems(business, pagBuilder);
 
     ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
     for (InventoryItem inventoryItem : dataAndTotalCount.getFirst()) {

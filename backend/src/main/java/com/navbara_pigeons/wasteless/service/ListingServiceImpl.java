@@ -100,7 +100,8 @@ public class ListingServiceImpl implements ListingService {
       Integer pagEndIndex, String sortBy) throws BusinessNotFoundException, UserNotFoundException {
     Business business = businessService.getBusiness(businessId);
 
-    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, "id");
+    String defaultSortField = Listing.class.getDeclaredFields()[0].getName();
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, defaultSortField);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);

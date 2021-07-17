@@ -207,7 +207,8 @@ public class UserServiceImpl implements UserService {
       Integer pagEndIndex, String sortBy)
       throws InvalidAttributeValueException, IllegalArgumentException {
 
-    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, "id");
+    String defaultSortField = User.class.getDeclaredFields()[0].getName();
+    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, defaultSortField);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);

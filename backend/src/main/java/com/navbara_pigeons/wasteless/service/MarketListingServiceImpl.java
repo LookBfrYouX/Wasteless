@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MarketListingServiceImpl implements MarketListingService {
 
-  private MarketListingDao marketListingDao;
+  private final MarketListingDao marketListingDao;
 
   public MarketListingServiceImpl(@Autowired MarketListingDao marketListingDao) {
     this.marketListingDao = marketListingDao;
@@ -37,12 +37,14 @@ public class MarketListingServiceImpl implements MarketListingService {
   public PaginationDto<FullMarketListingDto> getMarketListings(
       String section, String sortBy, Integer pagStartIndex, Integer pagEndIndex) {
 
-    PaginationBuilder pagBuilder = new PaginationBuilder(MarketListing.class, "id");
+    String defaultSortField = MarketListing.class.getDeclaredFields()[0].getName();
+    PaginationBuilder pagBuilder = new PaginationBuilder(MarketListing.class, defaultSortField);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
         .withSortByString(sortBy);
 
-    Pair<List<MarketListing>, Long> dataAndTotalCount = marketListingDao.getMarketListing(section, pagBuilder);
+    Pair<List<MarketListing>, Long> dataAndTotalCount = marketListingDao
+        .getMarketListing(section, pagBuilder);
 
     List<FullMarketListingDto> clientResults = new ArrayList<>();
     for (MarketListing marketListing : dataAndTotalCount.getFirst()) {
