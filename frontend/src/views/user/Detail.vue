@@ -195,8 +195,10 @@ would be the easiest option
   grid-gap: 1rem;
 }
 
-.businesses-container {
+.businesses-container, .user-details-container {
   // Sets max height for the entire row
+  // Tried using minmax(min-content, 35em) but min-content ensures the 
+  // content doesn't overflow, which we do want in this case
   max-height: 35em;
 }
 
@@ -307,6 +309,7 @@ export default {
      * Calls the API and updates the component's data with the result
      */
     apiPipeline: async function () {
+      console.log("CALL API");
       await this.parseApiResponse(this.callApi(this.userId));
     },
 
@@ -315,49 +318,12 @@ export default {
      * Returns the promise, not the response
      */
     callApi: function (userId) {
-    const testActingAs = (shortName = false, numBusinesses = 20, isAdmin = true) => {
-      const user = {
-        id: userId,
-        firstName: shortName? "FN": "A-Very-Long-First-Name",
-        middleName: shortName? "MN": "Ulysses-Archibald",
-        lastName: shortName? "LN": "A-Very-Long-Last-Name",
-        role: isAdmin? "ROLE_ADMIN": "ROLE_USER",
-        businessesAdministered: [],
-        homeAddress: {
-          streetNumber: "10",
-          streetName: "Downing Street",
-          suburb: "Covent Garden",
-          postcode: "SW1A 2AB",
-          city: "London",
-          region: "England",
-          country: "United Kingdom"
-        },
-        created: "1970-01-01T00:00:00Z",
-        dateOfBirth: "2000-12-31T23:59:59Z",
-        email: "email@email.com"
-      };
-
-      for (let i = 0; i < numBusinesses; i++) {
-        user.businessesAdministered.push({
-          id: i,
-          primaryAdministrator: 1,
-          name: shortName? `B${i}`: `The Very Good Business, Business Number #${i}`,
-          businessType: "Retail",
-          description: "This is a description of the business.\n\nA new line!"
-        });
+      if (typeof userId != "number" || isNaN(userId)) {
+        const err = new ApiRequestError(
+            "Cannot load profile page (no profile given). You may need to log in");
+        return Promise.reject(err);
       }
-      return user;
-    }
-    console.log(ApiRequestError);
-    return Promise.resolve({
-      data: testActingAs(false)
-    });
-      // if (typeof userId != "number" || isNaN(userId)) {
-      //   const err = new jpiRequestError(
-      //       "Cannot load profile page (no profile given). You may need to log in");
-      //   return Promise.reject(err);
-      // }
-      // return Api.profile(userId);
+      return Api.profile(userId);
     },
 
     /**
@@ -413,8 +379,7 @@ export default {
       this.apiPipeline();
     },
     userInfo() {
-      if (this.userInfo
-          !== null) {
+      if (this.userInfo !== null) {
         document.title = `${this.userInfo.firstName} ${this.userInfo.lastName} | Profile`;
       }
       // If switch user profile and request fails will be stuck with old title
