@@ -2,14 +2,13 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateMarketListingDto;
 import com.navbara_pigeons.wasteless.dto.FullMarketListingDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.MarketListingService;
 import com.navbara_pigeons.wasteless.service.UserService;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,15 +47,25 @@ public class MarketListingController {
     return new ResponseEntity<>(response, HttpStatus.valueOf(201));
   }
 
+  /**
+   * @param section
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null
+   * @param sortBy        Defines any user sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
+   * @return List of all paginated/sorted market listings that match the section String
+   */
   @GetMapping("/cards")
-  public ResponseEntity<List<FullMarketListingDto>> getMarketListings(
-      @RequestParam String section) {
+  public ResponseEntity<PaginationDto<FullMarketListingDto>> getMarketListings(
+      @RequestParam String section,
+      @RequestParam(required = false) Integer pagStartIndex,
+      @RequestParam(required = false) Integer pagEndIndex,
+      @RequestParam(required = false) String sortBy) {
     log.info("GETTING CARDS FROM THE '" + section + "' SECTION");
-    List<FullMarketListingDto> marketListingDtos = new ArrayList<>();
-    for (MarketListing marketListing : this.marketListingService.getMarketListings(section)) {
-      marketListingDtos.add(new FullMarketListingDto(marketListing));
-    }
-    return new ResponseEntity<>(marketListingDtos, HttpStatus.OK);
+    return new ResponseEntity<>(
+        this.marketListingService.getMarketListings(section, sortBy, pagStartIndex, pagEndIndex),
+        HttpStatus.OK);
   }
-
 }

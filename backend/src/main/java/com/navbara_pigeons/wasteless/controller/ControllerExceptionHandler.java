@@ -145,6 +145,13 @@ public class ControllerExceptionHandler {
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
   }
 
+  @ExceptionHandler({IllegalArgumentException.class})
+  public ResponseEntity<String> handleIllegalArgumentException(
+      InvalidAttributeValueException exc) {
+    log.error("SEARCH QUERY ERROR: 500 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
+  }
+
   @ExceptionHandler(UserAlreadyExistsException.class)
   @ResponseStatus(code = HttpStatus.CONFLICT, reason = "Email address already in use")
   public void handleUserAlreadyExistsException(UserAlreadyExistsException exc) {
@@ -184,7 +191,6 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(Exception.class)
   public ResponseEntity<String> handleGeneralException(Exception exc) {
     log.error("CRITICAL ERROR: 500 - " + exc.getMessage());
-    exc.printStackTrace();
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
   }
 

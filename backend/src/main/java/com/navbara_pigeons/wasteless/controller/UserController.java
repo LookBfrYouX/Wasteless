@@ -99,14 +99,22 @@ public class UserController {
   /**
    * Search for a user based of nickname or name(firstName, middleName, lastName)
    *
-   * @param searchQuery name being searched for
+   * @param searchQuery   name being searched for
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
+   * @param sortBy        Defines any user sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return List of all users matching the searchQuery
    * @throws ResponseStatusException Unknown Error
    */
   @GetMapping("/users/search")
-  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery)
-      throws InvalidAttributeValueException {
-    return new ResponseEntity<>(this.userService.searchUsers(searchQuery),
+  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery,
+      @RequestParam(required = false) Integer pagStartIndex,
+      @RequestParam(required = false) Integer pagEndIndex,
+      @RequestParam(required = false) String sortBy)
+      throws InvalidAttributeValueException, IllegalArgumentException {
+    return new ResponseEntity<>(
+        this.userService.searchUsers(searchQuery, pagStartIndex, pagEndIndex, sortBy),
         HttpStatus.valueOf(200));
   }
 

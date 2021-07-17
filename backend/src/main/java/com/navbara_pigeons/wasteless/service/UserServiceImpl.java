@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
@@ -10,6 +11,7 @@ import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
@@ -23,6 +25,7 @@ import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -187,21 +190,36 @@ public class UserServiceImpl implements UserService {
     return userDao.getUserByEmail(email);
   }
 
-
   /**
    * Calls the userDao to search for users using the given username
    *
-   * @param searchQuery the name being searched for
+   * @param searchQuery   The name being searched for
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
+   * @param sortBy        Defines any user sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return A list containing all the users whose names/nickname match the username
+   * @throws InvalidAttributeValueException
    */
   @Override
   @Transactional
-  public List<BasicUserDto> searchUsers(String searchQuery) throws InvalidAttributeValueException {
-    List<BasicUserDto> results = new ArrayList<>();
-    for (User user : userDao.searchUsers(searchQuery)) {
-      results.add(new BasicUserDto(user));
+  public PaginationDto<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex,
+      Integer pagEndIndex, String sortBy)
+      throws InvalidAttributeValueException, IllegalArgumentException {
+
+    String defaultSortField = User.class.getDeclaredFields()[0].getName();
+    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, defaultSortField);
+    pagBuilder.withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex)
+        .withSortByString(sortBy);
+
+    Pair<List<User>, Long> dataAndTotalCount = userDao.searchUsers(searchQuery, pagBuilder);
+
+    List<BasicUserDto> clientResults = new ArrayList<>();
+    for (User user : dataAndTotalCount.getFirst()) {
+      clientResults.add(new BasicUserDto(user));
     }
-    return results;
+    return new PaginationDto<>(clientResults, dataAndTotalCount.getSecond());
   }
 
   /**
@@ -291,10 +309,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean isSelf(String userEmail) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    if (userEmail.equals(auth.getName())) {
-      return true;
-    }
-    return false;
+    return userEmail.equals(auth.getName());
   }
 
   /**

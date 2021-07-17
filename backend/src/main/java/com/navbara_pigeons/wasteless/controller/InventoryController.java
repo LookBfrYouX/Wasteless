@@ -8,6 +8,7 @@ import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.InventoryService;
+import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * This controller class provides the endpoints for dealing with inventory items. All requests for
@@ -36,19 +38,27 @@ public class InventoryController {
     this.inventoryService = inventoryService;
   }
 
-
   /**
    * This endpoint retrieves a list of all products listed by a particular business (id).
    *
-   * @param id The ID of the business whose inventory is to be displayed
+   * @param id            The ID of the business whose inventory is to be displayed
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
+   * @param sortBy        Defines any inventory sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return response A JSONObject containing the information of all inventory items listed for the
    * business.
    */
   @GetMapping("/businesses/{id}/inventory")
-  public ResponseEntity<Object> showBusinessInventory(@PathVariable long id)
-      throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException, BusinessNotFoundException {
+  public ResponseEntity<Object> showBusinessInventory(@PathVariable long id,
+      @RequestParam(required = false) Integer pagStartIndex,
+      @RequestParam(required = false) Integer pagEndIndex,
+      @RequestParam(required = false) String sortBy)
+      throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException, BusinessNotFoundException, InvalidAttributeValueException {
     log.info("RETRIEVED INVENTORY ITEMS FOR BUSINESS: " + id);
-    return new ResponseEntity<>(this.inventoryService.getInventory(id), HttpStatus.valueOf(200));
+    return new ResponseEntity<>(
+        this.inventoryService.getInventory(id, pagStartIndex, pagEndIndex, sortBy),
+        HttpStatus.valueOf(200));
   }
 
   @PostMapping("/businesses/{id}/inventory")

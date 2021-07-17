@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Product;
@@ -13,12 +14,14 @@ import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.validation.InventoryServiceValidation;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 /**
@@ -53,24 +56,43 @@ public class InventoryServiceImpl implements InventoryService {
    * This method retrieves a list of all the products listed by a specific business from the
    * ProductDao given the business ID.
    *
-   * @param businessId The ID of the business whose products are to be retrieved.
+   * @param businessId    The ID of the business whose products are to be retrieved.
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null
+   * @param sortBy        Defines any inventory item sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return productCatalogue A List<Product> of products that are in the business product
    * catalogue.
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
-  public List<BasicInventoryItemDto> getInventory(long businessId)
-      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
-    if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
-      ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
-      Business business = businessDao.getBusinessById(businessId);
-      for (InventoryItem inventoryItem : business.getInventory()) {
-        inventory.add(new BasicInventoryItemDto(inventoryItem, publicPathPrefix));
-      }
-      return inventory;
-    } else {
+  public PaginationDto<BasicInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
+      Integer pagEndIndex, String sortBy)
+      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, IllegalArgumentException {
+
+    if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
       throw new InsufficientPrivilegesException("You are not permitted to modify this business");
     }
+
+    Business business = businessDao.getBusinessById(businessId);
+
+    String defaultSortField = InventoryItem.class.getDeclaredFields()[0].getName();
+    PaginationBuilder pagBuilder = new PaginationBuilder(InventoryItem.class, defaultSortField);
+    pagBuilder.withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex)
+        .withSortByString(sortBy);
+
+    Pair<List<InventoryItem>, Long> dataAndTotalCount = inventoryDao
+        .getInventoryItems(business, pagBuilder);
+
+    ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
+    for (InventoryItem inventoryItem : dataAndTotalCount.getFirst()) {
+      inventory.add(new BasicInventoryItemDto(inventoryItem, publicPathPrefix));
+    }
+    return new PaginationDto<>(inventory, dataAndTotalCount.getSecond());
+
   }
 
   /**

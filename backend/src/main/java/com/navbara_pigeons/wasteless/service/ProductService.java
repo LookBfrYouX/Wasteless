@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -14,7 +15,8 @@ import net.minidev.json.JSONObject;
 
 public interface ProductService {
 
-  List<BasicProductDto> getProducts(long businessId)
+  PaginationDto<BasicProductDto> getProducts(long businessId, Integer pagStartIndex, Integer pagEndIndex,
+      String sortBy)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException;
 
   JSONObject addProduct(long id, BasicProductCreationDto product)

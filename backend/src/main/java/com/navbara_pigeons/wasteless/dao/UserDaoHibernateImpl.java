@@ -1,15 +1,18 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -115,15 +118,30 @@ public class UserDaoHibernateImpl implements UserDao {
 
   @Override
   public List<User> searchUsers(String searchQuery) throws InvalidAttributeValueException {
+    String defaultSortField = InventoryItem.class.getDeclaredFields()[0].getName();
+    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, defaultSortField);
+    return searchUsers(searchQuery, pagBuilder).getFirst();
+  }
+
+  /**
+   * Search for a list of users.
+   *
+   * @param searchQuery Search query ( can include AND, OR's )
+   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and
+   *     paginating items
+   * @return A paginated and sorted list of Users and the total count of the entity (used for
+   *     client side pagination)
+   */
+  @Override
+  public Pair<List<User>, Long> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
+      throws InvalidAttributeValueException {
     Session currentSession = getSession();
-    // CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
-    CriteriaQuery<User> criteriaQuery = HibernateCriteriaQueryBuilder
-        .parseUserSearchQuery(currentSession, searchQuery);
+    TypedQuery<User> query =
+        HibernateCriteriaQueryBuilder.parseUserSearchQuery(currentSession, searchQuery, pagBuilder);
+    Long totalCount =
+        HibernateCriteriaQueryBuilder.getEntityCountQuery(currentSession, User.class);
 
-    Query<User> query = currentSession.createQuery(criteriaQuery);
-    List<User> results = query.getResultList();
-
-    return results;
+    return Pair.of(query.getResultList(), totalCount);
   }
 
   /**
@@ -134,5 +152,4 @@ public class UserDaoHibernateImpl implements UserDao {
   private Session getSession() {
     return this.entityManager.unwrap(Session.class);
   }
-
 }
