@@ -6,7 +6,7 @@
               src="@/../assets/images/default-user-thumbnail.svg">
       </div>
       <div class="user-info-container card p-3">
-        <div class="m-3">
+        <div class="">
           <div class="d-flex align-items-center flex-column flex-sm-row">
             <!--Users name-->
             <h2 class="mb-0 float-left">{{ userInfo.firstName }} {{ userInfo.middleName }}
@@ -122,43 +122,45 @@
           </li>
         </ul>
         <div class="m-md-4">
-          <table class="table table-hover">
-            <tbody>
-            <tr>
-              <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
-            </tr>
-            <tr v-if="userInfo.nickname" scope="row">
-              <th class="pl-0 pl-md-2">Nickname:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
-            </tr>
-            <tr scope="row">
-              <th class="pl-0 pl-md-2">Member since:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ this.$helper.memberSinceText(userInfo.created) }}</p></td>
-            </tr>
-            <tr v-if="dateOfBirthText" scope="row">
-              <th class="pl-0 pl-md-2">Date of Birth:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
-            </tr>
-            <tr>
-              <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
-              </td>
-            </tr>
-            <tr v-if="userInfo.email" scope="row">
-              <th class="pl-0 pl-md-2">Email Address:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
-            </tr>
-            <tr v-if="userInfo.phoneNumber" scope="row">
-              <th class="pl-0 pl-md-2">Phone Number:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
-            </tr>
-            <tr v-if="userInfo.homeAddress" scope="row">
-              <th class="pl-0 pl-md-2">Address:</th>
-              <td class="pr-0 pr-md-2 col-md value">
-                <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+          <div class="overflow-auto w-100">
+            <table class="table table-hover">
+              <tbody>
+                <tr>
+                  <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
+                </tr>
+                <tr v-if="userInfo.nickname" scope="row">
+                  <th class="pl-0 pl-md-2">Nickname:</th>
+                  <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
+                </tr>
+                <tr scope="row">
+                  <th class="pl-0 pl-md-2">Member since:</th>
+                  <td class="pr-0 pr-md-2 col-md value"><p>{{ this.$helper.memberSinceText(userInfo.created) }}</p></td>
+                </tr>
+                <tr v-if="dateOfBirthText" scope="row">
+                  <th class="pl-0 pl-md-2">Date of Birth:</th>
+                  <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
+                </tr>
+                <tr>
+                  <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
+                  </td>
+                </tr>
+                <tr v-if="userInfo.email" scope="row">
+                  <th class="pl-0 pl-md-2">Email Address:</th>
+                  <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
+                </tr>
+                <tr v-if="userInfo.phoneNumber" scope="row">
+                  <th class="pl-0 pl-md-2">Phone Number:</th>
+                  <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
+                </tr>
+                <tr v-if="userInfo.homeAddress" scope="row">
+                  <th class="pl-0 pl-md-2">Address:</th>
+                  <td class="pr-0 pr-md-2 col-md value">
+                    <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -199,6 +201,8 @@ would be the easiest option
   // Sets max height for the entire row
   // Tried using minmax(min-content, 35em) but min-content ensures the 
   // content doesn't overflow, which we do want in this case
+  // This is a difficult problem as we want the max height of the business container
+  // to be the below value, **unless the user details container is taller**
   max-height: 35em;
 }
 
@@ -217,7 +221,7 @@ would be the easiest option
     grid-row: 3/4;
   }
 
-  .businesses-container {
+  .businesses-container, .user-details-container {
     max-height: initial;
   }
 }
@@ -309,7 +313,6 @@ export default {
      * Calls the API and updates the component's data with the result
      */
     apiPipeline: async function () {
-      console.log("CALL API");
       await this.parseApiResponse(this.callApi(this.userId));
     },
 
