@@ -1,8 +1,7 @@
 package com.navbara_pigeons.wasteless.helper;
 
-import lombok.Getter;
-
 import java.lang.reflect.Field;
+import lombok.Getter;
 
 /**
  * A class that conveniently holds all of the needed information in order to paginate and sort a
@@ -15,7 +14,7 @@ import java.lang.reflect.Field;
 @Getter
 public class PaginationBuilder {
 
-  Object entity;
+  Class<?> entity;
   Integer pagStartIndex = 0;
   Integer pagEndIndex;
   String sortField;
@@ -24,10 +23,10 @@ public class PaginationBuilder {
   /**
    * Pagination Builder Constructor, sets the entity and parses the default sort field
    *
-   * @param entity The object that the Pagination/Sorting is for
+   * @param entity           The class of entity that the Pagination/Sorting is for
    * @param defaultSortField A String value of the Java field name from the Entity class
    */
-  public PaginationBuilder(Object entity, String defaultSortField) {
+  public PaginationBuilder(Class<?> entity, String defaultSortField) {
     this.entity = entity;
     // Use the parse method as it checks if the sort field exists in the entity
     if (defaultSortField != null) {
@@ -123,7 +122,7 @@ public class PaginationBuilder {
   private boolean isValidFieldName(String fieldName) throws IllegalArgumentException {
     boolean validField = false;
 
-    for (Field field : ((Class) entity).getDeclaredFields()) {
+    for (Field field : entity.getDeclaredFields()) {
       if (field.getName().equals(fieldName)) {
         validField = true;
         break;
@@ -133,7 +132,7 @@ public class PaginationBuilder {
     if (!validField) {
       throw new IllegalArgumentException(
           "The passed in field to sort by does not exist in the "
-              + ((Class) this.entity).getName()
+              + entity.getName()
               + " class");
     }
 
@@ -142,7 +141,9 @@ public class PaginationBuilder {
 
   /**
    * Parse a SortBy string sent from the client. Check that it is in the correct format and then set
-   * the sort field and its direction (sort ascending)
+   * the sort field and its direction (sort ascending).
+   * Note: Any sort string that does not match "desc" will by default be Ascending
+   *
    *
    * @param sortByString The SortBy string to parse
    * @throws IllegalArgumentException SortBy string has an invalid format

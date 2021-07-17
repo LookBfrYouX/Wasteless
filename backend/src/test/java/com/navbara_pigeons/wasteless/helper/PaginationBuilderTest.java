@@ -10,7 +10,7 @@ public class PaginationBuilderTest {
   @Test
   public void constructorWithValidParams() {
     // Arrange
-    Object entity = User.class;
+    Class<User> entity = User.class;
     String defaultSortField = "firstName";
 
     // Act
@@ -24,7 +24,7 @@ public class PaginationBuilderTest {
   @Test
   public void constructorWithInvalidSortField() {
     // Arrange
-    Object entity = User.class;
+    Class<User> entity = User.class;
     String defaultSortField = "nonExistingField";
 
     // Act & Assert
@@ -34,17 +34,17 @@ public class PaginationBuilderTest {
   }
 
   @Test
-  public void validPaginationAnValidSortingParameters() {
+  public void validPaginationAndValidSortingParameters() {
     // Arrange
-    Object entity = Product.class;
+    Class<Product> entity = Product.class;
     String defaultSortField = "manufacturer";
     Integer pagStartIndex = 0;
     Integer pagEndIndex = 0;
 
     // Act
     PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField)
-            .withPagStartIndex(pagStartIndex)
-            .withPagEndIndex(pagEndIndex);
+        .withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex);
 
     // Assert
     Assertions.assertEquals(pagStartIndex, paginationBuilder.getPagStartIndex());
@@ -56,7 +56,7 @@ public class PaginationBuilderTest {
   @Test
   public void testDefaultParameters() {
     // Arrange
-    Object entity = Product.class;
+    Class<Product> entity = Product.class;
     String defaultSortField = "name";
     boolean defaultSortAscending = true;
     Integer defaultPagStartIndex = 0;
@@ -74,7 +74,7 @@ public class PaginationBuilderTest {
   @Test
   public void testInvalidPaginationIndexes() {
     // Arrange
-    Object entity = Product.class;
+    Class<Product> entity = Product.class;
     String defaultSortField = "name";
     Integer pagStartIndex = 2;
     Integer pagEndIndex = pagStartIndex - 1;
@@ -92,7 +92,7 @@ public class PaginationBuilderTest {
   @Test
   public void changingToValidSortField() {
     // Arrange
-    Object entity = User.class;
+    Class<User> entity = User.class;
     String defaultSortField = "firstName";
     String newValidSortField = "lastName";
     PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField);
@@ -106,7 +106,7 @@ public class PaginationBuilderTest {
   @Test
   public void changingToInvalidSortField() {
     // Arrange
-    Object entity = User.class;
+    Class<User> entity = User.class;
     String defaultSortField = "firstName";
     String newInvalidSortField = "nonExistingField";
     PaginationBuilder paginationBuilder = new PaginationBuilder(entity, defaultSortField);
@@ -121,7 +121,7 @@ public class PaginationBuilderTest {
   @Test
   public void changingToValidSortAscending() {
     // Arrange
-    Object entity = User.class;
+    Class<User> entity = User.class;
     String defaultSortField = "firstName";
     Boolean newValidSortAscending = false;
 

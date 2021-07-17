@@ -6,13 +6,14 @@ import lombok.Data;
 @Data
 public class PaginationDto<T> {
 
-  private List<T> data;
+  private List<T> results;
   private Long totalCount;
 
-  public PaginationDto(List<T> data, Long totalCount) {
-    this.data = data;
+  public PaginationDto(List<T> results, Long totalCount) {
+    this.results = results;
     this.totalCount = totalCount;
   }
 
-  public PaginationDto() {}
+  public PaginationDto() {
+  }
 }

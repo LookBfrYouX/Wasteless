@@ -86,6 +86,8 @@ public class HibernateCriteriaQueryBuilder {
   public static TypedQuery<Product> listPaginatedAndSortedBusinessProducts(
       Session currentSession, Business business, PaginationBuilder pagBuilder) {
     // Setup
+    // Tried and failed to use the criteria API to join businesses and products through catalogue
+    // table, settled for using HQL
     String HQL =
         "SELECT bpc FROM Business b JOIN b.productsCatalogue bpc WHERE b.id=:business_id ORDER BY bpc."
             + pagBuilder.getSortField();
@@ -181,14 +183,15 @@ public class HibernateCriteriaQueryBuilder {
           Predicate lastPredicate = predicates.remove(predicates.size() - 1);
           Predicate newPredicate =
               criteriaBuilder.or(
-                  lastPredicate, makePredicate(tokens.get(i + 1), criteriaBuilder, root));
+                  lastPredicate,
+                  makePredicateForUserQuery(tokens.get(i + 1), criteriaBuilder, root));
           predicates.add(newPredicate);
           i++; // Extra increment so the attribute isn't added again!
         } else {
           throw new InvalidAttributeValueException("Check the AND syntax");
         }
       } else {
-        predicates.add(makePredicate(currentToken, criteriaBuilder, root));
+        predicates.add(makePredicateForUserQuery(currentToken, criteriaBuilder, root));
       }
     }
 
@@ -214,17 +217,17 @@ public class HibernateCriteriaQueryBuilder {
     return typedQuery;
   }
 
-  private static Predicate makePredicate(
+  private static Predicate makePredicateForUserQuery(
       String token, CriteriaBuilder criteriaBuilder, Root<User> root) {
     if (token.matches("\"\\S*.+?\"")) {
       String newToken = token.replace("\"", "");
-      return buildNameFullMatchPredicate(newToken, criteriaBuilder, root);
+      return buildNameFullMatchPredicateForUserQuery(newToken, criteriaBuilder, root);
     } else {
-      return buildNamePartialMatchPredicate(token, criteriaBuilder, root);
+      return buildNamePartialMatchPredicateForUserQuery(token, criteriaBuilder, root);
     }
   }
 
-  private static Predicate buildNameFullMatchPredicate(
+  private static Predicate buildNameFullMatchPredicateForUserQuery(
       String token, CriteriaBuilder criteriaBuilder, Root<User> root) {
     return criteriaBuilder.or(
         criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")), token.toLowerCase()),
@@ -233,7 +236,7 @@ public class HibernateCriteriaQueryBuilder {
         criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")), token.toLowerCase()));
   }
 
-  private static Predicate buildNamePartialMatchPredicate(
+  private static Predicate buildNamePartialMatchPredicateForUserQuery(
       String token, CriteriaBuilder criteriaBuilder, Root<User> root) {
     return criteriaBuilder.or(
         criteriaBuilder.like(

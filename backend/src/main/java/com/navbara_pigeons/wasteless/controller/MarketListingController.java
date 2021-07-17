@@ -29,8 +29,8 @@ public class MarketListingController {
   private final UserService userService;
   private final MarketListingService marketListingService;
 
-  public MarketListingController(
-      @Autowired UserService userService, MarketListingService marketListingService) {
+  public MarketListingController(@Autowired UserService userService,
+      MarketListingService marketListingService) {
     this.userService = userService;
     this.marketListingService = marketListingService;
   }
@@ -50,11 +50,11 @@ public class MarketListingController {
   /**
    * @param section
    * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
-   *     Null
-   * @param pagEndIndex The stop index of the list to return, implemented for pagination, Can be
-   *     Null
-   * @param sortBy Defines any user sorting needed and the direction (ascending or descending). In
-   *     the format "fieldName-<acs/desc>", Can be Null
+   *                      Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null
+   * @param sortBy        Defines any user sorting needed and the direction (ascending or
+   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return List of all paginated/sorted market listings that match the section String
    */
   @GetMapping("/cards")
