@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.dto.FullMarketListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.MarketListingService;
@@ -62,7 +63,7 @@ public class MarketListingController {
       @RequestParam String section,
       @RequestParam(required = false) Integer pagStartIndex,
       @RequestParam(required = false) Integer pagEndIndex,
-      @RequestParam(required = false) String sortBy) {
+      @RequestParam(required = false) String sortBy) throws InvalidPaginationInputException {
     log.info("GETTING CARDS FROM THE '" + section + "' SECTION");
     return new ResponseEntity<>(
         this.marketListingService.getMarketListings(section, sortBy, pagStartIndex, pagEndIndex),

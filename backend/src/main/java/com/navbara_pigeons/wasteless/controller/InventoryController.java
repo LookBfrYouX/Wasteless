@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.controller;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
@@ -42,8 +43,10 @@ public class InventoryController {
    * This endpoint retrieves a list of all products listed by a particular business (id).
    *
    * @param id            The ID of the business whose inventory is to be displayed
-   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null
    * @param sortBy        Defines any inventory sorting needed and the direction (ascending or
    *                      descending). In the format "fieldName-<acs/desc>", Can be Null
    * @return response A JSONObject containing the information of all inventory items listed for the
@@ -54,7 +57,7 @@ public class InventoryController {
       @RequestParam(required = false) Integer pagStartIndex,
       @RequestParam(required = false) Integer pagEndIndex,
       @RequestParam(required = false) String sortBy)
-      throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException, BusinessNotFoundException, InvalidAttributeValueException {
+      throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException, BusinessNotFoundException, InvalidAttributeValueException, InvalidPaginationInputException {
     log.info("RETRIEVED INVENTORY ITEMS FOR BUSINESS: " + id);
     return new ResponseEntity<>(
         this.inventoryService.getInventory(id, pagStartIndex, pagEndIndex, sortBy),

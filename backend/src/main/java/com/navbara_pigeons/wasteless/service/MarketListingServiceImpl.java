@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dao.MarketListingDao;
 import com.navbara_pigeons.wasteless.dto.FullMarketListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -35,7 +36,8 @@ public class MarketListingServiceImpl implements MarketListingService {
   @Override
   @Transactional
   public PaginationDto<FullMarketListingDto> getMarketListings(
-      String section, String sortBy, Integer pagStartIndex, Integer pagEndIndex) {
+      String section, String sortBy, Integer pagStartIndex, Integer pagEndIndex)
+      throws InvalidPaginationInputException {
 
     String defaultSortField = MarketListing.class.getDeclaredFields()[0].getName();
     PaginationBuilder pagBuilder = new PaginationBuilder(MarketListing.class, defaultSortField);

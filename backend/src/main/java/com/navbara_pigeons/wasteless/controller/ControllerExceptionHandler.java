@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
@@ -145,11 +146,12 @@ public class ControllerExceptionHandler {
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
   }
 
-  @ExceptionHandler({IllegalArgumentException.class})
-  public ResponseEntity<String> handleIllegalArgumentException(
-      InvalidAttributeValueException exc) {
-    log.error("SEARCH QUERY ERROR: 500 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
+  @ExceptionHandler(InvalidPaginationInputException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public ResponseEntity<String> handleInvalidPaginationInputException(
+      InvalidPaginationInputException exc) {
+    log.error("PAGINATION ERROR: 500 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @ExceptionHandler(UserAlreadyExistsException.class)

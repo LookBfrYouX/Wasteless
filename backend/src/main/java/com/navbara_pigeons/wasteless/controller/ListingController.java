@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -73,7 +74,7 @@ public class ListingController {
       @RequestParam(required = false) Integer pagStartIndex,
       @RequestParam(required = false) Integer pagEndIndex,
       @RequestParam(required = false) String sortBy)
-      throws UserNotFoundException, BusinessNotFoundException {
+      throws UserNotFoundException, BusinessNotFoundException, InvalidPaginationInputException {
     log.info("GETTING LISTINGS FOR BUSINESS WITH ID " + id);
     return new ResponseEntity<>(listingService.getListings(id, pagStartIndex, pagEndIndex, sortBy),
         HttpStatus.valueOf(200));
