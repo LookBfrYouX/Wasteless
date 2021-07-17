@@ -85,7 +85,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
         .thenReturn(Pair.of(inventory, 0L));
 
     List<BasicInventoryItemDto> inventoryDto = inventoryService
-        .getInventory(business.getId(), null, null, null).getData();
+        .getInventory(business.getId(), null, null, null).getResults();
 
     assertInventoryListEquals(inventory, inventoryDto);
   }
@@ -138,7 +138,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
         .thenReturn(Pair.of(inventoryItemList, 0L));
 
     List<BasicInventoryItemDto> inventory = inventoryService
-        .getInventory(business.getId(), null, null, null).getData();
+        .getInventory(business.getId(), null, null, null).getResults();
 
     assertInventoryListEquals(inventoryItemList, inventory);
   }

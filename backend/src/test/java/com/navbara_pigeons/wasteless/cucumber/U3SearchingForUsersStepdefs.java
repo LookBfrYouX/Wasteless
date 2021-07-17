@@ -41,7 +41,7 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
       newUser.setLastName(columns.get("lastName"));
       newUser.setNickname(columns.get("nickName"));
       newUser.setPassword(columns.get("password"));
-      System.out.println("CREATED NEW USER: " + newUser.toString());
+      System.out.println("CREATED NEW USER: " + newUser);
       Assertions.assertDoesNotThrow(() -> userController.registerUser(new CreateUserDto(newUser)));
     }
   }
@@ -51,7 +51,7 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
     JSONObject credentials = new JSONObject();
     credentials.put("email", email);
     credentials.put("password", password);
-    System.out.println(credentials.toString());
+    System.out.println(credentials);
 
     mockMvc.perform(
         post("/login")
@@ -108,7 +108,7 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
       throws UnsupportedEncodingException, JsonProcessingException {
     String json = this.mvcResult.getResponse().getContentAsString();
     PaginationDto<User> paginationDto = new ObjectMapper().readValue(json, PaginationDto.class);
-    assertEquals("[]", paginationDto.getData().toString());
+    assertEquals("[]", paginationDto.getResults().toString());
     System.out.println("NO USERS RETURNED -> " + this.mvcResult.getResponse().getContentAsString());
   }
 
