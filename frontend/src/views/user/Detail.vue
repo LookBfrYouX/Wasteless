@@ -82,7 +82,7 @@
         <h5 class="text-muted">Businesses</h5>
         <div
             v-if="Array.isArray(userInfo.businessesAdministered) && userInfo.businessesAdministered.length !== 0">
-          <ul class="profile-business-info list-unstyled">
+          <ul class="profile-business-info list-unstyled pl-0">
             <li
                 v-for="(business, index) in userInfo.businessesAdministered"
                 :key="index"
@@ -107,7 +107,7 @@
           No businesses
         </div>
       </div>
-      <div class="card user-details-container p-3">
+      <div class="card user-details-container p-3 pb-0 overflow-auto">
         <ul class="nav nav-tabs">
           <li class="nav-item">
             <a aria-current="page" class="nav-link active">Details</a>
@@ -116,9 +116,9 @@
             <a class="nav-link disabled">Future Tab</a>
           </li>
         </ul>
-        <div class="m-md-4">
+        <div class="m-md-4 mb-md-0">
           <div class="overflow-auto w-100">
-            <table class="table table-hover">
+            <table class="table table-hover mb-0">
               <tbody>
                 <tr>
                   <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
