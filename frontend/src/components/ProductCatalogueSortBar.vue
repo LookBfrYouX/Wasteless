@@ -1,41 +1,33 @@
 <template>
   <div>
-    <div>
-      Sort bar:
-    </div>
-    <button @click="sortByName">
-      Name
-    </button>
-    <button @click="sortByPrice">
-      Price
-    </button>
+    <v-select
+        class="col-6 col-lg-4"
+        :items="items.map(a => a.key)"
+        @change="sortChange"
+        label="Sort By"
+        solo dense
+    ></v-select>
   </div>
 </template>
 
 <script>
 export default {
   name: "ProductCatalogueSortBar",
+  props: {
+    items: Array,
+  },
   data() {
     return {
       sortBy: "",
     }
   },
   methods: {
-    sortByName: function () {
-      this.sortBy = (this.sortBy === "name-acs") ? "name-desc" : "name-acs";
-      this.sendEvent();
-    },
-    sortByPrice: function () {
-      this.sortBy = (this.sortBy === "recommendedRetailPrice-acs") ? "recommendedRetailPrice-desc" : "recommendedRetailPrice-acs";
-      this.sendEvent();
-    },
-    sendEvent: function () {
-      this.$emit('update', this.sortBy);
+    sortChange: function (event) {
+      const item = this.items.filter(obj => { return obj.key === event; })[0];
+      if (item) {
+        this.$emit('update', item.value);
+      }
     }
   }
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -1,6 +1,6 @@
 <template>
   <div class="w-100 col-12 col-md-8 col-lg-6">
-    <product-catalogue-sort-bar @update="sortUpdate" />
+    <product-catalogue-sort-bar @update="sortUpdate" :items="items" />
     <div>
       Displaying products {{ this.searchParams.pagStartIndex + 1 }} - {{ this.searchParams.pagEndIndex + 1 }} out of
       {{ this.totalResults }}
@@ -73,7 +73,13 @@ export default {
       products: [],
       currency: null,
       apiErrorMessage: null,
-      businessName: null
+      businessName: null,
+      items: [ // Sort options. Key is displayed and value is emitted when selection changes.
+        { key: "Name A-Z", value: "name-asc" },
+        { key: "Name Z-A", value: "name-desc" },
+        { key: "RRP Lowest", value: "recommendedRetailPrice-asc" },
+        { key: "RRP Highest", value: "recommendedRetailPrice-desc" },
+      ],
     }
   },
 
