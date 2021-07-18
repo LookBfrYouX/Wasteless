@@ -34,10 +34,11 @@ import {router} from './router';
 import {store} from './store';
 import {helper} from './helper';
 import {constants} from "./constants";
+import VueLogger from 'vuejs-logger';
+import vuetify from '@/plugins/vuetify' 
 import "bootstrap";
 import "./styles/main.scss";
-import VueLogger from 'vuejs-logger';
-import vuetify from '@/plugins/vuetify' // path to vuetify export
+// path to vuetify export
 
 
 

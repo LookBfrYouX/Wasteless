@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import net.minidev.json.JSONObject;
 
@@ -15,8 +16,10 @@ public interface BusinessService {
 
   Object getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException;
 
-  Business getBusiness(long id) throws BusinessNotFoundException, UserNotFoundException;
+  Business getBusiness(long id) throws BusinessNotFoundException;
 
   boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException;
 
+  void addBusinessAdmin(long businessId, long userId)
+      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException;
 }
