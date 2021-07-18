@@ -78,6 +78,59 @@ export const helper = {
   },
 
   /**
+   * Formats the date as a D MMMM YYYY string
+   * @param date date object, or something that can be passed to the constructor
+   */
+  formatDate: function (date) {
+    if (!(date instanceof Date)) {
+      date = new Date(date);
+    }
+    return `${date.getDate()} ${constants.MONTH_NAMES[date.getMonth()]}, ${date.getFullYear()}`;
+  },
+
+  /**
+   * Calculates the time since registration and returns it as a string
+   * @return string in format 'y years, m months'
+   */
+  generateTimeSinceRegistrationText: function (registrationDate, currentDate) {
+    const yearDiff = currentDate.getFullYear() - registrationDate.getFullYear();
+    const monthDiff = currentDate.getMonth() - registrationDate.getMonth();
+
+    const timeDiffInMonth = yearDiff * 12 + monthDiff;
+
+    const years = Math.floor(timeDiffInMonth / 12);
+    let months = timeDiffInMonth % 12;
+
+    const yearsText = `${years} year${years == 1 ? "" : "s"}`;
+
+    const monthsText = `${months} month${months == 1 ? "" : "s"}`;
+
+    if (years == 0) {
+      return monthsText;
+    }
+
+    return `${yearsText}, ${monthsText}`;
+  },
+
+  /**
+   * Formatted text for member since text
+   * @param createdDate Date to format
+   */
+  memberSinceText: function (registrationDate) {
+    if (isNaN(Date.parse(registrationDate))) {
+      return "Unknown";
+    }
+    const created = new Date(registrationDate);
+    const dateOfRegistration = this.formatDate(created);
+    const monthsSinceRegistration = this.generateTimeSinceRegistrationText(
+        created,
+        new Date()
+    );
+
+    return `${dateOfRegistration} (${monthsSinceRegistration})`;
+  },
+
+  /**
    * Navigates to profile page. Call using `goToProfile.bind(this)()` or `goToProfile(actingAsBusiness, router, route)`
    * If acting as business, goes to business profile. Otherwise, user profile.
    * If already on own profile page, reloads the page

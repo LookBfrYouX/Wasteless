@@ -39,13 +39,6 @@ describe("Correct today date", () => {
   });
 });
 
-test("Error modal shows", async () => {
-  Api.getProducts.mockImplementation(
-      () => Promise.reject(new ApiRequestError("Anything")));
-  await wrapper.vm.populateDropdown();
-  expect(wrapper.vm.apiErrorMessage).not.toBeNull()
-})
-
 test("Error message shows", async () => {
   Api.addItemToInventory.mockImplementation(
       () => Promise.reject(new ApiRequestError("Anything")));

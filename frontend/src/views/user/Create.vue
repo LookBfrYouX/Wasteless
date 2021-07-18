@@ -407,7 +407,7 @@ export default {
         return;
       }
 
-      if (this.phoneNumber.trim().length >= 20) {
+      if (this.phoneNumber.trim().length > 20) {
         this.errorMessage = this.phoneErrorMessage = "Phone number is a maximum of 20 digits long";
         this.$refs.countryCodeLabel.scrollIntoView();
         return;
