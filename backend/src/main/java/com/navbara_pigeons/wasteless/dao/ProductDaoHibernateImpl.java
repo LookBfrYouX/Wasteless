@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.ProductQueryBuilder;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
@@ -43,10 +44,10 @@ public class ProductDaoHibernateImpl implements ProductDao {
   @Override
   public Pair<List<Product>, Long> getProducts(Business business, PaginationBuilder pagBuilder) {
     Session currentSession = getSession();
-    TypedQuery<Product> query = HibernateCriteriaQueryBuilder
+    TypedQuery<Product> query = ProductQueryBuilder
         .listPaginatedAndSortedBusinessProducts(currentSession, business, pagBuilder);
     Long businessProductsCount =
-        HibernateCriteriaQueryBuilder.createTotalProductsCountQuery(currentSession, business)
+        ProductQueryBuilder.createTotalProductsCountQuery(currentSession, business)
             .getSingleResult();
     return Pair.of(query.getResultList(), businessProductsCount);
   }

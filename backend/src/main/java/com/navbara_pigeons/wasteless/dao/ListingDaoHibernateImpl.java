@@ -1,11 +1,11 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.ListingQueryBuilder;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
@@ -39,10 +39,10 @@ public class ListingDaoHibernateImpl implements ListingDao {
     Session currentSession = getSession();
 
     List<Listing> serverResult =
-        HibernateCriteriaQueryBuilder.listPaginatedAndSortedBusinessListings(
+        ListingQueryBuilder.listPaginatedAndSortedBusinessListings(
             currentSession, business, pagBuilder).getResultList();
     Long totalCount =
-        HibernateCriteriaQueryBuilder.createTotalListingsCountQuery(currentSession, business)
+        ListingQueryBuilder.createTotalListingsCountQuery(currentSession, business)
             .getSingleResult();
 
     return Pair.of(serverResult, totalCount);

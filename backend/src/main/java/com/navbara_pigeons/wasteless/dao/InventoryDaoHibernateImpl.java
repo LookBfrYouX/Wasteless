@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.InventoryQueryBuilder;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
@@ -41,10 +42,10 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
       PaginationBuilder pagBuilder) {
     Session currentSession = getSession();
     TypedQuery<InventoryItem> query =
-        HibernateCriteriaQueryBuilder.listPaginatedAndSortedBusinessInventory(
+        InventoryQueryBuilder.listPaginatedAndSortedBusinessInventory(
             currentSession, business, pagBuilder);
     Long totalCount =
-        HibernateCriteriaQueryBuilder.createTotalListingsCountQuery(currentSession, business)
+        InventoryQueryBuilder.createTotalInventoryCountQuery(currentSession, business)
             .getSingleResult();
     return Pair.of(query.getResultList(), totalCount);
   }

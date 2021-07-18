@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.UserQueryBuilder;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.management.InvalidAttributeValueException;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,21 +129,22 @@ public class UserDaoHibernateImpl implements UserDao {
    * Search for a list of users.
    *
    * @param searchQuery Search query ( can include AND, OR's )
-   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and
-   *     paginating items
-   * @return A paginated and sorted list of Users and the total count of the entity (used for
-   *     client side pagination)
+   * @param pagBuilder  The Pagination Builder that holds this configurations for sorting and
+   *                    paginating items
+   * @return A paginated and sorted list of Users and the total count of the entity (used for client
+   * side pagination)
    */
   @Override
   public Pair<List<User>, Long> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
       throws InvalidAttributeValueException {
     Session currentSession = getSession();
-    TypedQuery<User> query =
-        HibernateCriteriaQueryBuilder.parseUserSearchQuery(currentSession, searchQuery, pagBuilder);
-    Long totalCount =
-        HibernateCriteriaQueryBuilder.getEntityCountQuery(currentSession, User.class);
+    List<User> serverResults = UserQueryBuilder
+        .listPaginatedAndSortedUsers(currentSession, searchQuery, pagBuilder).getResultList();
+    Long totalCountOfQuery = entityManager.createQuery(
+        UserQueryBuilder.createTotalUserCountQuery(currentSession, searchQuery))
+        .getSingleResult();
 
-    return Pair.of(query.getResultList(), totalCount);
+    return Pair.of(serverResults, totalCountOfQuery);
   }
 
   /**
