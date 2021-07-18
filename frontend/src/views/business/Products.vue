@@ -1,8 +1,6 @@
 <template>
   <div class="w-100 col-12 col-md-8 col-lg-6">
-    <button @click="sortUpdate">
-      Sort
-    </button>
+    <product-catalogue-sort-bar @update="sortUpdate" />
     <div>
       Displaying products {{ this.searchParams.pagStartIndex + 1 }} - {{ this.searchParams.pagEndIndex + 1 }} out of
       {{ this.totalResults }}
@@ -23,7 +21,6 @@
     <v-pagination
         v-model="page"
         :length="totalPages"
-        prev-icon="mdi-menu-left"
         @input="pageUpdate"
         @next="pageUpdate"
         @previous="pageUpdate"
@@ -45,11 +42,13 @@ import ErrorModal from "@/components/ErrorModal.vue";
 import ProductCatalogueListItem from "@/components/cards/ProductCatalogueCard";
 
 import {Api} from "@/Api";
+import ProductCatalogueSortBar from "@/components/ProductCatalogueSortBar";
 
 
 export default {
   name: "ProductCatalogue",
   components: {
+    ProductCatalogueSortBar,
     ErrorModal,
     ProductCatalogueListItem,
   },
@@ -64,11 +63,12 @@ export default {
   data() {
     return {
       page: 1, // The default starting page.
-      itemsPerPage: 10, // The number of items to display on each page.
+      itemsPerPage: 3, // The number of items to display on each page.
       totalResults: 0, // The total number of results. Only 1 page is retrieved at a time.
       searchParams: {
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
+        sortBy: "id-acs",
       },
       products: [],
       currency: null,
@@ -97,9 +97,11 @@ export default {
     /**
      * Updates the search query and retrieves the new data.
      */
-    sortUpdate: async function () {
+    sortUpdate: async function (sortBy) {
       console.log("Sort changed, going back to page 1");
+      this.searchParams.sortBy = sortBy;
       this.page = 1;
+      console.log(this.searchParams);
       await this.pageUpdate();
     },
     /**
@@ -175,46 +177,5 @@ export default {
 };
 </script>
 <style>
-.theme--light.v-pagination .v-pagination__item--active {
-  color: white;
-  background: green;
-}
 
-.theme--light.v-pagination .v-pagination__navigation {
-  color: white;
-  background: green;
-}
-</style>
-<style>
-.theme--light.v-pagination .v-pagination__item--active {
-  color: white;
-  background: green;
-}
-
-.theme--light.v-pagination .v-pagination__navigation {
-  color: white;
-  background: green;
-}
-</style>
-<style>
-.theme--light.v-pagination .v-pagination__item--active {
-  color: white;
-  background: green;
-}
-
-.theme--light.v-pagination .v-pagination__navigation {
-  color: white;
-  background: green;
-}
-</style>
-<style>
-.theme--light.v-pagination .v-pagination__item--active {
-  color: white;
-  background: green;
-}
-
-.theme--light.v-pagination .v-pagination__navigation {
-  color: white;
-  background: green;
-}
 </style>
