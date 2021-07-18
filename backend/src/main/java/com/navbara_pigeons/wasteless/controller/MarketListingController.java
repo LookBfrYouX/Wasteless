@@ -6,7 +6,6 @@ import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
-import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.MarketListingService;
 import com.navbara_pigeons.wasteless.service.UserService;
@@ -39,7 +38,7 @@ public class MarketListingController {
   @PostMapping("/cards")
   public ResponseEntity<JSONObject> addMarketListing(
       @RequestBody CreateMarketListingDto createMarketListingDto)
-      throws UserNotFoundException, UnhandledException {
+      throws UserNotFoundException {
     log.info("CREATING A CARD WITH TITLE: " + createMarketListingDto.getTitle());
     User creator = userService.getUserById(createMarketListingDto.getCreatorId());
     MarketListing marketListing = new MarketListing(createMarketListingDto, creator);

@@ -1,8 +1,11 @@
 <template>
   <div class="w-100 col-12 col-md-8 col-lg-6">
+    <button @click="sortUpdate">
+      Sort
+    </button>
     <div>
-      Displaying page {{ this.page }} out of
-      {{ this.totalPages }}
+      Displaying products {{ this.searchParams.pagStartIndex + 1 }} - {{ this.searchParams.pagEndIndex + 1 }} out of
+      {{ this.totalResults }}
     </div>
     <ul class="list-unstyled">
       <li v-for="product in products" :key="product.id">
@@ -17,7 +20,14 @@
         </router-link>
       </li>
     </ul>
-    <v-pagination v-model="page" :length="6" />
+    <v-pagination
+        v-model="page"
+        :length="totalPages"
+        prev-icon="mdi-menu-left"
+        @input="pageUpdate"
+        @next="pageUpdate"
+        @previous="pageUpdate"
+    />
     <error-modal
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
@@ -53,8 +63,13 @@ export default {
 
   data() {
     return {
-      page: 1,
-      totalPages: 10,
+      page: 1, // The default starting page.
+      itemsPerPage: 10, // The number of items to display on each page.
+      totalResults: 0, // The total number of results. Only 1 page is retrieved at a time.
+      searchParams: {
+        pagStartIndex: 0, // The default start index. Overridden in beforeMount.
+        pagEndIndex: 0, // The default end index. Overridden in beforeMount.
+      },
       products: [],
       currency: null,
       apiErrorMessage: null,
@@ -65,11 +80,36 @@ export default {
   beforeMount: async function () {
     const success = await this.query();
     if (success) {
-      await Promise.allSettled([this.loadCurrencies(), this.loadBusinessName()]);
+      await Promise.allSettled([this.loadCurrencies(), this.loadBusinessName(), this.pageUpdate()]);
+    }
+  },
+
+  computed: {
+    /**
+     * Computes the total number of pages for the pagination component.
+     */
+    totalPages: function () {
+      return Math.floor((this.totalResults - 1) / this.itemsPerPage) + 1;
     }
   },
 
   methods: {
+    /**
+     * Updates the search query and retrieves the new data.
+     */
+    sortUpdate: async function () {
+      console.log("Sort changed, going back to page 1");
+      this.page = 1;
+      await this.pageUpdate();
+    },
+    /**
+     * Updates page when pagination buttons are pressed.
+     */
+    pageUpdate: async function () {
+      this.searchParams.pagStartIndex = ((this.page - 1) * this.itemsPerPage);
+      this.searchParams.pagEndIndex = Math.min((this.page * this.itemsPerPage) -1, this.totalResults - 1);
+      await this.query();
+    },
     /**
      * Loads currency info
      * @return true on success
@@ -104,11 +144,9 @@ export default {
       }
 
       try {
-        const response = (await Api.getProducts(this.businessId)).data;
+        const response = (await Api.getProducts(this.businessId, this.searchParams)).data;
         this.products = response.results;
         this.totalResults = response.totalCount;
-        //console.log(this.products);
-        console.log(this.totalResults);
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -136,3 +174,47 @@ export default {
   }
 };
 </script>
+<style>
+.theme--light.v-pagination .v-pagination__item--active {
+  color: white;
+  background: green;
+}
+
+.theme--light.v-pagination .v-pagination__navigation {
+  color: white;
+  background: green;
+}
+</style>
+<style>
+.theme--light.v-pagination .v-pagination__item--active {
+  color: white;
+  background: green;
+}
+
+.theme--light.v-pagination .v-pagination__navigation {
+  color: white;
+  background: green;
+}
+</style>
+<style>
+.theme--light.v-pagination .v-pagination__item--active {
+  color: white;
+  background: green;
+}
+
+.theme--light.v-pagination .v-pagination__navigation {
+  color: white;
+  background: green;
+}
+</style>
+<style>
+.theme--light.v-pagination .v-pagination__item--active {
+  color: white;
+  background: green;
+}
+
+.theme--light.v-pagination .v-pagination__navigation {
+  color: white;
+  background: green;
+}
+</style>
