@@ -21,7 +21,7 @@
               <input
                   v-model="name"
                   class="form-control"
-                  maxlength="30"
+                  maxlength="100"
                   name="name"
                   placeholder="Name"
                   required
@@ -55,6 +55,7 @@
                   name="manufacturer"
                   placeholder="Manufacturer"
                   required
+                  maxlength="100"
                   type="text"
               />
             </div>
