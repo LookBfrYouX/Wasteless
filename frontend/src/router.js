@@ -246,7 +246,6 @@ export const router = new VueRouter({
       component: () => import("./views/marketplace/CardCreate"),
       props: route => ({userId: parseInt(route.params.userId, 10)})
     },
-
     {
       name: "Error",
       path: "/error",

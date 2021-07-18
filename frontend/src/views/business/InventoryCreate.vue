@@ -13,13 +13,17 @@
       </div>
       <div class="row">
         <div class="col-12 col-md-6 form-group required">
+          <label for="productDropdown">Select product</label>
           <v-autocomplete
-            :items="products"
-            v-model="product"
-            label="Product"
-            solo
-          />
-        </div>
+          solo
+          dense
+          item-text="name"
+          item-value="id"
+          :items="products"
+          v-model="product"
+
+          ></v-autocomplete>
+          </div>
         <div class="col-12 col-md-6 form-group required">
           <label for="quantity">Quantity</label>
           <input
@@ -135,7 +139,7 @@
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="true"
-        :retry="this.populateProducts"
+        :retry="this.populateDropdown"
         :show="apiErrorMessage !== null"
         title="Error fetching business products"
     >
@@ -180,7 +184,7 @@ export default {
 
   beforeMount: async function () {
     this.setDateInputs(new Date());
-    await this.populateProducts();
+    await this.populateDropdown();
     await this.currencyPipeline();
   },
 
@@ -234,7 +238,7 @@ export default {
       }
 
       let data = {
-        "productId": this.product.id,
+        "productId": this.product,
         "quantity": parsedQuantity,
         "pricePerItem": parsedPricePerItem,
         "totalPrice": parsedTotalPrice,
@@ -263,7 +267,7 @@ export default {
       }
       this.todayDate = yyyy + '-' + mm + '-' + dd;
     },
-    async populateProducts() {
+    async populateDropdown() {
       await Api.getProducts(this.businessId)
       .then(({data}) => this.products = data)
       .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
