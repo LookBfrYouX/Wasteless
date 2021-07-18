@@ -135,6 +135,24 @@ public class BusinessServiceImpl implements BusinessService {
   }
 
   /**
+   * Adds user with given ID to list of business admins
+   *
+   * @param userId     of the user that will be added to the list of business admins
+   * @param businessId of the business to add the admin to
+   */
+  @Transactional
+  public void removeBusinessAdmin(long businessId, long userId)
+          throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException {
+    User user = userService.getUserById(userId);
+    Business business = getBusiness(businessId);
+    if (!isBusinessPrimaryAdmin(businessId) && !userService.isAdmin()) {
+      throw new InsufficientPrivilegesException("Must be the primary business admin to use this feature!");
+    }
+    business.removeAdministrator(user);
+    businessDao.saveBusiness(business);
+  }
+
+  /**
    * This helper method tests if the currently logged in user is an administrator of the business
    * with the given ID
    *
