@@ -7,7 +7,9 @@ import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Currency;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -85,10 +87,12 @@ public class ProductServiceImpl implements ProductService {
 
     Business business = businessDao.getBusinessById(businessId);
     String defaultSortField = Product.class.getDeclaredFields()[0].getName();
-    PaginationBuilder pagBuilder = new PaginationBuilder(Product.class, defaultSortField);
+//    PaginationBuilder pagBuilder = new PaginationBuilder(Product.class, defaultSortField);
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class,
+        ListingSortByOption.valueOf("TODO"));
     pagBuilder.withPagStartIndex(pagStartIndex)
-        .withPagEndIndex(pagEndIndex)
-        .withSortByString(sortBy);
+        .withPagEndIndex(pagEndIndex);
+//        .withSortByString(sortBy);
 
     Pair<List<Product>, Long> dataAndTotalCount = productDao.getProducts(business, pagBuilder);
 

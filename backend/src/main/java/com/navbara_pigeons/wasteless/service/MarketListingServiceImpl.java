@@ -3,7 +3,9 @@ package com.navbara_pigeons.wasteless.service;
 import com.navbara_pigeons.wasteless.dao.MarketListingDao;
 import com.navbara_pigeons.wasteless.dto.FullMarketListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.time.ZonedDateTime;
@@ -40,10 +42,12 @@ public class MarketListingServiceImpl implements MarketListingService {
       throws InvalidPaginationInputException {
 
     String defaultSortField = MarketListing.class.getDeclaredFields()[0].getName();
-    PaginationBuilder pagBuilder = new PaginationBuilder(MarketListing.class, defaultSortField);
+//    PaginationBuilder pagBuilder = new PaginationBuilder(MarketListing.class, defaultSortField);
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class,
+        ListingSortByOption.valueOf("TODO"));
     pagBuilder.withPagStartIndex(pagStartIndex)
-        .withPagEndIndex(pagEndIndex)
-        .withSortByString(sortBy);
+        .withPagEndIndex(pagEndIndex);
+//        .withSortByString(sortBy);
 
     Pair<List<MarketListing>, Long> dataAndTotalCount = marketListingDao
         .getMarketListing(section, pagBuilder);

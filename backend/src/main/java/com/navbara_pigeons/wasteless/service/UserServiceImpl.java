@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.enums.UserSortByOption;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
@@ -205,14 +206,13 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public PaginationDto<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex,
-      Integer pagEndIndex, String sortBy)
+      Integer pagEndIndex, UserSortByOption sortBy, boolean isAscending)
       throws InvalidAttributeValueException, InvalidPaginationInputException {
 
-    String defaultSortField = User.class.getDeclaredFields()[0].getName();
-    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, defaultSortField);
+    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, sortBy);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
-        .withSortByString(sortBy);
+        .withSortAscending(isAscending);
 
     Pair<List<User>, Long> dataAndTotalCount = userDao.searchUsers(searchQuery, pagBuilder);
 

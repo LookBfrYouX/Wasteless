@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.enums.UserSortByOption;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
@@ -112,10 +113,11 @@ public class UserController {
   public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery,
       @RequestParam(required = false) Integer pagStartIndex,
       @RequestParam(required = false) Integer pagEndIndex,
-      @RequestParam(required = false) String sortBy)
+      @RequestParam(required = false) UserSortByOption sortBy,
+      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
       throws InvalidAttributeValueException, InvalidPaginationInputException {
     return new ResponseEntity<>(
-        this.userService.searchUsers(searchQuery, pagStartIndex, pagEndIndex, sortBy),
+        this.userService.searchUsers(searchQuery, pagStartIndex, pagEndIndex, sortBy, isAscending),
         HttpStatus.valueOf(200));
   }
 

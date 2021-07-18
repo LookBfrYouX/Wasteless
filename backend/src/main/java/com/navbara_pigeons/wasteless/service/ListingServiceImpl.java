@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
@@ -105,10 +106,12 @@ public class ListingServiceImpl implements ListingService {
     Business business = businessService.getBusiness(businessId);
 
     String defaultSortField = Listing.class.getDeclaredFields()[0].getName();
-    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, defaultSortField);
+//    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, defaultSortField);
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class,
+        ListingSortByOption.valueOf("TODO"));
     pagBuilder.withPagStartIndex(pagStartIndex)
-        .withPagEndIndex(pagEndIndex)
-        .withSortByString(sortBy);
+        .withPagEndIndex(pagEndIndex);
+//        .withSortByString(sortBy);
 
     Pair<List<Listing>, Long> dataAndTotalCount = listingDao.getListings(business, pagBuilder);
 

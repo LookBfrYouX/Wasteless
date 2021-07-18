@@ -1,7 +1,7 @@
 package com.navbara_pigeons.wasteless.helper;
 
+import com.navbara_pigeons.wasteless.enums.SortByOption;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
-import java.lang.reflect.Field;
 import lombok.Getter;
 
 /**
@@ -15,11 +15,11 @@ import lombok.Getter;
 @Getter
 public class PaginationBuilder {
 
-  Class<?> entity;
-  Integer pagStartIndex = 0;
-  Integer pagEndIndex;
-  String sortField;
-  boolean sortAscending = true;
+  private final Class<?> entity;
+  private Integer pagStartIndex = 0;
+  private Integer pagEndIndex;
+  private SortByOption sortField;
+  private boolean sortAscending = true;
 
   /**
    * Pagination Builder Constructor, sets the entity and parses the default sort field
@@ -27,27 +27,19 @@ public class PaginationBuilder {
    * @param entity           The class of entity that the Pagination/Sorting is for
    * @param defaultSortField A String value of the Java field name from the Entity class
    */
-  public PaginationBuilder(Class<?> entity, String defaultSortField)
-      throws InvalidPaginationInputException {
+  public PaginationBuilder(Class<?> entity, SortByOption defaultSortByOption) {
     this.entity = entity;
-    // Use the parse method as it checks if the sort field exists in the entity
-    if (defaultSortField != null) {
-      parseSortByString(defaultSortField + "-acs");
-    }
+    sortField = defaultSortByOption;
   }
 
   /**
    * Parse a Sort By String from the Client.
    *
-   * @param sortByString Defines the field to sort by and the direction (ascending or descending).
-   *                     In the format "fieldName-<acs/desc>"
+   * @param sortByOption Defines the field to sort by
    * @return The Pagination Builder Object, used for chaining methods
    */
-  public PaginationBuilder withSortByString(String sortByString)
-      throws InvalidPaginationInputException {
-    if (sortByString != null) {
-      parseSortByString(sortByString);
-    }
+  public PaginationBuilder withSortBy(SortByOption sortByOption) {
+    sortField = sortByOption;
     return this;
   }
 
@@ -96,19 +88,6 @@ public class PaginationBuilder {
   }
 
   /**
-   * Set the field to sort by. Also check that the newField exists in the selected Entity.
-   *
-   * @param sortField The new sort Field value
-   * @return The Pagination Builder Object, used for chaining methods
-   */
-  public PaginationBuilder withSortField(String sortField) throws InvalidPaginationInputException {
-    if (isValidFieldName(sortField)) {
-      this.sortField = sortField;
-    }
-    return this;
-  }
-
-  /**
    * Set the Sorting Direction, in other words. Is the sorting in Ascending order?
    *
    * @param sortAscending Whether the list should be in Ascending order (Boolean value)
@@ -119,58 +98,62 @@ public class PaginationBuilder {
     return this;
   }
 
-  /**
-   * Private method to check if a passed field name (String) is in the currently selected entity.
-   *
-   * @param fieldName The field name in question
-   * @return True if the field name in in the entity, False if otherwise
-   * @throws InvalidPaginationInputException If the value is invalid
-   */
-  private boolean isValidFieldName(String fieldName) throws InvalidPaginationInputException {
-    boolean validField = false;
-
-    for (Field field : entity.getDeclaredFields()) {
-      if (field.getName().equals(fieldName)) {
-        validField = true;
-        break;
-      }
-    }
-
-    if (!validField) {
-      throw new InvalidPaginationInputException(
-          "The passed in field to sort by does not exist in the "
-              + entity.getName()
-              + " class");
-    }
-
-    return true;
+  public String getSortByFieldName() {
+    return "TODO";
   }
 
-  /**
-   * Parse a SortBy string sent from the client. Check that it is in the correct format and then set
-   * the sort field and its direction (sort ascending). Note: Any sort string that does not match
-   * "desc" will by default be Ascending
-   *
-   * @param sortByString The SortBy string to parse
-   * @throws InvalidPaginationInputException SortBy string has an invalid format
-   */
-  private void parseSortByString(String sortByString) throws InvalidPaginationInputException {
-    String[] splitSortBy = sortByString.split("-");
-
-    if (splitSortBy.length != 2) {
-      throw new InvalidPaginationInputException(
-          "SortByString must be in 'entityFieldName-<acs/desc>' format");
-    }
-
-    String passedSortField = splitSortBy[0];
-    String passedSortAscending = splitSortBy[1];
-
-    if (isValidFieldName(passedSortField)) {
-      this.sortField = passedSortField;
-    }
-
-    if (passedSortAscending.equals("desc")) {
-      this.sortAscending = false;
-    }
-  }
+//  /**
+//   * Private method to check if a passed field name (String) is in the currently selected entity.
+//   *
+//   * @param fieldName The field name in question
+//   * @return True if the field name in in the entity, False if otherwise
+//   * @throws InvalidPaginationInputException If the value is invalid
+//   */
+//  private boolean isValidFieldName(String fieldName) throws InvalidPaginationInputException {
+//    boolean validField = false;
+//
+//    for (Field field : entity.getDeclaredFields()) {
+//      if (field.getName().equals(fieldName)) {
+//        validField = true;
+//        break;
+//      }
+//    }
+//
+//    if (!validField) {
+//      throw new InvalidPaginationInputException(
+//          "The passed in field to sort by does not exist in the "
+//              + entity.getName()
+//              + " class");
+//    }
+//
+//    return true;
+//  }
+//
+//  /**
+//   * Parse a SortBy string sent from the client. Check that it is in the correct format and then set
+//   * the sort field and its direction (sort ascending). Note: Any sort string that does not match
+//   * "desc" will by default be Ascending
+//   *
+//   * @param sortByString The SortBy string to parse
+//   * @throws InvalidPaginationInputException SortBy string has an invalid format
+//   */
+//  private void parseSortByString(String sortByString) throws InvalidPaginationInputException {
+//    String[] splitSortBy = sortByString.split("-");
+//
+//    if (splitSortBy.length != 2) {
+//      throw new InvalidPaginationInputException(
+//          "SortByString must be in 'entityFieldName-<acs/desc>' format");
+//    }
+//
+//    String passedSortField = splitSortBy[0];
+//    String passedSortAscending = splitSortBy[1];
+//
+//    if (isValidFieldName(passedSortField)) {
+//      this.sortField = passedSortField;
+//    }
+//
+//    if (passedSortAscending.equals("desc")) {
+//      this.sortAscending = false;
+//    }
+//  }
 }

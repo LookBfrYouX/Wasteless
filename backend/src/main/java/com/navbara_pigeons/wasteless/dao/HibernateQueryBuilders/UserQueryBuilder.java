@@ -106,7 +106,7 @@ public class UserQueryBuilder {
     root.alias("userAlias");
 
     // Sorting query
-    Path<Object> path = root.get(pagBuilder.getSortField());
+    Path<Object> path = root.get(pagBuilder.getSortByFieldName());
     Order order =
         pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
     criteriaQuery.orderBy(order);

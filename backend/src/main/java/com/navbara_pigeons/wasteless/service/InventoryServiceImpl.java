@@ -7,7 +7,9 @@ import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
@@ -80,10 +82,12 @@ public class InventoryServiceImpl implements InventoryService {
     Business business = businessDao.getBusinessById(businessId);
 
     String defaultSortField = InventoryItem.class.getDeclaredFields()[0].getName();
-    PaginationBuilder pagBuilder = new PaginationBuilder(InventoryItem.class, defaultSortField);
+//    PaginationBuilder pagBuilder = new PaginationBuilder(InventoryItem.class, defaultSortField);
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class,
+        ListingSortByOption.valueOf("TODO"));
     pagBuilder.withPagStartIndex(pagStartIndex)
-        .withPagEndIndex(pagEndIndex)
-        .withSortByString(sortBy);
+        .withPagEndIndex(pagEndIndex);
+//        .withSortByString(sortBy);
 
     Pair<List<InventoryItem>, Long> dataAndTotalCount = inventoryDao
         .getInventoryItems(business, pagBuilder);

@@ -39,7 +39,7 @@ public class InventoryQueryBuilder {
     criteriaQuery.where(criteriaBuilder.equal(root.get("business"), business));
 
     // Sorting query
-    Path<Object> path = root.get(pagBuilder.getSortField());
+    Path<Object> path = root.get(pagBuilder.getSortByFieldName());
     Order order =
         pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
     criteriaQuery.orderBy(order);
