@@ -5,7 +5,7 @@ import com.navbara_pigeons.wasteless.dto.FullMarketListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
-import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
+import com.navbara_pigeons.wasteless.enums.MarketListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.time.ZonedDateTime;
@@ -37,17 +37,15 @@ public class MarketListingServiceImpl implements MarketListingService {
 
   @Override
   @Transactional
-  public PaginationDto<FullMarketListingDto> getMarketListings(
-      String section, String sortBy, Integer pagStartIndex, Integer pagEndIndex)
+  public PaginationDto<FullMarketListingDto> getMarketListings(String section,
+      MarketListingSortByOption sortBy, Integer pagStartIndex, Integer pagEndIndex,
+      boolean isAscending)
       throws InvalidPaginationInputException {
 
-    String defaultSortField = MarketListing.class.getDeclaredFields()[0].getName();
-//    PaginationBuilder pagBuilder = new PaginationBuilder(MarketListing.class, defaultSortField);
-    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class,
-        ListingSortByOption.valueOf("TODO"));
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, sortBy);
     pagBuilder.withPagStartIndex(pagStartIndex)
-        .withPagEndIndex(pagEndIndex);
-//        .withSortByString(sortBy);
+        .withPagEndIndex(pagEndIndex)
+        .withSortAscending(isAscending);
 
     Pair<List<MarketListing>, Long> dataAndTotalCount = marketListingDao
         .getMarketListing(section, pagBuilder);

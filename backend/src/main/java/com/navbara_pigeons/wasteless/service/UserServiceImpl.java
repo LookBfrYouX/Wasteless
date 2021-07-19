@@ -195,12 +195,16 @@ public class UserServiceImpl implements UserService {
   /**
    * Calls the userDao to search for users using the given username
    *
-   * @param searchQuery   The name being searched for
-   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
-   * @param sortBy        Defines any user sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
-   * @return A list containing all the users whose names/nickname match the username
+   * @param searchQuery   name being searched for
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
+   * @return A paginated/sorted list containing all the users whose names/nickname match the
+   * username
    * @throws InvalidAttributeValueException
    */
   @Override

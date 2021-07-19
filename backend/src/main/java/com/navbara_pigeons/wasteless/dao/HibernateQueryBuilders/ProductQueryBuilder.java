@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -29,7 +30,8 @@ public class ProductQueryBuilder {
   }
 
   public static TypedQuery<Product> listPaginatedAndSortedBusinessProducts(
-      Session currentSession, Business business, PaginationBuilder pagBuilder) {
+      Session currentSession, Business business, PaginationBuilder pagBuilder)
+      throws InvalidPaginationInputException {
     // Setup
     // Tried and failed to use the criteria API to join businesses and products through catalogue
     // table, settled for using HQL

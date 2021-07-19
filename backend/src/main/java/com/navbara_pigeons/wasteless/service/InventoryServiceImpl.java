@@ -9,7 +9,7 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
+import com.navbara_pigeons.wasteless.enums.InventorySortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
@@ -61,33 +61,32 @@ public class InventoryServiceImpl implements InventoryService {
    *
    * @param businessId    The ID of the business whose products are to be retrieved.
    * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
-   *                      Null
+   *                      Null. This index is inclusive.
    * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
-   *                      Null
-   * @param sortBy        Defines any inventory item sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
    * @return productCatalogue A List<Product> of products that are in the business product
    * catalogue.
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
   public PaginationDto<BasicInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
-      Integer pagEndIndex, String sortBy)
+      Integer pagEndIndex, InventorySortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, IllegalArgumentException, InvalidPaginationInputException {
 
     if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
-      throw new InsufficientPrivilegesException("You are not permitted to modify this business");
+      throw new InsufficientPrivilegesException(
+          "You are not permitted to view the Inventory of this business");
     }
 
     Business business = businessDao.getBusinessById(businessId);
 
-    String defaultSortField = InventoryItem.class.getDeclaredFields()[0].getName();
-//    PaginationBuilder pagBuilder = new PaginationBuilder(InventoryItem.class, defaultSortField);
-    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class,
-        ListingSortByOption.valueOf("TODO"));
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, sortBy);
     pagBuilder.withPagStartIndex(pagStartIndex)
-        .withPagEndIndex(pagEndIndex);
-//        .withSortByString(sortBy);
+        .withPagEndIndex(pagEndIndex)
+        .withSortAscending(isAscending);
 
     Pair<List<InventoryItem>, Long> dataAndTotalCount = inventoryDao
         .getInventoryItems(business, pagBuilder);

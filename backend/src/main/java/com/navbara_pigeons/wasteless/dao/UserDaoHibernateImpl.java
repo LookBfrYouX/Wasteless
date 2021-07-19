@@ -141,7 +141,7 @@ public class UserDaoHibernateImpl implements UserDao {
    */
   @Override
   public Pair<List<User>, Long> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
-      throws InvalidAttributeValueException {
+      throws InvalidAttributeValueException, InvalidPaginationInputException {
     Session currentSession = getSession();
     List<User> serverResults = UserQueryBuilder
         .listPaginatedAndSortedUsers(currentSession, searchQuery, pagBuilder).getResultList();

@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders;
 
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,8 @@ public class UserQueryBuilder {
   }
 
   public static TypedQuery<User> listPaginatedAndSortedUsers(Session currentSession,
-      String searchQuery, PaginationBuilder pagBuilder) throws InvalidAttributeValueException {
+      String searchQuery, PaginationBuilder pagBuilder)
+      throws InvalidAttributeValueException, InvalidPaginationInputException {
     CriteriaQuery<User> criteriaQuery = parseUserSearchQuery(currentSession, searchQuery);
     return userPaginationAndSorting(criteriaQuery, currentSession, pagBuilder);
   }
@@ -99,7 +101,7 @@ public class UserQueryBuilder {
   }
 
   private static TypedQuery<User> userPaginationAndSorting(CriteriaQuery<User> criteriaQuery,
-      Session currentSession, PaginationBuilder pagBuilder) {
+      Session currentSession, PaginationBuilder pagBuilder) throws InvalidPaginationInputException {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     Root<User> root = criteriaBuilder.createQuery(User.class).from(User.class);

@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.dao;
 import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.ListingQueryBuilder;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -28,14 +29,15 @@ public class ListingDaoHibernateImpl implements ListingDao {
   /**
    * Get a list of Listings for a specific Business.
    *
-   * @param business The specific business to get the information from
+   * @param business   The specific business to get the information from
    * @param pagBuilder The Pagination Builder that holds this configurations for sorting and
-   *     paginating items
+   *                   paginating items
    * @return A paginated and sorted list of Listings and the total count of the entity (used for
-   *     client side pagination)
+   * client side pagination)
    */
   @Override
-  public Pair<List<Listing>, Long> getListings(Business business, PaginationBuilder pagBuilder) {
+  public Pair<List<Listing>, Long> getListings(Business business, PaginationBuilder pagBuilder)
+      throws InvalidPaginationInputException {
     Session currentSession = getSession();
 
     List<Listing> serverResult =

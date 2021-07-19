@@ -1,6 +1,18 @@
 package com.navbara_pigeons.wasteless.helper;
 
+import static com.navbara_pigeons.wasteless.enums.UserSortByOption.FIRST_NAME;
+
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.entity.MarketListing;
+import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.enums.InventorySortByOption;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
+import com.navbara_pigeons.wasteless.enums.MarketListingSortByOption;
+import com.navbara_pigeons.wasteless.enums.ProductSortByOption;
 import com.navbara_pigeons.wasteless.enums.SortByOption;
+import com.navbara_pigeons.wasteless.enums.UserSortByOption;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import lombok.Getter;
 
@@ -24,12 +36,18 @@ public class PaginationBuilder {
   /**
    * Pagination Builder Constructor, sets the entity and parses the default sort field
    *
-   * @param entity           The class of entity that the Pagination/Sorting is for
-   * @param defaultSortField A String value of the Java field name from the Entity class
+   * @param entity              The class of entity that the Pagination/Sorting is for
+   * @param defaultSortByOption A enum value of the Java field name from the Entity class to sort
+   *                            by
    */
-  public PaginationBuilder(Class<?> entity, SortByOption defaultSortByOption) {
+  public PaginationBuilder(Class<?> entity, SortByOption defaultSortByOption)
+      throws InvalidPaginationInputException {
     this.entity = entity;
-    sortField = defaultSortByOption;
+    if (defaultSortByOption == null) {
+      sortField = getDefaultSortByOption();
+    } else {
+      sortField = defaultSortByOption;
+    }
   }
 
   /**
@@ -98,62 +116,109 @@ public class PaginationBuilder {
     return this;
   }
 
-  public String getSortByFieldName() {
-    return "TODO";
+  public String getSortByFieldName() throws InvalidPaginationInputException {
+    String fieldName = null;
+    // Switch statements apparently don't work for Class<?>
+    if (User.class.equals(entity)) {
+      switch ((UserSortByOption) this.getSortField()) {
+        case FIRST_NAME:
+          fieldName = "firstName";
+          break;
+        case MIDDLE_NAME:
+          fieldName = "middleName";
+          break;
+        case LAST_NAME:
+          fieldName = "lastName";
+          break;
+        case NICKNAME:
+          fieldName = "nickname";
+          break;
+      }
+    } else if (Product.class.equals(entity)) {
+      switch ((ProductSortByOption) this.getSortField()) {
+        case NAME:
+          fieldName = "name";
+          break;
+        case MANUFACTURER:
+          fieldName = "manufacturer";
+          break;
+        case RRP:
+          fieldName = "recommendedRetailPrice";
+          break;
+        case CREATED_DATE:
+          fieldName = "created";
+          break;
+      }
+    } else if (MarketListing.class.equals(entity)) {
+      switch ((MarketListingSortByOption) this.getSortField()) {
+        case TITLE:
+          fieldName = "title";
+          break;
+        case CREATED_DATE:
+          fieldName = "created";
+          break;
+        case DISPLAY_PERIOD_END_DATE:
+          fieldName = "displayPeriodEnd";
+          break;
+      }
+    } else if (Listing.class.equals(entity)) {
+      switch ((ListingSortByOption) this.getSortField()) {
+        case QUANTITY:
+          fieldName = "quantity";
+          break;
+        case PRICE:
+          fieldName = "price";
+          break;
+        case CREATED_DATE:
+          fieldName = "created";
+          break;
+        case CLOSES_DATE:
+          fieldName = "closes";
+          break;
+      }
+    } else if (InventoryItem.class.equals(entity)) {
+      switch ((InventorySortByOption) this.getSortField()) {
+        case QUANTITY:
+          fieldName = "quantity";
+          break;
+        case PPI:
+          fieldName = "pricePerItem";
+          break;
+        case TOTAL_PRICE:
+          fieldName = "totalPrice";
+          break;
+        case MANUFACTURED_DATE:
+          fieldName = "manufactured";
+          break;
+        case SELL_BY_DATE:
+          fieldName = "sellBy";
+          break;
+        case EXPIRY_DATE:
+          fieldName = "bestBefore";
+          break;
+      }
+    } else {
+      throw new InvalidPaginationInputException("Unknown entity used in Pagination Builder");
+    }
+    return fieldName;
   }
 
-//  /**
-//   * Private method to check if a passed field name (String) is in the currently selected entity.
-//   *
-//   * @param fieldName The field name in question
-//   * @return True if the field name in in the entity, False if otherwise
-//   * @throws InvalidPaginationInputException If the value is invalid
-//   */
-//  private boolean isValidFieldName(String fieldName) throws InvalidPaginationInputException {
-//    boolean validField = false;
-//
-//    for (Field field : entity.getDeclaredFields()) {
-//      if (field.getName().equals(fieldName)) {
-//        validField = true;
-//        break;
-//      }
-//    }
-//
-//    if (!validField) {
-//      throw new InvalidPaginationInputException(
-//          "The passed in field to sort by does not exist in the "
-//              + entity.getName()
-//              + " class");
-//    }
-//
-//    return true;
-//  }
-//
-//  /**
-//   * Parse a SortBy string sent from the client. Check that it is in the correct format and then set
-//   * the sort field and its direction (sort ascending). Note: Any sort string that does not match
-//   * "desc" will by default be Ascending
-//   *
-//   * @param sortByString The SortBy string to parse
-//   * @throws InvalidPaginationInputException SortBy string has an invalid format
-//   */
-//  private void parseSortByString(String sortByString) throws InvalidPaginationInputException {
-//    String[] splitSortBy = sortByString.split("-");
-//
-//    if (splitSortBy.length != 2) {
-//      throw new InvalidPaginationInputException(
-//          "SortByString must be in 'entityFieldName-<acs/desc>' format");
-//    }
-//
-//    String passedSortField = splitSortBy[0];
-//    String passedSortAscending = splitSortBy[1];
-//
-//    if (isValidFieldName(passedSortField)) {
-//      this.sortField = passedSortField;
-//    }
-//
-//    if (passedSortAscending.equals("desc")) {
-//      this.sortAscending = false;
-//    }
-//  }
+  private SortByOption getDefaultSortByOption() throws InvalidPaginationInputException {
+    SortByOption defaultSortByOption;
+    // Switch statements apparently don't work for Class<?>
+    if (User.class.equals(entity)) {
+      defaultSortByOption = FIRST_NAME;
+    } else if (Product.class.equals(entity)) {
+      defaultSortByOption = ProductSortByOption.NAME;
+    } else if (MarketListing.class.equals(entity)) {
+      defaultSortByOption = MarketListingSortByOption.CREATED_DATE;
+    } else if (Listing.class.equals(entity)) {
+      defaultSortByOption = ListingSortByOption.CREATED_DATE;
+    } else if (InventoryItem.class.equals(entity)) {
+      defaultSortByOption = InventorySortByOption.QUANTITY;
+    } else {
+      throw new InvalidPaginationInputException("Unknown entity used in Pagination Builder");
+    }
+    return defaultSortByOption;
+  }
 }

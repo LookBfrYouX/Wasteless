@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -32,7 +33,8 @@ public class ListingQueryBuilder {
   }
 
   public static TypedQuery<Listing> listPaginatedAndSortedBusinessListings(
-      Session currentSession, Business business, PaginationBuilder pagBuilder) {
+      Session currentSession, Business business, PaginationBuilder pagBuilder)
+      throws InvalidPaginationInputException {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
 

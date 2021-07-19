@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.dao;
 import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.InventoryQueryBuilder;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
@@ -39,7 +40,7 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
    */
   @Override
   public Pair<List<InventoryItem>, Long> getInventoryItems(Business business,
-      PaginationBuilder pagBuilder) {
+      PaginationBuilder pagBuilder) throws InvalidPaginationInputException {
     Session currentSession = getSession();
     TypedQuery<InventoryItem> query =
         InventoryQueryBuilder.listPaginatedAndSortedBusinessInventory(

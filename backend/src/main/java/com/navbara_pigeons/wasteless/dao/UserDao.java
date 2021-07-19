@@ -25,6 +25,6 @@ public interface UserDao {
       throws InvalidAttributeValueException, InvalidPaginationInputException;
 
   Pair<List<User>, Long> searchUsers(String searchQuery, PaginationBuilder pagBuilder)
-      throws InvalidAttributeValueException;
+      throws InvalidAttributeValueException, InvalidPaginationInputException;
 
 }
