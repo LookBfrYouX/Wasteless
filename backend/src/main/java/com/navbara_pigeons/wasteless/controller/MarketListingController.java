@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.enums.MarketListingSortByOption;
+import com.navbara_pigeons.wasteless.enums.MarketplaceSection;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -50,7 +51,7 @@ public class MarketListingController {
   }
 
   /**
-   * @param section
+   * @param section       The section of the marketplace
    * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
    *                      Null. This index is inclusive.
    * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
@@ -63,7 +64,7 @@ public class MarketListingController {
    */
   @GetMapping("/cards")
   public ResponseEntity<PaginationDto<FullMarketListingDto>> getMarketListings(
-      @RequestParam String section,
+      @RequestParam MarketplaceSection section,
       @RequestParam(required = false) Integer pagStartIndex,
       @RequestParam(required = false) Integer pagEndIndex,
       @RequestParam(required = false) MarketListingSortByOption sortBy,
@@ -72,7 +73,7 @@ public class MarketListingController {
     log.info("GETTING CARDS FROM THE '" + section + "' SECTION");
     return new ResponseEntity<>(
         this.marketListingService
-            .getMarketListings(section, sortBy, pagStartIndex, pagEndIndex, isAscending),
+            .getMarketListings(section.name(), sortBy, pagStartIndex, pagEndIndex, isAscending),
         HttpStatus.OK);
   }
 }
