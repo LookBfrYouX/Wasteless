@@ -41,7 +41,7 @@ public class MarketListingController {
   @PostMapping("/cards")
   public ResponseEntity<JSONObject> addMarketListing(
       @RequestBody CreateMarketListingDto createMarketListingDto)
-      throws UserNotFoundException, UnhandledException {
+      throws UserNotFoundException {
     log.info("CREATING A CARD WITH TITLE: " + createMarketListingDto.getTitle());
     User creator = userService.getUserById(createMarketListingDto.getCreatorId());
     MarketListing marketListing = new MarketListing(createMarketListingDto, creator);

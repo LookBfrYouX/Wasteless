@@ -8,7 +8,6 @@ import com.navbara_pigeons.wasteless.enums.UserSortByOption;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
-import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -88,7 +87,7 @@ public class UserController {
    */
   @GetMapping("/users/{id}")
   public ResponseEntity<Object> getUserById(@PathVariable String id)
-      throws UserNotFoundException, UnhandledException {
+      throws UserNotFoundException {
     log.info("GETTING USER BY ID: " + id);
     User user = userService.getUserById(Long.parseLong(id));
     if (userService.isAdmin() || userService.isSelf(user.getEmail())) {
