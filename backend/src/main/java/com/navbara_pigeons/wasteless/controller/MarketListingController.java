@@ -8,7 +8,6 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.enums.MarketListingSortByOption;
 import com.navbara_pigeons.wasteless.enums.MarketplaceSection;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
-import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.MarketListingService;
 import com.navbara_pigeons.wasteless.service.UserService;
