@@ -1,7 +1,6 @@
 package com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders;
 
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,13 @@ public class UserQueryBuilder {
   private UserQueryBuilder() {
   }
 
+  /**
+   * Create a query for retrieving the total count of the clients query
+   *
+   * @param currentSession The Session
+   * @param searchQuery    The search query for the group of users
+   * @return A Query for retrieving the total count (Long) of the clients query
+   */
   public static CriteriaQuery<Long> createTotalUserCountQuery(Session currentSession,
       String searchQuery)
       throws InvalidAttributeValueException {
@@ -38,9 +44,18 @@ public class UserQueryBuilder {
     return countQuery;
   }
 
+  /**
+   * Create a query to return a list of paginated and sorted Users that match the search criteria.
+   *
+   * @param currentSession The Session
+   * @param searchQuery    The search query for the group of users
+   * @param pagBuilder     The pagination builder that holds all the clients pagination values
+   * @return A Query that returns a list of paginated and sorted Users
+   * @throws InvalidAttributeValueException
+   */
   public static TypedQuery<User> listPaginatedAndSortedUsers(Session currentSession,
       String searchQuery, PaginationBuilder pagBuilder)
-      throws InvalidAttributeValueException, InvalidPaginationInputException {
+      throws InvalidAttributeValueException {
     CriteriaQuery<User> criteriaQuery = parseUserSearchQuery(currentSession, searchQuery);
     return userPaginationAndSorting(criteriaQuery, currentSession, pagBuilder);
   }
@@ -100,8 +115,16 @@ public class UserQueryBuilder {
     return criteriaQuery;
   }
 
+  /**
+   * Order and sort the search query
+   *
+   * @param criteriaQuery  The query to order/sort
+   * @param currentSession The Session
+   * @param pagBuilder     The pagination builder that holds all the clients pagination values
+   * @return A Query that returns a list of paginated and sorted Users
+   */
   private static TypedQuery<User> userPaginationAndSorting(CriteriaQuery<User> criteriaQuery,
-      Session currentSession, PaginationBuilder pagBuilder) throws InvalidPaginationInputException {
+      Session currentSession, PaginationBuilder pagBuilder) {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     Root<User> root = criteriaBuilder.createQuery(User.class).from(User.class);

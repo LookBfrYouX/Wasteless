@@ -2,7 +2,6 @@ package com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
-import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,6 +17,13 @@ public class InventoryQueryBuilder {
   private InventoryQueryBuilder() {
   }
 
+  /**
+   * Create a query for retrieving the total count of the clients query
+   *
+   * @param currentSession The Session
+   * @param business       The business to query for the inventory items
+   * @return A Query for retrieving the total count (Long) of the clients query
+   */
   public static Query<Long> createTotalInventoryCountQuery(
       Session currentSession, Business business) {
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
@@ -29,9 +35,17 @@ public class InventoryQueryBuilder {
     return currentSession.createQuery(countQuery);
   }
 
+  /**
+   * Create a query to return a list of paginated and sorted Inventory Items that match the search
+   * criteria.
+   *
+   * @param currentSession The Session
+   * @param business       The business to query for the inventory items
+   * @param pagBuilder     The pagination builder that holds all the clients pagination values
+   * @return A Query that returns a list of paginated and sorted Inventory Items
+   */
   public static TypedQuery<InventoryItem> listPaginatedAndSortedBusinessInventory(
-      Session currentSession, Business business, PaginationBuilder pagBuilder)
-      throws InvalidPaginationInputException {
+      Session currentSession, Business business, PaginationBuilder pagBuilder) {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<InventoryItem> criteriaQuery = criteriaBuilder.createQuery(InventoryItem.class);

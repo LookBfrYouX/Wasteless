@@ -20,6 +20,13 @@ public class ListingQueryBuilder {
   private ListingQueryBuilder() {
   }
 
+  /**
+   * Create a query for retrieving the total count of the clients query
+   *
+   * @param currentSession The Session
+   * @param business       The business to query for the listings
+   * @return A Query for retrieving the total count (Long) of the clients query
+   */
   public static Query<Long> createTotalListingsCountQuery(
       Session currentSession, Business business) {
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
@@ -32,6 +39,15 @@ public class ListingQueryBuilder {
     return currentSession.createQuery(countQuery);
   }
 
+  /**
+   * Create a query to return a list of paginated and sorted Listings that match the search
+   * criteria.
+   *
+   * @param currentSession The Session
+   * @param business       The business to query for the listings
+   * @param pagBuilder     The pagination builder that holds all the clients pagination values
+   * @return A Query that returns a list of paginated and sorted Listings
+   */
   public static TypedQuery<Listing> listPaginatedAndSortedBusinessListings(
       Session currentSession, Business business, PaginationBuilder pagBuilder)
       throws InvalidPaginationInputException {

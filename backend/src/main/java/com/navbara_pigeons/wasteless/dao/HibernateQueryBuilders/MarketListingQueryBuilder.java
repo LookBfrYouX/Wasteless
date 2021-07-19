@@ -1,7 +1,6 @@
 package com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders;
 
 import com.navbara_pigeons.wasteless.entity.MarketListing;
-import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -17,6 +16,13 @@ public class MarketListingQueryBuilder {
   private MarketListingQueryBuilder() {
   }
 
+  /**
+   * Create a query for retrieving the total count of the clients query
+   *
+   * @param currentSession The Session
+   * @param section        The section of the marketplace to query
+   * @return A Query for retrieving the total count (Long) of the clients query
+   */
   public static Query<Long> createTotalMarketListingsCountQuery(
       Session currentSession, String section) {
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
@@ -28,9 +34,17 @@ public class MarketListingQueryBuilder {
     return currentSession.createQuery(countQuery);
   }
 
+  /**
+   * Create a query to return a list of paginated and sorted Market Listings that match the search
+   * criteria.
+   *
+   * @param currentSession The Session
+   * @param section        The section of the marketplace to query
+   * @param pagBuilder     The pagination builder that holds all the clients pagination values
+   * @return A Query that returns a list of paginated and sorted Market Listings
+   */
   public static TypedQuery<MarketListing> listPaginatedAndSortedMarketListings(
-      Session currentSession, String section, PaginationBuilder pagBuilder)
-      throws InvalidPaginationInputException {
+      Session currentSession, String section, PaginationBuilder pagBuilder) {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<MarketListing> criteriaQuery = criteriaBuilder.createQuery(MarketListing.class);

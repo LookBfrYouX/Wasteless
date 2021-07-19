@@ -17,6 +17,13 @@ public class ProductQueryBuilder {
   private ProductQueryBuilder() {
   }
 
+  /**
+   * Create a query for retrieving the total count of the clients query
+   *
+   * @param currentSession The Session
+   * @param business       The business to query for the Products
+   * @return A Query for retrieving the total count (Long) of the clients query
+   */
   public static Query<Long> createTotalProductsCountQuery(
       Session currentSession, Business business) {
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
@@ -29,6 +36,15 @@ public class ProductQueryBuilder {
     return currentSession.createQuery(countQuery);
   }
 
+  /**
+   * Create a query to return a list of paginated and sorted Products that match the search
+   * criteria.
+   *
+   * @param currentSession The Session
+   * @param business       The business to query for the Products
+   * @param pagBuilder     The pagination builder that holds all the clients pagination values
+   * @return A Query that returns a list of paginated and sorted Products
+   */
   public static TypedQuery<Product> listPaginatedAndSortedBusinessProducts(
       Session currentSession, Business business, PaginationBuilder pagBuilder)
       throws InvalidPaginationInputException {
