@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-select
-        class="col-6 col-lg-4"
         :items="items.map(a => a.key)"
         @change="sortChange"
         label="Sort By"
@@ -12,14 +11,9 @@
 
 <script>
 export default {
-  name: "ProductCatalogueSortBar",
+  name: "SimpleSortBar",
   props: {
     items: Array,
-  },
-  data() {
-    return {
-      sortBy: "",
-    }
   },
   methods: {
     sortChange: function (event) {

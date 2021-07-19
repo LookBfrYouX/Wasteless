@@ -1,9 +1,16 @@
 <template>
   <div class="w-100 col-12 col-md-8 col-lg-6">
-    <product-catalogue-sort-bar @update="sortUpdate" :items="items" />
     <div>
-      Displaying products {{ this.searchParams.pagStartIndex + 1 }} - {{ this.searchParams.pagEndIndex + 1 }} out of
-      {{ this.totalResults }}
+      <h2>Product Catalogue for {{ businessName }}</h2>
+    </div>
+    <div class="d-inline-flex flex-wrap-reverse col-12">
+      <div class="col-12 col-lg-6">
+        <simple-sort-bar @update="sortUpdate" :items="items" />
+      </div>
+      <div class="col-12 col-lg-6">
+        Displaying products {{ this.searchParams.pagStartIndex + 1 }} - {{ this.searchParams.pagEndIndex + 1 }} out of
+        {{ this.totalResults }}
+      </div>
     </div>
     <ul class="list-unstyled">
       <li v-for="product in products" :key="product.id">
@@ -42,13 +49,13 @@ import ErrorModal from "@/components/ErrorModal.vue";
 import ProductCatalogueListItem from "@/components/cards/ProductCatalogueCard";
 
 import {Api} from "@/Api";
-import ProductCatalogueSortBar from "@/components/ProductCatalogueSortBar";
+import SimpleSortBar from "@/components/SimpleSortBar";
 
 
 export default {
   name: "ProductCatalogue",
   components: {
-    ProductCatalogueSortBar,
+    SimpleSortBar,
     ErrorModal,
     ProductCatalogueListItem,
   },
@@ -68,7 +75,7 @@ export default {
       searchParams: {
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
-        sortBy: "id-acs",
+        sortBy: "name-acs",
       },
       products: [],
       currency: null,
@@ -104,10 +111,8 @@ export default {
      * Updates the search query and retrieves the new data.
      */
     sortUpdate: async function (sortBy) {
-      console.log("Sort changed, going back to page 1");
       this.searchParams.sortBy = sortBy;
       this.page = 1;
-      console.log(this.searchParams);
       await this.pageUpdate();
     },
     /**
@@ -117,6 +122,7 @@ export default {
       this.searchParams.pagStartIndex = ((this.page - 1) * this.itemsPerPage);
       this.searchParams.pagEndIndex = Math.min((this.page * this.itemsPerPage) -1, this.totalResults - 1);
       await this.query();
+      window.scrollTo(0,0);
     },
     /**
      * Loads currency info
@@ -182,6 +188,3 @@ export default {
   }
 };
 </script>
-<style>
-
-</style>
