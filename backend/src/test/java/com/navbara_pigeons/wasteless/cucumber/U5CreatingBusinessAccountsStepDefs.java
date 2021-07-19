@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.User;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
@@ -58,7 +59,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
       throws Exception {
     Business business = new Business();
     Address address = makeAddress();
-    business.setBusinessType(businessType)
+    business.setBusinessType(BusinessType.fromString(businessType))
         .setName(businessName)
         .setAddress(address);
 
@@ -110,7 +111,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
     Business business = new Business();
     Address address = makeAddress();
     business
-        .setBusinessType(businessType)
+        .setBusinessType(BusinessType.fromString(businessType))
         .setName(businessName)
         .setAddress(address);
 
@@ -132,7 +133,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
       throws Exception {
     Business business = new Business();
     Address address = makeAddress();
-    business.setBusinessType(businessType)
+    business.setBusinessType(BusinessType.fromString(businessType))
         .setName(businessName)
         .setAddress(address);
 

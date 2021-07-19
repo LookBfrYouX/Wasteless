@@ -2,6 +2,8 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import java.time.ZonedDateTime;
+
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import lombok.Data;
 
 /**
@@ -15,7 +17,7 @@ public class BasicBusinessDto {
   private String name;
   private String description;
   private FullAddressDto address;
-  private String businessType;
+  private BusinessType businessType;
   private ZonedDateTime created;
 
   public BasicBusinessDto(Business business) {

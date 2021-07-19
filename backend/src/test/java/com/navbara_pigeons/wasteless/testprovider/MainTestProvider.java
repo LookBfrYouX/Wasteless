@@ -1,11 +1,7 @@
 package com.navbara_pigeons.wasteless.testprovider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.navbara_pigeons.wasteless.entity.Address;
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.InventoryItem;
-import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.entity.*;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -71,7 +67,7 @@ public class MainTestProvider {
     Business business = new Business();
     business.setName(businessName)
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
-        .setBusinessType("Non-profit organisation")
+        .setBusinessType(BusinessType.NON_PROFIT)
         .setAddress(makeAddress())
         .setDescription("some description");
     return business;

@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import java.time.ZonedDateTime;
@@ -19,7 +20,7 @@ public class FullBusinessDto {
   private String name;
   private String description;
   private FullAddressDto address;
-  private String businessType;
+  private BusinessType businessType;
   private ZonedDateTime created;
   private List<BasicUserDto> administrators;
   private List<BasicProductDto> productsCatalogue;

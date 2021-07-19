@@ -1,6 +1,8 @@
 package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
+import com.navbara_pigeons.wasteless.validation.constraints.StringEnumeration;
 import lombok.Data;
 
 
@@ -14,6 +16,8 @@ public class CreateBusinessDto {
   private String name;
   private String description;
   private FullAddressDto address;
+  
+  @StringEnumeration(enumClass = BusinessType.class, message = "Invalid business type given")
   private String businessType;
 
   public CreateBusinessDto(Business business) {
@@ -21,7 +25,7 @@ public class CreateBusinessDto {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new FullAddressDto(business.getAddress());
-    this.businessType = business.getBusinessType();
+    this.businessType = business.getBusinessType().toString();
   }
 
   public CreateBusinessDto() {

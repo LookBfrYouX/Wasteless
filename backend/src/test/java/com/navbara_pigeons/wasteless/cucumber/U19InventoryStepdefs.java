@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -30,7 +31,7 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
     Business business = new Business();
     business.setName(businessName);
     Address address = makeAddress();
-    business.setBusinessType(businessType)
+    business.setBusinessType(BusinessType.fromString(businessType))
         .setName(businessName)
         .setAddress(address);
 
