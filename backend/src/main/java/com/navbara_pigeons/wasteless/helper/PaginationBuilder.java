@@ -44,7 +44,7 @@ public class PaginationBuilder {
     if (defaultSortByOption == null) {
       sortField = getDefaultSortByOption();
     } else {
-      sortField = defaultSortByOption;
+      this.withSortBy(defaultSortByOption);
     }
   }
 
@@ -56,11 +56,11 @@ public class PaginationBuilder {
    */
   public PaginationBuilder withSortBy(SortByOption sortByOption)
       throws InvalidPaginationInputException {
-    if (entity == sortByOption.getClass()) {
+    if (entity == sortByOption.getEntity()) {
       sortField = sortByOption;
     } else {
       throw new InvalidPaginationInputException(
-          sortByOption + " is not a valid sort option for " + sortByOption.getClass().getName());
+          sortByOption + " is not a valid sort option for " + entity.getName());
     }
 
     return this;

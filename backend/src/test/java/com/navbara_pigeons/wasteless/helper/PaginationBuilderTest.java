@@ -31,7 +31,7 @@ public class PaginationBuilderTest {
   public void constructorWithInvalidSortField() {
     // Arrange
     Class<User> entity = User.class;
-    UserSortByOption defaultSortField = UserSortByOption.firstName;
+    SortByOption defaultSortField = ProductSortByOption.name;
 
     // Act & Assert
     Assertions.assertThrows(InvalidPaginationInputException.class, () -> {

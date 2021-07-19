@@ -1,10 +1,17 @@
 package com.navbara_pigeons.wasteless.enums;
 
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
+
 public enum InventorySortByOption implements SortByOption {
   quantity,
   pricePerItem,
   totalPrice,
   manufactured,
   sellBy,
-  bestBefore
+  bestBefore;
+
+  @Override
+  public Class<?> getEntity() {
+    return InventoryItem.class;
+  }
 }

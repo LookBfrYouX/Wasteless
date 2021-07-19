@@ -7,7 +7,6 @@ import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
-import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.enums.InventorySortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -83,7 +82,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     Business business = businessDao.getBusinessById(businessId);
 
-    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, sortBy);
+    PaginationBuilder pagBuilder = new PaginationBuilder(InventoryItem.class, sortBy);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
         .withSortAscending(isAscending);
