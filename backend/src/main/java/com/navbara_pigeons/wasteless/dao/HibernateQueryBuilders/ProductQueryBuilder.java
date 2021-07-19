@@ -37,7 +37,7 @@ public class ProductQueryBuilder {
     // table, settled for using HQL
     String HQL =
         "SELECT bpc FROM Business b JOIN b.productsCatalogue bpc WHERE b.id=:business_id ORDER BY bpc."
-            + pagBuilder.getSortByFieldName();
+            + pagBuilder.getSortField().toString();
     HQL += pagBuilder.isSortAscending() ? " ASC" : " DESC";
     TypedQuery<Product> typedQuery =
         currentSession

@@ -1,7 +1,5 @@
 package com.navbara_pigeons.wasteless.helper;
 
-import static com.navbara_pigeons.wasteless.enums.UserSortByOption.FIRST_NAME;
-
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
@@ -56,8 +54,15 @@ public class PaginationBuilder {
    * @param sortByOption Defines the field to sort by
    * @return The Pagination Builder Object, used for chaining methods
    */
-  public PaginationBuilder withSortBy(SortByOption sortByOption) {
-    sortField = sortByOption;
+  public PaginationBuilder withSortBy(SortByOption sortByOption)
+      throws InvalidPaginationInputException {
+    if (entity == sortByOption.getClass()) {
+      sortField = sortByOption;
+    } else {
+      throw new InvalidPaginationInputException(
+          sortByOption + " is not a valid sort option for " + sortByOption.getClass().getName());
+    }
+
     return this;
   }
 
@@ -116,106 +121,19 @@ public class PaginationBuilder {
     return this;
   }
 
-  public String getSortByFieldName() throws InvalidPaginationInputException {
-    String fieldName = null;
-    // Switch statements apparently don't work for Class<?>
-    if (User.class.equals(entity)) {
-      switch ((UserSortByOption) this.getSortField()) {
-        case FIRST_NAME:
-          fieldName = "firstName";
-          break;
-        case MIDDLE_NAME:
-          fieldName = "middleName";
-          break;
-        case LAST_NAME:
-          fieldName = "lastName";
-          break;
-        case NICKNAME:
-          fieldName = "nickname";
-          break;
-      }
-    } else if (Product.class.equals(entity)) {
-      switch ((ProductSortByOption) this.getSortField()) {
-        case NAME:
-          fieldName = "name";
-          break;
-        case MANUFACTURER:
-          fieldName = "manufacturer";
-          break;
-        case RRP:
-          fieldName = "recommendedRetailPrice";
-          break;
-        case CREATED_DATE:
-          fieldName = "created";
-          break;
-      }
-    } else if (MarketListing.class.equals(entity)) {
-      switch ((MarketListingSortByOption) this.getSortField()) {
-        case TITLE:
-          fieldName = "title";
-          break;
-        case CREATED_DATE:
-          fieldName = "created";
-          break;
-        case DISPLAY_PERIOD_END_DATE:
-          fieldName = "displayPeriodEnd";
-          break;
-      }
-    } else if (Listing.class.equals(entity)) {
-      switch ((ListingSortByOption) this.getSortField()) {
-        case QUANTITY:
-          fieldName = "quantity";
-          break;
-        case PRICE:
-          fieldName = "price";
-          break;
-        case CREATED_DATE:
-          fieldName = "created";
-          break;
-        case CLOSES_DATE:
-          fieldName = "closes";
-          break;
-      }
-    } else if (InventoryItem.class.equals(entity)) {
-      switch ((InventorySortByOption) this.getSortField()) {
-        case QUANTITY:
-          fieldName = "quantity";
-          break;
-        case PPI:
-          fieldName = "pricePerItem";
-          break;
-        case TOTAL_PRICE:
-          fieldName = "totalPrice";
-          break;
-        case MANUFACTURED_DATE:
-          fieldName = "manufactured";
-          break;
-        case SELL_BY_DATE:
-          fieldName = "sellBy";
-          break;
-        case EXPIRY_DATE:
-          fieldName = "bestBefore";
-          break;
-      }
-    } else {
-      throw new InvalidPaginationInputException("Unknown entity used in Pagination Builder");
-    }
-    return fieldName;
-  }
-
   private SortByOption getDefaultSortByOption() throws InvalidPaginationInputException {
     SortByOption defaultSortByOption;
     // Switch statements apparently don't work for Class<?>
     if (User.class.equals(entity)) {
-      defaultSortByOption = FIRST_NAME;
+      defaultSortByOption = UserSortByOption.firstName;
     } else if (Product.class.equals(entity)) {
-      defaultSortByOption = ProductSortByOption.NAME;
+      defaultSortByOption = ProductSortByOption.name;
     } else if (MarketListing.class.equals(entity)) {
-      defaultSortByOption = MarketListingSortByOption.CREATED_DATE;
+      defaultSortByOption = MarketListingSortByOption.created;
     } else if (Listing.class.equals(entity)) {
-      defaultSortByOption = ListingSortByOption.CREATED_DATE;
+      defaultSortByOption = ListingSortByOption.created;
     } else if (InventoryItem.class.equals(entity)) {
-      defaultSortByOption = InventorySortByOption.QUANTITY;
+      defaultSortByOption = InventorySortByOption.quantity;
     } else {
       throw new InvalidPaginationInputException("Unknown entity used in Pagination Builder");
     }

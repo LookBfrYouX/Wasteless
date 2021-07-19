@@ -39,7 +39,7 @@ public class MarketListingQueryBuilder {
     criteriaQuery.where(criteriaBuilder.equal(root.get("section"), section));
 
     // Sorting query
-    Path<Object> path = root.get(pagBuilder.getSortByFieldName());
+    Path<Object> path = root.get(pagBuilder.getSortField().toString());
     Order order =
         pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
     criteriaQuery.orderBy(order);
