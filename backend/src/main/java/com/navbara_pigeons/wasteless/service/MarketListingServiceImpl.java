@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.service;
 import com.navbara_pigeons.wasteless.dao.MarketListingDao;
 import com.navbara_pigeons.wasteless.dto.FullMarketListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
-import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
 import com.navbara_pigeons.wasteless.enums.MarketListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
@@ -42,7 +41,7 @@ public class MarketListingServiceImpl implements MarketListingService {
       boolean isAscending)
       throws InvalidPaginationInputException {
 
-    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, sortBy);
+    PaginationBuilder pagBuilder = new PaginationBuilder(MarketListing.class, sortBy);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
         .withSortAscending(isAscending);
