@@ -35,7 +35,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     business.setName(businessName);
     business.setAddress(new FullAddressDto(makeAddress()));
     business.getAddress().setCountry(countryName);
-
+    business.setPrimaryAdministratorId(loggedInUserId);
     JsonNode json = makePostRequestGetJson("/businesses", business, status().isCreated());
     businessId = json.get("businessId").asLong();
   }

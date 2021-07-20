@@ -65,7 +65,7 @@ public class UserDaoHibernateImpl implements UserDao {
     Session currentSession = getSession();
     User user = currentSession.get(User.class, id);
     if (user == null) {
-      throw new UserNotFoundException("No user with ID: " + Float.toString(id));
+      throw new UserNotFoundException("No user with ID: " + id);
     }
     return user;
   }

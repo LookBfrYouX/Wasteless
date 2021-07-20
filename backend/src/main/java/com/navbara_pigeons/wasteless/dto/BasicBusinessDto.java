@@ -17,7 +17,7 @@ public class BasicBusinessDto {
   private String name;
   private String description;
   private FullAddressDto address;
-  private BusinessType businessType;
+  private String businessType;
   private ZonedDateTime created;
 
   public BasicBusinessDto(Business business) {
@@ -26,7 +26,7 @@ public class BasicBusinessDto {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new FullAddressDto(business.getAddress());
-    this.businessType = business.getBusinessType();
+    this.businessType = business.getBusinessType().toString();
     this.created = business.getCreated();
   }
 

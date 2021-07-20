@@ -3,7 +3,9 @@ package com.navbara_pigeons.wasteless.cucumber;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
+import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.dto.FullAddressDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
@@ -28,12 +30,14 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
 
   @And("has a business {string} with type {string}")
   public void hasABusiness(String businessName, String businessType) throws Exception {
-    Business business = new Business();
+    CreateBusinessDto business = new CreateBusinessDto();
     business.setName(businessName);
-    Address address = makeAddress();
-    business.setBusinessType(BusinessType.fromString(businessType))
+    FullAddressDto address = new FullAddressDto(makeAddress());
+    business.setBusinessType(businessType)
         .setName(businessName)
-        .setAddress(address);
+        .setAddress(address)
+        .setPrimaryAdministratorId(loggedInUserId)
+    ;
 
     JsonNode response = makePostRequestGetJson(
         "/businesses/",

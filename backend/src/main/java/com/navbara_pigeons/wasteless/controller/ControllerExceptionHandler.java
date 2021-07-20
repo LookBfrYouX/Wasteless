@@ -212,12 +212,11 @@ public class ControllerExceptionHandler {
       errors.add(error.getDefaultMessage());
     }
 
-
     String message = "Invalid entity received:";
     for(String msg: errors) {
       message += "\n- " + msg;
     }
-
+    log.error(message);
     return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
   }
 }

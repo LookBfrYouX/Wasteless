@@ -9,14 +9,18 @@ import com.navbara_pigeons.wasteless.controller.ProductController;
 import com.navbara_pigeons.wasteless.controller.UserController;
 import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.security.service.BasicUserDetailsServiceImpl;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import io.cucumber.spring.CucumberContextConfiguration;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 
@@ -35,20 +39,23 @@ public class CucumberTestProvider extends MainTestProvider {
   @Autowired
   protected BasicUserDetailsServiceImpl basicUserDetailsService;
 
+  protected Long loggedInUserId = null;
 
   /**
    * Logs in as admin using userController. See `adminLogin`, may or may not be exactly the same
    */
   protected void login(String email) {
     // https://stackoverflow.com/questions/36584184/spring-security-withmockuser-does-not-work-with-cucumber-tests
+    UserDetails user = basicUserDetailsService.loadUserByUsername(email);
     SecurityContextHolder.getContext().setAuthentication(
         new UsernamePasswordAuthenticationToken(
-            basicUserDetailsService.loadUserByUsername(email),
-            basicUserDetailsService.loadUserByUsername(email),
+            user,
+            user,
             // This one is probably wrong but no one cares
             createAuthorityList("ADMIN")
         )
     );
+    loggedInUserId = ((BasicUserDetails) user).getId();
   }
 
 
@@ -114,7 +121,8 @@ public class CucumberTestProvider extends MainTestProvider {
     UserCredentials credentials = new UserCredentials();
     credentials.setEmail("mbi47@uclive.ac.nz");
     credentials.setPassword("fun123");
-    this.userController.login(credentials);
+    ResponseEntity<JSONObject> response = this.userController.login(credentials);
+    loggedInUserId = (Long) response.getBody().get("userId");
   }
 
   /**
@@ -125,7 +133,8 @@ public class CucumberTestProvider extends MainTestProvider {
     UserCredentials credentials = new UserCredentials();
     credentials.setEmail(email);
     credentials.setPassword("fun123");
-    this.userController.login(credentials);
+    ResponseEntity<JSONObject> response = this.userController.login(credentials);
+    loggedInUserId = (Long) response.getBody().get("userId");
   }
 
   void nonAdminLogin() throws UserNotFoundException, UserAuthenticationException {

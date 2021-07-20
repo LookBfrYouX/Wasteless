@@ -3,7 +3,11 @@ package com.navbara_pigeons.wasteless.cucumber;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
+import com.navbara_pigeons.wasteless.dto.FullAddressDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
@@ -24,7 +28,6 @@ import org.springframework.test.web.servlet.MvcResult;
 public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
 
   private MvcResult response;
-  private String userId;
 
   @Given("this user exists")
   public void thisUserExists(DataTable dataTable) {
@@ -51,7 +54,10 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
             .content(credentials.toString())
             .accept(MediaType.ALL))
         .andExpect(status().is(200)).andReturn();
-    userId = mvcResult.getResponse().getContentAsString().replaceAll("[^0-9]", "");
+//    loggedInUserId = Long.parseLong(
+    JsonNode response = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    loggedInUserId = response.get("userId").asLong();
+//                    loggedIn
   }
 
   @Given("I create a {string} business {string}")
@@ -61,7 +67,8 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
     Address address = makeAddress();
     business.setBusinessType(BusinessType.fromString(businessType))
         .setName(businessName)
-        .setAddress(address);
+        .setAddress(address)
+        .setPrimaryAdministratorId(loggedInUserId);
 
     response = mockMvc.perform(post("/businesses/")
         .contentType("application/json")
@@ -108,10 +115,10 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @Given("I create an illegitimate {string} business {string}")
   public void iCreateAnIllegitimateBusiness(String businessType, String businessName)
       throws Exception {
-    Business business = new Business();
-    Address address = makeAddress();
+    CreateBusinessDto business = new CreateBusinessDto();
+    FullAddressDto address = new FullAddressDto(makeAddress());
     business
-        .setBusinessType(BusinessType.fromString(businessType))
+        .setBusinessType(businessType)
         .setName(businessName)
         .setAddress(address);
 
@@ -154,7 +161,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
         .andExpect(status().isOk()).andReturn();
 
     // Get the businessId from the returned string object
-    if (!res.getResponse().getContentAsString().contains("\"primaryAdministratorId\":" + userId)) {
+    if (!res.getResponse().getContentAsString().contains("\"primaryAdministratorId\":" + loggedInUserId)) {
       Assert.fail("Business not found");
     }
   }

@@ -92,7 +92,7 @@ public class Business {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new Address(business.getAddress());
-    this.businessType = business.getBusinessType();
+    this.businessType = BusinessType.fromString(business.getBusinessType());
     this.created = business.getCreated();
     for (BasicUserDto userDto : business.getAdministrators()) {
       this.administrators.add(new User(userDto));
@@ -108,7 +108,7 @@ public class Business {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new Address(business.getAddress());
-    this.businessType = business.getBusinessType();
+    this.businessType = BusinessType.fromString(business.getBusinessType());
     this.created = business.getCreated();
   }
 

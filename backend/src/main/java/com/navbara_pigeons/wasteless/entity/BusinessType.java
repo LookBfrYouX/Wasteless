@@ -25,6 +25,9 @@ public enum BusinessType {
    * @throws IllegalArgumentException if invalid string given
    */
   public static BusinessType fromString(String businessType) throws IllegalArgumentException {
+    if (businessType == null) {
+      throw new IllegalArgumentException("Null given as business type");
+    }
     for (BusinessType b : BusinessType.values()) {
       if (b.value.equals(businessType)) {
         return b;

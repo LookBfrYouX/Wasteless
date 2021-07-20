@@ -20,7 +20,7 @@ public class FullBusinessDto {
   private String name;
   private String description;
   private FullAddressDto address;
-  private BusinessType businessType;
+  private String businessType;
   private ZonedDateTime created;
   private List<BasicUserDto> administrators;
   private List<BasicProductDto> productsCatalogue;
@@ -31,7 +31,7 @@ public class FullBusinessDto {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new FullAddressDto(business.getAddress());
-    this.businessType = business.getBusinessType();
+    this.businessType = business.getBusinessType().toString();
     this.created = business.getCreated();
     if (business.getAdministrators() != null) {
       this.administrators = makeUserDto(business.getAdministrators());
