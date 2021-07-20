@@ -98,10 +98,10 @@ export default {
       apiErrorMessage: null,
       businessName: null,
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
-        {key: "Name A-Z", value: "name-asc"},
-        {key: "Name Z-A", value: "name-desc"},
-        {key: "RRP Lowest", value: "recommendedRetailPrice-asc"},
-        {key: "RRP Highest", value: "recommendedRetailPrice-desc"},
+        {key: "Name A-Z", value: "name", isAscending: true},
+        {key: "Name Z-A", value: "name", isAscending: false},
+        {key: "RRP Lowest", value: "recommendedRetailPrice", isAscending: true},
+        {key: "RRP Highest", value: "recommendedRetailPrice", isAscending: false},
       ],
     }
   },
