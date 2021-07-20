@@ -28,7 +28,7 @@ The parent component must provide `address` prop. When the address is updated in
           :suggestions="[]"
           :value="address.streetNumber"
           inputClasses="form-control"
-          maxlength="50"
+          maxlength="100"
           name="streetnumber"
 
           placeholder="Street number"
@@ -85,7 +85,7 @@ The parent component must provide `address` prop. When the address is updated in
           :value="address.city"
           autocomplete="address-level2"
           inputClasses="form-control"
-          maxlength="100"
+          maxlength="200"
           name="city"
           placeholder="City"
 
@@ -104,7 +104,7 @@ The parent component must provide `address` prop. When the address is updated in
           :value="address.region"
           autocomplete="address-level1"
           inputClasses="form-control"
-          maxlength="100"
+          maxlength="200"
           name="region"
           placeholder="Region"
 
@@ -124,7 +124,7 @@ The parent component must provide `address` prop. When the address is updated in
           :value="address.postcode"
           autocomplete="postal-code"
           inputClasses="form-control"
-          maxlength="10"
+          maxlength="30"
           name="postcode"
           placeholder="Post code"
 
@@ -143,7 +143,7 @@ The parent component must provide `address` prop. When the address is updated in
           :value="address.country"
           autocomplete="country-name"
           class="form-control"
-          maxlength="50"
+          maxlength="100"
           name="country"
           placeholder="Country"
           required
