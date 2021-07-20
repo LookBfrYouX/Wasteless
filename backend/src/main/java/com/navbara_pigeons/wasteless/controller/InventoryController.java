@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.enums.InventorySortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
@@ -44,23 +45,27 @@ public class InventoryController {
    *
    * @param id            The ID of the business whose inventory is to be displayed
    * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
-   *                      Null
+   *                      Null. This index is inclusive.
    * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
-   *                      Null
-   * @param sortBy        Defines any inventory sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null and defaults to the 'id'
+   *                      field.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
    * @return response A JSONObject containing the information of all inventory items listed for the
    * business.
    */
   @GetMapping("/businesses/{id}/inventory")
-  public ResponseEntity<Object> showBusinessInventory(@PathVariable long id,
+  public ResponseEntity<Object> showBusinessInventory(
+      @PathVariable long id,
       @RequestParam(required = false) Integer pagStartIndex,
       @RequestParam(required = false) Integer pagEndIndex,
-      @RequestParam(required = false) String sortBy)
+      @RequestParam(required = false) InventorySortByOption sortBy,
+      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
       throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException, BusinessNotFoundException, InvalidAttributeValueException, InvalidPaginationInputException {
     log.info("RETRIEVED INVENTORY ITEMS FOR BUSINESS: " + id);
     return new ResponseEntity<>(
-        this.inventoryService.getInventory(id, pagStartIndex, pagEndIndex, sortBy),
+        this.inventoryService.getInventory(id, pagStartIndex, pagEndIndex, sortBy, isAscending),
         HttpStatus.valueOf(200));
   }
 

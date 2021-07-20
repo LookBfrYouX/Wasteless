@@ -63,7 +63,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
 
     Assertions.assertArrayEquals(
         List.of(1, 2, 3, 4, 5, 6).stream().map(Long::valueOf).toArray(),
-        listingService.getListings(mockBusiness.getId(), null, null, null)
+        listingService.getListings(mockBusiness.getId(), null, null, null, true)
             .getResults()
             .stream().map(FullListingDto::getId)
             .toArray()

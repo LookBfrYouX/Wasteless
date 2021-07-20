@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
@@ -89,26 +90,26 @@ public class ListingServiceImpl implements ListingService {
    *
    * @param businessId    id of business
    * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
-   *                      Null
+   *                      Null. This index is inclusive.
    * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
-   *                      Null
-   * @param sortBy        Defines any listing sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
    * @return listings in no guaranteed order
    * @throws BusinessNotFoundException
    * @throws UserNotFoundException
    */
   @Override
   public PaginationDto<FullListingDto> getListings(long businessId, Integer pagStartIndex,
-      Integer pagEndIndex, String sortBy)
+      Integer pagEndIndex, ListingSortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, UserNotFoundException, InvalidPaginationInputException {
     Business business = businessService.getBusiness(businessId);
 
-    String defaultSortField = Listing.class.getDeclaredFields()[0].getName();
-    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, defaultSortField);
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, sortBy);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
-        .withSortByString(sortBy);
+        .withSortAscending(isAscending);
 
     Pair<List<Listing>, Long> dataAndTotalCount = listingDao.getListings(business, pagBuilder);
 

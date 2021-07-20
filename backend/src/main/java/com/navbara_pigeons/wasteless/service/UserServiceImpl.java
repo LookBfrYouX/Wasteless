@@ -5,6 +5,7 @@ import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.enums.UserSortByOption;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
@@ -194,25 +195,28 @@ public class UserServiceImpl implements UserService {
   /**
    * Calls the userDao to search for users using the given username
    *
-   * @param searchQuery   The name being searched for
-   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
-   * @param sortBy        Defines any user sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
-   * @return A list containing all the users whose names/nickname match the username
+   * @param searchQuery   name being searched for
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
+   * @return A paginated/sorted list containing all the users whose names/nickname match the
+   * username
    * @throws InvalidAttributeValueException
    */
   @Override
   @Transactional
   public PaginationDto<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex,
-      Integer pagEndIndex, String sortBy)
+      Integer pagEndIndex, UserSortByOption sortBy, boolean isAscending)
       throws InvalidAttributeValueException, InvalidPaginationInputException {
 
-    String defaultSortField = User.class.getDeclaredFields()[0].getName();
-    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, defaultSortField);
+    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, sortBy);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
-        .withSortByString(sortBy);
+        .withSortAscending(isAscending);
 
     Pair<List<User>, Long> dataAndTotalCount = userDao.searchUsers(searchQuery, pagBuilder);
 

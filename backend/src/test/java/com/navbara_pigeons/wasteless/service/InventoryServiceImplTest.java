@@ -85,7 +85,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
         .thenReturn(Pair.of(inventory, 0L));
 
     List<BasicInventoryItemDto> inventoryDto = inventoryService
-        .getInventory(business.getId(), null, null, null).getResults();
+        .getInventory(business.getId(), null, null, null, true).getResults();
 
     assertInventoryListEquals(inventory, inventoryDto);
   }
@@ -94,7 +94,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   @WithMockUser(username = EMAIL_2)
   public void getInventory_isNotBusinessAdmin() {
     assertThrows(InsufficientPrivilegesException.class,
-        () -> inventoryService.getInventory(1, null, null, null));
+        () -> inventoryService.getInventory(1, null, null, null, true));
   }
 
   @Test
@@ -138,7 +138,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
         .thenReturn(Pair.of(inventoryItemList, 0L));
 
     List<BasicInventoryItemDto> inventory = inventoryService
-        .getInventory(business.getId(), null, null, null).getResults();
+        .getInventory(business.getId(), null, null, null, true).getResults();
 
     assertInventoryListEquals(inventoryItemList, inventory);
   }
@@ -149,6 +149,6 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     when(userServiceMock.isAdmin()).thenReturn(false);
     when(businessServiceMock.isBusinessAdmin(1000)).thenThrow(BusinessNotFoundException.class);
     assertThrows(BusinessNotFoundException.class,
-        () -> inventoryService.getInventory(1000, null, null, null));
+        () -> inventoryService.getInventory(1000, null, null, null, true));
   }
 }

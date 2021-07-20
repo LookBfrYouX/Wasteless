@@ -8,6 +8,7 @@ import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Currency;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.enums.ProductSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -66,29 +67,28 @@ public class ProductServiceImpl implements ProductService {
    *
    * @param businessId    The ID of the business whose products are to be retrieved.
    * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
-   *                      Null
+   *                      Null. This index is inclusive.
    * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
-   *                      Null
-   * @param sortBy        Defines any product sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
-   * @return productCatalogue A List<Product> of products that are in the business product
-   * catalogue.
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
   public PaginationDto<BasicProductDto> getProducts(long businessId, Integer pagStartIndex,
-      Integer pagEndIndex, String sortBy)
+      Integer pagEndIndex, ProductSortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InvalidPaginationInputException {
     if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
-      throw new InsufficientPrivilegesException("You are not permitted to modify this business");
+      throw new InsufficientPrivilegesException(
+          "You are not permitted to view the Products of this business");
     }
 
     Business business = businessDao.getBusinessById(businessId);
-    String defaultSortField = Product.class.getDeclaredFields()[0].getName();
-    PaginationBuilder pagBuilder = new PaginationBuilder(Product.class, defaultSortField);
+    PaginationBuilder pagBuilder = new PaginationBuilder(Product.class, sortBy);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
-        .withSortByString(sortBy);
+        .withSortAscending(isAscending);
 
     Pair<List<Product>, Long> dataAndTotalCount = productDao.getProducts(business, pagBuilder);
 

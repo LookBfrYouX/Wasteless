@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
+import com.navbara_pigeons.wasteless.enums.ProductSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
@@ -45,24 +46,30 @@ public class ProductController {
    * This endpoint retrieves a list of all products listed by a particular business (id).
    *
    * @param id            The business ID.
-   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be Null
-   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be Null
-   * @param sortBy        Defines any product sorting needed and the direction (ascending or
-   *                      descending). In the format "fieldName-<acs/desc>", Can be Null
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null and defaults to the 'id'
+   *                      field.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
    * @return A list of products.
    * @throws UserNotFoundException           Handled in ControllerExceptionHandler class.
    * @throws InsufficientPrivilegesException Handled in ControllerExceptionHandler class.
    * @throws BusinessNotFoundException       Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/products")
-  public ResponseEntity<Object> showBusinessCatalogue(@PathVariable long id,
+  public ResponseEntity<Object> showBusinessCatalogue(
+      @PathVariable long id,
       @RequestParam(required = false) Integer pagStartIndex,
       @RequestParam(required = false) Integer pagEndIndex,
-      @RequestParam(required = false) String sortBy)
+      @RequestParam(required = false) ProductSortByOption sortBy,
+      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InvalidPaginationInputException {
     log.info("RETRIEVED PRODUCTS FOR BUSINESS: " + id);
     return new ResponseEntity<>(
-        this.productService.getProducts(id, pagStartIndex, pagEndIndex, sortBy),
+        this.productService.getProducts(id, pagStartIndex, pagEndIndex, sortBy, isAscending),
         HttpStatus.valueOf(200));
   }
 
