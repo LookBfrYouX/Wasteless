@@ -2,8 +2,10 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /** This controller class provides the endpoints for dealing with business listings */
 @RestController
@@ -58,15 +61,29 @@ public class ListingController {
   /**
    * This controller endpoint is used to retrieve businesses listings from a specified business.
    *
-   * @param id The business ID
+   * @param id            The business ID
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null and defaults to the 'id'
+   *                      field.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
    * @return A ResponseEntity with a list of listings.
    * @throws UserNotFoundException Handled in ControllerExceptionHandler class.
    * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/listings")
-  public ResponseEntity<Object> getBusinessById(@PathVariable long id)
-      throws UserNotFoundException, BusinessNotFoundException {
+  public ResponseEntity<Object> getBusinessById(
+      @PathVariable long id,
+      @RequestParam(required = false) Integer pagStartIndex,
+      @RequestParam(required = false) Integer pagEndIndex,
+      @RequestParam(required = false) ListingSortByOption sortBy,
+      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
+      throws UserNotFoundException, BusinessNotFoundException, InvalidPaginationInputException {
     log.info("GETTING LISTINGS FOR BUSINESS WITH ID " + id);
-    return new ResponseEntity<>(listingService.getListings(id), HttpStatus.valueOf(200));
+    return new ResponseEntity<>(
+        listingService.getListings(id, pagStartIndex, pagEndIndex, sortBy, isAscending), HttpStatus.valueOf(200));
   }
 }

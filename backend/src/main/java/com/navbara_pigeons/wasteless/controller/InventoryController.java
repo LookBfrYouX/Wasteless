@@ -1,13 +1,16 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.enums.InventorySortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.InventoryService;
+import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * This controller class provides the endpoints for dealing with inventory items. All requests for
@@ -39,16 +43,31 @@ public class InventoryController {
   /**
    * This endpoint retrieves a list of all products listed by a particular business (id).
    *
-   * @param id The ID of the business whose inventory is to be displayed
+   * @param id            The ID of the business whose inventory is to be displayed
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null and defaults to the 'id'
+   *                      field.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
    * @return response A JSONObject containing the information of all inventory items listed for the
    *     business.
    */
   @GetMapping("/businesses/{id}/inventory")
-  public ResponseEntity<Object> showBusinessInventory(@PathVariable long id)
+  public ResponseEntity<Object> showBusinessInventory(
+      @PathVariable long id,
+      @RequestParam(required = false) Integer pagStartIndex,
+      @RequestParam(required = false) Integer pagEndIndex,
+      @RequestParam(required = false) InventorySortByOption sortBy,
+      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
       throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException,
-          BusinessNotFoundException {
+          BusinessNotFoundException, InvalidAttributeValueException, InvalidPaginationInputException {
     log.info("RETRIEVED INVENTORY ITEMS FOR BUSINESS: " + id);
-    return new ResponseEntity<>(this.inventoryService.getInventory(id), HttpStatus.valueOf(200));
+    return new ResponseEntity<>(
+        this.inventoryService.getInventory(id, pagStartIndex, pagEndIndex, sortBy, isAscending),
+        HttpStatus.valueOf(200));
   }
 
   @PostMapping("/businesses/{id}/inventory")
