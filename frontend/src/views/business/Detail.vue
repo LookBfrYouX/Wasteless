@@ -83,7 +83,7 @@
       <error-modal
           :goBack="true"
           :hideCallback="() => (apiErrorMessage = null)"
-          :refresh="false"
+          :refresh="true"
           :retry="false"
           :show="apiErrorMessage !== null"
           title="Error fetching business details"
@@ -124,7 +124,7 @@ export default {
     showBackButton: {
       type: Boolean,
       required: false,
-      default: true
+      default: false
     },
   },
 

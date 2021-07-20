@@ -157,3 +157,61 @@ describe("Date string format", () => {
     expect(helper.formatDate("1949-05-09")).toEqual("9 May, 1949");
   });
 });
+
+describe("addressToString", () => {
+  const address = {
+    streetNumber: "1",
+    streetName: "STREET",
+    suburb: "S",
+    postcode: "P",
+    city: "CITY",
+    region: "R",
+    country: "C"
+  };
+
+  test("full address", () => {
+    expect(helper.addressToString(address)).toEqual("1 STREET, S, CITY, R, P, C");
+  });
+  
+  test("full address, no street number", () => {
+    let addr = Object.assign({}, address);
+    delete addr.streetNumber;
+    expect(helper.addressToString(addr)).toEqual("STREET, S, CITY, R, P, C");
+  });
+
+  test("full address, blank street number", () => {
+    let addr = Object.assign({}, address);
+    addr.streetNumber = "";
+    expect(helper.addressToString(addr)).toEqual("STREET, S, CITY, R, P, C");
+  });
+
+  test("full address, no street name", () => {
+    let addr = Object.assign({}, address);
+    delete addr.streetName;
+    expect(helper.addressToString(addr)).toEqual("S, CITY, R, P, C");
+  });
+  
+  test("street and postcode missing", () => {
+    let addr = Object.assign({}, address);
+    delete addr.streetName;
+    delete addr.streetNumber;
+    delete addr.postcode;
+    expect(helper.addressToString(addr)).toEqual("S, CITY, R, C");
+  });
+
+  test("only country", () => {
+    expect(helper.addressToString({country: "C"})).toEqual("C");
+  });
+
+  test("only street", () => {
+    expect(helper.addressToString({streetNumber: "1", streetName: "STREET"})).toEqual("1 STREET");
+  });
+
+  test("only street, publicOnly", () => {
+    expect(helper.addressToString({streetNumber: "1", streetName: "STREET"}, true)).toEqual("");
+  });
+
+  test("all, publicOnly", () => {
+    expect(helper.addressToString(address, true)).toEqual("S, CITY, R, C");
+  });
+});
