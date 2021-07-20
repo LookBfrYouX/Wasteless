@@ -1,6 +1,6 @@
 package com.navbara_pigeons.wasteless.service;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -18,7 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
+
+import java.time.LocalDate;
 
 @SpringBootTest
 public class BusinessServiceImplTest extends ServiceTestProvider {
@@ -29,88 +30,144 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
   AddressService addressService;
   @Mock
   UserService userService;
+
   @InjectMocks
   BusinessServiceImpl businessService;
   protected long USERID_1 = 100;
   protected long USERID_2 = 101;
   protected long BUSINESSID_1 = 100;
+  protected User user1; // EMAIL_1, PASSWORD_1, not admin
 
+  /**
+   * Create user1, set them as logged in user and make getUserById/Email return the user
+   * Make saveAddress do nothing
+   * @throws UserNotFoundException
+   * @throws AddressValidationException
+   */
   @BeforeEach
-  void beforeAll()
-      throws UserNotFoundException, AddressValidationException, BusinessNotFoundException {
+  void beforeAll() throws UserNotFoundException, AddressValidationException {
     // Setting mocks before tests are run to ensure unit testing only
-    User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    user.setId(USERID_1);
-    Business business = makeBusiness();
-    business.setId(BUSINESSID_1);
-    business.setPrimaryAdministratorId(USERID_1);
-    FullBusinessDto fullBusinessDto = new FullBusinessDto(business, "");
+    user1 = makeUser(EMAIL_1, PASSWORD_1, false);
+    user1.setId(USERID_1);
 
-    when(userService.getLoggedInUser()).thenReturn(user);
-    when(userService.getUserByEmail(EMAIL_1)).thenReturn(user);
-    doNothing().when(businessDao).saveBusiness(any(Business.class));
-    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
+    when(userService.getLoggedInUser()).thenReturn(user1);
+    when(userService.getUserById(USERID_1)).thenReturn(user1);
+    when(userService.getUserByEmail(EMAIL_1)).thenReturn(user1);
     doNothing().when(addressService).saveAddress(any(Address.class));
   }
 
   @Test
-  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  void getBusinessByIdExpectOk()
-      throws BusinessNotFoundException, UserNotFoundException, AddressValidationException, BusinessRegistrationException {
+  void getBusinessById_admin_getFullDto() throws BusinessNotFoundException, UserNotFoundException {
     // Checking that the FullBusinessDto is returned
-    Business business = makeBusiness();
+    User user = makeUser(EMAIL_2, PASSWORD_1, false);
+    Business business = makeBusiness(user);
     business.setId(BUSINESSID_1);
-    businessService.saveBusiness(business);
+
+    when(userService.isAdmin()).thenReturn(true);
+
+    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
     Object businessDto = businessService.getBusinessById(business.getId());
 
-    assertThrows(ClassCastException.class, () -> {
-      BasicBusinessDto basicBusinessDto = (BasicBusinessDto) businessDto;
-    });
+    assertTrue(businessDto instanceof FullBusinessDto);
   }
 
   @Test
-  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  void getBusiness_twoAdmins()
-      throws BusinessNotFoundException, UserNotFoundException, AddressValidationException, BusinessRegistrationException {
-    // Business should have 2 admins, one as primary admin, other in the list of business admins
-    User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    user.setId(USERID_1);
-    User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
-    user2.setId(USERID_2);
-    Business business = makeBusiness();
-    business.getAdministrators().add(user2);
-    businessService.saveBusiness(business);
+  void getBusinessById_businessAdmin_getFullDto() throws BusinessNotFoundException, UserNotFoundException {
+    // Checking that the FullBusinessDto is returned
+    Business business = makeBusiness(user1);
+    business.setId(BUSINESSID_1);
 
-    when(businessDao.getBusinessById(business.getId())).thenReturn(business);
+    when(userService.isAdmin()).thenReturn(false);
+
+    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
     Object businessDto = businessService.getBusinessById(business.getId());
-    assertBusinessEquals(business, (FullBusinessDto) businessDto);
+
+    assertTrue(businessDto instanceof FullBusinessDto);
   }
 
-//  @Test
-//  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-//  void saveBusinessInvalidBusinessTypes() {
-//    // Checking saveBusiness throws errors with bad business types
-//    String[] testValues = {"asd", "123", "Marketing", "Retail", "Service"};
-//    Business business = makeBusiness();
-//    for (String testValue : testValues) {
-//      business.setBusinessType(testValue);
-//      assertThrows(BusinessTypeException.class, () -> businessService.saveBusiness(business));
-//    }
-//  }
+  @Test
+  void getBusinessById_notBusinessAdmin_getBasicDto() throws BusinessNotFoundException, UserNotFoundException {
+    // Checking that the BasicBusinessDto is returned
+    User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
+    user2.setId(USERID_2);
 
-//  @Test
-//  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-//  void saveBusinessValidBusinessTypes() {
-//    // Checking saveBusiness does not throw errors with good business types
-//    String[] testValues = {"Accommodation and Food Services", "Retail Trade",
-//        "Charitable organisation", "Non-profit organisation"
-//    };
-//    Business business = makeBusiness();
-//    for (String testValue : testValues) {
-//      business.setBusinessType(testValue);
-//      Assertions.assertDoesNotThrow(() -> businessService.saveBusiness(business));
-//    }
-//  }
+    Business business = makeBusiness(user2);
+    business.setId(BUSINESSID_1);
+
+    when(userService.isAdmin()).thenReturn(false);
+
+    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
+    Object businessDto = businessService.getBusinessById(business.getId());
+
+    assertTrue(businessDto instanceof BasicBusinessDto);
+  }
+
+  @Test
+  void createBusiness_primaryAdministratorsListNotSet()
+          throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
+
+    Business business = makeBusiness();
+    business.setId(BUSINESSID_1);
+    business.setPrimaryAdministratorId(user1.getId());
+
+    when(userService.isAdmin()).thenReturn(true);
+    businessService.saveBusiness(business);
+
+    assertEquals(1, business.getAdministrators().size());
+    assertEquals(USERID_1, business.getAdministrators().get(0).getId());
+  }
+
+  @Test
+  void createBusiness_notAdmin_noErrors() throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
+    Business business = makeBusiness(user1);
+    business.setId(BUSINESSID_1);
+
+    businessService.saveBusiness(business);
+  }
+
+
+  /**
+   * Non-admin user trying to create business with another user as the primary admin
+   */
+  @Test
+  void createBusiness_notAdminOtherAsPrimary() {
+    User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
+    user2.setId(USERID_2);
+
+    Business business = makeBusiness(user2);
+    business.setId(BUSINESSID_1);
+
+    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(business));
+  }
+
+
+  /**
+   * Crate a business with another user as the primary admin; should succeed as user making request is admin
+   */
+  @Test
+  void createBusiness_AdminOtherAsPrimary() throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
+    User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
+    user2.setId(USERID_2);
+
+    Business business = makeBusiness(user2);
+    business.setId(BUSINESSID_1);
+
+    when(userService.isAdmin()).thenReturn(true);
+    businessService.saveBusiness(business);
+  }
+
+  /**
+   * Crate a business but too young
+   */
+  @Test
+  void createBusiness_primaryAdminAgeRestriction() {
+    user1.setDateOfBirth(LocalDate.now().minusYears(4));
+    Business business = makeBusiness(user1);
+    business.setId(BUSINESSID_1);
+
+    when(userService.isAdmin()).thenReturn(true);
+    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(business));
+  }
 
   @Test
   void makeUserBusinessAdmin_expectOk() throws Exception {
@@ -120,7 +177,9 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
 
     User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
     user2.setId(USERID_2);
+
     when(userService.getUserById(USERID_2)).thenReturn(user2);
+    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
 
     Assertions.assertDoesNotThrow(() -> businessService.addBusinessAdmin(business.getId(), USERID_2));
   }
@@ -135,6 +194,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
     user2.setId(USERID_2);
     when(userService.getUserById(USERID_2)).thenReturn(user2);
+    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
 
     when(userService.getLoggedInUser()).thenReturn(user2);
     Assertions.assertThrows(InsufficientPrivilegesException.class, () -> businessService.addBusinessAdmin(business.getId(), USERID_2));

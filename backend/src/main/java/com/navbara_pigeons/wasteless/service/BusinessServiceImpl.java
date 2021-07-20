@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
 import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
@@ -51,9 +52,11 @@ public class BusinessServiceImpl implements BusinessService {
     this.userService = userService;
   }
 
+
   /**
-   * Performs basic business checks, sets role, created date and hashes password before sending to
-   * the dao
+   * Performs basic business checks. If the primary administrator is not in the list of administrators, they are fetched
+   * and added. If the primary administrator does not have the business in the list of businesses administered, the
+   * business is added and the user is saved
    *
    * @param business Business object to be saved.
    * @throws BusinessTypeException Thrown when a businessType is not an authorised businessType
@@ -61,19 +64,34 @@ public class BusinessServiceImpl implements BusinessService {
   @Override
   @Transactional
   public JSONObject saveBusiness(Business business)
-      throws BusinessRegistrationException, UserNotFoundException, AddressValidationException {
+          throws BusinessRegistrationException, UserNotFoundException, AddressValidationException {
     User currentUser = this.userService.getLoggedInUser();
-    User primaryAdministrator = this.userService.getUserById(business.getPrimaryAdministratorId());
-    if (currentUser.getId() != primaryAdministrator.getId() && !this.userService.isAdmin()) {
-      throw new BusinessRegistrationException("TODO Only a GAA can create a business with someone else as the primary business administrator");
+
+    // When create business request is made, administrators cannot be set (either by user or in the Business(CreateBusinessDto) constructor
+    // Hence, check in this method if the administrator is already set and if not, add them
+    User primaryAdministrator = null;
+    for(User admin: business.getAdministrators()) {
+      if (admin.getId() == business.getPrimaryAdministratorId()) {
+        primaryAdministrator = admin;
+        break;
+      }
     }
 
-    business.addAdministrator(primaryAdministrator);
+    if (primaryAdministrator == null) {
+      primaryAdministrator = userService.getUserById(business.getPrimaryAdministratorId());
+      business.addAdministrator(primaryAdministrator);
+    }
+
+    if (currentUser.getId() != primaryAdministrator.getId() && !this.userService.isAdmin()) {
+      throw new BusinessRegistrationException("Only a GAA can create a business with someone else as the primary business administrator");
+    }
+
     business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
     BusinessServiceValidation.validate(business, LocalDate.now());
     this.addressService.saveAddress(business.getAddress());
     this.businessDao.saveBusiness(business);
+
     JSONObject response = new JSONObject();
     response.put("businessId", business.getId());
     return response;

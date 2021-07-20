@@ -104,6 +104,16 @@ public class MainTestProvider {
   }
 
   /**
+   * This test helper method creates and returns a test business to be used in cucumber tests with
+   * default business names, types, descriptions etc.
+   * @param admin primary business administrator
+   * @return Business business
+   */
+  protected Business makeBusiness(User admin) {
+    return makeBusiness("Test Business Name", admin);
+  }
+
+  /**
    * This test helper method creates and returns a test user to be used in cucumber tests from the
    * given parameters.
    *
@@ -112,7 +122,7 @@ public class MainTestProvider {
   protected User makeUser(String email, String password, Boolean isAdmin) {
     User testUser = new User();
     // Create test user
-    testUser.setId(0)
+    testUser
         .setFirstName("Tony")
         .setLastName("Last")
         .setMiddleName("Middle")
