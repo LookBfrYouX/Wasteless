@@ -1078,15 +1078,21 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "var _ = require('lodash'),",
+                  "var _ = require('lodash');",
+                  "postman.setNextRequest(null);",
+                  "",
+                  "// Test status code",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
                   "",
                   "responseBody = pm.response.json();",
+                  "// Increment the test index value, used to cycle through query params",
                   "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
                   "",
                   "sortBy = pm.environment.get(\"sortBy\");",
                   "// Match the lodash format (asc/desc)",
                   "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
-                  "",
                   "",
                   "pm.test('User ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
                   "   // Using the orderBy function from lodash ",
@@ -1107,11 +1113,15 @@
                 "exec": [
                   "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
                   "",
+                  "// List the possible values to cycle through",
                   "sortByValues = [\"firstName\", \"middleName\", \"lastName\", \"nickname\"];",
                   "isAscedingValues = [\"yes\", \"no\"];",
                   "",
-                  "pm.environment.set(\"sortBy\", sortByValues[index % sortByValues.length]);",
-                  "pm.environment.set(\"isAscending\", isAscedingValues[index % isAscedingValues.length]);"
+                  "// Set the values as env vars, used as query params",
+                  "sortByIndex = (Math.floor(index / 2)) % sortByValues.length",
+                  "isAscedingIndex = index % isAscedingValues.length",
+                  "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
+                  "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);"
                 ],
                 "type": "text/javascript"
               }
@@ -1141,7 +1151,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/users/search?searchQuery={{searchQuery}}&sortBy={{sortBy}}&isAscending=yes&pagStartIndex={{pagStartIndex}}&pagEndIndex={{pagEndIndex}}",
+              "raw": "{{baseUrl}}/users/search?searchQuery={{searchQuery}}&sortBy={{sortBy}}&isAscending={{isAscending}}&pagStartIndex={{pagStartIndex}}&pagEndIndex={{pagEndIndex}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1161,7 +1171,7 @@
                 },
                 {
                   "key": "isAscending",
-                  "value": "yes"
+                  "value": "{{isAscending}}"
                 },
                 {
                   "key": "pagStartIndex",
