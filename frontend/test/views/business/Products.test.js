@@ -5,6 +5,7 @@ import {globalStateMocks} from "#/testHelper";
 import {Api} from "@/Api";
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import {ApiRequestError} from "@/ApiRequestError";
 
 Vue.use(Vuetify);
 let vuetify = new Vuetify();
@@ -34,12 +35,26 @@ beforeEach(() => {
 afterEach(() => wrapper.destroy());
 
 describe("Product API handling", () => {
-    test("Does it get to here", () => {
-        console.log("Yes it does!");
+    /**
+     * Tests that the products get set correctly.
+     */
+    test("Assert products get set from API", async () => {
         Api.getProducts.mockResolvedValue({
             data: response
         });
         await wrapper.vm.query();
-        console.log();
+        expect(wrapper.vm.$data.products).toEqual(response.results);
+
+    });
+
+    /**
+     * Tests for the correct error when no data is returned.
+     */
+    test("API returns error", async () => {
+        const message = "It's a Mario!";
+        Api.getProducts.mockImplementation(
+            () => Promise.reject(new ApiRequestError(message)));
+        await wrapper.vm.query();
+        expect(wrapper.vm.apiErrorMessage).toEqual(message);
     });
 });

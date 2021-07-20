@@ -1,9 +1,12 @@
 <template>
   <div class="w-100 col-12 col-md-8 col-lg-6">
+<!--  Page Title Area  -->
     <div>
       <h2>Product Catalogue for {{ businessName }}</h2>
     </div>
+<!--  Page Content Area  -->
     <div class="d-inline-flex flex-wrap-reverse col-12">
+<!--  Sort and Meta info Bar    -->
       <div class="col-12 col-lg-6">
         <simple-sort-bar @update="sortUpdate" :items="items" />
       </div>
@@ -12,6 +15,7 @@
         {{ this.totalResults }}
       </div>
     </div>
+<!-- Product List   -->
     <ul class="list-unstyled">
       <li v-for="product in products" :key="product.id">
         <router-link
@@ -25,6 +29,7 @@
         </router-link>
       </li>
     </ul>
+<!-- Pagination Bar   -->
     <v-pagination
         v-model="page"
         :length="totalPages"
@@ -32,6 +37,7 @@
         @next="pageUpdate"
         @previous="pageUpdate"
     />
+<!-- Error Component - Not Visible Component   -->
     <error-modal
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
@@ -160,7 +166,6 @@ export default {
       try {
         const response = (await Api.getProducts(this.businessId, this.searchParams)).data;
         this.products = response.results;
-        console.log(response);
         this.totalResults = response.totalCount;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
