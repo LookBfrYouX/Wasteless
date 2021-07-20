@@ -1073,6 +1073,50 @@
         },
         {
           "name": "Search for users by some criteria, for now: their name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var _ = require('lodash'),",
+                  "",
+                  "responseBody = pm.response.json();",
+                  "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                  "",
+                  "sortBy = pm.environment.get(\"sortBy\");",
+                  "// Match the lodash format (asc/desc)",
+                  "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
+                  "",
+                  "",
+                  "pm.test('User ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
+                  "   // Using the orderBy function from lodash ",
+                  "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
+                  "",
+                  "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
+                  "    var expectedSortedOrder = _.orderBy(responseBody.results, ({ sortBy }) => sortBy || '',[isAscending]);",
+                  "",
+                  "    pm.expect(responseBody.results).to.eql(expectedSortedOrder);    ",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
+                  "",
+                  "sortByValues = [\"firstName\", \"middleName\", \"lastName\", \"nickname\"];",
+                  "isAscedingValues = [\"yes\", \"no\"];",
+                  "",
+                  "pm.environment.set(\"sortBy\", sortByValues[index % sortByValues.length]);",
+                  "pm.environment.set(\"isAscending\", isAscedingValues[index % isAscedingValues.length]);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "apikey",
@@ -1097,7 +1141,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/users/search?searchQuery=John AND Smith",
+              "raw": "{{baseUrl}}/users/search?searchQuery={{searchQuery}}&sortBy={{sortBy}}&isAscending=yes&pagStartIndex={{pagStartIndex}}&pagEndIndex={{pagEndIndex}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1108,8 +1152,24 @@
               "query": [
                 {
                   "key": "searchQuery",
-                  "value": "John AND Smith",
+                  "value": "{{searchQuery}}",
                   "description": "(Required) Criteria to search users for, e.g: user’s full name or one or more of their names/nickname"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "{{sortBy}}"
+                },
+                {
+                  "key": "isAscending",
+                  "value": "yes"
+                },
+                {
+                  "key": "pagStartIndex",
+                  "value": "{{pagStartIndex}}"
+                },
+                {
+                  "key": "pagEndIndex",
+                  "value": "{{pagEndIndex}}"
                 }
               ]
             }
@@ -1443,21 +1503,14 @@
                       "raw": "{\n    \"name\": \"Watties Baked Beans - 420g can\",\n    \"id\": \"WATT-420-BEANS\",\n    \"description\": \"Baked Beans as they should be.\",\n    \"manufacturer\": \"Heinz Wattie's Limited\",\n    \"recommendedRetailPrice\": 2.2\n}"
                     },
                     "url": {
-                      "raw": "{{baseUrl}}/businesses/:id/products",
+                      "raw": "{{baseUrl}}/businesses/{{businessId}}/products",
                       "host": [
                         "{{baseUrl}}"
                       ],
                       "path": [
                         "businesses",
-                        ":id",
+                        "{{businessId}}",
                         "products"
-                      ],
-                      "variable": [
-                        {
-                          "key": "id",
-                          "value": "12684656",
-                          "description": "(Required) Business ID"
-                        }
                       ]
                     }
                   },
@@ -6106,11 +6159,24 @@
       }
     ]
   },
-  "variable": [
+  "event": [
     {
-      "key": "baseUrl",
-      "value": "https://virtserver.swaggerhub.com/matthewminish/seng302-2021-api-spec/3.0.1",
-      "type": "string"
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
     }
   ]
 }
