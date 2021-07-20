@@ -1072,6 +1072,53 @@
           ]
         },
         {
+          "name": "Login (Dawson)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = JSON.parse(responseBody);",
+                  "postman.setEnvironmentVariable(\"userId\", jsonData.userId);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"dnb36@uclive.ac.nz\",\n    \"password\": \"fun123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Search for users by some criteria, for now: their name",
           "event": [
             {
@@ -1328,6 +1375,108 @@
               "item": [
                 {
                   "name": "Retrieve all the products in a business's catalogue",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
+                          "",
+                          "// List the possible values to cycle through",
+                          "sortByValues = [\"name\", \"manufacturer\", \"recommendedRetailPrice\", \"created\"];",
+                          "isAscedingValues = [\"yes\", \"no\"];",
+                          "",
+                          "// Set the values as env vars, used as query params",
+                          "sortByIndex = (Math.floor(index / 2)) % sortByValues.length",
+                          "isAscedingIndex = index % isAscedingValues.length",
+                          "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
+                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "var _ = require('lodash');",
+                          "",
+                          "var jsonData = pm.response.json();",
+                          "",
+                          "",
+                          "// Test status code",
+                          "pm.test(\"Status code is 200\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "});",
+                          "",
+                          "",
+                          "// Test that totalCount is a Number and is between 0 & the amount of data returned",
+                          "pm.test(\"'totalCount' returns a valid number\", function () {",
+                          "    pm.expect(jsonData.totalCount).to.satisfy((count) => !isNaN(count));",
+                          "    pm.expect(jsonData.totalCount).to.within(0, jsonData.results.length)",
+                          "});",
+                          "",
+                          "",
+                          "// Test the size of results match pagination indexes",
+                          "pm.test(\"Paginination indicies return valid results\", function () {",
+                          "    pagStartIndex = pm.environment.get(\"pagStartIndex\");",
+                          "    // If start index is null then simplify it to zero",
+                          "    pagStartIndex = !pagStartIndex ? 0 : pagStartIndex;",
+                          "    pagEndIndex = pm.environment.get(\"pagEndIndex\");",
+                          "    resLength = jsonData.results.length;",
+                          "    totalCount = Number(jsonData.totalCount);",
+                          "",
+                          "    if (!pagEndIndex || pagEndIndex >= totalCount) {",
+                          "        pm.expect(resLength).to.eql(totalCount - pagStartIndex);",
+                          "    } else {",
+                          "        pm.expect(resLength).to.eql(pagEndIndex - pagStartIndex + 1);",
+                          "    }",
+                          "});",
+                          "",
+                          "",
+                          "// Test the response schema is correct",
+                          "var schema = {",
+                          "    \"properties\": {",
+                          "        \"results\": {",
+                          "            \"type\": \"array\",",
+                          "            \"items\": {",
+                          "                \"type\": \"object\"",
+                          "            }",
+                          "        },",
+                          "        \"totalCount\": {",
+                          "            \"type\": \"number\"",
+                          "        }",
+                          "    },",
+                          "    \"required\": [\"results\", \"totalCount\"]",
+                          "};",
+                          "",
+                          "pm.test('Response body is in expeced schema', function () {",
+                          "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+                          "});",
+                          "",
+                          "",
+                          "",
+                          "// Increment the test index value, used to cycle through query params",
+                          "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                          "",
+                          "sortBy = pm.environment.get(\"sortBy\");",
+                          "// Match the lodash format (asc/desc)",
+                          "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
+                          "",
+                          "pm.test('Product ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
+                          "   // Using the orderBy function from lodash ",
+                          "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
+                          "",
+                          "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
+                          "    var expectedSortedOrder = _.orderBy(jsonData.results, ({ sortBy }) => sortBy || '',[isAscending]);",
+                          "",
+                          "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    ",
+                          "});"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
                   "request": {
                     "auth": {
                       "type": "apikey",
@@ -1352,7 +1501,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{baseUrl}}/businesses/{{businessId}}/products",
+                      "raw": "{{baseUrl}}/businesses/{{businessId}}/products?sortBy={{sortBy}}&isAscending={{isAscending}}&pagStartIndex={{pagStartIndex}}&pagEndIndex={{pagEndIndex}}",
                       "host": [
                         "{{baseUrl}}"
                       ],
@@ -1360,6 +1509,24 @@
                         "businesses",
                         "{{businessId}}",
                         "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "sortBy",
+                          "value": "{{sortBy}}"
+                        },
+                        {
+                          "key": "isAscending",
+                          "value": "{{isAscending}}"
+                        },
+                        {
+                          "key": "pagStartIndex",
+                          "value": "{{pagStartIndex}}"
+                        },
+                        {
+                          "key": "pagEndIndex",
+                          "value": "{{pagEndIndex}}"
+                        }
                       ]
                     }
                   },
@@ -1714,6 +1881,108 @@
               "item": [
                 {
                   "name": "Retrieve a business's product inventory",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
+                          "",
+                          "// List the possible values to cycle through",
+                          "sortByValues = [\"quantity\", \"pricePerItem\", \"totalPrice\", \"manufactured\", \"sellBy\", \"bestBefore\"];",
+                          "isAscedingValues = [\"yes\", \"no\"];",
+                          "",
+                          "// Set the values as env vars, used as query params",
+                          "sortByIndex = (Math.floor(index / 2)) % sortByValues.length",
+                          "isAscedingIndex = index % isAscedingValues.length",
+                          "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
+                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "var _ = require('lodash');",
+                          "",
+                          "var jsonData = pm.response.json();",
+                          "",
+                          "",
+                          "// Test status code",
+                          "pm.test(\"Status code is 200\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "});",
+                          "",
+                          "",
+                          "// Test that totalCount is a Number and is between 0 & the amount of data returned",
+                          "pm.test(\"'totalCount' returns a valid number\", function () {",
+                          "    pm.expect(jsonData.totalCount).to.satisfy((count) => !isNaN(count));",
+                          "    pm.expect(jsonData.totalCount).to.within(0, jsonData.results.length)",
+                          "});",
+                          "",
+                          "",
+                          "// Test the size of results match pagination indexes",
+                          "pm.test(\"Paginination indicies return valid results\", function () {",
+                          "    pagStartIndex = pm.environment.get(\"pagStartIndex\");",
+                          "    // If start index is null then simplify it to zero",
+                          "    pagStartIndex = !pagStartIndex ? 0 : pagStartIndex;",
+                          "    pagEndIndex = pm.environment.get(\"pagEndIndex\");",
+                          "    resLength = jsonData.results.length;",
+                          "    totalCount = Number(jsonData.totalCount);",
+                          "",
+                          "    if (!pagEndIndex || pagEndIndex >= totalCount) {",
+                          "        pm.expect(resLength).to.eql(totalCount - pagStartIndex);",
+                          "    } else {",
+                          "        pm.expect(resLength).to.eql(pagEndIndex - pagStartIndex + 1);",
+                          "    }",
+                          "});",
+                          "",
+                          "",
+                          "// Test the response schema is correct",
+                          "var schema = {",
+                          "    \"properties\": {",
+                          "        \"results\": {",
+                          "            \"type\": \"array\",",
+                          "            \"items\": {",
+                          "                \"type\": \"object\"",
+                          "            }",
+                          "        },",
+                          "        \"totalCount\": {",
+                          "            \"type\": \"number\"",
+                          "        }",
+                          "    },",
+                          "    \"required\": [\"results\", \"totalCount\"]",
+                          "};",
+                          "",
+                          "pm.test('Response body is in expeced schema', function () {",
+                          "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+                          "});",
+                          "",
+                          "",
+                          "",
+                          "// Increment the test index value, used to cycle through query params",
+                          "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                          "",
+                          "sortBy = pm.environment.get(\"sortBy\");",
+                          "// Match the lodash format (asc/desc)",
+                          "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
+                          "",
+                          "pm.test('Inventory ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
+                          "   // Using the orderBy function from lodash ",
+                          "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
+                          "",
+                          "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
+                          "    var expectedSortedOrder = _.orderBy(jsonData.results, ({ sortBy }) => sortBy || '',[isAscending]);",
+                          "",
+                          "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    ",
+                          "});"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
                   "request": {
                     "auth": {
                       "type": "apikey",
@@ -2109,6 +2378,108 @@
               "item": [
                 {
                   "name": "Retrieve a business's listings",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
+                          "",
+                          "// List the possible values to cycle through",
+                          "sortByValues = [\"quantity\", \"price\", \"created\", \"closes\"];",
+                          "isAscedingValues = [\"yes\", \"no\"];",
+                          "",
+                          "// Set the values as env vars, used as query params",
+                          "sortByIndex = (Math.floor(index / 2)) % sortByValues.length",
+                          "isAscedingIndex = index % isAscedingValues.length",
+                          "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
+                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "var _ = require('lodash');",
+                          "",
+                          "var jsonData = pm.response.json();",
+                          "",
+                          "",
+                          "// Test status code",
+                          "pm.test(\"Status code is 200\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "});",
+                          "",
+                          "",
+                          "// Test that totalCount is a Number and is between 0 & the amount of data returned",
+                          "pm.test(\"'totalCount' returns a valid number\", function () {",
+                          "    pm.expect(jsonData.totalCount).to.satisfy((count) => !isNaN(count));",
+                          "    pm.expect(jsonData.totalCount).to.within(0, jsonData.results.length)",
+                          "});",
+                          "",
+                          "",
+                          "// Test the size of results match pagination indexes",
+                          "pm.test(\"Paginination indicies return valid results\", function () {",
+                          "    pagStartIndex = pm.environment.get(\"pagStartIndex\");",
+                          "    // If start index is null then simplify it to zero",
+                          "    pagStartIndex = !pagStartIndex ? 0 : pagStartIndex;",
+                          "    pagEndIndex = pm.environment.get(\"pagEndIndex\");",
+                          "    resLength = jsonData.results.length;",
+                          "    totalCount = Number(jsonData.totalCount);",
+                          "",
+                          "    if (!pagEndIndex || pagEndIndex >= totalCount) {",
+                          "        pm.expect(resLength).to.eql(totalCount - pagStartIndex);",
+                          "    } else {",
+                          "        pm.expect(resLength).to.eql(pagEndIndex - pagStartIndex + 1);",
+                          "    }",
+                          "});",
+                          "",
+                          "",
+                          "// Test the response schema is correct",
+                          "var schema = {",
+                          "    \"properties\": {",
+                          "        \"results\": {",
+                          "            \"type\": \"array\",",
+                          "            \"items\": {",
+                          "                \"type\": \"object\"",
+                          "            }",
+                          "        },",
+                          "        \"totalCount\": {",
+                          "            \"type\": \"number\"",
+                          "        }",
+                          "    },",
+                          "    \"required\": [\"results\", \"totalCount\"]",
+                          "};",
+                          "",
+                          "pm.test('Response body is in expeced schema', function () {",
+                          "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+                          "});",
+                          "",
+                          "",
+                          "",
+                          "// Increment the test index value, used to cycle through query params",
+                          "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                          "",
+                          "sortBy = pm.environment.get(\"sortBy\");",
+                          "// Match the lodash format (asc/desc)",
+                          "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
+                          "",
+                          "pm.test('Listing ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
+                          "   // Using the orderBy function from lodash ",
+                          "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
+                          "",
+                          "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
+                          "    var expectedSortedOrder = _.orderBy(jsonData.results, ({ sortBy }) => sortBy || '',[isAscending]);",
+                          "",
+                          "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    ",
+                          "});"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
                   "request": {
                     "auth": {
                       "type": "apikey",
@@ -5365,6 +5736,108 @@
         },
         {
           "name": "Retrieve all cards for a given section",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
+                  "",
+                  "// List the possible values to cycle through",
+                  "sortByValues = [\"title\", \"created\", \"displayPeriodEnd\"];",
+                  "isAscedingValues = [\"yes\", \"no\"];",
+                  "",
+                  "// Set the values as env vars, used as query params",
+                  "sortByIndex = (Math.floor(index / 2)) % sortByValues.length",
+                  "isAscedingIndex = index % isAscedingValues.length",
+                  "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
+                  "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var _ = require('lodash');",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "",
+                  "// Test status code",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "",
+                  "// Test that totalCount is a Number and is between 0 & the amount of data returned",
+                  "pm.test(\"'totalCount' returns a valid number\", function () {",
+                  "    pm.expect(jsonData.totalCount).to.satisfy((count) => !isNaN(count));",
+                  "    pm.expect(jsonData.totalCount).to.within(0, jsonData.results.length)",
+                  "});",
+                  "",
+                  "",
+                  "// Test the size of results match pagination indexes",
+                  "pm.test(\"Paginination indicies return valid results\", function () {",
+                  "    pagStartIndex = pm.environment.get(\"pagStartIndex\");",
+                  "    // If start index is null then simplify it to zero",
+                  "    pagStartIndex = !pagStartIndex ? 0 : pagStartIndex;",
+                  "    pagEndIndex = pm.environment.get(\"pagEndIndex\");",
+                  "    resLength = jsonData.results.length;",
+                  "    totalCount = Number(jsonData.totalCount);",
+                  "",
+                  "    if (!pagEndIndex || pagEndIndex >= totalCount) {",
+                  "        pm.expect(resLength).to.eql(totalCount - pagStartIndex);",
+                  "    } else {",
+                  "        pm.expect(resLength).to.eql(pagEndIndex - pagStartIndex + 1);",
+                  "    }",
+                  "});",
+                  "",
+                  "",
+                  "// Test the response schema is correct",
+                  "var schema = {",
+                  "    \"properties\": {",
+                  "        \"results\": {",
+                  "            \"type\": \"array\",",
+                  "            \"items\": {",
+                  "                \"type\": \"object\"",
+                  "            }",
+                  "        },",
+                  "        \"totalCount\": {",
+                  "            \"type\": \"number\"",
+                  "        }",
+                  "    },",
+                  "    \"required\": [\"results\", \"totalCount\"]",
+                  "};",
+                  "",
+                  "pm.test('Response body is in expeced schema', function () {",
+                  "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "// Increment the test index value, used to cycle through query params",
+                  "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                  "",
+                  "sortBy = pm.environment.get(\"sortBy\");",
+                  "// Match the lodash format (asc/desc)",
+                  "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
+                  "",
+                  "pm.test('Marketplace Card ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
+                  "   // Using the orderBy function from lodash ",
+                  "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
+                  "",
+                  "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
+                  "    var expectedSortedOrder = _.orderBy(jsonData.results, ({ sortBy }) => sortBy || '',[isAscending]);",
+                  "",
+                  "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    ",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "apikey",
@@ -5389,7 +5862,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/cards?section=ForSale",
+              "raw": "{{baseUrl}}/cards?section=ForSale&sortBy={{sortBy}}&isAscending={{isAscending}}&pagStartIndex={{pagStartIndex}}&pagEndIndex={{pagEndIndex}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -5401,6 +5874,22 @@
                   "key": "section",
                   "value": "ForSale",
                   "description": "(Required) The section for which cards should be retrieved."
+                },
+                {
+                  "key": "sortBy",
+                  "value": "{{sortBy}}"
+                },
+                {
+                  "key": "isAscending",
+                  "value": "{{isAscending}}"
+                },
+                {
+                  "key": "pagStartIndex",
+                  "value": "{{pagStartIndex}}"
+                },
+                {
+                  "key": "pagEndIndex",
+                  "value": "{{pagEndIndex}}"
                 }
               ]
             }
