@@ -160,6 +160,7 @@ export default {
       try {
         const response = (await Api.getProducts(this.businessId, this.searchParams)).data;
         this.products = response.results;
+        console.log(response);
         this.totalResults = response.totalCount;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
