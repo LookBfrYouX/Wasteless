@@ -12,13 +12,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import javax.annotation.PostConstruct;
+
+import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
 
 /**
  * This test helper class provides the general setup and methods available to all Service and Dao
  * tests. Test classes can extend this MainTestProvider to have access to the functionality.
  */
 @SpringBootTest
-@AutoConfigureMockMvc
 public class MainTestProvider {
 
   protected final String EMAIL_1 = "example@example.com";
@@ -28,13 +33,25 @@ public class MainTestProvider {
   protected final String PRODUCT_1_NAME = "PIZZA";
 
   @Autowired
-  protected MockMvc mockMvc;
-
-  @Autowired
   protected ObjectMapper objectMapper;
 
   @Autowired
   protected BusinessService businessService;
+
+  // https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html
+  protected MockMvc mockMvc;
+
+  @Autowired
+  protected WebApplicationContext webApplicationContext;
+
+  @PostConstruct
+  public void initMockMvc() {
+    // https://stackoverflow.com/questions/38755727/in-spring-mockmvc-tests-how-to-chain-visit-of-several-webpages
+    this.mockMvc = MockMvcBuilders
+        .webAppContextSetup(this.webApplicationContext)
+        .apply(sharedHttpSession())
+        .build();
+  }
 
   protected InventoryItem makeInventoryItem(Product product, Business business) {
     InventoryItem inventoryItem = new InventoryItem();
