@@ -14,12 +14,16 @@
       <div class="row">
         <div class="col-12 col-md-6 form-group required">
           <label for="productDropdown">Select product</label>
-          <select id="productDropdown" v-model="product" class="form-control" required>
-            <option v-for="product in products" :key="product.id" :value="product">
-              {{ product.name }}
-            </option>
-          </select>
-        </div>
+          <v-autocomplete
+          solo
+          dense
+          item-text="name"
+          item-value="id"
+          :items="products"
+          v-model="product"
+
+          ></v-autocomplete>
+          </div>
         <div class="col-12 col-md-6 form-group required">
           <label for="quantity">Quantity</label>
           <input
@@ -135,7 +139,7 @@
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="true"
-        :retry="this.populateDropdown"
+        :retry="this.populateProducts"
         :show="apiErrorMessage !== null"
         title="Error fetching business products"
     >
@@ -166,7 +170,7 @@ export default {
       sellBy: null,
       bestBefore: null,
       expires: null,
-      products: null,
+      products: [],
       currency: null,
       errorMessage: null,
     }
@@ -180,7 +184,7 @@ export default {
 
   beforeMount: async function () {
     this.setDateInputs(new Date());
-    await this.populateDropdown();
+    await this.populateProducts();
     await this.currencyPipeline();
   },
 
@@ -234,7 +238,7 @@ export default {
       }
 
       let data = {
-        "productId": this.product.id,
+        "productId": this.product,
         "quantity": parsedQuantity,
         "pricePerItem": parsedPricePerItem,
         "totalPrice": parsedTotalPrice,
@@ -263,7 +267,7 @@ export default {
       }
       this.todayDate = yyyy + '-' + mm + '-' + dd;
     },
-    async populateDropdown() {
+    async populateProducts() {
       await Api.getProducts(this.businessId)
       .then(({data}) => this.products = data)
       .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);

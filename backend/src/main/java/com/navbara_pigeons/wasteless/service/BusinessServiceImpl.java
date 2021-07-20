@@ -8,6 +8,7 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
 import java.time.ZoneOffset;
@@ -107,12 +108,30 @@ public class BusinessServiceImpl implements BusinessService {
    * @param id the id of the business
    * @return a business
    * @throws BusinessNotFoundException when business with given id does not exist
-   * @throws UserNotFoundException     should never be thrown. If is thrown, return 500 status code
    */
   @Override
   @Transactional
-  public Business getBusiness(long id) throws BusinessNotFoundException, UserNotFoundException {
+  public Business getBusiness(long id) throws BusinessNotFoundException {
     return businessDao.getBusinessById(id);
+  }
+
+  /**
+   * Adds user with given ID to list of business admins
+   *
+   * @param userId     of the user that will be added to the list of business admins
+   * @param businessId of the business to add the admin to
+   */
+  @Override
+  @Transactional
+  public void addBusinessAdmin(long businessId, long userId)
+      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException {
+    User user = userService.getUserById(userId);
+    Business business = getBusiness(businessId);
+    if (!isBusinessPrimaryAdmin(businessId) && !userService.isAdmin()) {
+      throw new InsufficientPrivilegesException("Must be the primary business admin to use this feature!");
+    }
+    business.addAdministrator(user);
+    businessDao.saveBusiness(business);
   }
 
   /**
@@ -136,6 +155,26 @@ public class BusinessServiceImpl implements BusinessService {
       if (authUser.getId() == user.getId()) {
         return true;
       }
+    }
+    return false;
+  }
+
+  /**
+   * This helper method tests if the currently logged in user is the primary administrator of the
+   * business with the given ID
+   *
+   * @param businessId The business to test against.
+   * @return True if the current user is the primary admin
+   * @throws BusinessNotFoundException The business does not exist
+   * @throws UserNotFoundException     The user does not exist
+   */
+  private boolean isBusinessPrimaryAdmin(long businessId)
+      throws BusinessNotFoundException, UserNotFoundException {
+    Business business = this.businessDao.getBusinessById(businessId);
+    User authUser = this.userService.getLoggedInUser();
+
+    if (business.getPrimaryAdministratorId() == authUser.getId()) {
+      return true;
     }
     return false;
   }

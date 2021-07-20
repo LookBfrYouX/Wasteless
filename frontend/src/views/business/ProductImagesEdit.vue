@@ -46,6 +46,7 @@
             class="bg-transparent border-0"
             type="button"
             @click="onPickFile"
+            aria-label="Upload image"
         >
           <span class="material-icons add-product-icon py-4 mb-4 mt-2">
             add_circle_outline
