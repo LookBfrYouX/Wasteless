@@ -196,7 +196,7 @@
                 :class="{'is-invalid': phoneErrorMessage !== null }"
                 autocomplete="tel-national"
                 class="form-control"
-                maxlength="20"
+                maxlength="25"
                 name="phoneNumber"
                 placeholder="Phone number"
                 type="text"

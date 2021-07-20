@@ -11,23 +11,15 @@
       <div class="row">
         <div class="form-group required col-md-6">
           <label for="product">Find product</label>
-          <select
-              id="product"
-              v-model="selectedProductId"
-              class="form-control"
-              required
+          <v-autocomplete
+            solo
+            dense
+            item-text="name"
+            item-value="id"
+            :items="getProducts"
+            v-model="selectedProductId"
           >
-            <option :value="null"
-                    disabled
-                    selected> -- Select product to list --
-            </option>
-            <option v-for="product in getProducts"
-                    :key="product.id"
-                    :value="product.id"
-            >
-              {{ product.name }}
-            </option>
-          </select>
+        </v-autocomplete>
         </div>
         <div class="form-group required col-md-6">
           <label for="inventory">Inventory item to list</label>
