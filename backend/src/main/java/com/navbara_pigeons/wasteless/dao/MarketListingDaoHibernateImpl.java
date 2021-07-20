@@ -1,12 +1,14 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.MarketListingQueryBuilder;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -25,16 +27,18 @@ public class MarketListingDaoHibernateImpl implements MarketListingDao {
   }
 
   @Override
-  public List<MarketListing> getMarketListing(String section) {
+  public Pair<List<MarketListing>, Long> getMarketListing(
+      String section, PaginationBuilder pagBuilder) throws InvalidPaginationInputException {
     Session currentSession = getSession();
-    // CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
-    CriteriaQuery<MarketListing> criteriaQuery = HibernateCriteriaQueryBuilder
-        .parseListingQuery(currentSession, section);
+    List<MarketListing> serverResults =
+        MarketListingQueryBuilder.listPaginatedAndSortedMarketListings(
+            currentSession, section, pagBuilder)
+            .getResultList();
+    Long totalCountOfSection =
+        MarketListingQueryBuilder.createTotalMarketListingsCountQuery(currentSession, section)
+            .getSingleResult();
 
-    Query<MarketListing> query = currentSession.createQuery(criteriaQuery);
-    List<MarketListing> results = query.getResultList();
-
-    return results;
+    return Pair.of(serverResults, totalCountOfSection);
   }
 
   /**
@@ -45,5 +49,4 @@ public class MarketListingDaoHibernateImpl implements MarketListingDao {
   private Session getSession() {
     return this.entityManager.unwrap(Session.class);
   }
-
 }
