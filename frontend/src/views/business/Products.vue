@@ -5,14 +5,16 @@
       <h2>Product Catalogue for {{ businessName }}</h2>
     </div>
 <!--  Page Content Area  -->
-    <div class="d-inline-flex flex-wrap-reverse col-12">
+    <div class="d-inline-flex flex-wrap-reverse col-12 pb-0">
 <!--  Sort and Meta info Bar    -->
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6 pb-0">
         <simple-sort-bar @update="sortUpdate" :items="items" />
       </div>
-      <div class="col-12 col-lg-6">
-        Displaying products {{ this.searchParams.pagStartIndex + 1 }} - {{ this.searchParams.pagEndIndex + 1 }} out of
-        {{ this.totalResults }}
+      <div class="col-12 col-lg-6 d-flex flex-row-reverse">
+        <span>
+          Displaying products {{ this.searchParams.pagStartIndex + 1 }} - {{ this.searchParams.pagEndIndex + 1 }} out of
+          {{ this.totalResults }}
+        </span>
       </div>
     </div>
 <!-- Product List   -->
@@ -76,7 +78,7 @@ export default {
   data() {
     return {
       page: 1, // The default starting page.
-      itemsPerPage: 3, // The number of items to display on each page.
+      itemsPerPage: 5, // The number of items to display on each page.
       totalResults: 0, // The total number of results. Only 1 page is retrieved at a time.
       searchParams: {
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
