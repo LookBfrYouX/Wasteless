@@ -1,45 +1,53 @@
 <template>
   <div class="w-100 col-12 col-md-8 col-lg-6">
-<!--  Page Title Area  -->
-    <div>
+    <!--  Page Title Area  -->
+    <div class="d-flex justify-space-between align-items-center d-flex">
       <h2>Product Catalogue for {{ businessName }}</h2>
+      <router-link class="btn btn-info d-flex" :to="{name: 'BusinessProductCreate', params: { businessId }}">
+        <span class="material-icons mr-1">add</span>
+        Create Product
+      </router-link>
     </div>
-<!--  Page Content Area  -->
-    <div class="d-inline-flex flex-wrap-reverse col-12 pb-0">
-<!--  Sort and Meta info Bar    -->
+    <!--  Page Content Area  -->
+    <div v-if="products.length" class="row">
+        <!--  Sort and Meta info Bar    -->
       <div class="col-12 col-lg-6 pb-0">
-        <simple-sort-bar @update="sortUpdate" :items="items" />
+        <simple-sort-bar @update="sortUpdate" :items="items"/>
       </div>
-      <div class="col-12 col-lg-6 d-flex flex-row-reverse">
+      <div class="col-12 col-lg-6 d-flex flex-lg-row-reverse align-items-center">
         <span>
           Displaying products {{ this.searchParams.pagStartIndex + 1 }} - {{ this.searchParams.pagEndIndex + 1 }} out of
           {{ this.totalResults }}
         </span>
       </div>
+
+      <!-- Product List   -->
+      <ul class="list-unstyled">
+        <li v-for="product in products" :key="product.id">
+          <router-link
+              :to="{ name: 'BusinessProductDetail', params: { businessId, productId: product.id }}"
+              class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-2 p-3 rounded"
+          >
+            <product-catalogue-list-item
+                :currency="currency"
+                :product="product"
+            />
+          </router-link>
+        </li>
+      </ul>
+      <!-- Pagination Bar   -->
+      <v-pagination
+          v-model="page"
+          :length="totalPages"
+          @input="pageUpdate"
+          @next="pageUpdate"
+          @previous="pageUpdate"
+      />
     </div>
-<!-- Product List   -->
-    <ul class="list-unstyled">
-      <li v-for="product in products" :key="product.id">
-        <router-link
-            :to="{ name: 'BusinessProductDetail', params: { businessId, productId: product.id }}"
-            class="text-decoration-none text-reset d-block hover-white-bg hover-scale-effect slightly-transparent-white-background my-2 p-3 rounded"
-        >
-          <product-catalogue-list-item
-              :currency="currency"
-              :product="product"
-          />
-        </router-link>
-      </li>
-    </ul>
-<!-- Pagination Bar   -->
-    <v-pagination
-        v-model="page"
-        :length="totalPages"
-        @input="pageUpdate"
-        @next="pageUpdate"
-        @previous="pageUpdate"
-    />
-<!-- Error Component - Not Visible Component   -->
+    <div v-else>
+      No products yet
+    </div>
+    <!-- Error Component - Not Visible Component   -->
     <error-modal
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
@@ -78,7 +86,7 @@ export default {
   data() {
     return {
       page: 1, // The default starting page.
-      itemsPerPage: 5, // The number of items to display on each page.
+      itemsPerPage: this.$constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_PAGE, // The number of items to display on each page.
       totalResults: 0, // The total number of results. Only 1 page is retrieved at a time.
       searchParams: {
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
@@ -90,10 +98,10 @@ export default {
       apiErrorMessage: null,
       businessName: null,
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
-        { key: "Name A-Z", value: "name-asc" },
-        { key: "Name Z-A", value: "name-desc" },
-        { key: "RRP Lowest", value: "recommendedRetailPrice-asc" },
-        { key: "RRP Highest", value: "recommendedRetailPrice-desc" },
+        {key: "Name A-Z", value: "name-asc"},
+        {key: "Name Z-A", value: "name-desc"},
+        {key: "RRP Lowest", value: "recommendedRetailPrice-asc"},
+        {key: "RRP Highest", value: "recommendedRetailPrice-desc"},
       ],
     }
   },
@@ -128,9 +136,9 @@ export default {
      */
     pageUpdate: async function () {
       this.searchParams.pagStartIndex = ((this.page - 1) * this.itemsPerPage);
-      this.searchParams.pagEndIndex = Math.min((this.page * this.itemsPerPage) -1, this.totalResults - 1);
+      this.searchParams.pagEndIndex = Math.max(0, Math.min((this.page * this.itemsPerPage) - 1, this.totalResults - 1));
       await this.query();
-      window.scrollTo(0,0);
+      window.scrollTo(0, 0);
     },
     /**
      * Loads currency info
@@ -169,6 +177,7 @@ export default {
         const response = (await Api.getProducts(this.businessId, this.searchParams)).data;
         this.products = response.results;
         this.totalResults = response.totalCount;
+        console.log(this.products.length);
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
