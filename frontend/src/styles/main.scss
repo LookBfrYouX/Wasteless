@@ -33,6 +33,11 @@ h3 {
     font-size: 1rem;
   }
 
+
+  ol, ul {
+    padding-left: 0;
+  }
+
   // Vuetify adds a rules like .flex-wrap that is after the Bootstrap stuff, breaking rules
   // like flex-wrap .flex-lg-nowrap, where you want to wrap only screen sizes below lg
   // There are *a lot* of rules that need to be added,
@@ -99,7 +104,7 @@ h3 {
 }
 
 .green-text-hover {
-  color:$dark;
+  color: $dark;
 }
 
 .green-text-hover:hover {
