@@ -3,7 +3,11 @@ package com.navbara_pigeons.wasteless.cucumber;
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.controller.BusinessController;
 import com.navbara_pigeons.wasteless.controller.ProductController;
 import com.navbara_pigeons.wasteless.controller.UserController;
@@ -15,7 +19,9 @@ import com.navbara_pigeons.wasteless.security.service.BasicUserDetailsServiceImp
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import io.cucumber.spring.CucumberContextConfiguration;
 import net.minidev.json.JSONObject;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +29,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import javax.annotation.PostConstruct;
 
 @CucumberContextConfiguration
 public class CucumberTestProvider extends MainTestProvider {
@@ -44,26 +54,35 @@ public class CucumberTestProvider extends MainTestProvider {
   /**
    * Logs in as admin using userController. See `adminLogin`, may or may not be exactly the same
    */
-  protected void login(String email) {
+  protected void login(String email, String password) throws Exception {
     // https://stackoverflow.com/questions/36584184/spring-security-withmockuser-does-not-work-with-cucumber-tests
-    UserDetails user = basicUserDetailsService.loadUserByUsername(email);
-    SecurityContextHolder.getContext().setAuthentication(
-        new UsernamePasswordAuthenticationToken(
-            user,
-            user,
-            // This one is probably wrong but no one cares
-            createAuthorityList("ADMIN")
-        )
-    );
-    loggedInUserId = ((BasicUserDetails) user).getId();
+    JSONObject credentials = new JSONObject();
+    credentials.appendField("email", email);
+    credentials.appendField("password", password);
+
+    String stringResponse = mockMvc.perform(
+        post("/login")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(credentials.toJSONString())
+    )
+        .andExpect(status().isOk())
+        .andReturn().getResponse().getContentAsString();
+
+    loggedInUserId = objectMapper.readTree(stringResponse).get("userId").asLong();
   }
 
+  /**
+   * Logs in as admin user
+   */
+  protected void adminLogin() throws Exception {
+    login("mbi47@uclive.ac.nz", "fun123");
+  }
 
   /**
-   * Logs in as admin using userController. See `adminLogin`, may or may not be exactly the same
+   * Logs in as non admin user
    */
-  protected void login() {
-    login("dnb36@uclive.ac.nz");
+  protected void nonAdminLogin() throws Exception {
+    login("fdi19@uclive.ac.nz", "fun123");
   }
 
   /**
@@ -72,7 +91,7 @@ public class CucumberTestProvider extends MainTestProvider {
    *
    * @param endpoint
    * @param data     Java object
-   * @param expect   e.g. status.getCreated(). can be null
+   * @param expect   e.g. status().getCreated(). can be null
    * @return
    * @throws Exception
    */
@@ -112,33 +131,6 @@ public class CucumberTestProvider extends MainTestProvider {
     String response = result.andReturn().getResponse().getContentAsString();
 
     return objectMapper.readTree(response);
-  }
-
-  /**
-   * Logs in as admin using userController. See `login`, may or may not be exactly the same
-   */
-  void adminLogin() throws UserNotFoundException, UserAuthenticationException {
-    UserCredentials credentials = new UserCredentials();
-    credentials.setEmail("mbi47@uclive.ac.nz");
-    credentials.setPassword("fun123");
-    ResponseEntity<JSONObject> response = this.userController.login(credentials);
-    loggedInUserId = (Long) response.getBody().get("userId");
-  }
-
-  /**
-   * Logs in as non admin user using userController. See `login`, may or may not be exactly the
-   * same
-   */
-  void nonAdminLogin(String email) throws UserNotFoundException, UserAuthenticationException {
-    UserCredentials credentials = new UserCredentials();
-    credentials.setEmail(email);
-    credentials.setPassword("fun123");
-    ResponseEntity<JSONObject> response = this.userController.login(credentials);
-    loggedInUserId = (Long) response.getBody().get("userId");
-  }
-
-  void nonAdminLogin() throws UserNotFoundException, UserAuthenticationException {
-    nonAdminLogin("fdi19@uclive.ac.nz");
   }
 
 

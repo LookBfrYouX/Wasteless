@@ -44,17 +44,18 @@ public class U3SearchingForUsersStepdefs extends CucumberTestProvider {
 
   @Given("A user {string} with password {string} is logged in.")
   public void aUserWithPasswordIsLoggedIn(String email, String password) throws Exception {
-    JSONObject credentials = new JSONObject();
-    credentials.put("email", email);
-    credentials.put("password", password);
-    System.out.println(credentials.toString());
-
-    mockMvc.perform(
-        post("/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(credentials.toString())
-            .accept(MediaType.ALL))
-        .andExpect(status().is(200));
+    login(email, password);
+//    JSONObject credentials = new JSONObject();
+//    credentials.put("email", email);
+//    credentials.put("password", password);
+//    System.out.println(credentials.toString());
+//
+//    mockMvc.perform(
+//        post("/login")
+//            .contentType(MediaType.APPLICATION_JSON)
+//            .content(credentials.toString())
+//            .accept(MediaType.ALL))
+//        .andExpect(status().is(200));
   }
 
   @When("A search is performed for another user named {string}")

@@ -44,20 +44,21 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
 
   @When("I am logged in with email {string} and password {string}")
   public void iAmLoggedInWithEmailAndPassword(String email, String password) throws Exception {
-    JSONObject credentials = new JSONObject();
-    credentials.put("email", email);
-    credentials.put("password", password);
-
-    MvcResult mvcResult = mockMvc.perform(
-        post("/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(credentials.toString())
-            .accept(MediaType.ALL))
-        .andExpect(status().is(200)).andReturn();
-//    loggedInUserId = Long.parseLong(
-    JsonNode response = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
-    loggedInUserId = response.get("userId").asLong();
-//                    loggedIn
+    login(email, password);
+//    JSONObject credentials = new JSONObject();
+//    credentials.put("email", email);
+//    credentials.put("password", password);
+//
+//    MvcResult mvcResult = mockMvc.perform(
+//        post("/login")
+//            .contentType(MediaType.APPLICATION_JSON)
+//            .content(credentials.toString())
+//            .accept(MediaType.ALL))
+//        .andExpect(status().is(200)).andReturn();
+////    loggedInUserId = Long.parseLong(
+//    JsonNode response = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+//    loggedInUserId = response.get("userId").asLong();
+////                    loggedIn
   }
 
   @Given("I create a {string} business {string}")

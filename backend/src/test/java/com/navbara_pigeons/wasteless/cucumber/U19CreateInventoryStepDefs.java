@@ -51,17 +51,18 @@ public class U19CreateInventoryStepDefs extends CucumberTestProvider {
 
   @When("{string} is logged in with password {string}")
   public void userIsLoggedIn(String email, String password) throws Exception {
-    JSONObject credentials = new JSONObject();
-    credentials.put("email", email);
-    credentials.put("password", password);
-    System.out.println(credentials.toString());
-
-    mockMvc.perform(
-        post("/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(credentials.toString())
-            .accept(MediaType.ALL))
-        .andExpect(status().is(200));
+    login(email, password);
+//    JSONObject credentials = new JSONObject();
+//    credentials.put("email", email);
+//    credentials.put("password", password);
+//    System.out.println(credentials.toString());
+//
+//    mockMvc.perform(
+//        post("/login")
+//            .contentType(MediaType.APPLICATION_JSON)
+//            .content(credentials.toString())
+//            .accept(MediaType.ALL))
+//        .andExpect(status().is(200));
   }
 
   @When("He tries to access his business called {string} inventory")

@@ -29,7 +29,10 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
   // ---------- AC2 ----------
   @Given("a user has a business {string} in {string}")
   public void a_user_has_a_business_in(String businessName, String countryName) throws Exception {
-    login();
+//    nonAdminLogin();
+    System.out.println("Before login");
+    adminLogin();
+    System.out.println("After login");
     CreateBusinessDto business = new CreateBusinessDto();
     business.setBusinessType("Retail Trade");
     business.setName(businessName);

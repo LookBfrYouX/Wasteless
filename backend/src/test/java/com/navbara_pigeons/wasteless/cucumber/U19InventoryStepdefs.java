@@ -24,8 +24,8 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
 
   // background is run before each test
   @Given("A user is logged in")
-  public void aUserIsLoggedIn() {
-    login();
+  public void aUserIsLoggedIn() throws Exception {
+    nonAdminLogin();
   }
 
   @And("has a business {string} with type {string}")
