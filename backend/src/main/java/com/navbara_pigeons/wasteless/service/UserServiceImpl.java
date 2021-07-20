@@ -3,13 +3,17 @@ package com.navbara_pigeons.wasteless.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.enums.UserSortByOption;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.validation.UserServiceValidation;
@@ -23,6 +27,7 @@ import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -187,21 +192,39 @@ public class UserServiceImpl implements UserService {
     return userDao.getUserByEmail(email);
   }
 
-
   /**
    * Calls the userDao to search for users using the given username
    *
-   * @param searchQuery the name being searched for
-   * @return A list containing all the users whose names/nickname match the username
+   * @param searchQuery   name being searched for
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
+   * @return A paginated/sorted list containing all the users whose names/nickname match the
+   * username
+   * @throws InvalidAttributeValueException
    */
   @Override
   @Transactional
-  public List<BasicUserDto> searchUsers(String searchQuery) throws InvalidAttributeValueException {
-    List<BasicUserDto> results = new ArrayList<>();
-    for (User user : userDao.searchUsers(searchQuery)) {
-      results.add(new BasicUserDto(user));
+  public PaginationDto<BasicUserDto> searchUsers(String searchQuery, Integer pagStartIndex,
+      Integer pagEndIndex, UserSortByOption sortBy, boolean isAscending)
+      throws InvalidAttributeValueException, InvalidPaginationInputException {
+
+    PaginationBuilder pagBuilder = new PaginationBuilder(User.class, sortBy);
+    pagBuilder.withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex)
+        .withSortAscending(isAscending);
+
+    Pair<List<User>, Long> dataAndTotalCount = userDao.searchUsers(searchQuery, pagBuilder);
+
+    List<BasicUserDto> clientResults = new ArrayList<>();
+    for (User user : dataAndTotalCount.getFirst()) {
+      clientResults.add(new BasicUserDto(user));
     }
-    return results;
+    return new PaginationDto<>(clientResults, dataAndTotalCount.getSecond());
   }
 
   /**
@@ -291,10 +314,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean isSelf(String userEmail) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    if (userEmail.equals(auth.getName())) {
-      return true;
-    }
-    return false;
+    return userEmail.equals(auth.getName());
   }
 
   /**

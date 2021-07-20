@@ -4,7 +4,9 @@ import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.enums.UserSortByOption;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
@@ -98,14 +100,27 @@ public class UserController {
   /**
    * Search for a user based of nickname or name(firstName, middleName, lastName)
    *
-   * @param searchQuery name being searched for
+   * @param searchQuery   name being searched for
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
    * @return List of all users matching the searchQuery
    * @throws ResponseStatusException Unknown Error
    */
   @GetMapping("/users/search")
-  public ResponseEntity<Object> searchUsers(@RequestParam String searchQuery)
-      throws InvalidAttributeValueException {
-    return new ResponseEntity<>(this.userService.searchUsers(searchQuery),
+  public ResponseEntity<Object> searchUsers(
+      @RequestParam String searchQuery,
+      @RequestParam(required = false) Integer pagStartIndex,
+      @RequestParam(required = false) Integer pagEndIndex,
+      @RequestParam(required = false) UserSortByOption sortBy,
+      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
+      throws InvalidAttributeValueException, InvalidPaginationInputException {
+    return new ResponseEntity<>(
+        this.userService.searchUsers(searchQuery, pagStartIndex, pagEndIndex, sortBy, isAscending),
         HttpStatus.valueOf(200));
   }
 
