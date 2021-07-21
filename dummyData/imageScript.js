@@ -3,6 +3,7 @@ const FormData = require("form-data");
 const Fs = require("fs");
 const Path = require('path')
 const SERVER_URL = "http://localhost:9499";
+const NUMBER_OF_INSERTS = 5000;
 let cookie = "";
 
 /**
@@ -60,7 +61,7 @@ async function uploadImage(businessId, productId) {
  */
 (async () => {
   await login();
-  for (let i = 1; i < 5000; i++) {
+  for (let i = 1; i < NUMBER_OF_INSERTS; i++) {
     await downloadImage();
     await uploadImage(i%1000, i);
   }
