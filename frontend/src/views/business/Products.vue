@@ -1,9 +1,9 @@
 <template>
-  <div class="w-100 col-12 col-md-8 col-lg-6">
+  <div class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2">
     <!--  Page Title Area  -->
-    <div class="d-flex justify-space-between align-items-center d-flex">
-      <h2>Product Catalogue for {{ businessName }}</h2>
-      <router-link class="btn btn-info d-flex" :to="{name: 'BusinessProductCreate', params: { businessId }}">
+    <div class="d-flex flex-sm-wrap pb-3 pb-md-0 align-items-center">
+      <h2 class="col-lg-9">Product Catalogue for {{ businessName }}</h2>
+      <router-link class="btn col-lg-3 ml-auto btn-info d-flex" :to="{name: 'BusinessProductCreate', params: { businessId }}">
         <span class="material-icons mr-1">add</span>
         Create Product
       </router-link>
