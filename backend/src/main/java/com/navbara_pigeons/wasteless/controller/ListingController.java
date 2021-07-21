@@ -10,6 +10,9 @@ import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.ListingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +23,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /** This controller class provides the endpoints for dealing with business listings */
 @RestController
 @Slf4j
 @RequestMapping("")
+@Tag(name = "Listing Endpoint", description = "The API endpoint for Product Listing related requests")
 public class ListingController {
 
   private final ListingService listingService;
@@ -75,15 +79,30 @@ public class ListingController {
    * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/listings")
-  public ResponseEntity<Object> getBusinessById(
-      @PathVariable long id,
-      @RequestParam(required = false) Integer pagStartIndex,
-      @RequestParam(required = false) Integer pagEndIndex,
-      @RequestParam(required = false) ListingSortByOption sortBy,
-      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
+  @Operation(summary = "Show a businesses listings", description = "Return a paginated/sorted list of a specific businesses listings")
+  public ResponseEntity<Object> showBusinessListings(
+      @Parameter(
+          description = "The unique ID number of the business"
+      ) @PathVariable long id,
+      @Parameter(
+          description = "The start index of the list to return, implemented for pagination, Can be "
+              + "Null. This index is inclusive."
+      ) @RequestParam(required = false) Integer pagStartIndex,
+      @Parameter(
+          description = "The stop index of the list to return, implemented for pagination, Can be "
+              + "Null. This index is inclusive."
+      ) @RequestParam(required = false) Integer pagEndIndex,
+      @Parameter(
+          description = "Defines the field to be sorted, can be null."
+      ) @RequestParam(required = false) ListingSortByOption sortBy,
+      @Parameter(
+          description = "Boolean value, whether the sort order should be in ascending order. Is not"
+              + " required and defaults to True."
+      ) @RequestParam(required = false, defaultValue = "true") boolean isAscending)
       throws UserNotFoundException, BusinessNotFoundException, InvalidPaginationInputException {
     log.info("GETTING LISTINGS FOR BUSINESS WITH ID " + id);
     return new ResponseEntity<>(
-        listingService.getListings(id, pagStartIndex, pagEndIndex, sortBy, isAscending), HttpStatus.valueOf(200));
+        listingService.getListings(id, pagStartIndex, pagEndIndex, sortBy, isAscending),
+        HttpStatus.valueOf(200));
   }
 }

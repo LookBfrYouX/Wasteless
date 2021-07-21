@@ -11,6 +11,9 @@ import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.MarketListingService;
 import com.navbara_pigeons.wasteless.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequestMapping("")
+@Tag(name = "Marketplace Endpoint (Cards)", description = "The API endpoint for a virtual marketplace")
 public class MarketListingController {
 
   private final UserService userService;
@@ -62,12 +66,26 @@ public class MarketListingController {
    * @return List of all paginated/sorted market listings that match the section String
    */
   @GetMapping("/cards")
+  @Operation(summary = "Show marketplace cards", description = "Return a paginated/sorted list of marketplace cards for a section")
   public ResponseEntity<PaginationDto<FullMarketListingDto>> getMarketListings(
-      @RequestParam MarketplaceSection section,
-      @RequestParam(required = false) Integer pagStartIndex,
-      @RequestParam(required = false) Integer pagEndIndex,
-      @RequestParam(required = false) MarketListingSortByOption sortBy,
-      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
+      @Parameter(
+          description = "The section for which cards should be retrieved."
+      ) @RequestParam MarketplaceSection section,
+      @Parameter(
+          description = "The start index of the list to return, implemented for pagination, Can be "
+              + "Null. This index is inclusive."
+      ) @RequestParam(required = false) Integer pagStartIndex,
+      @Parameter(
+          description = "The stop index of the list to return, implemented for pagination, Can be "
+              + "Null. This index is inclusive."
+      ) @RequestParam(required = false) Integer pagEndIndex,
+      @Parameter(
+          description = "Defines the field to be sorted, can be null."
+      ) @RequestParam(required = false) MarketListingSortByOption sortBy,
+      @Parameter(
+          description = "Boolean value, whether the sort order should be in ascending order. Is not"
+              + " required and defaults to True."
+      ) @RequestParam(required = false, defaultValue = "true") boolean isAscending)
       throws InvalidPaginationInputException {
     log.info("GETTING CARDS FROM THE '" + section + "' SECTION");
     return new ResponseEntity<>(

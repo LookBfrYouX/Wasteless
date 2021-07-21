@@ -8,6 +8,9 @@ import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +21,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller class provides the endpoints for dealing with products. All requests for products
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @Slf4j
 @RequestMapping("")
+@Tag(name = "Product Endpoint", description = "The API endpoint for Product related requests")
 public class ProductController {
 
   private final ProductService productService;
@@ -60,12 +64,26 @@ public class ProductController {
    * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/products")
+  @Operation(summary = "Show a businesses products", description = "Return a paginated/sorted list of a specific businesses products")
   public ResponseEntity<Object> showBusinessCatalogue(
-      @PathVariable long id,
-      @RequestParam(required = false) Integer pagStartIndex,
-      @RequestParam(required = false) Integer pagEndIndex,
-      @RequestParam(required = false) ProductSortByOption sortBy,
-      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
+      @Parameter(
+          description = "The unique ID number of the business"
+      ) @PathVariable long id,
+      @Parameter(
+          description = "The start index of the list to return, implemented for pagination, Can be "
+              + "Null. This index is inclusive."
+      ) @RequestParam(required = false) Integer pagStartIndex,
+      @Parameter(
+          description = "The stop index of the list to return, implemented for pagination, Can be "
+              + "Null. This index is inclusive."
+      ) @RequestParam(required = false) Integer pagEndIndex,
+      @Parameter(
+          description = "Defines the field to be sorted, can be null."
+      ) @RequestParam(required = false) ProductSortByOption sortBy,
+      @Parameter(
+          description = "Boolean value, whether the sort order should be in ascending order. Is not"
+              + " required and defaults to True."
+      ) @RequestParam(required = false, defaultValue = "true") boolean isAscending)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InvalidPaginationInputException {
     log.info("RETRIEVED PRODUCTS FOR BUSINESS: " + id);
     return new ResponseEntity<>(
