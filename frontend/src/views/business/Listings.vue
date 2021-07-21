@@ -106,7 +106,7 @@ export default {
   methods: {
     getListingsPipeline: async function () {
       try {
-        this.listings = (await Api.getBusinessListings(this.businessId)).data;
+        this.listings = (await Api.getBusinessListings(this.businessId)).data.results;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return false;
