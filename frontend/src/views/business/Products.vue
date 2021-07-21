@@ -9,7 +9,7 @@
       </router-link>
     </div>
     <!--  Page Content Area  -->
-    <div v-if="products.length" class="row">
+    <div v-if="products.length" class="row align-items-center">
         <!--  Sort and Meta info Bar    -->
       <div class="col-12 col-lg-6 pb-0">
         <simple-sort-bar @update="sortUpdate" :items="items"/>
@@ -22,7 +22,7 @@
       </div>
 
       <!-- Product List   -->
-      <ul class="list-unstyled">
+      <ul class="list-unstyled pl-0">
         <li v-for="product in products" :key="product.id">
           <router-link
               :to="{ name: 'BusinessProductDetail', params: { businessId, productId: product.id }}"
@@ -37,6 +37,7 @@
       </ul>
       <!-- Pagination Bar   -->
       <v-pagination
+          class="w-100"
           v-model="page"
           :length="totalPages"
           @input="pageUpdate"
