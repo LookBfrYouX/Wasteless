@@ -11,6 +11,12 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
   private MvcResult mvcResult;
   private User user;
 
+
+  @Given("{string} is signed in and administers a business {string} with a product {string}")
+  public void isSignedInAndAdministersABusinessWithAProduct(String arg0, String arg1, String arg2) {
+
+  }
+
   @Given("a user with name {string} exists and already administers a business called {string} that sells a product {string}")
   public void aUserWithNameIsLoggedInAndAdministersABusinessCalled(String userName,
       String businessName, String productName) throws Exception {

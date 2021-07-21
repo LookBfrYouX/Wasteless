@@ -22,6 +22,7 @@ import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,6 +52,15 @@ public class CucumberTestProvider extends MainTestProvider {
 
   protected Long loggedInUserId = null;
 
+  @PostConstruct
+  public void initMockMvc() {
+    // https://stackoverflow.com/questions/38755727/in-spring-mockmvc-tests-how-to-chain-visit-of-several-webpages
+    // Without the sharedHttpSession, login cookies aren't carried over between calls
+    this.mockMvc = MockMvcBuilders
+            .webAppContextSetup(this.webApplicationContext)
+            .apply(sharedHttpSession())
+            .build();
+  }
   /**
    * Logs in as admin using userController. See `adminLogin`, may or may not be exactly the same
    */

@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfig
  * tests. Test classes can extend this MainTestProvider to have access to the functionality.
  */
 @SpringBootTest
+@AutoConfigureMockMvc
 public class MainTestProvider {
 
   protected final String EMAIL_1 = "example@example.com";
@@ -39,19 +41,12 @@ public class MainTestProvider {
   protected BusinessService businessService;
 
   // https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html
+  @Autowired
   protected MockMvc mockMvc;
 
   @Autowired
   protected WebApplicationContext webApplicationContext;
 
-  @PostConstruct
-  public void initMockMvc() {
-    // https://stackoverflow.com/questions/38755727/in-spring-mockmvc-tests-how-to-chain-visit-of-several-webpages
-    this.mockMvc = MockMvcBuilders
-        .webAppContextSetup(this.webApplicationContext)
-        .apply(sharedHttpSession())
-        .build();
-  }
 
   protected InventoryItem makeInventoryItem(Product product, Business business) {
     InventoryItem inventoryItem = new InventoryItem();

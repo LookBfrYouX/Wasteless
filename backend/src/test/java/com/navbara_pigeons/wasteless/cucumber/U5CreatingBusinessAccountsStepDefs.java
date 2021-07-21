@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.dto.FullAddressDto;
@@ -28,6 +29,8 @@ import org.springframework.test.web.servlet.MvcResult;
 public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
 
   private MvcResult response;
+  private JsonNode jsonResponse;
+  private Long businessId;
 
   @Given("this user exists")
   public void thisUserExists(DataTable dataTable) {
@@ -45,51 +48,28 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @When("I am logged in with email {string} and password {string}")
   public void iAmLoggedInWithEmailAndPassword(String email, String password) throws Exception {
     login(email, password);
-//    JSONObject credentials = new JSONObject();
-//    credentials.put("email", email);
-//    credentials.put("password", password);
-//
-//    MvcResult mvcResult = mockMvc.perform(
-//        post("/login")
-//            .contentType(MediaType.APPLICATION_JSON)
-//            .content(credentials.toString())
-//            .accept(MediaType.ALL))
-//        .andExpect(status().is(200)).andReturn();
-////    loggedInUserId = Long.parseLong(
-//    JsonNode response = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
-//    loggedInUserId = response.get("userId").asLong();
-////                    loggedIn
   }
 
   @Given("I create a {string} business {string}")
   public void iCreateABusiness(String businessType, String businessName)
       throws Exception {
-    Business business = new Business();
-    Address address = makeAddress();
-    business.setBusinessType(BusinessType.fromString(businessType))
+    CreateBusinessDto business = new CreateBusinessDto();
+    FullAddressDto address = new FullAddressDto(makeAddress());
+    business.setBusinessType(businessType)
         .setName(businessName)
         .setAddress(address)
         .setPrimaryAdministratorId(loggedInUserId);
 
-    response = mockMvc.perform(post("/businesses/")
-        .contentType("application/json")
-        .content(objectMapper.writeValueAsString(business)))
-        .andExpect(status().isCreated()).andReturn();
+    jsonResponse = makePostRequestGetJson("/businesses", business, status().isCreated());
   }
 
   @Then("The business {string} is created and stored")
   public void theBusinessIsCreatedAndStored(String businessName) throws Exception {
     // Get the businessId from the returned string object
-    String businessObj = response.getResponse().getContentAsString();
-    String businessId = businessObj.replaceAll("[^0-9]", "");
+    businessId = jsonResponse.get("businessId").asLong();
 
-    MvcResult res = mockMvc.perform(get("/businesses/{id}", businessId)
-        .content(businessId))
-        .andExpect(status().isOk()).andReturn();
-
-    if (!res.getResponse().getContentAsString().contains(businessName)) {
-      Assert.fail("Business not found");
-    }
+    JsonNode responseObj = makeGetRequestGetJson("/businesses/" + businessId, status().isOk());
+    Assertions.assertEquals(businessName, responseObj.get("name").asText());
   }
 
   @Given("I create a business {string} without the required field: BusinessType")
@@ -101,7 +81,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
         .setAddress(address);
 
     response = mockMvc.perform(post("/businesses/")
-        .contentType("application/json")
+        .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(business)))
         .andReturn();
   }
@@ -139,35 +119,24 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @Given("I create a legitimate {string} business {string}")
   public void iCreateALegitimateBusiness(String businessType, String businessName)
       throws Exception {
-    Business business = new Business();
-    Address address = makeAddress();
-    business.setBusinessType(BusinessType.fromString(businessType))
+    CreateBusinessDto business = new CreateBusinessDto();
+    FullAddressDto address = new FullAddressDto(makeAddress());
+    business.setBusinessType(businessType)
         .setName(businessName)
-        .setAddress(address);
+        .setAddress(address)
+        .setPrimaryAdministratorId(loggedInUserId);
 
-    response = mockMvc.perform(post("/businesses/")
-        .contentType("application/json")
-        .content(objectMapper.writeValueAsString(business)))
-        .andExpect(status().isCreated()).andReturn();
+    jsonResponse = makePostRequestGetJson("/businesses", business, status().isCreated());
   }
 
   @Then("I can see myself as the primary administrator")
   public void iCanSeeMyselfAsThePrimaryAdministrator() throws Exception {
     // Get the businessId from the returned string object
-    String businessObj = response.getResponse().getContentAsString();
-    String businessId = businessObj.replaceAll("[^0-9]", "");
+    businessId = jsonResponse.get("businessId").asLong();
 
-    MvcResult res = mockMvc.perform(get("/businesses/{id}", businessId)
-        .content(businessId))
-        .andExpect(status().isOk()).andReturn();
-
-    // Get the businessId from the returned string object
-    if (!res.getResponse().getContentAsString().contains("\"primaryAdministratorId\":" + loggedInUserId)) {
-      Assert.fail("Business not found");
-    }
-  }
-
-  @Given("{string} is signed in and administers a business {string} with a product {string}")
-  public void isSignedInAndAdministersABusinessWithAProduct(String arg0, String arg1, String arg2) {
+    JsonNode response = makeGetRequestGetJson("/businesses/" + businessId, status().isOk());
+    Assertions.assertEquals(loggedInUserId, response.get("primaryAdministratorId").asLong());
+    Assertions.assertTrue(response.get("administrators").isArray());
+    Assertions.assertEquals(loggedInUserId, response.get("administrators").get(0).get("id").asLong());
   }
 }
