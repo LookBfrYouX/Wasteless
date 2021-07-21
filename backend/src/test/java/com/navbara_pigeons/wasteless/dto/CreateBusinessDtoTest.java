@@ -22,13 +22,16 @@ public class CreateBusinessDtoTest extends MainTestProvider {
 
   @Test
   public void validBusinessType() {
-    Assertions.assertEquals(0, validate(new CreateBusinessDto(makeBusiness())).size());
+    Assertions.assertEquals(0, validate(
+            new CreateBusinessDto(makeBusiness()).setPrimaryAdministratorId(1L)
+    ).size());
   }
 
   @Test
   public void invalidBusinessType() {
     CreateBusinessDto dto = new CreateBusinessDto(makeBusiness());
     dto.setBusinessType("Invalid business type");
+    dto.setPrimaryAdministratorId(1L);
     Assertions.assertEquals(1, validate(dto).size());
   }
 }

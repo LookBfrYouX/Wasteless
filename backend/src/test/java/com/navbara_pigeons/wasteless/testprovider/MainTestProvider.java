@@ -100,7 +100,8 @@ public class MainTestProvider {
     Business business = makeBusiness(businessName);
     ArrayList<User> administrators = new ArrayList<>();
     administrators.add(admin);
-    business.setName(businessName)
+    business
+        .setName(businessName)
         .setAdministrators(administrators)
         .setPrimaryAdministratorId(admin.getId());
     return business;
