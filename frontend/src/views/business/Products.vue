@@ -120,7 +120,7 @@ export default {
      * Computes the total number of pages for the pagination component.
      */
     totalPages: function () {
-      return Math.floor((this.totalResults - 1) / this.itemsPerPage) + 1;
+      return Math.ceil((this.totalResults - 1) / this.itemsPerPage);
     }
   },
 
@@ -180,7 +180,6 @@ export default {
         const response = (await Api.getProducts(this.businessId, this.searchParams)).data;
         this.products = response.results;
         this.totalResults = response.totalCount;
-        console.log(this.products.length);
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
