@@ -155,7 +155,7 @@ export default {
      * Parses the API response given a promise to the request.
      */
     parseApiResponse: async function (apiCall) {
-      const listings = (await apiCall).data.results;
+      const listings = (await apiCall).data;
       const listing = listings.find(({id}) => id === this.listingId);
       if (listing === undefined) {
         throw new ApiRequestError(

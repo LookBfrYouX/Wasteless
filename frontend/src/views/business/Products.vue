@@ -134,7 +134,7 @@ export default {
       }
 
       try {
-        this.products = (await Api.getProducts(this.businessId)).data.results;
+        this.products = (await Api.getProducts(this.businessId)).data;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;

@@ -111,7 +111,7 @@ export default {
   methods: {
     getInventory: async function () {
       try {
-        this.listings = (await Api.getBusinessInventory(this.businessId)).data.results;
+        this.listings = (await Api.getBusinessInventory(this.businessId)).data;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return false;
