@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -70,36 +71,44 @@ public class BusinessControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void addAdmin_expectOk() throws Exception {
+    JSONObject userId = new JSONObject();
+    userId.put("userId", RANDOMUSERID);
     mockMvc.perform(put("/businesses/1/makeAdministrator")
         .contentType("application/json")
-        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .content(String.valueOf(userId)))
         .andExpect(status().isOk());
   }
 
   @Test
   @WithAnonymousUser
   void addAdmin_expectUnauthorized() throws Exception {
+    JSONObject userId = new JSONObject();
+    userId.put("userId", RANDOMUSERID);
     mockMvc.perform(put("/businesses/1/makeAdministrator")
         .contentType("application/json")
-        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .content(String.valueOf(userId)))
         .andExpect(status().isUnauthorized());
   }
 
   @Test
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
   void addAdmin_expectForbidden() throws Exception {
+    JSONObject userId = new JSONObject();
+    userId.put("userId", RANDOMUSERID);
     mockMvc.perform(put("/businesses/1/makeAdministrator")
         .contentType("application/json")
-        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .content(String.valueOf(userId)))
         .andExpect(status().isForbidden());
   }
 
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void addAdmin_expectNotAcceptable() throws Exception {
+    JSONObject userId = new JSONObject();
+    userId.put("userId", RANDOMUSERID);
     mockMvc.perform(put("/businesses/tony/makeAdministrator")
         .contentType("application/json")
-        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .content(String.valueOf(userId)))
         .andExpect(status().isNotAcceptable());
   }
 }
