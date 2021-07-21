@@ -56,6 +56,14 @@
           Add Product To Catalogue
         </router-link>
         <router-link
+            v-if="showEditAdminsButton"
+            :to="{ name: 'BusinessAdminEdit', params: { businessId }}"
+            class="btn btn-white-bg-primary m-1 d-flex"
+        >
+          <span class="material-icons mr-1">edit</span>
+          Edit Administrators
+        </router-link>
+        <router-link
             v-if="canEditBusiness"
             :to="{ name: 'BusinessProducts', params: { businessId }}"
             class="btn btn-white-bg-primary m-1 d-flex"
@@ -112,6 +120,7 @@ export default {
         address: {},
         businessType: "",
         administrators: [],
+        primaryAdministratorId: null
       },
       apiErrorMessage: null,
     };
@@ -199,6 +208,13 @@ export default {
      */
     canEditBusiness() {
       return this.$stateStore.getters.canEditBusiness(this.businessId);
+    },
+
+    showEditAdminsButton() {
+      const {getters} = this.$stateStore;
+
+      return getters.isAdmin() || getters.isSignedIn() &&
+             getters.getAuthUser().id == this.businessInfo.primaryAdministratorId;
     }
   },
 
