@@ -16,12 +16,12 @@ describe("SimpleSortBar test", () => {
         wrapper = mount(SimpleSortBar, {
             vuetify,
             propsData: {
-                items: [{key: 'name', value: 'name-desc'}],
+                items: [{key: 'name', value: 'name', isAscending: true}],
             },
         });
 
         wrapper.vm.sortChange('name');
-        expect(wrapper.emitted().update[0]).toEqual(['name-desc']);
+        expect(wrapper.emitted().update[0]).toEqual(['name', true]);
     })
 
     test("Test value is returned with multiple valid keys", () => {
@@ -29,24 +29,24 @@ describe("SimpleSortBar test", () => {
             vuetify,
             propsData: {
                 items: [
-                    {key: 'Name A-Z', value: 'name-asc'},
-                    {key: 'RRP Lowest', value: 'recommendedRetailPrice-asc'},
-                    {key: 'Date Created', value: 'date-asc'}
+                    {key: 'Name A-Z', value: 'name', isAscending: true},
+                    {key: 'RRP Lowest', value: 'recommendedRetailPrice', isAscending: true},
+                    {key: 'Date Created', value: 'date', isAscending: true}
                 ],
             },
         });
 
         wrapper.vm.sortChange('RRP Lowest');
         wrapper.vm.sortChange('Date Created');
-        expect(wrapper.emitted().update[0]).toEqual(['recommendedRetailPrice-asc']);
-        expect(wrapper.emitted().update[1]).toEqual(['date-asc']);
+        expect(wrapper.emitted().update[0]).toEqual(['recommendedRetailPrice', true]);
+        expect(wrapper.emitted().update[1]).toEqual(['date', true]);
     })
 
     test("Test nothing is returned with invalid key", () => {
         wrapper = mount(SimpleSortBar, {
             vuetify,
             propsData: {
-                items: [{key: 'name', value: 'name-desc'}],
+                items: [{key: 'name', value: 'name', isAscending: true}],
             },
         });
 
