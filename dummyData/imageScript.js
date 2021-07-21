@@ -5,12 +5,6 @@ const Fs = require("fs");
 let cookie = "";
 const Path = require('path')
 
-const instance = Axios.create({
-  baseURL: SERVER_URL,
-  timeout: 10000,
-  withCredentials: true
-});
-
 /**
  * Queries the picsum.photos API to retrieve and download a random image
  */
@@ -24,39 +18,43 @@ async function downloadImage() {
     method: 'GET',
     responseType: 'stream'
   })
-  response.data.pipe(writer)
+  response.data.pipe(writer);
 }
 
+/**
+ * Logs into the amf133 account (which has admin rights)
+ */
 async function login() {
-  await instance.post("/login",
+  await Axios.post(`${SERVER_URL}/login`,
       {email: "amf133@uclive.ac.nz", password: "fun123"}).then((response) => {
     cookie = response.headers["set-cookie"][0].split(";")[0];
   });
 }
 
-async function uploadImage() {
+/**
+ * Uploads image to our API
+ */
+async function uploadImage(businessId, productId) {
   let filePath = __dirname + "/a.jpg";
+  const data = new FormData();
+  data.append('image', Fs.createReadStream(filePath));
 
-  Fs.readFile(filePath, (error ,imageData) => {
-    console.log(imageData.toString('binary'));
-    Axios.post(
-        `http://localhost:9499/businesses/${1}/products/${1}/images`, imageData.toString('binary'), {
-          headers: {
-            'Content-Type': 'multipart/form-data; boundary=<calculated when request is sent>',
-            cookie
-          }
-        }).then((response) => {
-      console.log(response)
-    }).catch((err) => {
-      console.log(err)
-    })
-  });
+  let config = {
+    method: 'post',
+    url: `${SERVER_URL}/businesses/${businessId}/products/${productId}/images`,
+    headers: {
+      cookie,
+      ...data.getHeaders()
+    },
+    data: data
+  };
+  Axios(config);
 }
 
 (async () => {
   await login();
   await downloadImage();
-  await uploadImage();
+  await uploadImage(1, 1);
 })();
 
 // for (let i = 0; i < 5000; i++) {
