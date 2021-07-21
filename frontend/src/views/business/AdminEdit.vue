@@ -6,6 +6,31 @@
       </div>
     </div>
 
+    <v-autocomplete
+        v-model="adminIdToAdd"
+        :items="userSearchResults"
+        :loading="userSearchLoading"
+        :search-input.sync="userSearchQuery"
+        item-text="name"
+        item-value="id"
+
+        color="white"
+        hide-no-data
+        hide-selected
+        label="Public APIs"
+        placeholder="Start typing to Search"
+        prepend-icon="md-database-search"
+      ></v-autocomplete>
+      <button
+        class="btn btn-primary d-flex align-items-center"
+        type="button"
+        :disabled="adminIdToAdd == null"
+        :click="addAdmin"
+      >
+        <span class="material-icons">add</span>
+        Add as administrator
+      </button>
+
     <v-data-table
        :headers="[{
          text: 'Name',
@@ -94,7 +119,13 @@ export default {
       business: null,
       apiErrorMessage: null,
       adminIdToRemove: null,
-      removeAdminDialogOpen: false
+      removeAdminDialogOpen: false,
+
+      todoModel: null,
+      userSearchQuery: "",
+      userSearchLoading: false,
+      userSearchResults: [],
+      adminIdToAdd: null,
     }
   },
 
@@ -113,6 +144,10 @@ export default {
         if (await Api.handle401(err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
+    },
+
+    searchEvent(query) {
+      console.log(query);
     },
 
 
@@ -140,6 +175,13 @@ export default {
 
     removeAdmin() {
       console.log("REMOVE");
+    },
+
+    addAdmin() {
+      console.log("ADD", this.adminIdToAdd);
+      this.adminIdToAdd = null;
+      this.userSearchQuery = "";
+      this.userSearchResults = [];
     }
   },
 
@@ -167,6 +209,14 @@ export default {
         });
       }
       return null; 
+    },
+
+    /**
+     * Gets set of existing admin IDs. Empty set if businesses not loaded
+     */
+    existingAdminIds() {
+      if (this.business) return new Set(this.business.administrators.map(admin => admin.id));
+      return new Set();
     }
   },
 
@@ -185,6 +235,36 @@ export default {
       if (this.businessName != null) {
         document.title = `Edit Admins for ${this.businessName}`;
       }
+    },
+
+    async userSearchQuery(query) {
+      this.userSearchLoading = true;
+
+      // // If user is selected from dropdown and they later type some other stuff, remove the selection
+      // if (this.adminIdToAdd != null) {
+      //   const selectedUser = this.userSearchResults.find(user => user.id == this.adminIdToAdd);
+      //   if (!selectedUser || selectedUser.name != query) {
+      //     this.adminIdToAdd = null;
+      //   }
+      // }
+
+
+      console.log(query);
+      try {
+        const results = (await Api.search(query)).data.results;
+        this.userSearchResults = results.map(user => ({
+          ...user,
+          name: this.formatName(user),
+          disabled: this.existingAdminIds.has(user.id)
+        }));
+      } catch(err) {
+        if (await Api.handle401(err)) return;
+        console.error(err);
+        console.log("TODO");
+        this.userSearchLoading = false;
+        return;
+      }
+      this.userSearchLoading = false;
     }
   }
 };
