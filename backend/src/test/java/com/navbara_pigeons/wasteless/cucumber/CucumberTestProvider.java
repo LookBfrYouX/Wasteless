@@ -70,15 +70,9 @@ public class CucumberTestProvider extends MainTestProvider {
     credentials.appendField("email", email);
     credentials.appendField("password", password);
 
-    String stringResponse = mockMvc.perform(
-        post("/login")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(credentials.toJSONString())
-    )
-        .andExpect(status().isOk())
-        .andReturn().getResponse().getContentAsString();
+    JsonNode response = makePostRequestGetJson("/login", credentials, status().isOk());
 
-    loggedInUserId = objectMapper.readTree(stringResponse).get("userId").asLong();
+    loggedInUserId = response.get("userId").asLong();
   }
 
   /**

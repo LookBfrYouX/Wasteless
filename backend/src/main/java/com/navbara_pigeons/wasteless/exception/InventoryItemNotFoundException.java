@@ -7,7 +7,7 @@ public class InventoryItemNotFoundException extends Exception {
   }
 
   public InventoryItemNotFoundException(long inventoryItemId) {
-    super("Invetory Item with ID " + inventoryItemId + " could not be found");
+    super("Inventory Item with ID " + inventoryItemId + " could not be found");
   }
 
 }

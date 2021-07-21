@@ -64,6 +64,7 @@ public class MainTestProvider {
     product.setName(productName)
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setDescription("A test product.")
+        .setManufacturer("Test manufacturer")
         .setRecommendedRetailPrice(20.25);
     return product;
   }
