@@ -50,7 +50,7 @@ public class BusinessController {
   @PostMapping("/businesses")
   public ResponseEntity<JSONObject> registerBusiness(@RequestBody CreateBusinessDto business)
       throws UserNotFoundException, AddressValidationException, BusinessTypeException,
-          BusinessRegistrationException {
+      BusinessRegistrationException {
     JSONObject businessId = businessService.saveBusiness(new Business(business));
     log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
     return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));
@@ -75,14 +75,15 @@ public class BusinessController {
    * Add a specific user to the list of administrators for a business
    *
    * @param businessId unique identifier of the business being searched for
-   * @param userId     the id of the user to add to the list of admins
+   * @param jsonId     the id of the user to add to the list of admins
    */
   @PutMapping("/businesses/{businessId}/makeAdministrator")
   public ResponseEntity<String> addBusinessAdmin(@PathVariable String businessId,
-      @RequestBody String userId)
+      @RequestBody JSONObject jsonId)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
+    long userId = Long.parseLong(jsonId.get("userId").toString());
     log.info("ADDING USER WITH ID " + userId + " AS ADMIN TO BUSINESS WITH ID: " + businessId);
-    businessService.addBusinessAdmin(Long.parseLong(businessId), Long.parseLong(userId));
+    businessService.addBusinessAdmin(Long.parseLong(businessId), userId);
     return new ResponseEntity<>("Individual added as an administrator successfully",
         HttpStatus.valueOf(200));
   }
