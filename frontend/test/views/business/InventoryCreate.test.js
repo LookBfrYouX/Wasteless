@@ -14,7 +14,7 @@ beforeEach(async () => {
     propsData: {
       businessId: 1
     },
-    stubs: ['error-modal']
+    stubs: ['error-modal', 'v-autocomplete']
   });
 });
 

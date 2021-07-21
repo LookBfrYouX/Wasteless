@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.testprovider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+
 import com.navbara_pigeons.wasteless.dto.BasicAddressDto;
 import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
@@ -22,6 +23,7 @@ import com.navbara_pigeons.wasteless.service.BusinessService;
 import com.navbara_pigeons.wasteless.service.KeywordService;
 import com.navbara_pigeons.wasteless.service.ProductService;
 import com.navbara_pigeons.wasteless.service.UserService;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -340,6 +342,14 @@ public class ServiceTestProvider extends MainTestProvider {
     Listing l5 = newListing(5, i3);
     Listing l6 = newListing(6, i3);
     return business;
+  }
+
+  public List<Listing> getMockBusinessListings(Business mockBusiness) {
+    List<Listing> mockBusinessListings = new ArrayList<Listing>();
+    for (InventoryItem inventoryItem : mockBusiness.getInventory()) {
+      mockBusinessListings.addAll(inventoryItem.getListings());
+    }
+    return mockBusinessListings;
   }
 
   /**
