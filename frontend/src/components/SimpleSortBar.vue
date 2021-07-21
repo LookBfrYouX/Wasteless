@@ -19,7 +19,7 @@ export default {
     sortChange: function (event) {
       const item = this.items.filter(obj => { return obj.key === event; })[0];
       if (item) {
-        this.$emit('update', item.value); // TODO deal with other constraints
+        this.$emit('update', item.value, item.isAscending);
       }
     }
   }

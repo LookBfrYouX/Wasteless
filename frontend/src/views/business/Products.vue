@@ -91,7 +91,8 @@ export default {
       searchParams: {
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
-        sortBy: "name-acs",
+        sortBy: "name",
+        isAscending: true
       },
       products: [],
       currency: null,
@@ -126,8 +127,9 @@ export default {
     /**
      * Updates the search query and retrieves the new data.
      */
-    sortUpdate: async function (sortBy) {
+    sortUpdate: async function (sortBy, isAscending) {
       this.searchParams.sortBy = sortBy;
+      this.searchParams.isAscending = isAscending;
       this.page = 1;
       await this.pageUpdate();
     },
