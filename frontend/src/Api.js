@@ -148,6 +148,20 @@ export const Api = {
     });
   },
 
+  addBusinessAdmin: (businessId, userId) => {
+    console.log("TODO backend should accept JSON, not string body");
+    console.log("TODO error messages");
+    return instance.put(`/businesses/${businessId}/makeAdministrator`, userId, {
+      headers: {
+        "Content-Type": "text/plain"
+      }
+    }).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+
+      });
+    })
+  },
+
   /**
    *
    * @param {*} id ID of business
@@ -182,7 +196,7 @@ export const Api = {
    */
   search: (searchQuery) => {
     return instance.get(
-        `/users/search?searchQuery=${encodeURIComponent(searchQuery)}`)
+        `/users/search?searchQuery=${encodeURIComponent(searchQuery == null? "": searchQuery)}`)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error);
     });

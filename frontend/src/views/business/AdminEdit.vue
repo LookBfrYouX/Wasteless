@@ -17,15 +17,15 @@
         color="white"
         hide-no-data
         hide-selected
-        label="Public APIs"
+        label="Search Users"
         placeholder="Start typing to Search"
-        prepend-icon="md-database-search"
+        prepend-icon="search"
       ></v-autocomplete>
       <button
         class="btn btn-primary d-flex align-items-center"
         type="button"
         :disabled="adminIdToAdd == null"
-        :click="addAdmin"
+        @click="addAdmin"
       >
         <span class="material-icons">add</span>
         Add as administrator
@@ -141,13 +141,9 @@ export default {
       try {
         this.business = (await Api.businessProfile(this.businessId)).data;
       } catch(err) {
-        if (await Api.handle401(err)) return;
+        if (await Api.handle401.bind(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
-    },
-
-    searchEvent(query) {
-      console.log(query);
     },
 
 
@@ -168,20 +164,42 @@ export default {
       return name;
     },
 
+    /**
+     * Callback when a remove admin button is clicked. Pass in the relevant admin ID
+     */
     removeAdminButtonClicked(id) {
       this.adminIdToRemove = id;
       this.removeAdminDialogOpen = true;
     },
 
+    /**
+     * Pipeline for adding admin, given by `adminIdToRemove`, to the buisness
+     * Handles API call, errors etc.
+     */
     removeAdmin() {
+      console.log("TODO is this method even called");
       console.log("REMOVE");
     },
 
-    addAdmin() {
-      console.log("ADD", this.adminIdToAdd);
+    /**
+     * Pipeline for adding admin, given by `adminIdToAdd`, to the buisness
+     * Handles API call, errors etc.
+     */
+    async addAdmin() {
+      const id = this.adminIdToAdd;
       this.adminIdToAdd = null;
       this.userSearchQuery = "";
       this.userSearchResults = [];
+
+      try {
+        await Api.addBusinessAdmin(this.businessId, id);
+      } catch(err) {
+        if (await Api.handle401.bind(this, err)) return;
+        console.error(err);
+        console.log("TODO");
+      }
+
+      await this.fetchBusiness();
     }
   },
 
@@ -237,19 +255,20 @@ export default {
       }
     },
 
+    /**
+     * Callback when search query changes. Responsible for API request to search for users
+     */
     async userSearchQuery(query) {
       this.userSearchLoading = true;
 
-      // // If user is selected from dropdown and they later type some other stuff, remove the selection
-      // if (this.adminIdToAdd != null) {
-      //   const selectedUser = this.userSearchResults.find(user => user.id == this.adminIdToAdd);
-      //   if (!selectedUser || selectedUser.name != query) {
-      //     this.adminIdToAdd = null;
-      //   }
-      // }
+      // If user is selected from dropdown and they later type some other stuff, remove the selection
+      if (this.adminIdToAdd != null) {
+        const selectedUser = this.userSearchResults.find(user => user.id == this.adminIdToAdd);
+        if (!selectedUser || selectedUser.name != query) {
+          this.adminIdToAdd = null;
+        }
+      }
 
-
-      console.log(query);
       try {
         const results = (await Api.search(query)).data.results;
         this.userSearchResults = results.map(user => ({
@@ -258,7 +277,7 @@ export default {
           disabled: this.existingAdminIds.has(user.id)
         }));
       } catch(err) {
-        if (await Api.handle401(err)) return;
+        if (await Api.handle401.bind(this, err)) return;
         console.error(err);
         console.log("TODO");
         this.userSearchLoading = false;
