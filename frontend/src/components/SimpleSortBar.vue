@@ -13,6 +13,10 @@
 export default {
   name: "SimpleSortBar",
   props: {
+    /**
+     * A mapping of key, value, and isAscending.
+     * e.g. [{ key: 'Name A-Z', value: 'name', isAscending: true }]
+     */
     items: Array,
   },
   methods: {
