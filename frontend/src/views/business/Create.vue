@@ -20,7 +20,7 @@
             <input
                 v-model="name"
                 class="form-control"
-                maxlength="30"
+                maxlength="50"
                 name="name"
                 placeholder="Name"
                 required
@@ -56,7 +56,7 @@
                 id="description"
                 v-model="description"
                 class="form-control"
-                maxlength="500"
+                maxlength="250"
                 name="description"
                 placeholder="Description"
                 rows="5"

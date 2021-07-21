@@ -1,5 +1,7 @@
 /* MAIN SCHEMA DEFINITION */
 
+DROP TABLE IF EXISTS marketlisting_keyword CASCADE;
+DROP TABLE IF EXISTS keyword CASCADE;
 DROP TABLE IF EXISTS marketlisting CASCADE;
 DROP TABLE IF EXISTS listing CASCADE;
 DROP TABLE IF EXISTS inventory_item CASCADE;
@@ -155,6 +157,25 @@ CREATE TABLE marketlisting
     TITLE              VARCHAR(50) NOT NULL,
     DESCRIPTION        VARCHAR(250),
     CONSTRAINT user_fk FOREIGN KEY (CREATOR_ID) REFERENCES user (ID)
+);
+
+CREATE TABLE keyword
+(
+    ID                 BIGINT AUTO_INCREMENT PRIMARY KEY,
+    NAME               VARCHAR(50) NOT NULL UNIQUE,
+    CREATED            DATETIME NOT NULL
+);
+
+CREATE TABLE marketlisting_keyword
+(
+    MARKETLISTING_ID  BIGINT NOT NULL,
+    KEYWORD_ID BIGINT NOT NULL,
+    CONSTRAINT marketlisting_keyword_pk
+        UNIQUE (MARKETLISTING_ID, KEYWORD_ID),
+    CONSTRAINT marketlisting_keyword_fk
+        FOREIGN KEY (MARKETLISTING_ID) REFERENCES marketlisting (ID),
+    CONSTRAINT keyword_marketlisting_fk
+        FOREIGN KEY (KEYWORD_ID) REFERENCES keyword (ID)
 );
 
 
@@ -410,3 +431,10 @@ VALUES (5002, 'ForSale', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Shoddy w
         'Wanting to sell Wasteless, no longer needed or wanted.'),
        (5002, 'Wanted', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Fresh motivation',
         'Will pay for motivation.');
+
+
+INSERT INTO keyword (NAME, CREATED)
+VALUES ('Tea', '2021-04-23 15:34:20'),
+       ('Electronic', '2021-04-23 15:34:20'),
+       ('Supplement', '2021-04-23 15:34:20'),
+       ('Dairy', '2021-04-23 15:34:20');

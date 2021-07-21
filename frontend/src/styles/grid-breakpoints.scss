@@ -1,0 +1,14 @@
+// Needed a way to access breakpoints: although Bootstrap exports
+// the breakpoints as CSS variables, we can't use them in media queries.
+// This file is imported into 'variables.scss' so this is the 'source of truth'
+// for breakpoint sizes. To use the breakpoints in SCSS, use:
+// @import "~/src/styles/grid-breakpoints.scss";
+// @media (max-width: map-get($grid-breakpoints, "sm")) {}
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+);

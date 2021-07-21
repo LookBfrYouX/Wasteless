@@ -14,7 +14,7 @@ beforeEach(async () => {
     propsData: {
       businessId: 1
     },
-    stubs: ['error-modal']
+    stubs: ['error-modal', 'v-autocomplete']
   });
 });
 
@@ -38,24 +38,6 @@ describe("Correct today date", () => {
     expect(wrapper.vm.todayDate).toBe("2020-12-31");
   });
 });
-
-test("Products list gets populated", async () => {
-  await wrapper.vm.$nextTick();
-  const optionEls = wrapper.find("#productDropdown").findAll("option");
-  expect(optionEls.length).toBe(products.length);
-
-  for (let i = 0; i < optionEls.length; i++) {
-    const optionEl = optionEls.at(i);
-    expect(optionEl.text()).toEqual(products[i].name);
-  }
-});
-
-test("Error modal shows", async () => {
-  Api.getProducts.mockImplementation(
-      () => Promise.reject(new ApiRequestError("Anything")));
-  await wrapper.vm.populateDropdown();
-  expect(wrapper.vm.apiErrorMessage).not.toBeNull()
-})
 
 test("Error message shows", async () => {
   Api.addItemToInventory.mockImplementation(
