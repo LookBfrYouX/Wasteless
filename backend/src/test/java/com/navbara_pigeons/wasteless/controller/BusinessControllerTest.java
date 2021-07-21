@@ -13,7 +13,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 
 public class BusinessControllerTest extends ControllerTestProvider {
 
-  long RANDOMUSERID = 2;
+  long RANDOMUSERID = 5002;
 
   @Test
   @WithUserDetails(value = "amf133@uclive.ac.nz")
@@ -52,13 +52,13 @@ public class BusinessControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "amf133@uclive.ac.nz")
   void getBusiness_expectOk() throws Exception {
-    mockMvc.perform(get("/businesses/1")).andExpect(status().isOk());
+    mockMvc.perform(get("/businesses/1001")).andExpect(status().isOk());
   }
 
   @Test
   @WithAnonymousUser
   void getBusiness_expectUnauthorized() throws Exception {
-    mockMvc.perform(get("/businesses/1")).andExpect(status().isUnauthorized());
+    mockMvc.perform(get("/businesses/1001")).andExpect(status().isUnauthorized());
   }
 
   @Test
@@ -70,7 +70,7 @@ public class BusinessControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void addAdmin_expectOk() throws Exception {
-    mockMvc.perform(put("/businesses/1/makeAdministrator")
+    mockMvc.perform(put("/businesses/1001/makeAdministrator")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(RANDOMUSERID)))
         .andExpect(status().isOk());
@@ -79,7 +79,7 @@ public class BusinessControllerTest extends ControllerTestProvider {
   @Test
   @WithAnonymousUser
   void addAdmin_expectUnauthorized() throws Exception {
-    mockMvc.perform(put("/businesses/1/makeAdministrator")
+    mockMvc.perform(put("/businesses/1001/makeAdministrator")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(RANDOMUSERID)))
         .andExpect(status().isUnauthorized());
@@ -88,7 +88,7 @@ public class BusinessControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
   void addAdmin_expectForbidden() throws Exception {
-    mockMvc.perform(put("/businesses/1/makeAdministrator")
+    mockMvc.perform(put("/businesses/1001/makeAdministrator")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(RANDOMUSERID)))
         .andExpect(status().isForbidden());

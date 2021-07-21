@@ -16,14 +16,14 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "mbi47@uclive.ac.nz")
   void getInventoryFromOneBusinessTestAsAdmin() throws Exception {
-    String endpointUrl = "/businesses/1/inventory";
+    String endpointUrl = "/businesses/1001/inventory";
     mockMvc.perform(get(endpointUrl)).andExpect(status().isOk());
   }
 
   @Test
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
   void getInventoryFromOneBusinessTestAsWrongUser() throws Exception {
-    String endpointUrl = "/businesses/3/inventory";
+    String endpointUrl = "/businesses/1003/inventory";
     mockMvc.perform(get(endpointUrl)).andExpect(status().is(403));
   }
 
@@ -37,7 +37,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @Test
   @WithAnonymousUser
   void getInventoryFromOneBusinessTestAsAnon() throws Exception {
-    String endpointUrl = "/businesses/1/inventory";
+    String endpointUrl = "/businesses/1001/inventory";
     mockMvc.perform(get(endpointUrl)).andExpect(status().isUnauthorized());
   }
 
@@ -51,9 +51,9 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void addInventoryItemToBusinessInventory() throws Exception {
-    String endpointUrl = "/businesses/1/inventory";
+    String endpointUrl = "/businesses/1001/inventory";
     CreateInventoryItemDto dto = new CreateInventoryItemDto();
-    dto.setProductId(1);
+    dto.setProductId(5001);
     dto.setQuantity(2);
     dto.setExpires(LocalDate.now());
     mockMvc.perform(post(endpointUrl)
@@ -65,10 +65,10 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "mbi47@uclive.ac.nz")
   void asUser_addInventoryItem_expectOk() throws Exception {
-    String endpointUrl = "/businesses/2/inventory";
+    String endpointUrl = "/businesses/1002/inventory";
     CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
     inventoryItemDto.setExpires(LocalDate.now());
-    inventoryItemDto.setProductId(2);
+    inventoryItemDto.setProductId(5002);
     inventoryItemDto.setQuantity(15);
     inventoryItemDto.setTotalPrice(220.00);
     inventoryItemDto.setPricePerItem(20.00);
@@ -81,9 +81,9 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void asUser_addInventoryItem_expect_InvalidBusinessId() throws Exception {
-    String endpointUrl = "/businesses/5/inventory";
+    String endpointUrl = "/businesses/1005/inventory";
     CreateInventoryItemDto dto = new CreateInventoryItemDto();
-    dto.setProductId(1);
+    dto.setProductId(5001);
     dto.setQuantity(2);
     dto.setExpires(LocalDate.now());
     mockMvc.perform(post(endpointUrl)
@@ -95,7 +95,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void addInventoryItemToBusinessInventoryInvalidProductId() throws Exception {
-    String endpointUrl = "/businesses/1/inventory";
+    String endpointUrl = "/businesses/1001/inventory";
     CreateInventoryItemDto dto = new CreateInventoryItemDto();
     dto.setProductId(7000);
     dto.setQuantity(2);
@@ -112,7 +112,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
     String endpointUrl = "/businesses/200000/inventory";
     CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
     inventoryItemDto.setExpires(LocalDate.now());
-    inventoryItemDto.setProductId(2);
+    inventoryItemDto.setProductId(5002);
     inventoryItemDto.setQuantity(15);
     inventoryItemDto.setTotalPrice(220.00);
     inventoryItemDto.setPricePerItem(20.00);
@@ -125,10 +125,10 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void asSpecificUser_addInventoryItemToOtherUsersBusiness_expectForbidden() throws Exception {
-    String endpointUrl = "/businesses/3/inventory";
+    String endpointUrl = "/businesses/1003/inventory";
     CreateInventoryItemDto inventoryItemDto = new CreateInventoryItemDto();
     inventoryItemDto.setExpires(LocalDate.now());
-    inventoryItemDto.setProductId(2);
+    inventoryItemDto.setProductId(5002);
     inventoryItemDto.setQuantity(15);
     inventoryItemDto.setTotalPrice(220.00);
     inventoryItemDto.setPricePerItem(20.00);
