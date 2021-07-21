@@ -28,4 +28,14 @@ public class KeywordServiceImplTest extends ServiceTestProvider {
     when(keywordDao.findAllById(keywordIds)).thenReturn(returnedKeywords);
     assertKeywordEquals(returnedKeywords, expectedKeywords);
   }
+
+  @Test
+  public void getKeyword_validIds_expectEmptyKeywords() {
+    long[] keywordIdsArray = { 2 };
+    List<Long> keywordIds = Arrays.stream(keywordIdsArray).boxed().collect(Collectors.toList());
+    ArrayList<Keyword> expectedKeywords = new ArrayList<>();
+    ArrayList<Keyword> returnedKeywords = new ArrayList<>();
+    when(keywordDao.findAllById(keywordIds)).thenReturn(returnedKeywords);
+    assertKeywordEquals(returnedKeywords, expectedKeywords);
+  }
 }
