@@ -50,7 +50,7 @@ public class BusinessController {
   @PostMapping("/businesses")
   public ResponseEntity<JSONObject> registerBusiness(@RequestBody CreateBusinessDto business)
       throws UserNotFoundException, AddressValidationException, BusinessTypeException,
-          BusinessRegistrationException {
+      BusinessRegistrationException {
     JSONObject businessId = businessService.saveBusiness(new Business(business));
     log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
     return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));
@@ -83,6 +83,23 @@ public class BusinessController {
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
     log.info("ADDING USER WITH ID " + userId + " AS ADMIN TO BUSINESS WITH ID: " + businessId);
     businessService.addBusinessAdmin(Long.parseLong(businessId), Long.parseLong(userId));
+    return new ResponseEntity<>("Individual added as an administrator successfully",
+        HttpStatus.valueOf(200));
+  }
+
+  /**
+   * Removes a specific user from the list of administrators for a business
+   *
+   * @param businessId unique identifier of the business being searched for
+   * @param jsonId     the id of the user to be removed from the list of admins
+   */
+  @PutMapping("/businesses/{businessId}/removeAdministrator")
+  public ResponseEntity<String> removeBusinessAdmin(@PathVariable String businessId,
+      @RequestBody JSONObject jsonId) {
+    long userId = Long.parseLong(jsonId.get("userId").toString());
+    log.info("REMOVING USER WITH ID " + userId + " FROM LIST OF ADMINS IN BUSINESS WITH ID: "
+        + businessId);
+    businessService.removeBusinessAdmin(Long.parseLong(businessId), userId);
     return new ResponseEntity<>("Individual added as an administrator successfully",
         HttpStatus.valueOf(200));
   }
