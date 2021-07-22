@@ -29,6 +29,7 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
   public void hasABusiness(String businessName, String businessType) throws Exception {
     Business business = new Business();
     business.setName(businessName);
+    business.setPrimaryAdministratorId(4);
     Address address = makeAddress();
     business.setBusinessType(businessType)
         .setName(businessName)
