@@ -90,6 +90,7 @@ export const router = new VueRouter({
     {
       name: "BusinessCreate",
       path: "/business/create",
+      props: route => ({userId: parseInt(route.params.userId, 10)}),
       meta: {
         title: "Create Business | Wasteless",
         requiresNotBusinessAdmin: true

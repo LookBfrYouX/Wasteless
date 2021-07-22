@@ -61,8 +61,8 @@
               Create Marketplace Card
             </router-link>
             <router-link
-                v-if="isSignedIn && authUser.id === userInfo.id"
-                :to="{ name: 'BusinessCreate' }"
+                v-if="(isSignedIn && authUser.id === userInfo.id) || isAdmin"
+                :to="{ name: 'BusinessCreate', params: { userId: userId } }"
                 class="btn btn-white-bg-primary m-1 d-flex"
                 type="button"
             >
