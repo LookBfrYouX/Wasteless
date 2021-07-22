@@ -40,6 +40,11 @@
           Add as administrator
         </button>
       </div>
+      <div v-if="addAdminErrorMessage" class="col-12">
+        <div class="alert alert-warning mb-0">
+          {{addAdminErrorMessage}}
+        </div>
+      </div>
     </div>
     <v-data-table
        :headers="[{
@@ -125,13 +130,16 @@ export default {
     return {
       business: null,
       apiErrorMessage: null,
-      adminIdToRemove: null,
-      removeAdminDialogOpen: false,
 
       userSearchQuery: "",
       userSearchLoading: false,
       userSearchResultsRaw: [],
       adminIdToAdd: null,
+      addAdminErrorMessage: null,
+
+      adminIdToRemove: null,
+      removeAdminDialogOpen: false,
+      removeAdminErrorMessage: null
     }
   },
 
@@ -144,10 +152,11 @@ export default {
      * Fetches businesses, setting `business`
      */
     async fetchBusiness() {
+      this.business = null; // Show loading screen
       try {
         this.business = (await Api.businessProfile(this.businessId)).data;
       } catch(err) {
-        if (await Api.handle401.bind(this, err)) return;
+        if (await Api.handle401.call(this, err)) return;
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
@@ -179,12 +188,24 @@ export default {
     },
 
     /**
-     * Pipeline for adding admin, given by `adminIdToRemove`, to the buisness
+     * Pipeline for removing admin, given by `adminIdToRemove`, from the buisness
      * Handles API call, errors etc.
      */
-    removeAdmin() {
-      console.log("TODO is this method even called");
-      console.log("REMOVE");
+    async removeAdmin() {
+      const id = this.adminIdToRemove;
+      this.removeAdminDialogOpen = false;
+      this.adminIdToRemove = null;
+      this.removeAdminErrorMessage = null;
+
+      try {
+        console.log(id);
+      } catch(err) {
+        if (await Api.handle401.call(this, err)) return;
+        this.removeAdminErrorMessage = err.userFacingErrorMessage;
+        return;
+      }
+
+      await this.fetchBusiness();
     },
 
     /**
@@ -196,13 +217,15 @@ export default {
       this.adminIdToAdd = null;
       this.userSearchQuery = "";
       this.userSearchResultsRaw = [];
+      this.addAdminErrorMessage = null;
 
       try {
         await Api.addBusinessAdmin(this.businessId, id);
       } catch(err) {
-        if (await Api.handle401.bind(this, err)) return;
-        console.error(err);
-        console.log("TODO");
+        if (await Api.handle401.call(this, err)) return;
+        this.addAdminErrorMessage = err.userFacingErrorMessage;
+        console.log(this.addAdminErrorMessage)
+        return;
       }
 
       await this.fetchBusiness();
@@ -301,7 +324,7 @@ export default {
       try {
         this.userSearchResultsRaw = (await Api.search(query)).data.results;
       } catch(err) {
-        if (await Api.handle401.bind(this, err)) return;
+        if (await Api.handle401.call(this, err)) return;
         console.error(err);
         console.log("TODO");
         this.userSearchLoading = false;
