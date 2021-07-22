@@ -68,7 +68,8 @@ public class Main {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
+        registry
+            .addMapping("/**")
             .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
             .allowedOrigins("http://localhost:9500", "https://csse-s302g3.canterbury.ac.nz")
             .allowCredentials(true);

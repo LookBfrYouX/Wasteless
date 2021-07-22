@@ -14,6 +14,9 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -21,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,14 +31,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
  * @author Maximilian Birzer, Dawson Berry, Alec Fox
  */
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("")
+@Tag(name = "User Endpoint", description = "The API endpoint for User related requests")
 public class UserController {
 
   private final UserService userService;
@@ -72,7 +76,8 @@ public class UserController {
    */
   @PostMapping("/users")
   public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user)
-      throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException, UserAuthenticationException {
+      throws UserNotFoundException, AddressValidationException, UserRegistrationException,
+      UserAlreadyExistsException, UserAuthenticationException {
     JSONObject createdUserId = userService.saveUser(new User(user));
     log.info("ACCOUNT CREATED SUCCESSFULLY: " + user.getEmail());
     return new ResponseEntity<>(createdUserId, HttpStatus.valueOf(201));
@@ -112,12 +117,28 @@ public class UserController {
    * @throws ResponseStatusException Unknown Error
    */
   @GetMapping("/users/search")
+  @Operation(summary = "Find Users by a search query", description = "Search with a search query to return a paginated/sorted list of Users")
   public ResponseEntity<Object> searchUsers(
-      @RequestParam String searchQuery,
-      @RequestParam(required = false) Integer pagStartIndex,
-      @RequestParam(required = false) Integer pagEndIndex,
-      @RequestParam(required = false) UserSortByOption sortBy,
-      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
+      @Parameter(
+          description =
+              "Criteria to search users for (e.g: user’s full name or one or more of their"
+                  + " names/nickname). Can include `AND` & `OR` for logical disjunction)"
+      ) @RequestParam String searchQuery,
+      @Parameter(
+          description = "The start index of the list to return, implemented for pagination, Can be "
+              + "Null. This index is inclusive."
+      ) @RequestParam(required = false) Integer pagStartIndex,
+      @Parameter(
+          description = "The stop index of the list to return, implemented for pagination, Can be "
+              + "Null. This index is inclusive."
+      ) @RequestParam(required = false) Integer pagEndIndex,
+      @Parameter(
+          description = "Defines the field to be sorted, can be null."
+      ) @RequestParam(required = false) UserSortByOption sortBy,
+      @Parameter(
+          description = "Boolean value, whether the sort order should be in ascending order. Is not"
+              + " required and defaults to True."
+      ) @RequestParam(required = false, defaultValue = "true") boolean isAscending)
       throws InvalidAttributeValueException, InvalidPaginationInputException {
     return new ResponseEntity<>(
         this.userService.searchUsers(searchQuery, pagStartIndex, pagEndIndex, sortBy, isAscending),
