@@ -246,7 +246,7 @@ export default {
      */
     async getListings() {
       try {
-        return (await Api.getBusinessListings(this.businessId)).data;
+        return (await Api.getBusinessListings(this.businessId)).data.results;
       } catch (err) {
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
