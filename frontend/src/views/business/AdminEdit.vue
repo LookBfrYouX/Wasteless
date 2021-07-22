@@ -7,7 +7,7 @@
     </div>
 
     <div class="row mb-2 mb-md-4">
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-8 d-flex align-items-center">
         <v-autocomplete
           v-model="adminIdToAdd"
           :items="userSearchResults"
@@ -29,7 +29,7 @@
           prepend-icon="search"
         ></v-autocomplete>
       </div>
-      <div class="col-12 col-md-6 d-flex align-items-center justify-content-end">
+      <div class="col-12 col-md-4 d-flex align-items-center justify-content-end">
         <button
           class="btn btn-primary d-flex align-items-center"
           type="button"
@@ -60,11 +60,9 @@
 
         :items-per-page="10"
         :footer-props="{
-          showFirstLastPage: true,
-          firstIcon: 'md-arrow-collapse-left',
-          lastIcon: 'md-arrow-collapse-right',
-          prevIcon: 'md-minus',
-          nextIcon: 'md-plus'
+          showFirstLastPage: false,
+          prevIcon: 'chevron_left',
+          nextIcon: 'chevron_right'
         }"
     >
       <template v-slot:top>
@@ -130,10 +128,9 @@ export default {
       adminIdToRemove: null,
       removeAdminDialogOpen: false,
 
-      todoModel: null,
       userSearchQuery: "",
       userSearchLoading: false,
-      userSearchResults: [],
+      userSearchResultsRaw: [],
       adminIdToAdd: null,
     }
   },
@@ -198,7 +195,7 @@ export default {
       const id = this.adminIdToAdd;
       this.adminIdToAdd = null;
       this.userSearchQuery = "";
-      this.userSearchResults = [];
+      this.userSearchResultsRaw = [];
 
       try {
         await Api.addBusinessAdmin(this.businessId, id);
@@ -253,6 +250,19 @@ export default {
 
       return getters.isAdmin() || getters.isSignedIn() &&
              this.business && getters.getAuthUser().id == this.business.primaryAdministratorId;
+    },
+
+    /**
+     * Calculates full user name and disabled state
+     */
+    userSearchResults() {
+      return this.userSearchResultsRaw.map(user => ({
+        ...user,
+        name: this.formatName(user),
+        disabled: this.existingAdminIds.has(user.id)
+        // If this is not computed, when admin is added and you click back on the search field,
+        // the person you just added can still be selected
+      }));
     }
   },
 
@@ -289,12 +299,7 @@ export default {
       }
 
       try {
-        const results = (await Api.search(query)).data.results;
-        this.userSearchResults = results.map(user => ({
-          ...user,
-          name: this.formatName(user),
-          disabled: this.existingAdminIds.has(user.id)
-        }));
+        this.userSearchResultsRaw = (await Api.search(query)).data.results;
       } catch(err) {
         if (await Api.handle401.bind(this, err)) return;
         console.error(err);
