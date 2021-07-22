@@ -10,27 +10,31 @@ import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.InventoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller class provides the endpoints for dealing with inventory items. All requests for
  * inventory items listed by businesses are received here.
  */
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("")
+@Tag(name = "Inventory Endpoint", description = "The API endpoint for Business Inventory related requests")
 public class InventoryController {
 
   private final InventoryService inventoryService;
@@ -56,13 +60,28 @@ public class InventoryController {
    * business.
    */
   @GetMapping("/businesses/{id}/inventory")
+  @Operation(summary = "Show a businesses inventory", description = "Return a paginated/sorted list of a specific businesses inventory")
   public ResponseEntity<Object> showBusinessInventory(
-      @PathVariable long id,
-      @RequestParam(required = false) Integer pagStartIndex,
-      @RequestParam(required = false) Integer pagEndIndex,
-      @RequestParam(required = false) InventorySortByOption sortBy,
-      @RequestParam(required = false, defaultValue = "true") boolean isAscending)
-      throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException, BusinessNotFoundException, InvalidAttributeValueException, InvalidPaginationInputException {
+      @Parameter(
+          description = "The unique ID number of the business"
+      ) @PathVariable long id,
+      @Parameter(
+          description = "The start index of the list to return, implemented for pagination, Can be "
+              + "Null. This index is inclusive."
+      ) @RequestParam(required = false) Integer pagStartIndex,
+      @Parameter(
+          description = "The stop index of the list to return, implemented for pagination, Can be "
+              + "Null. This index is inclusive."
+      ) @RequestParam(required = false) Integer pagEndIndex,
+      @Parameter(
+          description = "Defines the field to be sorted, can be null."
+      ) @RequestParam(required = false) InventorySortByOption sortBy,
+      @Parameter(
+          description = "Boolean value, whether the sort order should be in ascending order. Is not"
+              + " required and defaults to True."
+      ) @RequestParam(required = false, defaultValue = "true") boolean isAscending)
+      throws UserNotFoundException, InsufficientPrivilegesException, InventoryItemNotFoundException,
+      BusinessNotFoundException, InvalidAttributeValueException, InvalidPaginationInputException {
     log.info("RETRIEVED INVENTORY ITEMS FOR BUSINESS: " + id);
     return new ResponseEntity<>(
         this.inventoryService.getInventory(id, pagStartIndex, pagEndIndex, sortBy, isAscending),
@@ -70,13 +89,17 @@ public class InventoryController {
   }
 
   @PostMapping("/businesses/{id}/inventory")
-  public ResponseEntity<JSONObject> addToBusinessInventory(@PathVariable long id,
-      @RequestBody CreateInventoryItemDto inventoryDto)
-      throws InventoryRegistrationException, UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException {
+  public ResponseEntity<JSONObject> addToBusinessInventory(
+      @PathVariable long id, @RequestBody CreateInventoryItemDto inventoryDto)
+      throws InventoryRegistrationException, UserNotFoundException, BusinessNotFoundException,
+      ProductNotFoundException, InsufficientPrivilegesException {
     JSONObject response = new JSONObject();
     response.appendField("inventoryItemId", inventoryService.addInventoryItem(id, inventoryDto));
-    log.info("ADDED NEW INVENTORY ITEM FOR PRODUCT id: " + inventoryDto.getProductId()
-        + " FOR BUSINESS: " + id);
+    log.info(
+        "ADDED NEW INVENTORY ITEM FOR PRODUCT id: "
+            + inventoryDto.getProductId()
+            + " FOR BUSINESS: "
+            + id);
     return new ResponseEntity<>(response, HttpStatus.valueOf(201));
   }
 }
