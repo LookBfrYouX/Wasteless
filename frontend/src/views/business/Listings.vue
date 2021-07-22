@@ -1,36 +1,49 @@
 <template>
   <div class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2">
-    <sorted-paginated-item-list
-        :currentSortOption.sync="currentSortOption"
-        :items="listings"
-        :sortOptions="sortOptions"
-    >
-      <template v-slot:title>
-        <h2>Listings for {{ businessName }}</h2>
-      </template>
-      <template v-slot:item="slotProps">
-        <router-link
-            :to="{ name: 'BusinessListingDetail', params: { businessId, listingId: slotProps.item.id }}"
-            class="text-decoration-none text-reset"
-        >
-          <listing-item-card
-              :businessId="businessId"
-              :currency="currency"
-              :item="slotProps.item"
-              class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
-          />
-        </router-link>
-      </template>
-      <template v-slot:right-button>
-        <router-link
-            v-if="$stateStore.getters.canEditBusiness(businessId)"
-            :to="{ name: 'BusinessListingCreate', params: { businessId }}"
-            class="btn btn-info d-flex">
-          <span class="material-icons mr-1">add</span>
-          Create Listing
-        </router-link>
-      </template>
-    </sorted-paginated-item-list>
+    <div class="d-flex flex-sm-wrap pb-3 pb-md-0 align-items-center">
+      <h2 class="col-lg-9">Listings for {{ businessName }}</h2>
+      <router-link
+          v-if="$stateStore.getters.canEditBusiness(businessId)"
+          :to="{ name: 'BusinessListingCreate', params: { businessId }}"
+          class="btn btn-info d-flex">
+        <span class="material-icons mr-1">add</span>
+        Create Listing
+      </router-link>
+    </div>
+    <div v-if="listings.length" class="row align-items-center">
+      <div class="col-12 col-lg-6 pb-0">
+        <simple-sort-bar @update="sortUpdate" :items="items"/>
+      </div>
+      <!-- Product List   -->
+      <ul class="list-unstyled pl-0">
+        <li v-for="listing in listings" :key="listing.id">
+          <router-link
+              :to="{ name: 'BusinessListingDetail', params: { businessId, listingId: listing.id }}"
+              class="text-decoration-none text-reset"
+          >
+            <listing-item-card
+                :businessId="businessId"
+                :currency="currency"
+                :item="listing"
+                class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
+            />
+          </router-link>
+        </li>
+      </ul>
+      <!-- Pagination Bar   -->
+      <v-pagination
+          class="w-100"
+          v-model="page"
+          :length="totalPages"
+          @input="pageUpdate"
+          @next="pageUpdate"
+          @previous="pageUpdate"
+      />
+    </div>
+    <div v-else>
+      No listings yet
+    </div>
+
     <error-modal
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
@@ -44,39 +57,16 @@
   </div>
 </template>
 <script>
-import SortedPaginatedItemList from '../../components/SortedPaginatedItemList.vue';
 import ListingItemCard from "@/components/cards/ListingCard";
 import ErrorModal from "@/components/ErrorModal";
 import {Api} from "@/Api";
+import SimpleSortBar from "@/components/SimpleSortBar";
 
-import {helper} from "@/helper";
-
-const sortOptions = [
-  {
-    name: "Name",
-    sortMethod: helper.sensibleSorter(el => el.inventoryItem.product.name)
-  },
-  {
-    name: "Price",
-    sortMethod: helper.sensibleSorter("price")
-  }, {
-    name: "Quantity",
-    sortMethod: helper.sensibleSorter("quantity")
-  }, {
-    name: "Listing Created",
-    // Yes, you can sort dates as a string in this format
-    // Add a reversed param to sorter? Should the 'natural' sort for created/closes be oldest first? 
-    sortMethod: helper.sensibleSorter("created")
-  }, {
-    name: "Listing Closes",
-    sortMethod: helper.sensibleSorter("closes")
-  }
-];
 
 export default {
   components: {
     ListingItemCard,
-    SortedPaginatedItemList,
+    SimpleSortBar,
     ErrorModal
   },
 
@@ -89,24 +79,65 @@ export default {
 
   data() {
     return {
+      page: 1, // The default starting page.
+      itemsPerPage: this.$constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_PAGE, // The number of items to display on each page.
+      totalResults: 0, // The total number of results. Only 1 page is retrieved at a time.
+      searchParams: {
+        pagStartIndex: 0, // The default start index. Overridden in beforeMount.
+        pagEndIndex: 0, // The default end index. Overridden in beforeMount.
+        sortBy: "quantity",
+        isAscending: false
+      },
       listings: [],
       apiErrorMessage: null,
-      sortOptions: sortOptions,
-      currentSortOption: {...sortOptions[0], reversed: false},
       businessName: null,
-      currency: null
+      currency: null,
+      items: [ // Sort options. Key is displayed and value is emitted when selection changes.
+        {key: "Lowest Quantity", value: "quantity", isAscending: true},
+        {key: "Highest Quantity", value: "quantity", isAscending: false},
+      ],
     };
   },
 
   beforeMount: async function () {
+    await this.getListingsPipeline();
     return Promise.allSettled(
-        [this.loadBusinessName(), this.getListingsPipeline(), this.getCurrency()]);
+        [this.loadBusinessName(), this.getCurrency(), this.pageUpdate()]);
+  },
+
+  computed: {
+    /**
+     * Computes the total number of pages for the pagination component.
+     */
+    totalPages: function () {
+      return Math.floor((this.totalResults - 1) / this.itemsPerPage) + 1;
+    }
   },
 
   methods: {
+    /**
+     * Updates the search query and retrieves the new data.
+     */
+    sortUpdate: async function (sortBy, isAscending) {
+      this.searchParams.sortBy = sortBy;
+      this.searchParams.isAscending = isAscending;
+      this.page = 1;
+      await this.pageUpdate();
+    },
+    /**
+     * Updates page when pagination buttons are pressed.
+     */
+    pageUpdate: async function () {
+      this.searchParams.pagStartIndex = ((this.page - 1) * this.itemsPerPage);
+      this.searchParams.pagEndIndex = Math.max(0, Math.min((this.page * this.itemsPerPage) - 1, this.totalResults - 1));
+      await this.getListingsPipeline();
+      window.scrollTo(0, 0);
+    },
     getListingsPipeline: async function () {
       try {
-        this.listings = (await Api.getBusinessListings(this.businessId)).data;
+        const response = (await Api.getBusinessListings(this.businessId, this.searchParams)).data;
+        this.listings = response.results;
+        this.totalResults = response.totalCount;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return false;

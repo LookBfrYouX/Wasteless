@@ -318,8 +318,8 @@ export const Api = {
    * @param {*} businessId id of the business to get listings for
    * @returns axios response or ApiRequestError
    */
-  getBusinessListings: businessId => {
-    return instance.get(`/businesses/${businessId}/listings`).catch(err => {
+  getBusinessListings: (businessId, params) => {
+    return instance.get(`/businesses/${businessId}/listings`, { params: params }).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
       });

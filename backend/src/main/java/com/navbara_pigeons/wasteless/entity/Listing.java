@@ -52,7 +52,6 @@ public class Listing {
   private ZonedDateTime closes;
 
   public Listing(CreateListingDto createListingDto) {
-    this.id = createListingDto.getId();
     this.quantity = createListingDto.getQuantity();
     this.price = createListingDto.getPrice();
     this.moreInfo = createListingDto.getMoreInfo();
