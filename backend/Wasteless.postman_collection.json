@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "421bbcf9-39d5-4d56-820b-b0be0b22fc02",
+    "_postman_id": "a09248dd-094f-47e0-b465-7188839fb771",
     "name": "Wasteless",
     "description": "API specification for the SENG302 2021 project\n\nContact Support:\n Email: seng302@canterbury.ac.nz",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -1139,7 +1139,7 @@
                   "// Test that totalCount is a Number and is between 0 & the amount of data returned",
                   "pm.test(\"'totalCount' returns a valid number\", function () {",
                   "    pm.expect(jsonData.totalCount).to.satisfy((count) => !isNaN(count));",
-                  "    pm.expect(jsonData.totalCount).to.within(0, jsonData.results.length)",
+                  "    pm.expect(jsonData.totalCount).to.above(jsonData.results.length-1);",
                   "});",
                   "",
                   "",
@@ -1194,7 +1194,7 @@
                   "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
                   "",
                   "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
-                  "    var expectedSortedOrder = _.orderBy(jsonData.results, ({ sortBy }) => sortBy || '',[isAscending]);",
+                  "    var expectedSortedOrder = _.orderBy(jsonData.results, [( o ) => { return o[sortBy] || ''}],[isAscending]);",
                   "",
                   "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    ",
                   "});"
@@ -1211,12 +1211,16 @@
                   "// List the possible values to cycle through",
                   "sortByValues = [\"firstName\", \"middleName\", \"lastName\", \"nickname\"];",
                   "isAscedingValues = [\"yes\", \"no\"];",
+                  "pagIndexValues = [[0, \"\"], [0, 1], [2, 5]]  // In (start, end) format where `start` is pagStartIndex",
                   "",
                   "// Set the values as env vars, used as query params",
-                  "sortByIndex = (Math.floor(index / 2)) % sortByValues.length",
-                  "isAscedingIndex = index % isAscedingValues.length",
+                  "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
+                  "isAscedingIndex = index % isAscedingValues.length;",
+                  "pagIndexIndex = index % pagIndexValues.length;",
                   "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                  "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);"
+                  "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);",
+                  "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
+                  "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                 ],
                 "type": "text/javascript"
               }
@@ -1385,12 +1389,16 @@
                           "// List the possible values to cycle through",
                           "sortByValues = [\"name\", \"manufacturer\", \"recommendedRetailPrice\", \"created\"];",
                           "isAscedingValues = [\"yes\", \"no\"];",
+                          "pagIndexValues = [[0, \"\"], [0, 1], [2, 5]]  // In (start, end) format where `start` is pagStartIndex",
                           "",
                           "// Set the values as env vars, used as query params",
-                          "sortByIndex = (Math.floor(index / 2)) % sortByValues.length",
-                          "isAscedingIndex = index % isAscedingValues.length",
+                          "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
+                          "isAscedingIndex = index % isAscedingValues.length;",
+                          "pagIndexIndex = index % pagIndexValues.length;",
                           "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);"
+                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);",
+                          "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
+                          "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                         ],
                         "type": "text/javascript"
                       }
@@ -1403,6 +1411,9 @@
                           "",
                           "var jsonData = pm.response.json();",
                           "",
+                          "// Increment the test index value, used to cycle through query params",
+                          "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                          "",
                           "",
                           "// Test status code",
                           "pm.test(\"Status code is 200\", function () {",
@@ -1413,7 +1424,7 @@
                           "// Test that totalCount is a Number and is between 0 & the amount of data returned",
                           "pm.test(\"'totalCount' returns a valid number\", function () {",
                           "    pm.expect(jsonData.totalCount).to.satisfy((count) => !isNaN(count));",
-                          "    pm.expect(jsonData.totalCount).to.within(0, jsonData.results.length)",
+                          "    pm.expect(jsonData.totalCount).to.above(jsonData.results.length-1);",
                           "});",
                           "",
                           "",
@@ -1456,9 +1467,6 @@
                           "",
                           "",
                           "",
-                          "// Increment the test index value, used to cycle through query params",
-                          "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
-                          "",
                           "sortBy = pm.environment.get(\"sortBy\");",
                           "// Match the lodash format (asc/desc)",
                           "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
@@ -1468,7 +1476,9 @@
                           "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
                           "",
                           "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
-                          "    var expectedSortedOrder = _.orderBy(jsonData.results, ({ sortBy }) => sortBy || '',[isAscending]);",
+                          "    var expectedSortedOrder = _.orderBy(jsonData.results, [( o ) => { return o[sortBy] || ''}], [isAscending]);",
+                          "    console.log(expectedSortedOrder)",
+                          "    console.log(jsonData.results)",
                           "",
                           "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    ",
                           "});"
@@ -1891,12 +1901,16 @@
                           "// List the possible values to cycle through",
                           "sortByValues = [\"quantity\", \"pricePerItem\", \"totalPrice\", \"manufactured\", \"sellBy\", \"bestBefore\"];",
                           "isAscedingValues = [\"yes\", \"no\"];",
+                          "pagIndexValues = [[0, \"\"], [0, 1], [2, 5]]  // In (start, end) format where `start` is pagStartIndex",
                           "",
                           "// Set the values as env vars, used as query params",
-                          "sortByIndex = (Math.floor(index / 2)) % sortByValues.length",
-                          "isAscedingIndex = index % isAscedingValues.length",
+                          "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
+                          "isAscedingIndex = index % isAscedingValues.length;",
+                          "pagIndexIndex = index % pagIndexValues.length;",
                           "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);"
+                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);",
+                          "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
+                          "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                         ],
                         "type": "text/javascript"
                       }
@@ -1919,7 +1933,7 @@
                           "// Test that totalCount is a Number and is between 0 & the amount of data returned",
                           "pm.test(\"'totalCount' returns a valid number\", function () {",
                           "    pm.expect(jsonData.totalCount).to.satisfy((count) => !isNaN(count));",
-                          "    pm.expect(jsonData.totalCount).to.within(0, jsonData.results.length)",
+                          "    pm.expect(jsonData.totalCount).to.above(jsonData.results.length-1);",
                           "});",
                           "",
                           "",
@@ -1974,7 +1988,7 @@
                           "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
                           "",
                           "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
-                          "    var expectedSortedOrder = _.orderBy(jsonData.results, ({ sortBy }) => sortBy || '',[isAscending]);",
+                          "    var expectedSortedOrder = _.orderBy(jsonData.results, [( o ) => { return o[sortBy] || ''}],[isAscending]);",
                           "",
                           "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    ",
                           "});"
@@ -2007,7 +2021,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{baseUrl}}/businesses/{{businessId}}/inventory/",
+                      "raw": "{{baseUrl}}/businesses/{{businessId}}/inventory/?sortBy={{sortBy}}&isAscending={{isAscending}}&pagStartIndex={{pagStartIndex}}&pagEndIndex={{pagEndIndex}}",
                       "host": [
                         "{{baseUrl}}"
                       ],
@@ -2016,6 +2030,24 @@
                         "{{businessId}}",
                         "inventory",
                         ""
+                      ],
+                      "query": [
+                        {
+                          "key": "sortBy",
+                          "value": "{{sortBy}}"
+                        },
+                        {
+                          "key": "isAscending",
+                          "value": "{{isAscending}}"
+                        },
+                        {
+                          "key": "pagStartIndex",
+                          "value": "{{pagStartIndex}}"
+                        },
+                        {
+                          "key": "pagEndIndex",
+                          "value": "{{pagEndIndex}}"
+                        }
                       ]
                     }
                   },
@@ -2388,12 +2420,16 @@
                           "// List the possible values to cycle through",
                           "sortByValues = [\"quantity\", \"price\", \"created\", \"closes\"];",
                           "isAscedingValues = [\"yes\", \"no\"];",
+                          "pagIndexValues = [[0, \"\"], [0, 1], [2, 5]]  // In (start, end) format where `start` is pagStartIndex",
                           "",
                           "// Set the values as env vars, used as query params",
-                          "sortByIndex = (Math.floor(index / 2)) % sortByValues.length",
-                          "isAscedingIndex = index % isAscedingValues.length",
+                          "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
+                          "isAscedingIndex = index % isAscedingValues.length;",
+                          "pagIndexIndex = index % pagIndexValues.length;",
                           "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);"
+                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);",
+                          "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
+                          "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                         ],
                         "type": "text/javascript"
                       }
@@ -2416,7 +2452,7 @@
                           "// Test that totalCount is a Number and is between 0 & the amount of data returned",
                           "pm.test(\"'totalCount' returns a valid number\", function () {",
                           "    pm.expect(jsonData.totalCount).to.satisfy((count) => !isNaN(count));",
-                          "    pm.expect(jsonData.totalCount).to.within(0, jsonData.results.length)",
+                          "    pm.expect(jsonData.totalCount).to.above(jsonData.results.length-1);",
                           "});",
                           "",
                           "",
@@ -2471,7 +2507,7 @@
                           "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
                           "",
                           "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
-                          "    var expectedSortedOrder = _.orderBy(jsonData.results, ({ sortBy }) => sortBy || '',[isAscending]);",
+                          "    var expectedSortedOrder = _.orderBy(jsonData.results, [( o ) => { return o[sortBy] || ''}],[isAscending]);",
                           "",
                           "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    ",
                           "});"
@@ -2504,7 +2540,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{baseUrl}}/businesses/{{businessId}}/listings",
+                      "raw": "{{baseUrl}}/businesses/{{businessId}}/listings?sortBy={{sortBy}}&isAscending={{isAscending}}&pagStartIndex={{pagStartIndex}}&pagEndIndex={{pagEndIndex}}",
                       "host": [
                         "{{baseUrl}}"
                       ],
@@ -2512,6 +2548,24 @@
                         "businesses",
                         "{{businessId}}",
                         "listings"
+                      ],
+                      "query": [
+                        {
+                          "key": "sortBy",
+                          "value": "{{sortBy}}"
+                        },
+                        {
+                          "key": "isAscending",
+                          "value": "{{isAscending}}"
+                        },
+                        {
+                          "key": "pagStartIndex",
+                          "value": "{{pagStartIndex}}"
+                        },
+                        {
+                          "key": "pagEndIndex",
+                          "value": "{{pagEndIndex}}"
+                        }
                       ]
                     }
                   },
@@ -5746,12 +5800,16 @@
                   "// List the possible values to cycle through",
                   "sortByValues = [\"title\", \"created\", \"displayPeriodEnd\"];",
                   "isAscedingValues = [\"yes\", \"no\"];",
+                  "pagIndexValues = [[0, \"\"], [0, 1], [1, 2]]  // In (start, end) format where `start` is pagStartIndex",
                   "",
                   "// Set the values as env vars, used as query params",
-                  "sortByIndex = (Math.floor(index / 2)) % sortByValues.length",
-                  "isAscedingIndex = index % isAscedingValues.length",
+                  "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
+                  "isAscedingIndex = index % isAscedingValues.length;",
+                  "pagIndexIndex = index % pagIndexValues.length;",
                   "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                  "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);"
+                  "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);",
+                  "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
+                  "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                 ],
                 "type": "text/javascript"
               }
@@ -5774,7 +5832,7 @@
                   "// Test that totalCount is a Number and is between 0 & the amount of data returned",
                   "pm.test(\"'totalCount' returns a valid number\", function () {",
                   "    pm.expect(jsonData.totalCount).to.satisfy((count) => !isNaN(count));",
-                  "    pm.expect(jsonData.totalCount).to.within(0, jsonData.results.length)",
+                  "    pm.expect(jsonData.totalCount).to.above(jsonData.results.length-1);",
                   "});",
                   "",
                   "",
@@ -5829,7 +5887,7 @@
                   "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
                   "",
                   "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
-                  "    var expectedSortedOrder = _.orderBy(jsonData.results, ({ sortBy }) => sortBy || '',[isAscending]);",
+                  "    var expectedSortedOrder = _.orderBy(jsonData.results, [( o ) => { return o[sortBy] || ''}],[isAscending]);",
                   "",
                   "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    ",
                   "});"
