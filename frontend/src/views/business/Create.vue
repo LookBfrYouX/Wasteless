@@ -90,14 +90,7 @@ import {Api} from "@/Api";
 import AddressForm from "@/components/AddressForm";
 
 export default {
-  name: "BusinessCreate",
-
-  props: {
-    userId: {
-      type: Number, // may be NaN
-      required: false
-    }
-  },
+  name: "RegisterBusiness",
 
   components: {
     "address-form": AddressForm,
@@ -159,9 +152,7 @@ export default {
       }
 
       let business = {
-        // Line below allows admins to create business accounts for others
-        primaryAdministratorId: !Number.isNaN(this.userId) && this.$stateStore.getters.isAdmin()
-            ? this.userId : user.id,
+        primaryAdministratorId: user.id,
         name: this.name,
         description: this.description,
         address: {

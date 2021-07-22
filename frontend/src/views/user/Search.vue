@@ -98,7 +98,7 @@ export default {
     query: async function () {
       /* makes a query to the api to search for the prop value from the app.vue main page*/
       try {
-        this.results = (await Api.search(this.search)).data.results;
+        this.results = (await Api.search(this.search)).data;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
