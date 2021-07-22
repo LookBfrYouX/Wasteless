@@ -194,9 +194,11 @@ export default {
       business.id = response.data.businessId;
       business.created = new Date().toISOString(); // temporary created value
 
-      user.businessesAdministered.push(business);
+      if (user.id == this.userId) { // If you made your own business (admin didnt make it)
+        user.businessesAdministered.push(business);
+        this.$stateStore.actions.setActingAs(business.id);
+      }
       this.$stateStore.actions.setAuthUser(user); // Add business to state store
-      this.$stateStore.actions.setActingAs(business.id);
       await this.$router.push({
         name: "BusinessDetail",
         params: {
