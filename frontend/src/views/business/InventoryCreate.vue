@@ -269,7 +269,7 @@ export default {
     },
     async populateDropdown() {
       await Api.getProducts(this.businessId)
-      .then(({data}) => this.products = data)
+      .then(({data}) => this.products = data.results)
       .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
     }
   }

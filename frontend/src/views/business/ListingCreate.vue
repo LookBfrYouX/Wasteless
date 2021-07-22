@@ -232,7 +232,7 @@ export default {
      */
     async getInventory() {
       try {
-        this.inventory = (await Api.getBusinessInventory(this.businessId)).data;
+        this.inventory = (await Api.getBusinessInventory(this.businessId)).data.results;
         return true;
       } catch (err) {
         this.apiErrorMessage = err.userFacingErrorMessage;

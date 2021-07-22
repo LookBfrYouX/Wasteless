@@ -1,31 +1,39 @@
 <template>
-  <div class="w-100">
-    <sorted-paginated-item-list
-        :currentSortOption.sync="currentSortOption"
-        :items="listings"
-        :sortOptions="sortOptions"
-    >
-      <template v-slot:title>
-        <h2>Inventory for {{ businessName ? businessName : "business" }}</h2>
-      </template>
-      <template v-slot:item="slotProps">
+  <div class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2">
+    <div class="d-flex flex-sm-wrap pb-3 pb-md-0 align-items-center">
+      <h2 class="col-lg-9">Inventory for {{ businessName }}</h2>
+      <router-link
+          :to="{ name: 'BusinessInventoryCreate', params: { businessId }}"
+          class="btn btn-info d-flex"
+      >
+        <span class="material-icons mr-1">add</span>
+        Add Item to Inventory
+      </router-link>
+    </div>
+    <!--  Sort and Meta info Bar    -->
+    <div class="col-12 col-lg-6 pb-0">
+      <simple-sort-bar @update="sortUpdate" :items="items"/>
+    </div>
+    <!-- Product List   -->
+    <ul class="list-unstyled pl-0">
+      <li v-for="listing in listings" :key="listing.id">
         <inventory-item-card
             :businessId="businessId"
             :currency="currency"
-            :item="slotProps.item"
+            :item="listing"
             class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
         />
-      </template>
-      <template v-slot:right-button>
-        <router-link
-            :to="{ name: 'BusinessInventoryCreate', params: { businessId }}"
-            class="btn btn-info d-flex"
-        >
-          <span class="material-icons mr-1">add</span>
-          Add Item to Inventory
-        </router-link>
-      </template>
-    </sorted-paginated-item-list>
+      </li>
+    </ul>
+    <!-- Pagination Bar   -->
+    <v-pagination
+        class="w-100"
+        v-model="page"
+        :length="totalPages"
+        @input="pageUpdate"
+        @next="pageUpdate"
+        @previous="pageUpdate"
+    />
     <error-modal
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
@@ -39,50 +47,16 @@
   </div>
 </template>
 <script>
-import SortedPaginatedItemList from '../../components/SortedPaginatedItemList.vue';
 import ErrorModal from "@/components/ErrorModal";
 import {Api} from "@/Api";
-import {helper} from "@/helper";
 import InventoryItemCard from "@/components/cards/InventoryCard";
+import SimpleSortBar from "@/components/SimpleSortBar";
 
-const sortOptions = [
-  {
-    name: "Inventory Item ID",
-    sortMethod: helper.sensibleSorter("id")
-  }, {
-    name: "Product ID",
-    sortMethod: helper.sensibleSorter(el => el.product.id)
-  }, {
-    name: "Product Name",
-    sortMethod: helper.sensibleSorter(el => el.product.name)
-  }, {
-    name: "Quantity",
-    sortMethod: helper.sensibleSorter("quantity")
-  }, {
-    name: "Price Per Item",
-    sortMethod: helper.sensibleSorter("pricePerItem")
-  }, {
-    name: "Total Price",
-    sortMethod: helper.sensibleSorter("totalPrice")
-  }, {
-    name: "Manufacturing Date",
-    sortMethod: helper.sensibleSorter("manufactured")
-  }, {
-    name: "Best Before Date",
-    sortMethod: helper.sensibleSorter("bestBefore")
-  }, {
-    name: "Sell By Date",
-    sortMethod: helper.sensibleSorter("sellBy")
-  }, {
-    name: "Expires",
-    sortMethod: helper.sensibleSorter("expires")
-  }
-];
 
 export default {
   components: {
+    SimpleSortBar,
     InventoryItemCard,
-    SortedPaginatedItemList,
     ErrorModal
   },
 
@@ -95,23 +69,64 @@ export default {
 
   data() {
     return {
+      page: 1, // The default starting page.
+      itemsPerPage: this.$constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_PAGE, // The number of items to display on each page.
+      totalResults: 0, // The total number of results. Only 1 page is retrieved at a time.
+      searchParams: {
+        pagStartIndex: 0, // The default start index. Overridden in beforeMount.
+        pagEndIndex: 0, // The default end index. Overridden in beforeMount.
+        sortBy: "quantity",
+        isAscending: false
+      },
       listings: [],
       apiErrorMessage: null,
-      sortOptions,
-      currentSortOption: {...sortOptions[0], reversed: false},
       businessName: null,
       currency: null,
+      items: [ // Sort options. Key is displayed and value is emitted when selection changes.
+        {key: "Lowest Quantity", value: "quantity", isAscending: true},
+        {key: "Highest Quantity", value: "quantity", isAscending: false},
+      ],
     };
   },
 
   beforeMount: async function () {
-    return Promise.allSettled([this.getInventory(), this.updateBusinessName(), this.getCurrency()]);
+    await this.getInventory();
+    return Promise.allSettled([this.updateBusinessName(), this.getCurrency(), this.pageUpdate()]);
+  },
+
+  computed: {
+    /**
+     * Computes the total number of pages for the pagination component.
+     */
+    totalPages: function () {
+      return Math.floor((this.totalResults - 1) / this.itemsPerPage) + 1;
+    }
   },
 
   methods: {
+    /**
+     * Updates the search query and retrieves the new data.
+     */
+    sortUpdate: async function (sortBy, isAscending) {
+      this.searchParams.sortBy = sortBy;
+      this.searchParams.isAscending = isAscending;
+      this.page = 1;
+      await this.pageUpdate();
+    },
+    /**
+     * Updates page when pagination buttons are pressed.
+     */
+    pageUpdate: async function () {
+      this.searchParams.pagStartIndex = ((this.page - 1) * this.itemsPerPage);
+      this.searchParams.pagEndIndex = Math.max(0, Math.min((this.page * this.itemsPerPage) - 1, this.totalResults - 1));
+      await this.getInventory();
+      window.scrollTo(0, 0);
+    },
     getInventory: async function () {
       try {
-        this.listings = (await Api.getBusinessInventory(this.businessId)).data;
+        const response = (await Api.getBusinessInventory(this.businessId, this.searchParams)).data;
+        this.listings = response.results;
+        this.totalResults = response.totalCount;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return false;

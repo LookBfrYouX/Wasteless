@@ -22,7 +22,7 @@
       </div>
 
       <!-- Product List   -->
-      <ul class="list-unstyled pl-0">
+      <ul class="list-unstyled w-100 pl-0">
         <li v-for="product in products" :key="product.id">
           <router-link
               :to="{ name: 'BusinessProductDetail', params: { businessId, productId: product.id }}"

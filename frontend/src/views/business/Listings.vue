@@ -1,12 +1,12 @@
 <template>
-  <div class="w-100">
+  <div class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2">
     <sorted-paginated-item-list
         :currentSortOption.sync="currentSortOption"
         :items="listings"
         :sortOptions="sortOptions"
     >
       <template v-slot:title>
-        <h2>Listings for {{ businessName ? businessName : "business" }}</h2>
+        <h2>Listings for {{ businessName }}</h2>
       </template>
       <template v-slot:item="slotProps">
         <router-link
