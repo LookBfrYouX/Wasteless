@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.cucumber;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,6 +18,8 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
@@ -28,9 +31,9 @@ import org.springframework.test.web.servlet.MvcResult;
 
 public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
 
-  private MvcResult response;
-  private JsonNode jsonResponse;
-  private Long businessId;
+  private MvcResult response; // So that error can be checked in another step
+  private JsonNode jsonResponse; // to get business ID from successful registrations
+  private Long differentUserId;
 
   @Given("this user exists")
   public void thisUserExists(DataTable dataTable) {
@@ -41,16 +44,18 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
       newUser.setLastName(columns.get("lastName"));
       newUser.setNickname(columns.get("nickName"));
       newUser.setPassword(columns.get("password"));
-      Assertions.assertDoesNotThrow(() -> userController.registerUser(new CreateUserDto(newUser)));
+      Assertions.assertDoesNotThrow(() -> registerUser(new CreateUserDto(newUser)));
     }
   }
 
-  @When("I am logged in with email {string} and password {string}")
+  // ----- AC1 -----
+
+  @Given("I am logged in with email {string} and password {string}")
   public void iAmLoggedInWithEmailAndPassword(String email, String password) throws Exception {
     login(email, password);
   }
 
-  @Given("I create a {string} business {string}")
+  @When("I create a {string} business {string}")
   public void iCreateABusiness(String businessType, String businessName)
       throws Exception {
     CreateBusinessDto business = new CreateBusinessDto();
@@ -66,13 +71,15 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @Then("The business {string} is created and stored")
   public void theBusinessIsCreatedAndStored(String businessName) throws Exception {
     // Get the businessId from the returned string object
-    businessId = jsonResponse.get("businessId").asLong();
+    Long businessId = getBusinessIdFromJsonResponse();
 
     JsonNode responseObj = makeGetRequestGetJson("/businesses/" + businessId, status().isOk());
     Assertions.assertEquals(businessName, responseObj.get("name").asText());
   }
 
-  @Given("I create a business {string} without the required field: BusinessType")
+  // ----- AC2 -----
+
+  @When("I create a business {string} without the required field: BusinessType")
   public void iCreateABusinessWithoutTheRequiredFieldBusinessType(String businessName)
       throws Exception {
     CreateBusinessDto business = new CreateBusinessDto();
@@ -93,7 +100,9 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
     }
   }
 
-  @Given("I create an illegitimate {string} business {string}")
+  // ----- AC3 -----
+
+  @When("I create an illegitimate {string} business {string}")
   public void iCreateAnIllegitimateBusiness(String businessType, String businessName)
       throws Exception {
     CreateBusinessDto business = new CreateBusinessDto();
@@ -104,7 +113,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
         .setAddress(address);
 
     response = mockMvc.perform(post("/businesses/")
-        .contentType("application/json")
+        .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(business)))
         .andReturn();
   }
@@ -116,7 +125,9 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
     }
   }
 
-  @Given("I create a legitimate {string} business {string}")
+  // ----- AC5.1 -----
+
+  @When("I create a legitimate {string} business {string}")
   public void iCreateALegitimateBusiness(String businessType, String businessName)
       throws Exception {
     CreateBusinessDto business = new CreateBusinessDto();
@@ -132,11 +143,59 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @Then("I can see myself as the primary administrator")
   public void iCanSeeMyselfAsThePrimaryAdministrator() throws Exception {
     // Get the businessId from the returned string object
-    businessId = jsonResponse.get("businessId").asLong();
+    Long businessId = getBusinessIdFromJsonResponse();
 
     JsonNode response = makeGetRequestGetJson("/businesses/" + businessId, status().isOk());
     Assertions.assertEquals(loggedInUserId, response.get("primaryAdministratorId").asLong());
     Assertions.assertTrue(response.get("administrators").isArray());
     Assertions.assertEquals(loggedInUserId, response.get("administrators").get(0).get("id").asLong());
+  }
+
+  // ----- AC5.2 -----
+
+  @Given("A user exists with email {string} and password {string}")
+  public void aUserExistsWithEmailAndPassword(String email, String password) throws Exception {
+    User newUser = makeUser(email, password, false);
+    differentUserId = registerUser(new CreateUserDto(newUser));
+  }
+
+  @When("I set this user as an admin of my newly created business")
+  public void iSetThisUserAsAnAdminOfMyNewlyCreatedBusiness() throws Exception {
+    Long businessId = getBusinessIdFromJsonResponse();
+
+    mockMvc.perform(
+        put("/businesses/{id}/makeAdministrator", businessId)
+            .contentType(MediaType.TEXT_PLAIN)
+            .content(differentUserId.toString())
+            .accept(MediaType.ALL))
+        .andExpect(status().is(200));
+  }
+
+  @Then("I can see him in the list of admins for the business")
+  public void iCanSeeHimInTheListOfAdminsForTheBusiness() throws Exception {
+    // Get the businessId from the returned string object
+    Long businessId = getBusinessIdFromJsonResponse();
+
+    // Check the newUser is in the list of admins for the returned business
+    JsonNode response = makeGetRequestGetJson(
+        "/businesses/" + businessId,
+        status().isOk()
+    );
+
+    JsonNode admins = response.get("administrators");
+    for (JsonNode admin: admins) {
+      if (admin.get("id").asLong() == differentUserId) {
+        return;
+      }
+    }
+
+    Assertions.fail();
+  }
+
+  /**
+   * Returns a businessId from a post business endpoint response
+   */
+  private Long getBusinessIdFromJsonResponse() {
+    return jsonResponse.get("businessId").asLong();
   }
 }

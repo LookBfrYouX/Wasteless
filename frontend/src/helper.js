@@ -10,9 +10,10 @@ export const helper = {
   /**
    * Given address object, convert it to string, stripping out undefined components
    * @param {object} address
+   * @param {Boolean} publicOnly if true, only public components are in the output string
    * @returns
    */
-  addressToString(address) {
+  addressToString(address, publicOnly = false) {
     const numberUndef = address.streetNumber == undefined
         || address.streetNumber.trim().length == 0;
     const nameUndef = address.streetName == undefined
@@ -20,23 +21,30 @@ export const helper = {
 
     let street = undefined;
     if (numberUndef && !nameUndef) {
-      street = address.streetNumber;
-    }// if street number defined but street name not, don't show either
-    else if (!numberUndef
-        && !nameUndef) {
+      // if street number defined but street name not, don't show either
+      street = address.streetName;
+    }
+    else if (!numberUndef && !nameUndef) {
       street = `${address.streetNumber} ${address.streetName}`;
     }
 
-    return [
+    const components = publicOnly? [
+        address.suburb,
+        address.city,
+        address.region,
+        address.country
+      ]: [
       street,
       address.suburb,
       address.city,
       address.region,
       address.postcode,
       address.country
-    ].filter(
-        component => typeof component == "string" && component.trim().length
-            > 0).join(', ');
+      ];
+      
+    return components.filter(component => 
+        typeof component == "string" && component.trim().length > 0
+      ).join(', ');
   },
 
   /**

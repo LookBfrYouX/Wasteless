@@ -2,7 +2,11 @@
 
 Basic project template using `gradle`, `npm`, `Spring Boot`, `Vue.js` and `Gitlab CI`.
 
-## Basic Project Structure
+## Project Structure
+
+### Frontend
+
+#### Directories
 
 A frontend sub-project (web GUI):
 
@@ -10,12 +14,25 @@ A frontend sub-project (web GUI):
 - `frontend/public` publicly accessible web assets (e.g., icons, images, style sheets)
 - `frontend/dist` Frontend production build
 
+### Backend
+
+#### Directories
+
 A backend sub-project (business logic and persistence server):
 
 - `backend/src` Backend source code (Java - Spring)
 - `backend/out` Backend production build
 
+#### Specification
+
+The OpenAPI YAML specification can be accessed by first running the backend server and then heading
+to http://localhost:9499/api-docs.yaml.
+
+Alternatively, you can visualise and interact with the API specification by visiting the Swagger-UI
+web page at http://localhost:9499/swagger-ui.
+
 ## Credentials
+
 - Admin Role
   - Admin@wasteless.co.nz
   - admin

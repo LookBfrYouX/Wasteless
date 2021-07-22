@@ -61,4 +61,8 @@ public class U15ProductCatalogueStepdefs extends CucumberTestProvider {
   @When("{string} requests his product catalogue")
   public void requestsHisProductCatalogue(String arg0) {
   }
+
+  @Given("{string} is signed in and administers a business {string} with a product {string}")
+  public void isSignedInAndAdministersABusinessWithAProduct(String arg0, String arg1, String arg2) {
+  }
 }
