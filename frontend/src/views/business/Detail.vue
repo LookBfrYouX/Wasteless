@@ -31,18 +31,18 @@
           <dd class="col-md value"> {{ this.$helper.memberSinceText(businessInfo.created) }}</dd>
         </dl>
         <dl class="row">
-          <dt class="col-md label">Administrator:</dt>
-          <dd
-              v-for="admin in businessInfo.administrators"
-              :key="admin.id"
-              class="col-md value"
-          >
+          <dt class="col-md label">Administrators:</dt>
+          <dd class="col-md value">
             <router-link
+                v-for="(admin, index) in businessInfo.administrators"
+                :key="admin.id"
                 :to="{ name: 'UserDetail', params: { userId: admin.id }}"
-                class="admin-link hover-cursor-pointer text-decoration-none"
-            >
-              {{ admin.firstName }} {{ admin.lastName }}
-            </router-link>
+                class="inline admin-link hover-cursor-pointer text-decoration-none"
+            >{{
+              index == businessInfo.administrators.length - 1? "and ": ""
+              }}{{ admin.firstName }} {{ admin.lastName }}{{
+              index == businessInfo.administrators.length - 1? "": ", "
+            }}</router-link>
           </dd>
         </dl>
       </ul>

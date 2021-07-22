@@ -198,7 +198,7 @@ would be the easiest option
   // content doesn't overflow, which we do want in this case
   // This is a difficult problem as we want the max height of the business container
   // to be the below value, **unless the user details container is taller**
-  max-height: 35em;
+  max-height: 40em;
 }
 
 .user-details-container {
