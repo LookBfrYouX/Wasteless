@@ -4,15 +4,19 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Currency;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.enums.ProductSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ForbiddenException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.validation.ProductServiceValidation;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -22,6 +26,7 @@ import javax.transaction.Transactional;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 /**
@@ -60,24 +65,38 @@ public class ProductServiceImpl implements ProductService {
    * This method retrieves a list of all the products listed by a specific business from the
    * ProductDao given the business ID.
    *
-   * @param businessId The ID of the business whose products are to be retrieved.
-   * @return productCatalogue A List<Product> of products that are in the business product
-   * catalogue.
+   * @param businessId    The ID of the business whose products are to be retrieved.
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
-  public List<BasicProductDto> getProducts(long businessId)
-      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException {
-    if (this.userService.isAdmin() || this.businessService.isBusinessAdmin(businessId)) {
-      Business business = businessDao.getBusinessById(businessId);
-      ArrayList<BasicProductDto> products = new ArrayList<>();
-      for (Product product : business.getProductsCatalogue()) {
-        products.add(new BasicProductDto(product, publicPathPrefix));
-      }
-      return products;
-    } else {
-      throw new InsufficientPrivilegesException("You are not permitted to modify this business");
+  public PaginationDto<BasicProductDto> getProducts(long businessId, Integer pagStartIndex,
+      Integer pagEndIndex, ProductSortByOption sortBy, boolean isAscending)
+      throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InvalidPaginationInputException {
+    if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
+      throw new InsufficientPrivilegesException(
+          "You are not permitted to view the Products of this business");
     }
+
+    Business business = businessDao.getBusinessById(businessId);
+    PaginationBuilder pagBuilder = new PaginationBuilder(Product.class, sortBy);
+    pagBuilder.withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex)
+        .withSortAscending(isAscending);
+
+    Pair<List<Product>, Long> dataAndTotalCount = productDao.getProducts(business, pagBuilder);
+
+    ArrayList<BasicProductDto> products = new ArrayList<>();
+    for (Product product : dataAndTotalCount.getFirst()) {
+      products.add(new BasicProductDto(product, publicPathPrefix));
+    }
+    return new PaginationDto<>(products, dataAndTotalCount.getSecond());
   }
 
   /**

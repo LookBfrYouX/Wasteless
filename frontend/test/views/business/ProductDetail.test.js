@@ -41,7 +41,8 @@ describe("Parsing API response to get product images", () => {
         productId: 1,
         businessId: 1
       },
-      mocks
+      mocks,
+      stubs: ["router-link"]
     });
     const getProducts = jest.fn(() => Promise.resolve());
     Api.getProducts.mockImplementation(getProducts);
