@@ -6,43 +6,50 @@
       </div>
     </div>
 
-    <v-autocomplete
-        v-model="adminIdToAdd"
-        :items="userSearchResults"
-        :loading="userSearchLoading"
-        :search-input.sync="userSearchQuery"
-        item-text="name"
-        item-value="id"
+    <div class="row mb-2 mb-md-4">
+      <div class="col-12 col-md-6">
+        <v-autocomplete
+          v-model="adminIdToAdd"
+          :items="userSearchResults"
+          :loading="userSearchLoading"
+          :search-input.sync="userSearchQuery"
+          item-text="name"
+          item-value="id"
 
-        color="white"
-        hide-no-data
-        hide-selected
-        label="Search Users"
-        placeholder="Start typing to Search"
-        prepend-icon="search"
-      ></v-autocomplete>
-      <button
-        class="btn btn-primary d-flex align-items-center"
-        type="button"
-        :disabled="adminIdToAdd == null"
-        @click="addAdmin"
-      >
-        <span class="material-icons">add</span>
-        Add as administrator
-      </button>
+          solo
+          clearable
+          color="white"
 
+          class="remove-v-autocomplete-bottom-padding"
+
+          hide-no-data
+          hide-selected
+          label="Search Users"
+          placeholder="Start typing to Search"
+          prepend-icon="search"
+        ></v-autocomplete>
+      </div>
+      <div class="col-12 col-md-6 d-flex align-items-center justify-content-end">
+        <button
+          class="btn btn-primary d-flex align-items-center"
+          type="button"
+          :disabled="adminIdToAdd == null"
+          @click="addAdmin"
+        >
+          <span class="material-icons">add</span>
+          Add as administrator
+        </button>
+      </div>
+    </div>
     <v-data-table
        :headers="[{
          text: 'Name',
          sortable: true,
          value: 'name'
        }, {
-         text: 'Email',
-         sortable: true,
-         value: 'email'
-       }, {
          text: 'Remove',
          sortable: false,
+         align: 'end',
          value: 'actions'
        }]"
        :items="admins == null? []: admins"
@@ -75,13 +82,15 @@
         </v-dialog>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <button
-          class="btn btn-outline-danger btn-sm d-flex align-content-center"
-          :disabled="business.primaryAdministratorId == item.id"
-          @click="removeAdminButtonClicked(item.id)"
-        >
-          <span class="material-icons">delete</span>
-        </button>
+        <div class="d-flex justify-content-end">
+          <button
+            class="btn btn-outline-danger btn-sm d-flex align-content-center"
+            :disabled="business.primaryAdministratorId == item.id"
+            @click="removeAdminButtonClicked(item.id)"
+          >
+            <span class="material-icons">delete</span>
+          </button>
+        </div>
       </template>
     </v-data-table>
 
@@ -221,7 +230,6 @@ export default {
         return this.business.administrators.map(admin => {
           return {
             name: this.formatName(admin),
-            email: admin.email,
             id: admin.id
           }
         });
@@ -235,6 +243,16 @@ export default {
     existingAdminIds() {
       if (this.business) return new Set(this.business.administrators.map(admin => admin.id));
       return new Set();
+    },
+
+    /**
+     * Checks if the user has permission to edit the business; either a GAA or the primary administrator
+     */
+    userCanModifyBusiness() {
+      const {getters} = this.$stateStore;
+
+      return getters.isAdmin() || getters.isSignedIn() &&
+             this.business && getters.getAuthUser().id == this.business.primaryAdministratorId;
     }
   },
 
@@ -244,6 +262,7 @@ export default {
      */
     async businessId() {
       await this.fetchBusiness();
+      console.log("!");
     },
 
     /**

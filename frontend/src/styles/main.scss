@@ -154,3 +154,14 @@ nav {
   background-position: right;
   background-repeat: no-repeat;
 }
+
+
+.remove-v-autocomplete-bottom-padding {
+  .v-input__slot {
+    margin-bottom: 0;
+  }
+
+  .v-text-field__details {
+    display: none;
+  }
+}
