@@ -120,7 +120,7 @@ export default {
      * Computes the total number of pages for the pagination component.
      */
     totalPages: function () {
-      return Math.ceil((this.totalResults - 1) / this.itemsPerPage);
+      return Math.floor((this.totalResults - 1) / this.itemsPerPage) + 1;
     }
   },
 
