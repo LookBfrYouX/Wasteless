@@ -168,7 +168,7 @@ export default {
      * Parses the API response given a promise to the request
      */
     parseApiResponse: async function (apiCall) {
-      const products = (await apiCall).data.results;
+      const products = (await apiCall).data;
       const product = products.find(({id}) => id === this.productId);
       // find the product the correct id
       if (product === undefined) {

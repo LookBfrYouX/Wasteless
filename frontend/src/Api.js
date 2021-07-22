@@ -169,8 +169,8 @@ export const Api = {
    * @param id ID of business
    * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
-  getProducts: (id, params) => {
-    return instance.get(`/businesses/${id}/products`, { params: params }).catch(error => {
+  getProducts: (id) => {
+    return instance.get(`/businesses/${id}/products`).catch(error => {
       throw ApiRequestError.createFromMessageMap(error);
     });
   },
