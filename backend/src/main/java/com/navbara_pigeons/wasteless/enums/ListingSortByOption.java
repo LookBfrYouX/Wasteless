@@ -6,7 +6,9 @@ public enum ListingSortByOption implements SortByOption {
   quantity,
   price,
   created,
-  closes;
+  closes,
+  name,
+  description;
 
   @Override
   public Class<?> getEntity() {
