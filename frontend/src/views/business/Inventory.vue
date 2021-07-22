@@ -10,30 +10,36 @@
         Add Item to Inventory
       </router-link>
     </div>
+    <!--  Page Content Area  -->
+    <div v-if="listings.length" class="row align-items-center">
     <!--  Sort and Meta info Bar    -->
-    <div class="col-12 col-lg-6 pb-0">
-      <simple-sort-bar @update="sortUpdate" :items="items"/>
-    </div>
+      <div class="col-12 col-lg-6 pb-0">
+        <simple-sort-bar @update="sortUpdate" :items="items"/>
+      </div>
     <!-- Product List   -->
-    <ul class="list-unstyled pl-0">
-      <li v-for="listing in listings" :key="listing.id">
-        <inventory-item-card
-            :businessId="businessId"
-            :currency="currency"
-            :item="listing"
-            class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
-        />
-      </li>
-    </ul>
+      <ul class="list-unstyled pl-0">
+        <li v-for="listing in listings" :key="listing.id">
+          <inventory-item-card
+              :businessId="businessId"
+              :currency="currency"
+              :item="listing"
+              class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
+          />
+        </li>
+      </ul>
     <!-- Pagination Bar   -->
-    <v-pagination
-        class="w-100"
-        v-model="page"
-        :length="totalPages"
-        @input="pageUpdate"
-        @next="pageUpdate"
-        @previous="pageUpdate"
-    />
+      <v-pagination
+          class="w-100"
+          v-model="page"
+          :length="totalPages"
+          @input="pageUpdate"
+          @next="pageUpdate"
+          @previous="pageUpdate"
+      />
+    </div>
+    <div v-else>
+      No products yet
+    </div>
     <error-modal
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
