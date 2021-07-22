@@ -67,10 +67,12 @@ public class BusinessServiceImpl implements BusinessService {
     if (!BusinessServiceValidation.isBusinessTypeValid(business.getBusinessType())) {
       throw new BusinessTypeException("Invalid BusinessType");
     }
-
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     User currentUser = this.userService.getUserByEmail(authentication.getName());
+    if (userService.isAdmin()) {
+      currentUser = userService.getUserById(business.getPrimaryAdministratorId());
+    }
     business.addAdministrator(currentUser);
     business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     business.setPrimaryAdministratorId(currentUser.getId());
