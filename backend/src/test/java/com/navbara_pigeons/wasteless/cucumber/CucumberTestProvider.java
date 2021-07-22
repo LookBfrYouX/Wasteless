@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.controller.BusinessController;
 import com.navbara_pigeons.wasteless.controller.ProductController;
 import com.navbara_pigeons.wasteless.controller.UserController;
+import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
@@ -137,5 +138,18 @@ public class CucumberTestProvider extends MainTestProvider {
     return objectMapper.readTree(response);
   }
 
+  /**
+   * Registers and logs in as the given user
+   * @param user
+   * @return user id
+   * @throws Exception
+   */
+  protected long registerUser(CreateUserDto user) throws Exception {
+    return makePostRequestGetJson(
+        "/users",
+        user,
+        status().isCreated()
+    ).get("userId").asLong();
+  }
 
 }
