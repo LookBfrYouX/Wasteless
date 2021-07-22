@@ -75,8 +75,8 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @Given("I create a business {string} without the required field: BusinessType")
   public void iCreateABusinessWithoutTheRequiredFieldBusinessType(String businessName)
       throws Exception {
-    Business business = new Business();
-    Address address = makeAddress();
+    CreateBusinessDto business = new CreateBusinessDto();
+    FullAddressDto address = new FullAddressDto(makeAddress());
     business.setName(businessName)
         .setAddress(address);
 

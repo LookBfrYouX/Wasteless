@@ -23,7 +23,7 @@ public class Business {
   private long id;
 
   @Column(name = "PRIMARY_ADMINISTRATOR_ID")
-  private long primaryAdministratorId;
+  private Long primaryAdministratorId;
 
   @Column(name = "NAME")
   private String name;

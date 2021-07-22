@@ -68,8 +68,13 @@ public class BusinessServiceImpl implements BusinessService {
     User currentUser = this.userService.getLoggedInUser();
 
     // When create business request is made, administrators cannot be set (either by user or in the Business(CreateBusinessDto) constructor
-    // Hence, check in this method if the administrator is already set and if not, add them
+    // Hence, check if the primary administrator is already in the list of administrators and if not, add them
     User primaryAdministrator = null;
+    if (business.getPrimaryAdministratorId() == null) {
+      // Default to current user if not given
+      business.setPrimaryAdministratorId(currentUser.getId());
+    }
+
     for(User admin: business.getAdministrators()) {
       if (admin.getId() == business.getPrimaryAdministratorId()) {
         primaryAdministrator = admin;

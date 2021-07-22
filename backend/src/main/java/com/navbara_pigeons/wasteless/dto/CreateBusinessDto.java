@@ -16,9 +16,6 @@ import javax.validation.constraints.Size;
  */
 @Data
 public class CreateBusinessDto {
-
-  @NotNull(message = "Primary administrator ID is required")
-  @Positive
   private Long primaryAdministratorId;
 
   @NotBlank
@@ -32,6 +29,7 @@ public class CreateBusinessDto {
   private FullAddressDto address;
   
   @StringEnumeration(enumClass = BusinessType.class, message = "Invalid business type given")
+  @NotNull(message = "Business type is required")
   private String businessType;
 
   public CreateBusinessDto(Business business) {

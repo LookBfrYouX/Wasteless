@@ -125,7 +125,18 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     businessService.saveBusiness(business);
   }
 
+  /**
+   * Should not complain if primary administrator is not set
+   * @throws UserNotFoundException
+   * @throws AddressValidationException
+   * @throws BusinessRegistrationException
+   */
+  @Test
+  void createBusiness_notAdmin_primaryAdministratorNotSet() throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
+    Business business = makeBusiness("businessName");
 
+    businessService.saveBusiness(business);
+  }
   /**
    * Non-admin user trying to create business with another user as the primary admin
    */
