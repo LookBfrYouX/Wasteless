@@ -139,7 +139,7 @@
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="true"
-        :retry="this.populateDropdown"
+        :retry="this.populateProducts"
         :show="apiErrorMessage !== null"
         title="Error fetching business products"
     >
@@ -184,7 +184,7 @@ export default {
 
   beforeMount: async function () {
     this.setDateInputs(new Date());
-    await this.populateDropdown();
+    await this.populateProducts();
     await this.currencyPipeline();
   },
 
@@ -267,7 +267,7 @@ export default {
       }
       this.todayDate = yyyy + '-' + mm + '-' + dd;
     },
-    async populateDropdown() {
+    async populateProducts() {
       await Api.getProducts(this.businessId)
       .then(({data}) => this.products = data)
       .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
