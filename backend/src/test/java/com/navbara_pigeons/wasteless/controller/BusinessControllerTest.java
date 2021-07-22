@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -98,6 +99,51 @@ public class BusinessControllerTest extends ControllerTestProvider {
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void addAdmin_expectNotAcceptable() throws Exception {
     mockMvc.perform(put("/businesses/tony/makeAdministrator")
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .andExpect(status().isNotAcceptable());
+  }
+
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void removeAdmin_expectOk() throws Exception {
+    JSONObject makeUserId = new JSONObject();
+    makeUserId.put("userId", RANDOMUSERID);
+    mockMvc.perform(put("/businesses/1/removeAdministrator")
+        .contentType("application/json")
+        .content(String.valueOf(makeUserId)))
+        .andExpect(status().isOk());
+
+    JSONObject removeUserId = new JSONObject();
+    removeUserId.put("userId", RANDOMUSERID);
+    mockMvc.perform(put("/businesses/1/removeAdministrator")
+        .contentType("application/json")
+        .content(String.valueOf(removeUserId)))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  @WithAnonymousUser
+  void removeAdmin_expectUnauthorized() throws Exception {
+    mockMvc.perform(put("/businesses/1/removeAdministrator")
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @WithUserDetails(value = "fdi19@uclive.ac.nz")
+  void removeAdmin_expectForbidden() throws Exception {
+    mockMvc.perform(put("/businesses/1/removeAdministrator")
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void removeAdmin_expectNotAcceptable() throws Exception {
+    mockMvc.perform(put("/businesses/tony/removeAdministrator")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(RANDOMUSERID)))
         .andExpect(status().isNotAcceptable());

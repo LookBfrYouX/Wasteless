@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -209,5 +210,51 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   private String getBusinessIdFromResponse() throws UnsupportedEncodingException {
     String businessObj = response.getResponse().getContentAsString();
     return businessObj.replaceAll("[^0-9]", "");
+  }
+
+  // ----- AC5.3 -----
+
+  @Then("I can remove him from the list of admins for my business")
+  public void iCanRemoveHimFromTheListOfAdminsForMyBusiness() throws Exception {
+    String businessId = getBusinessIdFromResponse();
+    JSONObject removeUserId = new JSONObject();
+    removeUserId.put("userId", newUserId);
+
+    mockMvc.perform(
+        put("/businesses/{id}/removeAdministrator", businessId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(String.valueOf(removeUserId))
+            .accept(MediaType.ALL))
+        .andExpect(status().is(200));
+  }
+
+  @Then("I can see he is not in the list of admins for my business")
+  public void iCanSeeHeIsNotInTheListOfAdminsForMyBusiness() throws Exception {
+    // Get the businessId from the returned string object
+    String businessId = getBusinessIdFromResponse();
+
+    MvcResult res = mockMvc.perform(get("/businesses/{id}", businessId)
+        .content(businessId))
+        .andExpect(status().isOk()).andReturn();
+
+    // Check the newUser is in the list of admins for the returned business
+    JSONObject jsonResponse = new JSONObject(res.getResponse().getContentAsString());
+    Assertions.assertFalse(jsonResponse.get("administrators").toString().contains("\"id\":" + newUserId));
+  }
+
+  // ----- AC5.4 -----
+
+  @Then("I cannot remove myself from this list of admins")
+  public void iCannotRemoveMyselfFromThisListOfAdmins() throws Exception {
+    String businessId = getBusinessIdFromResponse();
+    JSONObject removeUserId = new JSONObject();
+    removeUserId.put("userId", newUserId);
+
+    mockMvc.perform(
+        put("/businesses/{id}/removeAdministrator", businessId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(String.valueOf(removeUserId))
+            .accept(MediaType.ALL))
+        .andExpect(status().is(400));
   }
 }
