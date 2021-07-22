@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
+import com.navbara_pigeons.wasteless.dto.UserIdDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -75,15 +76,14 @@ public class BusinessController {
    * Add a specific user to the list of administrators for a business
    *
    * @param businessId unique identifier of the business being searched for
-   * @param jsonId     the id of the user to add to the list of admins
+   * @param userIdDto     the id of the user to add to the list of admins
    */
   @PutMapping("/businesses/{businessId}/makeAdministrator")
   public ResponseEntity<String> addBusinessAdmin(@PathVariable String businessId,
-      @RequestBody JSONObject jsonId)
+      @RequestBody UserIdDto userIdDto)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
-    long userId = Long.parseLong(jsonId.get("userId").toString());
-    log.info("ADDING USER WITH ID " + userId + " AS ADMIN TO BUSINESS WITH ID: " + businessId);
-    businessService.addBusinessAdmin(Long.parseLong(businessId), userId);
+    log.info("ADDING USER WITH ID " + userIdDto.getUserId() + " AS ADMIN TO BUSINESS WITH ID: " + businessId);
+    businessService.addBusinessAdmin(Long.parseLong(businessId), userIdDto.getUserId());
     return new ResponseEntity<>("Individual added as an administrator successfully",
         HttpStatus.valueOf(200));
   }
