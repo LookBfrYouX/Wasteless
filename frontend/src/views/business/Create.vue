@@ -95,7 +95,7 @@ export default {
   props: {
     userId: {
       type: Number, // may be NaN
-      required: false
+      required: true
     }
   },
 
