@@ -103,19 +103,19 @@ describe("addAdmin", () => {
 
 describe("existingAdminIds", () => {
   test("two admins", async () => {
-    expect(wrapper.vm.existingAdminIds()).toEqual(new Set([1, 2]));
+    expect(wrapper.vm.existingAdminIds).toEqual(new Set([1, 2]));
   });
 
   test("businesses not fetched yet", async () => {
     wrapper.vm.business = null;
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.existingAdminIds().size()).toEqual(0);
+    expect(wrapper.vm.existingAdminIds.size).toEqual(0);
   });
 });
 
 describe("admins", () => {
   test("two admins", async () => {
-    expect(wrapper.vm.admins()).toEqual([{
+    expect(wrapper.vm.admins).toEqual([{
       name: "Primary Business Admin (ID 1)",
       id: 1
     }, {
@@ -127,7 +127,7 @@ describe("admins", () => {
   test("businesses not fetched yet", async () => {
     wrapper.vm.business = null;
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.admins()).toEqual(null);
+    expect(wrapper.vm.admins).toEqual(null);
   });
 });
 
