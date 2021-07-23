@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import org.junit.jupiter.api.Assertions;
@@ -34,21 +35,25 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
   UserService userService;
   @InjectMocks
   BusinessServiceImpl businessService;
+  protected long USERID_1 = 100;
+  protected long USERID_2 = 101;
+  protected long BUSINESSID_1 = 100;
 
   @BeforeEach
   void beforeAll()
       throws UserNotFoundException, AddressValidationException, BusinessNotFoundException {
     // Setting mocks before tests are run to ensure unit testing only
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    user.setId(100);
+    user.setId(USERID_1);
     Business business = makeBusiness();
-    business.setPrimaryAdministratorId(100);
+    business.setId(BUSINESSID_1);
+    business.setPrimaryAdministratorId(USERID_1);
     FullBusinessDto fullBusinessDto = new FullBusinessDto(business, "");
 
     when(userService.getLoggedInUser()).thenReturn(user);
     when(userService.getUserByEmail(EMAIL_1)).thenReturn(user);
     doNothing().when(businessDao).saveBusiness(any(Business.class));
-    when(businessDao.getBusinessById(business.getId())).thenReturn(business);
+    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
     doNothing().when(addressService).saveAddress(any(Address.class));
   }
 
@@ -58,6 +63,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
       throws BusinessNotFoundException, UserNotFoundException, AddressValidationException, BusinessTypeException {
     // Checking that the FullBusinessDto is returned
     Business business = makeBusiness();
+    business.setId(BUSINESSID_1);
     businessService.saveBusiness(business);
     Object businessDto = businessService.getBusinessById(business.getId());
 
@@ -72,9 +78,9 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
       throws BusinessNotFoundException, UserNotFoundException, AddressValidationException, BusinessTypeException {
     // Business should have 2 admins, one as primary admin, other in the list of business admins
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    user.setId(100);
+    user.setId(USERID_1);
     User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
-    user2.setId(101);
+    user2.setId(USERID_2);
     Business business = makeBusiness();
     business.getAdministrators().add(user2);
     businessService.saveBusiness(business);
@@ -108,5 +114,33 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
       business.setBusinessType(testValue);
       Assertions.assertDoesNotThrow(() -> businessService.saveBusiness(business));
     }
+  }
+
+  @Test
+  void makeUserBusinessAdmin_expectOk() throws Exception {
+    Business business = makeBusiness();
+    business.setId(BUSINESSID_1);
+    business.setPrimaryAdministratorId(USERID_1);
+
+    User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
+    user2.setId(USERID_2);
+    when(userService.getUserById(USERID_2)).thenReturn(user2);
+
+    Assertions.assertDoesNotThrow(() -> businessService.addBusinessAdmin(business.getId(), USERID_2));
+  }
+
+  @Test
+  void makeUserBusinessAdmin_expectInsufficientPrivileges() throws Exception {
+    // User 2 trying to make himself admin
+    Business business = makeBusiness();
+    business.setId(BUSINESSID_1);
+    business.setPrimaryAdministratorId(USERID_1);
+
+    User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
+    user2.setId(USERID_2);
+    when(userService.getUserById(USERID_2)).thenReturn(user2);
+
+    when(userService.getLoggedInUser()).thenReturn(user2);
+    Assertions.assertThrows(InsufficientPrivilegesException.class, () -> businessService.addBusinessAdmin(business.getId(), USERID_2));
   }
 }

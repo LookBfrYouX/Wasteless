@@ -2,14 +2,17 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
+import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -20,6 +23,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 /**
@@ -77,29 +81,43 @@ public class ListingServiceImpl implements ListingService {
     ListingServiceValidation.isListingValid(listing);
 
     listing.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
-    listingDao.save(listing);
+    listingDao.saveListing(listing);
     return listing.getId();
   }
 
   /**
    * Gets all listings for the given business
    *
-   * @param businessId id of business
+   * @param businessId    id of business
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
    * @return listings in no guaranteed order
    * @throws BusinessNotFoundException
    * @throws UserNotFoundException
    */
   @Override
-  public List<FullListingDto> getListings(long businessId)
-      throws BusinessNotFoundException, UserNotFoundException {
+  public PaginationDto<FullListingDto> getListings(long businessId, Integer pagStartIndex,
+      Integer pagEndIndex, ListingSortByOption sortBy, boolean isAscending)
+      throws BusinessNotFoundException, UserNotFoundException, InvalidPaginationInputException {
     Business business = businessService.getBusiness(businessId);
+
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, sortBy);
+    pagBuilder.withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex)
+        .withSortAscending(isAscending);
+
+    Pair<List<Listing>, Long> dataAndTotalCount = listingDao.getListings(business, pagBuilder);
+
     ArrayList<FullListingDto> listings = new ArrayList<>();
-    for (InventoryItem inventory : business.getInventory()) {
-      for (Listing listing : inventory.getListings()) {
-        listings.add(new FullListingDto(listing, publicPathPrefix));
-      }
+    for (Listing listing : dataAndTotalCount.getFirst()) {
+      listings.add(new FullListingDto(listing, publicPathPrefix));
     }
 
-    return listings;
+    return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
 }

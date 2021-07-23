@@ -49,6 +49,7 @@
               v-model="title"
               class="form-control"
               name="title"
+              maxlength="50"
               placeholder="Title"
               required
               type="text"
@@ -104,7 +105,7 @@
               id="description"
               v-model="description"
               class="form-control"
-              maxlength="500"
+              maxlength="250"
               name="description"
               placeholder="Description"
               rows="5"
@@ -169,7 +170,7 @@ export default {
 
   data() {
     return {
-      // Initialize section first section in the constants list 
+      // Initialize section first section in the constants list
       section: Object.keys(this.$constants.MARKETPLACE.SECTIONS)[0],
       title: "",
       description: "",

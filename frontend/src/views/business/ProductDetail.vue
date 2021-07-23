@@ -1,8 +1,8 @@
 <template>
   <div class="container my-4">
-    <div class="list-group-item card">
+    <div class="p-3 bg-white rounded">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-12">
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <h2 class="card-title mb-0">
               {{ name }} (ID:
@@ -14,37 +14,24 @@
             <span class="material-icons mr-1">arrow_back</span>
             Back
           </button>
-          <div class="mt-2">Description: {{ description }}</div>
+          <image-carousel :images="productImages"/>
+          <div class="mt-2">{{ description }}</div>
           <div class="mt-2">Created: {{ $helper.isoToDateString(created) }}</div>
           <div class="mt-2">RRP: {{
               $helper.makeCurrencyString(recommendedRetailPrice, currency)
             }}
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="primary-image-wrapper">
-            <img v-if="productImages.length !== 0" :src="productImages[0].filename"
-                 alt="Primary images">
-            <img v-else alt="Default product image"
-                 src="@/../assets/images/default-product-thumbnail.svg">
-          </div>
-        </div>
-      </div>
-      <div class="row my-2">
-        <div v-for="(image, index) in productImages"
-             :key="image.id"
-             :class="{ 'd-none': index === 0}"
-             class="col-12 col-md-6 col-lg-4 p-2">
-          <img :src="image.filename"
-               alt="Product Image"
-               class="img-fluid">
-        </div>
       </div>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-primary mr-0"
-                @click="editProductImages(productId)">
+        <router-link class="btn btn-primary mr-0"
+          :to="{ name: 'BusinessProductImagesEdit', params: {
+              businessId: this.businessId,
+              productId
+          }}"
+        >
           Edit product images
-        </button>
+        </router-link>
       </div>
     </div>
     <error-modal
@@ -59,23 +46,18 @@
     </error-modal>
   </div>
 </template>
-
-<style>
-.primary-image-wrapper img {
-  width: 100%;
-  border: #1ec996 solid 2px;
-}
-</style>
 <script>
 import ErrorModal from "@/components/ErrorModal.vue";
 
 import {ApiRequestError} from "@/ApiRequestError";
 import {Api} from "@/Api";
+import ImageCarousel from '../../components/ImageCarousel.vue';
 
 export default {
   name: "productDetail",
   components: {
     ErrorModal,
+    ImageCarousel,
   },
 
   data() {
@@ -167,7 +149,7 @@ export default {
      * Parses the API response given a promise to the request.
      */
     parseApiResponse: async function (apiCall) {
-      const products = (await apiCall).data;
+      const products = (await apiCall).data.results;
       const product = products.find(({id}) => id === this.productId);
       if (product === undefined) {
         throw new ApiRequestError(
@@ -195,5 +177,4 @@ export default {
     }
   }
 }
-
 </script>

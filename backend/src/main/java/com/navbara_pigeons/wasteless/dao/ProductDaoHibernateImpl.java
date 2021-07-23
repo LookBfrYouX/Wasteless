@@ -1,10 +1,17 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.ProductQueryBuilder;
+import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
+import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -23,6 +30,28 @@ public class ProductDaoHibernateImpl implements ProductDao {
    */
   public ProductDaoHibernateImpl(@Autowired EntityManager entityManager) {
     this.entityManager = entityManager;
+  }
+
+  /**
+   * Gets a list of the products for a specific business. Also returns results in a paginated form
+   * which is configured from the Pagination Builder.
+   *
+   * @param business   The specific business to get the information from
+   * @param pagBuilder The Pagination Builder that holds this configurations for sorting and
+   *                   paginating items
+   * @return A paginated and sorted list of Listings and the total count of the entity (used for
+   * client side pagination)
+   */
+  @Override
+  public Pair<List<Product>, Long> getProducts(Business business, PaginationBuilder pagBuilder)
+      throws InvalidPaginationInputException {
+    Session currentSession = getSession();
+    TypedQuery<Product> query = ProductQueryBuilder
+        .listPaginatedAndSortedBusinessProducts(currentSession, business, pagBuilder);
+    Long businessProductsCount =
+        ProductQueryBuilder.createTotalProductsCountQuery(currentSession, business)
+            .getSingleResult();
+    return Pair.of(query.getResultList(), businessProductsCount);
   }
 
   /**
