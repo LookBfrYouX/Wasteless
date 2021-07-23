@@ -2,10 +2,13 @@ package com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.enums.InventorySortByOption;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
@@ -49,13 +52,28 @@ public class InventoryQueryBuilder {
     // Setup
     CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
     CriteriaQuery<InventoryItem> criteriaQuery = criteriaBuilder.createQuery(InventoryItem.class);
-
     Root<InventoryItem> root = criteriaQuery.from(InventoryItem.class);
+    Join<InventoryItem, Product> product = root.join("product");
 
     criteriaQuery.where(criteriaBuilder.equal(root.get("business"), business));
 
     // Sorting query
-    Path<Object> path = root.get(pagBuilder.getSortField().toString());
+    Path<Object> path;
+    switch ((InventorySortByOption) pagBuilder.getSortField()) {
+      case quantity:
+      case pricePerItem:
+      case totalPrice:
+      case manufactured:
+      case sellBy:
+        path = root.get(pagBuilder.getSortField().toString());
+        break;
+      case name:
+        path = product.get(pagBuilder.getSortField().toString());
+        break;
+      default:
+        throw new IllegalStateException(
+            "Unexpected value: " + pagBuilder.getSortField());
+    }
     Order order =
         pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
     criteriaQuery.orderBy(order);

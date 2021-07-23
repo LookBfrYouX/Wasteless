@@ -148,6 +148,20 @@ export default {
     },
 
     /**
+     * Returns the age from a given date of birth
+     */
+    getAge: function(birthDateString) {
+      let today = new Date();
+      let birthDate = new Date(birthDateString);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      let m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age;
+    },
+
+    /**
      * Calls the API to create business information
      * Returns a promise, not a response
      */
@@ -155,6 +169,11 @@ export default {
       const user = this.authUser;
       if (user == null) {
         this.errorMessage = "You must be signed in to create a business";
+        return;
+      }
+
+      if (this.getAge(this.authUser.dateOfBirth) < 16) {
+        this.errorMessage = "You must be more than 16 years of age to register a business!"
         return;
       }
 

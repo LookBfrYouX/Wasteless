@@ -8,7 +8,7 @@ public enum InventorySortByOption implements SortByOption {
   totalPrice,
   manufactured,
   sellBy,
-  bestBefore;
+  name; // From Product entity
 
   @Override
   public Class<?> getEntity() {
