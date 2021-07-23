@@ -81,7 +81,7 @@ public class InventoryControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void asUser_addInventoryItem_expect_InvalidBusinessId() throws Exception {
-    String endpointUrl = "/businesses/1005/inventory";
+    String endpointUrl = "/businesses/-1/inventory";
     CreateInventoryItemDto dto = new CreateInventoryItemDto();
     dto.setProductId(5001);
     dto.setQuantity(2);
