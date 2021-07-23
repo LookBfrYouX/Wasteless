@@ -20,6 +20,7 @@ public class BusinessControllerTest extends ControllerTestProvider {
   @WithUserDetails(value = "amf133@uclive.ac.nz")
   void registerBusiness_expectCreated() throws Exception {
     CreateBusinessDto createBusinessDto = makeCreateBusinessDto();
+    createBusinessDto.setPrimaryAdministratorId(3);
 
     mockMvc.perform(post("/businesses/")
         .contentType("application/json")
