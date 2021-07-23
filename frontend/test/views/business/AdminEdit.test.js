@@ -130,3 +130,36 @@ describe("admins", () => {
     expect(wrapper.vm.admins()).toEqual(null);
   });
 });
+
+describe("userSearchResults", () => {
+  test("two admins plus another user", async () => {
+    wrapper.vm.userSearchResultsRaw = [
+        ...business.administrators,
+      {
+        id: 3,
+        firstName: "A",
+        middleName: "nother",
+        lastName: "User"
+      }
+    ]
+    expect(wrapper.vm.admins).toEqual([{
+      name: "Primary Business Admin (ID 1)",
+      id: 1,
+      disabled: true
+    }, {
+      name: "Secondary Business Admin (ID 2)",
+      id: 2,
+      disabled: true
+    }, {
+      name: "A nother User",
+      id: 3,
+      disabled: false
+    }]);
+  });
+
+  test("businesses not fetched yet", async () => {
+    wrapper.vm.business = null;
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.admins).toEqual(null);
+  });
+});

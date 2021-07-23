@@ -271,7 +271,7 @@ export default {
      */
     userSearchResults() {
       return this.userSearchResultsRaw.map(user => ({
-        ...user,
+        id: user.id,
         name: this.$helper.formatFullName(user),
         disabled: this.existingAdminIds.has(user.id)
         // If this is not computed, when admin is added and you click back on the search field,
