@@ -110,7 +110,8 @@ beforeEach(() => {
     },
     mocks: {
       ...globalStateMocks(),
-    }
+    },
+    stubs: ["v-autocomplete"]
   });
 });
 

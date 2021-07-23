@@ -12,7 +12,14 @@ beforeEach(() => {
     },
     mocks: {},
     stubs: {},
-    methods: {}
+    methods: {},
+    attachTo: document.body
+    /**
+     * https://vue-test-utils.vuejs.org/api/wrapper/#trigger
+     * When using trigger('focus') with jsdom v16.4.0 and above you must use the attachTo option when mounting the component.
+     * This is because a bug fix in jsdom v16.4.0 changed el.focus() to do nothing on elements that are disconnected from the DOM.
+     * Spent a good few hours trying to figure out why some tests were failing: blur() worked, but focus() didn't
+     */
   });
 });
 
@@ -133,6 +140,7 @@ describe("arrow behaviour", () => {
         await input.trigger("blur");
         await wrapper.vm.$nextTick();
         await input.trigger("focus");
+        await wrapper.vm.$nextTick();
         jest.runAllTimers();
         expect(wrapper.vm.showSuggestions).toBe(true);
       });
