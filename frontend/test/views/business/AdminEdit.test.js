@@ -22,14 +22,14 @@ const BUSINESS_TEMPLATE = {
       firstName: "Primary",
       middleName: "Business",
       lastName: "Admin",
-      nickName: "ID 1"
+      nickname: "ID 1"
     },
     {
       id: 2,
       firstName: "Secondary",
       middleName: "Business",
       lastName: "Admin",
-      nickName: "ID 2"
+      nickname: "ID 2"
     }
   ]
 };
@@ -133,7 +133,7 @@ describe("admins", () => {
 
 describe("userSearchResults", () => {
   test("two admins plus another user", async () => {
-    wrapper.vm.userSearchResultsRaw = [
+    wrapper.vm.$data.userSearchResultsRaw = [
         ...business.administrators,
       {
         id: 3,
@@ -141,8 +141,9 @@ describe("userSearchResults", () => {
         middleName: "nother",
         lastName: "User"
       }
-    ]
-    expect(wrapper.vm.admins).toEqual([{
+    ];
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.userSearchResults).toEqual([{
       name: "Primary Business Admin (ID 1)",
       id: 1,
       disabled: true
@@ -158,8 +159,6 @@ describe("userSearchResults", () => {
   });
 
   test("businesses not fetched yet", async () => {
-    wrapper.vm.business = null;
-    await wrapper.vm.$nextTick();
-    expect(wrapper.vm.admins).toEqual(null);
+    expect(wrapper.vm.userSearchResults).toEqual([]);
   });
 });
