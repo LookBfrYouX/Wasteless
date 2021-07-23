@@ -195,6 +195,23 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     Assertions.assertDoesNotThrow(() -> businessService.addBusinessAdmin(business.getId(), USERID_2));
   }
 
+  /**
+   * Crate a business with another user as the primary admin; should succeed as user making request is admin
+   */
+  @Test
+  void createBusiness_tooYoung() throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
+    User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
+    user2.setDateOfBirth(LocalDate.now().minusYears(14)); // must be over 16
+    user2.setId(USERID_2);
+
+    Business business = makeBusiness(user2);
+    business.setId(BUSINESSID_1);
+
+    when(userService.isAdmin()).thenReturn(true);
+    when(userService.getUserById(USERID_2)).thenReturn(user2);
+    assertThrows(BusinessRegistrationException.class, () -> businessService.saveBusiness(business));
+  }
+
   @Test
   void makeUserBusinessAdmin_expectInsufficientPrivileges() throws Exception {
     // User 2 trying to make himself admin
@@ -210,4 +227,5 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     when(userService.getLoggedInUser()).thenReturn(user2);
     Assertions.assertThrows(InsufficientPrivilegesException.class, () -> businessService.addBusinessAdmin(business.getId(), USERID_2));
   }
+
 }
