@@ -163,10 +163,13 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   public void iSetThisUserAsAnAdminOfMyNewlyCreatedBusiness() throws Exception {
     Long businessId = getBusinessIdFromJsonResponse();
 
+    JSONObject newUserIdJson = new JSONObject();
+    newUserIdJson.put("userId", newUserId);
+
     mockMvc.perform(
         put("/businesses/{id}/makeAdministrator", businessId)
-            .contentType(MediaType.TEXT_PLAIN)
-            .content(differentUserId.toString())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(String.valueOf(newUserIdJson))
             .accept(MediaType.ALL))
         .andExpect(status().is(200));
   }

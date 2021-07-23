@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
+import com.navbara_pigeons.wasteless.dto.UserIdDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -70,36 +71,40 @@ public class BusinessControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void addAdmin_expectOk() throws Exception {
+    UserIdDto userIdDto = new UserIdDto(RANDOMUSERID);
     mockMvc.perform(put("/businesses/1/makeAdministrator")
         .contentType("application/json")
-        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .content(objectMapper.writeValueAsString(userIdDto)))
         .andExpect(status().isOk());
   }
 
   @Test
   @WithAnonymousUser
   void addAdmin_expectUnauthorized() throws Exception {
+    UserIdDto userIdDto = new UserIdDto(RANDOMUSERID);
     mockMvc.perform(put("/businesses/1/makeAdministrator")
         .contentType("application/json")
-        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .content(objectMapper.writeValueAsString(userIdDto)))
         .andExpect(status().isUnauthorized());
   }
 
   @Test
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
   void addAdmin_expectForbidden() throws Exception {
+    UserIdDto userIdDto = new UserIdDto(RANDOMUSERID);
     mockMvc.perform(put("/businesses/1/makeAdministrator")
         .contentType("application/json")
-        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .content(objectMapper.writeValueAsString(userIdDto)))
         .andExpect(status().isForbidden());
   }
 
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   void addAdmin_expectNotAcceptable() throws Exception {
+    UserIdDto userIdDto = new UserIdDto(RANDOMUSERID);
     mockMvc.perform(put("/businesses/tony/makeAdministrator")
         .contentType("application/json")
-        .content(objectMapper.writeValueAsString(RANDOMUSERID)))
+        .content(objectMapper.writeValueAsString(userIdDto)))
         .andExpect(status().isNotAcceptable());
   }
 }
