@@ -16,14 +16,14 @@ public class ProductControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "mbi47@uclive.ac.nz")
   void getProductsFromOneBusinessTestAsAdmin() throws Exception {
-    String endpointUrl = "/businesses/1/products";
+    String endpointUrl = "/businesses/1001/products";
     mockMvc.perform(get(endpointUrl)).andExpect(status().isOk());
   }
 
   @Test
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
   void getProductsFromOneBusinessTestAsWrongUser() throws Exception {
-    String endpointUrl = "/businesses/3/products";
+    String endpointUrl = "/businesses/1003/products";
     mockMvc.perform(get(endpointUrl)).andExpect(status().is(403));
   }
 
@@ -37,7 +37,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   @Test
   @WithAnonymousUser
   void getProductsFromOneBusinessTestAsAnon() throws Exception {
-    String endpointUrl = "/businesses/1/products";
+    String endpointUrl = "/businesses/1001/products";
     mockMvc.perform(get(endpointUrl)).andExpect(status().isUnauthorized());
   }
 
@@ -57,7 +57,7 @@ public class ProductControllerTest extends ControllerTestProvider {
     mockProduct.setManufacturer("Hut");
     mockProduct.setRecommendedRetailPrice(100.0);
 
-    mockMvc.perform(post("/businesses/1/products")
+    mockMvc.perform(post("/businesses/1001/products")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(mockProduct)))
         .andExpect(status().isCreated());
@@ -72,7 +72,7 @@ public class ProductControllerTest extends ControllerTestProvider {
     mockProduct.setManufacturer(null);
     mockProduct.setRecommendedRetailPrice(100.0);
 
-    mockMvc.perform(post("/businesses/1/products")
+    mockMvc.perform(post("/businesses/1001/products")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(mockProduct)))
         .andExpect(status().isBadRequest());
@@ -87,7 +87,7 @@ public class ProductControllerTest extends ControllerTestProvider {
     mockProduct.setManufacturer("Hut");
     mockProduct.setRecommendedRetailPrice(100.0);
 
-    mockMvc.perform(post("/businesses/1/products")
+    mockMvc.perform(post("/businesses/1001/products")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(mockProduct)))
         .andExpect(status().isUnauthorized());
@@ -102,7 +102,7 @@ public class ProductControllerTest extends ControllerTestProvider {
     mockProduct.setManufacturer("Hut");
     mockProduct.setRecommendedRetailPrice(100.0);
 
-    mockMvc.perform(post("/businesses/1/products")
+    mockMvc.perform(post("/businesses/1001/products")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(mockProduct)))
         .andExpect(status().isForbidden());

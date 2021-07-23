@@ -22,7 +22,6 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
   private long businessId;
   private long productId;
   private long inventoryItemId;
-  private long listingId;
   private MvcResult responseOne;
   private MvcResult responseTwo;
 
@@ -78,7 +77,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setQuantity(quantity);
     listing.setPrice(price);
 
-    responseOne = mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
+    responseOne = mockMvc.perform(post("/businesses/" + businessId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andReturn();
@@ -92,7 +91,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setQuantity(quantity);
     listing.setPrice(price);
 
-    responseTwo = mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
+    responseTwo = mockMvc.perform(post("/businesses/" + businessId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andReturn();
@@ -116,7 +115,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setPrice(1.00);
     listing.setMoreInfo(moreInfo);
 
-    mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
+    mockMvc.perform(post("/businesses/" + businessId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andExpect(status().is(201));
@@ -139,7 +138,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setQuantity(quantity);
     listing.setPrice(1.00);
 
-    mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
+    mockMvc.perform(post("/businesses/" + businessId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andExpect(status().is(201));
