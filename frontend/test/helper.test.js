@@ -215,3 +215,53 @@ describe("addressToString", () => {
     expect(helper.addressToString(address, true)).toEqual("S, CITY, R, C");
   });
 });
+
+describe("formatUserName", () => {
+  const makeUser = (firstName = "FN", middleName = "MN", lastName = "LN", nickname="NN") => ({
+    firstName,
+    middleName,
+    lastName,
+    nickname
+  });
+
+  test("all components given", () => {
+    expect(helper.formatName(makeUser())).toEqual("FN MN LN (NN)");
+  });
+
+  test("nick name missing", () => {
+    let user = makeUser();
+    delete user.nickname;
+    expect(helper.formatName(user)).toEqual("FN MN LN");
+  });
+  test("nick name null", () => {
+    let user = makeUser();
+    user.nickname = null;
+    expect(helper.formatName(user)).toEqual("FN MN LN");
+  });
+  test("nick name empty", () => {
+    let user = makeUser();
+    user.nickname = "";
+    expect(helper.formatName(user)).toEqual("FN MN LN");
+  });
+  test("nick name whitespace", () => {
+    let user = makeUser();
+    user.nickname = "  ";
+    expect(helper.formatName(user)).toEqual("FN MN LN");
+  });
+
+  test("all components missing", () => {
+    expect(helper.formatName({})).toEqual("");
+  });
+
+  test("first name missing", () => {
+    let user = makeUser();
+    delete user.firstName;
+    expect(helper.formatName(user)).toEqual("MN LN (NN)");
+  });
+
+  test("middle name missing", () => {
+    let user = makeUser();
+    delete user.middleName;
+    expect(helper.formatName(user)).toEqual("FN LN (NN)");
+  });
+});

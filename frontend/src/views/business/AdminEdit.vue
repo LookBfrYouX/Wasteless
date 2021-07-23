@@ -4,6 +4,14 @@
       <div class="col-12">
         <h2>Edit Administrators{{businessName? ` for ${businessName}`: ""}}</h2>
       </div>
+      <div class="col-12">
+        <router-link
+          :to="{name: 'BusinessDetail', params: { businessId }}"
+          class="btn btn-primary"
+        >
+          Back to Business
+        </router-link>
+      </div>
     </div>
 
     <div class="row mb-2 mb-md-4">
@@ -144,7 +152,7 @@ export default {
   },
 
   async mounted() {
-    await Promise.all([this.fetchBusiness()])
+    await Promise.all([this.fetchBusiness()]);
   },
 
   methods: {
@@ -161,23 +169,6 @@ export default {
       }
     },
 
-
-    /**
-     * Formats object with name components, removing null or empty strings
-     * @param {{firstName: String, middleName: String, lastName: String, nickname: String}} object with name components
-     * @return string in format {firstName} {middleName} {lastName} ({nickname})
-     */
-    formatName(user) {
-      let name = [user.firstName, user.middleName, user.lastName]
-          .filter(el => typeof el == "string" && el.trim().length)
-          .map(el => el.trim())
-          .join(" ");
-      
-      if (typeof user.nickname == "string" && user.nickname.trim().length) {
-        name += ` (${user.nickname})`
-      }
-      return name;
-    },
 
     /**
      * Callback when a remove admin button is clicked. Pass in the relevant admin ID
@@ -249,7 +240,7 @@ export default {
       if (this.business) {
         return this.business.administrators.map(admin => {
           return {
-            name: this.formatName(admin),
+            name: this.$helper.formatFullName(admin),
             id: admin.id
           }
         });
@@ -281,7 +272,7 @@ export default {
     userSearchResults() {
       return this.userSearchResultsRaw.map(user => ({
         ...user,
-        name: this.formatName(user),
+        name: this.$helper.formatFullName(user),
         disabled: this.existingAdminIds.has(user.id)
         // If this is not computed, when admin is added and you click back on the search field,
         // the person you just added can still be selected
@@ -295,7 +286,6 @@ export default {
      */
     async businessId() {
       await this.fetchBusiness();
-      console.log("!");
     },
 
     /**
@@ -335,5 +325,3 @@ export default {
   }
 };
 </script>
-<style>
-</style>
