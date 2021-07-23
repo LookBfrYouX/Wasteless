@@ -16,4 +16,11 @@ public class MarketListingControllerTest extends ControllerTestProvider {
     mockMvc.perform(get("/cards?section=" + validSection)).andExpect(status().isOk());
   }
 
+  @Test
+  @WithMockUser
+  void getMarketListings_invalidSection() throws Exception {
+    String invalidSection = "FakeSection";
+    mockMvc.perform(get("/cards?section=" + invalidSection)).andExpect(status().isBadRequest());
+  }
+
 }
