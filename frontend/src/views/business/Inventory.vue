@@ -1,17 +1,19 @@
 <template>
-  <div class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2">
-    <div class="d-flex flex-sm-wrap pb-3 pb-md-0 align-items-center">
-      <h2 class="col-lg-9">Inventory for {{ businessName }}</h2>
-      <router-link
-          :to="{ name: 'BusinessInventoryCreate', params: { businessId }}"
-          class="btn btn-info d-flex"
-      >
-        <span class="material-icons mr-1">add</span>
-        Add Item to Inventory
-      </router-link>
+  <div class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2 align-items-center container-fluid">
+    <div class="d-flex flex-sm-wrap pb-3 pb-md-0 align-items-center container-fluid">
+      <div class="row mt-4 align-items-center">
+        <h2 class="col-lg-8 pl-0">Inventory for {{ businessName }}</h2>
+        <router-link
+            :to="{ name: 'BusinessInventoryCreate', params: { businessId }}"
+            class="btn col-12 col-lg-4 btn-info d-flex h-100"
+        >
+          <span class="material-icons mr-1">add</span>
+          Add Item
+        </router-link>
+      </div>
     </div>
     <!--  Page Content Area  -->
-    <div v-if="listings.length" class="row align-items-center">
+    <div v-if="listings.length" class="container-fluid align-items-center">
     <!--  Sort and Meta info Bar    -->
       <div class="col-12 col-lg-6 pb-0">
         <simple-sort-bar @update="sortUpdate" :items="items"/>

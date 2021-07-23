@@ -1,15 +1,17 @@
 <template>
-  <div class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2">
+  <div class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2 align-items-center container-fluid">
     <!--  Page Title Area  -->
-    <div class="d-flex flex-sm-wrap pb-3 pb-md-0 align-items-center">
-      <h2 class="col-lg-9">Product Catalogue for {{ businessName }}</h2>
-      <router-link class="btn col-lg-3 ml-auto btn-info d-flex" :to="{name: 'BusinessProductCreate', params: { businessId }}">
-        <span class="material-icons mr-1">add</span>
-        Create Product
-      </router-link>
+    <div class="d-flex flex-sm-wrap pb-3 pb-md-0 align-items-center container-fluid">
+      <div class="row mt-4 align-items-center">
+        <h2 class="col-lg-8 pl-0">Product Catalogue for {{ businessName }}</h2>
+        <router-link class="btn col-12 col-lg-4 btn-info d-flex h-100" :to="{name: 'BusinessProductCreate', params: { businessId }}">
+          <span class="material-icons mr-1">add</span>
+          Create Product
+        </router-link>
+      </div>
     </div>
     <!--  Page Content Area  -->
-    <div v-if="products.length" class="row align-items-center">
+    <div v-if="products.length" class="container-fluid align-items-center">
         <!--  Sort and Meta info Bar    -->
       <div class="col-12 col-lg-6 pb-0">
         <simple-sort-bar @update="sortUpdate" :items="items"/>
@@ -22,7 +24,7 @@
       </div>
 
       <!-- Product List   -->
-      <ul class="list-unstyled w-100 pl-0">
+      <ul class="list-unstyled pl-0">
         <li v-for="product in products" :key="product.id">
           <router-link
               :to="{ name: 'BusinessProductDetail', params: { businessId, productId: product.id }}"
