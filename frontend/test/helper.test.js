@@ -225,43 +225,43 @@ describe("formatUserName", () => {
   });
 
   test("all components given", () => {
-    expect(helper.formatName(makeUser())).toEqual("FN MN LN (NN)");
+    expect(helper.formatFullName(makeUser())).toEqual("FN MN LN (NN)");
   });
 
   test("nick name missing", () => {
     let user = makeUser();
     delete user.nickname;
-    expect(helper.formatName(user)).toEqual("FN MN LN");
+    expect(helper.formatFullName(user)).toEqual("FN MN LN");
   });
   test("nick name null", () => {
     let user = makeUser();
     user.nickname = null;
-    expect(helper.formatName(user)).toEqual("FN MN LN");
+    expect(helper.formatFullName(user)).toEqual("FN MN LN");
   });
   test("nick name empty", () => {
     let user = makeUser();
     user.nickname = "";
-    expect(helper.formatName(user)).toEqual("FN MN LN");
+    expect(helper.formatFullName(user)).toEqual("FN MN LN");
   });
   test("nick name whitespace", () => {
     let user = makeUser();
     user.nickname = "  ";
-    expect(helper.formatName(user)).toEqual("FN MN LN");
+    expect(helper.formatFullName(user)).toEqual("FN MN LN");
   });
 
   test("all components missing", () => {
-    expect(helper.formatName({})).toEqual("");
+    expect(helper.formatFullName({})).toEqual("");
   });
 
   test("first name missing", () => {
     let user = makeUser();
     delete user.firstName;
-    expect(helper.formatName(user)).toEqual("MN LN (NN)");
+    expect(helper.formatFullName(user)).toEqual("MN LN (NN)");
   });
 
   test("middle name missing", () => {
     let user = makeUser();
     delete user.middleName;
-    expect(helper.formatName(user)).toEqual("FN LN (NN)");
+    expect(helper.formatFullName(user)).toEqual("FN LN (NN)");
   });
 });
