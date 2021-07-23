@@ -164,7 +164,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
     Long businessId = getBusinessIdFromJsonResponse();
 
     JSONObject newUserIdJson = new JSONObject();
-    newUserIdJson.put("userId", newUserId);
+    newUserIdJson.put("userId", differentUserId);
 
     mockMvc.perform(
         put("/businesses/{id}/makeAdministrator", businessId)
