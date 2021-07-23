@@ -57,6 +57,10 @@ Running on: http://localhost:9500/ by default
 
 Running on: http://localhost:9499/ by default
 
+### Adding dummy data
+
+Wiki page on how to add the data here: https://eng-git.canterbury.ac.nz/seng302-2021/team-300/-/wikis/Inserting%20test%20data
+
 ## Contributors
 
 - Alec Fox (amf133)

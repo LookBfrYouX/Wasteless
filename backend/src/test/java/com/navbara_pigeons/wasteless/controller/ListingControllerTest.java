@@ -23,7 +23,7 @@ public class ListingControllerTest extends ControllerTestProvider {
   @Test
   @WithMockUser
   void getListings_normalUser() throws Exception {
-    mockMvc.perform(get("/businesses/1/listings")).andExpect(status().isOk());
+    mockMvc.perform(get("/businesses/1001/listings")).andExpect(status().isOk());
   }
 
   @Test
@@ -37,11 +37,11 @@ public class ListingControllerTest extends ControllerTestProvider {
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   public void return201OnAddListing() throws Exception {
     CreateListingDto listing = new CreateListingDto();
-    listing.setInventoryItemId(1L);
+    listing.setInventoryItemId(5001);
     listing.setQuantity(1L);
     listing.setPrice(17.99);
 
-    mockMvc.perform(post("/businesses/1/listings")
+    mockMvc.perform(post("/businesses/1001/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andExpect(status().isCreated());
@@ -53,10 +53,10 @@ public class ListingControllerTest extends ControllerTestProvider {
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   public void throw400OnBadListing() throws Exception {
     CreateListingDto listing = new CreateListingDto();
-    listing.setInventoryItemId(1L);
+    listing.setInventoryItemId(5001);
     listing.setPrice(17.99);
 
-    mockMvc.perform(post("/businesses/1/listings")
+    mockMvc.perform(post("/businesses/1001/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andExpect(status().isBadRequest());
@@ -70,7 +70,7 @@ public class ListingControllerTest extends ControllerTestProvider {
     mockListing.setQuantity(1L);
     mockListing.setPrice(17.99);
 
-    mockMvc.perform(post("/businesses/1/listings")
+    mockMvc.perform(post("/businesses/1001/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(mockListing)))
         .andExpect(status().isUnauthorized());
@@ -84,7 +84,7 @@ public class ListingControllerTest extends ControllerTestProvider {
     mockListing.setQuantity(1L);
     mockListing.setPrice(17.99);
 
-    mockMvc.perform(post("/businesses/1/listings")
+    mockMvc.perform(post("/businesses/1001/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(mockListing)))
         .andExpect(status().isForbidden());
