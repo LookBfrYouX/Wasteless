@@ -34,7 +34,7 @@ public class BasicUserDto {
   @Length(max=50, message = "Nick Name has to be less than or equal to 50 Characters")
   private String nickname;
 
-  @Length(max=50, message = "Bio has to be less than or equal to 250 Characters")
+  @Length(max=250, message = "Bio has to be less than or equal to 250 Characters")
   private String bio;
   private BasicAddressDto homeAddress;
   private ZonedDateTime created;

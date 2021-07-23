@@ -29,11 +29,10 @@ public class CreateUserDto {
   @Length(max=50, message = "Nickname has to be less than or equal to 50 Characters")
   private String nickname;
 
-  @Length(max=50, message = "Bio has to be less than or equal to 250 Characters")
+  @Length(max=250, message = "Bio has to be less than or equal to 250 Characters")
   private String bio;
 
   @Email(message = "Email has to be Valid")
-  @UniqueElements(message = "Email has to be Unique")
   @Length(max=50, message = "Email has to be less than or equal to 50 Characters")
   private String email;
 

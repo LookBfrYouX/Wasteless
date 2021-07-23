@@ -1,11 +1,7 @@
 package com.navbara_pigeons.wasteless.testprovider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.navbara_pigeons.wasteless.entity.Address;
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.InventoryItem;
-import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.entity.*;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -132,7 +128,6 @@ public class MainTestProvider {
     // Save user using DAO and retrieve by Email
     return testUser;
   }
-
   /**
    * This test helper method creates and returns a test address to be used in cucumber tests from
    * the given parameters.

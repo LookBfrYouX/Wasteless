@@ -4,7 +4,7 @@ package com.navbara_pigeons.wasteless.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
+import com.navbara_pigeons.wasteless.dto.CreateProductDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -52,7 +52,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   public void return201OnAddProductTest() throws Exception {
-    BasicProductCreationDto mockProduct = new BasicProductCreationDto();
+    CreateProductDto mockProduct = new CreateProductDto();
     mockProduct.setName("Pizza");
     mockProduct.setManufacturer("Hut");
     mockProduct.setRecommendedRetailPrice(100.0);
@@ -67,7 +67,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   public void throw400OnBadProductTest() throws Exception {
-    BasicProductCreationDto mockProduct = new BasicProductCreationDto();
+    CreateProductDto mockProduct = new CreateProductDto();
     mockProduct.setManufacturer(null);
     mockProduct.setRecommendedRetailPrice(100.0);
 
@@ -81,7 +81,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   @Test
   @WithAnonymousUser
   public void throw401OnAddProductTest() throws Exception {
-    BasicProductCreationDto mockProduct = new BasicProductCreationDto();
+    CreateProductDto mockProduct = new CreateProductDto();
     mockProduct.setName("Pizza");
     mockProduct.setManufacturer("Hut");
     mockProduct.setRecommendedRetailPrice(100.0);
@@ -96,7 +96,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
   public void throw403OnAddProductTest() throws Exception {
-    BasicProductCreationDto mockProduct = new BasicProductCreationDto();
+    CreateProductDto mockProduct = new CreateProductDto();
     mockProduct.setName("Pizza");
     mockProduct.setManufacturer("Hut");
     mockProduct.setRecommendedRetailPrice(100.0);

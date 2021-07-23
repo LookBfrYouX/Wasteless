@@ -2,7 +2,7 @@ package com.navbara_pigeons.wasteless.cucumber;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
+import com.navbara_pigeons.wasteless.dto.CreateProductDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -43,7 +43,7 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
 
   @And("with a product {string}")
   public void withAProduct(String name) throws Exception {
-    BasicProductCreationDto product = new BasicProductCreationDto();
+    CreateProductDto product = new CreateProductDto();
     product.setName(name);
     product.setManufacturer("Should be optional but might still be required");
     product.setRecommendedRetailPrice(10.0);

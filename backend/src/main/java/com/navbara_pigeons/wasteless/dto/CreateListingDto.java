@@ -22,7 +22,7 @@ public class CreateListingDto {
 
 
   @NotNull(message = "Price cannot be Null")
-  @Min(message = "Price Has To Be Positive", value = 0)
+  @DecimalMin(message = "Price Has To Be Positive", value = "0")
   private Double price;
 
   @Length(max=50, message = "More Info has to be less than or equal to 50 Characters")

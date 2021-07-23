@@ -42,7 +42,6 @@ public class FullUserDto {
   private String bio;
 
   @Email(message = "Email has to be Valid")
-  @UniqueElements(message = "Email has to be Unique")
   @Length(max=50, message = "Email has to be less than or equal to 50 Characters")
   private String email;
 
