@@ -9,6 +9,8 @@ import com.navbara_pigeons.wasteless.enums.MarketListingSortByOption;
 import com.navbara_pigeons.wasteless.enums.MarketplaceSection;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.service.KeywordService;
+import com.navbara_pigeons.wasteless.service.KeywordServiceImpl;
 import com.navbara_pigeons.wasteless.service.MarketListingService;
 import com.navbara_pigeons.wasteless.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,11 +36,13 @@ public class MarketListingController {
 
   private final UserService userService;
   private final MarketListingService marketListingService;
+  private final KeywordService keywordService;
 
   public MarketListingController(
-      @Autowired UserService userService, MarketListingService marketListingService) {
+      @Autowired UserService userService, MarketListingService marketListingService, KeywordService keywordService) {
     this.userService = userService;
     this.marketListingService = marketListingService;
+    this.keywordService = keywordService;
   }
 
   @PostMapping("/cards")
@@ -48,6 +52,7 @@ public class MarketListingController {
     log.info("CREATING A CARD WITH TITLE: " + createMarketListingDto.getTitle());
     User creator = userService.getUserById(createMarketListingDto.getCreatorId());
     MarketListing marketListing = new MarketListing(createMarketListingDto, creator);
+    marketListing.setKeywords(keywordService.getKeywords(createMarketListingDto.getKeywordIds()));
     JSONObject response = new JSONObject();
     response.put("cardId", this.marketListingService.saveMarketListing(marketListing));
     return new ResponseEntity<>(response, HttpStatus.valueOf(201));
