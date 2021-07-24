@@ -17,34 +17,34 @@ let wrapper;
 let response = {
     results: [
         {
-            "id": 1,
-            "creator": {},
-            "section": "ForSale",
-            "created": "2021-05-23T15:34:20+12:00",
-            "displayPeriodEnd": "2021-06-23T15:34:20+12:00",
-            "title": "title 1",
-            "description": "description 1",
-            "keywords": [1]
+            id: 1,
+            creator: {},
+            section: "ForSale",
+            created: "2021-05-23T15:34:20+12:00",
+            displayPeriodEnd: "2021-06-23T15:34:20+12:00",
+            title: "title 1",
+            description: "description 1",
+            keywords: [1]
         },
         {
-            "id": 2,
-            "creator": {},
-            "section": "ForSale",
-            "created": "2021-05-24T15:34:20+12:00",
-            "displayPeriodEnd": "2021-06-24T15:34:20+12:00",
-            "title": "title 2",
-            "description": "description 2",
-            "keywords": [2]
+            id: 2,
+            creator: {},
+            section: "ForSale",
+            created: "2021-05-24T15:34:20+12:00",
+            displayPeriodEnd: "2021-06-24T15:34:20+12:00",
+            title: "title 2",
+            description: "description 2",
+            keywords: [2]
         },
         {
-            "id": 3,
-            "creator": {},
-            "section": "ForSale",
-            "created": "2021-05-25T15:34:20+12:00",
-            "displayPeriodEnd": "2021-06-25T15:34:20+12:00",
-            "title": "title 3",
-            "description": "description 3",
-            "keywords": [3]
+            id: 3,
+            creator: {},
+            section: "ForSale",
+            created: "2021-05-25T15:34:20+12:00",
+            displayPeriodEnd: "2021-06-25T15:34:20+12:00",
+            title: "title 3",
+            description: "description 3",
+            keywords: [3]
         }
     ],
     totalCount: 3
