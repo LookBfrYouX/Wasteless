@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Keyword;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.service.BusinessService;
@@ -162,4 +163,13 @@ public class MainTestProvider {
     return bCryptPasswordEncoder.encode(password);
   }
 
+  /**
+   * This test helper method creates and returns a test Keyword to be used in CreateKeywordDtoTest
+   * @return Keyword entity with a valid length name
+   */
+  protected Keyword makeKeyword() {
+    Keyword keyword = new Keyword();
+    keyword.setName("Random Keyword");
+    return keyword;
+  }
 }

@@ -58,13 +58,12 @@ public class MarketListing {
           CascadeType.REFRESH
       }
   )
-
   @JoinTable(
       name = "MARKETLISTING_KEYWORD",
       joinColumns = @JoinColumn(name = "MARKETLISTING_ID"),
       inverseJoinColumns = @JoinColumn(name = "KEYWORD_ID")
   )
-  private List<Keyword> keywords = new ArrayList<>();
+  private List<Keyword> keywords;
 
   public MarketListing() {
 
@@ -81,4 +80,14 @@ public class MarketListing {
     //    this.keywords =
   }
 
+  /**
+   * Add a keyword to market listing.
+   * @param keyword
+   */
+  public void addKeyword(Keyword keyword) {
+    if (this.keywords == null) {
+      this.keywords = new ArrayList<>();
+    }
+    this.keywords.add(keyword);
+  }
 }

@@ -14,11 +14,13 @@ import com.navbara_pigeons.wasteless.dto.FullUserDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Keyword;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.service.BusinessService;
+import com.navbara_pigeons.wasteless.service.KeywordService;
 import com.navbara_pigeons.wasteless.service.ProductService;
 import com.navbara_pigeons.wasteless.service.UserService;
 import java.util.ArrayList;
@@ -33,6 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * This class provides the setup for Service level tests and provides various convenience methods.
  */
 public class ServiceTestProvider extends MainTestProvider {
+
+  @Autowired
+  protected KeywordService keywordService;
 
   @Autowired
   protected UserService userService;
@@ -345,5 +350,17 @@ public class ServiceTestProvider extends MainTestProvider {
       mockBusinessListings.addAll(inventoryItem.getListings());
     }
     return mockBusinessListings;
+  }
+
+  /**
+   * Asserts all Keyword names in a list of Keyword.
+   *
+   * @param keywords List of Keyword
+   * @param expectedKeywords List of Keyword
+   */
+  protected void assertKeywordEquals(List<Keyword> keywords, List<Keyword> expectedKeywords) {
+    for (int i = 0; i < keywords.size(); i++) {
+      assertEquals(keywords.get(i).getName(), expectedKeywords.get(i).getName());
+    }
   }
 }

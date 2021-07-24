@@ -1,21 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.exception.AddressValidationException;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
-import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
-import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
-import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
-import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
-import com.navbara_pigeons.wasteless.exception.ListingValidationException;
-import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
-import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
-import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.*;
+
 import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -217,4 +203,12 @@ public class ControllerExceptionHandler {
     log.error("BAD REQUEST: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(InvalidMarketListingSectionException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleInvalidMarketListingSectionException(InvalidMarketListingSectionException exc) {
+    log.error("BAD REQUEST: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
 }
