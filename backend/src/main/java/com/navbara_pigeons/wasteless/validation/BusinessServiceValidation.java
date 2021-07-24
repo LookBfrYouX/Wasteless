@@ -17,9 +17,6 @@ public class BusinessServiceValidation {
    * @throws BusinessRegistrationException if business is invalid
    */
   public static void validate(Business business, LocalDate currentDate) throws BusinessRegistrationException {
-    // Questions: should error or boolean be returned
-    // Should there be a single method call?
-    // Where to store constant?
     User primaryBusinessAdmin = null;
     for(User user: business.getAdministrators()) {
       if (user.getId() == business.getPrimaryAdministratorId()) {
