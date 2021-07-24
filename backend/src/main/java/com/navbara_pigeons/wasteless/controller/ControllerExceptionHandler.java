@@ -224,8 +224,9 @@ public class ControllerExceptionHandler {
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exc) {
-    log.error("ENTITY VALIDATION EXCEPTION");
+    log.error("ENTITY VALIDATION EXCEPTION: 400 - " + exc.getMessage());
     ArrayList<String> errors = new ArrayList<>();
     for(FieldError error: exc.getBindingResult().getFieldErrors()) {
       errors.add(error.getField() + ": " + error.getDefaultMessage());
@@ -239,7 +240,7 @@ public class ControllerExceptionHandler {
     for(String msg: errors) {
       message += "\n- " + msg;
     }
-    log.error(message);
+
     return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
   }
 }

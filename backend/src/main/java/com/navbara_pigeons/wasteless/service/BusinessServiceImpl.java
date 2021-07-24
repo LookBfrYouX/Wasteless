@@ -54,43 +54,35 @@ public class BusinessServiceImpl implements BusinessService {
 
 
   /**
-   * Performs basic business checks. If the primary administrator is not in the list of administrators, they are fetched
-   * and added. If the primary administrator does not have the business in the list of businesses administered, the
-   * business is added and the user is saved
+   * Saves a business. If the primary administrator ID is not set, it is set to
+   * the current user.
    *
    * @param business Business object to be saved.
-   * @throws BusinessTypeException Thrown when a businessType is not an authorised businessType
+   * @return JSON object with `businessId` property
+   * @throws BusinessRegistrationException if primary administrator is too young,
+   * or an non-GAA user attempts to set the primary administrator as someone else
    */
   @Override
   @Transactional
   public JSONObject saveBusiness(Business business)
           throws BusinessRegistrationException, UserNotFoundException, AddressValidationException {
     User currentUser = this.userService.getLoggedInUser();
-
-    // When create business request is made, administrators cannot be set (either by user or in the Business(CreateBusinessDto) constructor
-    // Hence, check if the primary administrator is already in the list of administrators and if not, add them
+    
     User primaryAdministrator = null;
     if (business.getPrimaryAdministratorId() == null) {
       // Default to current user if not given
       business.setPrimaryAdministratorId(currentUser.getId());
-    }
-
-    for(User admin: business.getAdministrators()) {
-      if (admin.getId() == business.getPrimaryAdministratorId()) {
-        primaryAdministrator = admin;
-        break;
+      primaryAdministrator = currentUser;
+    } else {
+      if (currentUser.getId() != business.getPrimaryAdministratorId() && !this.userService.isAdmin()) {
+        throw new BusinessRegistrationException(
+            "Only a GAA can create a business with someone else as the primary business administrator"
+        );
       }
-    }
-
-    if (primaryAdministrator == null) {
       primaryAdministrator = userService.getUserById(business.getPrimaryAdministratorId());
-      business.addAdministrator(primaryAdministrator);
     }
 
-    if (currentUser.getId() != primaryAdministrator.getId() && !this.userService.isAdmin()) {
-      throw new BusinessRegistrationException("Only a GAA can create a business with someone else as the primary business administrator");
-    }
-
+    business.addAdministrator(primaryAdministrator);
     business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
 
     BusinessServiceValidation.validate(business, LocalDate.now());

@@ -22,8 +22,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface StringEnumeration {
   String message() default "{com.navbara_pigeons.wasteless.validation.constraints.StringEnumeration." + "message}";
-  // TODO MESSAGE
-//  String message() default "{com.xxx.bean.validation.constraints.StringEnumeration.message}";
   Class<?>[] groups() default {};
   Class<? extends Payload>[] payload() default {};
 
