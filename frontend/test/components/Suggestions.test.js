@@ -40,7 +40,7 @@ describe("arrow behaviour", () => {
    * Sets suggestion to an array and focuses on input element
    * @returns input element
    */
-  const setup = async (suggestions = undefined) => {
+  const setup = async (suggestions = undefined, focusOnInput = true) => {
     if (suggestions == undefined) {
       suggestions = defaultSuggestions;
     }
@@ -49,7 +49,10 @@ describe("arrow behaviour", () => {
     });
 
     const input = wrapper.find("input");
-    await input.trigger("focus");
+    if (focusOnInput) {
+      // Can't seem to do this twice in a test. Focus, then blur, then focus fails
+      await input.trigger("focus");
+    }
 
     return {
       input
@@ -135,7 +138,8 @@ describe("arrow behaviour", () => {
 
   test("blur then focus doesn't causes suggestion list to disappear",
       async () => {
-        const {input} = await setup();
+        const {input} = await setup(undefined, false);
+        wrapper.vm.showSuggestions = true;
 
         await input.trigger("blur");
         await wrapper.vm.$nextTick();
