@@ -7,4 +7,6 @@ public interface KeywordService {
 
   List<Keyword> getKeywords(List<Long> keywordId);
 
+  List<Keyword> getAllKeywords();
+
 }

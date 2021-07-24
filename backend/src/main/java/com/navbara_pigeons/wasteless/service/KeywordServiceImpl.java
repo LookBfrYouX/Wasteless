@@ -28,4 +28,15 @@ public class KeywordServiceImpl implements KeywordService {
     keywordDao.findAllById(keywordIds).forEach(keywords::add);
     return keywords;
   }
+
+  /**
+   * Retrieve all keywords in the database.
+   * @return
+   */
+  @Override
+  public List<Keyword> getAllKeywords() {
+    List<Keyword> keywords = new ArrayList<>();
+    keywordDao.findAll().forEach(keywords::add);
+    return keywords;
+  }
 }
