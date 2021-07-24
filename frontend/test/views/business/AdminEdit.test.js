@@ -131,6 +131,31 @@ describe("admins", () => {
   });
 });
 
+describe("userCanModifyBusiness", () => {
+  test("GAA", async () => {
+    wrapper.vm.$stateStore.getters.isAdmin = () => true;
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.userCanModifyBusiness).toEqual(true);
+  });
+
+
+  test("Primary business admin", async () => {
+    wrapper.vm.$stateStore.getters.isAdmin = () => false;
+    wrapper.vm.$stateStore.getters.getAuthUser = () => ({ id: 4 });
+    wrapper.vm.business.primaryAdministratorId = 4;
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.userCanModifyBusiness).toEqual(true);
+  });
+
+  test("Not primary business admin or GAA", async () => {
+    wrapper.vm.$stateStore.getters.isAdmin = () => false;
+    wrapper.vm.$stateStore.getters.getAuthUser = () => ({ id: 4 });
+    wrapper.vm.business.primaryAdministratorId = 3;
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.userCanModifyBusiness).toEqual(false);
+  });
+});
+
 describe("userSearchResults", () => {
   test("two admins plus another user", async () => {
     wrapper.vm.$data.userSearchResultsRaw = [
@@ -160,5 +185,59 @@ describe("userSearchResults", () => {
 
   test("businesses not fetched yet", async () => {
     expect(wrapper.vm.userSearchResults).toEqual([]);
+  });
+});
+
+describe("userSearchQuery", () => {
+    const results = [
+      {id: 3, firstName: "A", lastName: "B"},
+      {id: 4, firstName: "C", lastName: "D"}
+    ];
+
+  test("standard query, check userSearchResultsSet", async () => {
+    Api.search.mockResolvedValue({ data: { results }});
+    
+    await wrapper.setData({
+      userSearchQuery: "test"
+    });
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.userSearchResultsRaw).toEqual(results);
+  });
+
+  test("disabling submit button", async () => {
+    // if user selects a result and then types some other stuff, the adminIdToAdd
+    // should be set to null
+    Api.search.mockResolvedValue({ data: { results }});
+    
+    await wrapper.setData({
+      adminIdToAdd: 3,
+      userSearchQuery: "A B",
+      userSearchResultsRaw: results
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.adminIdToAdd).toEqual(3);
+
+    await wrapper.setData({
+      userSearchQuery: "A B C"
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.adminIdToAdd).toBe(null);
+  });
+
+
+  test("user search loading is set and reset after API loads", async () => {
+    const wait = (duration) => new Promise(resolve => setTimeout(resolve, duration));
+    const time = 100;
+    Api.search.mockImplementation(async () => {
+      await wait(time);
+      // return Promise.reject();
+      return { data: { results }};
+    });
+    await wrapper.setData({ userSearchQuery: "asdf" });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.userSearchLoading).toBe(true);
+    await wait(time);
+    expect(wrapper.vm.userSearchLoading).toBe(false);
   });
 });
