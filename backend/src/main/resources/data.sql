@@ -326,22 +326,31 @@ VALUES (1001,
         'TestName',
         5004,
         'A Good business',
-        5,
+        6005,
         'RETAIL',
         '2020-07-14T14:32:00.000000'),
        (1002,
         'Fake Business',
         5004,
         'Shh very secret',
-        4,
+        6004,
         'RETAIL',
         '2020-07-14T14:32:00.000000'),
-        4,
+       (1003,
+        'Pie Palace',
+        5002,
+        'Pies for all',
+        6004,
         'RETAIL',
         '2020-07-14T14:32:00.000000');
 
+-- Inserting user-business data
 
 INSERT INTO user_business(USER_ID,
+                          BUSINESS_ID)
+VALUES (5004, 1001),
+       (5004, 1002),
+       (5002, 1003);
 
 -- Inserting product data
 
