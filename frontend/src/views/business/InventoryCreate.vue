@@ -238,7 +238,7 @@ export default {
       }
 
       let data = {
-        "productId": this.product,
+        "productId": this.product.id,
         "quantity": parsedQuantity,
         "pricePerItem": parsedPricePerItem,
         "totalPrice": parsedTotalPrice,
