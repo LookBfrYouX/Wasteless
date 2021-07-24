@@ -20,9 +20,8 @@ public class KeywordController {
     }
 
     @GetMapping("/keywords")
-    public ResponseEntity getKeywords(@RequestParam List<Long> ids) {
-        System.out.println(ids);
-        return new ResponseEntity(keywordService.getKeywords(ids), HttpStatus.valueOf(200));
+    public ResponseEntity getKeywords() {
+        return new ResponseEntity(keywordService.getAllKeywords(), HttpStatus.valueOf(200));
     }
 
 }
