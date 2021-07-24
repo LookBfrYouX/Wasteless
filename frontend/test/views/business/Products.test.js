@@ -11,6 +11,7 @@ Vue.use(Vuetify);
 let vuetify = new Vuetify();
 
 jest.mock("@/Api");
+window.scrollTo = jest.fn()
 
 let wrapper;
 
