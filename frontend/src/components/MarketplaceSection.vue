@@ -129,7 +129,6 @@ export default {
       this.searchParams.pagStartIndex = ((this.page - 1) * this.itemsPerPage);
       this.searchParams.pagEndIndex = Math.max(0,
           Math.min((this.page * this.itemsPerPage) - 1, this.totalResults - 1));
-      console.log(this.searchParams.pagEndIndex)
       await this.getCardsFromAPI();
       window.scrollTo(0, 0);
     },
