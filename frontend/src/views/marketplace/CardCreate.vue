@@ -229,7 +229,7 @@ export default {
     getAllKeywords: async function () {
       try {
         const data = (await Api.getAllKeywords()).data;
-        console.log(data);
+        this.allKeywords = data;
         this.allKeywordsName = data.map(keyword => keyword.name);
         this.addKeywords = true;
       } catch (err) {
@@ -237,16 +237,19 @@ export default {
       }
     },
 
+    /**
+     * Returns a list of keyword ids of selected keywords. Used when creating a card.
+     */
     findKeywordIds() {
-      if (this.allKeywords != null) {
-        const keywordIds = this.allKeywords.map((keyword) => {
-          if (keyword.name in this.selectedKeywordsName) {
-            return keyword.id;
+      const keywordIds = [];
+      if (this.allKeywords != null && this.selectedKeywordsName.length !== 0) {
+        this.allKeywords.forEach((keyword) => {
+          if (this.selectedKeywordsName.includes(keyword.name)) {
+            keywordIds.push(keyword.id);
           }
         });
-        return keywordIds;
       }
-      return [];
+      return keywordIds;
     },
 
     /**
@@ -265,7 +268,6 @@ export default {
       }
 
       const keywordIds = this.findKeywordIds();
-      console.log(keywordIds);
 
       const cardData = {
         creatorId: this.userId,
