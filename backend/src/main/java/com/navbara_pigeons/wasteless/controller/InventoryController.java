@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.management.InvalidAttributeValueException;
+import javax.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +92,7 @@ public class InventoryController {
 
   @PostMapping("/businesses/{id}/inventory")
   public ResponseEntity<JSONObject> addToBusinessInventory(
-      @PathVariable long id, @RequestBody CreateInventoryItemDto inventoryDto)
+      @PathVariable long id, @RequestBody @Valid CreateInventoryItemDto inventoryDto)
       throws InventoryRegistrationException, UserNotFoundException, BusinessNotFoundException,
       ProductNotFoundException, InsufficientPrivilegesException {
     JSONObject response = new JSONObject();

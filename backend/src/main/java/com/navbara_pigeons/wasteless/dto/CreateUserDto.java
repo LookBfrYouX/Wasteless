@@ -2,7 +2,11 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.User;
 import java.time.LocalDate;
+
+import com.navbara_pigeons.wasteless.validation.constraints.NotTooDistantPast;
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -17,6 +21,9 @@ public class CreateUserDto {
   private String nickname;
   private String bio;
   private String email;
+
+  @NotNull(message = "Date of birth is required")
+  @NotTooDistantPast(message = "Date of birth too far into the past")
   private LocalDate dateOfBirth;
   private String phoneNumber;
   private String password;
