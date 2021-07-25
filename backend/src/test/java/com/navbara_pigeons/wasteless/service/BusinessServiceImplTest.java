@@ -143,4 +143,37 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     when(userService.getLoggedInUser()).thenReturn(user2);
     Assertions.assertThrows(InsufficientPrivilegesException.class, () -> businessService.addBusinessAdmin(business.getId(), USERID_2));
   }
+
+  @Test
+  void removeUserBusinessAdmin_expectOk() throws Exception {
+    Business business = makeBusiness();
+    business.setId(BUSINESSID_1);
+    business.setPrimaryAdministratorId(USERID_1);
+
+    User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
+    user2.setId(USERID_2);
+    when(userService.getUserById(USERID_2)).thenReturn(user2);
+    businessService.addBusinessAdmin(business.getId(), USERID_2);
+
+    Assertions.assertDoesNotThrow(() -> businessService.removeBusinessAdmin(business.getId(), USERID_2));
+
+  }
+
+  @Test
+  void removeUserBusinessAdmin_expectInsufficientPrivileges() throws Exception {
+    // User 2 trying to make himself admin
+    Business business = makeBusiness();
+    business.setId(BUSINESSID_1);
+    business.setPrimaryAdministratorId(USERID_1);
+
+    User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
+    user2.setId(USERID_2);
+    when(userService.getUserById(USERID_2)).thenReturn(user2);
+    businessService.addBusinessAdmin(business.getId(), USERID_2);
+
+    when(userService.getLoggedInUser()).thenReturn(user2);
+    Assertions.assertThrows(InsufficientPrivilegesException.class, () -> businessService.removeBusinessAdmin(business.getId(), USERID_2));
+  }
+
+
 }
