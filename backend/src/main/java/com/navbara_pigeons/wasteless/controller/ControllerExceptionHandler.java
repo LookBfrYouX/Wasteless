@@ -216,12 +216,6 @@ public class ControllerExceptionHandler {
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  @ExceptionHandler(ListingValidationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
-    log.error("BAD REQUEST: 400 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
-  }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
