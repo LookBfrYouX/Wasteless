@@ -22,20 +22,20 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
   private long businessId;
   private long productId;
   private long inventoryItemId;
-  private long listingId;
   private MvcResult responseOne;
   private MvcResult responseTwo;
 
   // ---------- AC2 ----------
   @Given("a user has a business {string} in {string}")
   public void a_user_has_a_business_in(String businessName, String countryName) throws Exception {
-    login();
+    adminLogin();
+    
     CreateBusinessDto business = new CreateBusinessDto();
     business.setBusinessType("Retail Trade");
     business.setName(businessName);
     business.setAddress(new FullAddressDto(makeAddress()));
     business.getAddress().setCountry(countryName);
-
+    business.setPrimaryAdministratorId(loggedInUserId);
     JsonNode json = makePostRequestGetJson("/businesses", business, status().isCreated());
     businessId = json.get("businessId").asLong();
   }
@@ -78,7 +78,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setQuantity(quantity);
     listing.setPrice(price);
 
-    responseOne = mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
+    responseOne = mockMvc.perform(post("/businesses/" + businessId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andReturn();
@@ -92,7 +92,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setQuantity(quantity);
     listing.setPrice(price);
 
-    responseTwo = mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
+    responseTwo = mockMvc.perform(post("/businesses/" + businessId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andReturn();
@@ -116,7 +116,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setPrice(1.00);
     listing.setMoreInfo(moreInfo);
 
-    mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
+    mockMvc.perform(post("/businesses/" + businessId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andExpect(status().is(201));
@@ -139,7 +139,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
     listing.setQuantity(quantity);
     listing.setPrice(1.00);
 
-    mockMvc.perform(post("/businesses/" + inventoryItemId + "/listings")
+    mockMvc.perform(post("/businesses/" + businessId + "/listings")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andExpect(status().is(201));

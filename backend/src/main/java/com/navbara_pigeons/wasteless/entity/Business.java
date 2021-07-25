@@ -8,19 +8,8 @@ import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.Data;
 
 @Data
@@ -34,7 +23,7 @@ public class Business {
   private long id;
 
   @Column(name = "PRIMARY_ADMINISTRATOR_ID")
-  private long primaryAdministratorId;
+  private Long primaryAdministratorId;
 
   @Column(name = "NAME")
   private String name;
@@ -47,7 +36,8 @@ public class Business {
   private Address address;
 
   @Column(name = "BUSINESS_TYPE")
-  private String businessType;
+  @Enumerated(EnumType.STRING)
+  private BusinessType businessType;
 
   @Column(name = "CREATED")
   private ZonedDateTime created;
@@ -102,7 +92,7 @@ public class Business {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new Address(business.getAddress());
-    this.businessType = business.getBusinessType();
+    this.businessType = BusinessType.fromString(business.getBusinessType());
     this.created = business.getCreated();
     for (BasicUserDto userDto : business.getAdministrators()) {
       this.administrators.add(new User(userDto));
@@ -118,7 +108,7 @@ public class Business {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new Address(business.getAddress());
-    this.businessType = business.getBusinessType();
+    this.businessType = BusinessType.fromString(business.getBusinessType());
     this.created = business.getCreated();
   }
 
@@ -127,7 +117,7 @@ public class Business {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new Address(business.getAddress());
-    this.businessType = business.getBusinessType();
+    this.businessType = BusinessType.fromString(business.getBusinessType());
   }
 
   public Business() {
@@ -145,6 +135,14 @@ public class Business {
     this.administrators.add(administrator);
   }
 
+  /**
+   * This is a helper method for adding a user to the business.
+   *
+   * @param administrator The user to be added.
+   */
+  public void removeAdministrator(User administrator) {
+    this.administrators.remove(administrator);
+  }
   /**
    * This is a helper method for adding a product to the business product catalogue.
    *
