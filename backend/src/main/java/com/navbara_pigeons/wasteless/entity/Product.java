@@ -19,6 +19,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import lombok.Data;
 
 @Data
@@ -43,6 +45,8 @@ public class Product {
   @Column(name = "MANUFACTURER")
   private String manufacturer;
 
+  @DecimalMin(message="RRP must be above 0.01", value="0.01")
+  @DecimalMax(message="RRP must be below 10,000,000", value="10000000.00")
   @Column(name = "RRP")
   private Double recommendedRetailPrice;
 

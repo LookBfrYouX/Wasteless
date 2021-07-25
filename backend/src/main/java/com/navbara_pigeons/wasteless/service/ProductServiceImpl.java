@@ -126,12 +126,6 @@ public class ProductServiceImpl implements ProductService {
       throw new ProductRegistrationException("User or business not found");
     }
 
-    if (!ProductServiceValidation.priceIsValid(basicProduct.getRecommendedRetailPrice())) {
-      // Needs to be here as basicProduct stores Double; product stores double
-      throw new ProductRegistrationException(
-          "Invalid price; must be a number greater than 0");
-    }
-
     Product product = new Product();
 
     product.setName(basicProduct.getName());

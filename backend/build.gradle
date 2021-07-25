@@ -65,7 +65,7 @@ dependencies {
     // ability to generate OpenAPI specification from Spring and visualise in Swagger-UI
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.9'
     // ability to validate our spring entities
-    implementation 'org.hibernate.validator:hibernate-validator:7.0.0.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // use spring boot mocking test framework
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
