@@ -65,8 +65,8 @@
             class="btn btn-primary">
             Add keywords
           </v-btn>
-          <v-p
-            v-if="addKeywords">Find keywords to add</v-p>
+          <p
+            v-if="addKeywords">Find keywords to add</p>
           <v-autocomplete
               v-if="addKeywords"
               background-color="transparent"
@@ -119,9 +119,6 @@
 
 </style>
 <script>
-// import Suggestions from "@/components/Suggestions.vue";
-// import Tag from "@/components/Tag.vue";
-import EditDistance from "@/EditDistance";
 
 // While there is no backend, use this static list of tags
 import temporaryTags from "../../assets/temporaryTags.json";
@@ -168,57 +165,6 @@ export default {
     }
   },
 
-  computed: {
-    /**
-     * Computes the suggestions that should be shown to the user given the static list of suggestions
-     * and value of the add tag input field
-     */
-    tagSuggestions() {
-      const {
-        NUM_SUGGESTIONS,
-        WORST_RATIO,
-        INSERT_COST,
-        DELETE_COST,
-        SUBSTITUTE_COST
-      } = this.$constants.MARKETPLACE.CREATE_CARD.TAG_SUGGESTIONS;
-
-      let suggestions = this.allTags.map(tag => {
-        tag.score = new EditDistance(
-            this.tagInputValue.toLocaleLowerCase(),
-            tag.name.toLocaleLowerCase(),
-            INSERT_COST,
-            DELETE_COST,
-            SUBSTITUTE_COST
-        ).calculate();
-
-        tag.weightedScore = tag.score / tag.name.length;
-        // weighted score takes into account length of tag so that it doesn't prefer shorter suggestions
-
-        tag.toString = () => tag.name; // toString used to show the suggestion
-
-        return tag;
-      });
-
-      suggestions.sort((a, b) => a.weightedScore - b.weightedScore);
-      const selectedSuggestions = new Set(this.tags.map(({id}) => id));
-      suggestions = suggestions.filter(
-          ({id, weightedScore}) => weightedScore < WORST_RATIO && !selectedSuggestions.has(id));
-      // Filter out bad suggestions (scores too high) and already selected suggestions
-
-      suggestions = suggestions.slice(0, NUM_SUGGESTIONS);
-      // If there are too many suggestions, only return the best few
-
-      if (suggestions.length == 0) {
-        // If there are no suggestions add a disabled item to show this (makes it clear that the user needs to change the suggestion)
-        suggestions = [{
-          toString: () => "No suggestions",
-          disabled: true
-        }];
-      }
-      return suggestions;
-    }
-  },
-
   beforeMount() {
     if (this.initialSection) {
       this.section = this.initialSection;
@@ -226,6 +172,9 @@ export default {
   },
 
   methods: {
+    /**
+     * Get all keywords from the database to show in the combobox.
+     */
     getAllKeywords: async function () {
       try {
         const data = (await Api.getAllKeywords()).data;
