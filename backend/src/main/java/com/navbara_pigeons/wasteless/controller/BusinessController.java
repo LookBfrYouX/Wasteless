@@ -56,11 +56,11 @@ public class BusinessController {
    */
   @PostMapping("/businesses")
   @Operation(summary = "Register business", description = "Register a business using the 'CreateBusinessDto' object")
-  public ResponseEntity<JSONObject> registerBusiness(@RequestBody @Valid CreateBusinessDto business)
+  public ResponseEntity<Object> registerBusiness(@RequestBody @Valid CreateBusinessDto business)
       throws UserNotFoundException, AddressValidationException, BusinessTypeException, BusinessRegistrationException {
     JSONObject businessId = businessService.saveBusiness(new Business(business));
     log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
-    return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));
+    return new ResponseEntity<>(businessId, HttpStatus.CREATED);
   }
 
   /**
@@ -76,7 +76,7 @@ public class BusinessController {
       throws UserNotFoundException, BusinessNotFoundException {
     log.info("GETTING BUSINESS BY ID: " + id);
     return new ResponseEntity<>(
-        businessService.getBusinessById(Long.parseLong(id)), HttpStatus.valueOf(200));
+        businessService.getBusinessById(Long.parseLong(id)), HttpStatus.OK);
   }
 
   /**
@@ -93,7 +93,7 @@ public class BusinessController {
     log.info("ADDING USER WITH ID " + userIdDto.getUserId() + " AS ADMIN TO BUSINESS WITH ID: " + businessId);
     businessService.addBusinessAdmin(Long.parseLong(businessId), userIdDto.getUserId());
     return new ResponseEntity<>("Individual added as an administrator successfully",
-        HttpStatus.valueOf(200));
+        HttpStatus.OK);
   }
 
   /**
@@ -111,6 +111,6 @@ public class BusinessController {
         + businessId);
     businessService.removeBusinessAdmin(Long.parseLong(businessId), userIdDto.getUserId());
     return new ResponseEntity<>("Individual added as an administrator successfully",
-        HttpStatus.valueOf(200));
+        HttpStatus.OK);
   }
 }

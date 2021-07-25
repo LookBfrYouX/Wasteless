@@ -56,7 +56,7 @@ public class MarketListingController {
     marketListing.setKeywords(keywordService.getKeywords(createMarketListingDto.getKeywordIds()));
     JSONObject response = new JSONObject();
     response.put("cardId", this.marketListingService.saveMarketListing(marketListing));
-    return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
   /**

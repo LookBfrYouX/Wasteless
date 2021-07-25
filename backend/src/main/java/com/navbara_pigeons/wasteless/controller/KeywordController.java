@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.controller;
 import com.navbara_pigeons.wasteless.entity.Keyword;
 import com.navbara_pigeons.wasteless.service.KeywordService;
 import io.swagger.v3.oas.annotations.Operation;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,8 @@ public class KeywordController {
      */
     @GetMapping("/keywords")
     @Operation(summary = "Show a list of keywords", description = "Return a list of all keywords")
-    public ResponseEntity<List<Keyword>> getAllKeywords() {
-        return new ResponseEntity<>(keywordService.getAllKeywords(), HttpStatus.valueOf(200));
+    public ResponseEntity<Object> getAllKeywords() {
+        return new ResponseEntity<>(keywordService.getAllKeywords(), HttpStatus.OK);
     }
 
 }

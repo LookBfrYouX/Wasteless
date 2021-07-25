@@ -103,6 +103,6 @@ public class ListingController {
     log.info("GETTING LISTINGS FOR BUSINESS WITH ID " + id);
     return new ResponseEntity<>(
         listingService.getListings(id, pagStartIndex, pagEndIndex, sortBy, isAscending),
-        HttpStatus.valueOf(200));
+        HttpStatus.OK);
   }
 }
