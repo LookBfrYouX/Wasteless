@@ -33,20 +33,17 @@ public class BusinessServiceImpl implements BusinessService {
   private final AddressService addressService;
   private final UserService userService;
 
-
   @Value("${public_path_prefix}")
   private String publicPathPrefix;
 
-
   /**
-   * BusinessServiceImplementation constructor that takes autowired parameters and sets up the
-   * service for interacting with all business related services.
+   * BusinessServiceImplementation constructor that takes autowired parameters and
+   * sets up the service for interacting with all business related services.
    *
    * @param businessDao The BusinessDataAccessObject.
    */
   @Autowired
-  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService,
-      @Lazy UserService userService) {
+  public BusinessServiceImpl(BusinessDao businessDao, AddressService addressService, @Lazy UserService userService) {
     // Using @Lazy to prevent Circular Dependencies
     this.businessDao = businessDao;
     this.addressService = addressService;
@@ -54,11 +51,12 @@ public class BusinessServiceImpl implements BusinessService {
   }
 
   /**
-   * Performs basic business checks, sets role, created date and hashes password before sending to
-   * the dao
+   * Performs basic business checks, sets role, created date and hashes password
+   * before sending to the dao
    *
    * @param business Business object to be saved.
-   * @throws BusinessTypeException Thrown when a businessType is not an authorised businessType
+   * @throws BusinessTypeException Thrown when a businessType is not an authorised
+   *                               businessType
    */
   @Override
   @Transactional
@@ -88,7 +86,8 @@ public class BusinessServiceImpl implements BusinessService {
    * @param id the id of the business
    * @return a business DTO
    * @throws BusinessNotFoundException when business with given id does not exist
-   * @throws UserNotFoundException     should never be thrown. If is thrown, return 500 status code
+   * @throws UserNotFoundException     should never be thrown. If is thrown,
+   *                                   return 500 status code
    */
   @Override
   @Transactional
@@ -118,7 +117,8 @@ public class BusinessServiceImpl implements BusinessService {
   /**
    * Adds user with given ID to list of business admins
    *
-   * @param userId     of the user that will be added to the list of business admins
+   * @param userId     of the user that will be added to the list of business
+   *                   admins
    * @param businessId of the business to add the admin to
    */
   @Override
@@ -135,16 +135,34 @@ public class BusinessServiceImpl implements BusinessService {
   }
 
   /**
-   * This helper method tests if the currently logged in user is an administrator of the business
-   * with the given ID
+   * Removes user with given ID from list of business admins
+   *
+   * @param userId     of the user that will be added to the list of business
+   *                   admins
+   * @param businessId of the business to add the admin to
+   */
+  @Transactional
+  public void removeBusinessAdmin(long businessId, long userId)
+      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException {
+    User user = userService.getUserById(userId);
+    Business business = getBusiness(businessId);
+    if (!isBusinessPrimaryAdmin(businessId) && !userService.isAdmin()) {
+      throw new InsufficientPrivilegesException("Must be the primary business admin to use this feature!");
+    }
+    business.removeAdministrator(user);
+    businessDao.saveBusiness(business);
+  }
+
+  /**
+   * This helper method tests if the currently logged in user is an administrator
+   * of the business with the given ID
    *
    * @param businessId The business to test against.
    * @return True if the current user is the primary admin or a regular admin
    * @throws BusinessNotFoundException The business does not exist
    * @throws UserNotFoundException     The user does not exist
    */
-  public boolean isBusinessAdmin(long businessId)
-      throws BusinessNotFoundException, UserNotFoundException {
+  public boolean isBusinessAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException {
     Business business = this.businessDao.getBusinessById(businessId);
     User authUser = this.userService.getLoggedInUser();
 
@@ -160,16 +178,15 @@ public class BusinessServiceImpl implements BusinessService {
   }
 
   /**
-   * This helper method tests if the currently logged in user is the primary administrator of the
-   * business with the given ID
+   * This helper method tests if the currently logged in user is the primary
+   * administrator of the business with the given ID
    *
    * @param businessId The business to test against.
    * @return True if the current user is the primary admin
    * @throws BusinessNotFoundException The business does not exist
    * @throws UserNotFoundException     The user does not exist
    */
-  private boolean isBusinessPrimaryAdmin(long businessId)
-      throws BusinessNotFoundException, UserNotFoundException {
+  private boolean isBusinessPrimaryAdmin(long businessId) throws BusinessNotFoundException, UserNotFoundException {
     Business business = this.businessDao.getBusinessById(businessId);
     User authUser = this.userService.getLoggedInUser();
 
