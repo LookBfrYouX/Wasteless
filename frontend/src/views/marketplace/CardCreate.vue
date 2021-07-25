@@ -1,4 +1,5 @@
 <template>
+  <v-app>
   <div class="w-100 d-flex my-3">
     <form
         autocomplete="on"
@@ -58,44 +59,16 @@
       </div>
       <div class="row">
         <div class="col-12 form-group">
-          <div class=" d-flex flex-wrap align-items-center">
-            <label class="mr-2 mb-2 py-2" for="tags">Tags: </label>
-            <span v-if="!tags.length" class="mr-2 mb-2 py-2">None</span>
-            <tag
-                v-for="tag in tags"
-                v-else
-                :key="tag.id"
-                :xButton="true"
-                class="mr-2 mb-2"
-                @xClick="removeTag(tag.id)"
-            >
-              {{ tag.name }}
-            </tag>
-          </div>
-          <div class="add-tag-container">
-            <button
-                v-if="!showSuggestions"
-                class="btn btn-primary w-100"
-                @click="showSuggestionsInput"
-            >
-              Add Tag
-            </button>
-            <suggestions
-                v-else
-                id="tags"
-                ref="suggestionsInput"
-                :liActiveClasses="{'bg-primary': true, 'text-light': true}"
-                :suggestions="tagSuggestions"
-                :value="tagInputValue"
-                inputClasses="form-control"
-                name="tags"
-                placeholder="Add a Tag"
-                type="text"
-                @blur="showSuggestions = false"
-                @input="value => tagInputValue = value"
-                @suggestion="tagSuggestionSelected"
-            />
-          </div>
+          <v-btn
+            @click="getAllKeywords">
+            Add keywords
+          </v-btn>
+          <v-autocomplete
+              chips
+              clearable
+              deletable-chips
+              multiple
+          ></v-autocomplete>
         </div>
       </div>
       <div class="row">
@@ -132,6 +105,7 @@
       </div>
     </form>
   </div>
+  </v-app>
 </template>
 <style scoped>
 .add-tag-container {
@@ -139,8 +113,8 @@
 }
 </style>
 <script>
-import Suggestions from "@/components/Suggestions.vue";
-import Tag from "@/components/Tag.vue";
+// import Suggestions from "@/components/Suggestions.vue";
+// import Tag from "@/components/Tag.vue";
 import EditDistance from "@/EditDistance";
 
 // While there is no backend, use this static list of tags
@@ -149,7 +123,7 @@ import temporaryTags from "../../assets/temporaryTags.json";
 import {Api} from "@/Api";
 
 export default {
-  components: {Suggestions, Tag},
+  // components: {Suggestions, Tag},
   props: {
     /**
      * ID of user to create the card as
@@ -180,7 +154,8 @@ export default {
       showSuggestions: false,
       allTags: temporaryTags,
       // Array of objects { id: Number, name: String }
-      tags: []
+      tags: [],
+      allKeywords: null
     }
   },
 
@@ -267,6 +242,15 @@ export default {
      */
     removeTag(id) {
       this.tags = this.tags.filter(tag => tag.id != id);
+    },
+
+    getAllKeywords: async function () {
+      try {
+        const data = (await Api.getAllKeywords()).data;
+        console.log(data);
+      } catch (err) {
+        this.apiErrorMessage = "Cannot retrieve keywords"
+      }
     },
 
     /**
