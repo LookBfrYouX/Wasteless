@@ -189,7 +189,7 @@ export default {
       this.removeAdminErrorMessage = null;
 
       try {
-        console.log(id);
+        await Api.removeBusinessAdmin(this.businessId, id);
       } catch(err) {
         if (await Api.handle401.call(this, err)) return;
         this.removeAdminErrorMessage = err.userFacingErrorMessage;

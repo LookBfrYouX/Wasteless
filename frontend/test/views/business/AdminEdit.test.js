@@ -101,6 +101,27 @@ describe("addAdmin", () => {
   });
 });
 
+describe("removeAdmin", () => {
+  test("success", async () => {
+    wrapper.vm.adminIdToRemove= 3;
+    Api.removeBusinessAdmin.mockResolvedValue();
+    await wrapper.vm.removeAdmin();
+    expect(Api.removeBusinessAdmin.mock.calls.length).toEqual(1);
+    expect(Api.removeBusinessAdmin.mock.calls[0]).toEqual([business.id, 3]); // businessId, user Id
+    expect(Api.businessProfile.mock.calls.length).toEqual(2); // business fetched again to get new admin
+  });
+
+
+  test("failed API call", async () => {
+    wrapper.vm.adminIdToRemove = 3;
+    Api.removeBusinessAdmin.mockImplementation(() => Promise.reject(new ApiRequestError("Err")));
+    await wrapper.vm.removeAdmin();
+    expect(Api.removeBusinessAdmin.mock.calls.length).toEqual(1);
+    expect(wrapper.vm.removeAdminErrorMessage).toEqual("Err");
+    expect(Api.businessProfile.mock.calls.length).toEqual(1); // business not fetched again
+  });
+});
+
 describe("existingAdminIds", () => {
   test("two admins", async () => {
     expect(wrapper.vm.existingAdminIds).toEqual(new Set([1, 2]));
@@ -226,13 +247,26 @@ describe("userSearchQuery", () => {
   });
 
 
-  test("user search loading is set and reset after API loads", async () => {
+  test("user search loading is set and reset after API loads; successful API call", async () => {
     const wait = (duration) => new Promise(resolve => setTimeout(resolve, duration));
     const time = 100;
     Api.search.mockImplementation(async () => {
       await wait(time);
-      // return Promise.reject();
       return { data: { results }};
+    });
+    await wrapper.setData({ userSearchQuery: "asdf" });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.userSearchLoading).toBe(true);
+    await wait(time);
+    expect(wrapper.vm.userSearchLoading).toBe(false);
+  });
+
+  test("user search loading is set and reset after API loads: failed API call", async () => {
+    const wait = (duration) => new Promise(resolve => setTimeout(resolve, duration));
+    const time = 100;
+    Api.search.mockImplementation(async () => {
+      await wait(time);
+      return Promise.reject();
     });
     await wrapper.setData({ userSearchQuery: "asdf" });
     await wrapper.vm.$nextTick();
