@@ -278,7 +278,7 @@ describe("userSearchQuery", () => {
     const time = 100;
     Api.search.mockImplementation(async () => {
       await wait(time);
-      return Promise.reject();
+      return Promise.reject({ userFacingErrorMessage: "err" });
     });
     await wrapper.setData({ userSearchQuery: "asdf" });
     await wrapper.vm.$nextTick();
