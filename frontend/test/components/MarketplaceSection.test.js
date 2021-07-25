@@ -68,6 +68,7 @@ describe("Card API handling", () => {
    * Tests that the cards get set correctly.
    */
   test("Assert cards get set from API", async () => {
+    window.scrollTo = jest.fn();
     Api.getMarketplaceCards.mockResolvedValue({
       data: response
     });
