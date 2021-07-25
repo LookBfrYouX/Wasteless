@@ -114,11 +114,26 @@
           </v-card>
         </v-dialog>
       </template>
+      <template v-slot:[`item.name`]="{ item }">
+        <div
+          class="d-flex flex-column"
+        >
+          <span>{{ item.name }}</span>
+          <span
+            class="primary-admin-text text-faded"
+            v-if="business.primaryAdministratorId == item.id"
+          >
+            Primary Business Administrator
+          </span>
+        </div>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <div class="d-flex justify-content-end">
+        <div
+          class="d-flex justify-content-end"
+          v-if="business.primaryAdministratorId != item.id"
+        >
           <button
             class="btn btn-outline-danger btn-sm d-flex align-content-center"
-            :disabled="business.primaryAdministratorId == item.id"
             @click="removeAdminButtonClicked(item.id)"
           >
             <span class="material-icons">delete</span>
@@ -347,8 +362,10 @@ export default {
   }
 };
 </script>
-<style>
-.hide-all-but-first-result .v-list-item:not(:first-child) {
-  display: none;
+<style scoped>
+.primary-admin-text {
+  font-size: 0.8em;
+  font-variant-caps: all-small-caps;
 }
+
 </style>
