@@ -21,12 +21,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +49,7 @@ public class ControllerExceptionHandler {
    */
   @ExceptionHandler(InsufficientPrivilegesException.class)
   public ResponseEntity<String> handleInsufficientPrivilegesException(
-      InsufficientPrivilegesException exc) {
+          InsufficientPrivilegesException exc) {
     log.error("UNAUTHORISED ACTION: 403 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(403));
   }
@@ -106,14 +108,14 @@ public class ControllerExceptionHandler {
 
   @ExceptionHandler(ProductRegistrationException.class)
   public ResponseEntity<String> handleProductRegistrationException(
-      ProductRegistrationException exc) {
+          ProductRegistrationException exc) {
     log.error("PRODUCT REGISTRATION ERROR: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
   }
 
   @ExceptionHandler(InventoryItemNotFoundException.class)
   public ResponseEntity<String> handleInventoryItemNotFoundException(
-      InventoryItemNotFoundException exc) {
+          InventoryItemNotFoundException exc) {
     log.error("INVENTORY ITEM ERROR: 406 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
   }
@@ -126,7 +128,7 @@ public class ControllerExceptionHandler {
    */
   @ExceptionHandler(InventoryRegistrationException.class)
   public ResponseEntity<String> handleInventoryRegistrationException(
-      InventoryRegistrationException exc) {
+          InventoryRegistrationException exc) {
     log.error("INVENTORY REGISTRATION EXCEPTION: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
   }
@@ -145,7 +147,7 @@ public class ControllerExceptionHandler {
 
   @ExceptionHandler(InvalidAttributeValueException.class)
   public ResponseEntity<String> handleInvalidAttributeValueException(
-      InvalidAttributeValueException exc) {
+          InvalidAttributeValueException exc) {
     log.error("SEARCH QUERY ERROR: 500 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
   }
@@ -200,17 +202,26 @@ public class ControllerExceptionHandler {
   }
 
 
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public Map<String, String> handleValidationExceptions(
-          MethodArgumentNotValidException ex) {
-    Map<String, String> errors = new HashMap<>();
-    ex.getBindingResult().getAllErrors().forEach((error) -> {
-      String fieldName = ((FieldError) error).getField();
-      String errorMessage = error.getDefaultMessage();
-      errors.put(fieldName, errorMessage);
-    });
-    log.error(String.valueOf(errors));
-    return errors;
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exc) {
+    log.error("ENTITY VALIDATION EXCEPTION: 400 - " + exc.getMessage());
+    ArrayList<String> errors = new ArrayList<>();
+    for (FieldError error : exc.getBindingResult().getFieldErrors()) {
+      errors.add(error.getField() + ": " + error.getDefaultMessage());
+    }
+
+    for (ObjectError error : exc.getBindingResult().getGlobalErrors()) {
+      errors.add(error.getDefaultMessage());
+    }
+
+    String message = "Invalid entity received:";
+    for (String msg : errors) {
+      message += "\n- " + msg;
+    }
+
+    return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
   }
 }
+
+

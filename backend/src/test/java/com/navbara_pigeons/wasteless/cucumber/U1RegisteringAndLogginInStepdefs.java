@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -105,22 +106,24 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
 
   @When("I register an account with the invalid email {string} and password {string}")
   public void iRegisterAnAccountWithTheInvalidEmailAndPassword(String email, String password)
-      throws Exception {
+          throws Exception {
     User newUser = makeUser(email, password, false);
-    CreateUserDto dto = new CreateUserDto(newUser);
-    dto.setPassword(password);
+    newUser.setPassword(password);
     this.mvcResult = mockMvc.perform(
-        post("/users")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(dto))
-            .accept(MediaType.ALL))
-        .andExpect(status().is(400))
-        .andReturn();
+            post("/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(newUser))
+                    .accept(MediaType.ALL))
+            .andExpect(status().is(400))
+            .andReturn();
   }
+
+
 
   @Then("I am shown an error that my request is invalid")
   public void iAmShownAnErrorThatMyRequestIsInvalid() {
-    assertEquals("Bad Request", this.mvcResult.getResponse().getErrorMessage());
+    System.out.println(this.mvcResult.getResponse().getStatus());
+    assertEquals(400, this.mvcResult.getResponse().getStatus());
   }
 
   @When("I register an account with the taken email {string} and password {string}")
@@ -133,7 +136,7 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(newUser))
             .accept(MediaType.ALL))
-        .andExpect(status().is(400))
+        .andExpect(status().is(409))
         .andReturn();
   }
 
