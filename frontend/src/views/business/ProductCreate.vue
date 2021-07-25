@@ -37,7 +37,8 @@
                   v-model="price"
                   :placeholder="currencyText"
                   class="form-control"
-                  min="0.00"
+                  min="0.01"
+                  max="10000000"
                   name="price"
                   required
                   step="0.01"
