@@ -30,8 +30,6 @@
           :length="totalPages"
           class="w-100"
           @input="pageUpdate"
-          @next="pageUpdate"
-          @previous="pageUpdate"
       />
     </div>
     <div v-else>
