@@ -100,17 +100,16 @@ public class BusinessController {
    * Removes a specific user from the list of administrators for a business
    *
    * @param businessId unique identifier of the business being searched for
-   * @param jsonId     the id of the user to be removed from the list of admins
+   * @param userIdDto     the id of the user to be removed from the list of admins
    */
   @PutMapping("/businesses/{businessId}/removeAdministrator")
   @Operation(summary = "Remove a users business admin privileges", description = "Remove user from list of admins for a business")
   public ResponseEntity<String> removeBusinessAdmin(@PathVariable String businessId,
-      @RequestBody JSONObject jsonId)
+      @RequestBody UserIdDto userIdDto)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, BusinessAdminException {
-    long userId = Long.parseLong(jsonId.get("userId").toString());
-    log.info("REMOVING USER WITH ID " + userId + " FROM LIST OF ADMINS IN BUSINESS WITH ID: "
+    log.info("REMOVING USER WITH ID " + userIdDto.getUserId() + " FROM LIST OF ADMINS IN BUSINESS WITH ID: "
         + businessId);
-    businessService.removeBusinessAdmin(Long.parseLong(businessId), userId);
+    businessService.removeBusinessAdmin(Long.parseLong(businessId), userIdDto.getUserId());
     return new ResponseEntity<>("Individual added as an administrator successfully",
         HttpStatus.valueOf(200));
   }
