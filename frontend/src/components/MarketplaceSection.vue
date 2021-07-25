@@ -106,6 +106,7 @@ export default {
   },
   watch: {
     section: async function () {
+      this.page = 1;
       const success = await this.getCardsFromAPI();
       if (success != null) {
         await this.pageUpdate();
