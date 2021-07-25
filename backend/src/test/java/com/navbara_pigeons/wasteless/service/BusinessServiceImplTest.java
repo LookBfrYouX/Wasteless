@@ -236,6 +236,10 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
 
     User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
     user2.setId(USERID_2);
+
+    when(userService.getUserById(USERID_2)).thenReturn(user2);
+    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
+
     when(userService.getUserById(USERID_2)).thenReturn(user2);
     businessService.addBusinessAdmin(business.getId(), USERID_2);
 
@@ -252,7 +256,10 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
 
     User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
     user2.setId(USERID_2);
+
     when(userService.getUserById(USERID_2)).thenReturn(user2);
+    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
+
     businessService.addBusinessAdmin(business.getId(), USERID_2);
 
     when(userService.getLoggedInUser()).thenReturn(user2);
