@@ -164,11 +164,11 @@ public class ControllerExceptionHandler {
   }
 
   @ExceptionHandler(InvalidPaginationInputException.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleInvalidPaginationInputException(
       InvalidPaginationInputException exc) {
-    log.error("PAGINATION ERROR: 500 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    log.error("PAGINATION INPUT ERROR: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(UserAlreadyExistsException.class)
