@@ -170,9 +170,10 @@ export const Api = {
    * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
   getProducts: (id, params) => {
-    return instance.get(`/businesses/${id}/products`, { params: params }).catch(error => {
-      throw ApiRequestError.createFromMessageMap(error);
-    });
+    return instance.get(`/businesses/${id}/products`, {params: params}).catch(
+        error => {
+          throw ApiRequestError.createFromMessageMap(error);
+        });
   },
 
   /**
@@ -358,12 +359,13 @@ export const Api = {
    * Get a list of all of the marketplace cards and their creators
    * @returns {Promise<AxiosResponse<any>>} Promise containing the cards
    */
-  getMarketplaceCards: (section) => {
-    return instance.get(`/cards?section=${section}`).catch(err => {
-      throw ApiRequestError.createFromMessageMap(err, {
-        400: "Oops, it looks like that section doesn't exist! Have another try."
-      });
-    })
+  getMarketplaceCards: (section, params) => {
+    return instance.get(`/cards?section=${section}`, {params: params}).catch(
+        err => {
+          throw ApiRequestError.createFromMessageMap(err, {
+            400: "Oops, it looks like that section doesn't exist! Have another try."
+          });
+        })
   },
   addBusinessListings: (businessId, listings) => {
     return instance.post(
