@@ -190,13 +190,6 @@ public class ControllerExceptionHandler {
     log.error("FAILED LOGIN: 400 - " + exc.getMessage());
   }
 
-  @ExceptionHandler(Exception.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public ResponseEntity<String> handleGeneralException(Exception exc) {
-    log.error("CRITICAL ERROR: 500 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
   @ExceptionHandler(ListingValidationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
@@ -209,6 +202,13 @@ public class ControllerExceptionHandler {
   public ResponseEntity<String> handleInvalidMarketListingSectionException(InvalidMarketListingSectionException exc) {
     log.error("BAD REQUEST: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public ResponseEntity<String> handleGeneralException(Exception exc) {
+    log.error("CRITICAL ERROR: 500 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
 }
