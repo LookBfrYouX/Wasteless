@@ -9,21 +9,25 @@
           aria-controls="navbarSupportedContent"
           aria-expanded="false"
           aria-label="Toggle navigation"
-          class="navbar-toggler"
+          class="navbar-toggler pr-4"
           data-target="#navbarSupportedContent"
           data-toggle="collapse"
           type="button"
       >
+      <!-- mr-4 allows there to be space between icon and content. By default the navbar content
+      has padding left but on small screens where the hamburger button is on its own line, the padding
+      eats up some of the screen width
+      -->
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <!-- Overflow content -->
-      <div id="navbarSupportedContent" class="collapse navbar-collapse">
+      <div id="navbarSupportedContent" class="collapse navbar-collapse w-100">
         <!-- Left group: links to profile and business -->
-        <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start">
+        <ul class="navbar-nav d-flex justify-content-between align-items-lg-center w-100 align-items-start pl-0">
           <div
-              :class="{'d-lg-none': navbarLinks.length > 2}"
-              class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center"
+              :class="{'d-lg-none d-md-none': navbarLinks.length > 2}"
+              class="d-flex d-xl-flex flex-wrap flex-lg-nowrap justify-content-center nav-link-list"
           >
             <!-- List of links in XL only hidden if lg and more than 2 links -->
             <li
@@ -31,9 +35,10 @@
                 :key="i"
                 :class="{ 'mx-4': i != 0, active }"
                 class="nav-item d-flex align-items-center text-center mx-lg-0"
+                aria-label="Quick links"
             >
               <a
-                  class="nav-link"
+                  class="nav-link py-1"
                   href="javascript:"
                   @click="click"
               > {{ name }}
@@ -42,7 +47,7 @@
           </div>
 
           <li
-              :class="{'d-lg-block': navbarLinks.length > 2}"
+              :class="{'d-lg-block d-md-block': navbarLinks.length > 2}"
               class="navbar-item dropdown d-none d-xl-none p-absolute"
           >
             <!-- dropdown menu for the business/profile links only if lg AND if more than 2 links-->
@@ -92,7 +97,7 @@
           </li>
 
           <!-- Right group: User and acting as -->
-          <li v-if="isSignedIn" class="nav-item dropdown">
+          <li v-if="isSignedIn" class="nav-item dropdown acting-as-dropdown">
             <a id="navbarDropdownMenuLink" aria-expanded="false"
                aria-haspopup="true" class="nav-link dropdown-toggle d-flex align-items-center"
                data-toggle="dropdown"
@@ -107,33 +112,40 @@
                    class="nav-picture rounded-circle"
                    src="@/../assets/images/default-user-thumbnail.svg"
               >
-              <div class="d-flex flex-column mx-1">
-              <span class="m-0 p-0 text-dark">
+              <div class="d-flex flex-column mx-1 current-acting-as-wrapper">
+                <!-- title attribute will show full name in case it is too long to fit -->
+              <span class="m-0 p-0 text-dark ellipsis-overflow" v-bind:title="printCurrentActingAs">
                   {{ printCurrentActingAs }}
                 </span>
                 <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
               </div>
             </a>
 
-            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu position-absolute">
+            <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu position-absolute">
               <div class="h4 dropdown-header">Act as</div>
-              <a class="dropdown-item" href="javascript:"
-                 @click="switchActingAs(null)">
-                {{ authUser.firstName }} {{ authUser.lastName }}
-                <span v-if="currentActingAs === null">
-                  &#10003;
+              <a class="dropdown-item d-flex"
+                 v-bind:class="{'currently-acting-as': currentActingAs == null}"
+                 href="javascript:"
+                 v-bind:title="authUser.firstName + ' ' + authUser.lastName"
+                 @click="switchActingAs(null)"
+              >
+              <!-- d-flex used on the a so that space is made for the the tick
+               (added via an ::after) for active items when the name is long and overflows -->
+                <span class="ellipsis-overflow">
+                  {{ authUser.firstName }} {{ authUser.lastName }}
                 </span>
               </a>
               <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
               <a v-for="business in actingAsEntities" :key="business.id"
-                 class="dropdown-item"
+                 class="dropdown-item d-flex"
+                 v-bind:class="{'currently-acting-as': currentActingAs == business}"
                  href="javascript:"
-                 @click="switchActingAs(business)">
-                {{ business.name }}
-                <span v-if="business === currentActingAs">
-
-                  &#10003;
-                  </span>
+                 v-bind:title="business.name"
+                 @click="switchActingAs(business)"
+              >
+                <span class="ellipsis-overflow">
+                  {{ business.name }}
+                </span>
               </a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="javascript:" @click="signOut">Sign out</a>
@@ -418,5 +430,48 @@ nav {
 nav .active {
   /* For some reason, Bootstrap adds underline to the links. Doesn't show up on bootstrap example website */
   text-decoration: inherit;
+}
+
+.current-acting-as-wrapper {
+  min-width: 0; /* Needed to truncate text in a flex box */
+}
+
+.ellipsis-overflow {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.currently-acting-as::after {
+  /* Checkmark next to currently acting user/business */
+  content: "\2713";
+}
+
+.acting-as-dropdown {
+  /* The 20em is to prevent the name from getting far too big on big wide screens */
+  max-width: min(100%, 20em);
+}
+
+
+.acting-as-dropdown .dropdown-menu {
+  /* Dropdown. Set it to be full screen width(*) or 30em, whichever is smaller
+     so use 100% to make it full width.
+     (*) Subtract 3rem since the navbar has 1.5rem of padding on left and right and hence, the dropdown
+     is positioned 1.5rem from the edge of the screen. Subtract 3rem to ensure even margins on both sides
+     If the scroll bar appears it doesn't look great, but can't do much about it with CSS
+  */
+  width: min(20em, calc(100vw - 3rem));
+  overflow-y: auto;
+
+  /* Thinking that on mobile devices navbar will be max ~20rem tall (acting as business, iPhone 5s screen size)
+     To ensure it doesn't go negative, there is also a minimum height
+     Then ensure it isn't ridiculously tall on desktop screens
+  */
+  max-height: min(25em, max(4em, calc(100vh - 22rem)));
+}
+
+.nav-link-list {
+  overflow-y: auto;
+  max-height: 25vh;
 }
 </style>

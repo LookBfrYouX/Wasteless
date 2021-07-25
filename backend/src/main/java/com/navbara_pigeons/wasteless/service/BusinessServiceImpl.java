@@ -137,9 +137,9 @@ public class BusinessServiceImpl implements BusinessService {
   /**
    * Removes user with given ID from list of business admins
    *
-   * @param userId     of the user that will be added to the list of business
+   * @param userId     of the user that will be removed to the list of business
    *                   admins
-   * @param businessId of the business to add the admin to
+   * @param businessId of the business to remove the admin from
    */
   @Transactional
   public void removeBusinessAdmin(long businessId, long userId)
