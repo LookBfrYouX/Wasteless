@@ -78,6 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.POST, "/businesses/{id}/listings").authenticated()
         .antMatchers(HttpMethod.PUT, "/businesses/{businessId}/makeAdministrator").authenticated()
         .antMatchers(HttpMethod.GET, "/keywords").permitAll()
+        .antMatchers(HttpMethod.PUT, "/businesses/{businessId}/removeAdministrator").authenticated()
         .antMatchers("/swagger-ui/**").permitAll()
         .antMatchers("/api-docs.yaml").permitAll()
         .antMatchers("/api-docs/**").permitAll()

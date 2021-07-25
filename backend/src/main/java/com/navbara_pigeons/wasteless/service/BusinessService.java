@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
@@ -22,4 +23,7 @@ public interface BusinessService {
 
   void addBusinessAdmin(long businessId, long userId)
       throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException;
+
+  void removeBusinessAdmin(long businessId, long userId)
+      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, BusinessAdminException;
 }
