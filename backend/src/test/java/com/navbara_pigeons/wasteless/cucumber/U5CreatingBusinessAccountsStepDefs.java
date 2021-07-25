@@ -4,28 +4,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.dto.UserIdDto;
 import com.navbara_pigeons.wasteless.dto.FullAddressDto;
-import com.navbara_pigeons.wasteless.entity.Address;
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -166,9 +157,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   public void iSetThisUserAsAnAdminOfMyNewlyCreatedBusiness() throws Exception {
     Long businessId = getBusinessIdFromJsonResponse();
 
-    JSONObject newUserIdJson = new JSONObject();
-    newUserIdJson.put("userId", differentUserId);
-    UserIdDto userIdDto = new UserIdDto(Long.valueOf(newUserId));
+    UserIdDto userIdDto = new UserIdDto(Long.valueOf(differentUserId));
 
     mockMvc.perform(
         put("/businesses/{id}/makeAdministrator", businessId)
@@ -199,19 +188,12 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
     Assertions.fail();
   }
 
-  /**
-   * Returns a businessId from a post business endpoint response
-   */
-  private Long getBusinessIdFromJsonResponse() {
-    return jsonResponse.get("businessId").asLong();
-  }
-
   // ----- AC5.3 -----
 
   @Then("I can remove him from the list of admins for my business")
   public void iCanRemoveHimFromTheListOfAdminsForMyBusiness() throws Exception {
-    String businessId = getBusinessIdFromResponse();
-    UserIdDto userIdDto = new UserIdDto(Long.valueOf(newUserId));
+    Long businessId = getBusinessIdFromJsonResponse();
+    UserIdDto userIdDto = new UserIdDto(Long.valueOf(differentUserId));
 
     mockMvc.perform(
         put("/businesses/{id}/removeAdministrator", businessId)
@@ -224,23 +206,22 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @Then("I can see he is not in the list of admins for my business")
   public void iCanSeeHeIsNotInTheListOfAdminsForMyBusiness() throws Exception {
     // Get the businessId from the returned string object
-    String businessId = getBusinessIdFromResponse();
+    Long businessId = getBusinessIdFromJsonResponse();
 
-    MvcResult res = mockMvc.perform(get("/businesses/{id}", businessId)
-        .content(businessId))
+    MvcResult res = mockMvc.perform(get("/businesses/{id}", businessId))
         .andExpect(status().isOk()).andReturn();
 
     // Check the newUser is in the list of admins for the returned business
     JSONObject jsonResponse = new JSONObject(res.getResponse().getContentAsString());
-    Assertions.assertFalse(jsonResponse.get("administrators").toString().contains("\"id\":" + newUserId));
+    Assertions.assertFalse(jsonResponse.get("administrators").toString().contains("\"id\":" + differentUserId));
   }
 
   // ----- AC5.4 -----
 
   @Then("I cannot remove myself from this list of admins")
   public void iCannotRemoveMyselfFromThisListOfAdmins() throws Exception {
-    String businessId = getBusinessIdFromResponse();
-    UserIdDto userIdDto = new UserIdDto(Long.valueOf(userId));
+    Long businessId = getBusinessIdFromJsonResponse();
+    UserIdDto userIdDto = new UserIdDto(Long.valueOf(loggedInUserId));
 
     mockMvc.perform(
         put("/businesses/{id}/removeAdministrator", businessId)
@@ -248,5 +229,12 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
             .content(objectMapper.writeValueAsString(userIdDto))
             .accept(MediaType.ALL))
         .andExpect(status().is(400));
+  }
+
+  /**
+   * Returns a businessId from a post business endpoint response
+   */
+  private Long getBusinessIdFromJsonResponse() {
+    return jsonResponse.get("businessId").asLong();
   }
 }
