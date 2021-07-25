@@ -1,12 +1,10 @@
-import {mount} from "@vue/test-utils";
+import {shallowMount} from "@vue/test-utils";
 import CreateListing from "@/views/business/ListingCreate";
 import {globalStateMocks} from "#/testHelper";
 import {ApiRequestError} from "@/ApiRequestError";
 import {Api} from "@/Api";
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 
-Vue.use(Vuetify);
 let vuetify = new Vuetify();
 
 jest.mock("@/Api");
@@ -115,7 +113,7 @@ const mockListings = {
 }
 
 beforeEach(() => {
-  wrapper = mount(CreateListing, {
+  wrapper = shallowMount(CreateListing, {
     vuetify,
     propsData: {
       businessId: 1
