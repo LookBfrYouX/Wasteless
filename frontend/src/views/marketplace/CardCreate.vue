@@ -182,7 +182,7 @@ export default {
         this.allKeywordsName = data.map(keyword => keyword.name);
         this.addKeywords = true;
       } catch (err) {
-        this.apiErrorMessage = "Cannot retrieve keywords"
+        this.errorMessage = "Cannot retrieve keywords"
       }
     },
 

@@ -87,4 +87,30 @@ describe("Keyword functionality", () => {
     await wrapper.vm.getAllKeywords();
     expect(wrapper.vm.allKeywords.length).toBe(2);
   });
+
+  test("Failed to fetch keywords", async () => {
+    Api.getAllKeywords.mockImplementation(
+        () => Promise.reject(new ApiRequestError()));
+    mountCard();
+    await wrapper.vm.getAllKeywords();
+    expect(wrapper.vm.errorMessage).toEqual("Cannot retrieve keywords");
+  });
+
+  test("Create an array of keyword ids of selected keywords", () => {
+    mountCard();
+    wrapper.vm.allKeywords = [ { id: 1, name: "First keyword" },
+      { id: 2, name: "Second keyword" },
+      { id: 3, name: "Third keyword" }];
+    wrapper.vm.selectedKeywordsName = ["Second keyword"];
+    expect(wrapper.vm.findKeywordIds()).toEqual([2]);
+  });
+
+  test("User did not add keyword to the card", () => {
+    mountCard();
+    wrapper.vm.allKeywords = [ { id: 1, name: "First keyword" },
+      { id: 2, name: "Second keyword" },
+      { id: 3, name: "Third keyword" }];
+    wrapper.vm.selectedKeywordsName = [];
+    expect(wrapper.vm.findKeywordIds()).toEqual([]);
+  });
 });
