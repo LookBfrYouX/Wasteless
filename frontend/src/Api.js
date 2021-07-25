@@ -155,7 +155,7 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any>>}
    */
   addBusinessAdmin: (businessId, userId) => {
-    return instance.put(`/businesses/${businessId}/makeAdministrator`, userId).catch(err => {
+    return instance.put(`/businesses/${businessId}/makeAdministrator`, { userId }).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         400: "The user does not exist or is already an admin",
         403: "Only the primary business administrator or GAA can modify business admininstrators"
@@ -170,8 +170,7 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any>>}
    */
   removeBusinessAdmin: (businessId, userId) => {
-    console.log("TODO error messages");
-    return instance.put(`/businesses/${businessId}/removeAdministrator`, userId).catch(err => {
+    return instance.put(`/businesses/${businessId}/removeAdministrator`, { userId }).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         400: "The user does not exist, is not an admin or is the primary business administrator",
         403: "Only the primary business administrator or GAA can modify business admininstrators"
