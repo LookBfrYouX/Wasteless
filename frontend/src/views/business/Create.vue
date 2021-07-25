@@ -92,6 +92,13 @@ import AddressForm from "@/components/AddressForm";
 export default {
   name: "RegisterBusiness",
 
+  props: {
+    userId: {
+      type: Number, // may be NaN
+      required: true
+    }
+  },
+
   components: {
     "address-form": AddressForm,
   },
@@ -171,7 +178,9 @@ export default {
       }
 
       let business = {
-        primaryAdministratorId: user.id,
+        // Line below allows admins to create business accounts for others
+        primaryAdministratorId: !Number.isNaN(this.userId) && this.$stateStore.getters.isAdmin()
+            ? this.userId : user.id,
         name: this.name,
         description: this.description,
         address: {
@@ -204,9 +213,11 @@ export default {
       business.id = response.data.businessId;
       business.created = new Date().toISOString(); // temporary created value
 
-      user.businessesAdministered.push(business);
+      if (user.id == this.userId) { // If you made your own business (admin didnt make it)
+        user.businessesAdministered.push(business);
+        this.$stateStore.actions.setActingAs(business.id);
+      }
       this.$stateStore.actions.setAuthUser(user); // Add business to state store
-      this.$stateStore.actions.setActingAs(business.id);
       await this.$router.push({
         name: "BusinessDetail",
         params: {

@@ -95,6 +95,23 @@ export const router = new VueRouter({
         requiresNotBusinessAdmin: true
       },
       component: () => import("./views/business/Create.vue"),
+      props: () => {
+        const user = store.getters.getAuthUser();
+        const userId = user ? user.id : NaN; // If not logged in, should be redirected to a different page, so user id should never be NaN anyway
+        return {userId};
+      }
+    },
+    {
+      name: "BusinessCreateAdmin",
+      // GAA can create card acting as any user
+      path: "/business/admin/:userId(\\d+)/create",
+      meta: {
+        title: "Create Card | Wasteless",
+        /* Only accessible if GAA */
+        adminOnly: true,
+      },
+      component: () => import("./views/business/Create.vue"),
+      props: route => ({userId: parseInt(route.params.userId, 10)})
     },
     {
       name: "BusinessDetail",
