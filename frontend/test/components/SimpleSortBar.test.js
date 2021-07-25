@@ -1,10 +1,8 @@
 import {mount} from "@vue/test-utils"
 import SimpleSortBar from "@/components/SimpleSortBar";
 
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 
-Vue.use(Vuetify);
 let vuetify = new Vuetify();
 
 let wrapper;

@@ -46,7 +46,7 @@ beforeEach(() => {
           businessId: 1
         },
         mocks: {...globalStateMocks()},
-        stubs: ["inventory-item-card"]
+        stubs: ["inventory-item-card", "router-link"]
       });
 });
 
