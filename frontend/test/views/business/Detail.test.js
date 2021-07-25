@@ -100,3 +100,38 @@ describe("adminLinks", () => {
     ]);
   });
 });
+
+describe("showEditAdminsButton", () => {
+  test("GAA", async () => {
+    const getters = wrapper.vm.$stateStore.getters;
+    getters.isAdmin = () => true;
+    getters.getActingAs = () => null;
+    getters.getAuthUser = () => ({ id: 3 });
+    wrapper.vm.businessInfo = ({ id: 1, primaryAdministratorId: 2, address: {} });
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.showEditAdminsButton).toBeTruthy();
+  });
+  
+  test("primary business admin, not acting as", async () => {
+    const getters = wrapper.vm.$stateStore.getters;
+    getters.isAdmin = () => false;
+    getters.getActingAs = () => ({ id: 1000, primaryAdministratorId: 3, address: {} });
+    getters.getAuthUser = () => ({ id: 3 });
+    wrapper.vm.businessInfo = ({ id: 1, primaryAdministratorId: 3, address: {} });
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.showEditAdminsButton).toBeFalsy();
+  });
+
+  test("primary business admin, is acting as", async () => {
+    const getters = wrapper.vm.$stateStore.getters;
+    getters.isAdmin = () => false;
+    getters.getActingAs = () => ({ id: 1, primaryAdministratorId: 2, address: {} });
+    getters.getAuthUser = () => ({ id: 2 });
+    wrapper.vm.businessInfo = ({ id: 1, primaryAdministratorId: 2, address: {} });
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.showEditAdminsButton).toBeTruthy();
+  });
+});
