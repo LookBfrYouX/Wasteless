@@ -49,7 +49,7 @@ public class ImageController {
   public ResponseEntity<String> uploadProductImage(
       @PathVariable long businessId,
       @PathVariable long productId,
-      @RequestParam MultipartFile image) {
+      @RequestParam MultipartFile image) throws UserNotFoundException, BusinessNotFoundException, IOException, ProductNotFoundException {
     try {
       imageService.uploadProductImage(businessId, productId, image);
       log.info(
@@ -60,24 +60,9 @@ public class ImageController {
               + " TO BUSINESS "
               + businessId);
       return new ResponseEntity<>(HttpStatus.CREATED);
-    } catch (UserNotFoundException exc) {
-      log.error("USER NOT FOUND ERROR: " + productId);
-      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The user does not exist");
-    } catch (BusinessNotFoundException exc) {
-      log.error("BUSINESS NOT FOUND ERROR: " + productId);
-      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The business does not exist");
-    } catch (ProductNotFoundException exc) {
-      log.error("PRODUCT NOT FOUND ERROR: " + productId);
-      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, exc.getMessage());
     } catch (ImageNotFoundException exc) {
       log.error("NO IMAGE RECEIVED");
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "NO IMAGE RECEIVED");
-    } catch (BadCredentialsException exc) {
-      log.error("INSUFFICIENT PRIVILEGES: " + productId);
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, exc.getMessage());
-    } catch (Exception exc) {
-      log.error("FAILED WHEN UPLOADING PRODUCT IMAGE" + exc.getMessage());
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
     }
   }
 

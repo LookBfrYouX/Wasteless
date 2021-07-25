@@ -30,7 +30,7 @@ public class KeywordController {
     @GetMapping("/keywords")
     @Operation(summary = "Show a list of keywords", description = "Return a list of all keywords")
     public ResponseEntity<Object> getAllKeywords() {
-        return new ResponseEntity<>(keywordService.getAllKeywords(), HttpStatus.valueOf(200));
+        return new ResponseEntity<>(keywordService.getAllKeywords(), HttpStatus.OK);
     }
 
 }
