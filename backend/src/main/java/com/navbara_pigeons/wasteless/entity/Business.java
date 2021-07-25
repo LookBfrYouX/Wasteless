@@ -136,6 +136,14 @@ public class Business {
   }
 
   /**
+   * This is a helper method for adding a user to the business.
+   *
+   * @param administrator The user to be added.
+   */
+  public void removeAdministrator(User administrator) {
+    this.administrators.remove(administrator);
+  }
+  /**
    * This is a helper method for adding a product to the business product catalogue.
    *
    * @param product The product to be added.
