@@ -22,7 +22,7 @@ public class BusinessDaoTest extends MainTestProvider {
   @Test
   @Transactional
   void saveBusinessTest() {
-    Business business = makeBusiness();
+    Business business = makeBusiness().setPrimaryAdministratorId(3L);
     addressDao.saveAddress(business.getAddress());
     businessDao.saveBusiness(business);
     assertTrue(business.getId() > 0);
@@ -30,7 +30,7 @@ public class BusinessDaoTest extends MainTestProvider {
 
   @Test
   void saveValidBusinessAndGetByIdTest() {
-    Business business = makeBusiness();
+    Business business = makeBusiness().setPrimaryAdministratorId(3L);
     addressDao.saveAddress(business.getAddress());
     businessDao.saveBusiness(business);
     Business returnedBusiness = null;

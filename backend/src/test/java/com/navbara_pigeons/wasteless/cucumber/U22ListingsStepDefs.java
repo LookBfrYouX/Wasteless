@@ -28,13 +28,14 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
   // ---------- AC2 ----------
   @Given("a user has a business {string} in {string}")
   public void a_user_has_a_business_in(String businessName, String countryName) throws Exception {
-    login();
+    adminLogin();
+    
     CreateBusinessDto business = new CreateBusinessDto();
     business.setBusinessType("Retail Trade");
     business.setName(businessName);
     business.setAddress(new FullAddressDto(makeAddress()));
     business.getAddress().setCountry(countryName);
-
+    business.setPrimaryAdministratorId(loggedInUserId);
     JsonNode json = makePostRequestGetJson("/businesses", business, status().isCreated());
     businessId = json.get("businessId").asLong();
   }
