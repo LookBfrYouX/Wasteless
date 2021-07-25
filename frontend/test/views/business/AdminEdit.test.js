@@ -207,6 +207,18 @@ describe("userSearchResults", () => {
   test("businesses not fetched yet", async () => {
     expect(wrapper.vm.userSearchResults).toEqual([]);
   });
+
+  test("disabled property in results", async () => {
+    wrapper.vm.$data.userSearchResultsRaw = [
+      {id: 100, disabled: true, firstName: "A"},
+      {id: 200, disabled: false, firstName: "B"}
+    ]
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.userSearchResults).toEqual([
+      {id: 100, name: "A", disabled: true},
+      {id: 200, name: "B", disabled: false},
+    ]);
+  });
 });
 
 describe("userSearchQuery", () => {

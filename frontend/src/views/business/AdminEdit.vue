@@ -30,12 +30,17 @@
 
           class="remove-v-autocomplete-bottom-padding"
 
-          hide-no-data
           hide-selected
           label="Search Users"
           placeholder="Start typing to Search"
           prepend-icon="search"
-        ></v-autocomplete>
+
+
+          :hide-no-data="userSearchErrorMessage == null"
+          :no-data-text="userSearchErrorMessage == null? 'No results': userSearchErrorMessage"
+        >
+        <!-- Stick error message inline in the no data text -->
+        </v-autocomplete>
       </div>
       <div class="col-12 col-md-4 d-flex align-items-center justify-content-end">
         <button
@@ -70,7 +75,6 @@
        :loading="admins == null"
         loading-text="Loading business information"
 
-
         :items-per-page="10"
         :footer-props="{
           showFirstLastPage: false,
@@ -79,7 +83,7 @@
         }"
     >
       <template v-slot:top>
-        <!-- Not sure if dialog needs to go inside this slot -->
+        <!-- Once delete button clicked, confirmation through this dialog -->
         <v-dialog v-model="removeAdminDialogOpen" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">Remove this user as an administrator of this business?</v-card-title>
@@ -87,6 +91,24 @@
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="removeAdminDialogOpen = false">Cancel</v-btn>
               <v-btn color="blue darken-1" text @click="removeAdmin">OK</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <!-- If remove admin API call fails, this dialog appears -->
+        <v-dialog
+            :value="removeAdminErrorMessage != null"
+            @input="() => removeAdminErrorMessage = null"
+            max-width="500px"
+        >
+          <v-card>
+            <v-card-title class="text-h5">Admin Removal Failed</v-card-title>
+            <v-card-text>{{ removeAdminErrorMessage }}</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="removeAdmin">Retry</v-btn>
+              <v-btn color="blue darken-1" text @click="() => removeAdminErrorMessage = null">Ok</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -141,6 +163,7 @@ export default {
 
       userSearchQuery: "",
       userSearchLoading: false,
+      userSearchErrorMessage: null,
       userSearchResultsRaw: [],
       adminIdToAdd: null,
       addAdminErrorMessage: null,
@@ -215,7 +238,6 @@ export default {
       } catch(err) {
         if (await Api.handle401.call(this, err)) return;
         this.addAdminErrorMessage = err.userFacingErrorMessage;
-        console.log(this.addAdminErrorMessage)
         return;
       }
 
@@ -273,7 +295,7 @@ export default {
       return this.userSearchResultsRaw.map(user => ({
         id: user.id,
         name: this.$helper.formatFullName(user),
-        disabled: this.existingAdminIds.has(user.id)
+        disabled: typeof user.disabled == "boolean"? user.disabled: this.existingAdminIds.has(user.id)
         // If this is not computed, when admin is added and you click back on the search field,
         // the person you just added can still be selected
       }));
@@ -302,6 +324,7 @@ export default {
      */
     async userSearchQuery(query) {
       this.userSearchLoading = true;
+      this.userSearchErrorMessage = null;
 
       // If user is selected from dropdown and they later type some other stuff, remove the selection
       if (this.adminIdToAdd != null) {
@@ -315,13 +338,17 @@ export default {
         this.userSearchResultsRaw = (await Api.search(query)).data.results;
       } catch(err) {
         if (await Api.handle401.call(this, err)) return;
-        console.error(err);
-        console.log("TODO");
-        this.userSearchLoading = false;
-        return;
+        // Show that api request failed inline in the search results
+        this.userSearchErrorMessage = `Search failed; ${err.userFacingErrorMessage}`;
       }
+
       this.userSearchLoading = false;
     }
   }
 };
 </script>
+<style>
+.hide-all-but-first-result .v-list-item:not(:first-child) {
+  display: none;
+}
+</style>
