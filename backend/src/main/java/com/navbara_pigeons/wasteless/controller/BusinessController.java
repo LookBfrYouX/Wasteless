@@ -11,6 +11,8 @@ import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.BusinessService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,7 @@ import javax.validation.Valid;
 @RestController
 @Slf4j
 @RequestMapping("")
+@Tag(name = "Business Endpoint", description = "The API endpoint for Business related requests")
 public class BusinessController {
 
   private final BusinessService businessService;
@@ -52,6 +55,7 @@ public class BusinessController {
    * @throws ResponseStatusException Unknown Error.
    */
   @PostMapping("/businesses")
+  @Operation(summary = "Register business", description = "Register a business using the 'CreateBusinessDto' object")
   public ResponseEntity<JSONObject> registerBusiness(@RequestBody @Valid CreateBusinessDto business)
       throws UserNotFoundException, AddressValidationException, BusinessTypeException, BusinessRegistrationException {
     JSONObject businessId = businessService.saveBusiness(new Business(business));
@@ -67,6 +71,7 @@ public class BusinessController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/businesses/{id}")
+  @Operation(summary = "Get information about a business", description = "Returns all information about a business with the given id")
   public ResponseEntity<Object> getBusinessById(@PathVariable String id)
       throws UserNotFoundException, BusinessNotFoundException {
     log.info("GETTING BUSINESS BY ID: " + id);
@@ -81,6 +86,7 @@ public class BusinessController {
    * @param userIdDto     the id of the user to add to the list of admins
    */
   @PutMapping("/businesses/{businessId}/makeAdministrator")
+  @Operation(summary = "Make user a business admin", description = "Add another user to the list of admins for a business")
   public ResponseEntity<String> addBusinessAdmin(@PathVariable String businessId,
       @RequestBody UserIdDto userIdDto)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
@@ -97,6 +103,7 @@ public class BusinessController {
    * @param jsonId     the id of the user to be removed from the list of admins
    */
   @PutMapping("/businesses/{businessId}/removeAdministrator")
+  @Operation(summary = "Remove a users business admin privileges", description = "Remove user from list of admins for a business")
   public ResponseEntity<String> removeBusinessAdmin(@PathVariable String businessId,
       @RequestBody JSONObject jsonId)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, BusinessAdminException {
