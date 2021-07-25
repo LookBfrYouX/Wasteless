@@ -1,15 +1,21 @@
-import {shallowMount} from "@vue/test-utils";
+import {mount} from "@vue/test-utils";
 import CreateListing from "@/views/business/ListingCreate";
 import {globalStateMocks} from "#/testHelper";
 import {ApiRequestError} from "@/ApiRequestError";
 import {Api} from "@/Api";
+import Vue from 'vue'
+import Vuetify from 'vuetify'
+
+Vue.use(Vuetify);
+let vuetify = new Vuetify();
 
 jest.mock("@/Api");
 
 let wrapper;
 
-const mockInventory =
-    [{
+const mockInventory = {
+  results: [
+    {
       "id": 10,
       "product": {
         "id": "1",
@@ -20,43 +26,46 @@ const mockInventory =
       "totalPrice": 25.00,
       "expires": "2021-08-03"
     },
-      {
-        "id": 20,
-        "product": {
-          "id": "2",
-          "name": "English Breakfast",
-        },
-        "quantity": 10,
-        "pricePerItem": null,
-        "totalPrice": 40.00,
-        "expires": "2021-09-02"
+    {
+      "id": 20,
+      "product": {
+        "id": "2",
+        "name": "English Breakfast",
       },
-      {
-        "id": 30,
-        "product": {
-          "id": "2",
-          "name": "English Breakfast",
-        },
-        "quantity": 7,
-        "pricePerItem": 10.0,
-        "totalPrice": null,
-        "expires": "2021-10-01"
+      "quantity": 10,
+      "pricePerItem": null,
+      "totalPrice": 40.00,
+      "expires": "2021-09-02"
+    },
+    {
+      "id": 30,
+      "product": {
+        "id": "2",
+        "name": "English Breakfast",
       },
-      {
-        "id": 40,
-        "product": {
-          "id": "3",
-          "name": "Green tea",
-        },
-        "quantity": 9,
-        "pricePerItem": 6.0,
-        "totalPrice": 50.00,
-        "expires": "2021-10-01"
+      "quantity": 7,
+      "pricePerItem": 10.0,
+      "totalPrice": null,
+      "expires": "2021-10-01"
+    },
+    {
+      "id": 40,
+      "product": {
+        "id": "3",
+        "name": "Green tea",
       },
-    ];
+      "quantity": 9,
+      "pricePerItem": 6.0,
+      "totalPrice": 50.00,
+      "expires": "2021-10-01"
+    },
+  ],
+  totalCount: 4
+}
 
-const mockListings =
-    [{
+const mockListings = {
+  results: [
+    {
       "id": 100,
       "inventoryItem": {
         "id": 10,
@@ -71,43 +80,47 @@ const mockListings =
       },
       "quantity": 3,
     },
-      {
-        "id": 200,
-        "inventoryItem": {
-          "id": 10,
-          "product": {
-            "id": "1",
-            "name": "Earl Grey",
-          },
-          "quantity": 4,
-          "pricePerItem": 7.0,
-          "totalPrice": 25.00,
-          "expires": "2021-05-22"
-        },
-        "quantity": 1,
-      },
-      {
-        "id": 300,
-        "inventoryItem": {
-          "id": 20,
-          "product": {
-            "id": "3",
-            "name": "English Breakfast",
-          },
-          "quantity": 10,
-          "pricePerItem": 5.0,
-          "totalPrice": 40.00,
-          "expires": "2021-09-22"
+    {
+      "id": 200,
+      "inventoryItem": {
+        "id": 10,
+        "product": {
+          "id": "1",
+          "name": "Earl Grey",
         },
         "quantity": 4,
+        "pricePerItem": 7.0,
+        "totalPrice": 25.00,
+        "expires": "2021-05-22"
       },
-    ];
+      "quantity": 1,
+    },
+    {
+      "id": 300,
+      "inventoryItem": {
+        "id": 20,
+        "product": {
+          "id": "3",
+          "name": "English Breakfast",
+        },
+        "quantity": 10,
+        "pricePerItem": 5.0,
+        "totalPrice": 40.00,
+        "expires": "2021-09-22"
+      },
+      "quantity": 4,
+    },
+  ],
+  totalCount: 3
+}
 
 beforeEach(() => {
-  wrapper = shallowMount(CreateListing, {
+  wrapper = mount(CreateListing, {
+    vuetify,
     propsData: {
       businessId: 1
     },
+    stubs: ["error-modal"],
     mocks: {
       ...globalStateMocks(),
     },
@@ -142,7 +155,7 @@ describe("getListings method", () => {
     };
     Api.getBusinessListings.mockResolvedValue(mockListingsResponse);
     let response = await wrapper.vm.getListings();
-    expect(response).toEqual(mockListings);
+    expect(response).toEqual(mockListings.results);
   });
 
   test("Get listings failed", async () => {
@@ -156,7 +169,7 @@ describe("getListings method", () => {
 describe("getAvailableInventoryItem method", () => {
   test("Inventory item not listed yet", async () => {
     wrapper.setData({
-      inventory: mockInventory
+      inventory: mockInventory.results
     });
     let mockListingsResponse = {
       data: mockListings
@@ -169,7 +182,7 @@ describe("getAvailableInventoryItem method", () => {
 
   test("Inventory with already one listing exits", async () => {
     wrapper.setData({
-      inventory: mockInventory
+      inventory: mockInventory.results
     });
     let mockListingsResponse = {
       data: mockListings
@@ -181,7 +194,7 @@ describe("getAvailableInventoryItem method", () => {
 
   test("No more item available to list from inventory", async () => {
     wrapper.setData({
-      inventory: mockInventory
+      inventory: mockInventory.results
     });
     let mockListingsResponse = {
       data: mockListings
@@ -203,7 +216,7 @@ describe("getProducts computed", () => {
 
   test("Successfully got products from inventory", () => {
     wrapper.setData({
-      inventory: mockInventory
+      inventory: mockInventory.results
     });
     let products = wrapper.vm.getProducts;
     expect(products.length).toEqual(3);
@@ -229,7 +242,7 @@ describe("filteredInventory computed", () => {
 
   test("Inventory array successfully filtered", () => {
     wrapper.setData({
-      inventory: mockInventory,
+      inventory: mockInventory.results,
       selectedProductId: "2"
     });
     let filteredInventoryArray = wrapper.vm.filteredInventory;
@@ -256,7 +269,7 @@ describe("defaultPrice computed", () => {
   });
 
   test("User specified quantity more than maximum quantity", async () => {
-    let mockInventoryItem = mockInventory[0];
+    let mockInventoryItem = mockInventory.results[0];
     let quantityExceeded = mockInventoryItem.quantity + 1;
     wrapper.setData({
       selectedInventoryItem: mockInventoryItem,
@@ -268,7 +281,7 @@ describe("defaultPrice computed", () => {
   });
 
   test("Total price of inventory item is null", () => {
-    let mockInventoryItem = mockInventory[2];
+    let mockInventoryItem = mockInventory.results[2];
     let quantityFullSize = mockInventoryItem.quantity;
     wrapper.setData({
       selectedInventoryItem: mockInventoryItem,
@@ -279,7 +292,7 @@ describe("defaultPrice computed", () => {
   });
 
   test("Price per item of inventory item is null", () => {
-    let mockInventoryItem = mockInventory[1];
+    let mockInventoryItem = mockInventory.results[1];
     let quantityFullSize = mockInventoryItem.quantity;
     wrapper.setData({
       selectedInventoryItem: mockInventoryItem,
@@ -290,7 +303,7 @@ describe("defaultPrice computed", () => {
   })
 
   test("Listing full quantity in the inventory", async () => {
-    let mockInventoryItem = mockInventory[3];
+    let mockInventoryItem = mockInventory.results[3];
     mockInventoryItem.quantityRemaining = 9;
     let quantityFullSize = mockInventoryItem.quantity;
     wrapper.setData({
@@ -304,7 +317,7 @@ describe("defaultPrice computed", () => {
   });
 
   test("Listing partial quantity in the inventory", async () => {
-    let mockInventoryItem = mockInventory[1];
+    let mockInventoryItem = mockInventory.results[1];
     mockInventoryItem.quantityRemaining = 6;
     let quantityFullSize = mockInventoryItem.quantity;
     let quantityPartial = quantityFullSize - 1;
@@ -330,7 +343,7 @@ describe("addListing method", () => {
     wrapper.setData({
       closeDate: null,
       closeTime: null,
-      selectedInventoryItem: mockInventory[0],
+      selectedInventoryItem: mockInventory.results[0],
       quantity: "2",
       moreInfo: ""
     });
