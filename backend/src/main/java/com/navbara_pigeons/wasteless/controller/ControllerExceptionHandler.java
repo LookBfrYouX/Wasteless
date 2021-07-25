@@ -174,6 +174,12 @@ public class ControllerExceptionHandler {
     log.error("BUSINESS TYPE ERROR: 400 - " + exc.getMessage());
   }
 
+  @ExceptionHandler(ListingValidationException.class)
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad Request")
+  public void handleBusinessTypeException(ListingValidationException exc) {
+    log.error("LISTING VALIDATION EXCEPTION: 400 - " + exc.getMessage());
+  }
+
   @ExceptionHandler(AddressValidationException.class)
   @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad address given")
   public void handleAddressValidationException(AddressValidationException exc) {

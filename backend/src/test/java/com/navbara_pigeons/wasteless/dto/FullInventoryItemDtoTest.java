@@ -35,8 +35,7 @@ public class FullInventoryItemDtoTest extends MainTestProvider {
     public void invalidCreateInventoryItemDtoWithOutOfBoundFields() {
         CreateInventoryItemDto dto = new CreateInventoryItemDto(makeInventoryItem(makeProduct("new"),makeBusiness()));
         dto.setQuantity(-1);
-        dto.setExpires(LocalDate.MIN);
-        Assertions.assertEquals(2, validate(dto).size());
+        Assertions.assertEquals(1, validate(dto).size());
     }
     
 }

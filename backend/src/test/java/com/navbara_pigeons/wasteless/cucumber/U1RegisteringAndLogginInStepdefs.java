@@ -107,11 +107,12 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
   public void iRegisterAnAccountWithTheInvalidEmailAndPassword(String email, String password)
       throws Exception {
     User newUser = makeUser(email, password, false);
-    newUser.setPassword(password);
+    CreateUserDto dto = new CreateUserDto(newUser);
+    dto.setPassword(password);
     this.mvcResult = mockMvc.perform(
         post("/users")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(newUser))
+            .content(objectMapper.writeValueAsString(dto))
             .accept(MediaType.ALL))
         .andExpect(status().is(400))
         .andReturn();
@@ -132,7 +133,7 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(newUser))
             .accept(MediaType.ALL))
-        .andExpect(status().is(409))
+        .andExpect(status().is(400))
         .andReturn();
   }
 
