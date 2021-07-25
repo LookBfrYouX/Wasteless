@@ -3,6 +3,8 @@ package com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import javax.persistence.TypedQuery;
@@ -58,10 +60,25 @@ public class ListingQueryBuilder {
     CriteriaQuery<Listing> criteriaQuery = criteriaBuilder.createQuery(Listing.class);
     Root<Listing> listing = criteriaQuery.from(Listing.class);
     Join<Listing, InventoryItem> inventoryItem = listing.join("inventoryItem");
+    Join<InventoryItem, Product> product = inventoryItem.join("product");
     criteriaQuery.where(criteriaBuilder.equal(inventoryItem.get("business"), business));
 
     // Sorting query
-    Path<Object> path = listing.get(pagBuilder.getSortField().toString());
+    Path<Object> path;
+    switch ((ListingSortByOption) pagBuilder.getSortField()) {
+      case quantity:
+      case price:
+      case created:
+      case closes:
+        path = listing.get(pagBuilder.getSortField().toString());
+        break;
+      case name:
+        path = product.get(pagBuilder.getSortField().toString());
+        break;
+      default:
+        throw new IllegalStateException(
+            "Unexpected value: " + pagBuilder.getSortField());
+    }
     Order order =
         pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
     criteriaQuery.orderBy(order);
