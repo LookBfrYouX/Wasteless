@@ -60,14 +60,22 @@
       <div class="row">
         <div class="col-12 form-group">
           <v-btn
-            @click="getAllKeywords">
+              v-if="!addKeywords"
+            @click="getAllKeywords()"
+            class="btn btn-primary">
             Add keywords
           </v-btn>
+          <v-p
+            v-if="addKeywords">Find keywords to add</v-p>
           <v-autocomplete
+              v-if="addKeywords"
+              background-color="transparent"
               chips
               clearable
               deletable-chips
               multiple
+              :items="allKeywordsName"
+              v-model="selectedKeywordsName"
           ></v-autocomplete>
         </div>
       </div>
@@ -108,9 +116,7 @@
   </v-app>
 </template>
 <style scoped>
-.add-tag-container {
-  width: min(100%, 20em);
-}
+
 </style>
 <script>
 // import Suggestions from "@/components/Suggestions.vue";
@@ -155,7 +161,10 @@ export default {
       allTags: temporaryTags,
       // Array of objects { id: Number, name: String }
       tags: [],
-      allKeywords: null
+      addKeywords: false,
+      allKeywords: null,
+      allKeywordsName: [],
+      selectedKeywordsName: []
     }
   },
 
@@ -217,40 +226,27 @@ export default {
   },
 
   methods: {
-    /**
-     * When tag is selected clear the input field and add the tag to the list of selected tags
-     */
-    tagSuggestionSelected: async function (tag) {
-      this.tags.push(tag);
-      this.tagInputValue = "";
-    },
-
-    /**
-     * When the add tag button is clicked, show the suggestion and force focus on the suggestions input element
-     */
-    showSuggestionsInput() {
-      this.showSuggestions = true;
-      this.$nextTick(() => {
-        // Need to wait until next tick for the input element to be created on the DOM
-        // so that focus can be forced
-        this.$refs.suggestionsInput.$refs.input.focus()
-      });
-    },
-
-    /**
-     * Removes the tag with the given ID
-     */
-    removeTag(id) {
-      this.tags = this.tags.filter(tag => tag.id != id);
-    },
-
     getAllKeywords: async function () {
       try {
         const data = (await Api.getAllKeywords()).data;
         console.log(data);
+        this.allKeywordsName = data.map(keyword => keyword.name);
+        this.addKeywords = true;
       } catch (err) {
         this.apiErrorMessage = "Cannot retrieve keywords"
       }
+    },
+
+    findKeywordIds() {
+      if (this.allKeywords != null) {
+        const keywordIds = this.allKeywords.map((keyword) => {
+          if (keyword.name in this.selectedKeywordsName) {
+            return keyword.id;
+          }
+        });
+        return keywordIds;
+      }
+      return [];
     },
 
     /**
@@ -268,13 +264,16 @@ export default {
         return;
       }
 
+      const keywordIds = this.findKeywordIds();
+      console.log(keywordIds);
+
       const cardData = {
         creatorId: this.userId,
         section: this.section,
         title: this.title,
         description: this.description.trim(),
         // remove extra newlines etc. at the start and end
-        tagIds: this.tags.map(tag => tag.id)
+        tagIds: keywordIds
       };
 
       try {
