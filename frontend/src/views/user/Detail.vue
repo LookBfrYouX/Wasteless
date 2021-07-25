@@ -60,15 +60,22 @@
             >
               Create Marketplace Card
             </router-link>
-            <button
-                v-if="(isSignedIn && authUser.id === userInfo.id) || isAdmin"
-                @click="createBusiness()"
+            <router-link
+                v-if="isSignedIn && authUser.id === userInfo.id"
+                :to="{ name: 'BusinessCreate' }"
                 class="btn btn-white-bg-primary m-1 d-flex"
-                type="button"
             >
               <span class="material-icons mr-1">business</span>
               Register Business
-            </button>
+            </router-link>
+            <router-link
+                v-else-if="isSignedIn && isAdmin"
+                :to="{name: 'BusinessCreateAdmin', params: {userId}}"
+                class="btn btn-white-bg-primary m-1 d-flex"
+            >
+              <span class="material-icons mr-1">business</span>
+              Register Business as {{userInfo.firstName}}
+            </router-link>
           </div>
           <div v-if="statusMessage.length > 0" class="row mt-2">
             <div class="col">
@@ -345,16 +352,6 @@ export default {
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
-    createBusiness: function () {
-      if (this.$stateStore.getters.isAdmin()) {
-        this.$router.push({
-          name: 'BusinessCreateAdmin',
-          params: {userId: this.userId}
-        })
-      } else {
-        this.$router.push({name: 'BusinessCreate'})
-      }
-    }
   },
 
   computed: {
