@@ -27,11 +27,13 @@ describe("Register business", () => {
 
   test("user must be older than 16 to register (fail)", async () => {
     Api.registerBusiness.mock.calls.length = 0;
-    let todayDate = new Date();
-    let year = todayDate.getFullYear();
-    let month = todayDate.getMonth();
-    let day = todayDate.getDay();
-    GLOBAL_STATE.authUser.dateOfBirth = year + "-" + month + "-" + day;
+    const today = new Date();
+    let dateOfBirth = new Date(
+      today.getFullYear() - 15,
+      today.getMonth(),
+      today.getDay()
+    ).toISOString().substring(0, 10); // Might be off by a day due to timezones, but doesn't really matter
+    GLOBAL_STATE.authUser.dateOfBirth = dateOfBirth;
     const mocks = globalStateMocks();
 
     const mockRegisterBusinessResponse = { data : {businessId: 1 } };

@@ -3,15 +3,15 @@ import {mount} from "@vue/test-utils";
 import {globalStateMocks} from "#/testHelper";
 
 import {Api} from "@/Api";
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import {ApiRequestError} from "@/ApiRequestError";
 
-Vue.use(Vuetify);
 let vuetify = new Vuetify();
 
 jest.mock("@/Api");
+window.scrollTo = jest.fn()
 
+window.scrollTo = jest.fn();
 let wrapper;
 
 let response = {
