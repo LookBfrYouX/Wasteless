@@ -7,10 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import java.util.ArrayList;
 
 /**
  * This class handles all custom controller exceptions and returns the appropriate response entity
@@ -211,4 +216,31 @@ public class ControllerExceptionHandler {
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
+  @ExceptionHandler(ListingValidationException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
+    log.error("BAD REQUEST: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exc) {
+    log.error("ENTITY VALIDATION EXCEPTION: 400 - " + exc.getMessage());
+    ArrayList<String> errors = new ArrayList<>();
+    for(FieldError error: exc.getBindingResult().getFieldErrors()) {
+      errors.add(error.getField() + ": " + error.getDefaultMessage());
+    }
+
+    for(ObjectError error: exc.getBindingResult().getGlobalErrors()) {
+      errors.add(error.getDefaultMessage());
+    }
+
+    String message = "Invalid entity received:";
+    for(String msg: errors) {
+      message += "\n- " + msg;
+    }
+
+    return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+  }
 }

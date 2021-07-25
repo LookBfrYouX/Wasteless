@@ -118,7 +118,7 @@ public class ServiceTestProvider extends MainTestProvider {
     assertEquals(business.getName(), businessDto.getName());
     assertEquals(business.getDescription(), businessDto.getDescription());
     assertEquals(business.getCreated(), businessDto.getCreated());
-    assertEquals(business.getBusinessType(), businessDto.getBusinessType());
+    assertEquals(business.getBusinessType().toString(), businessDto.getBusinessType());
     assertAddressEquals(business.getAddress(), businessDto.getAddress());
     assertEquals(business.getPrimaryAdministratorId(), businessDto.getPrimaryAdministratorId());
 
@@ -137,7 +137,7 @@ public class ServiceTestProvider extends MainTestProvider {
     assertEquals(business.getName(), businessDto.getName());
     assertEquals(business.getDescription(), businessDto.getDescription());
     assertEquals(business.getCreated(), businessDto.getCreated());
-    assertEquals(business.getBusinessType(), businessDto.getBusinessType());
+    assertEquals(business.getBusinessType().toString(), businessDto.getBusinessType());
 
     assertEquals(business.getPrimaryAdministratorId(), businessDto.getPrimaryAdministratorId());
     assertAddressEquals(business.getAddress(), businessDto.getAddress());

@@ -64,10 +64,17 @@
                 v-if="isSignedIn && authUser.id === userInfo.id"
                 :to="{ name: 'BusinessCreate' }"
                 class="btn btn-white-bg-primary m-1 d-flex"
-                type="button"
             >
               <span class="material-icons mr-1">business</span>
               Register Business
+            </router-link>
+            <router-link
+                v-else-if="isSignedIn && isAdmin"
+                :to="{name: 'BusinessCreateAdmin', params: {userId}}"
+                class="btn btn-white-bg-primary m-1 d-flex"
+            >
+              <span class="material-icons mr-1">business</span>
+              Register Business as {{userInfo.firstName}}
             </router-link>
           </div>
           <div v-if="statusMessage.length > 0" class="row mt-2">
@@ -366,7 +373,7 @@ export default {
         return "Unknown";
       }
       return this.$helper.formatDate(this.userInfo.dateOfBirth);
-    },
+    }
   },
 
   watch: {
