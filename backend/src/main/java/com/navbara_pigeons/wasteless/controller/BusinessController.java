@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+
 /**
  * This controller class provides the endpoints for dealing with businesses. All requests for
  * information about businesses are received here. IMPORTANT NOTE: Endpoints for information about
@@ -50,9 +52,8 @@ public class BusinessController {
    * @throws ResponseStatusException Unknown Error.
    */
   @PostMapping("/businesses")
-  public ResponseEntity<JSONObject> registerBusiness(@RequestBody CreateBusinessDto business)
-      throws UserNotFoundException, AddressValidationException, BusinessTypeException,
-      BusinessRegistrationException {
+  public ResponseEntity<JSONObject> registerBusiness(@RequestBody @Valid CreateBusinessDto business)
+      throws UserNotFoundException, AddressValidationException, BusinessTypeException, BusinessRegistrationException {
     JSONObject businessId = businessService.saveBusiness(new Business(business));
     log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
     return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));

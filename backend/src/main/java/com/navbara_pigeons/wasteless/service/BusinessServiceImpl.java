@@ -4,7 +4,9 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
 import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -12,6 +14,8 @@ import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.validation.BusinessServiceValidation;
+
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import javax.transaction.Transactional;
@@ -62,20 +66,30 @@ public class BusinessServiceImpl implements BusinessService {
   @Override
   @Transactional
   public JSONObject saveBusiness(Business business)
-      throws BusinessTypeException, UserNotFoundException, AddressValidationException {
-    if (!BusinessServiceValidation.isBusinessTypeValid(business.getBusinessType())) {
-      throw new BusinessTypeException("Invalid BusinessType");
+          throws BusinessRegistrationException, UserNotFoundException, AddressValidationException {
+    User currentUser = this.userService.getLoggedInUser();
+
+    User primaryAdministrator = null;
+    if (business.getPrimaryAdministratorId() == null) {
+      // Default to current user if not given
+      business.setPrimaryAdministratorId(currentUser.getId());
+      primaryAdministrator = currentUser;
+    } else {
+      if (currentUser.getId() != business.getPrimaryAdministratorId() && !this.userService.isAdmin()) {
+        throw new BusinessRegistrationException(
+            "Only a GAA can create a business with someone else as the primary business administrator"
+        );
+      }
+      primaryAdministrator = userService.getUserById(business.getPrimaryAdministratorId());
     }
 
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    Authentication authentication = securityContext.getAuthentication();
-    User currentUser = this.userService.getUserByEmail(authentication.getName());
-    business.addAdministrator(currentUser);
+    business.addAdministrator(primaryAdministrator);
     business.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
-    business.setPrimaryAdministratorId(currentUser.getId());
 
+    BusinessServiceValidation.validate(business, LocalDate.now());
     this.addressService.saveAddress(business.getAddress());
     this.businessDao.saveBusiness(business);
+
     JSONObject response = new JSONObject();
     response.put("businessId", business.getId());
     return response;
