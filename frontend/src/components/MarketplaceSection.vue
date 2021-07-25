@@ -134,7 +134,8 @@ export default {
 
     /**
      * Get the marketplace cards from the API for the specified section
-     * @returns {Promise<T>} Promise containing a list of the cards
+     * @returns {Promise<T>} Promise containing an object of a list of the cards (results) and the
+     * total count of all of the items (totalCount)
      */
     async getCardsFromAPI() {
       try {
