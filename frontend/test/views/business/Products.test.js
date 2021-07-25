@@ -14,12 +14,41 @@ window.scrollTo = jest.fn()
 window.scrollTo = jest.fn();
 let wrapper;
 
-let response = {results: [
-    {id: 1, name: "Product 1", description: "Description 1", manufacturer: "Manufacturer 1", recommendedRetailPrice: 4.67, created: "2020-07-14T14:32:00+12:00", primaryProductImage: null, images: []},
-    {id: 2, name: "Product 2", description: "Description 2", manufacturer: "Manufacturer 2", recommendedRetailPrice: 3.0, created: "2020-07-14T14:32:00+12:00", primaryProductImage: null, images: []},
-    {id: 3, name: "Product 3", description: "Description 3", manufacturer: "Manufacturer 3", recommendedRetailPrice: 3.3, created: "2020-07-14T14:32:00+12:00", primaryProductImage: null, images: []}
-],
-    totalCount: 3 }
+let response = {
+    results: [
+        {
+            id: 1,
+            creator: {},
+            section: "ForSale",
+            created: "2021-05-23T15:34:20+12:00",
+            displayPeriodEnd: "2021-06-23T15:34:20+12:00",
+            title: "title 1",
+            description: "description 1",
+            keywords: [1]
+        },
+        {
+            id: 2,
+            creator: {},
+            section: "ForSale",
+            created: "2021-05-24T15:34:20+12:00",
+            displayPeriodEnd: "2021-06-24T15:34:20+12:00",
+            title: "title 2",
+            description: "description 2",
+            keywords: [2]
+        },
+        {
+            id: 3,
+            creator: {},
+            section: "ForSale",
+            created: "2021-05-25T15:34:20+12:00",
+            displayPeriodEnd: "2021-06-25T15:34:20+12:00",
+            title: "title 3",
+            description: "description 3",
+            keywords: [3]
+        }
+    ],
+    totalCount: 3
+}
 
 beforeEach(() => {
     wrapper = mount(Products, {
