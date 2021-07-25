@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -141,13 +142,17 @@ public class BusinessServiceImpl implements BusinessService {
    *                   admins
    * @param businessId of the business to remove the admin from
    */
+  @Override
   @Transactional
   public void removeBusinessAdmin(long businessId, long userId)
-      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException {
+      throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException, BusinessAdminException {
     User user = userService.getUserById(userId);
     Business business = getBusiness(businessId);
     if (!isBusinessPrimaryAdmin(businessId) && !userService.isAdmin()) {
       throw new InsufficientPrivilegesException("Must be the primary business admin to use this feature!");
+    }
+    if (business.getPrimaryAdministratorId() == userId) {
+      throw new BusinessAdminException("You cannot remove the primary business admin!");
     }
     business.removeAdministrator(user);
     businessDao.saveBusiness(business);

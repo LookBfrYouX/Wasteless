@@ -34,7 +34,7 @@ Feature: U5 Creating Business Accounts
     Then I can see him in the list of admins for the business
 
   Scenario: AC5.3 - Primary administrator can revoke access from other users
-    Given A user exists with email "tony@gmail.com" and password "t3stUser"
+    Given A user exists with email "monkey@gmail.com" and password "t3stUser"
     Given I am logged in with email "testUser1111111@wasteless.com" and password "t3stUser"
     When I create a legitimate "Retail Trade" business "testBusiness5"
     When I set this user as an admin of my newly created business
@@ -42,8 +42,7 @@ Feature: U5 Creating Business Accounts
     Then I can remove him from the list of admins for my business
     Then I can see he is not in the list of admins for my business
 
-  Scenario: AC5.4 - Primary administrator cannot revoke their own admin status
-    Given A user exists with email "tony@gmail.com" and password "t3stUser"
+  Scenario: AC5.4 - Primary administrator cannot be removed from the list of business admins
     Given I am logged in with email "testUser1111111@wasteless.com" and password "t3stUser"
     When I create a legitimate "Retail Trade" business "testBusiness5"
     Then I cannot remove myself from this list of admins

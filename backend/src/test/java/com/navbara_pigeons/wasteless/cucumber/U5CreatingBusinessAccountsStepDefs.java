@@ -5,9 +5,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
+import com.navbara_pigeons.wasteless.dto.UserIdDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -182,13 +184,12 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   public void iSetThisUserAsAnAdminOfMyNewlyCreatedBusiness() throws Exception {
     String businessId = getBusinessIdFromResponse();
 
-    JSONObject newUserIdJson = new JSONObject();
-    newUserIdJson.put("userId", newUserId);
+    UserIdDto userIdDto = new UserIdDto(Long.valueOf(newUserId));
 
     mockMvc.perform(
         put("/businesses/{id}/makeAdministrator", businessId)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(String.valueOf(newUserIdJson))
+            .content(objectMapper.writeValueAsString(userIdDto))
             .accept(MediaType.ALL))
         .andExpect(status().is(200));
   }
@@ -220,13 +221,12 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @Then("I can remove him from the list of admins for my business")
   public void iCanRemoveHimFromTheListOfAdminsForMyBusiness() throws Exception {
     String businessId = getBusinessIdFromResponse();
-    JSONObject removeUserId = new JSONObject();
-    removeUserId.put("userId", newUserId);
+    UserIdDto userIdDto = new UserIdDto(Long.valueOf(newUserId));
 
     mockMvc.perform(
         put("/businesses/{id}/removeAdministrator", businessId)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(String.valueOf(removeUserId))
+            .content(objectMapper.writeValueAsString(userIdDto))
             .accept(MediaType.ALL))
         .andExpect(status().is(200));
   }
@@ -250,13 +250,12 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @Then("I cannot remove myself from this list of admins")
   public void iCannotRemoveMyselfFromThisListOfAdmins() throws Exception {
     String businessId = getBusinessIdFromResponse();
-    JSONObject removeUserId = new JSONObject();
-    removeUserId.put("userId", newUserId);
+    UserIdDto userIdDto = new UserIdDto(Long.valueOf(userId));
 
     mockMvc.perform(
         put("/businesses/{id}/removeAdministrator", businessId)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(String.valueOf(removeUserId))
+            .content(objectMapper.writeValueAsString(userIdDto))
             .accept(MediaType.ALL))
         .andExpect(status().is(400));
   }

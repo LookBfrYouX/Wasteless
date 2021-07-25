@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.UserIdDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
@@ -96,7 +97,8 @@ public class BusinessController {
    */
   @PutMapping("/businesses/{businessId}/removeAdministrator")
   public ResponseEntity<String> removeBusinessAdmin(@PathVariable String businessId,
-      @RequestBody JSONObject jsonId) {
+      @RequestBody JSONObject jsonId)
+      throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, BusinessAdminException {
     long userId = Long.parseLong(jsonId.get("userId").toString());
     log.info("REMOVING USER WITH ID " + userId + " FROM LIST OF ADMINS IN BUSINESS WITH ID: "
         + businessId);
