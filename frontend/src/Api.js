@@ -158,7 +158,7 @@ export const Api = {
     return instance.put(`/businesses/${businessId}/makeAdministrator`, { userId }).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         400: "The user does not exist or is already an admin",
-        403: "Only the primary business administrator or GAA can modify business admininstrators"
+        403: "Only the primary business administrator or GAA can add or remove business administrators"
       });
     });
   },
@@ -173,7 +173,7 @@ export const Api = {
     return instance.put(`/businesses/${businessId}/removeAdministrator`, { userId }).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         400: "The user does not exist, is not an admin or is the primary business administrator",
-        403: "Only the primary business administrator or GAA can modify business admininstrators"
+        403: "Only the primary business administrator or GAA can add or remove business administrators"
       });
     });
   },

@@ -33,16 +33,15 @@
         <dl class="row">
           <dt class="col-md label">Administrators:</dt>
           <dd class="col-md value">
+            <!-- This bit is pretty ugly to ensure there are no extra spaces -->
             <router-link
-                v-for="(admin, index) in businessInfo.administrators"
-                :key="admin.id"
-                :to="{ name: 'UserDetail', params: { userId: admin.id }}"
+                v-for="({text, userId}) in adminLinks"
+                :key="userId"
+                :to="{ name: 'UserDetail', params: { userId }}"
                 class="inline admin-link hover-cursor-pointer text-decoration-none"
-            >{{
-              index == businessInfo.administrators.length - 1? "and ": ""
-              }}{{ admin.firstName }} {{ admin.lastName }}{{
-              index == businessInfo.administrators.length - 1? "": ", "
-            }}</router-link>
+            >
+              {{text}}
+            </router-link>
           </dd>
         </dl>
       </ul>
@@ -210,12 +209,40 @@ export default {
       return this.$stateStore.getters.canEditBusiness(this.businessId);
     },
 
+    /**
+     * User can edit admins if they are admin, or they are the primary
+     * administrator of the business AND are acting as that business
+     */
     showEditAdminsButton() {
-      const {getters} = this.$stateStore;
+      const { isAdmin, getActingAs, getAuthUser } = this.$stateStore.getters;
+      return isAdmin() || 
+          getActingAs() && getActingAs().id == this.businessInfo.id &&
+          getAuthUser().id == this.businessInfo.primaryAdministratorId;
+    },
 
-      return getters.isAdmin() || getters.isSignedIn() &&
-             getters.getAuthUser().id == this.businessInfo.primaryAdministratorId;
-    }
+    /**
+     * Generates admin links with 'and', commas etc.
+     * @return [{ userId, text }]
+     */
+    adminLinks() {
+      if (!this.businessInfo || !Array.isArray(this.businessInfo.administrators)) return [];
+      return this.businessInfo.administrators.map((admin, i, arr) => {
+        let text = "";
+        if (i == arr.length - 1 && arr.length > 1) {
+          // 'a', 'a and b', 'a, b and c'; last element has and, unless array only has one element
+          text = " and ";
+        }
+        text += this.$helper.formatFullName(admin);
+        if (i < arr.length - 2) {
+          // No oxford comma: 'a, b and c'. Last two elements don't need commas
+          text += ", ";
+        }
+        return {
+          userId: admin.id,
+          text
+        }
+      });
+    },
   },
 
   watch: {
