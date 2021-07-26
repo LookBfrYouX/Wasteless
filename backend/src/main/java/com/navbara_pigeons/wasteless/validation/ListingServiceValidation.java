@@ -9,6 +9,11 @@ public class ListingServiceValidation {
 
 
   public static void isListingValid(Listing listing) throws ListingValidationException {
+    // Check the given id exists
+    if (listing.getInventoryItem() == null) {
+      throw new ListingValidationException("Inventory item not found");
+    }
+
     // Quantity must be above 0 and below the remaining quantity
     long remainingQuantity = listing.getInventoryItem().getQuantity();
     List<InventoryItem> inventory = listing.getInventoryItem().getBusiness().getInventory();

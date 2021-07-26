@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.dto;
 
+import java.util.List;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -22,5 +23,5 @@ public class CreateMarketListingDto {
 
   @Length(max=250, message = "Description has to be less than or equal to 250 Characters")
   private String description;
-
+  private List<Long> keywordIds;
 }

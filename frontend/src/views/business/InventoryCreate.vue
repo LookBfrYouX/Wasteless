@@ -47,6 +47,7 @@
               :placeholder="currencyText"
               class="form-control"
               min="0.01"
+              max="10000000"
               name="pricePerItem"
               step="0.01"
               type="number"
@@ -57,10 +58,10 @@
           <input
               id="totalPrice"
               v-model="totalPrice"
-              :max="pricePerItem * quantity"
               :placeholder="currencyText"
               class="form-control"
-              min="0.0"
+              min="0.01"
+              max="10000000"
               name="totalPrice"
               step="0.01"
               type="number"
@@ -269,7 +270,7 @@ export default {
     },
     async populateDropdown() {
       await Api.getProducts(this.businessId)
-      .then(({data}) => this.products = data)
+      .then(({data}) => this.products = data.results)
       .catch(err => this.apiErrorMessage = err.userFacingErrorMessage);
     }
   }

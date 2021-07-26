@@ -46,6 +46,7 @@
             class="bg-transparent border-0"
             type="button"
             @click="onPickFile"
+            aria-label="Upload image"
         >
           <span class="material-icons add-product-icon py-4 mb-4 mt-2">
             add_circle_outline
@@ -167,7 +168,7 @@ export default {
      * Parses the API response given a promise to the request
      */
     parseApiResponse: async function (apiCall) {
-      const products = (await apiCall).data;
+      const products = (await apiCall).data.results;
       const product = products.find(({id}) => id === this.productId);
       // find the product the correct id
       if (product === undefined) {

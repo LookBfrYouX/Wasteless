@@ -1,8 +1,8 @@
 <template>
   <div class="container my-4">
-    <div class="list-group-item card">
+    <div class="p-3 bg-white rounded">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-12">
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <h2 class="card-title mb-0">
               {{ name }} (ID:
@@ -14,21 +14,15 @@
             <span class="material-icons mr-1">arrow_back</span>
             Back
           </button>
-          <div class="mt-2">Description: {{ description }}</div>
+          <image-carousel :images="productImages"/>
+
+          <div class="mt-2">{{ description }}</div>
           <div class="mt-2">Quantity: {{ quantity }}</div>
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
           <div v-if="moreInfo" class="mt-2 mb-5">More Information: {{ moreInfo }}</div>
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated, true) }}</div>
             <div class="date mt-2">Closes: {{ $helper.isoToDateString(listingCloses, true) }}</div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="primary-image-wrapper">
-            <img v-if="productImages.length !== 0" :src="productImages[0].filename"
-                 alt="Primary images">
-            <img v-else alt="Default product image"
-                 src="@/../assets/images/default-product-thumbnail.svg">
           </div>
         </div>
       </div>
@@ -38,16 +32,6 @@
         <div class="date mt-2">Sell By: {{ $helper.isoToDateString(sellBy) }}</div>
         <div class="date mt-2">Best Before: {{ $helper.isoToDateString(bestBefore) }}</div>
         <div class="date mt-2">Expires: {{ $helper.isoToDateString(expires) }}</div>
-      </div>
-      <div class="row my-2">
-        <div v-for="(image, index) in productImages"
-             :key="image.id"
-             :class="{ 'd-none': index === 0}"
-             class="col-12 col-md-6 col-lg-4 p-2">
-          <img :src="image.filename"
-               alt="Product Image"
-               class="img-fluid">
-        </div>
       </div>
     </div>
     <error-modal
@@ -63,22 +47,18 @@
   </div>
 </template>
 
-<style>
-.primary-image-wrapper img {
-  width: 100%;
-  border: #1ec996 solid 2px;
-}
-</style>
 <script>
 import ErrorModal from "@/components/ErrorModal.vue";
 
 import {ApiRequestError} from "@/ApiRequestError";
 import {Api} from "@/Api";
+import ImageCarousel from '../../components/ImageCarousel.vue';
 
 export default {
   name: "salesListingDetail",
   components: {
-    ErrorModal,
+    ImageCarousel,
+    ErrorModal
   },
 
   data() {
@@ -175,7 +155,7 @@ export default {
      * Parses the API response given a promise to the request.
      */
     parseApiResponse: async function (apiCall) {
-      const listings = (await apiCall).data;
+      const listings = (await apiCall).data.results;
       const listing = listings.find(({id}) => id === this.listingId);
       if (listing === undefined) {
         throw new ApiRequestError(

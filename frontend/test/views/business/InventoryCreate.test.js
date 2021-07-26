@@ -14,7 +14,7 @@ beforeEach(async () => {
     propsData: {
       businessId: 1
     },
-    stubs: ['error-modal']
+    stubs: ['error-modal', 'v-autocomplete']
   });
 });
 
@@ -38,13 +38,6 @@ describe("Correct today date", () => {
     expect(wrapper.vm.todayDate).toBe("2020-12-31");
   });
 });
-
-test("Error modal shows", async () => {
-  Api.getProducts.mockImplementation(
-      () => Promise.reject(new ApiRequestError("Anything")));
-  await wrapper.vm.populateDropdown();
-  expect(wrapper.vm.apiErrorMessage).not.toBeNull()
-})
 
 test("Error message shows", async () => {
   Api.addItemToInventory.mockImplementation(

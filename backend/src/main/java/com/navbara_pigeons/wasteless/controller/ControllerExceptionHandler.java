@@ -1,10 +1,12 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.ArrayList;
@@ -37,7 +40,7 @@ import java.util.Map;
  * for each. Error logging for controllers is also handled in this class. It does NOT handle Spring
  * Security exceptions however.
  */
-@ControllerAdvice
+@RestControllerAdvice
 @Slf4j
 public class ControllerExceptionHandler {
 
@@ -48,10 +51,11 @@ public class ControllerExceptionHandler {
    * @return ResponseEntity with the exception message
    */
   @ExceptionHandler(InsufficientPrivilegesException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
   public ResponseEntity<String> handleInsufficientPrivilegesException(
           InsufficientPrivilegesException exc) {
     log.error("UNAUTHORISED ACTION: 403 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(403));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.FORBIDDEN);
   }
 
   /**
@@ -61,9 +65,10 @@ public class ControllerExceptionHandler {
    * @return ResponseEntity with the exception message
    */
   @ExceptionHandler(BusinessNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
   public ResponseEntity<String> handleBusinessNotFoundException(BusinessNotFoundException exc) {
     log.error("BUSINESS NOT FOUND: 406 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_ACCEPTABLE);
   }
 
   /**
@@ -73,9 +78,10 @@ public class ControllerExceptionHandler {
    * @return ResponseEntity with the exception message
    */
   @ExceptionHandler(UserNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
   public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException exc) {
     log.error("USER NOT FOUND: 406 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_ACCEPTABLE);
   }
 
   /**
@@ -84,40 +90,46 @@ public class ControllerExceptionHandler {
    * @return Response to the user (BAD_REQUEST)
    */
   @ExceptionHandler(MaxUploadSizeExceededException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleMaxSizeException() {
     return new ResponseEntity<>("File too large!", HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(BadCredentialsException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
   public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException exc) {
     log.error("BAD CREDENTIALS: 403 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(403));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.FORBIDDEN);
   }
 
   @ExceptionHandler(NotAcceptableException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
   public ResponseEntity<String> handleNotAcceptableException(NotAcceptableException exc) {
     log.error("NOT ACCEPTABLE: 409 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(409));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(NumberFormatException.class)
+  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
   public ResponseEntity<String> handleNumberFormatException(NumberFormatException exc) {
     log.error("NUMBER FORMAT ERROR: 406 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_ACCEPTABLE);
   }
 
   @ExceptionHandler(ProductRegistrationException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleProductRegistrationException(
           ProductRegistrationException exc) {
     log.error("PRODUCT REGISTRATION ERROR: 400 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(InventoryItemNotFoundException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleInventoryItemNotFoundException(
           InventoryItemNotFoundException exc) {
     log.error("INVENTORY ITEM ERROR: 406 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(406));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
   /**
@@ -127,10 +139,11 @@ public class ControllerExceptionHandler {
    * @return ResponseEntity with the exception message
    */
   @ExceptionHandler(InventoryRegistrationException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleInventoryRegistrationException(
           InventoryRegistrationException exc) {
     log.error("INVENTORY REGISTRATION EXCEPTION: 400 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
   /**
@@ -140,16 +153,26 @@ public class ControllerExceptionHandler {
    * @return ResponseEntity with the exception message
    */
   @ExceptionHandler(ProductNotFoundException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleProductNotFound(ProductNotFoundException exc) {
     log.error("PRODUCT NOT FOUND: 406 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(400));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(InvalidAttributeValueException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<String> handleInvalidAttributeValueException(
           InvalidAttributeValueException exc) {
     log.error("SEARCH QUERY ERROR: 500 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @ExceptionHandler(InvalidPaginationInputException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleInvalidPaginationInputException(
+      InvalidPaginationInputException exc) {
+    log.error("PAGINATION INPUT ERROR: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(UserAlreadyExistsException.class)
@@ -189,39 +212,52 @@ public class ControllerExceptionHandler {
   }
 
   @ExceptionHandler(UserAuthenticationException.class)
-  @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Failed login attempt, email or password incorrect")
+  @ResponseStatus(
+      code = HttpStatus.BAD_REQUEST,
+      reason = "Failed login attempt, email or password incorrect")
   public void handleUserAuthenticationException(UserAuthenticationException exc) {
     log.error("FAILED LOGIN: 400 - " + exc.getMessage());
   }
 
   @ExceptionHandler(Exception.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<String> handleGeneralException(Exception exc) {
     log.error("CRITICAL ERROR: 500 - " + exc.getMessage());
-    exc.printStackTrace();
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.valueOf(500));
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
+  @ExceptionHandler(ListingValidationException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
+    log.error("BAD REQUEST: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exc) {
     log.error("ENTITY VALIDATION EXCEPTION: 400 - " + exc.getMessage());
     ArrayList<String> errors = new ArrayList<>();
-    for (FieldError error : exc.getBindingResult().getFieldErrors()) {
+    for(FieldError error: exc.getBindingResult().getFieldErrors()) {
       errors.add(error.getField() + ": " + error.getDefaultMessage());
     }
 
-    for (ObjectError error : exc.getBindingResult().getGlobalErrors()) {
+    for(ObjectError error: exc.getBindingResult().getGlobalErrors()) {
       errors.add(error.getDefaultMessage());
     }
 
     String message = "Invalid entity received:";
-    for (String msg : errors) {
+    for(String msg: errors) {
       message += "\n- " + msg;
     }
 
     return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(BusinessAdminException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleBusinessAdminException(BusinessAdminException exc) {
+    log.error("BAD REQUEST: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
 }
-
-

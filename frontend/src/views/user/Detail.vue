@@ -1,15 +1,13 @@
 <template>
-  <div class="container">
-    <div class="row mt-2">
-      <!--User profile image card-->
-      <div class="col-md-4 m-2 card">
-
-        <img alt="Users profile image" class="my-3 rounded-circle"
-             src="@/../assets/images/default-user-thumbnail.svg">
+  <div class="container my-4">
+    <div class="w-100 grid-container">
+      <div class="profile-image-container card">
+        <img alt="User's profile image" class="my-3 rounded-circle"
+              src="@/../assets/images/default-user-thumbnail.svg">
       </div>
-      <div class="col-md-7 m-2 card">
-        <div class="m-3">
-          <div class="d-flex align-items-center">
+      <div class="user-info-container card p-3">
+        <div class="">
+          <div class="d-flex align-items-center flex-column flex-sm-row">
             <!--Users name-->
             <h2 class="mb-0 float-left">{{ userInfo.firstName }} {{ userInfo.middleName }}
               {{ userInfo.lastName }}</h2>
@@ -19,10 +17,7 @@
                 class="d-flex align-items-center">
               <span class="material-icons md-dark md-inactive ml-2">location_on</span>
               <span class="text-muted">
-                {{
-                  [userInfo.homeAddress.suburb, userInfo.homeAddress.city].filter(Boolean).join(
-                      ', ')
-                }}
+                {{ $helper.addressToString(userInfo.homeAddress, true) }}
               </span>
             </div>
 
@@ -69,10 +64,17 @@
                 v-if="isSignedIn && authUser.id === userInfo.id"
                 :to="{ name: 'BusinessCreate' }"
                 class="btn btn-white-bg-primary m-1 d-flex"
-                type="button"
             >
               <span class="material-icons mr-1">business</span>
               Register Business
+            </router-link>
+            <router-link
+                v-else-if="isSignedIn && isAdmin"
+                :to="{name: 'BusinessCreateAdmin', params: {userId}}"
+                class="btn btn-white-bg-primary m-1 d-flex"
+            >
+              <span class="material-icons mr-1">business</span>
+              Register Business as {{userInfo.firstName}}
             </router-link>
           </div>
           <div v-if="statusMessage.length > 0" class="row mt-2">
@@ -82,13 +84,12 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4 order-2 order-md-1 m-2 card">
-        <h5 class="text-muted mt-3">Businesses</h5>
+          
+      <div class="card businesses-container p-3 overflow-auto">
+        <h5 class="text-muted">Businesses</h5>
         <div
             v-if="Array.isArray(userInfo.businessesAdministered) && userInfo.businessesAdministered.length !== 0">
-          <ul class="profile-business-info list-unstyled">
+          <ul class="profile-business-info list-unstyled pl-0">
             <li
                 v-for="(business, index) in userInfo.businessesAdministered"
                 :key="index"
@@ -98,7 +99,9 @@
                   :to="{ name: 'BusinessDetail', params: { businessId: business.id, showBackButton: true}}"
                   class="text-reset text-decoration-none"
               >
-                <h5 class="business-name card-title card-link">{{ business.name }}</h5>
+                <h5 class="business-name card-title card-link green-text-hover">
+                  {{ business.name }}
+                </h5>
               </router-link>
               <h6 class="card-subtitle mb-2 text-muted">
                 {{ business.businessType }}
@@ -111,8 +114,8 @@
           No businesses
         </div>
       </div>
-      <div class="col-md-7 order-1 order-md-2 m-2 card">
-        <ul class="nav nav-tabs mt-2">
+      <div class="card user-details-container p-3 pb-0 overflow-auto">
+        <ul class="nav nav-tabs">
           <li class="nav-item">
             <a aria-current="page" class="nav-link active">Details</a>
           </li>
@@ -120,44 +123,46 @@
             <a class="nav-link disabled">Future Tab</a>
           </li>
         </ul>
-        <div class="m-md-4">
-          <table class="table table-hover">
-            <tbody>
-            <tr>
-              <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
-            </tr>
-            <tr v-if="userInfo.nickname" scope="row">
-              <th class="pl-0 pl-md-2">Nickname:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
-            </tr>
-            <tr v-if="memberSinceText" scope="row">
-              <th class="pl-0 pl-md-2">Member since:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ memberSinceText }}</p></td>
-            </tr>
-            <tr v-if="dateOfBirthText" scope="row">
-              <th class="pl-0 pl-md-2">Date of Birth:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
-            </tr>
-            <tr>
-              <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
-              </td>
-            </tr>
-            <tr v-if="userInfo.email" scope="row">
-              <th class="pl-0 pl-md-2">Email Address:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
-            </tr>
-            <tr v-if="userInfo.phoneNumber" scope="row">
-              <th class="pl-0 pl-md-2">Phone Number:</th>
-              <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
-            </tr>
-            <tr v-if="userInfo.homeAddress" scope="row">
-              <th class="pl-0 pl-md-2">Address:</th>
-              <td class="pr-0 pr-md-2 col-md value">
-                <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+        <div class="m-md-4 mb-md-0">
+          <div class="overflow-auto w-100">
+            <table class="table table-hover mb-0">
+              <tbody>
+                <tr>
+                  <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
+                </tr>
+                <tr v-if="userInfo.nickname" scope="row">
+                  <th class="pl-0 pl-md-2">Nickname:</th>
+                  <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
+                </tr>
+                <tr scope="row">
+                  <th class="pl-0 pl-md-2">Member since:</th>
+                  <td class="pr-0 pr-md-2 col-md value"><p>{{ this.$helper.memberSinceText(userInfo.created) }}</p></td>
+                </tr>
+                <tr v-if="dateOfBirthText" scope="row">
+                  <th class="pl-0 pl-md-2">Date of Birth:</th>
+                  <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
+                </tr>
+                <tr>
+                  <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
+                  </td>
+                </tr>
+                <tr v-if="userInfo.email" scope="row">
+                  <th class="pl-0 pl-md-2">Email Address:</th>
+                  <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
+                </tr>
+                <tr v-if="userInfo.phoneNumber" scope="row">
+                  <th class="pl-0 pl-md-2">Phone Number:</th>
+                  <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
+                </tr>
+                <tr v-if="userInfo.homeAddress" scope="row">
+                  <th class="pl-0 pl-md-2">Address:</th>
+                  <td class="pr-0 pr-md-2 col-md value">
+                    <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -175,9 +180,52 @@
 </template>
 
 <style>
-.business-name:hover {
-  cursor: pointer;
-  color: #1ec996;
+</style>
+<style lang="scss" scoped>
+@import "~/src/styles/grid-breakpoints.scss";
+
+/* Using CSS Grid instead of standard bootstrap as we need to 
+limit the height of the businesses administered list. Height of the 
+businesses and user details container need to be equal, so thought this
+would be the easiest option
+*/
+.grid-container {
+  display: grid;
+  // Auto height for first row, don't know what the second row is doing but
+  // it seems to be working
+  grid-template-rows: auto min-content;
+  // First column takes up a third, second takes up two thirds 
+  grid-template-columns: 4fr 8fr;
+  grid-gap: 1rem;
+}
+
+.businesses-container, .user-details-container {
+  // Sets max height for the entire row
+  // Tried using minmax(min-content, 35em) but min-content ensures the 
+  // content doesn't overflow, which we do want in this case
+  // This is a difficult problem as we want the max height of the business container
+  // to be the below value, **unless the user details container is taller**
+  max-height: 35em;
+}
+
+.user-details-container {
+  min-height: 0;
+}
+
+@media (max-width: map-get($grid-breakpoints, "md")) {
+  .grid-container {
+    grid-template-columns: auto;
+    grid-template-rows: repeat(4, auto);
+  }
+  
+  .user-details-container {
+    // Switch order: user details is the third row, before businesses list
+    grid-row: 3/4;
+  }
+
+  .businesses-container, .user-details-container {
+    max-height: initial;
+  }
 }
 
 th {
@@ -304,41 +352,6 @@ export default {
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
-
-    /**
-     * Formats the date as a D MMMM YYYY string
-     * @param date date object, or something that can be passed to the constructor
-     */
-    formatDate: function (date) {
-      if (!(date instanceof Date)) {
-        date = new Date(date);
-      }
-      return `${date.getDate()} ${this.$constants.MONTH_NAMES[date.getMonth()]}, ${date.getFullYear()}`;
-    },
-
-    /**
-     * Calculates the time since registration and returns it as a string
-     * @return string in format 'y years, m months'
-     */
-    generateTimeSinceRegistrationText: function (registrationDate, currentDate) {
-      const yearDiff = currentDate.getFullYear() - registrationDate.getFullYear();
-      const monthDiff = currentDate.getMonth() - registrationDate.getMonth();
-
-      const timeDiffInMonth = yearDiff * 12 + monthDiff;
-
-      const years = Math.floor(timeDiffInMonth / 12);
-      let months = timeDiffInMonth % 12;
-
-      const yearsText = `${years} year${years == 1 ? "" : "s"}`;
-
-      const monthsText = `${months} month${months == 1 ? "" : "s"}`;
-
-      if (years == 0) {
-        return monthsText;
-      }
-
-      return `${yearsText}, ${monthsText}`;
-    },
   },
 
   computed: {
@@ -359,24 +372,7 @@ export default {
       if (isNaN(Date.parse(this.userInfo.dateOfBirth))) {
         return "Unknown";
       }
-      return this.formatDate(this.userInfo.dateOfBirth);
-    },
-
-    /**
-     * Formatted text for member since text
-     */
-    memberSinceText: function () {
-      if (isNaN(Date.parse(this.userInfo.created))) {
-        return "Unknown";
-      }
-      const created = new Date(this.userInfo.created);
-      const dateOfRegistration = this.formatDate(created);
-      const monthsSinceRegistration = this.generateTimeSinceRegistrationText(
-          created,
-          new Date()
-      );
-
-      return `${dateOfRegistration} (${monthsSinceRegistration})`;
+      return this.$helper.formatDate(this.userInfo.dateOfBirth);
     }
   },
 
@@ -388,8 +384,7 @@ export default {
       this.apiPipeline();
     },
     userInfo() {
-      if (this.userInfo
-          !== null) {
+      if (this.userInfo !== null) {
         document.title = `${this.userInfo.firstName} ${this.userInfo.lastName} | Profile`;
       }
       // If switch user profile and request fails will be stuck with old title

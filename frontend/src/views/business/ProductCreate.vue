@@ -21,7 +21,7 @@
               <input
                   v-model="name"
                   class="form-control"
-                  maxlength="30"
+                  maxlength="100"
                   name="name"
                   placeholder="Name"
                   required
@@ -37,7 +37,8 @@
                   v-model="price"
                   :placeholder="currencyText"
                   class="form-control"
-                  min="0.00"
+                  min="0.01"
+                  max="10000000"
                   name="price"
                   required
                   step="0.01"
@@ -55,6 +56,7 @@
                   name="manufacturer"
                   placeholder="Manufacturer"
                   required
+                  maxlength="100"
                   type="text"
               />
             </div>

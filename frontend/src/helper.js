@@ -10,9 +10,10 @@ export const helper = {
   /**
    * Given address object, convert it to string, stripping out undefined components
    * @param {object} address
+   * @param {Boolean} publicOnly if true, only public components are in the output string
    * @returns
    */
-  addressToString(address) {
+  addressToString(address, publicOnly = false) {
     const numberUndef = address.streetNumber == undefined
         || address.streetNumber.trim().length == 0;
     const nameUndef = address.streetName == undefined
@@ -20,23 +21,30 @@ export const helper = {
 
     let street = undefined;
     if (numberUndef && !nameUndef) {
-      street = address.streetNumber;
-    }// if street number defined but street name not, don't show either
-    else if (!numberUndef
-        && !nameUndef) {
+      // if street number defined but street name not, don't show either
+      street = address.streetName;
+    }
+    else if (!numberUndef && !nameUndef) {
       street = `${address.streetNumber} ${address.streetName}`;
     }
 
-    return [
+    const components = publicOnly? [
+        address.suburb,
+        address.city,
+        address.region,
+        address.country
+      ]: [
       street,
       address.suburb,
       address.city,
       address.region,
       address.postcode,
       address.country
-    ].filter(
-        component => typeof component == "string" && component.trim().length
-            > 0).join(', ');
+      ];
+      
+    return components.filter(component => 
+        typeof component == "string" && component.trim().length > 0
+      ).join(', ');
   },
 
   /**
@@ -75,6 +83,59 @@ export const helper = {
       day = "0" + day;
     }
     return `${year}-${month}-${day}`;
+  },
+
+  /**
+   * Formats the date as a D MMMM YYYY string
+   * @param date date object, or something that can be passed to the constructor
+   */
+  formatDate: function (date) {
+    if (!(date instanceof Date)) {
+      date = new Date(date);
+    }
+    return `${date.getDate()} ${constants.MONTH_NAMES[date.getMonth()]}, ${date.getFullYear()}`;
+  },
+
+  /**
+   * Calculates the time since registration and returns it as a string
+   * @return string in format 'y years, m months'
+   */
+  generateTimeSinceRegistrationText: function (registrationDate, currentDate) {
+    const yearDiff = currentDate.getFullYear() - registrationDate.getFullYear();
+    const monthDiff = currentDate.getMonth() - registrationDate.getMonth();
+
+    const timeDiffInMonth = yearDiff * 12 + monthDiff;
+
+    const years = Math.floor(timeDiffInMonth / 12);
+    let months = timeDiffInMonth % 12;
+
+    const yearsText = `${years} year${years == 1 ? "" : "s"}`;
+
+    const monthsText = `${months} month${months == 1 ? "" : "s"}`;
+
+    if (years == 0) {
+      return monthsText;
+    }
+
+    return `${yearsText}, ${monthsText}`;
+  },
+
+  /**
+   * Formatted text for member since text
+   * @param createdDate Date to format
+   */
+  memberSinceText: function (registrationDate) {
+    if (isNaN(Date.parse(registrationDate))) {
+      return "Unknown";
+    }
+    const created = new Date(registrationDate);
+    const dateOfRegistration = this.formatDate(created);
+    const monthsSinceRegistration = this.generateTimeSinceRegistrationText(
+        created,
+        new Date()
+    );
+
+    return `${dateOfRegistration} (${monthsSinceRegistration})`;
   },
 
   /**

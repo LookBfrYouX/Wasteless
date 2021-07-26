@@ -10,7 +10,6 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UnhandledException;
 import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -126,7 +125,7 @@ public class UserServiceImplTest extends ServiceTestProvider {
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   public void getUserById_selfIsPrimaryBusinessAdmin()
-      throws UserNotFoundException, BusinessNotFoundException, UnhandledException {
+      throws UserNotFoundException, BusinessNotFoundException {
     User user1 = makeUser(EMAIL_1, PASSWORD_1, false);
     user1.setId(100);
     when(userDaoMock.getUserById(user1.getId())).thenReturn(user1);
@@ -145,7 +144,7 @@ public class UserServiceImplTest extends ServiceTestProvider {
   @Test
   @WithMockUser()
   public void getUserById_otherIsBusinessAdmin()
-      throws UserNotFoundException, BusinessNotFoundException, UnhandledException {
+      throws UserNotFoundException, BusinessNotFoundException {
     User user1 = makeUser(EMAIL_1, PASSWORD_1, false);
     user1.setId(100);
     when(userDaoMock.getUserById(user1.getId())).thenReturn(user1);

@@ -1,6 +1,8 @@
 package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
+import com.navbara_pigeons.wasteless.validation.constraints.StringEnumeration;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -9,12 +11,18 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+
 
 /**
  * Business DTO which returns all user details except catalog and administrators list
  */
 @Data
 public class CreateBusinessDto {
+  private Long primaryAdministratorId;
 
   private long primaryAdministratorId;
 
@@ -37,11 +45,9 @@ public class CreateBusinessDto {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new FullAddressDto(business.getAddress());
-    this.businessType = business.getBusinessType();
+    this.businessType = business.getBusinessType().toString();
   }
 
   public CreateBusinessDto() {
-
   }
-
 }

@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import lombok.Data;
 
 @Data
@@ -39,6 +41,8 @@ public class Listing {
   @Column(name = "QUANTITY")
   private long quantity;
 
+  @DecimalMin(message="price must be above 0.01", value="0.01")
+  @DecimalMax(message="price must be below 10,000,000", value="10000000.00")
   @Column(name = "PRICE")
   private Double price;
 
@@ -52,7 +56,6 @@ public class Listing {
   private ZonedDateTime closes;
 
   public Listing(CreateListingDto createListingDto) {
-    this.id = createListingDto.getId();
     this.quantity = createListingDto.getQuantity();
     this.price = createListingDto.getPrice();
     this.moreInfo = createListingDto.getMoreInfo();

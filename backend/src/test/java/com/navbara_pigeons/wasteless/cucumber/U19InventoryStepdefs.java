@@ -3,9 +3,12 @@ package com.navbara_pigeons.wasteless.cucumber;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.dto.CreateProductDto;
+import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.dto.FullAddressDto;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -21,18 +24,20 @@ public class U19InventoryStepdefs extends CucumberTestProvider {
 
   // background is run before each test
   @Given("A user is logged in")
-  public void aUserIsLoggedIn() {
-    login();
+  public void aUserIsLoggedIn() throws Exception {
+    nonAdminLogin();
   }
 
   @And("has a business {string} with type {string}")
   public void hasABusiness(String businessName, String businessType) throws Exception {
-    Business business = new Business();
+    CreateBusinessDto business = new CreateBusinessDto();
     business.setName(businessName);
-    Address address = makeAddress();
+    FullAddressDto address = new FullAddressDto(makeAddress());
     business.setBusinessType(businessType)
         .setName(businessName)
-        .setAddress(address);
+        .setAddress(address)
+        .setPrimaryAdministratorId(loggedInUserId)
+    ;
 
     JsonNode response = makePostRequestGetJson(
         "/businesses/",

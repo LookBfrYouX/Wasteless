@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
@@ -10,7 +11,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.management.InvalidAttributeValueException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -137,8 +138,8 @@ class UserDaoHibernateImplTest {
     userDao.saveUser(testUser2);
     userDao.saveUser(testUser3);
 
-    List<User> results1 = null;
-    try {
+    Assertions.assertDoesNotThrow(() -> {
+      List<User> results1 = null;
       results1 = userDao.searchUsers("Fred");
       assertEquals(results1.size(), 2);
 
@@ -156,9 +157,7 @@ class UserDaoHibernateImplTest {
       assertEquals(results4.size(), 1);
       assertEquals(results4.get(0).getId(), testUser2.getId());
       assertEquals(results4.get(0).getEmail(), testUser2.getEmail());
-    } catch (InvalidAttributeValueException e) {
-      e.printStackTrace();
-    }
+    });
   }
 
   @Test
@@ -184,8 +183,9 @@ class UserDaoHibernateImplTest {
     actuallySaveUser(userToSearch);
 
     // ACT
-    List<User> validFnameQuery = null;
-    try {
+    Assertions.assertDoesNotThrow(() -> {
+      List<User> validFnameQuery = null;
+
       validFnameQuery = userDao.searchUsers(firstName);
       List<User> validMnameQuery = userDao.searchUsers(middleName);
       List<User> validLnameQuery = userDao.searchUsers(lastName);
@@ -199,9 +199,7 @@ class UserDaoHibernateImplTest {
       assertEquals(userToSearch.getId(), validLnameQuery.get(0).getId());
       assertEquals(userToSearch.getId(), validNnameQuery.get(0).getId());
       assertEquals(userToSearch.getId(), validFullNameQuery.get(0).getId());
-    } catch (InvalidAttributeValueException e) {
-      e.printStackTrace();
-    }
+    });
   }
 
   @Transactional
@@ -233,8 +231,8 @@ class UserDaoHibernateImplTest {
     List<User> expectedResult = new ArrayList<>();
 
     // ACT
-    List<User> invalidFnameQuery = null;
-    try {
+    Assertions.assertDoesNotThrow(() -> {
+      List<User> invalidFnameQuery = null;
       invalidFnameQuery = userDao.searchUsers("Philliam");
       List<User> invalidMnameQuery = userDao.searchUsers("Gladley");
       List<User> invalidLnameQuery = userDao.searchUsers("PittBull");
@@ -248,9 +246,7 @@ class UserDaoHibernateImplTest {
       assertEquals(expectedResult, invalidLnameQuery);
       assertEquals(expectedResult, invalidNnameQuery);
       assertEquals(expectedResult, invalidFullNameQuery);
-    } catch (InvalidAttributeValueException e) {
-      e.printStackTrace();
-    }
+    });
   }
 
   private Address mockAddress() {
