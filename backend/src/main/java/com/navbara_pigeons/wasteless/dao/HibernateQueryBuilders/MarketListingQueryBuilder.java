@@ -1,10 +1,14 @@
 package com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders;
 
+import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
+import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.enums.MarketListingSortByOption;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
@@ -50,10 +54,26 @@ public class MarketListingQueryBuilder {
     CriteriaQuery<MarketListing> criteriaQuery = criteriaBuilder.createQuery(MarketListing.class);
 
     Root<MarketListing> root = criteriaQuery.from(MarketListing.class);
+    Join<MarketListing, User> user = root.join("creator");
+    Join<User, Address> address = user.join("homeAddress");
     criteriaQuery.where(criteriaBuilder.equal(root.get("section"), section));
 
     // Sorting query
-    Path<Object> path = root.get(pagBuilder.getSortField().toString());
+    Path<Object> path;
+    switch ((MarketListingSortByOption) pagBuilder.getSortField()) {
+      case title:
+      case created:
+      case displayPeriodEnd:
+        path = root.get(pagBuilder.getSortField().toString());
+        break;
+      case suburb:
+      case city:
+        path = address.get(pagBuilder.getSortField().toString());
+        break;
+      default:
+        throw new IllegalStateException(
+            "Unexpected value: " + pagBuilder.getSortField());
+    }
     Order order =
         pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
     criteriaQuery.orderBy(order);
