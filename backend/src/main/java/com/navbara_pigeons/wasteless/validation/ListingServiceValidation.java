@@ -13,10 +13,6 @@ public class ListingServiceValidation {
     if (listing.getInventoryItem() == null) {
       throw new ListingValidationException("Inventory item not found");
     }
-    // Check price is not negative or null
-    if (listing.getPrice() == null || listing.getPrice() <= 0) {
-      throw new ListingValidationException("Price must be greater than 0");
-    }
 
     // Quantity must be above 0 and below the remaining quantity
     long remainingQuantity = listing.getInventoryItem().getQuantity();
@@ -28,9 +24,9 @@ public class ListingServiceValidation {
         }
       }
     }
-    if (listing.getQuantity() <= 0 || listing.getQuantity() > remainingQuantity) {
+    if (listing.getQuantity() > remainingQuantity) {
       throw new ListingValidationException(
-          "Quantity must be less than or equal to the amount left in the inventory and greater than 0");
+          "Quantity must be less than or equal to the amount left in the inventory");
     }
   }
 }

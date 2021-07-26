@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @Slf4j
 @RequestMapping("")
@@ -43,7 +45,7 @@ public class MarketListingController {
 
   @PostMapping("/cards")
   public ResponseEntity<JSONObject> addMarketListing(
-      @RequestBody CreateMarketListingDto createMarketListingDto)
+      @Valid @RequestBody CreateMarketListingDto createMarketListingDto)
       throws UserNotFoundException {
     log.info("CREATING A CARD WITH TITLE: " + createMarketListingDto.getTitle());
     User creator = userService.getUserById(createMarketListingDto.getCreatorId());

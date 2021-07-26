@@ -2,7 +2,6 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
-import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -107,11 +106,9 @@ public class ProductServiceImpl implements ProductService {
    * @return JSONObject with `productId`
    * @throws ProductRegistrationException If data supplied is not expected (bad request)
    * @throws ForbiddenException           If user if not an admin of the business (forbidden)
-   * @throws ForbiddenException           If user if not an admin of the business (forbidden)
    */
-  @Override
   @Transactional
-  public JSONObject addProduct(long businessId, BasicProductCreationDto basicProduct)
+  public JSONObject addProduct(long businessId, Product basicProduct)
       throws ProductRegistrationException,
       InsufficientPrivilegesException {
     // Throw 400 if bad request, 403 if user is not business admin
@@ -124,12 +121,6 @@ public class ProductServiceImpl implements ProductService {
       }
     } catch (UserNotFoundException | BusinessNotFoundException exc) {
       throw new ProductRegistrationException("User or business not found");
-    }
-
-    if (!ProductServiceValidation.priceIsValid(basicProduct.getRecommendedRetailPrice())) {
-      // Needs to be here as basicProduct stores Double; product stores double
-      throw new ProductRegistrationException(
-          "Invalid price; must be a number greater than 0");
     }
 
     Product product = new Product();
@@ -145,10 +136,6 @@ public class ProductServiceImpl implements ProductService {
       throw new ProductRegistrationException("Unknown country; cannot set currency");
     }
     product.setCurrency(currency.getCode());
-
-    if (!ProductServiceValidation.requiredFieldsNotEmpty(product)) {
-      throw new ProductRegistrationException("Required fields not given or were empty");
-    }
 
     product.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     productDao.saveProduct(product);

@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.navbara_pigeons.wasteless.dto.BasicImageDto;
+import com.navbara_pigeons.wasteless.dto.CreateProductDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import java.time.ZonedDateTime;
@@ -19,6 +20,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import lombok.Data;
 
 @Data
@@ -43,24 +46,13 @@ public class Product {
   @Column(name = "MANUFACTURER")
   private String manufacturer;
 
+  @DecimalMin(message="RRP must be above 0.01", value="0.01")
+  @DecimalMax(message="RRP must be below 10,000,000", value="10000000.00")
   @Column(name = "RRP")
   private Double recommendedRetailPrice;
 
   @Column(name = "CREATED")
   private ZonedDateTime created;
-
-//  @JsonIgnore
-//  @OneToMany(
-//      fetch = FetchType.LAZY,
-//      cascade = {
-//          CascadeType.DETACH,
-//          CascadeType.MERGE,
-//          CascadeType.PERSIST,
-//          CascadeType.REFRESH
-//      }
-//  )
-//  @JoinColumn(name = "PRODUCT_ID")
-//  private List<Inventory> inventoryItems;
 
   @JsonIgnore
   @OneToOne(fetch = FetchType.EAGER)
@@ -100,22 +92,15 @@ public class Product {
     }
   }
 
-  public Product() {
-
+  public Product(CreateProductDto product) {
+    this.name = product.getName();
+    this.description = product.getDescription();
+    this.manufacturer = product.getManufacturer();
+    this.recommendedRetailPrice = product.getRecommendedRetailPrice();
   }
 
-//  /**
-//   * Helper method which adds inventory item to list of inventory items
-//   * @param inventoryItem item to add
-//   */
-//  public void addInventoryItem(Inventory inventoryItem) {
-//    if (this.inventoryItems == null) {
-//      this.inventoryItems = new ArrayList<>();
-//    }
-//
-//    this.inventoryItems.add(inventoryItem);
-//  }
 
+  public Product() {}
 
   /**
    * This is a helper method for adding a image to the product.

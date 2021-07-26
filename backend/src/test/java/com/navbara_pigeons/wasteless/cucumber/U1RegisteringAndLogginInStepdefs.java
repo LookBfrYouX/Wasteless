@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,7 +74,6 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
     JSONObject credentials = new JSONObject();
     credentials.put("email", email);
     credentials.put("password", password);
-    System.out.println(credentials.toString());
     this.mvcResult = mockMvc.perform(
         post("/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -105,21 +105,23 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
 
   @When("I register an account with the invalid email {string} and password {string}")
   public void iRegisterAnAccountWithTheInvalidEmailAndPassword(String email, String password)
-      throws Exception {
+          throws Exception {
     User newUser = makeUser(email, password, false);
     newUser.setPassword(password);
     this.mvcResult = mockMvc.perform(
-        post("/users")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(newUser))
-            .accept(MediaType.ALL))
-        .andExpect(status().is(400))
-        .andReturn();
+            post("/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(newUser))
+                    .accept(MediaType.ALL))
+            .andExpect(status().is(400))
+            .andReturn();
   }
+
+
 
   @Then("I am shown an error that my request is invalid")
   public void iAmShownAnErrorThatMyRequestIsInvalid() {
-    assertEquals("Bad Request", this.mvcResult.getResponse().getErrorMessage());
+    assertEquals(400, this.mvcResult.getResponse().getStatus());
   }
 
   @When("I register an account with the taken email {string} and password {string}")

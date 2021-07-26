@@ -152,7 +152,6 @@ public class MainTestProvider {
     // Save user using DAO and retrieve by Email
     return testUser;
   }
-
   /**
    * This test helper method creates and returns a test address to be used in cucumber tests from
    * the given parameters.

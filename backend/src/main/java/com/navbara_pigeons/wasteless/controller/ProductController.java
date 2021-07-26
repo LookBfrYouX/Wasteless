@@ -1,6 +1,8 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
+import com.navbara_pigeons.wasteless.dto.CreateProductDto;
+import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.enums.ProductSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -11,6 +13,7 @@ import com.navbara_pigeons.wasteless.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 /**
  * This controller class provides the endpoints for dealing with products. All requests for products
@@ -102,9 +107,9 @@ public class ProductController {
    */
   @PostMapping("/businesses/{id}/products")
   public ResponseEntity<Object> addToCatalogue(
-      @PathVariable long id, @RequestBody BasicProductCreationDto product)
+      @PathVariable long id, @RequestBody @Valid CreateProductDto product)
       throws InsufficientPrivilegesException, ProductRegistrationException {
-    JSONObject response = productService.addProduct(id, product);
+    JSONObject response = productService.addProduct(id, new Product(product));
     log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());
     return new ResponseEntity<>(response, HttpStatus.valueOf(201));
   }

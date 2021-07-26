@@ -13,7 +13,7 @@ import net.minidev.json.JSONObject;
 public interface BusinessService {
 
   JSONObject saveBusiness(Business business)
-      throws BusinessTypeException, UserNotFoundException, BusinessRegistrationException, AddressValidationException;
+      throws UserNotFoundException, BusinessRegistrationException, AddressValidationException;
 
   Object getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException;
 
