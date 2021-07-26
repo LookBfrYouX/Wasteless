@@ -92,6 +92,18 @@ public class InventoryController {
         HttpStatus.OK);
   }
 
+    /**
+     * This endpoint allows adding an inventory item to a business given a business id.
+     *
+     * @param id The business id.
+     * @param inventoryDto The inventory item.
+     * @return Returns the Inventory Item ID.
+     * @throws InventoryRegistrationException
+     * @throws UserNotFoundException
+     * @throws BusinessNotFoundException
+     * @throws ProductNotFoundException
+     * @throws InsufficientPrivilegesException
+     */
   @PostMapping("/businesses/{id}/inventory")
   public ResponseEntity<JSONObject> addToBusinessInventory(
       @PathVariable long id, @RequestBody @Valid CreateInventoryItemDto inventoryDto)

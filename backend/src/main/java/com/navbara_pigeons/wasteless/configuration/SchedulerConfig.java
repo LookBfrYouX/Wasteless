@@ -29,6 +29,7 @@ public class SchedulerConfig {
 
   @Value("${dgaa.user.email}")
   private String dgaaEmail;
+
   @Value("${dgaa.user.password}")
   private String dgaaPassword;
 

@@ -48,6 +48,12 @@ public class MarketListingController {
     this.keywordService = keywordService;
   }
 
+  /**
+   * This endpoint allows a market listing to be added to the marketplace.
+   * @param createMarketListingDto THe market listing.
+   * @return The ID of the created listing.
+   * @throws UserNotFoundException
+   */
   @PostMapping("/cards")
   public ResponseEntity<JSONObject> addMarketListing(
       @Valid @RequestBody CreateMarketListingDto createMarketListingDto)
