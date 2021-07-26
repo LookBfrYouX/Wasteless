@@ -79,9 +79,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
     testCompileOnly 'org.projectlombok:lombok:1.18.16'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
-
-    // ability to use validators
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 // create a specific task to run cucumber tests

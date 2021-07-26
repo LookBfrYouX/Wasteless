@@ -124,7 +124,6 @@ import temporaryTags from "../../assets/temporaryTags.json";
 import {Api} from "@/Api";
 
 export default {
-  // components: {Suggestions, Tag},
   props: {
     /**
      * ID of user to create the card as
