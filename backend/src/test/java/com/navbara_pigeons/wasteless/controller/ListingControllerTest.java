@@ -3,6 +3,8 @@ package com.navbara_pigeons.wasteless.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
@@ -55,6 +57,28 @@ public class ListingControllerTest extends ControllerTestProvider {
     CreateListingDto listing = new CreateListingDto();
     listing.setInventoryItemId(5001);
     listing.setPrice(17.99);
+
+    mockMvc.perform(post("/businesses/1001/listings")
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(listing)))
+        .andExpect(status().isBadRequest());
+  }
+
+  // Throw 400 on bad request to controller (price must be above 0 and below 10000000)
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  public void throw400OnBadListingPrice() throws Exception {
+    CreateListingDto listing = new CreateListingDto();
+    listing.setInventoryItemId(5001);
+    listing.setQuantity(1);
+    listing.setPrice(-5.00);
+
+    mockMvc.perform(post("/businesses/1001/listings")
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(listing)))
+        .andExpect(status().isBadRequest());
+
+    listing.setPrice(10000001.00);
 
     mockMvc.perform(post("/businesses/1001/listings")
         .contentType("application/json")

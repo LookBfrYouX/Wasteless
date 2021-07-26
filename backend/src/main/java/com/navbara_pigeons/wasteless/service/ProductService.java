@@ -27,5 +27,4 @@ public interface ProductService {
   Product getProduct(long productId) throws ProductNotFoundException;
 
   void saveProduct(Product product);
-
 }
