@@ -48,14 +48,13 @@
           </div>
 
           <div class="row">
-            <div class="form-group required col px-3">
+            <div class="form-group col px-3">
               <label>Manufacturer</label>
               <input
                   v-model="manufacturer"
                   class="form-control"
                   name="manufacturer"
                   placeholder="Manufacturer"
-                  required
                   maxlength="100"
                   type="text"
               />
