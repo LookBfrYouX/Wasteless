@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.service;
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
-import com.navbara_pigeons.wasteless.validation.AddressServiceValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,10 +30,6 @@ public class AddressServiceImpl implements AddressService {
   @Override
   @Transactional
   public void saveAddress(Address address) throws AddressValidationException {
-    if (!AddressServiceValidation.requiredFieldsNotEmpty(address)) {
-      throw new AddressValidationException("Required address fields were not given");
-    }
-
     if (!isCountryValid(address.getCountry())) {
       throw new AddressValidationException(
           "Country does not exist or is not known: " + address.getCountry());

@@ -24,9 +24,9 @@ public class ListingServiceValidation {
         }
       }
     }
-    if (listing.getQuantity() <= 0 || listing.getQuantity() > remainingQuantity) {
+    if (listing.getQuantity() > remainingQuantity) {
       throw new ListingValidationException(
-          "Quantity must be less than or equal to the amount left in the inventory and greater than 0");
+          "Quantity must be less than or equal to the amount left in the inventory");
     }
   }
 }
