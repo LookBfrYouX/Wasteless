@@ -19,6 +19,9 @@ import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
 import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import com.navbara_pigeons.wasteless.exception.InvalidMarketListingSectionException;
+import com.navbara_pigeons.wasteless.exception.MarketListingCreationException;
+
 import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
