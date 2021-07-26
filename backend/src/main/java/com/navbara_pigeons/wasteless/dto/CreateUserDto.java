@@ -33,7 +33,7 @@ public class CreateUserDto {
   @Length(max=250, message = "Bio has to be less than or equal to 250 Characters")
   private String bio;
 
-  @Email(message = "Email has to be Valid")
+  @Pattern(regexp="^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$", message = "Email has to be Valid")
   @Length(max=50, message = "Email has to be less than or equal to 50 Characters")
   private String email;
 

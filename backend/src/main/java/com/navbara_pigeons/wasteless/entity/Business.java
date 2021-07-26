@@ -118,7 +118,6 @@ public class Business {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new Address(business.getAddress());
-    this.businessType = business.getBusinessType();
     this.created = business.getCreated();
   }
 
@@ -127,7 +126,6 @@ public class Business {
     this.name = business.getName();
     this.description = business.getDescription();
     this.address = new Address(business.getAddress());
-    this.businessType = business.getBusinessType();
   }
 
   public Business() {
