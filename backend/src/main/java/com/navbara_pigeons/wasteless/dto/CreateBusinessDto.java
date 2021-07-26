@@ -31,7 +31,7 @@ public class CreateBusinessDto {
   @Length(max=250, message = "Description has to be less than or equal to 250 Characters")
   private String description;
 
-
+  @Valid
   private FullAddressDto address;
 
   @NotNull(message = "Business Type is Required")
