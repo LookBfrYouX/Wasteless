@@ -57,7 +57,7 @@ public class BusinessController {
   @PostMapping("/businesses")
   @Operation(summary = "Register business", description = "Register a business using the 'CreateBusinessDto' object")
   public ResponseEntity<JSONObject> registerBusiness(@RequestBody @Valid CreateBusinessDto business)
-      throws UserNotFoundException, AddressValidationException, BusinessTypeException, BusinessRegistrationException {
+      throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
     JSONObject businessId = businessService.saveBusiness(new Business(business));
     log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
     return new ResponseEntity<>(businessId, HttpStatus.valueOf(201));

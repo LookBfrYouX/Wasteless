@@ -87,7 +87,7 @@ public class Business {
   @JoinColumn(name = "BUSINESS_ID")
   private List<InventoryItem> inventory = new ArrayList<>();
 
-  public Business(FullBusinessDto business) throws BusinessTypeException {
+  public Business(FullBusinessDto business) {
     this.id = business.getId();
     this.primaryAdministratorId = business.getPrimaryAdministratorId();
     this.name = business.getName();
@@ -103,7 +103,7 @@ public class Business {
     }
   }
 
-  public Business(BasicBusinessDto business) throws BusinessTypeException {
+  public Business(BasicBusinessDto business) {
     this.id = business.getId();
     this.primaryAdministratorId = business.getPrimaryAdministratorId();
     this.name = business.getName();
@@ -113,7 +113,7 @@ public class Business {
     this.created = business.getCreated();
   }
 
-  public Business(CreateBusinessDto business)  throws BusinessTypeException {
+  public Business(CreateBusinessDto business) {
     this.primaryAdministratorId = business.getPrimaryAdministratorId();
     this.name = business.getName();
     this.description = business.getDescription();

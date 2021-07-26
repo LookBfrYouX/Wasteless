@@ -36,6 +36,7 @@ public class CreateBusinessDto {
 
   @NotNull(message = "Business Type is Required")
   @Length(max=50, message = "Business Type has to be less than or equal to 50 Characters")
+  @StringEnumeration(enumClass = BusinessType.class, message = "Invalid business type given")
   private String businessType;
 
   public CreateBusinessDto(Business business) {

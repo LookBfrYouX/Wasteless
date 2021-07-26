@@ -97,7 +97,7 @@ public class User {
   )
   private List<Business> businesses = new ArrayList<>();
 
-  public User(BasicUserDto user) throws BusinessTypeException {
+  public User(BasicUserDto user) {
     this.id = user.getId();
     this.firstName = user.getFirstName();
     this.lastName = user.getLastName();
@@ -112,7 +112,7 @@ public class User {
     }
   }
 
-  public User(FullUserDto user) throws BusinessTypeException {
+  public User(FullUserDto user) {
     this.id = user.getId();
     this.firstName = user.getFirstName();
     this.lastName = user.getLastName();
