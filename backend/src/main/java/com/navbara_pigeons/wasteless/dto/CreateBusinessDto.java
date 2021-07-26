@@ -4,6 +4,12 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.validation.constraints.StringEnumeration;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -18,18 +24,19 @@ import javax.validation.constraints.Size;
 public class CreateBusinessDto {
   private Long primaryAdministratorId;
 
-  @NotBlank
-  @Size(max = 50, message = "Name too long; max 50 characters")
+  @NotBlank(message = "Name is Required")
+  @Length(max=50, message = "Name has to be less than or equal to 50 Characters")
   private String name;
 
-  @Size(max = 250, message = "Description too long; max 250 characters")
+  @Length(max=250, message = "Description has to be less than or equal to 250 Characters")
   private String description;
 
-  @NotNull(message = "Address is required")
+  @Valid
   private FullAddressDto address;
-  
+
+  @NotNull(message = "Business Type is Required")
+  @Length(max=50, message = "Business Type has to be less than or equal to 50 Characters")
   @StringEnumeration(enumClass = BusinessType.class, message = "Invalid business type given")
-  @NotNull(message = "Business type is required")
   private String businessType;
 
   public CreateBusinessDto(Business business) {

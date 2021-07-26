@@ -27,7 +27,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/** This controller class provides the endpoints for dealing with business listings */
+import javax.validation.Valid;
+
+/**
+ * This controller class provides the endpoints for dealing with business listings
+ */
 @RestController
 @Slf4j
 @RequestMapping("")
