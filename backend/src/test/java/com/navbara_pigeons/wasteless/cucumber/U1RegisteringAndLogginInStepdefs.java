@@ -74,7 +74,6 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
     JSONObject credentials = new JSONObject();
     credentials.put("email", email);
     credentials.put("password", password);
-    System.out.println(credentials.toString());
     this.mvcResult = mockMvc.perform(
         post("/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -122,7 +121,6 @@ public class U1RegisteringAndLogginInStepdefs extends CucumberTestProvider {
 
   @Then("I am shown an error that my request is invalid")
   public void iAmShownAnErrorThatMyRequestIsInvalid() {
-    System.out.println(this.mvcResult.getResponse().getStatus());
     assertEquals(400, this.mvcResult.getResponse().getStatus());
   }
 

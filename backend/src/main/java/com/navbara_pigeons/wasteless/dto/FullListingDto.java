@@ -2,25 +2,19 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Listing;
 import java.time.ZonedDateTime;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
 
 @Data
 public class FullListingDto {
 
   private long id;
   private FullInventoryItemDto inventoryItem;
-
-  @NotNull(message = "Quantity cannot be Null")
   private long quantity;
-
-  @NotNull(message = "Price cannot be Null")
+  @DecimalMin(message="price must be above 0.01", value="0.01")
+  @DecimalMax(message="price must be below 10,000,000", value="10000000.00")
   private Double price;
-
-  @Length(max=50, message = "More Info has to be less than or equal to 50 Characters")
   private String moreInfo;
   private ZonedDateTime created;
   private ZonedDateTime closes;

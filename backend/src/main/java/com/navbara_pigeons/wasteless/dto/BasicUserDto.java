@@ -7,10 +7,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
 
 /**
  * User DTO which does not return coarse address, email, date of birth and phone number
@@ -19,22 +15,10 @@ import javax.validation.constraints.NotBlank;
 public class BasicUserDto {
 
   private long id;
-
-  @NotBlank(message = "First Name is Required")
-  @Length(max=50, message = "First Name has to be less than or equal to 50 Characters")
   private String firstName;
-
-  @NotBlank(message = "Last Name is Required")
-  @Length(max=50, message = "Last Name has to be less than or equal to 50 Characters")
   private String lastName;
-
-  @Length(max=50, message = "Middle Name has to be less than or equal to 50 Characters")
   private String middleName;
-
-  @Length(max=50, message = "Nick Name has to be less than or equal to 50 Characters")
   private String nickname;
-
-  @Length(max=250, message = "Bio has to be less than or equal to 250 Characters")
   private String bio;
   private BasicAddressDto homeAddress;
   private ZonedDateTime created;

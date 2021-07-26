@@ -3,26 +3,25 @@ package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import java.time.LocalDate;
-import lombok.Data;
-
+import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
+import lombok.Data;
 
 @Data
 public class BasicInventoryItemDto {
 
   private long id;
   private BasicProductDto product;
-
-  @NotNull(message = "Quantity Cannot Be Null")
-  @DecimalMin(inclusive = false, value = "0", message = "Quantity has to be greater than 0")
   private long quantity;
+  @DecimalMin(message="pricePerItem must be above 0.01", value="0.01")
+  @DecimalMax(message="pricePerItem must be below 10,000,000", value="10000000.00")
   private Double pricePerItem;
+  @DecimalMin(message="totalPrice must be above 0.01", value="0.01")
+  @DecimalMax(message="totalPrice must be below 10,000,000", value="10000000.00")
   private Double totalPrice;
   private LocalDate manufactured;
   private LocalDate sellBy;
   private LocalDate bestBefore;
-  @NotNull(message = "Expiry Date Cannot Be Null")
   private LocalDate expires;
 
   public BasicInventoryItemDto(InventoryItem inventoryItem, String publicPathPrefix) {

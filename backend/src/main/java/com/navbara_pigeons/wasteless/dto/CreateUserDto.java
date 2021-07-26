@@ -6,6 +6,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 
@@ -46,6 +47,8 @@ public class CreateUserDto {
   @Length(max=60, message = "Password has to be less than or equal to 60 Characters")
   @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+).{8,}", message = "The password must be at least 8 characters long and contain lowercase, uppercase and number characters")
   private String password;
+
+  @Valid
   private FullAddressDto homeAddress;
 
   public CreateUserDto(User user) {
