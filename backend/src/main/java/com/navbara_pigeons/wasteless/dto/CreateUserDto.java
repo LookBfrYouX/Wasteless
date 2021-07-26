@@ -1,14 +1,14 @@
 package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.validation.constraints.AfterNowPlusXYears;
+import com.navbara_pigeons.wasteless.validation.constraints.BeforeNowPlusXYears;
 import java.time.LocalDate;
-import com.navbara_pigeons.wasteless.validation.constraints.NotTooDistantPast;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import javax.validation.constraints.NotNull;
-
 
 /**
  * User DTO which returns all user information except password
@@ -38,7 +38,8 @@ public class CreateUserDto {
   private String email;
 
   @NotNull(message = "Date Of Birth cannot be Null")
-  @NotTooDistantPast(message = "Date of birth too far into the past")
+  @BeforeNowPlusXYears(years=-13, message="You must be 13 years or older to register")
+  @AfterNowPlusXYears(years=-100, message="Must be less than 100 years old to register")
   private LocalDate dateOfBirth;
 
   @Length(max=25, message = "Phone Number has to be less than or equal to 25 Characters")

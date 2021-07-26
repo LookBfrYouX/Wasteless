@@ -22,12 +22,8 @@ public class InventoryServiceValidation {
    *
    * @param inventory
    */
-  public static void datesValid(InventoryItem inventory, LocalDate currentDate)
+  public static void datesValid(InventoryItem inventory)
       throws InventoryRegistrationException {
-    // TODO how do we ensure local date is equal to date of the user?
-    if (InventoryServiceValidation.date1AfterDate2(inventory.getManufactured(), currentDate)) {
-      throw new InventoryRegistrationException("Manufacture date must be before or equal to today");
-    }
     if (InventoryServiceValidation
         .date1AfterDate2(inventory.getManufactured(), inventory.getBestBefore())) {
       throw new InventoryRegistrationException("Best before date must be after manufacture date");
@@ -36,8 +32,9 @@ public class InventoryServiceValidation {
         .date1AfterDate2(inventory.getBestBefore(), inventory.getSellBy())) {
       throw new InventoryRegistrationException("Sell by date must be after best before date");
     }
-    if (InventoryServiceValidation.date1AfterDate2(currentDate, inventory.getExpires())) {
-      throw new InventoryRegistrationException("Expiry date must be on or after today");
+    if (InventoryServiceValidation
+        .date1AfterDate2(inventory.getSellBy(), inventory.getExpires())) {
+      throw new InventoryRegistrationException("Expiry must be after the sell by date");
     }
   }
 
@@ -60,8 +57,7 @@ public class InventoryServiceValidation {
    */
   public static void isInventoryItemValid(InventoryItem inventory)
       throws InventoryRegistrationException {
-    LocalDate currentDate = LocalDate.now();
-    InventoryServiceValidation.datesValid(inventory, currentDate);
+    InventoryServiceValidation.datesValid(inventory);
     InventoryServiceValidation.quantityValid(inventory.getQuantity());
   }
 }

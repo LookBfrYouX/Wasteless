@@ -14,12 +14,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Code copied from https://stackoverflow.com/a/18209990
  */
 @Documented
-@Constraint(validatedBy = NotTooDistantPastValidator.class)
+@Constraint(validatedBy = AfterNowPlusXYearsValidator.class)
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, PARAMETER, CONSTRUCTOR })
 @Retention(RUNTIME)
-public @interface NotTooDistantPast {
-  String message() default "{com.navbara_pigeons.wasteless.validation.constraints.NotTooDistantPast." + "message}";
+public @interface AfterNowPlusXYears {
+  String message() default "{com.navbara_pigeons.wasteless.validation.constraints.OutsideXYears." + "message}";
   Class<?>[] groups() default {};
   Class<? extends Payload>[] payload() default {};
-  String minYears() default "100";
+  int years() default 100;
 }
