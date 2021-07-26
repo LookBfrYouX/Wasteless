@@ -11,6 +11,7 @@ import com.navbara_pigeons.wasteless.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +103,7 @@ public class ProductController {
    */
   @PostMapping("/businesses/{id}/products")
   public ResponseEntity<Object> addToCatalogue(
-      @PathVariable long id, @RequestBody BasicProductCreationDto product)
+      @PathVariable long id, @RequestBody @Valid BasicProductCreationDto product)
       throws InsufficientPrivilegesException, ProductRegistrationException {
     JSONObject response = productService.addProduct(id, product);
     log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());

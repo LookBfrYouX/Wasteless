@@ -60,24 +60,6 @@ public class InventoryServiceValidation {
   }
 
   /**
-   * Checks if price is valid: positive and less than 10000
-   *
-   * @param price price to check
-   * @return if price is valid or null
-   */
-  public static void priceValid(Double price) throws InventoryRegistrationException {
-    if (price == null) {
-      return;
-    }
-    if (price < 0) {
-      throw new InventoryRegistrationException("Price cannot be negative");
-      // test gets broken when user inputs 9999.999
-    } else if (price > 9999.99) {
-      throw new InventoryRegistrationException("Price cannot be more than 10000");
-    }
-  }
-
-  /**
    * Checks if quantity is valid: positive
    *
    * @param quantity quantity to check
@@ -99,7 +81,6 @@ public class InventoryServiceValidation {
     LocalDate currentDate = LocalDate.now();
     InventoryServiceValidation.requiredFieldsNotEmpty(inventory);
     InventoryServiceValidation.datesValid(inventory, currentDate);
-    InventoryServiceValidation.priceValid(inventory.getPricePerItem());
     InventoryServiceValidation.quantityValid(inventory.getQuantity());
   }
 }
