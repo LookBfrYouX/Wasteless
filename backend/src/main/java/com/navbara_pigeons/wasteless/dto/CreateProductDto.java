@@ -22,7 +22,8 @@ public class CreateProductDto {
   @Length(max=100, message = "Manufacturer has to be less than or equal to 100 Characters")
   private String manufacturer;
 
-  @DecimalMin(message = "Recommended Retail Price must be Positive", value = "0")
+  @DecimalMin(message="RRP must be above 0.01", value="0.01")
+  @DecimalMax(message="RRP must be below 10,000,000", value="10000000.00")
   private Double recommendedRetailPrice;
 
 

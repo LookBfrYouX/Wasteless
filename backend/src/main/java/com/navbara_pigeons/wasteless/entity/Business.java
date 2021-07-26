@@ -1,10 +1,10 @@
 package com.navbara_pigeons.wasteless.entity;
 
 import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
-import com.navbara_pigeons.wasteless.dto.BasicProductDto;
-import com.navbara_pigeons.wasteless.dto.BasicUserDto;
-import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
+import com.navbara_pigeons.wasteless.dto.BasicProductDto;
+import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;

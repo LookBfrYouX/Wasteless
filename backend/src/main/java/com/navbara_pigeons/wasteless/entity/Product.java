@@ -92,6 +92,14 @@ public class Product {
     }
   }
 
+  public Product(CreateProductDto product) {
+    this.name = product.getName();
+    this.description = product.getDescription();
+    this.manufacturer = product.getManufacturer();
+    this.recommendedRetailPrice = product.getRecommendedRetailPrice();
+  }
+
+
   public Product() {}
 
   /**

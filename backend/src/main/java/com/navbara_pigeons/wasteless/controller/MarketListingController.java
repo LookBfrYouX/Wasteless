@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("")
 @Tag(name = "Marketplace Endpoint (Cards)", description = "The API endpoint for a virtual marketplace")
@@ -46,7 +46,7 @@ public class MarketListingController {
   @PostMapping("/cards")
   public ResponseEntity<JSONObject> addMarketListing(
       @Valid @RequestBody CreateMarketListingDto createMarketListingDto)
-      throws UserNotFoundException, UnhandledException {
+      throws UserNotFoundException {
     log.info("CREATING A CARD WITH TITLE: " + createMarketListingDto.getTitle());
     User creator = userService.getUserById(createMarketListingDto.getCreatorId());
     MarketListing marketListing = new MarketListing(createMarketListingDto, creator);

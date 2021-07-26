@@ -24,8 +24,6 @@ import javax.validation.constraints.Size;
 public class CreateBusinessDto {
   private Long primaryAdministratorId;
 
-  private long primaryAdministratorId;
-
   @NotBlank(message = "Name is Required")
   @Length(max=50, message = "Name has to be less than or equal to 50 Characters")
   private String name;

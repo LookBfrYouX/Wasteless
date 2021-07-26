@@ -17,6 +17,7 @@ public class BasicBusinessDto {
   private String name;
   private String description;
   private FullAddressDto address;
+  private String businessType;
   private ZonedDateTime created;
 
   public BasicBusinessDto(Business business) {

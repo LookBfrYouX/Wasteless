@@ -32,7 +32,7 @@ import javax.validation.Valid;
 /**
  * This controller class provides the endpoints for dealing with business listings
  */
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("")
 @Tag(name = "Listing Endpoint", description = "The API endpoint for Product Listing related requests")
