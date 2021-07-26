@@ -78,7 +78,6 @@ public class UserController {
    */
   @PostMapping("/users")
   @Operation(summary = "Register a new user", description = "New user registration")
-  public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user)
   public ResponseEntity<JSONObject> registerUser(@Valid @RequestBody CreateUserDto user)
       throws UserNotFoundException, AddressValidationException, UserRegistrationException,
       UserAlreadyExistsException, UserAuthenticationException {
