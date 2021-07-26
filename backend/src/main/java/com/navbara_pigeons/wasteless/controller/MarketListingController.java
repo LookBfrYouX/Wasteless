@@ -81,7 +81,7 @@ public class MarketListingController {
   public ResponseEntity<PaginationDto<FullMarketListingDto>> getMarketListings(
       @Parameter(
           description = "The section for which cards should be retrieved."
-      ) @RequestParam MarketplaceSection section,
+      ) @RequestParam String section,
       @Parameter(
           description = "The start index of the list to return, implemented for pagination, Can be "
               + "Null. This index is inclusive."
@@ -101,7 +101,7 @@ public class MarketListingController {
     log.info("GETTING CARDS FROM THE '" + section + "' SECTION");
     return new ResponseEntity<>(
         this.marketListingService
-            .getMarketListings(section.name(), sortBy, pagStartIndex, pagEndIndex, isAscending),
+            .getMarketListings(section, sortBy, pagStartIndex, pagEndIndex, isAscending),
         HttpStatus.OK);
   }
 }

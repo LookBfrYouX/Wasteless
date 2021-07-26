@@ -227,13 +227,6 @@ public class ControllerExceptionHandler {
     log.error("FAILED LOGIN: 400 - " + exc.getMessage());
   }
 
-  @ExceptionHandler(ListingValidationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
-    log.error("BAD REQUEST: 400 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
-  }
-
   @ExceptionHandler(InvalidMarketListingSectionException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleInvalidMarketListingSectionException(InvalidMarketListingSectionException exc) {
