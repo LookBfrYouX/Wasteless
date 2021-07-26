@@ -1,5 +1,4 @@
 <template>
-  <v-app>
   <div class="w-100 d-flex my-3">
     <form
         autocomplete="on"
@@ -113,7 +112,6 @@
       </div>
     </form>
   </div>
-  </v-app>
 </template>
 <style scoped>
 
@@ -224,7 +222,7 @@ export default {
         title: this.title,
         description: this.description.trim(),
         // remove extra newlines etc. at the start and end
-        tagIds: keywordIds
+        keywordIds: keywordIds
       };
 
       try {
