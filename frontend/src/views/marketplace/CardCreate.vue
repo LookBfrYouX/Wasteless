@@ -58,12 +58,13 @@
       </div>
       <div class="row">
         <div class="col-12 form-group">
-          <v-btn
+          <button
               v-if="!addKeywords"
             @click="getAllKeywords()"
-            class="btn btn-primary">
+            class="btn btn-primary"
+              type="button">
             Add keywords
-          </v-btn>
+          </button>
           <p
             v-if="addKeywords">Find keywords to add</p>
           <v-autocomplete
@@ -203,6 +204,7 @@ export default {
      * sends request to the server.
      */
     create: async function () {
+      console.log("!!!!");
       if (!Object.keys(this.$constants.MARKETPLACE.SECTIONS).includes(this.section)) {
         this.errorMessage = "You must select a section to list your card in";
         return;
