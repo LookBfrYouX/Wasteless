@@ -66,11 +66,32 @@ public class ProductControllerTest extends ControllerTestProvider {
   // Throw 400 on bad request to controller (name is required)
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  public void throw400OnBadProductTest() throws Exception {
+  public void throw400OnBadProductNameTest() throws Exception {
+    BasicProductCreationDto mockProduct = new BasicProductCreationDto();
+    mockProduct.setManufacturer(null);
+    mockProduct.setRecommendedRetailPrice(100.0);
+
+    mockMvc.perform(post("/businesses/1001/products")
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(mockProduct)))
+        .andExpect(status().isBadRequest());
+  }
+
+  // Throw 400 on bad request to controller (price must be above 0 and below 10000000)
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  public void throw400OnBadProductPriceTest() throws Exception {
     BasicProductCreationDto mockProduct = new BasicProductCreationDto();
     mockProduct.setName("Pizza");
     mockProduct.setManufacturer(null);
-    mockProduct.setRecommendedRetailPrice(100.0);
+    mockProduct.setRecommendedRetailPrice(-5.00);
+
+    mockMvc.perform(post("/businesses/1001/products")
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(mockProduct)))
+        .andExpect(status().isBadRequest());
+
+    mockProduct.setRecommendedRetailPrice(10000001.00);
 
     mockMvc.perform(post("/businesses/1001/products")
         .contentType("application/json")

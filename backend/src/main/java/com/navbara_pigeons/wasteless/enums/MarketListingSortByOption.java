@@ -5,7 +5,9 @@ import com.navbara_pigeons.wasteless.entity.MarketListing;
 public enum MarketListingSortByOption implements SortByOption {
   title,
   created,
-  displayPeriodEnd;
+  displayPeriodEnd,
+  suburb,
+  city;
 
   @Override
   public Class<?> getEntity() {

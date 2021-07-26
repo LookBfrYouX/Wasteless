@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.service.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class ListingController {
    */
   @PostMapping("/businesses/{businessId}/listings")
   public ResponseEntity<JSONObject> addListing(
-      @PathVariable long businessId, @RequestBody CreateListingDto listingDto)
+      @PathVariable long businessId, @RequestBody @Valid CreateListingDto listingDto)
       throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException,
           ListingValidationException, InventoryItemNotFoundException {
 

@@ -138,4 +138,40 @@ public class InventoryControllerTest extends ControllerTestProvider {
         .andExpect(status().isForbidden());
   }
 
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void addInventoryItemToBusinessInventoryInvalidPrice() throws Exception {
+    String endpointUrl = "/businesses/1001/inventory";
+    CreateInventoryItemDto dto = new CreateInventoryItemDto();
+    dto.setProductId(7000);
+    dto.setQuantity(2);
+    dto.setPricePerItem(-5.00);
+    dto.setExpires(LocalDate.now());
+    mockMvc.perform(post(endpointUrl)
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(dto)))
+        .andExpect(status().isBadRequest());
+
+    dto.setPricePerItem(10000001.00);
+
+    mockMvc.perform(post(endpointUrl)
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(dto)))
+        .andExpect(status().isBadRequest());
+
+    dto.setPricePerItem(5.00);
+    dto.setTotalPrice(-5.00);
+
+    mockMvc.perform(post(endpointUrl)
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(dto)))
+        .andExpect(status().isBadRequest());
+
+    dto.setTotalPrice(10000001.00);
+
+    mockMvc.perform(post(endpointUrl)
+        .contentType("application/json")
+        .content(objectMapper.writeValueAsString(dto)))
+        .andExpect(status().isBadRequest());
+  }
 }

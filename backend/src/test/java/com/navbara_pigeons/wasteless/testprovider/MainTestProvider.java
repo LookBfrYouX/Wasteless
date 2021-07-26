@@ -1,12 +1,7 @@
 package com.navbara_pigeons.wasteless.testprovider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.navbara_pigeons.wasteless.entity.Address;
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.InventoryItem;
-import com.navbara_pigeons.wasteless.entity.Keyword;
-import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.entity.*;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -14,9 +9,16 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import javax.annotation.PostConstruct;
+
+import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
 
 /**
  * This test helper class provides the general setup and methods available to all Service and Dao
@@ -33,13 +35,18 @@ public class MainTestProvider {
   protected final String PRODUCT_1_NAME = "PIZZA";
 
   @Autowired
-  protected MockMvc mockMvc;
-
-  @Autowired
   protected ObjectMapper objectMapper;
 
   @Autowired
   protected BusinessService businessService;
+
+  // https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html
+  @Autowired
+  protected MockMvc mockMvc;
+
+  @Autowired
+  protected WebApplicationContext webApplicationContext;
+
 
   protected InventoryItem makeInventoryItem(Product product, Business business) {
     InventoryItem inventoryItem = new InventoryItem();
@@ -57,6 +64,7 @@ public class MainTestProvider {
     product.setName(productName)
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setDescription("A test product.")
+        .setManufacturer("Test manufacturer")
         .setRecommendedRetailPrice(20.25);
     return product;
   }
@@ -72,7 +80,7 @@ public class MainTestProvider {
     Business business = new Business();
     business.setName(businessName)
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
-        .setBusinessType("Non-profit organisation")
+        .setBusinessType(BusinessType.NON_PROFIT)
         .setAddress(makeAddress())
         .setDescription("some description");
     return business;
@@ -92,7 +100,8 @@ public class MainTestProvider {
     Business business = makeBusiness(businessName);
     ArrayList<User> administrators = new ArrayList<>();
     administrators.add(admin);
-    business.setName(businessName)
+    business
+        .setName(businessName)
         .setAdministrators(administrators)
         .setPrimaryAdministratorId(admin.getId());
     return business;
@@ -109,6 +118,16 @@ public class MainTestProvider {
   }
 
   /**
+   * This test helper method creates and returns a test business to be used in cucumber tests with
+   * default business names, types, descriptions etc.
+   * @param admin primary business administrator
+   * @return Business business
+   */
+  protected Business makeBusiness(User admin) {
+    return makeBusiness("Test Business Name", admin);
+  }
+
+  /**
    * This test helper method creates and returns a test user to be used in cucumber tests from the
    * given parameters.
    *
@@ -117,7 +136,7 @@ public class MainTestProvider {
   protected User makeUser(String email, String password, Boolean isAdmin) {
     User testUser = new User();
     // Create test user
-    testUser.setId(0)
+    testUser
         .setFirstName("Tony")
         .setLastName("Last")
         .setMiddleName("Middle")
