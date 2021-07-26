@@ -30,12 +30,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class handles all custom controller exceptions and returns the appropriate response entity
@@ -55,7 +58,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(InsufficientPrivilegesException.class)
   @ResponseStatus(HttpStatus.FORBIDDEN)
   public ResponseEntity<String> handleInsufficientPrivilegesException(
-      InsufficientPrivilegesException exc) {
+          InsufficientPrivilegesException exc) {
     log.error("UNAUTHORISED ACTION: 403 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.FORBIDDEN);
   }
@@ -121,7 +124,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(ProductRegistrationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleProductRegistrationException(
-      ProductRegistrationException exc) {
+          ProductRegistrationException exc) {
     log.error("PRODUCT REGISTRATION ERROR: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
@@ -129,7 +132,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(InventoryItemNotFoundException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleInventoryItemNotFoundException(
-      InventoryItemNotFoundException exc) {
+          InventoryItemNotFoundException exc) {
     log.error("INVENTORY ITEM ERROR: 406 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
@@ -143,7 +146,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(InventoryRegistrationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleInventoryRegistrationException(
-      InventoryRegistrationException exc) {
+          InventoryRegistrationException exc) {
     log.error("INVENTORY REGISTRATION EXCEPTION: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
@@ -164,7 +167,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(InvalidAttributeValueException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<String> handleInvalidAttributeValueException(
-      InvalidAttributeValueException exc) {
+          InvalidAttributeValueException exc) {
     log.error("SEARCH QUERY ERROR: 500 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
@@ -200,6 +203,15 @@ public class ControllerExceptionHandler {
   public void handleBusinessTypeException(BusinessTypeException exc) {
     log.error("BUSINESS TYPE ERROR: 400 - " + exc.getMessage());
   }
+
+  @ExceptionHandler(ListingValidationException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
+    log.error("BAD REQUEST: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+
 
   @ExceptionHandler(AddressValidationException.class)
   @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad address given")

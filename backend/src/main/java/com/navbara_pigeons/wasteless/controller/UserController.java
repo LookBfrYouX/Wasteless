@@ -18,6 +18,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.management.InvalidAttributeValueException;
+import javax.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +78,7 @@ public class UserController {
    */
   @PostMapping("/users")
   @Operation(summary = "Register a new user", description = "New user registration")
-  public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user)
+  public ResponseEntity<JSONObject> registerUser(@Valid @RequestBody CreateUserDto user)
       throws UserNotFoundException, AddressValidationException, UserRegistrationException,
       UserAlreadyExistsException, UserAuthenticationException {
     JSONObject createdUserId = userService.saveUser(new User(user));

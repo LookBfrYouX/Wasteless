@@ -21,6 +21,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import lombok.Data;
 import lombok.ToString;
 
@@ -68,6 +70,7 @@ public class User {
 
   @Column(name = "ROLE")
   private String role;
+
 
   @Column(name = "PASSWORD")
   private String password;

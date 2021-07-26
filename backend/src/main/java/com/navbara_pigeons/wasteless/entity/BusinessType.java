@@ -1,5 +1,7 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+
 public enum BusinessType {
   ACCOMMODATION_AND_FOOD("Accommodation and Food Services"),
   RETAIL("Retail Trade"),
@@ -22,7 +24,7 @@ public enum BusinessType {
    * Converts string to BusinessType (using the enum value, not the name of the enum)
    * @param businessType string to convert
    * @return enum value
-   * @throws IllegalArgumentException if invalid string given
+   * @throws BusinessTypeException if invalid string given
    */
   public static BusinessType fromString(String businessType) throws IllegalArgumentException {
     if (businessType == null) {

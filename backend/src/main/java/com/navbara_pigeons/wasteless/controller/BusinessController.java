@@ -56,7 +56,7 @@ public class BusinessController {
    */
   @PostMapping("/businesses")
   @Operation(summary = "Register business", description = "Register a business using the 'CreateBusinessDto' object")
-  public ResponseEntity<Object> registerBusiness(@RequestBody @Valid CreateBusinessDto business)
+  public ResponseEntity<JSONObject> registerBusiness(@RequestBody @Valid CreateBusinessDto business)
       throws UserNotFoundException, AddressValidationException, BusinessTypeException, BusinessRegistrationException {
     JSONObject businessId = businessService.saveBusiness(new Business(business));
     log.info("BUSINESS CREATED SUCCESSFULLY: " + businessId.get("businessId"));
@@ -73,7 +73,7 @@ public class BusinessController {
   @GetMapping("/businesses/{id}")
   @Operation(summary = "Get information about a business", description = "Returns all information about a business with the given id")
   public ResponseEntity<Object> getBusinessById(@PathVariable String id)
-      throws UserNotFoundException, BusinessNotFoundException {
+          throws UserNotFoundException, BusinessNotFoundException {
     log.info("GETTING BUSINESS BY ID: " + id);
     return new ResponseEntity<>(
         businessService.getBusinessById(Long.parseLong(id)), HttpStatus.OK);
