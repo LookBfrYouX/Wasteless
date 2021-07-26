@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
@@ -164,11 +165,11 @@ public class ControllerExceptionHandler {
   }
 
   @ExceptionHandler(InvalidPaginationInputException.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleInvalidPaginationInputException(
       InvalidPaginationInputException exc) {
-    log.error("PAGINATION ERROR: 500 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    log.error("PAGINATION INPUT ERROR: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(UserAlreadyExistsException.class)
@@ -242,5 +243,12 @@ public class ControllerExceptionHandler {
     }
 
     return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(BusinessAdminException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleBusinessAdminException(BusinessAdminException exc) {
+    log.error("BAD REQUEST: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 }
