@@ -2,7 +2,10 @@ package com.navbara_pigeons.wasteless.validation;
 
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+
 import java.time.LocalDate;
+import java.util.AbstractMap;
+import java.util.List;
 
 public class InventoryServiceValidation {
   /**
@@ -24,17 +27,30 @@ public class InventoryServiceValidation {
    */
   public static void datesValid(InventoryItem inventory)
       throws InventoryRegistrationException {
-    if (InventoryServiceValidation
-        .date1AfterDate2(inventory.getManufactured(), inventory.getBestBefore())) {
-      throw new InventoryRegistrationException("Best before date must be after manufacture date");
-    }
-    if (InventoryServiceValidation
-        .date1AfterDate2(inventory.getBestBefore(), inventory.getSellBy())) {
-      throw new InventoryRegistrationException("Sell by date must be after best before date");
-    }
-    if (InventoryServiceValidation
-        .date1AfterDate2(inventory.getSellBy(), inventory.getExpires())) {
-      throw new InventoryRegistrationException("Expiry must be after the sell by date");
+    List<AbstractMap.SimpleEntry<String, LocalDate>> ordering = List.of(
+        new AbstractMap.SimpleEntry<>("Manufactured", inventory.getManufactured()),
+        new AbstractMap.SimpleEntry<>("Best Before", inventory.getBestBefore()),
+        new AbstractMap.SimpleEntry<>("Sell By", inventory.getSellBy()),
+        new AbstractMap.SimpleEntry<>("Expiry", inventory.getExpires())
+    );
+
+    // Dates in the list must be in order
+    // Because some elements can be null, cannot just compare dates that are next
+    // to each other in the list. Hence, must compare each element with every other element
+    for(int i = 0; i < ordering.size() - 1; i++) {
+      for(int j = i + 1; j < ordering.size(); j++) {
+        if (InventoryServiceValidation.date1AfterDate2(
+            ordering.get(i).getValue(),
+            ordering.get(j).getValue()
+        )) {
+          throw new InventoryRegistrationException(
+              String.format("%s date must be after %s date",
+                  ordering.get(i).getKey(),
+                  ordering.get(j).getKey()
+              )
+          );
+        }
+      }
     }
   }
 
