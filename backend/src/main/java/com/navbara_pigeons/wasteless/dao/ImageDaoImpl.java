@@ -64,11 +64,20 @@ public class ImageDaoImpl implements ImageDao {
     Files.copy(image.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
   }
 
+  /**
+   * Delete an image from the local storage.
+   * @param filename
+   * @throws IOException
+   */
   public void deleteProductImageFromMachine(String filename) throws IOException {
     Path imagePath = getPathToProduct(filename);
     Files.delete(imagePath);
   }
 
+  /**
+   * Delete an image from the database.
+   * @param image
+   */
   public void deleteImage(Image image) {
     Session currentSession = getSession();
     currentSession.delete(image);

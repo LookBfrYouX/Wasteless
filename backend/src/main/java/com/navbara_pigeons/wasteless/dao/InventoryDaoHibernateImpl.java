@@ -40,7 +40,7 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
    */
   @Override
   public Pair<List<InventoryItem>, Long> getInventoryItems(Business business,
-      PaginationBuilder pagBuilder) throws InvalidPaginationInputException {
+      PaginationBuilder pagBuilder) {
     Session currentSession = getSession();
     TypedQuery<InventoryItem> query =
         InventoryQueryBuilder.listPaginatedAndSortedBusinessInventory(
@@ -60,23 +60,6 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
   public void saveInventoryItem(InventoryItem inventory) {
     Session currentSession = getSession();
     currentSession.saveOrUpdate(inventory);
-  }
-
-  /**
-   * This method returns a product from the database.
-   *
-   * @param inventoryId The id of the inventoryItem to be retreived.
-   * @return inventoryItem to be returned
-   * @throws InventoryItemNotFoundException when no inventoryItem is found
-   */
-  @Override
-  public InventoryItem getInventoryItem(long inventoryId) throws InventoryItemNotFoundException {
-    Session currentSession = getSession();
-    InventoryItem inventory = currentSession.get(InventoryItem.class, inventoryId);
-    if (inventory == null) {
-      throw new InventoryItemNotFoundException(inventoryId);
-    }
-    return inventory;
   }
 
   /**

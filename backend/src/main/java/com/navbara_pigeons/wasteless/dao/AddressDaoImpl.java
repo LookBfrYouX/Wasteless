@@ -27,17 +27,6 @@ public class AddressDaoImpl implements AddressDao {
   }
 
   /**
-   * Method to delete an Address entity from the database.
-   *
-   * @param address Passed in Address model
-   */
-  @Override
-  public void deleteAddress(Address address) {
-    Session currentSession = getSession();
-    currentSession.delete(address);
-  }
-
-  /**
    * Get the entity manager session
    *
    * @return Instance of the Session class

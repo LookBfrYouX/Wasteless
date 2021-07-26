@@ -46,17 +46,6 @@ public class UserDaoHibernateImpl implements UserDao {
   }
 
   /**
-   * Method to remove a user from the database
-   *
-   * @param user Passed in User model
-   */
-  @Override
-  public void deleteUser(User user) {
-    Session currentSession = getSession();
-    currentSession.delete(user);
-  }
-
-  /**
    * Method to retrieve a User by the corresponding id. Throws Runtime exception if no or many users
    * are found.
    *

@@ -13,8 +13,6 @@ public interface UserDao {
 
   void saveUser(User user);
 
-  void deleteUser(User user);
-
   User getUserById(long id) throws UserNotFoundException;
 
   User getUserByEmail(String email) throws UserNotFoundException;
