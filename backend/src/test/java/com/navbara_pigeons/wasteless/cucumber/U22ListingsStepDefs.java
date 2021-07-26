@@ -4,7 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
+import com.navbara_pigeons.wasteless.dto.CreateProductDto;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
@@ -15,6 +15,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
 
 public class U22ListingsStepDefs extends CucumberTestProvider {
@@ -42,7 +43,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
 
   @And("the business has the product {string} with RRP of {double}")
   public void the_business_has_the_product_with_rrp_of(String name, Double rrp) throws Exception {
-    BasicProductCreationDto product = new BasicProductCreationDto();
+    CreateProductDto product = new CreateProductDto();
     product.setName(name);
     product.setManufacturer("Should be optional but might still be required");
     product.setRecommendedRetailPrice(rrp);
@@ -101,8 +102,9 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
   @Then("appropriate error messages are shown")
   public void appropriateErrorMessagesAreShown() {
     // First listing should be created, second shouldn't
-    Assertions.assertEquals(responseOne.getResponse().getStatus(), 201);
-    Assertions.assertEquals(responseTwo.getResponse().getStatus(), 400);
+    Assertions.assertEquals(201, responseOne.getResponse().getStatus());
+
+    Assertions.assertEquals(400, responseTwo.getResponse().getStatus());
   }
 
 

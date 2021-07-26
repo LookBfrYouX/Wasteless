@@ -92,12 +92,6 @@ public class UserServiceImpl implements UserService {
   public JSONObject saveUser(User user)
       throws UserAlreadyExistsException, UserRegistrationException, UserNotFoundException, AddressValidationException, UserAuthenticationException {
     // Email validation
-    if (!UserServiceValidation.requiredFieldsNotEmpty(user)) {
-      throw new UserRegistrationException("Required user fields cannot be null");
-    }
-    if (!UserServiceValidation.isEmailValid(user.getEmail())) {
-      throw new UserRegistrationException("Invalid email");
-    }
     if (userDao.userExists(user.getEmail())) {
       throw new UserAlreadyExistsException("User already exists");
     }
@@ -107,10 +101,6 @@ public class UserServiceImpl implements UserService {
     }
     if (!user.getDateOfBirth().isAfter(LocalDate.now().minusYears(110))) {
       throw new UserRegistrationException("Must be less than 110 years old to register");
-    }
-    // Password and field validation
-    if (!UserServiceValidation.isPasswordValid(user.getPassword())) {
-      throw new UserRegistrationException("Password does not pass validation check");
     }
 
     // Set user credentials for logging in after registering

@@ -1,3 +1,5 @@
+
+
 package com.navbara_pigeons.wasteless.dto;
 
 
@@ -7,10 +9,16 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import lombok.Data;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+
 @Data
 public class CreateInventoryItemDto {
 
   private long productId;
+
+  @NotNull(message = "Quantity Cannot Be Null")
+  @DecimalMin(inclusive = false, value = "0")
   private long quantity;
   @DecimalMin(message="pricePerItem must be above 0.01", value="0.01")
   @DecimalMax(message="pricePerItem must be below 10,000,000", value="10000000.00")
@@ -21,6 +29,8 @@ public class CreateInventoryItemDto {
   private LocalDate manufactured;
   private LocalDate sellBy;
   private LocalDate bestBefore;
+
+  @NotNull(message = "Expiry Date Cannot Be Null")
   private LocalDate expires;
 
   public CreateInventoryItemDto(InventoryItem inventoryItem) {

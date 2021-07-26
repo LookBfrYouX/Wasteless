@@ -17,6 +17,8 @@ import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
@@ -29,6 +31,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 public class UserServiceImplTest extends ServiceTestProvider {
 
@@ -71,29 +78,6 @@ public class UserServiceImplTest extends ServiceTestProvider {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     for (String testValue : testValues) {
       user.setDateOfBirth(LocalDate.parse(testValue));
-      assertThrows(UserRegistrationException.class, () -> userService.saveUser(user));
-    }
-  }
-
-  @Test
-  public void saveUser_invalidEmail() {
-    String[] testValues = {"alec", "alec@", "alec@.", "alec@gmail", "alec@gmail.", "@", "@gmail",
-        "@gmail.com"};
-    User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    for (String testValue : testValues) {
-      user.setEmail(testValue);
-      assertThrows(UserRegistrationException.class, () -> userService.saveUser(user));
-    }
-  }
-
-  @Test
-  public void saveUser_invalidPassword() {
-    String[] testValues = {"pwrd", "", "password",
-        "passw rd", "pasWrd", "passwoRd", "passwo8d",
-        "PASSW8RD"};
-    User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    for (String testValue : testValues) {
-      user.setPassword(testValue);
       assertThrows(UserRegistrationException.class, () -> userService.saveUser(user));
     }
   }

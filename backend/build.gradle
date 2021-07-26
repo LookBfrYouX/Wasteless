@@ -53,6 +53,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // ability to expose JPA as REST services (discouraged, but used for example purpose here)
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    // ability to use validators
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     // ability to expose RESTFul services (with controllers)
     implementation 'org.springframework.boot:spring-boot-starter-web'
     // security starter package
