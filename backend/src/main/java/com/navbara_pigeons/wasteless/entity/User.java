@@ -21,6 +21,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import lombok.Data;
 import lombok.ToString;
 
@@ -95,7 +97,7 @@ public class User {
   )
   private List<Business> businesses = new ArrayList<>();
 
-  public User(BasicUserDto user) {
+  public User(BasicUserDto user) throws BusinessTypeException {
     this.id = user.getId();
     this.firstName = user.getFirstName();
     this.lastName = user.getLastName();
@@ -110,7 +112,7 @@ public class User {
     }
   }
 
-  public User(FullUserDto user) {
+  public User(FullUserDto user) throws BusinessTypeException {
     this.id = user.getId();
     this.firstName = user.getFirstName();
     this.lastName = user.getLastName();

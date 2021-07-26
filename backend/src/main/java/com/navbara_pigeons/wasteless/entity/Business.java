@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import lombok.Data;
 
 @Data
@@ -86,7 +87,7 @@ public class Business {
   @JoinColumn(name = "BUSINESS_ID")
   private List<InventoryItem> inventory = new ArrayList<>();
 
-  public Business(FullBusinessDto business) {
+  public Business(FullBusinessDto business) throws BusinessTypeException {
     this.id = business.getId();
     this.primaryAdministratorId = business.getPrimaryAdministratorId();
     this.name = business.getName();
@@ -102,7 +103,7 @@ public class Business {
     }
   }
 
-  public Business(BasicBusinessDto business) {
+  public Business(BasicBusinessDto business) throws BusinessTypeException {
     this.id = business.getId();
     this.primaryAdministratorId = business.getPrimaryAdministratorId();
     this.name = business.getName();
@@ -112,7 +113,7 @@ public class Business {
     this.created = business.getCreated();
   }
 
-  public Business(CreateBusinessDto business) {
+  public Business(CreateBusinessDto business)  throws BusinessTypeException {
     this.primaryAdministratorId = business.getPrimaryAdministratorId();
     this.name = business.getName();
     this.description = business.getDescription();

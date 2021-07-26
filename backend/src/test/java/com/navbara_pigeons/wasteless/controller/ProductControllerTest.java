@@ -81,7 +81,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   public void throw400OnBadProductPriceTest() throws Exception {
-    BasicProductCreationDto mockProduct = new BasicProductCreationDto();
+    CreateProductDto mockProduct = new CreateProductDto();
     mockProduct.setName("Pizza");
     mockProduct.setManufacturer(null);
     mockProduct.setRecommendedRetailPrice(-5.00);
