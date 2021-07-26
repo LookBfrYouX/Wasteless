@@ -85,6 +85,10 @@ export default {
         {key: "Latest Listings", value: "created", isAscending: false},
         {key: "Closing Soon", value: "displayPeriodEnd", isAscending: true},
         {key: "Closing Latest", value: "displayPeriodEnd", isAscending: false},
+        {key: "Suburb A-Z", value: "suburb", isAscending: true},
+        {key: "Suburb Z-A", value: "suburb", isAscending: false},
+        {key: "City A-Z", value: "city", isAscending: true},
+        {key: "City Z-A", value: "city", isAscending: false}
       ]
     };
   },
