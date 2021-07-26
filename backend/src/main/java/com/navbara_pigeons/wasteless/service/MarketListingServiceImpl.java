@@ -4,10 +4,14 @@ import com.navbara_pigeons.wasteless.dao.MarketListingDao;
 import com.navbara_pigeons.wasteless.dto.FullMarketListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
+import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.enums.MarketListingSortByOption;
 import com.navbara_pigeons.wasteless.enums.MarketplaceSection;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidMarketListingSectionException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
+import com.navbara_pigeons.wasteless.exception.MarketListingCreationException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -22,16 +26,28 @@ import org.springframework.stereotype.Service;
 public class MarketListingServiceImpl implements MarketListingService {
 
   private final MarketListingDao marketListingDao;
+  private final UserService userService;
+  private final KeywordService keywordService;
 
-  public MarketListingServiceImpl(@Autowired MarketListingDao marketListingDao) {
+  @Autowired
+  public MarketListingServiceImpl(MarketListingDao marketListingDao, UserService userService, KeywordService keywordService) {
     this.marketListingDao = marketListingDao;
+    this.userService = userService;
+    this.keywordService = keywordService;
   }
 
   @Override
   @Transactional
-  public Long saveMarketListing(MarketListing marketListing) {
+  public Long saveMarketListing(MarketListing marketListing, List<Long> keywordIds, Long creatorId)
+      throws UserNotFoundException, InsufficientPrivilegesException {
+    User currentUser = userService.getLoggedInUser();
+    if (!userService.isAdmin() && currentUser.getId() != creatorId) {
+      throw new InsufficientPrivilegesException("Only a GAA can create a market listing as an other user.");
+    }
     marketListing.setCreated(ZonedDateTime.now());
     marketListing.setDisplayPeriodEnd(ZonedDateTime.now().plus(1, ChronoUnit.MONTHS));
+    marketListing.setCreator(userService.getUserById(creatorId));
+    marketListing.setKeywords(keywordService.getKeywords(keywordIds));
     this.marketListingDao.saveMarketListing(marketListing);
     return marketListing.getId();
   }

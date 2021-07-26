@@ -69,15 +69,14 @@ public class MarketListing {
 
   }
 
-  public MarketListing(CreateMarketListingDto marketListingDto, User user) {
-    this.creator = user;
+  /**
+   * Constructs MarketListing object from DTO. The creator id and keyword ids are not set.
+   * @param marketListingDto
+   */
+  public MarketListing(CreateMarketListingDto marketListingDto) {
     this.section = marketListingDto.getSection();
     this.title = marketListingDto.getTitle();
     this.description = marketListingDto.getDescription();
-    // Converting the Keyword Id's into Keywords was not in the scope of task SENG302T300-207
-    // This must be completed in task SENG302T300-229, possible create a method in the MarketListing
-    //   service that can convert a list of Id's into the entities
-    //    this.keywords =
   }
 
   /**

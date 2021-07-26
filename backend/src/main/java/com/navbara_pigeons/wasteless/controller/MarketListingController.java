@@ -7,6 +7,7 @@ import com.navbara_pigeons.wasteless.entity.MarketListing;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.enums.MarketListingSortByOption;
 import com.navbara_pigeons.wasteless.enums.MarketplaceSection;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidMarketListingSectionException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -39,8 +40,8 @@ public class MarketListingController {
   private final MarketListingService marketListingService;
   private final KeywordService keywordService;
 
-  public MarketListingController(
-      @Autowired UserService userService, MarketListingService marketListingService, KeywordService keywordService) {
+  @Autowired
+  public MarketListingController(UserService userService, MarketListingService marketListingService, KeywordService keywordService) {
     this.userService = userService;
     this.marketListingService = marketListingService;
     this.keywordService = keywordService;
@@ -49,13 +50,15 @@ public class MarketListingController {
   @PostMapping("/cards")
   public ResponseEntity<JSONObject> addMarketListing(
       @RequestBody CreateMarketListingDto createMarketListingDto)
-      throws UserNotFoundException {
+      throws UserNotFoundException, InsufficientPrivilegesException {
     log.info("CREATING A CARD WITH TITLE: " + createMarketListingDto.getTitle());
-    User creator = userService.getUserById(createMarketListingDto.getCreatorId());
-    MarketListing marketListing = new MarketListing(createMarketListingDto, creator);
-    marketListing.setKeywords(keywordService.getKeywords(createMarketListingDto.getKeywordIds()));
+
     JSONObject response = new JSONObject();
-    response.put("cardId", this.marketListingService.saveMarketListing(marketListing));
+    response.put("cardId", marketListingService.saveMarketListing(
+        new MarketListing(createMarketListingDto),
+        createMarketListingDto.getKeywordIds(),
+        createMarketListingDto.getCreatorId()
+    ));
     return new ResponseEntity<>(response, HttpStatus.valueOf(201));
   }
 
