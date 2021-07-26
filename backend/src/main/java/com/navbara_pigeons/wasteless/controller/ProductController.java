@@ -89,7 +89,7 @@ public class ProductController {
     log.info("RETRIEVED PRODUCTS FOR BUSINESS: " + id);
     return new ResponseEntity<>(
         this.productService.getProducts(id, pagStartIndex, pagEndIndex, sortBy, isAscending),
-        HttpStatus.valueOf(200));
+        HttpStatus.OK);
   }
 
   /**
@@ -107,6 +107,6 @@ public class ProductController {
       throws InsufficientPrivilegesException, ProductRegistrationException {
     JSONObject response = productService.addProduct(id, product);
     log.info("ADDED NEW PRODUCT, BUSINESS ID " + id + " PRODUCT NAME " + product.getName());
-    return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 }

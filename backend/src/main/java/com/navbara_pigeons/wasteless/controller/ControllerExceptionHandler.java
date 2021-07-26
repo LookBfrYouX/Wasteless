@@ -1,5 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
+import com.navbara_pigeons.wasteless.exception.*;
+
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -213,6 +215,20 @@ public class ControllerExceptionHandler {
     log.error("FAILED LOGIN: 400 - " + exc.getMessage());
   }
 
+  @ExceptionHandler(ListingValidationException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
+    log.error("BAD REQUEST: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(InvalidMarketListingSectionException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleInvalidMarketListingSectionException(InvalidMarketListingSectionException exc) {
+    log.error("BAD REQUEST: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<String> handleGeneralException(Exception exc) {
@@ -220,12 +236,6 @@ public class ControllerExceptionHandler {
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  @ExceptionHandler(ListingValidationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
-    log.error("BAD REQUEST: 400 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
-  }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -254,19 +264,4 @@ public class ControllerExceptionHandler {
     log.error("BAD REQUEST: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
-
-  @ExceptionHandler(InvalidMarketListingSectionException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<String> handleInvalidMarketListingSectionException(InvalidMarketListingSectionException exc) {
-    log.error("BAD REQUEST: 400 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
-  }
-
-  @ExceptionHandler(MarketListingCreationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<String> handleMarketListingCreationException(MarketListingCreationException exc) {
-    log.error("BAD REQUEST: 400 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
-  }
-
 }

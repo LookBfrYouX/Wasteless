@@ -86,7 +86,7 @@ public class InventoryController {
     log.info("RETRIEVED INVENTORY ITEMS FOR BUSINESS: " + id);
     return new ResponseEntity<>(
         this.inventoryService.getInventory(id, pagStartIndex, pagEndIndex, sortBy, isAscending),
-        HttpStatus.valueOf(200));
+        HttpStatus.OK);
   }
 
   @PostMapping("/businesses/{id}/inventory")
@@ -101,6 +101,6 @@ public class InventoryController {
             + inventoryDto.getProductId()
             + " FOR BUSINESS: "
             + id);
-    return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 }

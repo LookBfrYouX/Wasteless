@@ -59,7 +59,7 @@ public class MarketListingController {
         createMarketListingDto.getKeywordIds(),
         createMarketListingDto.getCreatorId()
     ));
-    return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
   /**

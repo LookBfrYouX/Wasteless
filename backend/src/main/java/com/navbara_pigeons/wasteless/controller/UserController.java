@@ -63,7 +63,7 @@ public class UserController {
     // Attempt to login and return JSON userId if successful
     JSONObject response = userService.login(userCredentials);
     log.info("SUCCESSFUL LOGIN: " + userCredentials.getEmail());
-    return new ResponseEntity<>(response, HttpStatus.valueOf(200));
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   /**
@@ -75,12 +75,13 @@ public class UserController {
    * @throws ResponseStatusException HTTP 400, 409 exceptions.
    */
   @PostMapping("/users")
+  @Operation(summary = "Register a new user", description = "New user registration")
   public ResponseEntity<JSONObject> registerUser(@RequestBody CreateUserDto user)
       throws UserNotFoundException, AddressValidationException, UserRegistrationException,
       UserAlreadyExistsException, UserAuthenticationException {
     JSONObject createdUserId = userService.saveUser(new User(user));
     log.info("ACCOUNT CREATED SUCCESSFULLY: " + user.getEmail());
-    return new ResponseEntity<>(createdUserId, HttpStatus.valueOf(201));
+    return new ResponseEntity<>(createdUserId, HttpStatus.CREATED);
   }
 
   /**
@@ -91,14 +92,15 @@ public class UserController {
    * @throws ResponseStatusException HTTP 401 Unauthorised & 406 Not Acceptable
    */
   @GetMapping("/users/{id}")
+  @Operation(summary = "Get a user by their ID", description = "Authenticated users can get user information by their ID")
   public ResponseEntity<Object> getUserById(@PathVariable String id)
       throws UserNotFoundException {
     log.info("GETTING USER BY ID: " + id);
     User user = userService.getUserById(Long.parseLong(id));
     if (userService.isAdmin() || userService.isSelf(user.getEmail())) {
-      return new ResponseEntity<>(new FullUserDto(user), HttpStatus.valueOf(200));
+      return new ResponseEntity<>(new FullUserDto(user), HttpStatus.OK);
     } else {
-      return new ResponseEntity<>(new BasicUserDto(user), HttpStatus.valueOf(200));
+      return new ResponseEntity<>(new BasicUserDto(user), HttpStatus.OK);
     }
   }
 
@@ -142,7 +144,7 @@ public class UserController {
       throws InvalidAttributeValueException, InvalidPaginationInputException {
     return new ResponseEntity<>(
         this.userService.searchUsers(searchQuery, pagStartIndex, pagEndIndex, sortBy, isAscending),
-        HttpStatus.valueOf(200));
+        HttpStatus.OK);
   }
 
   /**
@@ -151,11 +153,12 @@ public class UserController {
    * @param id The unique identifier of the user being given GAA rights.
    */
   @PutMapping("/users/{id}/makeAdmin")
+  @Operation(summary = "Make a user admin", description = "Allow admins to grant others admin permissions")
   public ResponseEntity<String> makeUserAdmin(@PathVariable String id)
       throws UserNotFoundException {
     userService.makeUserAdmin(Integer.parseInt(id));
     log.info("ADMIN PRIVILEGES GRANTED TO: " + id);
-    return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));
+    return new ResponseEntity<>("Action completed successfully", HttpStatus.OK);
   }
 
   /**
@@ -166,10 +169,11 @@ public class UserController {
    * @return HttpStatus 406 for Invalid ID format or User Doesn't Exist exception.
    */
   @PutMapping("/users/{id}/revokeAdmin")
+  @Operation(summary = "Revoke a users admin permissions", description = "Admin users can use this endpoint to revoke admin permissions")
   public ResponseEntity<String> revokeAdminPermissions(@PathVariable long id)
       throws NotAcceptableException, UserNotFoundException {
     userService.revokeAdmin(id);
     log.info("ADMIN PRIVILEGES REVOKED FROM: " + id);
-    return new ResponseEntity<>("Action completed successfully", HttpStatus.valueOf(200));
+    return new ResponseEntity<>("Action completed successfully", HttpStatus.OK);
   }
 }
