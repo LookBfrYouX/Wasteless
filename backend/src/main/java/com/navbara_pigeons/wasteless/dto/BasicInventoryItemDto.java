@@ -7,6 +7,9 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import lombok.Data;
 
+/**
+ * Inventory Item DTO
+ */
 @Data
 public class BasicInventoryItemDto {
 
@@ -24,6 +27,11 @@ public class BasicInventoryItemDto {
   private LocalDate bestBefore;
   private LocalDate expires;
 
+  /**
+   * Constructor for creating Inventory Item DTO from Inventory Item Entity. (needs public path prefix for images)
+   * @param inventoryItem
+   * @param publicPathPrefix
+   */
   public BasicInventoryItemDto(InventoryItem inventoryItem, String publicPathPrefix) {
     this.id = inventoryItem.getId();
     this.product = new BasicProductDto(inventoryItem.getProduct(), publicPathPrefix);

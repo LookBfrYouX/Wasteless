@@ -13,6 +13,10 @@ public class BasicAddressDto {
   private String region;
   private String country;
 
+  /**
+   * Constructor to create Address DTO from Address Entity
+   * @param address
+   */
   public BasicAddressDto(Address address) {
     this.city = address.getCity();
     this.region = address.getRegion();
