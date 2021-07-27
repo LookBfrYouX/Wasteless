@@ -57,3 +57,81 @@ describe("API response", () => {
     expect(wrapper.vm.businessInfo).not.toEqual(data);
   });
 });
+
+describe("adminLinks", () => {
+  const method = BusinessProfile.computed.adminLinks;
+  // Probably a bit faster to run tests this way; bind this and get return value
+  // of method instead of using wrapper.vm.$nextTick();
+
+  const checker = (names, output) => expect(method.call({
+    businessInfo: {
+      administrators: names.map((name, id) => ({ firstName: name, id })) 
+    },
+    $helper: { formatFullName: ({ firstName }) => firstName }
+  }).map(el => el.text).join("")).toEqual(output);
+
+ 
+  test("One user", () => checker(["A"], "A"));
+  test("Two users", () => checker(["A", "B"], "A and B"));
+  test("Three users", () => checker(["A", "B", "C"], "A, B and C"));
+  test("Five users", () => checker(["A", "B", "C", "D", "E"], "A, B, C, D and E"));
+  test("No users", () => checker([""], ""));
+
+  test("Business not set", () => {
+    expect(method.call({businessInfo: null})).toEqual([]);
+  });
+
+
+  test("Full mounted test", async () => {
+    wrapper.vm.businessInfo = {
+      administrators: [
+        { firstName: "A", lastName: "B", id: 2 },
+        { firstName: "C", lastName: "D", id: 3 },
+        { firstName: "E", lastName: "F", nickname: "G", id: 4 },
+      ],
+      address: {}
+    };
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.adminLinks).toEqual([
+      { text: "A B, ", userId: 2 },
+      { text: "C D", userId: 3 },
+      { text: " and E F (G)", userId: 4 }
+    ]);
+  });
+});
+
+describe("showEditAdminsButton", () => {
+  test("GAA", async () => {
+    const getters = wrapper.vm.$stateStore.getters;
+    getters.isAdmin = () => true;
+    getters.getActingAs = () => null;
+    getters.getAuthUser = () => ({ id: 3 });
+    wrapper.vm.businessInfo = ({ id: 1, primaryAdministratorId: 2, address: {} });
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.showEditAdminsButton).toBeTruthy();
+  });
+  
+  test("primary business admin, not acting as", async () => {
+    const getters = wrapper.vm.$stateStore.getters;
+    getters.isAdmin = () => false;
+    getters.getActingAs = () => ({ id: 1000, primaryAdministratorId: 3, address: {} });
+    getters.getAuthUser = () => ({ id: 3 });
+    wrapper.vm.businessInfo = ({ id: 1, primaryAdministratorId: 3, address: {} });
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.showEditAdminsButton).toBeFalsy();
+  });
+
+  test("primary business admin, is acting as", async () => {
+    const getters = wrapper.vm.$stateStore.getters;
+    getters.isAdmin = () => false;
+    getters.getActingAs = () => ({ id: 1, primaryAdministratorId: 2, address: {} });
+    getters.getAuthUser = () => ({ id: 2 });
+    wrapper.vm.businessInfo = ({ id: 1, primaryAdministratorId: 2, address: {} });
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.showEditAdminsButton).toBeTruthy();
+  });
+});

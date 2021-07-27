@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
@@ -9,19 +10,20 @@ import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
+import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
-import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
-import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.*;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -44,6 +46,9 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
   @Mock
   ProductDao productDaoMock;
+
+  @Mock
+  ProductService productServiceMock;
 
   @Mock
   InventoryDao inventoryDaoMock;
@@ -98,13 +103,6 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  @WithMockUser()
-  public void getInventory_isNotLoggedIn() {
-    //not sure what exception to use here as it is handled by sprint security
-//    assertThrows(.class, () -> inventoryService.getInventory(1000));
-  }
-
-  @Test
   @WithMockUser(authorities = {"ADMIN"})
   public void getInventory_isAdmin()
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException, InvalidPaginationInputException {
@@ -150,5 +148,75 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     when(businessServiceMock.isBusinessAdmin(1000)).thenThrow(BusinessNotFoundException.class);
     assertThrows(BusinessNotFoundException.class,
         () -> inventoryService.getInventory(1000, null, null, null, true));
+  }
+
+
+  public void makeInventoryTestWrapper(CreateInventoryItemDto item, boolean shouldFail) throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
+    Business business = makeBusiness().setId(2);
+    Product product = makeProduct("ame").setId(1);
+
+    doNothing().when(inventoryDaoMock).saveInventoryItem(any(InventoryItem.class));
+    when(businessServiceMock.getBusinessById(business.getId())).thenReturn(business);
+    when(productServiceMock.getProduct(product.getId())).thenReturn(product);
+    when(businessServiceMock.isBusinessAdmin(business.getId())).thenReturn(true);
+    item.setProductId(product.getId());
+
+    if (shouldFail) {
+      Assertions.assertThrows(InventoryRegistrationException.class, () ->
+          inventoryService.addInventoryItem(business.getId(), item)
+      );
+    } else {
+      Assertions.assertDoesNotThrow(() -> inventoryService.addInventoryItem(business.getId(), item));
+    }
+  }
+
+  @Test
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
+  public void invalidMakeInventory_bestBeforeBeforeManufactured() throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
+    CreateInventoryItemDto item = new CreateInventoryItemDto();
+    item.setManufactured(LocalDate.now().minusDays(2));
+    item.setBestBefore(LocalDate.now().minusDays(3));
+    makeInventoryTestWrapper(item, true);
+  }
+
+  @Test
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
+  public void invalidMakeInventory_sellByBeforeBestBefore() throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
+    CreateInventoryItemDto item = new CreateInventoryItemDto();
+    item.setSellBy(LocalDate.now().minusDays(2));
+    item.setBestBefore(LocalDate.now().minusDays(1));
+    makeInventoryTestWrapper(item, true);
+  }
+
+
+  @Test
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
+  public void invalidMakeInventory_expiryBeforeSellBy() throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
+    CreateInventoryItemDto item = new CreateInventoryItemDto();
+    item.setExpires(LocalDate.now().minusDays(2));
+    item.setSellBy(LocalDate.now().minusDays(1));
+    makeInventoryTestWrapper(item, true);
+  }
+
+
+  @Test
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
+  public void invalidMakeInventory_bestBeforeBeforeExpiry() throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
+    CreateInventoryItemDto item = new CreateInventoryItemDto();
+    item.setBestBefore(LocalDate.now().plusDays(4));
+    item.setExpires(LocalDate.now().plusDays(3));
+    makeInventoryTestWrapper(item, true);
+  }
+
+
+  @Test
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
+  public void makeInventory_allDatesAreToday() throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
+    CreateInventoryItemDto item = new CreateInventoryItemDto();
+    item.setExpires(LocalDate.now());
+    item.setSellBy(LocalDate.now());
+    item.setBestBefore(LocalDate.now());
+    item.setManufactured(LocalDate.now());
+    makeInventoryTestWrapper(item, false);
   }
 }

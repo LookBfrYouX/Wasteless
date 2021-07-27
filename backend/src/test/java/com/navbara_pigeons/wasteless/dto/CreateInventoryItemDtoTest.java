@@ -9,6 +9,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
+import java.time.LocalDate;
 
 public class CreateInventoryItemDtoTest extends MainTestProvider {
     private Set<ConstraintViolation<CreateInventoryItemDto>> validate(CreateInventoryItemDto dto) {
@@ -36,5 +37,46 @@ public class CreateInventoryItemDtoTest extends MainTestProvider {
         dto.setQuantity(-1);
         Assertions.assertEquals(1, validate(dto).size());
     }
-    
+
+    @Test
+    public void invalidCreateInventoryItemManufactureDateInFuture() {
+        CreateInventoryItemDto dto = new CreateInventoryItemDto(makeInventoryItem(makeProduct("new"),makeBusiness()));
+        dto.setManufactured(LocalDate.now().plusYears(1));
+        Assertions.assertEquals(1, validate(dto).size());
+    }
+
+    @Test
+    public void invalidCreateInventoryItemManufactureDateTooOld() {
+        CreateInventoryItemDto dto = new CreateInventoryItemDto(makeInventoryItem(makeProduct("new"),makeBusiness()));
+        dto.setManufactured(LocalDate.now().minusYears(150));
+        Assertions.assertEquals(1, validate(dto).size());
+    }
+
+    @Test
+    public void validCreateInventoryItemManufactureDate() {
+        CreateInventoryItemDto dto = new CreateInventoryItemDto(makeInventoryItem(makeProduct("new"),makeBusiness()));
+        dto.setManufactured(LocalDate.now().minusDays(1));
+        Assertions.assertEquals(0, validate(dto).size());
+    }
+
+    @Test
+    public void invalidCreateInventoryItemExpiryDateInPast() {
+        CreateInventoryItemDto dto = new CreateInventoryItemDto(makeInventoryItem(makeProduct("new"),makeBusiness()));
+        dto.setExpires(LocalDate.now().minusDays(1));
+        Assertions.assertEquals(1, validate(dto).size());
+    }
+
+    @Test
+    public void invalidCreateInventoryItemExpiryDateTooFarInFuture() {
+        CreateInventoryItemDto dto = new CreateInventoryItemDto(makeInventoryItem(makeProduct("new"),makeBusiness()));
+        dto.setExpires(LocalDate.now().plusYears(150));
+        Assertions.assertEquals(1, validate(dto).size());
+    }
+
+    @Test
+    public void validCreateInventoryItemExpiryDateValid() {
+        CreateInventoryItemDto dto = new CreateInventoryItemDto(makeInventoryItem(makeProduct("new"),makeBusiness()));
+        dto.setExpires(LocalDate.now().plusDays(1));
+        Assertions.assertEquals(0, validate(dto).size());
+    }
 }

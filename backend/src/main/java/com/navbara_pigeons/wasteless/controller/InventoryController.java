@@ -1,4 +1,3 @@
-
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
@@ -28,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 /**
  * This controller class provides the endpoints for dealing with inventory items. All requests for

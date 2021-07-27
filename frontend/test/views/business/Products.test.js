@@ -9,9 +9,9 @@ import {ApiRequestError} from "@/ApiRequestError";
 let vuetify = new Vuetify();
 
 jest.mock("@/Api");
-window.scrollTo = jest.fn()
 
-window.scrollTo = jest.fn();
+window.scrollTo = jest.fn(); // Scrolls to top of screen when prev/next page button clicked
+
 let wrapper;
 
 let response = {

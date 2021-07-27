@@ -40,7 +40,7 @@ The parent component must provide `address` prop. When the address is updated in
       />
       <!-- No suggestions for street number -->
     </div>
-    <div class="form-group required col-12 col-md-9">
+    <div class="form-group col-12 col-md-9">
       <label>Street name</label>
       <suggestions
           :suggestions="addressSuggestions"
@@ -51,7 +51,6 @@ The parent component must provide `address` prop. When the address is updated in
           name="streetName"
           placeholder="Street name"
 
-          required
           type="text"
           @focus="activeAddressInputName = 'streetName'"
 
@@ -59,7 +58,7 @@ The parent component must provide `address` prop. When the address is updated in
           @suggestion="suggestionSelected"
       />
     </div>
-    <div class="form-group required col-12 col-md-9 ml-auto">
+    <div class="form-group col-12 col-md-9 ml-auto">
       <label>Suburb</label>
       <suggestions
           :suggestions="addressSuggestions"
@@ -70,7 +69,6 @@ The parent component must provide `address` prop. When the address is updated in
           name="suburb"
           placeholder="Suburb"
 
-          required
           type="text"
           @focus="activeAddressInputName = 'suburb'"
 
@@ -78,7 +76,7 @@ The parent component must provide `address` prop. When the address is updated in
           @suggestion="suggestionSelected"
       />
     </div>
-    <div class="form-group required col-12 col-md-6">
+    <div class="form-group col-12 col-md-6">
       <label>City</label>
       <suggestions
           :suggestions="addressSuggestions"
@@ -89,7 +87,6 @@ The parent component must provide `address` prop. When the address is updated in
           name="city"
           placeholder="City"
 
-          required
           type="text"
           @focus="activeAddressInputName = 'city'"
 
@@ -97,7 +94,7 @@ The parent component must provide `address` prop. When the address is updated in
           @suggestion="suggestionSelected"
       />
     </div>
-    <div class="form-group required col-12 col-md-6">
+    <div class="form-group col-12 col-md-6">
       <label>Region</label>
       <suggestions
           :suggestions="addressSuggestions"
@@ -108,7 +105,6 @@ The parent component must provide `address` prop. When the address is updated in
           name="region"
           placeholder="Region"
 
-          required
           type="text"
           @focus="activeAddressInputName = 'region'"
 
@@ -117,7 +113,7 @@ The parent component must provide `address` prop. When the address is updated in
       />
     </div>
 
-    <div class="form-group required col-12 col-md-6">
+    <div class="form-group col-12 col-md-6">
       <label>Post code</label>
       <suggestions
           :suggestions="addressSuggestions"
@@ -128,7 +124,6 @@ The parent component must provide `address` prop. When the address is updated in
           name="postcode"
           placeholder="Post code"
 
-          required
           type="text"
           @focus="activeAddressInputName = 'postcode'"
 

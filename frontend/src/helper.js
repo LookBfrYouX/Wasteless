@@ -318,4 +318,22 @@ export const helper = {
       return null;
     }
   },
+
+
+  /**
+   * Formats object with name components, removing null or empty strings
+   * @param {{firstName: String, middleName: String, lastName: String, nickname: String}} object with name components
+   * @return string in format {firstName} {middleName} {lastName} ({nickname})
+   */
+  formatFullName(user) {
+    let name = [user.firstName, user.middleName, user.lastName]
+        .filter(el => typeof el == "string" && el.trim().length)
+        .map(el => el.trim())
+        .join(" ");
+    
+    if (typeof user.nickname == "string" && user.nickname.trim().length) {
+      name += ` (${user.nickname})`
+    }
+    return name;
+  },
 }
