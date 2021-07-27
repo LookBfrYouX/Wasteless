@@ -31,17 +31,16 @@
           <dd class="col-md value"> {{ this.$helper.memberSinceText(businessInfo.created) }}</dd>
         </dl>
         <dl class="row">
-          <dt class="col-md label">Administrator:</dt>
-          <dd
-              v-for="admin in businessInfo.administrators"
-              :key="admin.id"
-              class="col-md value"
-          >
+          <dt class="col-md label">Administrators:</dt>
+          <dd class="col-md value">
+            <!-- This bit is pretty ugly to ensure there are no extra spaces -->
             <router-link
-                :to="{ name: 'UserDetail', params: { userId: admin.id }}"
-                class="admin-link hover-cursor-pointer text-decoration-none"
+                v-for="({text, userId}) in adminLinks"
+                :key="userId"
+                :to="{ name: 'UserDetail', params: { userId }}"
+                class="inline admin-link hover-cursor-pointer text-decoration-none"
             >
-              {{ admin.firstName }} {{ admin.lastName }}
+              {{text}}
             </router-link>
           </dd>
         </dl>
@@ -54,6 +53,14 @@
         >
           <span class="material-icons mr-1">add</span>
           Add Product To Catalogue
+        </router-link>
+        <router-link
+            v-if="showEditAdminsButton"
+            :to="{ name: 'BusinessAdminEdit', params: { businessId }}"
+            class="btn btn-white-bg-primary m-1 d-flex"
+        >
+          <span class="material-icons mr-1">edit</span>
+          Edit Administrators
         </router-link>
         <router-link
             v-if="canEditBusiness"
@@ -112,6 +119,7 @@ export default {
         address: {},
         businessType: "",
         administrators: [],
+        primaryAdministratorId: null
       },
       apiErrorMessage: null,
     };
@@ -199,7 +207,42 @@ export default {
      */
     canEditBusiness() {
       return this.$stateStore.getters.canEditBusiness(this.businessId);
-    }
+    },
+
+    /**
+     * User can edit admins if they are admin, or they are the primary
+     * administrator of the business AND are acting as that business
+     */
+    showEditAdminsButton() {
+      const { isAdmin, getActingAs, getAuthUser } = this.$stateStore.getters;
+      return isAdmin() || 
+          getActingAs() && getActingAs().id == this.businessInfo.id &&
+          getAuthUser().id == this.businessInfo.primaryAdministratorId;
+    },
+
+    /**
+     * Generates admin links with 'and', commas etc.
+     * @return [{ userId, text }]
+     */
+    adminLinks() {
+      if (!this.businessInfo || !Array.isArray(this.businessInfo.administrators)) return [];
+      return this.businessInfo.administrators.map((admin, i, arr) => {
+        let text = "";
+        if (i == arr.length - 1 && arr.length > 1) {
+          // 'a', 'a and b', 'a, b and c'; last element has and, unless array only has one element
+          text = " and ";
+        }
+        text += this.$helper.formatFullName(admin);
+        if (i < arr.length - 2) {
+          // No oxford comma: 'a, b and c'. Last two elements don't need commas
+          text += ", ";
+        }
+        return {
+          userId: admin.id,
+          text
+        }
+      });
+    },
   },
 
   watch: {

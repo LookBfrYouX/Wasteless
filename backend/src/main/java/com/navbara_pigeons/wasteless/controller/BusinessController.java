@@ -73,7 +73,7 @@ public class BusinessController {
   @GetMapping("/businesses/{id}")
   @Operation(summary = "Get information about a business", description = "Returns all information about a business with the given id")
   public ResponseEntity<Object> getBusinessById(@PathVariable String id)
-          throws UserNotFoundException, BusinessNotFoundException {
+      throws UserNotFoundException, BusinessNotFoundException {
     log.info("GETTING BUSINESS BY ID: " + id);
     return new ResponseEntity<>(
         businessService.getBusinessById(Long.parseLong(id)), HttpStatus.OK);
