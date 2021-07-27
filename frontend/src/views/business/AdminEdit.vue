@@ -350,7 +350,8 @@ export default {
       }
 
       try {
-        this.userSearchResultsRaw = (await Api.search(query)).data.results;
+        const params = { searchQuery: query }
+        this.userSearchResultsRaw = (await Api.search(params)).data.results;
       } catch(err) {
         if (await Api.handle401.call(this, err)) return;
         // Show that api request failed inline in the search results
