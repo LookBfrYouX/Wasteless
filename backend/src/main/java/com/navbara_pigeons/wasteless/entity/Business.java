@@ -98,9 +98,6 @@ public class Business {
     for (BasicUserDto userDto : business.getAdministrators()) {
       this.administrators.add(new User(userDto));
     }
-    for (BasicProductDto productDto : business.getProductsCatalogue()) {
-      this.productsCatalogue.add(new Product(productDto));
-    }
   }
 
   public Business(BasicBusinessDto business) {

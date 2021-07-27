@@ -156,7 +156,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     Product product = makeProduct("ame").setId(1);
 
     doNothing().when(inventoryDaoMock).saveInventoryItem(any(InventoryItem.class));
-    when(businessServiceMock.getBusinessById(business.getId())).thenReturn(business);
+    when(businessServiceMock.getBusiness(business.getId())).thenReturn(business);
     when(productServiceMock.getProduct(product.getId())).thenReturn(product);
     when(businessServiceMock.isBusinessAdmin(business.getId())).thenReturn(true);
     item.setProductId(product.getId());

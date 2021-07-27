@@ -23,7 +23,6 @@ public class FullBusinessDto {
   private String businessType;
   private ZonedDateTime created;
   private List<BasicUserDto> administrators;
-  private List<BasicProductDto> productsCatalogue;
 
   public FullBusinessDto(Business business, String publicPathPrefix) {
     this.id = business.getId();
@@ -35,9 +34,6 @@ public class FullBusinessDto {
     this.created = business.getCreated();
     if (business.getAdministrators() != null) {
       this.administrators = makeUserDto(business.getAdministrators());
-    }
-    if (business.getProductsCatalogue() != null) {
-      this.productsCatalogue = makeProductDto(business.getProductsCatalogue(), publicPathPrefix);
     }
   }
 
@@ -54,13 +50,4 @@ public class FullBusinessDto {
     }
     return userlistDto;
   }
-
-  private List<BasicProductDto> makeProductDto(List<Product> products, String publicPathPrefix) {
-    ArrayList<BasicProductDto> productsDto = new ArrayList<BasicProductDto>();
-    for (Product product : products) {
-      productsDto.add(new BasicProductDto(product, publicPathPrefix));
-    }
-    return productsDto;
-  }
-
 }

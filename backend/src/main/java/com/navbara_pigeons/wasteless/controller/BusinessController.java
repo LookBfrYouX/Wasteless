@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
+import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
 import com.navbara_pigeons.wasteless.dto.UserIdDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +43,9 @@ import javax.validation.Valid;
 public class BusinessController {
 
   private final BusinessService businessService;
+
+  @Value("${public_path_prefix}")
+  private String publicPathPrefix;
 
   public BusinessController(@Autowired BusinessService businessService) {
     this.businessService = businessService;
@@ -76,7 +81,9 @@ public class BusinessController {
       throws UserNotFoundException, BusinessNotFoundException {
     log.info("GETTING BUSINESS BY ID: " + id);
     return new ResponseEntity<>(
-        businessService.getBusinessById(Long.parseLong(id)), HttpStatus.OK);
+        new FullBusinessDto(businessService.getBusiness(Long.parseLong(id)), publicPathPrefix),
+        HttpStatus.OK
+    );
   }
 
   /**
