@@ -22,7 +22,6 @@ public class BasicImageDto {
   public BasicImageDto(String publicPathPrefix, Image image) {
     this.id = image.getId();
     this.filename = publicPathPrefix + image.getPath().substring(1);
-    System.out.println(this.filename);
     this.thumbnailFilename = publicPathPrefix + image.getThumbnailPath().substring(1);
   }
 

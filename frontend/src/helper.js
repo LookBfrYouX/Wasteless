@@ -211,16 +211,14 @@ export const helper = {
       console.warn(
           "Business ID not given; getBusinessCountry");
     }
+
     const actingAsBusiness = stateStore.getters.getActingAs();
-    if (actingAsBusiness == null) {
-      // const user = stateStore.getters.getAuthUser();
-      // if (user.businessesAdmistered)
-      // If acting as admin, can view page and don't know country information
-      const {data} = await Api.businessProfile(businessId);
-      return data.address.country;
+    if (actingAsBusiness && actingAsBusiness.id == businessId) {
+      return actingAsBusiness.country;
     }
 
-    return actingAsBusiness.address.country;
+    const {data} = await Api.businessProfile(businessId);
+    return data.address.country;
   },
 
   /**

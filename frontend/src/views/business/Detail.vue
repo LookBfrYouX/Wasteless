@@ -180,6 +180,7 @@ export default {
         return;
       }
       if (this.businessInfo.primaryAdministratorId == currentUser.id ||
+          this.administrators &&
           this.businessInfo.administrators.find(admin => admin.id == currentUser.id) !== undefined
       ) {
         // Update the user with new info

@@ -138,7 +138,7 @@
                   <th class="pl-0 pl-md-2">Member since:</th>
                   <td class="pr-0 pr-md-2 col-md value"><p>{{ this.$helper.memberSinceText(userInfo.created) }}</p></td>
                 </tr>
-                <tr v-if="dateOfBirthText" scope="row">
+                <tr v-if="!isNaN(Date.parse(userInfo.dateOfBirth))" scope="row">
                   <th class="pl-0 pl-md-2">Date of Birth:</th>
                   <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
                 </tr>

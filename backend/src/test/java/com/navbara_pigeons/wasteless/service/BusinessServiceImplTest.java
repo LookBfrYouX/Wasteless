@@ -66,40 +66,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     when(userService.isAdmin()).thenReturn(true);
 
     when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
-    Object businessDto = businessService.getBusinessById(business.getId());
-
-    assertTrue(businessDto instanceof FullBusinessDto);
-  }
-
-  @Test
-  void getBusinessById_businessAdmin_getFullDto() throws BusinessNotFoundException, UserNotFoundException {
-    // Checking that the FullBusinessDto is returned
-    Business business = makeBusiness(user1);
-    business.setId(BUSINESSID_1);
-
-    when(userService.isAdmin()).thenReturn(false);
-
-    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
-    Object businessDto = businessService.getBusinessById(business.getId());
-
-    assertTrue(businessDto instanceof FullBusinessDto);
-  }
-
-  @Test
-  void getBusinessById_notBusinessAdmin_getBasicDto() throws BusinessNotFoundException, UserNotFoundException {
-    // Checking that the BasicBusinessDto is returned
-    User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
-    user2.setId(USERID_2);
-
-    Business business = makeBusiness(user2);
-    business.setId(BUSINESSID_1);
-
-    when(userService.isAdmin()).thenReturn(false);
-
-    when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
-    Object businessDto = businessService.getBusinessById(business.getId());
-
-    assertTrue(businessDto instanceof BasicBusinessDto);
+    assertEquals(business, businessService.getBusiness(business.getId()));
   }
 
   @Test

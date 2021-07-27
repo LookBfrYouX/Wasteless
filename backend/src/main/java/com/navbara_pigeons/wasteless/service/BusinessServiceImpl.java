@@ -33,9 +33,6 @@ public class BusinessServiceImpl implements BusinessService {
   private final AddressService addressService;
   private final UserService userService;
 
-  @Value("${public_path_prefix}")
-  private String publicPathPrefix;
-
   /**
    * BusinessServiceImplementation constructor that takes autowired parameters and
    * sets up the service for interacting with all business related services.
@@ -88,27 +85,6 @@ public class BusinessServiceImpl implements BusinessService {
     JSONObject response = new JSONObject();
     response.put("businessId", business.getId());
     return response;
-  }
-
-  /**
-   * Calls the businessDao to get the specified business
-   *
-   * @param id the id of the business
-   * @return a business DTO
-   * @throws BusinessNotFoundException when business with given id does not exist
-   * @throws UserNotFoundException     should never be thrown. If is thrown,
-   *                                   return 500 status code
-   */
-  @Override
-  @Transactional
-  public Object getBusinessById(long id) throws BusinessNotFoundException, UserNotFoundException {
-    Business business = businessDao.getBusinessById(id);
-
-    if (isBusinessAdmin(id) || userService.isAdmin()) {
-      return new FullBusinessDto(business, publicPathPrefix);
-    } else {
-      return new BasicBusinessDto(business);
-    }
   }
 
   /**
