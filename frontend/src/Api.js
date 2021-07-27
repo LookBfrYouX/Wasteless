@@ -406,5 +406,17 @@ export const Api = {
         403: "You don't have permission to add the listings"
       });
     });
+  },
+
+  /**
+   * Get all keywords to add to market listing card.
+   * @returns {Promise<AxiosResponse<any>>} List of keywords
+   */
+  getAllKeywords: () => {
+    return instance.get(`/keywords`).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        400: "Cannot fetch keywords"
+      });
+    });
   }
 }
