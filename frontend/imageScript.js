@@ -49,7 +49,7 @@ async function uploadImage(businessId, productId, filePath) {
   data.append('image', fs.createReadStream(filePath));
 
   let config = {
-    method: 'post',
+    method: "POST",
     url: `${SERVER_URL}/businesses/${businessId}/products/${productId}/images`,
     headers: {
       cookie,
@@ -58,9 +58,7 @@ async function uploadImage(businessId, productId, filePath) {
     data: data
   };
   
-  await axios(config).then(function() {
-    console.log("Success");
-  }).catch(function(error) {
+  return await axios(config).catch(error => {
     console.log(error);
   });
 }
@@ -69,18 +67,24 @@ async function uploadImage(businessId, productId, filePath) {
  * Runs an async function on elements of an array
  * @param {*} elements 
  * @param {*} job (element, index) => Promise
- * @param {*} simultaneousJobs number of jobs to run simultaneously
+ * @param {*} batchSize number of jobs to run simultaneously.
+ * When all jobs in a batch finish, the next batch starts
  */
-const batcher = async (elements, job, simultaneousJobs = 5) => {
+const batcher = async (elements, job, batchSize = 5) => {
   let i = 0;
   while (i < elements.length) {
     let promises = [];
-    const iMax = Math.min(elements.length, i + simultaneousJobs);
+    const iMax = Math.min(elements.length, i + batchSize);
     for(; i < iMax; i++) {
       promises.push(job(elements[i], i));
     }
 
-    await Promise.allSettled(promises);
+    const results = await Promise.allSettled(promises);
+    results.forEach(result => {
+      if (result.status == "rejected") {
+        console.log(result.reason);
+      }
+    });
   }
 }
 
@@ -125,7 +129,7 @@ const downloadAndUpload = async () => {
   await batcher(arr, async (i) => {
     const filePath = await downloadImage();
     await uploadImage((i % NUM_BUSINESSES) + 1, i + 1, filePath);
-    fs.deleteFileSync(filePath);
+    fs.unlinkSync(filePath);
     console.log(`Processed image ${i}`);
   });
 }
