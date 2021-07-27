@@ -350,7 +350,7 @@ export default {
       }
 
       try {
-        const params = { searchQuery: query }
+        const params = { searchQuery: query, pagEndIndex: 10 };
         this.userSearchResultsRaw = (await Api.search(params)).data.results;
       } catch(err) {
         if (await Api.handle401.call(this, err)) return;
