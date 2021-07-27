@@ -149,6 +149,36 @@ export const Api = {
   },
 
   /**
+   * Adds a user as an admin to the business
+   * @param businessId
+   * @param userId user to make admin
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  addBusinessAdmin: (businessId, userId) => {
+    return instance.put(`/businesses/${businessId}/makeAdministrator`, { userId }).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        400: "The user does not exist or is already an admin",
+        403: "Only the primary business administrator or GAA can add or remove business administrators"
+      });
+    });
+  },
+
+  /**
+   * Removes an admin from the business
+   * @param businessId
+   * @param userId admin to remove
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  removeBusinessAdmin: (businessId, userId) => {
+    return instance.put(`/businesses/${businessId}/removeAdministrator`, { userId }).catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        400: "The user does not exist, is not an admin or is the primary business administrator",
+        403: "Only the primary business administrator or GAA can add or remove business administrators"
+      });
+    });
+  },
+
+  /**
    *
    * @param {*} id ID of business
    * @param {object} props with properties:
@@ -183,7 +213,7 @@ export const Api = {
    */
   search: (searchQuery) => {
     return instance.get(
-        `/users/search?searchQuery=${encodeURIComponent(searchQuery)}`)
+        `/users/search?searchQuery=${encodeURIComponent(searchQuery == null? "": searchQuery)}`)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error);
     });

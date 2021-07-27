@@ -127,7 +127,16 @@ export const router = new VueRouter({
         return {businessId, showBackButton};
       },
     },
-
+    {
+      name: "BusinessAdminEdit",
+      path: "/business/:businessId(\\d+)/admin",
+      component: () => import("./views/business/AdminEdit.vue"),
+      props: route => ({businessId: parseInt(route.params.businessId, 10)}),
+      meta: {
+        title: "Edit Administrators | Wasteless",
+        requiresBusinessAdmin: true
+      }
+    },
     {
       name: "BusinessProductCreate",
       path: "/business/:businessId(\\d+)/product/create",
@@ -263,6 +272,7 @@ export const router = new VueRouter({
       component: () => import("./views/marketplace/CardCreate"),
       props: route => ({userId: parseInt(route.params.userId, 10)})
     },
+
     {
       name: "Error",
       path: "/error",
