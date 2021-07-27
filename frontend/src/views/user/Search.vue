@@ -80,7 +80,7 @@ export default {
   data() {
     return {
       page: 1, // The default starting page.
-      itemsPerPage: this.$constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_PAGE, // The number of items to display on each page.
+      itemsPerPage: this.$constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_PAGE * 2, // The number of items to display on each page.
       totalResults: 0, // The total number of results. Only 1 page is retrieved at a time.
       searchParams: {
         searchQuery: this.search,
@@ -171,10 +171,4 @@ export default {
 
 <style scoped>
 
-button.page-link {
-  display: inline-block;
-  font-size: 20px;
-  color: #29b3ed;
-  font-weight: 500;
-}
 </style>
