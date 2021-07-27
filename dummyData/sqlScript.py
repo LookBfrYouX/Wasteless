@@ -15,6 +15,7 @@ for item in itemsToAdd:
 
     # Country names are different between the SQL generator and restcountries.eu, so this is a manual map
     # made by subtacting restcountries countries from sql output countries.
+    # Saint Barthélemy: UTF encoding is horrible so just switch to france
     newFile.write("""
 UPDATE ADDRESS SET COUNTRY = 'Antarctica' WHERE COUNTRY = 'Antarctica (the territory South of 60 deg S)';
 UPDATE ADDRESS SET COUNTRY = 'Bolivia (Plurinational State of)' WHERE COUNTRY = 'Bolivia';
@@ -33,7 +34,7 @@ UPDATE ADDRESS SET COUNTRY = 'Netherlands' WHERE COUNTRY = 'Netherlands Antilles
 UPDATE ADDRESS SET COUNTRY = 'Palestine, State of' WHERE COUNTRY = 'Palestinian Territory';
 UPDATE ADDRESS SET COUNTRY = 'Pitcairn' WHERE COUNTRY = 'Pitcairn Islands';
 UPDATE ADDRESS SET COUNTRY = 'France' WHERE COUNTRY = 'Reunion';
-UPDATE ADDRESS SET COUNTRY = 'Saint Barthélemy' WHERE COUNTRY = 'Saint Barthelemy';
+UPDATE ADDRESS SET COUNTRY = 'France' WHERE COUNTRY = 'Saint Barthelemy';
 UPDATE ADDRESS SET COUNTRY = 'Saint Helena, Ascension and Tristan da Cunha' WHERE COUNTRY = 'Saint Helena';
 UPDATE ADDRESS SET COUNTRY = 'Saint Martin (French part)' WHERE COUNTRY = 'Saint Martin';
 UPDATE ADDRESS SET COUNTRY = 'Slovakia' WHERE COUNTRY = 'Slovakia (Slovak Republic)';
@@ -43,7 +44,5 @@ UPDATE ADDRESS SET COUNTRY = 'United Kingdom of Great Britain and Northern Irela
 UPDATE ADDRESS SET COUNTRY = 'United States of America' WHERE COUNTRY = 'United States Minor Outlying Islands';
 UPDATE ADDRESS SET COUNTRY = 'Virgin Islands (U.S.)' WHERE COUNTRY = 'United States Virgin Islands';
 UPDATE ADDRESS SET COUNTRY = 'Venezuela (Bolivarian Republic of)' WHERE COUNTRY = 'Venezuela';
-UPDATE ADDRESS SET COUNTRY = 'Viet Nam' WHERE COUNTRY = 'Vietnam';
-    """)
-    newFile.close()
+UPDATE ADDRESS SET COUNTRY = 'Viet Nam' WHERE COUNTRY = 'Vietnam';""")
     file.close()
