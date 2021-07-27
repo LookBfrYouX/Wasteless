@@ -50,7 +50,11 @@ CREATE TABLE business
     ID                       BIGINT AUTO_INCREMENT PRIMARY KEY,
     NAME                     VARCHAR(50) NOT NULL,
     DESCRIPTION              VARCHAR(250),
-    BUSINESS_TYPE            VARCHAR(50) NOT NULL,
+    BUSINESS_TYPE            ENUM(
+        'ACCOMMODATION_AND_FOOD',
+        'RETAIL',
+        'CHARITY',
+        'NON_PROFIT')                    NOT NULL,
     CREATED                  DATETIME    NOT NULL,
     PRIMARY_ADMINISTRATOR_ID BIGINT      NOT NULL,
     ADDRESS_ID               BIGINT      NOT NULL,
