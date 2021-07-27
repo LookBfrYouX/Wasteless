@@ -83,21 +83,6 @@
           />
         </div>
         <div class="col-12 col-md-6 form-group">
-          <label for="sellBy">Sell By</label>
-          <input
-              id="sellBy"
-              v-model="sellBy"
-              :min="todayDate"
-              class="form-control"
-              maxlength="30"
-              name="sellBy"
-              placeholder="Sell By"
-              type="date"
-          />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12 col-md-6 form-group">
           <label for="bestBefore">Best before</label>
           <input
               id="bestBefore"
@@ -107,6 +92,21 @@
               maxlength="30"
               name="bestBefore"
               placeholder="Best before"
+              type="date"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6 form-group">
+          <label for="sellBy">Sell By</label>
+          <input
+              id="sellBy"
+              v-model="sellBy"
+              :min="todayDate"
+              class="form-control"
+              maxlength="30"
+              name="sellBy"
+              placeholder="Sell By"
               type="date"
           />
         </div>
