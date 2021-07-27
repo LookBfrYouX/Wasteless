@@ -74,8 +74,10 @@
               clearable
               deletable-chips
               multiple
-              :items="allKeywordsName"
-              v-model="selectedKeywordsName"
+              :items="allKeywords"
+              item-text="name"
+              item-value="id"
+              v-model="selectedKeywordIds"
           ></v-autocomplete>
         </div>
       </div>
@@ -114,13 +116,7 @@
     </form>
   </div>
 </template>
-<style scoped>
-
-</style>
 <script>
-
-// While there is no backend, use this static list of tags
-import temporaryTags from "../../assets/temporaryTags.json";
 
 import {Api} from "@/Api";
 
@@ -153,13 +149,11 @@ export default {
       tagInputValue: "",
       // Value of tag suggestions input field
       showSuggestions: false,
-      allTags: temporaryTags,
       // Array of objects { id: Number, name: String }
       tags: [],
       addKeywords: false,
       allKeywords: null,
-      allKeywordsName: [],
-      selectedKeywordsName: []
+      selectedKeywordIds: []
     }
   },
 
@@ -177,7 +171,6 @@ export default {
       try {
         const data = (await Api.getAllKeywords()).data;
         this.allKeywords = data;
-        this.allKeywordsName = data.map(keyword => keyword.name);
         this.addKeywords = true;
       } catch (err) {
         this.errorMessage = "Cannot retrieve keywords"
@@ -185,26 +178,10 @@ export default {
     },
 
     /**
-     * Returns a list of keyword ids of selected keywords. Used when creating a card.
-     */
-    findKeywordIds() {
-      const keywordIds = [];
-      if (this.allKeywords != null && this.selectedKeywordsName.length !== 0) {
-        this.allKeywords.forEach((keyword) => {
-          if (this.selectedKeywordsName.includes(keyword.name)) {
-            keywordIds.push(keyword.id);
-          }
-        });
-      }
-      return keywordIds;
-    },
-
-    /**
      * Pipeline triggered when user submits form; validates the data and if successful,
      * sends request to the server.
      */
     create: async function () {
-      console.log("!!!!");
       if (!Object.keys(this.$constants.MARKETPLACE.SECTIONS).includes(this.section)) {
         this.errorMessage = "You must select a section to list your card in";
         return;
@@ -215,15 +192,13 @@ export default {
         return;
       }
 
-      const keywordIds = this.findKeywordIds();
-
       const cardData = {
         creatorId: this.userId,
         section: this.section,
         title: this.title,
         description: this.description.trim(),
         // remove extra newlines etc. at the start and end
-        keywordIds: keywordIds
+        keywordIds: this.selectedKeywordIds
       };
 
       try {
