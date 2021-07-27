@@ -66,9 +66,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     when(userService.isAdmin()).thenReturn(true);
 
     when(businessDao.getBusinessById(BUSINESSID_1)).thenReturn(business);
-    Object businessDto = businessService.getBusiness(business.getId());
-
-    assertTrue(businessDto instanceof FullBusinessDto);
+    assertEquals(business, businessService.getBusiness(business.getId()));
   }
 
   @Test
