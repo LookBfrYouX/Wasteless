@@ -13,10 +13,14 @@ for item in itemsToAdd:
         if line.startswith("INSERT INTO `{}`".format(item)):
             newFile.write(line)
 
-    # Country names are different between the SQL generator and restcountries.eu, so this is a manual map
-    # made by subtacting restcountries countries from sql output countries.
-    # Saint Barthélemy: UTF encoding is horrible so just switch to france
-    newFile.write("""
+    file.close()
+
+
+file = open("database.sql")
+# Country names are different between the SQL generator and restcountries.eu, so this is a manual map
+# made by subtacting restcountries countries from sql output countries.
+# Saint Barthélemy: UTF encoding is horrible so just switch to france
+newFile.write("""
 UPDATE ADDRESS SET COUNTRY = 'Antarctica' WHERE COUNTRY = 'Antarctica (the territory South of 60 deg S)';
 UPDATE ADDRESS SET COUNTRY = 'Bolivia (Plurinational State of)' WHERE COUNTRY = 'Bolivia';
 UPDATE ADDRESS SET COUNTRY = 'Norway' WHERE COUNTRY = 'Bouvet Island (Bouvetoya)';
@@ -45,4 +49,4 @@ UPDATE ADDRESS SET COUNTRY = 'United States of America' WHERE COUNTRY = 'United 
 UPDATE ADDRESS SET COUNTRY = 'Virgin Islands (U.S.)' WHERE COUNTRY = 'United States Virgin Islands';
 UPDATE ADDRESS SET COUNTRY = 'Venezuela (Bolivarian Republic of)' WHERE COUNTRY = 'Venezuela';
 UPDATE ADDRESS SET COUNTRY = 'Viet Nam' WHERE COUNTRY = 'Vietnam';""")
-    file.close()
+file.close()
