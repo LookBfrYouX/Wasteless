@@ -92,7 +92,7 @@ describe("Keyword functionality", () => {
     Api.getAllKeywords.mockImplementation(
         () => Promise.reject(new ApiRequestError()));
     mountCard();
-    await wrapper.vm.getAllKeywords();
-    expect(wrapper.vm.errorMessage).toEqual("Cannot retrieve keywords");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.keywordsErrorMessage).toEqual("Cannot retrieve keywords");
   });
 });

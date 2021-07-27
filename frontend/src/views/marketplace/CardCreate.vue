@@ -58,18 +58,10 @@
       </div>
       <div class="row">
         <div class="col-12 form-group">
-          <button
-              v-if="!addKeywords"
-            @click="getAllKeywords()"
-            class="btn btn-primary"
-              type="button">
-            Add keywords
-          </button>
-          <p
-            v-if="addKeywords">Find keywords to add</p>
+          <label class="form-label">Add Keywords</label>
           <v-autocomplete
-              v-if="addKeywords"
-              background-color="transparent"
+              background-color="white"
+              class="remove-v-autocomplete-bottom-padding pt-0 rounded"
               chips
               clearable
               deletable-chips
@@ -78,6 +70,9 @@
               item-text="name"
               item-value="id"
               v-model="selectedKeywordIds"
+
+              :hide-no-data="keywordsErrorMessage == null"
+              :no-data-text="keywordsErrorMessage == null? 'No results': keywordsErrorMessage"
           ></v-autocomplete>
         </div>
       </div>
@@ -146,21 +141,17 @@ export default {
       title: "",
       description: "",
       errorMessage: null,
-      tagInputValue: "",
-      // Value of tag suggestions input field
-      showSuggestions: false,
-      // Array of objects { id: Number, name: String }
-      tags: [],
-      addKeywords: false,
-      allKeywords: null,
-      selectedKeywordIds: []
+      allKeywords: [], // Array of objects { id: Number, name: String }
+      selectedKeywordIds: [],
+      keywordsErrorMessage: null
     }
   },
 
-  beforeMount() {
+  async beforeMount() {
     if (this.initialSection) {
       this.section = this.initialSection;
     }
+    await this.getAllKeywords();
   },
 
   methods: {
@@ -171,9 +162,8 @@ export default {
       try {
         const data = (await Api.getAllKeywords()).data;
         this.allKeywords = data;
-        this.addKeywords = true;
       } catch (err) {
-        this.errorMessage = "Cannot retrieve keywords"
+        this.keywordsErrorMessage = "Cannot retrieve keywords"
       }
     },
 
