@@ -44,7 +44,7 @@ public class InventoryServiceValidation {
             ordering.get(j).getValue()
         )) {
           throw new InventoryRegistrationException(
-              String.format("%s date must be after %s date",
+              String.format("%s date must be before %s date",
                   ordering.get(i).getKey(),
                   ordering.get(j).getKey()
               )
