@@ -76,31 +76,41 @@ describe("API error handling", () => {
   });
 });
 
-describe("Test tag suggestions", () => {
-  test("No suggestions", async () => {
+describe("Keyword functionality", () => {
+  test("Successfully fetch all keywords", async () => {
+    const mockKeywords = {
+      data: [ { name: "First keyword" },
+              { name: "Second keyword"}]
+    }
+    Api.getAllKeywords.mockResolvedValue(mockKeywords);
     mountCard();
-    wrapper.setData({
-      allTags: []
-    });
-
-    await wrapper.vm.$nextTick();
-    const suggestions = wrapper.vm.tagSuggestions;
-    expect(suggestions.length).toBe(1);
-    expect(suggestions[0].disabled).toBeTruthy();
+    await wrapper.vm.getAllKeywords();
+    expect(wrapper.vm.allKeywords.length).toBe(2);
   });
 
-  test("Suggestions are at least somewhat sensible", async () => {
+  test("Failed to fetch keywords", async () => {
+    Api.getAllKeywords.mockImplementation(
+        () => Promise.reject(new ApiRequestError()));
     mountCard();
-    const tags = ["Cat", "Dog", "No code is good code", "Hydrofluoric Acid",
-      "日常"].map((tag, i) => ({name: tag, id: i}));
-    wrapper.setData({
-      allTags: tags,
-      tagInputValue: "acid"
-    });
+    await wrapper.vm.getAllKeywords();
+    expect(wrapper.vm.errorMessage).toEqual("Cannot retrieve keywords");
+  });
 
-    await wrapper.vm.$nextTick();
-    const suggestions = wrapper.vm.tagSuggestions;
-    expect(suggestions.length).toBe(1);
-    expect(suggestions[0].toString()).toBe("Hydrofluoric Acid");
+  test("Create an array of keyword ids of selected keywords", () => {
+    mountCard();
+    wrapper.vm.allKeywords = [ { id: 1, name: "First keyword" },
+      { id: 2, name: "Second keyword" },
+      { id: 3, name: "Third keyword" }];
+    wrapper.vm.selectedKeywordsName = ["Second keyword"];
+    expect(wrapper.vm.findKeywordIds()).toEqual([2]);
+  });
+
+  test("User did not add keyword to the card", () => {
+    mountCard();
+    wrapper.vm.allKeywords = [ { id: 1, name: "First keyword" },
+      { id: 2, name: "Second keyword" },
+      { id: 3, name: "Third keyword" }];
+    wrapper.vm.selectedKeywordsName = [];
+    expect(wrapper.vm.findKeywordIds()).toEqual([]);
   });
 });
