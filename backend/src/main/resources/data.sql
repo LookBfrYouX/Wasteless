@@ -426,10 +426,10 @@ VALUES (5001, 5001, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17',
        (5003, 5002, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (5004, 5003, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
 
-INSERT INTO marketlisting (CREATOR_ID, SECTION, CREATED, DISPLAY_PERIOD_END, TITLE, DESCRIPTION)
-VALUES (5002, 'ForSale', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Shoddy web app',
+INSERT INTO marketlisting (ID, CREATOR_ID, SECTION, CREATED, DISPLAY_PERIOD_END, TITLE, DESCRIPTION)
+VALUES (2501, 5002, 'ForSale', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Shoddy web app',
         'Wanting to sell Wasteless, no longer needed or wanted.'),
-       (5002, 'Wanted', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Fresh motivation',
+       (2502, 5002, 'Wanted', '2021-05-23 15:34:20', '2021-06-23 15:34:20', 'Fresh motivation',
         'Will pay for motivation.');
 
 
