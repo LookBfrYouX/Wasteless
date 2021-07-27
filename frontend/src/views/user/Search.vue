@@ -99,6 +99,8 @@ export default {
         {key: "Middle name Z-A", value: "middleName", isAscending: false},
         {key: "Last name A-Z", value: "lastName", isAscending: true},
         {key: "Last name Z-A", value: "lastName", isAscending: false},
+        {key: "Nickname A-Z", value: "nickname", isAscending: true},
+        {key: "Nickname Z-A", value: "nickname", isAscending: false},
       ],
     }
   },
