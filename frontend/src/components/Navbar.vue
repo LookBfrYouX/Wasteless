@@ -78,20 +78,23 @@
 
           <!-- Center group: search input and button -->
           <li v-if="isSignedIn" class="navbar-item d-flex search-container w-100">
-            <form class="input-group navbar-center form-inline" @submit.prevent="search">
+            <form class="input-group navbar-center flex-nowrap" @submit.prevent="search">
               <div class="input-group w-100">
-                <div class="input-group-prepend h-100">
-                  <span class="input-group-text">
-                    <span class="material-icons">search</span>
-                  </span>
-                </div>
                 <input
                     :value="query"
-                    class=" form-control mr-sm-2 h-100"
-                    placeholder="Search"
+                    class=" form-control h-100"
+                    placeholder="Search Users"
                     type="text"
                     @input="event => $emit('input', event)"
                 />
+              </div>
+              <div class="input-group-append h-100">
+                <button
+                  type="submit"
+                  class="d-flex input-group-text align-items-center"
+                >
+                  <span class="material-icons">search</span>
+                </button>
               </div>
             </form>
           </li>
@@ -408,7 +411,9 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import "~/src/styles/grid-breakpoints.scss";
+
 nav {
   z-index: 10;
 }
@@ -423,8 +428,19 @@ nav {
 }
 
 .search-container {
-  max-width: 25em;
+  max-width: 20em;
   flex-grow: 2;
+}
+
+@media (max-width: map-get($grid-breakpoints, "sm")) {
+  .search-container {
+    max-width: initial;
+  }
+}
+
+.search-container input {
+  border-end-end-radius: 0;
+  border-start-end-radius: 0;
 }
 
 nav .active {
