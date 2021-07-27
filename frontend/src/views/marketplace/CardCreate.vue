@@ -58,44 +58,25 @@
       </div>
       <div class="row">
         <div class="col-12 form-group">
-          <div class=" d-flex flex-wrap align-items-center">
-            <label class="mr-2 mb-2 py-2" for="tags">Tags: </label>
-            <span v-if="!tags.length" class="mr-2 mb-2 py-2">None</span>
-            <tag
-                v-for="tag in tags"
-                v-else
-                :key="tag.id"
-                :xButton="true"
-                class="mr-2 mb-2"
-                @xClick="removeTag(tag.id)"
-            >
-              {{ tag.name }}
-            </tag>
-          </div>
-          <div class="add-tag-container">
-            <button
-                v-if="!showSuggestions"
-                class="btn btn-primary w-100"
-                @click="showSuggestionsInput"
-            >
-              Add Tag
-            </button>
-            <suggestions
-                v-else
-                id="tags"
-                ref="suggestionsInput"
-                :liActiveClasses="{'bg-primary': true, 'text-light': true}"
-                :suggestions="tagSuggestions"
-                :value="tagInputValue"
-                inputClasses="form-control"
-                name="tags"
-                placeholder="Add a Tag"
-                type="text"
-                @blur="showSuggestions = false"
-                @input="value => tagInputValue = value"
-                @suggestion="tagSuggestionSelected"
-            />
-          </div>
+          <button
+              v-if="!addKeywords"
+            @click="getAllKeywords()"
+            class="btn btn-primary"
+              type="button">
+            Add keywords
+          </button>
+          <p
+            v-if="addKeywords">Find keywords to add</p>
+          <v-autocomplete
+              v-if="addKeywords"
+              background-color="transparent"
+              chips
+              clearable
+              deletable-chips
+              multiple
+              :items="allKeywordsName"
+              v-model="selectedKeywordsName"
+          ></v-autocomplete>
         </div>
       </div>
       <div class="row">
@@ -134,14 +115,9 @@
   </div>
 </template>
 <style scoped>
-.add-tag-container {
-  width: min(100%, 20em);
-}
+
 </style>
 <script>
-import Suggestions from "@/components/Suggestions.vue";
-import Tag from "@/components/Tag.vue";
-import EditDistance from "@/EditDistance";
 
 // While there is no backend, use this static list of tags
 import temporaryTags from "../../assets/temporaryTags.json";
@@ -149,7 +125,6 @@ import temporaryTags from "../../assets/temporaryTags.json";
 import {Api} from "@/Api";
 
 export default {
-  components: {Suggestions, Tag},
   props: {
     /**
      * ID of user to create the card as
@@ -180,58 +155,11 @@ export default {
       showSuggestions: false,
       allTags: temporaryTags,
       // Array of objects { id: Number, name: String }
-      tags: []
-    }
-  },
-
-  computed: {
-    /**
-     * Computes the suggestions that should be shown to the user given the static list of suggestions
-     * and value of the add tag input field
-     */
-    tagSuggestions() {
-      const {
-        NUM_SUGGESTIONS,
-        WORST_RATIO,
-        INSERT_COST,
-        DELETE_COST,
-        SUBSTITUTE_COST
-      } = this.$constants.MARKETPLACE.CREATE_CARD.TAG_SUGGESTIONS;
-
-      let suggestions = this.allTags.map(tag => {
-        tag.score = new EditDistance(
-            this.tagInputValue.toLocaleLowerCase(),
-            tag.name.toLocaleLowerCase(),
-            INSERT_COST,
-            DELETE_COST,
-            SUBSTITUTE_COST
-        ).calculate();
-
-        tag.weightedScore = tag.score / tag.name.length;
-        // weighted score takes into account length of tag so that it doesn't prefer shorter suggestions
-
-        tag.toString = () => tag.name; // toString used to show the suggestion
-
-        return tag;
-      });
-
-      suggestions.sort((a, b) => a.weightedScore - b.weightedScore);
-      const selectedSuggestions = new Set(this.tags.map(({id}) => id));
-      suggestions = suggestions.filter(
-          ({id, weightedScore}) => weightedScore < WORST_RATIO && !selectedSuggestions.has(id));
-      // Filter out bad suggestions (scores too high) and already selected suggestions
-
-      suggestions = suggestions.slice(0, NUM_SUGGESTIONS);
-      // If there are too many suggestions, only return the best few
-
-      if (suggestions.length == 0) {
-        // If there are no suggestions add a disabled item to show this (makes it clear that the user needs to change the suggestion)
-        suggestions = [{
-          toString: () => "No suggestions",
-          disabled: true
-        }];
-      }
-      return suggestions;
+      tags: [],
+      addKeywords: false,
+      allKeywords: null,
+      allKeywordsName: [],
+      selectedKeywordsName: []
     }
   },
 
@@ -243,30 +171,32 @@ export default {
 
   methods: {
     /**
-     * When tag is selected clear the input field and add the tag to the list of selected tags
+     * Get all keywords from the database to show in the combobox.
      */
-    tagSuggestionSelected: async function (tag) {
-      this.tags.push(tag);
-      this.tagInputValue = "";
+    getAllKeywords: async function () {
+      try {
+        const data = (await Api.getAllKeywords()).data;
+        this.allKeywords = data;
+        this.allKeywordsName = data.map(keyword => keyword.name);
+        this.addKeywords = true;
+      } catch (err) {
+        this.errorMessage = "Cannot retrieve keywords"
+      }
     },
 
     /**
-     * When the add tag button is clicked, show the suggestion and force focus on the suggestions input element
+     * Returns a list of keyword ids of selected keywords. Used when creating a card.
      */
-    showSuggestionsInput() {
-      this.showSuggestions = true;
-      this.$nextTick(() => {
-        // Need to wait until next tick for the input element to be created on the DOM
-        // so that focus can be forced
-        this.$refs.suggestionsInput.$refs.input.focus()
-      });
-    },
-
-    /**
-     * Removes the tag with the given ID
-     */
-    removeTag(id) {
-      this.tags = this.tags.filter(tag => tag.id != id);
+    findKeywordIds() {
+      const keywordIds = [];
+      if (this.allKeywords != null && this.selectedKeywordsName.length !== 0) {
+        this.allKeywords.forEach((keyword) => {
+          if (this.selectedKeywordsName.includes(keyword.name)) {
+            keywordIds.push(keyword.id);
+          }
+        });
+      }
+      return keywordIds;
     },
 
     /**
@@ -274,6 +204,7 @@ export default {
      * sends request to the server.
      */
     create: async function () {
+      console.log("!!!!");
       if (!Object.keys(this.$constants.MARKETPLACE.SECTIONS).includes(this.section)) {
         this.errorMessage = "You must select a section to list your card in";
         return;
@@ -284,13 +215,15 @@ export default {
         return;
       }
 
+      const keywordIds = this.findKeywordIds();
+
       const cardData = {
         creatorId: this.userId,
         section: this.section,
         title: this.title,
         description: this.description.trim(),
         // remove extra newlines etc. at the start and end
-        tagIds: this.tags.map(tag => tag.id)
+        keywordIds: keywordIds
       };
 
       try {

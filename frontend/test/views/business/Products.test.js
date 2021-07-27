@@ -59,18 +59,37 @@ beforeEach(() => {
             businessId: 1
         }
     });
+    Api.getProducts.mockResolvedValue({
+        data: response
+    });
 });
 
 afterEach(() => wrapper.destroy());
+
+describe("Ensure values are set and changed", () => {
+    /**
+     * Tests the component is set up correctly.
+     */
+    test("Check data values are set", async () => {
+        await wrapper.vm.pageUpdate();
+        expect(wrapper.vm.$data.page).toEqual(1);
+        expect(wrapper.vm.$data.totalResults).toEqual(3);
+        expect(wrapper.vm.$data.searchParams).toBeDefined();
+        expect(wrapper.vm.$data.searchParams.sortBy).toEqual("name");
+    });
+
+    test("Calling sortUpdate changes sort", async () => {
+        await wrapper.vm.sortUpdate("recommendedRetailPrice", false);
+        expect(wrapper.vm.$data.searchParams.sortBy).toEqual("recommendedRetailPrice")
+        expect(wrapper.vm.$data.searchParams.isAscending).toBeFalsy();
+    });
+});
 
 describe("Product API handling", () => {
     /**
      * Tests that the products get set correctly.
      */
     test("Assert products get set from API", async () => {
-        Api.getProducts.mockResolvedValue({
-            data: response
-        });
         await wrapper.vm.query();
         expect(wrapper.vm.$data.products).toEqual(response.results);
 
