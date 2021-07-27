@@ -6,5 +6,4 @@ public interface AddressDao {
 
   void saveAddress(Address address);
 
-  void deleteAddress(Address address);
 }

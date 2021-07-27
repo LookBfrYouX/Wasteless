@@ -14,6 +14,11 @@ public class BasicImageDto {
   private String filename;
   private String thumbnailFilename;
 
+  /**
+   * Constructor for creating Image DTO from Image entity. (needs a public path prefix)
+   * @param publicPathPrefix
+   * @param image
+   */
   public BasicImageDto(String publicPathPrefix, Image image) {
     this.id = image.getId();
     this.filename = publicPathPrefix + image.getPath().substring(1);

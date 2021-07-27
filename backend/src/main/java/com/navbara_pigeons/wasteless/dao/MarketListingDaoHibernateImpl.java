@@ -20,12 +20,23 @@ public class MarketListingDaoHibernateImpl implements MarketListingDao {
     this.entityManager = entityManager;
   }
 
+  /**
+   * Saves a new market listing.
+   * @param marketListing
+   */
   @Override
   public void saveMarketListing(MarketListing marketListing) {
     Session currentSession = getSession();
     currentSession.saveOrUpdate(marketListing);
   }
 
+  /**
+   * Retrieves a list of market listings from a section.
+   * @param section
+   * @param pagBuilder
+   * @return
+   * @throws InvalidPaginationInputException
+   */
   @Override
   public Pair<List<MarketListing>, Long> getMarketListing(
       String section, PaginationBuilder pagBuilder) throws InvalidPaginationInputException {

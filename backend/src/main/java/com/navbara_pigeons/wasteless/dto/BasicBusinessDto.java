@@ -20,6 +20,10 @@ public class BasicBusinessDto {
   private String businessType;
   private ZonedDateTime created;
 
+  /**
+   * Constructor for creating public (basic address) Business DTO from Business Entity.
+   * @param business
+   */
   public BasicBusinessDto(Business business) {
     this.id = business.getId();
     this.primaryAdministratorId = business.getPrimaryAdministratorId();

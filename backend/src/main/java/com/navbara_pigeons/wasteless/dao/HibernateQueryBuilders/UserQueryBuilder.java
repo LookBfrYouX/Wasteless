@@ -145,6 +145,13 @@ public class UserQueryBuilder {
     return typedQuery;
   }
 
+  /**
+   * Consumes a token and calls the corresponding predicate creation method.
+   * @param token
+   * @param criteriaBuilder
+   * @param root
+   * @return
+   */
   private static Predicate makePredicateForUserQuery(
       String token, CriteriaBuilder criteriaBuilder, Root<User> root) {
     if (token.matches("\"\\S*.+?\"")) {
@@ -155,6 +162,13 @@ public class UserQueryBuilder {
     }
   }
 
+  /**
+   * Predicate builder for full name matches.
+   * @param token
+   * @param criteriaBuilder
+   * @param root
+   * @return
+   */
   private static Predicate buildNameFullMatchPredicateForUserQuery(
       String token, CriteriaBuilder criteriaBuilder, Root<User> root) {
     return criteriaBuilder.or(
@@ -164,6 +178,13 @@ public class UserQueryBuilder {
         criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")), token.toLowerCase()));
   }
 
+  /**
+   * Predicate builder for partial name matches.
+   * @param token
+   * @param criteriaBuilder
+   * @param root
+   * @return
+   */
   private static Predicate buildNamePartialMatchPredicateForUserQuery(
       String token, CriteriaBuilder criteriaBuilder, Root<User> root) {
     return criteriaBuilder.or(

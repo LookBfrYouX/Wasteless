@@ -12,8 +12,6 @@ public interface InventoryDao {
 
   void saveInventoryItem(InventoryItem inventory);
 
-  InventoryItem getInventoryItem(long InventoryId) throws InventoryItemNotFoundException;
-
   Pair<List<InventoryItem>, Long> getInventoryItems(Business business, PaginationBuilder pagBuilder)
       throws InvalidPaginationInputException;
 }
