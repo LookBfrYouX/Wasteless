@@ -73,7 +73,7 @@ describe("fetchBusiness", () => {
 
   test("failed mount", async () => {
     Api.businessProfile.mockImplementation(() => Promise.reject(new ApiRequestError("Err")));
-    standardMount();
+    await standardMount();
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.business).toBe(null);
     expect(wrapper.vm.apiErrorMessage).toEqual("Err");

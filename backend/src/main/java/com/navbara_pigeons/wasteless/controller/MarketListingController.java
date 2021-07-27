@@ -4,16 +4,12 @@ import com.navbara_pigeons.wasteless.dto.CreateMarketListingDto;
 import com.navbara_pigeons.wasteless.dto.FullMarketListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.MarketListing;
-import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.enums.MarketListingSortByOption;
-import com.navbara_pigeons.wasteless.enums.MarketplaceSection;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidMarketListingSectionException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.service.KeywordService;
-import com.navbara_pigeons.wasteless.service.KeywordServiceImpl;
 import com.navbara_pigeons.wasteless.service.MarketListingService;
-import com.navbara_pigeons.wasteless.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,27 +33,32 @@ import javax.validation.Valid;
 @Tag(name = "Marketplace Endpoint (Cards)", description = "The API endpoint for a virtual marketplace")
 public class MarketListingController {
 
-  private final UserService userService;
   private final MarketListingService marketListingService;
-  private final KeywordService keywordService;
 
-  public MarketListingController(
-      @Autowired UserService userService, MarketListingService marketListingService, KeywordService keywordService) {
-    this.userService = userService;
+  @Autowired
+  public MarketListingController(MarketListingService marketListingService) {
     this.marketListingService = marketListingService;
-    this.keywordService = keywordService;
   }
 
+  /**
+   * Create a market listing card
+   * @param createMarketListingDto
+   * @return Response entity with cardId if successful.
+   * @throws UserNotFoundException
+   * @throws InsufficientPrivilegesException
+   */
   @PostMapping("/cards")
   public ResponseEntity<JSONObject> addMarketListing(
       @Valid @RequestBody CreateMarketListingDto createMarketListingDto)
-      throws UserNotFoundException {
+      throws UserNotFoundException, InsufficientPrivilegesException {
     log.info("CREATING A CARD WITH TITLE: " + createMarketListingDto.getTitle());
-    User creator = userService.getUserById(createMarketListingDto.getCreatorId());
-    MarketListing marketListing = new MarketListing(createMarketListingDto, creator);
-    marketListing.setKeywords(keywordService.getKeywords(createMarketListingDto.getKeywordIds()));
+
     JSONObject response = new JSONObject();
-    response.put("cardId", this.marketListingService.saveMarketListing(marketListing));
+    response.put("cardId", marketListingService.saveMarketListing(
+        new MarketListing(createMarketListingDto),
+        createMarketListingDto.getKeywordIds(),
+        createMarketListingDto.getCreatorId()
+    ));
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
