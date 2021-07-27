@@ -212,6 +212,7 @@ export const Api = {
    * @returns promise. If it fails, the error will have the `userFacingErrorMessage` property
    */
   search: (params) => {
+    params.searchQuery = (params.searchQuery) ? params.searchQuery : "";
     return instance.get('/users/search', { params: params })
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error);
