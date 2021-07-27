@@ -1,4 +1,6 @@
-newFile = open("result.sql", "x")
+import codecs
+
+newFile = codecs.open("result.sql", "x", "utf-8")
 
 # This list needs to be in order
 itemsToAdd = ["address", "user", "business", "user_business", "product",
@@ -43,4 +45,5 @@ UPDATE ADDRESS SET COUNTRY = 'Virgin Islands (U.S.)' WHERE COUNTRY = 'United Sta
 UPDATE ADDRESS SET COUNTRY = 'Venezuela (Bolivarian Republic of)' WHERE COUNTRY = 'Venezuela';
 UPDATE ADDRESS SET COUNTRY = 'Viet Nam' WHERE COUNTRY = 'Vietnam';
     """)
+    newFile.close()
     file.close()
