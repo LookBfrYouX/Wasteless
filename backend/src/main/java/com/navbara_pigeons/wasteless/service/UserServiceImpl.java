@@ -95,13 +95,6 @@ public class UserServiceImpl implements UserService {
     if (userDao.userExists(user.getEmail())) {
       throw new UserAlreadyExistsException("User already exists");
     }
-    // Check user is over 13 years old
-    if (!user.getDateOfBirth().isBefore(LocalDate.now().minusYears(13))) {
-      throw new UserRegistrationException("Must be 13 years or older to register");
-    }
-    if (!user.getDateOfBirth().isAfter(LocalDate.now().minusYears(110))) {
-      throw new UserRegistrationException("Must be less than 110 years old to register");
-    }
 
     // Set user credentials for logging in after registering
     UserCredentials userCredentials = new UserCredentials();

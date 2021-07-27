@@ -8,6 +8,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.time.LocalDate;
 import java.util.Set;
 
 public class CreateUserDtoTest extends MainTestProvider {
@@ -55,5 +56,25 @@ public class CreateUserDtoTest extends MainTestProvider {
         Assertions.assertEquals(1, validate(dto).size());
     }
 
+    @Test
+    public void invalidCreateUserFutureDateOfBirth() {
+        CreateUserDto dto = new CreateUserDto(makeUser("email@email.co.nz", "password123", false));
+        dto.setDateOfBirth(LocalDate.now().plusYears(10));
+        Assertions.assertEquals(1, validate(dto).size());
+    }
+
+    @Test
+    public void invalidCreateUserDateOfBirthTooOld() {
+        CreateUserDto dto = new CreateUserDto(makeUser("email@email.co.nz", "password123", false));
+        dto.setDateOfBirth(LocalDate.now().minusYears(150));
+        Assertions.assertEquals(1, validate(dto).size());
+    }
+
+    @Test
+    public void validCreateUserDateOfBirthMinimumAge() {
+        CreateUserDto dto = new CreateUserDto(makeUser("email@email.co.nz", "password123", false));
+        dto.setDateOfBirth(LocalDate.now().minusYears(13));
+        Assertions.assertEquals(0, validate(dto).size());
+    }
 
 }

@@ -69,19 +69,6 @@ public class UserServiceImplTest extends ServiceTestProvider {
     userService.saveUser(user);
   }
 
-
-  // This test has been changed as the LocalDate data type now stops incorrectly formatted data being supplied.
-  // This test now tests that users are of sufficient age.
-  @Test
-  public void saveUser_invalidDoB() {
-    String[] testValues = {"2034-11-11", "2020-10-05"};
-    User user = makeUser(EMAIL_1, PASSWORD_1, false);
-    for (String testValue : testValues) {
-      user.setDateOfBirth(LocalDate.parse(testValue));
-      assertThrows(UserRegistrationException.class, () -> userService.saveUser(user));
-    }
-  }
-
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
   public void getUserById_self() throws UserNotFoundException {

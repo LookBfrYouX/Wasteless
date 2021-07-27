@@ -1,12 +1,11 @@
 package com.navbara_pigeons.wasteless.dto;
 
-import java.time.LocalDate;
+import com.navbara_pigeons.wasteless.validation.constraints.BeforeNowPlusXYears;
 import java.time.ZonedDateTime;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-
 import javax.validation.constraints.*;
 
 @Data
@@ -17,7 +16,6 @@ public class CreateListingDto {
   @NotNull(message = "Inventory Item Id cannot be Null")
   private long inventoryItemId;
 
-
   @NotNull(message = "Quantity cannot be Null")
   @DecimalMin(inclusive = false, value = "0")
   private long quantity;
@@ -27,7 +25,8 @@ public class CreateListingDto {
 
   @Length(max=50, message = "More Info has to be less than or equal to 50 Characters")
   private String moreInfo;
-  private LocalDate created;
+  @FutureOrPresent
+  @BeforeNowPlusXYears(years=1, message="Listings must close between now and 1 years time")
   private ZonedDateTime closes;
 
   public CreateListingDto() {
