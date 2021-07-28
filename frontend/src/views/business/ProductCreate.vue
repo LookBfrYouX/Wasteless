@@ -200,8 +200,6 @@ export default {
         this.errorMessage = "Please enter a valid price greater than 0";
       } else if (this.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
-      } else if (this.manufacturer.trim().length === 0) {
-        this.errorMessage = "Please enter a manufacturer for your product";
       } else {
         try {
           await this.callApi({
