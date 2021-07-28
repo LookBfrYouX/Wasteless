@@ -214,7 +214,7 @@ export const helper = {
 
     const actingAsBusiness = stateStore.getters.getActingAs();
     if (actingAsBusiness && actingAsBusiness.id == businessId) {
-      return actingAsBusiness.country;
+      return actingAsBusiness.address.country;
     }
 
     const {data} = await Api.businessProfile(businessId);
