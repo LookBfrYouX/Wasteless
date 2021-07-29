@@ -1,6 +1,6 @@
-const {Api} = require("./Api.js");
-const countryData = require("./assets/countryData.json");
-const {constants} = require("./constants");
+const {Api} = require("@/Api.js");
+const countryData = require("@/assets/countryData.json");
+const {constants} = require("@/constants");
 
 /**
  * Helper methods that may be used by multiple pages. It is added to the vue prototype so

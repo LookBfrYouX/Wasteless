@@ -29,15 +29,15 @@
  * Main entry point for your Vue app
  */
 import Vue from 'vue';
-import App from './App';
-import {router} from './router';
-import {store} from './store';
-import {helper} from './helper';
-import {constants} from "./constants";
+import App from '@/App';
+import {router} from '@/router';
+import {store} from '@/store';
+import {helper} from '@/helper';
+import {constants} from "@/constants";
 import VueLogger from 'vuejs-logger';
 import vuetify from '@/plugins/vuetify' 
 import "bootstrap";
-import "./styles/main.scss";
+import "@/styles/main.scss";
 // path to vuetify export
 
 
