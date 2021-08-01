@@ -206,9 +206,7 @@ export default {
         this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
             this.$stateStore);
       } catch (err) {
-        if (await Api.handle401.call(this, err)) {
-
-        }
+        await Api.handle401.call(this, err);
       }
     },
 
