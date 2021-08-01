@@ -14,8 +14,17 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * Annotation for string enum; ensures string matches `toString` value of an enum class Code copied
- * from https://stackoverflow.com/a/18209990
+ * Checks that the given dates are not past a certain point x years in the future (or past), or vice
+ * versa. Boundaries are inclusive.
+ * <p>
+ * The 'x' in the diagram below indicates areas that will cause the validation to fail:
+ * <pre>
+ * The Past-----------------|-----------Now------------|--------------The Future
+ * BeforeNowPlusXYears(-ve) | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ *                      BeforeNowPlusXYears(+ve)       | xxxxxxxxxxxxxxxxxxxxxxx
+ * xxxxxxxxxxxxxxxxxxxxxxxx |          AfterNowPlusXYears(-ve)
+ * xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx | AfterNowPlusXYears(+ve)
+ * </pre>
  */
 @Documented
 @Constraint(validatedBy = AfterNowPlusXYearsValidator.class)

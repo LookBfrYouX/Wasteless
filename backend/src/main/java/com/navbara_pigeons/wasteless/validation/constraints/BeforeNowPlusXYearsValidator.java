@@ -11,14 +11,16 @@ import javax.validation.ConstraintValidatorContext;
  * Checks that the given dates are not past a certain point x years in the future (or past), or vice
  * versa. Boundaries are inclusive.
  * <p>
- * This has been tested with LocalDate and ZonedDateTime. The x indicates areas that will cause the
- * validation to fail
+ * This has been tested with LocalDate and ZonedDateTime.
  * <p>
+ * The 'x' in the diagram below indicates areas that will cause the validation to fail:
+ * <pre>
  * The Past-----------------|-----------Now------------|--------------The Future
  * BeforeNowPlusXYears(-ve) | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
- * BeforeNowPlusXYears(+ve)       | xxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxx |
- * AfterNowPlusXYears(-ve) xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx |
- * AfterNowPlusXYears(+ve)
+ *                      BeforeNowPlusXYears(+ve)       | xxxxxxxxxxxxxxxxxxxxxxx
+ * xxxxxxxxxxxxxxxxxxxxxxxx |          AfterNowPlusXYears(-ve)
+ * xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx | AfterNowPlusXYears(+ve)
+ * </pre>
  */
 public class BeforeNowPlusXYearsValidator implements
     ConstraintValidator<BeforeNowPlusXYears, Temporal> {
