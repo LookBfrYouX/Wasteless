@@ -1,6 +1,24 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InvalidMarketListingSectionException;
+import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+import com.navbara_pigeons.wasteless.exception.ListingValidationException;
+import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
+import com.navbara_pigeons.wasteless.exception.ProductRegistrationException;
+import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
+import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
+import java.util.ArrayList;
 import javax.management.InvalidAttributeValueException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,15 +27,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class handles all custom controller exceptions and returns the appropriate response entity
@@ -37,7 +50,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(InsufficientPrivilegesException.class)
   @ResponseStatus(HttpStatus.FORBIDDEN)
   public ResponseEntity<String> handleInsufficientPrivilegesException(
-          InsufficientPrivilegesException exc) {
+      InsufficientPrivilegesException exc) {
     log.error("UNAUTHORISED ACTION: 403 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.FORBIDDEN);
   }
@@ -103,7 +116,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(ProductRegistrationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleProductRegistrationException(
-          ProductRegistrationException exc) {
+      ProductRegistrationException exc) {
     log.error("PRODUCT REGISTRATION ERROR: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
@@ -111,7 +124,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(InventoryItemNotFoundException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleInventoryItemNotFoundException(
-          InventoryItemNotFoundException exc) {
+      InventoryItemNotFoundException exc) {
     log.error("INVENTORY ITEM ERROR: 406 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
@@ -125,7 +138,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(InventoryRegistrationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleInventoryRegistrationException(
-          InventoryRegistrationException exc) {
+      InventoryRegistrationException exc) {
     log.error("INVENTORY REGISTRATION EXCEPTION: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
@@ -146,7 +159,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(InvalidAttributeValueException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<String> handleInvalidAttributeValueException(
-          InvalidAttributeValueException exc) {
+      InvalidAttributeValueException exc) {
     log.error("SEARCH QUERY ERROR: 500 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
@@ -191,7 +204,6 @@ public class ControllerExceptionHandler {
   }
 
 
-
   @ExceptionHandler(AddressValidationException.class)
   @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad address given")
   public void handleAddressValidationException(AddressValidationException exc) {
@@ -208,7 +220,8 @@ public class ControllerExceptionHandler {
 
   @ExceptionHandler(InvalidMarketListingSectionException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<String> handleInvalidMarketListingSectionException(InvalidMarketListingSectionException exc) {
+  public ResponseEntity<String> handleInvalidMarketListingSectionException(
+      InvalidMarketListingSectionException exc) {
     log.error("BAD REQUEST: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
@@ -223,19 +236,20 @@ public class ControllerExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exc) {
+  public ResponseEntity<String> handleMethodArgumentNotValidException(
+      MethodArgumentNotValidException exc) {
     log.error("ENTITY VALIDATION EXCEPTION: 400 - " + exc.getMessage());
     ArrayList<String> errors = new ArrayList<>();
-    for(FieldError error: exc.getBindingResult().getFieldErrors()) {
+    for (FieldError error : exc.getBindingResult().getFieldErrors()) {
       errors.add(error.getField() + ": " + error.getDefaultMessage());
     }
 
-    for(ObjectError error: exc.getBindingResult().getGlobalErrors()) {
+    for (ObjectError error : exc.getBindingResult().getGlobalErrors()) {
       errors.add(error.getDefaultMessage());
     }
 
     String message = "Invalid entity received:";
-    for(String msg: errors) {
+    for (String msg : errors) {
       message += "\n- " + msg;
     }
 

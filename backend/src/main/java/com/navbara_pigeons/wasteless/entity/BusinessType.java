@@ -9,19 +9,14 @@ public enum BusinessType {
   NON_PROFIT("Non-profit organisation");
 
   String value;
-  BusinessType(String value) {
-       this.value = value;
-  }
 
-  /**
-   * Returns string value of the business type
-   */
-  public String toString() {
-       return this.value;
+  BusinessType(String value) {
+    this.value = value;
   }
 
   /**
    * Converts string to BusinessType (using the enum value, not the name of the enum)
+   *
    * @param businessType string to convert
    * @return enum value
    * @throws BusinessTypeException if invalid string given
@@ -36,6 +31,14 @@ public enum BusinessType {
       }
     }
 
-    throw new IllegalArgumentException(String.format("Invalid business type given; got '%s'", businessType));
+    throw new IllegalArgumentException(
+        String.format("Invalid business type given; got '%s'", businessType));
+  }
+
+  /**
+   * Returns string value of the business type
+   */
+  public String toString() {
+    return this.value;
   }
 }

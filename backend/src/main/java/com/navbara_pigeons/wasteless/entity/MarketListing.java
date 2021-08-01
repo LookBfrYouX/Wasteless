@@ -71,6 +71,7 @@ public class MarketListing {
 
   /**
    * Constructs MarketListing object from DTO. The creator id and keyword ids are not set.
+   *
    * @param marketListingDto
    */
   public MarketListing(CreateMarketListingDto marketListingDto) {
@@ -81,6 +82,7 @@ public class MarketListing {
 
   /**
    * Add a keyword to market listing.
+   *
    * @param keyword
    */
   public void addKeyword(Keyword keyword) {

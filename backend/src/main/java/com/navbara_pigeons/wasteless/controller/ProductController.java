@@ -1,6 +1,5 @@
 package com.navbara_pigeons.wasteless.controller;
 
-import com.navbara_pigeons.wasteless.dto.BasicProductCreationDto;
 import com.navbara_pigeons.wasteless.dto.CreateProductDto;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.enums.ProductSortByOption;
@@ -26,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 /**
  * This controller class provides the endpoints for dealing with products. All requests for products
@@ -64,9 +61,9 @@ public class ProductController {
    * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
    *                      required and defaults to True.
    * @return A list of products.
-   * @throws UserNotFoundException Handled in ControllerExceptionHandler class.
+   * @throws UserNotFoundException           Handled in ControllerExceptionHandler class.
    * @throws InsufficientPrivilegesException Handled in ControllerExceptionHandler class.
-   * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
+   * @throws BusinessNotFoundException       Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/products")
   @Operation(summary = "Show a businesses products", description = "Return a paginated/sorted list of a specific businesses products")
@@ -99,11 +96,11 @@ public class ProductController {
   /**
    * This endpoint is to add a product to the catalog
    *
-   * @param id The business ID.
+   * @param id      The business ID.
    * @param product The product to be added.
    * @return A ResponseEntity.
    * @throws InsufficientPrivilegesException Handled in ControllerExceptionHandler class.
-   * @throws ProductRegistrationException Handled in ControllerExceptionHandler class.
+   * @throws ProductRegistrationException    Handled in ControllerExceptionHandler class.
    */
   @PostMapping("/businesses/{id}/products")
   public ResponseEntity<Object> addToCatalogue(

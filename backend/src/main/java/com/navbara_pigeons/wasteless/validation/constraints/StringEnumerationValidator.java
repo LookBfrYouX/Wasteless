@@ -1,14 +1,13 @@
 package com.navbara_pigeons.wasteless.validation.constraints;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
- * Validator for string enum
- * Code copied from https://stackoverflow.com/a/18209990
+ * Validator for string enum Code copied from https://stackoverflow.com/a/18209990
  */
 public class StringEnumerationValidator implements ConstraintValidator<StringEnumeration, String> {
 
@@ -16,6 +15,7 @@ public class StringEnumerationValidator implements ConstraintValidator<StringEnu
 
   /**
    * Gets the toString values of each enum value
+   *
    * @param e enum class
    * @return Set of enum values
    */

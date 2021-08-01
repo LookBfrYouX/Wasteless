@@ -9,14 +9,14 @@ import com.navbara_pigeons.wasteless.exception.InvalidMarketListingSectionExcept
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import java.util.List;
-import javax.transaction.Transactional;
 
 public interface MarketListingService {
+
   Long saveMarketListing(MarketListing marketListing, List<Long> keywordIds, Long creatorId)
       throws UserNotFoundException, InsufficientPrivilegesException;
 
   PaginationDto<FullMarketListingDto> getMarketListings(
       String section, MarketListingSortByOption sortBy, Integer pagStartIndex, Integer pagEndIndex,
       boolean isAscending)
-          throws InvalidPaginationInputException, InvalidMarketListingSectionException;
+      throws InvalidPaginationInputException, InvalidMarketListingSectionException;
 }

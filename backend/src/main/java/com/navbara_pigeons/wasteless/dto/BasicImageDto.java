@@ -16,6 +16,7 @@ public class BasicImageDto {
 
   /**
    * Constructor for creating Image DTO from Image entity. (needs a public path prefix)
+   *
    * @param publicPathPrefix
    * @param image
    */

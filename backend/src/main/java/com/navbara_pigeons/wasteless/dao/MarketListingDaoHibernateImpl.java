@@ -22,6 +22,7 @@ public class MarketListingDaoHibernateImpl implements MarketListingDao {
 
   /**
    * Saves a new market listing.
+   *
    * @param marketListing
    */
   @Override
@@ -32,6 +33,7 @@ public class MarketListingDaoHibernateImpl implements MarketListingDao {
 
   /**
    * Retrieves a list of market listings from a section.
+   *
    * @param section
    * @param pagBuilder
    * @return

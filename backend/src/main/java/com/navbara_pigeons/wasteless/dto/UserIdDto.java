@@ -7,11 +7,13 @@ import lombok.Data;
  */
 @Data
 public class UserIdDto {
+
   private long userId;
 
   public UserIdDto(long userId) {
     this.userId = userId;
   }
 
-  public UserIdDto(){}
+  public UserIdDto() {
+  }
 }

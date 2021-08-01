@@ -10,7 +10,6 @@ import com.navbara_pigeons.wasteless.enums.MarketplaceSection;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidMarketListingSectionException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
-import com.navbara_pigeons.wasteless.exception.MarketListingCreationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.time.ZonedDateTime;
@@ -30,7 +29,8 @@ public class MarketListingServiceImpl implements MarketListingService {
   private final KeywordService keywordService;
 
   @Autowired
-  public MarketListingServiceImpl(MarketListingDao marketListingDao, UserService userService, KeywordService keywordService) {
+  public MarketListingServiceImpl(MarketListingDao marketListingDao, UserService userService,
+      KeywordService keywordService) {
     this.marketListingDao = marketListingDao;
     this.userService = userService;
     this.keywordService = keywordService;
@@ -42,7 +42,8 @@ public class MarketListingServiceImpl implements MarketListingService {
       throws UserNotFoundException, InsufficientPrivilegesException {
     User currentUser = userService.getLoggedInUser();
     if (!userService.isAdmin() && currentUser.getId() != creatorId) {
-      throw new InsufficientPrivilegesException("Only a GAA can create a market listing as an other user.");
+      throw new InsufficientPrivilegesException(
+          "Only a GAA can create a market listing as an other user.");
     }
     marketListing.setCreated(ZonedDateTime.now());
     marketListing.setDisplayPeriodEnd(ZonedDateTime.now().plus(1, ChronoUnit.MONTHS));
@@ -57,10 +58,10 @@ public class MarketListingServiceImpl implements MarketListingService {
   public PaginationDto<FullMarketListingDto> getMarketListings(String section,
       MarketListingSortByOption sortBy, Integer pagStartIndex, Integer pagEndIndex,
       boolean isAscending)
-          throws InvalidPaginationInputException, InvalidMarketListingSectionException {
+      throws InvalidPaginationInputException, InvalidMarketListingSectionException {
     try {
       MarketplaceSection.valueOf(section);
-    } catch(IllegalArgumentException | NullPointerException e) {
+    } catch (IllegalArgumentException | NullPointerException e) {
       throw new InvalidMarketListingSectionException("Invalid section given");
     }
 

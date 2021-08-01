@@ -2,8 +2,8 @@ package com.navbara_pigeons.wasteless.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.navbara_pigeons.wasteless.dto.BasicImageDto;
-import com.navbara_pigeons.wasteless.dto.CreateProductDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
+import com.navbara_pigeons.wasteless.dto.CreateProductDto;
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -46,8 +46,8 @@ public class Product {
   @Column(name = "MANUFACTURER")
   private String manufacturer;
 
-  @DecimalMin(message="RRP must be above 0.01", value="0.01")
-  @DecimalMax(message="RRP must be below 10,000,000", value="10000000.00")
+  @DecimalMin(message = "RRP must be above 0.01", value = "0.01")
+  @DecimalMax(message = "RRP must be below 10,000,000", value = "10000000.00")
   @Column(name = "RRP")
   private Double recommendedRetailPrice;
 
@@ -100,7 +100,8 @@ public class Product {
   }
 
 
-  public Product() {}
+  public Product() {
+  }
 
   /**
    * This is a helper method for adding a image to the product.

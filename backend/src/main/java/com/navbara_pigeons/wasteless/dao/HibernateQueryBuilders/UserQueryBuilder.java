@@ -147,6 +147,7 @@ public class UserQueryBuilder {
 
   /**
    * Consumes a token and calls the corresponding predicate creation method.
+   *
    * @param token
    * @param criteriaBuilder
    * @param root
@@ -164,6 +165,7 @@ public class UserQueryBuilder {
 
   /**
    * Predicate builder for full name matches.
+   *
    * @param token
    * @param criteriaBuilder
    * @param root
@@ -180,6 +182,7 @@ public class UserQueryBuilder {
 
   /**
    * Predicate builder for partial name matches.
+   *
    * @param token
    * @param criteriaBuilder
    * @param root

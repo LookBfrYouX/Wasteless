@@ -1,40 +1,25 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
-import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.controller.BusinessController;
 import com.navbara_pigeons.wasteless.controller.ProductController;
 import com.navbara_pigeons.wasteless.controller.UserController;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
-import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
-import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.security.model.BasicUserDetails;
-import com.navbara_pigeons.wasteless.security.model.UserCredentials;
 import com.navbara_pigeons.wasteless.security.service.BasicUserDetailsServiceImpl;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import io.cucumber.spring.CucumberContextConfiguration;
+import javax.annotation.PostConstruct;
 import net.minidev.json.JSONObject;
-import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import javax.annotation.PostConstruct;
 
 @CucumberContextConfiguration
 public class CucumberTestProvider extends MainTestProvider {
@@ -58,10 +43,11 @@ public class CucumberTestProvider extends MainTestProvider {
     // https://stackoverflow.com/questions/38755727/in-spring-mockmvc-tests-how-to-chain-visit-of-several-webpages
     // Without the sharedHttpSession, login cookies aren't carried over between calls
     this.mockMvc = MockMvcBuilders
-            .webAppContextSetup(this.webApplicationContext)
-            .apply(sharedHttpSession())
-            .build();
+        .webAppContextSetup(this.webApplicationContext)
+        .apply(sharedHttpSession())
+        .build();
   }
+
   /**
    * Logs in as admin using userController. See `adminLogin`, may or may not be exactly the same
    */
@@ -140,6 +126,7 @@ public class CucumberTestProvider extends MainTestProvider {
 
   /**
    * Registers and logs in as the given user
+   *
    * @param user
    * @return user id
    * @throws Exception

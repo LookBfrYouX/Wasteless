@@ -12,11 +12,11 @@ public class FullInventoryItemDto {
   private long id;
   private BasicProductDto product;
   private long quantity;
-  @DecimalMin(message="pricePerItem must be above 0.01", value="0.01")
-  @DecimalMax(message="pricePerItem must be below 10,000,000", value="10000000.00")
+  @DecimalMin(message = "pricePerItem must be above 0.01", value = "0.01")
+  @DecimalMax(message = "pricePerItem must be below 10,000,000", value = "10000000.00")
   private Double pricePerItem;
-  @DecimalMin(message="totalPrice must be above 0.01", value="0.01")
-  @DecimalMax(message="totalPrice must be below 10,000,000", value="10000000.00")
+  @DecimalMin(message = "totalPrice must be above 0.01", value = "0.01")
+  @DecimalMax(message = "totalPrice must be below 10,000,000", value = "10000000.00")
   private Double totalPrice;
   private LocalDate expires;
   private LocalDate manufactured;

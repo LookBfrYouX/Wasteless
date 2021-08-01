@@ -2,12 +2,12 @@ package com.navbara_pigeons.wasteless.validation;
 
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
-
 import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.List;
 
 public class InventoryServiceValidation {
+
   /**
    * Checks if a date is after another. for checking the expiration is after current date.
    *
@@ -37,8 +37,8 @@ public class InventoryServiceValidation {
     // Dates in the list must be in order
     // Because some elements can be null, cannot just compare dates that are next
     // to each other in the list. Hence, must compare each element with every other element
-    for(int i = 0; i < ordering.size() - 1; i++) {
-      for(int j = i + 1; j < ordering.size(); j++) {
+    for (int i = 0; i < ordering.size() - 1; i++) {
+      for (int j = i + 1; j < ordering.size(); j++) {
         if (InventoryServiceValidation.date1AfterDate2(
             ordering.get(i).getValue(),
             ordering.get(j).getValue()

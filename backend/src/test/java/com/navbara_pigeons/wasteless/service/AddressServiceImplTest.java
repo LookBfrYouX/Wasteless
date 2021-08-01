@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
+
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;

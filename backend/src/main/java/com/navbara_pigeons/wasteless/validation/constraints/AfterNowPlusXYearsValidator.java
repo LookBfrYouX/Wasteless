@@ -8,19 +8,21 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- * Checks that the given dates are not past a certain point x years in the
- * future (or past), or vice versa. Boundaries are inclusive.
- *
- * This has been tested with LocalDate and ZonedDateTime.
- * The x indicates areas that will cause the validation to fail
- *
+ * Checks that the given dates are not past a certain point x years in the future (or past), or vice
+ * versa. Boundaries are inclusive.
+ * <p>
+ * This has been tested with LocalDate and ZonedDateTime. The x indicates areas that will cause the
+ * validation to fail
+ * <p>
  * The Past-----------------|-----------Now------------|--------------The Future
  * BeforeNowPlusXYears(-ve) | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
- *                      BeforeNowPlusXYears(+ve)       | xxxxxxxxxxxxxxxxxxxxxxx
- * xxxxxxxxxxxxxxxxxxxxxxxx |          AfterNowPlusXYears(-ve)
- * xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx | AfterNowPlusXYears(+ve)
+ * BeforeNowPlusXYears(+ve)       | xxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxx |
+ * AfterNowPlusXYears(-ve) xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx |
+ * AfterNowPlusXYears(+ve)
  */
-public class AfterNowPlusXYearsValidator implements ConstraintValidator<AfterNowPlusXYears, Temporal> {
+public class AfterNowPlusXYearsValidator implements
+    ConstraintValidator<AfterNowPlusXYears, Temporal> {
+
   int years;
 
   @Override
@@ -33,7 +35,9 @@ public class AfterNowPlusXYearsValidator implements ConstraintValidator<AfterNow
     if (value == null) {
       return true;
     } else {
-      return value.until(ZonedDateTime.now(ZoneId.systemDefault()).plusYears(years), ChronoUnit.DAYS) <= 0;
+      return
+          value.until(ZonedDateTime.now(ZoneId.systemDefault()).plusYears(years), ChronoUnit.DAYS)
+              <= 0;
     }
   }
 }

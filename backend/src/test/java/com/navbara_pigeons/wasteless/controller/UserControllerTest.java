@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.entity.Address;
@@ -35,7 +36,7 @@ class UserControllerTest {
   public MockMvc mockMvc;
   @Autowired
   private WebApplicationContext wac;
-  private String password = "pass";
+  private final String password = "pass";
 
   private User user;
 

@@ -108,6 +108,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
   /**
    * Search for users given a search string.
+   *
    * @param searchQuery
    * @return
    * @throws InvalidAttributeValueException

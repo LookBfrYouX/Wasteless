@@ -15,6 +15,7 @@ public class BasicAddressDto {
 
   /**
    * Constructor to create Address DTO from Address Entity
+   *
    * @param address
    */
   public BasicAddressDto(Address address) {

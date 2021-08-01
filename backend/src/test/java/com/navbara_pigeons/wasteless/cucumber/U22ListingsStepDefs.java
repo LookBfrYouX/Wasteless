@@ -3,11 +3,12 @@ package com.navbara_pigeons.wasteless.cucumber;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.JsonNode;
-import com.navbara_pigeons.wasteless.dto.CreateProductDto;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
+import com.navbara_pigeons.wasteless.dto.CreateProductDto;
 import com.navbara_pigeons.wasteless.dto.FullAddressDto;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -15,7 +16,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
 
 public class U22ListingsStepDefs extends CucumberTestProvider {
@@ -30,7 +30,7 @@ public class U22ListingsStepDefs extends CucumberTestProvider {
   @Given("a user has a business {string} in {string}")
   public void a_user_has_a_business_in(String businessName, String countryName) throws Exception {
     adminLogin();
-    
+
     CreateBusinessDto business = new CreateBusinessDto();
     business.setBusinessType("Retail Trade");
     business.setName(businessName);

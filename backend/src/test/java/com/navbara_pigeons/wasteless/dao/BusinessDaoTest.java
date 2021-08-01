@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.dao;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import javax.transaction.Transactional;

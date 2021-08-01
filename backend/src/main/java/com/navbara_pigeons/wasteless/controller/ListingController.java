@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-
 /**
  * This controller class provides the endpoints for dealing with business listings
  */
@@ -56,7 +54,7 @@ public class ListingController {
   public ResponseEntity<JSONObject> addListing(
       @PathVariable long businessId, @RequestBody @Valid CreateListingDto listingDto)
       throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException,
-          ListingValidationException, InventoryItemNotFoundException {
+      ListingValidationException, InventoryItemNotFoundException {
 
     Long listingId =
         listingService.addListing(
@@ -80,7 +78,7 @@ public class ListingController {
    * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
    *                      required and defaults to True.
    * @return A ResponseEntity with a list of listings.
-   * @throws UserNotFoundException Handled in ControllerExceptionHandler class.
+   * @throws UserNotFoundException     Handled in ControllerExceptionHandler class.
    * @throws BusinessNotFoundException Handled in ControllerExceptionHandler class.
    */
   @GetMapping("/businesses/{id}/listings")

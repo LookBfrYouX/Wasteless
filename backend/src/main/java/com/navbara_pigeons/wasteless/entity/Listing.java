@@ -41,8 +41,8 @@ public class Listing {
   @Column(name = "QUANTITY")
   private long quantity;
 
-  @DecimalMin(message="price must be above 0.01", value="0.01")
-  @DecimalMax(message="price must be below 10,000,000", value="10000000.00")
+  @DecimalMin(message = "price must be above 0.01", value = "0.01")
+  @DecimalMax(message = "price must be below 10,000,000", value = "10000000.00")
   @Column(name = "PRICE")
   private Double price;
 

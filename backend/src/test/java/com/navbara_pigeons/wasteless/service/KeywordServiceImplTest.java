@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import static org.mockito.Mockito.when;
+
 import com.navbara_pigeons.wasteless.dao.KeywordDao;
 import com.navbara_pigeons.wasteless.entity.Keyword;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
@@ -19,7 +20,7 @@ public class KeywordServiceImplTest extends ServiceTestProvider {
 
   @Test
   public void getKeyword_validIds_expectValidKeywords() {
-    long[] keywordIdsArray = { 1 };
+    long[] keywordIdsArray = {1};
     List<Long> keywordIds = Arrays.stream(keywordIdsArray).boxed().collect(Collectors.toList());
     Keyword keyword1 = new Keyword();
     keyword1.setName("Dairy");
@@ -32,7 +33,7 @@ public class KeywordServiceImplTest extends ServiceTestProvider {
 
   @Test
   public void getKeyword_validIds_expectEmptyKeywords() {
-    long[] keywordIdsArray = { 2 };
+    long[] keywordIdsArray = {2};
     List<Long> keywordIds = Arrays.stream(keywordIdsArray).boxed().collect(Collectors.toList());
     ArrayList<Keyword> expectedKeywords = new ArrayList<>();
     ArrayList<Keyword> returnedKeywords = new ArrayList<>();

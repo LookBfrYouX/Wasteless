@@ -19,6 +19,7 @@ public class KeywordServiceImpl implements KeywordService {
 
   /**
    * Retrieves keywords given a list of keywordIds.
+   *
    * @param keywordIds
    * @return
    */
@@ -31,6 +32,7 @@ public class KeywordServiceImpl implements KeywordService {
 
   /**
    * Retrieve all keywords in the database.
+   *
    * @return
    */
   @Override

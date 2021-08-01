@@ -1,7 +1,5 @@
 package com.navbara_pigeons.wasteless.validation;
 
-import com.navbara_pigeons.wasteless.entity.User;
-import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 public class UserServiceValidation {

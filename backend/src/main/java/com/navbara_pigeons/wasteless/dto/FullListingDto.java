@@ -12,8 +12,8 @@ public class FullListingDto {
   private long id;
   private FullInventoryItemDto inventoryItem;
   private long quantity;
-  @DecimalMin(message="price must be above 0.01", value="0.01")
-  @DecimalMax(message="price must be below 10,000,000", value="10000000.00")
+  @DecimalMin(message = "price must be above 0.01", value = "0.01")
+  @DecimalMax(message = "price must be below 10,000,000", value = "10000000.00")
   private Double price;
   private String moreInfo;
   private ZonedDateTime created;

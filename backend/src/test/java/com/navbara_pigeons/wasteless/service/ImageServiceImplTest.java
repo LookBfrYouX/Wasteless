@@ -11,19 +11,24 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Image;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
-import com.navbara_pigeons.wasteless.exception.*;
+import com.navbara_pigeons.wasteless.exception.AddressValidationException;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
+import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
+import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
+import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
+import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,13 +59,15 @@ class ImageServiceImplTest extends ServiceTestProvider {
   long BUSINESS_ID = 100;
   Product testProduct;
   long PRODUCT_ID = 100;
+
   /**
-   * Set up testing environment. Create a User, Image, Business and a test Product. No other businesses/products exist
+   * Set up testing environment. Create a User, Image, Business and a test Product. No other
+   * businesses/products exist
    */
   @BeforeEach
   public void initialise()
-          throws IOException, UserNotFoundException, AddressValidationException, BusinessTypeException,
-          BusinessRegistrationException, UserAuthenticationException, UserRegistrationException, UserAlreadyExistsException, BusinessNotFoundException, ProductNotFoundException {
+      throws IOException, UserNotFoundException, AddressValidationException, BusinessTypeException,
+      BusinessRegistrationException, UserAuthenticationException, UserRegistrationException, UserAlreadyExistsException, BusinessNotFoundException, ProductNotFoundException {
     // Get the test image
     FileInputStream fis = new FileInputStream("./src/test/resources/TestImage.jpeg");
     testImage = new MockMultipartFile("TestImage.jpeg", "TestImage.jpeg", "image/jpeg", fis);
@@ -100,10 +107,11 @@ class ImageServiceImplTest extends ServiceTestProvider {
     });
 
     doNothing().when(imageDao).saveProductImageToDb(any(Image.class));
-    doNothing().when(imageDao).saveProductImageToMachine(any(MultipartFile.class), any(String.class));
+    doNothing().when(imageDao)
+        .saveProductImageToMachine(any(MultipartFile.class), any(String.class));
   }
 
-// User making the request must be admin in order for the primary administrator to be different from signed in user
+  // User making the request must be admin in order for the primary administrator to be different from signed in user
   @Test
   @WithUserDetails("mbi47@uclive.ac.nz")
   void uploadProductImage() {

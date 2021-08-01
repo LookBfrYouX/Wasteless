@@ -66,6 +66,7 @@ public class ImageDaoImpl implements ImageDao {
 
   /**
    * Delete an image from the local storage.
+   *
    * @param filename
    * @throws IOException
    */
@@ -76,6 +77,7 @@ public class ImageDaoImpl implements ImageDao {
 
   /**
    * Delete an image from the database.
+   *
    * @param image
    */
   public void deleteImage(Image image) {

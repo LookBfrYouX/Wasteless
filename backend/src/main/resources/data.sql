@@ -50,11 +50,11 @@ CREATE TABLE business
     ID                       BIGINT AUTO_INCREMENT PRIMARY KEY,
     NAME                     VARCHAR(50) NOT NULL,
     DESCRIPTION              VARCHAR(250),
-    BUSINESS_TYPE            ENUM(
+    BUSINESS_TYPE ENUM (
         'ACCOMMODATION_AND_FOOD',
         'RETAIL',
         'CHARITY',
-        'NON_PROFIT')                    NOT NULL,
+        'NON_PROFIT') NOT NULL,
     CREATED                  DATETIME    NOT NULL,
     PRIMARY_ADMINISTRATOR_ID BIGINT      NOT NULL,
     ADDRESS_ID               BIGINT      NOT NULL,
@@ -154,26 +154,26 @@ CREATE TABLE listing
 CREATE TABLE marketlisting
 (
     ID                 BIGINT AUTO_INCREMENT PRIMARY KEY,
-    CREATOR_ID         BIGINT      NOT NULL,
+    CREATOR_ID         BIGINT                               NOT NULL,
     SECTION            ENUM ('ForSale','Wanted','Exchange') NOT NULL,
     CREATED            DATETIME,
     DISPLAY_PERIOD_END DATETIME,
-    TITLE              VARCHAR(50) NOT NULL,
+    TITLE              VARCHAR(50)                          NOT NULL,
     DESCRIPTION        VARCHAR(250),
     CONSTRAINT user_fk FOREIGN KEY (CREATOR_ID) REFERENCES user (ID)
 );
 
 CREATE TABLE keyword
 (
-    ID                 BIGINT AUTO_INCREMENT PRIMARY KEY,
-    NAME               VARCHAR(50) NOT NULL UNIQUE,
-    CREATED            DATETIME NOT NULL
+    ID      BIGINT AUTO_INCREMENT PRIMARY KEY,
+    NAME    VARCHAR(50) NOT NULL UNIQUE,
+    CREATED DATETIME    NOT NULL
 );
 
 CREATE TABLE marketlisting_keyword
 (
-    MARKETLISTING_ID  BIGINT NOT NULL,
-    KEYWORD_ID BIGINT NOT NULL,
+    MARKETLISTING_ID BIGINT NOT NULL,
+    KEYWORD_ID       BIGINT NOT NULL,
     CONSTRAINT marketlisting_keyword_pk
         UNIQUE (MARKETLISTING_ID, KEYWORD_ID),
     CONSTRAINT marketlisting_keyword_fk
@@ -425,7 +425,8 @@ VALUES (5001, 5001, 1001, 20, 4.67, 20.00, '2021-08-16', '2021-08-13',
 -- Inserting listing data
 
 INSERT INTO listing (ID, INVENTORY_ITEM_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
-VALUES (5001, 5001, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+VALUES (5001, 5001, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17',
+        '2021-06-16 21:16:26'),
        (5002, 5001, 3, 12.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (5003, 5002, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (5004, 5003, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');

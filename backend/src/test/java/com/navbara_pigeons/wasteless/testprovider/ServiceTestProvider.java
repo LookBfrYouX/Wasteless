@@ -355,7 +355,7 @@ public class ServiceTestProvider extends MainTestProvider {
   /**
    * Asserts all Keyword names in a list of Keyword.
    *
-   * @param keywords List of Keyword
+   * @param keywords         List of Keyword
    * @param expectedKeywords List of Keyword
    */
   protected void assertKeywordEquals(List<Keyword> keywords, List<Keyword> expectedKeywords) {

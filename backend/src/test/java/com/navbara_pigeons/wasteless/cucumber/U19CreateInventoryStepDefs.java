@@ -1,8 +1,8 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import io.cucumber.datatable.DataTable;
@@ -12,10 +12,8 @@ import io.cucumber.java.en.When;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 public class U19CreateInventoryStepDefs extends CucumberTestProvider {
@@ -34,7 +32,7 @@ public class U19CreateInventoryStepDefs extends CucumberTestProvider {
       newUser.setLastName("LastName");
       newUser.setNickname("NickName");
       newUser.setFirstName(columns.get("firstName"));
-      System.out.println("CREATED NEW USER: " + newUser.toString());
+      System.out.println("CREATED NEW USER: " + newUser);
       Assertions.assertDoesNotThrow(() -> userController.registerUser(new CreateUserDto(newUser)));
       if (newUser.getEmail().equals("Bobby@email.test")) {
         user = newUser;

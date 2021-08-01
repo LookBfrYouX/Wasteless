@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-/** @author Alec Fox, Fletcher Dick, Haruka Ichinose */
+/**
+ * @author Alec Fox, Fletcher Dick, Haruka Ichinose
+ */
 @Slf4j
 @RestController
 public class ImageController {
@@ -41,15 +43,16 @@ public class ImageController {
    * Add image to business's product
    *
    * @param businessId id of the business
-   * @param productId id of the product
-   * @param image image to be added
+   * @param productId  id of the product
+   * @param image      image to be added
    * @return The URI for the relative image location
    */
   @PostMapping("/businesses/{businessId}/products/{productId}/images")
   public ResponseEntity<String> uploadProductImage(
       @PathVariable long businessId,
       @PathVariable long productId,
-      @RequestParam MultipartFile image) throws UserNotFoundException, BusinessNotFoundException, IOException, ProductNotFoundException {
+      @RequestParam MultipartFile image)
+      throws UserNotFoundException, BusinessNotFoundException, IOException, ProductNotFoundException {
     try {
       imageService.uploadProductImage(businessId, productId, image);
       log.info(
@@ -70,8 +73,8 @@ public class ImageController {
    * Add image to business's product
    *
    * @param businessId id of the business
-   * @param productId id of the product
-   * @param imageId id of the image to set as primary image
+   * @param productId  id of the product
+   * @param imageId    id of the image to set as primary image
    * @return The URI for the relative image location
    */
   @PutMapping("/businesses/{businessId}/products/{productId}/images/{imageId}/makeprimary")

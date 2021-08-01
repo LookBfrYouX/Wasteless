@@ -41,3 +41,4 @@ bin/
 .DS_Store
 frontend/public/user-content/images/**/*.jpg
 frontend/public/user-content/images/**/*.png
+/dummyData/images/

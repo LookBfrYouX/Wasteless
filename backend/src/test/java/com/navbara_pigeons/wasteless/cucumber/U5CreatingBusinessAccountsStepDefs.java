@@ -4,11 +4,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
-import com.navbara_pigeons.wasteless.dto.UserIdDto;
 import com.navbara_pigeons.wasteless.dto.FullAddressDto;
+import com.navbara_pigeons.wasteless.dto.UserIdDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
@@ -142,7 +143,8 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
     JsonNode response = makeGetRequestGetJson("/businesses/" + businessId, status().isOk());
     Assertions.assertEquals(loggedInUserId, response.get("primaryAdministratorId").asLong());
     Assertions.assertTrue(response.get("administrators").isArray());
-    Assertions.assertEquals(loggedInUserId, response.get("administrators").get(0).get("id").asLong());
+    Assertions
+        .assertEquals(loggedInUserId, response.get("administrators").get(0).get("id").asLong());
   }
 
   // ----- AC5.2 -----
@@ -179,7 +181,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
     );
 
     JsonNode admins = response.get("administrators");
-    for (JsonNode admin: admins) {
+    for (JsonNode admin : admins) {
       if (admin.get("id").asLong() == differentUserId) {
         return;
       }
@@ -213,7 +215,8 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
 
     // Check the newUser is in the list of admins for the returned business
     JSONObject jsonResponse = new JSONObject(res.getResponse().getContentAsString());
-    Assertions.assertFalse(jsonResponse.get("administrators").toString().contains("\"id\":" + differentUserId));
+    Assertions.assertFalse(
+        jsonResponse.get("administrators").toString().contains("\"id\":" + differentUserId));
   }
 
   // ----- AC5.4 -----

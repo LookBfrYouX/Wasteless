@@ -2,7 +2,7 @@ Feature: UCM2 Card Creation
 
   Scenario: Before all
     Given There is a user
-      | emailAddress                  | password | firstName | lastName | nickName |
+      | emailAddress            | password | firstName | lastName | nickName |
       | testUser2@wasteless.com | t3stUser | Test      | User     | TestyBoi |
 
   Scenario: AC1 - Create a card for one of the three sections
