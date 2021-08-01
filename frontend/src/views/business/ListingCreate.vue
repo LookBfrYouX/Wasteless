@@ -12,14 +12,14 @@
         <div class="form-group required col-md-6">
           <label for="product">Find product</label>
           <v-autocomplete
-            solo
-            dense
-            item-text="name"
-            item-value="id"
-            :items="getProducts"
-            v-model="selectedProductId"
+              v-model="selectedProductId"
+              :items="getProducts"
+              dense
+              item-text="name"
+              item-value="id"
+              solo
           >
-        </v-autocomplete>
+          </v-autocomplete>
         </div>
         <div class="form-group required col-md-6">
           <label for="inventory">Inventory item to list</label>
@@ -72,8 +72,8 @@
               v-model="price"
               :disabled="quantity === null"
               class="form-control"
-              min="0.01"
               max="10000000"
+              min="0.01"
               name="price"
               required
               step="0.01"

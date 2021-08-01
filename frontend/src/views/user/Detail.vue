@@ -3,7 +3,7 @@
     <div class="w-100 grid-container">
       <div class="profile-image-container card">
         <img alt="User's profile image" class="my-3 rounded-circle"
-              src="@/../assets/images/default-user-thumbnail.svg">
+             src="@/../assets/images/default-user-thumbnail.svg">
       </div>
       <div class="user-info-container card p-3">
         <div class="">
@@ -74,7 +74,7 @@
                 class="btn btn-white-bg-primary m-1 d-flex"
             >
               <span class="material-icons mr-1">business</span>
-              Register Business as {{userInfo.firstName}}
+              Register Business as {{ userInfo.firstName }}
             </router-link>
           </div>
           <div v-if="statusMessage.length > 0" class="row mt-2">
@@ -84,7 +84,7 @@
           </div>
         </div>
       </div>
-          
+
       <div class="card businesses-container p-3 overflow-auto">
         <h5 class="text-muted">Businesses</h5>
         <div
@@ -127,39 +127,41 @@
           <div class="overflow-auto w-100">
             <table class="table table-hover mb-0">
               <tbody>
-                <tr>
-                  <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
-                </tr>
-                <tr v-if="userInfo.nickname" scope="row">
-                  <th class="pl-0 pl-md-2">Nickname:</th>
-                  <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
-                </tr>
-                <tr scope="row">
-                  <th class="pl-0 pl-md-2">Member since:</th>
-                  <td class="pr-0 pr-md-2 col-md value"><p>{{ this.$helper.memberSinceText(userInfo.created) }}</p></td>
-                </tr>
-                <tr v-if="!isNaN(Date.parse(userInfo.dateOfBirth))" scope="row">
-                  <th class="pl-0 pl-md-2">Date of Birth:</th>
-                  <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
-                </tr>
-                <tr>
-                  <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
-                  </td>
-                </tr>
-                <tr v-if="userInfo.email" scope="row">
-                  <th class="pl-0 pl-md-2">Email Address:</th>
-                  <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
-                </tr>
-                <tr v-if="userInfo.phoneNumber" scope="row">
-                  <th class="pl-0 pl-md-2">Phone Number:</th>
-                  <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
-                </tr>
-                <tr v-if="userInfo.homeAddress" scope="row">
-                  <th class="pl-0 pl-md-2">Address:</th>
-                  <td class="pr-0 pr-md-2 col-md value">
-                    <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
-                  </td>
-                </tr>
+              <tr>
+                <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
+              </tr>
+              <tr v-if="userInfo.nickname" scope="row">
+                <th class="pl-0 pl-md-2">Nickname:</th>
+                <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
+              </tr>
+              <tr scope="row">
+                <th class="pl-0 pl-md-2">Member since:</th>
+                <td class="pr-0 pr-md-2 col-md value"><p>{{
+                    this.$helper.memberSinceText(userInfo.created)
+                  }}</p></td>
+              </tr>
+              <tr v-if="!isNaN(Date.parse(userInfo.dateOfBirth))" scope="row">
+                <th class="pl-0 pl-md-2">Date of Birth:</th>
+                <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
+              </tr>
+              <tr>
+                <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">Contact Information</h5>
+                </td>
+              </tr>
+              <tr v-if="userInfo.email" scope="row">
+                <th class="pl-0 pl-md-2">Email Address:</th>
+                <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
+              </tr>
+              <tr v-if="userInfo.phoneNumber" scope="row">
+                <th class="pl-0 pl-md-2">Phone Number:</th>
+                <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
+              </tr>
+              <tr v-if="userInfo.homeAddress" scope="row">
+                <th class="pl-0 pl-md-2">Address:</th>
+                <td class="pr-0 pr-md-2 col-md value">
+                  <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
+                </td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -217,7 +219,7 @@ would be the easiest option
     grid-template-columns: auto;
     grid-template-rows: repeat(4, auto);
   }
-  
+
   .user-details-container {
     // Switch order: user details is the third row, before businesses list
     grid-row: 3/4;

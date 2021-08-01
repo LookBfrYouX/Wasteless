@@ -40,7 +40,7 @@
                 :to="{ name: 'UserDetail', params: { userId }}"
                 class="inline admin-link hover-cursor-pointer text-decoration-none"
             >
-              {{text}}
+              {{ text }}
             </router-link>
           </dd>
         </dl>
@@ -215,8 +215,8 @@ export default {
      * administrator of the business AND are acting as that business
      */
     showEditAdminsButton() {
-      const { isAdmin, getActingAs, getAuthUser } = this.$stateStore.getters;
-      return isAdmin() || 
+      const {isAdmin, getActingAs, getAuthUser} = this.$stateStore.getters;
+      return isAdmin() ||
           getActingAs() && getActingAs().id == this.businessInfo.id &&
           getAuthUser().id == this.businessInfo.primaryAdministratorId;
     },
@@ -226,7 +226,9 @@ export default {
      * @return [{ userId, text }]
      */
     adminLinks() {
-      if (!this.businessInfo || !Array.isArray(this.businessInfo.administrators)) return [];
+      if (!this.businessInfo || !Array.isArray(this.businessInfo.administrators)) {
+        return [];
+      }
       return this.businessInfo.administrators.map((admin, i, arr) => {
         let text = "";
         if (i == arr.length - 1 && arr.length > 1) {

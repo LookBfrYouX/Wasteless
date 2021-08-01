@@ -15,7 +15,7 @@ describe("Register business", () => {
   test("user must be older than 16 to register (pass)", async () => {
     Api.registerBusiness.mock.calls.length = 0;
     const mocks = globalStateMocks();
-    const mockRegisterBusinessResponse = { data : {businessId: 1 } };
+    const mockRegisterBusinessResponse = {data: {businessId: 1}};
     wrapper = shallowMount(Create, {
       mocks,
     });
@@ -29,14 +29,14 @@ describe("Register business", () => {
     Api.registerBusiness.mock.calls.length = 0;
     const today = new Date();
     let dateOfBirth = new Date(
-      today.getFullYear() - 15,
-      today.getMonth(),
-      today.getDay()
+        today.getFullYear() - 15,
+        today.getMonth(),
+        today.getDay()
     ).toISOString().substring(0, 10); // Might be off by a day due to timezones, but doesn't really matter
     GLOBAL_STATE.authUser.dateOfBirth = dateOfBirth;
     const mocks = globalStateMocks();
 
-    const mockRegisterBusinessResponse = { data : {businessId: 1 } };
+    const mockRegisterBusinessResponse = {data: {businessId: 1}};
     wrapper = shallowMount(Create, {
       mocks,
     });

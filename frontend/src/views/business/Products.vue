@@ -1,10 +1,12 @@
 <template>
-  <div class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2 align-items-center container-fluid">
+  <div
+      class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2 align-items-center container-fluid">
     <!--  Page Title Area  -->
     <div class="d-flex flex-sm-wrap pb-3 pb-md-0 align-items-center container-fluid">
       <div class="row mt-4 align-items-center">
         <h2 class="col-lg-8 pl-0">Product Catalogue for {{ businessName }}</h2>
-        <router-link class="btn col-12 col-lg-4 btn-info d-flex h-100" :to="{name: 'BusinessProductCreate', params: { businessId }}">
+        <router-link :to="{name: 'BusinessProductCreate', params: { businessId }}"
+                     class="btn col-12 col-lg-4 btn-info d-flex h-100">
           <span class="material-icons mr-1">add</span>
           Create Product
         </router-link>
@@ -12,13 +14,15 @@
     </div>
     <!--  Page Content Area  -->
     <div v-if="products.length" class="container-fluid align-items-center">
-        <!--  Sort and Meta info Bar    -->
+      <!--  Sort and Meta info Bar    -->
       <div class="col-12 col-lg-6 pb-0">
-        <simple-sort-bar @update="sortUpdate" :items="items"/>
+        <simple-sort-bar :items="items" @update="sortUpdate"/>
       </div>
       <div class="col-12 col-lg-6 d-flex flex-lg-row-reverse align-items-center">
         <span>
-          Displaying products {{ this.searchParams.pagStartIndex + 1 }} - {{ this.searchParams.pagEndIndex + 1 }} out of
+          Displaying products {{
+            this.searchParams.pagStartIndex + 1
+          }} - {{ this.searchParams.pagEndIndex + 1 }} out of
           {{ this.totalResults }}
         </span>
       </div>
@@ -39,9 +43,9 @@
       </ul>
       <!-- Pagination Bar   -->
       <v-pagination
-          class="w-100"
           v-model="page"
           :length="totalPages"
+          class="w-100"
           @input="pageUpdate"
           @next="pageUpdate"
           @previous="pageUpdate"
@@ -69,7 +73,6 @@ import ProductCatalogueListItem from "@/components/cards/ProductCatalogueCard";
 
 import {Api} from "@/Api";
 import SimpleSortBar from "@/components/SimpleSortBar";
-
 
 export default {
   name: "ProductCatalogue",
@@ -141,7 +144,8 @@ export default {
      */
     pageUpdate: async function () {
       this.searchParams.pagStartIndex = ((this.page - 1) * this.itemsPerPage);
-      this.searchParams.pagEndIndex = Math.max(0, Math.min((this.page * this.itemsPerPage) - 1, this.totalResults - 1));
+      this.searchParams.pagEndIndex = Math.max(0,
+          Math.min((this.page * this.itemsPerPage) - 1, this.totalResults - 1));
       await this.query();
       window.scrollTo(0, 0);
     },

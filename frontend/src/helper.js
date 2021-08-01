@@ -23,28 +23,27 @@ export const helper = {
     if (numberUndef && !nameUndef) {
       // if street number defined but street name not, don't show either
       street = address.streetName;
-    }
-    else if (!numberUndef && !nameUndef) {
+    } else if (!numberUndef && !nameUndef) {
       street = `${address.streetNumber} ${address.streetName}`;
     }
 
-    const components = publicOnly? [
-        address.suburb,
-        address.city,
-        address.region,
-        address.country
-      ]: [
+    const components = publicOnly ? [
+      address.suburb,
+      address.city,
+      address.region,
+      address.country
+    ] : [
       street,
       address.suburb,
       address.city,
       address.region,
       address.postcode,
       address.country
-      ];
-      
-    return components.filter(component => 
+    ];
+
+    return components.filter(component =>
         typeof component == "string" && component.trim().length > 0
-      ).join(', ');
+    ).join(', ');
   },
 
   /**
@@ -317,7 +316,6 @@ export const helper = {
     }
   },
 
-
   /**
    * Formats object with name components, removing null or empty strings
    * @param {{firstName: String, middleName: String, lastName: String, nickname: String}} object with name components
@@ -325,10 +323,10 @@ export const helper = {
    */
   formatFullName(user) {
     let name = [user.firstName, user.middleName, user.lastName]
-        .filter(el => typeof el == "string" && el.trim().length)
-        .map(el => el.trim())
-        .join(" ");
-    
+    .filter(el => typeof el == "string" && el.trim().length)
+    .map(el => el.trim())
+    .join(" ");
+
     if (typeof user.nickname == "string" && user.nickname.trim().length) {
       name += ` (${user.nickname})`
     }

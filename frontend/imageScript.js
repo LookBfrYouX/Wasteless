@@ -20,7 +20,8 @@ if (!fs.existsSync(IMAGE_DIRECTORY)) {
  */
 async function downloadImage() {
   const url = `https://picsum.photos/${IMAGE_SIZE}`;
-  const imagePath = path.join(IMAGE_DIRECTORY, Math.random().toString(36).substring(8) + ".jpg");
+  const imagePath = path.join(IMAGE_DIRECTORY,
+      Math.random().toString(36).substring(8) + ".jpg");
   const writer = fs.createWriteStream(imagePath);
 
   await axios({
@@ -58,7 +59,7 @@ async function uploadImage(businessId, productId, filePath) {
     },
     data: data
   };
-  
+
   return await axios(config).catch(error => {
     console.log(error);
   });
@@ -66,7 +67,7 @@ async function uploadImage(businessId, productId, filePath) {
 
 /**
  * Runs an async function on elements of an array
- * @param {*} elements 
+ * @param {*} elements
  * @param {*} job (element, index) => Promise
  * @param {*} batchSize number of jobs to run simultaneously.
  * When all jobs in a batch finish, the next batch starts
@@ -76,7 +77,7 @@ const batcher = async (elements, job, batchSize = 5) => {
   while (i < elements.length) {
     let promises = [];
     const iMax = Math.min(elements.length, i + batchSize);
-    for(; i < iMax; i++) {
+    for (; i < iMax; i++) {
       promises.push(job(elements[i], i));
     }
 
@@ -88,7 +89,6 @@ const batcher = async (elements, job, batchSize = 5) => {
     });
   }
 }
-
 
 /**
  * Downloads images and puts them in IMAGE_DIRECTORY
@@ -115,7 +115,6 @@ const uploadFromFilesystem = async () => {
     console.log(`Uploaded image ${i}`);
   });
 }
-
 
 /**
  * Simultaneously downloads and uploads. Images are deleted after upload

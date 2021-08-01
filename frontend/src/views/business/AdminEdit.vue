@@ -2,12 +2,12 @@
   <div class="container mt-4">
     <div class="row">
       <div class="col-12">
-        <h2>Edit Administrators{{businessName? ` for ${businessName}`: ""}}</h2>
+        <h2>Edit Administrators{{ businessName ? ` for ${businessName}` : "" }}</h2>
       </div>
       <div class="col-12">
         <router-link
-          :to="{name: 'BusinessDetail', params: { businessId }}"
-          class="btn btn-primary"
+            :to="{name: 'BusinessDetail', params: { businessId }}"
+            class="btn btn-primary"
         >
           Back to Business
         </router-link>
@@ -17,37 +17,37 @@
     <div class="row mb-2 mb-md-4">
       <div class="col-12 col-md-8 d-flex align-items-center">
         <v-autocomplete
-          v-model="adminIdToAdd"
-          :items="userSearchResults"
-          :loading="userSearchLoading"
-          :search-input.sync="userSearchQuery"
-          item-text="name"
-          item-value="id"
+            v-model="adminIdToAdd"
+            :hide-no-data="userSearchErrorMessage == null"
+            :items="userSearchResults"
+            :loading="userSearchLoading"
+            :no-data-text="userSearchErrorMessage == null? 'No results': userSearchErrorMessage"
+            :search-input.sync="userSearchQuery"
 
-          solo
-          clearable
-          color="white"
+            class="remove-v-autocomplete-bottom-padding"
+            clearable
+            color="white"
 
-          class="remove-v-autocomplete-bottom-padding"
+            hide-selected
 
-          hide-selected
-          label="Search Users"
-          placeholder="Start typing to Search"
-          prepend-icon="search"
+            item-text="name"
+            item-value="id"
+            label="Search Users"
+            placeholder="Start typing to Search"
 
 
-          :hide-no-data="userSearchErrorMessage == null"
-          :no-data-text="userSearchErrorMessage == null? 'No results': userSearchErrorMessage"
+            prepend-icon="search"
+            solo
         >
-        <!-- Stick error message inline in the no data text -->
+          <!-- Stick error message inline in the no data text -->
         </v-autocomplete>
       </div>
       <div class="col-12 col-md-4 d-flex align-items-center justify-content-end">
         <button
-          class="btn btn-primary d-flex align-items-center"
-          type="button"
-          :disabled="adminIdToAdd == null"
-          @click="addAdmin"
+            :disabled="adminIdToAdd == null"
+            class="btn btn-primary d-flex align-items-center"
+            type="button"
+            @click="addAdmin"
         >
           <span class="material-icons">add</span>
           Add as administrator
@@ -55,12 +55,17 @@
       </div>
       <div v-if="addAdminErrorMessage" class="col-12">
         <div class="alert alert-warning mb-0">
-          {{addAdminErrorMessage}}
+          {{ addAdminErrorMessage }}
         </div>
       </div>
     </div>
     <v-data-table
-       :headers="[{
+        :footer-props="{
+          showFirstLastPage: false,
+          prevIcon: 'chevron_left',
+          nextIcon: 'chevron_right'
+        }"
+        :headers="[{
          text: 'Name',
          sortable: true,
          value: 'name'
@@ -70,26 +75,23 @@
          align: 'end',
          value: 'actions'
        }]"
-       :items="admins == null? []: admins"
 
-       :loading="admins == null"
-        loading-text="Loading business information"
-
+        :items="admins == null? []: admins"
         :items-per-page="10"
-        :footer-props="{
-          showFirstLastPage: false,
-          prevIcon: 'chevron_left',
-          nextIcon: 'chevron_right'
-        }"
+
+        :loading="admins == null"
+        loading-text="Loading business information"
     >
       <template v-slot:top>
         <!-- Once delete button clicked, confirmation through this dialog -->
         <v-dialog v-model="removeAdminDialogOpen" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Remove this user as an administrator of this business?</v-card-title>
+            <v-card-title class="text-h5">Remove this user as an administrator of this business?
+            </v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="removeAdminDialogOpen = false">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="removeAdminDialogOpen = false">Cancel
+              </v-btn>
               <v-btn color="blue darken-1" text @click="removeAdmin">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -99,8 +101,8 @@
         <!-- If remove admin API call fails, this dialog appears -->
         <v-dialog
             :value="removeAdminErrorMessage != null"
-            @input="() => removeAdminErrorMessage = null"
             max-width="500px"
+            @input="() => removeAdminErrorMessage = null"
         >
           <v-card>
             <v-card-title class="text-h5">Admin Removal Failed</v-card-title>
@@ -108,7 +110,8 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="removeAdmin">Retry</v-btn>
-              <v-btn color="blue darken-1" text @click="() => removeAdminErrorMessage = null">Ok</v-btn>
+              <v-btn color="blue darken-1" text @click="() => removeAdminErrorMessage = null">Ok
+              </v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -116,12 +119,12 @@
       </template>
       <template v-slot:[`item.name`]="{ item }">
         <div
-          class="d-flex flex-column"
+            class="d-flex flex-column"
         >
           <span>{{ item.name }}</span>
           <span
-            class="primary-admin-text text-faded"
-            v-if="business.primaryAdministratorId == item.id"
+              v-if="business.primaryAdministratorId == item.id"
+              class="primary-admin-text text-faded"
           >
             Primary Business Administrator
           </span>
@@ -129,12 +132,12 @@
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <div
-          class="d-flex justify-content-end"
-          v-if="business.primaryAdministratorId != item.id"
+            v-if="business.primaryAdministratorId != item.id"
+            class="d-flex justify-content-end"
         >
           <button
-            class="btn btn-outline-danger btn-sm d-flex align-content-center"
-            @click="removeAdminButtonClicked(item.id)"
+              class="btn btn-outline-danger btn-sm d-flex align-content-center"
+              @click="removeAdminButtonClicked(item.id)"
           >
             <span class="material-icons">delete</span>
           </button>
@@ -152,7 +155,7 @@
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
- </div>	
+  </div>
 </template>
 <script>
 import {Api} from "@/Api";
@@ -201,12 +204,13 @@ export default {
       this.business = null; // Show loading screen
       try {
         this.business = (await Api.businessProfile(this.businessId)).data;
-      } catch(err) {
-        if (await Api.handle401.call(this, err)) return;
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
-
 
     /**
      * Callback when a remove admin button is clicked. Pass in the relevant admin ID
@@ -228,8 +232,10 @@ export default {
 
       try {
         await Api.removeBusinessAdmin(this.businessId, id);
-      } catch(err) {
-        if (await Api.handle401.call(this, err)) return;
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.removeAdminErrorMessage = err.userFacingErrorMessage;
         return;
       }
@@ -250,8 +256,10 @@ export default {
 
       try {
         await Api.addBusinessAdmin(this.businessId, id);
-      } catch(err) {
-        if (await Api.handle401.call(this, err)) return;
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         this.addAdminErrorMessage = err.userFacingErrorMessage;
         return;
       }
@@ -265,10 +273,12 @@ export default {
      * Business name, or null if businesses have not been fetched yet
      */
     businessName() {
-      if (this.business) return this.business.name;
+      if (this.business) {
+        return this.business.name;
+      }
       return null;
     },
-   
+
     /**
      * Returns array of business admins with only information necesssary for the table
      * If businesses have not been fetched, null is returned
@@ -282,14 +292,16 @@ export default {
           }
         });
       }
-      return null; 
+      return null;
     },
 
     /**
      * Gets set of existing admin IDs. Empty set if businesses not loaded
      */
     existingAdminIds() {
-      if (this.business) return new Set(this.business.administrators.map(admin => admin.id));
+      if (this.business) {
+        return new Set(this.business.administrators.map(admin => admin.id));
+      }
       return new Set();
     },
 
@@ -300,7 +312,7 @@ export default {
       const {getters} = this.$stateStore;
 
       return getters.isAdmin() || getters.isSignedIn() &&
-             this.business && getters.getAuthUser().id == this.business.primaryAdministratorId;
+          this.business && getters.getAuthUser().id == this.business.primaryAdministratorId;
     },
 
     /**
@@ -310,7 +322,8 @@ export default {
       return this.userSearchResultsRaw.map(user => ({
         id: user.id,
         name: this.$helper.formatFullName(user),
-        disabled: typeof user.disabled == "boolean"? user.disabled: this.existingAdminIds.has(user.id)
+        disabled: typeof user.disabled == "boolean" ? user.disabled : this.existingAdminIds.has(
+            user.id)
         // If this is not computed, when admin is added and you click back on the search field,
         // the person you just added can still be selected
       }));
@@ -350,10 +363,12 @@ export default {
       }
 
       try {
-        const params = { searchQuery: query, pagEndIndex: 10 };
+        const params = {searchQuery: query, pagEndIndex: 10};
         this.userSearchResultsRaw = (await Api.search(params)).data.results;
-      } catch(err) {
-        if (await Api.handle401.call(this, err)) return;
+      } catch (err) {
+        if (await Api.handle401.call(this, err)) {
+          return;
+        }
         // Show that api request failed inline in the search results
         this.userSearchErrorMessage = `Search failed; ${err.userFacingErrorMessage}`;
       }

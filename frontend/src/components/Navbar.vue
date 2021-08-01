@@ -14,10 +14,10 @@
           data-toggle="collapse"
           type="button"
       >
-      <!-- mr-4 allows there to be space between icon and content. By default the navbar content
-      has padding left but on small screens where the hamburger button is on its own line, the padding
-      eats up some of the screen width
-      -->
+        <!-- mr-4 allows there to be space between icon and content. By default the navbar content
+        has padding left but on small screens where the hamburger button is on its own line, the padding
+        eats up some of the screen width
+        -->
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -34,8 +34,8 @@
                 v-for="({name, click, active}, i) in navbarLinks"
                 :key="i"
                 :class="{ 'mx-4': i != 0, active }"
-                class="nav-item d-flex align-items-center text-center mx-lg-0"
                 aria-label="Quick links"
+                class="nav-item d-flex align-items-center text-center mx-lg-0"
             >
               <a
                   class="nav-link py-1"
@@ -90,8 +90,8 @@
               </div>
               <div class="input-group-append h-100">
                 <button
-                  type="submit"
-                  class="d-flex input-group-text align-items-center"
+                    class="d-flex input-group-text align-items-center"
+                    type="submit"
                 >
                   <span class="material-icons">search</span>
                 </button>
@@ -117,7 +117,8 @@
               >
               <div class="d-flex flex-column mx-1 current-acting-as-wrapper">
                 <!-- title attribute will show full name in case it is too long to fit -->
-              <span class="m-0 p-0 text-dark ellipsis-overflow" v-bind:title="printCurrentActingAs">
+                <span class="m-0 p-0 text-dark ellipsis-overflow"
+                      v-bind:title="printCurrentActingAs">
                   {{ printCurrentActingAs }}
                 </span>
                 <span v-if="isAdmin" class="admin-text p-0 text-faded">ADMIN</span>
@@ -127,13 +128,13 @@
             <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu position-absolute">
               <div class="h4 dropdown-header">Act as</div>
               <a class="dropdown-item d-flex"
-                 v-bind:class="{'currently-acting-as': currentActingAs == null}"
                  href="javascript:"
+                 v-bind:class="{'currently-acting-as': currentActingAs == null}"
                  v-bind:title="authUser.firstName + ' ' + authUser.lastName"
                  @click="switchActingAs(null)"
               >
-              <!-- d-flex used on the a so that space is made for the the tick
-               (added via an ::after) for active items when the name is long and overflows -->
+                <!-- d-flex used on the a so that space is made for the the tick
+                 (added via an ::after) for active items when the name is long and overflows -->
                 <span class="ellipsis-overflow">
                   {{ authUser.firstName }} {{ authUser.lastName }}
                 </span>
@@ -141,8 +142,8 @@
               <div v-if="actingAsEntities.length" class="dropdown-divider"></div>
               <a v-for="business in actingAsEntities" :key="business.id"
                  class="dropdown-item d-flex"
-                 v-bind:class="{'currently-acting-as': currentActingAs == business}"
                  href="javascript:"
+                 v-bind:class="{'currently-acting-as': currentActingAs == business}"
                  v-bind:title="business.name"
                  @click="switchActingAs(business)"
               >

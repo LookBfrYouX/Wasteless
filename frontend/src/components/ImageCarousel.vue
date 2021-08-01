@@ -1,26 +1,26 @@
 <template>
   <v-carousel
-    class="my-2 image-carousel-container"
-    v-model="currentImage"
-    :hide-delimiters="carouselImages.length < 2"
-    :show-arrows="carouselImages.length >= 2"
-    :key="carouselKey"
+      :key="carouselKey"
+      v-model="currentImage"
+      :hide-delimiters="carouselImages.length < 2"
+      :show-arrows="carouselImages.length >= 2"
+      class="my-2 image-carousel-container"
   >
     <v-carousel-item
-      v-for="image in carouselImages"
-      :key="image.id"
+        v-for="image in carouselImages"
+        :key="image.id"
     >
-    <div class="h-100 d-flex">
-      <v-img
-        :src="image.filename"
-        contain
-      >
-      <!-- lazy-src can be bound to thumbnailFilename,
-      but thumbnails are square so it is quite jarring when it switches from
-      the thumbnail to the full image. Hence, it is not being used
-        -->
-      </v-img>
-    </div>
+      <div class="h-100 d-flex">
+        <v-img
+            :src="image.filename"
+            contain
+        >
+          <!-- lazy-src can be bound to thumbnailFilename,
+          but thumbnails are square so it is quite jarring when it switches from
+          the thumbnail to the full image. Hence, it is not being used
+            -->
+        </v-img>
+      </div>
     </v-carousel-item>
   </v-carousel>
 </template>
@@ -52,10 +52,12 @@ export default {
 
   computed: {
     /**
-     * Adds the default image if there are no images 
-     */ 
+     * Adds the default image if there are no images
+     */
     carouselImages() {
-      if (this.images.length) return this.images;
+      if (this.images.length) {
+        return this.images;
+      }
       return [{
         filename: defaultImage,
         id: 1
@@ -67,9 +69,9 @@ export default {
     /**
      * https://github.com/vuetifyjs/vuetify/issues/12949
      * Order seems to be partially dependent on ID - from the issue, this
-     * occurs after the list of elements is updated, so use key to create a new 
+     * occurs after the list of elements is updated, so use key to create a new
      * instance of carousel each time the image list is updated
-     * 
+     *
      * To replicate the issue, upload a few images and pick the last image as the
      * primary image (and remove this method)
      */

@@ -48,8 +48,8 @@
               id="title"
               v-model="title"
               class="form-control"
-              name="title"
               maxlength="50"
+              name="title"
               placeholder="Title"
               required
               type="text"
@@ -60,19 +60,19 @@
         <div class="col-12 form-group">
           <label class="form-label">Add Keywords</label>
           <v-autocomplete
+              v-model="selectedKeywordIds"
+              :hide-no-data="keywordsErrorMessage == null"
+              :items="allKeywords"
+              :no-data-text="keywordsErrorMessage == null? 'No results': keywordsErrorMessage"
               background-color="white"
-              class="remove-v-autocomplete-bottom-padding pt-0 rounded"
               chips
+              class="remove-v-autocomplete-bottom-padding pt-0 rounded"
               clearable
               deletable-chips
-              multiple
-              :items="allKeywords"
               item-text="name"
-              item-value="id"
-              v-model="selectedKeywordIds"
 
-              :hide-no-data="keywordsErrorMessage == null"
-              :no-data-text="keywordsErrorMessage == null? 'No results': keywordsErrorMessage"
+              item-value="id"
+              multiple
           ></v-autocomplete>
         </div>
       </div>

@@ -24,11 +24,11 @@
         </div>
       </div>
       <div class="d-flex justify-content-end">
-        <router-link class="btn btn-primary mr-0"
-          :to="{ name: 'BusinessProductImagesEdit', params: {
+        <router-link :to="{ name: 'BusinessProductImagesEdit', params: {
               businessId: this.businessId,
               productId
           }}"
+                     class="btn btn-primary mr-0"
         >
           Edit product images
         </router-link>

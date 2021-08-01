@@ -2,9 +2,9 @@
   <div>
     <v-select
         :items="items.map(a => a.key)"
-        @change="sortChange"
+        dense
         label="Sort By"
-        solo dense
+        solo @change="sortChange"
     ></v-select>
   </div>
 </template>
@@ -21,7 +21,9 @@ export default {
   },
   methods: {
     sortChange: function (event) {
-      const item = this.items.filter(obj => { return obj.key === event; })[0];
+      const item = this.items.filter(obj => {
+        return obj.key === event;
+      })[0];
       if (item) {
         this.$emit('update', item.value, item.isAscending);
       }

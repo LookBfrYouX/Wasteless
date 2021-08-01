@@ -43,7 +43,6 @@ beforeEach(() => {
 
 afterEach(() => wrapper.destroy());
 
-
 describe("API response", () => {
   test("values being set", async () => {
     const data = {

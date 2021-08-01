@@ -15,15 +15,15 @@
         <div class="col-12 col-md-6 form-group required">
           <label for="productDropdown">Select product</label>
           <v-autocomplete
-          solo
-          dense
-          item-text="name"
-          item-value="id"
-          :items="products"
-          v-model="product"
+              v-model="product"
+              :items="products"
+              dense
+              item-text="name"
+              item-value="id"
+              solo
 
           ></v-autocomplete>
-          </div>
+        </div>
         <div class="col-12 col-md-6 form-group required">
           <label for="quantity">Quantity</label>
           <input
@@ -46,8 +46,8 @@
               v-model="pricePerItem"
               :placeholder="currencyText"
               class="form-control"
-              min="0.01"
               max="10000000"
+              min="0.01"
               name="pricePerItem"
               step="0.01"
               type="number"
@@ -60,8 +60,8 @@
               v-model="totalPrice"
               :placeholder="currencyText"
               class="form-control"
-              min="0.01"
               max="10000000"
+              min="0.01"
               name="totalPrice"
               step="0.01"
               type="number"
@@ -207,7 +207,7 @@ export default {
             this.$stateStore);
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
-          return;
+
         }
       }
     },

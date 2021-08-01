@@ -8,6 +8,7 @@
 
   // Force Vuetify to use normal fonts and font sizes
   font-family: $font-family-base;
+
   .v-list--dense .v-list-item .v-list-item__subtitle, .v-list--dense .v-list-item .v-list-item__title, .v-list-item--dense .v-list-item__subtitle, .v-list-item--dense .v-list-item__title {
     font-size: 1rem;
   }

@@ -35,12 +35,10 @@ import {store} from '@/store';
 import {helper} from '@/helper';
 import {constants} from "@/constants";
 import VueLogger from 'vuejs-logger';
-import vuetify from '@/plugins/vuetify' 
+import vuetify from '@/plugins/vuetify'
 import "bootstrap";
 import "@/styles/main.scss";
 // path to vuetify export
-
-
 
 Vue.config.productionTip = false
 

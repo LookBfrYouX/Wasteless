@@ -170,9 +170,10 @@ describe("addressToString", () => {
   };
 
   test("full address", () => {
-    expect(helper.addressToString(address)).toEqual("1 STREET, S, CITY, R, P, C");
+    expect(helper.addressToString(address)).toEqual(
+        "1 STREET, S, CITY, R, P, C");
   });
-  
+
   test("full address, no street number", () => {
     let addr = Object.assign({}, address);
     delete addr.streetNumber;
@@ -190,7 +191,7 @@ describe("addressToString", () => {
     delete addr.streetName;
     expect(helper.addressToString(addr)).toEqual("S, CITY, R, P, C");
   });
-  
+
   test("street and postcode missing", () => {
     let addr = Object.assign({}, address);
     delete addr.streetName;
@@ -204,11 +205,13 @@ describe("addressToString", () => {
   });
 
   test("only street", () => {
-    expect(helper.addressToString({streetNumber: "1", streetName: "STREET"})).toEqual("1 STREET");
+    expect(helper.addressToString(
+        {streetNumber: "1", streetName: "STREET"})).toEqual("1 STREET");
   });
 
   test("only street, publicOnly", () => {
-    expect(helper.addressToString({streetNumber: "1", streetName: "STREET"}, true)).toEqual("");
+    expect(helper.addressToString({streetNumber: "1", streetName: "STREET"},
+        true)).toEqual("");
   });
 
   test("all, publicOnly", () => {
@@ -217,7 +220,8 @@ describe("addressToString", () => {
 });
 
 describe("formatUserName", () => {
-  const makeUser = (firstName = "FN", middleName = "MN", lastName = "LN", nickname="NN") => ({
+  const makeUser = (firstName = "FN", middleName = "MN", lastName = "LN",
+      nickname = "NN") => ({
     firstName,
     middleName,
     lastName,

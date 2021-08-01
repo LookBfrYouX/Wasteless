@@ -1,16 +1,16 @@
-import {shallowMount, mount} from "@vue/test-utils";
+import {mount} from "@vue/test-utils";
 import AdminEdit from "@/views/business/AdminEdit";
 import {globalStateMocks} from "#/testHelper";
-
-jest.mock("@/Api");
 import {Api} from "@/Api";
 
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import {ApiRequestError} from "@/ApiRequestError";
+
+jest.mock("@/Api");
+
 Vue.use(Vuetify);
 const vuetify = new Vuetify();
-
-import {ApiRequestError} from "@/ApiRequestError";
 
 const BUSINESS_TEMPLATE = {
   id: 1,
@@ -44,7 +44,7 @@ const standardMount = () => {
     mocks: globalStateMocks(),
     stubs: ["error-modal", "router-link", "v-autocomplete", "v-data-table"], // Add the name of the business listings item component to here
     propsData: {
-        businessId: business.id
+      businessId: business.id
     }
   });
 
@@ -64,7 +64,6 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-
 describe("fetchBusiness", () => {
   test("successful mount", async () => {
     await wrapper.vm.$nextTick();
@@ -72,7 +71,8 @@ describe("fetchBusiness", () => {
   });
 
   test("failed mount", async () => {
-    Api.businessProfile.mockImplementation(() => Promise.reject(new ApiRequestError("Err")));
+    Api.businessProfile.mockImplementation(
+        () => Promise.reject(new ApiRequestError("Err")));
     await standardMount();
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.business).toBe(null);
@@ -90,10 +90,10 @@ describe("addAdmin", () => {
     expect(Api.businessProfile.mock.calls.length).toEqual(2); // business fetched again to get new admin
   });
 
-
   test("failed API call", async () => {
     wrapper.vm.adminIdToAdd = 3;
-    Api.addBusinessAdmin.mockImplementation(() => Promise.reject(new ApiRequestError("Err")));
+    Api.addBusinessAdmin.mockImplementation(
+        () => Promise.reject(new ApiRequestError("Err")));
     await wrapper.vm.addAdmin();
     expect(Api.addBusinessAdmin.mock.calls.length).toEqual(1);
     expect(wrapper.vm.addAdminErrorMessage).toEqual("Err");
@@ -103,7 +103,7 @@ describe("addAdmin", () => {
 
 describe("removeAdmin", () => {
   test("success", async () => {
-    wrapper.vm.adminIdToRemove= 3;
+    wrapper.vm.adminIdToRemove = 3;
     Api.removeBusinessAdmin.mockResolvedValue();
     await wrapper.vm.removeAdmin();
     expect(Api.removeBusinessAdmin.mock.calls.length).toEqual(1);
@@ -111,10 +111,10 @@ describe("removeAdmin", () => {
     expect(Api.businessProfile.mock.calls.length).toEqual(2); // business fetched again to get new admin
   });
 
-
   test("failed API call", async () => {
     wrapper.vm.adminIdToRemove = 3;
-    Api.removeBusinessAdmin.mockImplementation(() => Promise.reject(new ApiRequestError("Err")));
+    Api.removeBusinessAdmin.mockImplementation(
+        () => Promise.reject(new ApiRequestError("Err")));
     await wrapper.vm.removeAdmin();
     expect(Api.removeBusinessAdmin.mock.calls.length).toEqual(1);
     expect(wrapper.vm.removeAdminErrorMessage).toEqual("Err");
@@ -159,10 +159,9 @@ describe("userCanModifyBusiness", () => {
     expect(wrapper.vm.userCanModifyBusiness).toEqual(true);
   });
 
-
   test("Primary business admin", async () => {
     wrapper.vm.$stateStore.getters.isAdmin = () => false;
-    wrapper.vm.$stateStore.getters.getAuthUser = () => ({ id: 4 });
+    wrapper.vm.$stateStore.getters.getAuthUser = () => ({id: 4});
     wrapper.vm.business.primaryAdministratorId = 4;
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.userCanModifyBusiness).toEqual(true);
@@ -170,7 +169,7 @@ describe("userCanModifyBusiness", () => {
 
   test("Not primary business admin or GAA", async () => {
     wrapper.vm.$stateStore.getters.isAdmin = () => false;
-    wrapper.vm.$stateStore.getters.getAuthUser = () => ({ id: 4 });
+    wrapper.vm.$stateStore.getters.getAuthUser = () => ({id: 4});
     wrapper.vm.business.primaryAdministratorId = 3;
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.userCanModifyBusiness).toEqual(false);
@@ -180,7 +179,7 @@ describe("userCanModifyBusiness", () => {
 describe("userSearchResults", () => {
   test("two admins plus another user", async () => {
     wrapper.vm.$data.userSearchResultsRaw = [
-        ...business.administrators,
+      ...business.administrators,
       {
         id: 3,
         firstName: "A",
@@ -222,14 +221,14 @@ describe("userSearchResults", () => {
 });
 
 describe("userSearchQuery", () => {
-    const results = [
-      {id: 3, firstName: "A", lastName: "B"},
-      {id: 4, firstName: "C", lastName: "D"}
-    ];
+  const results = [
+    {id: 3, firstName: "A", lastName: "B"},
+    {id: 4, firstName: "C", lastName: "D"}
+  ];
 
   test("standard query, check userSearchResultsSet", async () => {
-    Api.search.mockResolvedValue({ data: { results }});
-    
+    Api.search.mockResolvedValue({data: {results}});
+
     await wrapper.setData({
       userSearchQuery: "test"
     });
@@ -241,8 +240,8 @@ describe("userSearchQuery", () => {
   test("disabling submit button", async () => {
     // if user selects a result and then types some other stuff, the adminIdToAdd
     // should be set to null
-    Api.search.mockResolvedValue({ data: { results }});
-    
+    Api.search.mockResolvedValue({data: {results}});
+
     await wrapper.setData({
       adminIdToAdd: 3,
       userSearchQuery: "A B",
@@ -258,32 +257,36 @@ describe("userSearchQuery", () => {
     expect(wrapper.vm.adminIdToAdd).toBe(null);
   });
 
+  test(
+      "user search loading is set and reset after API loads; successful API call",
+      async () => {
+        const wait = (duration) => new Promise(
+            resolve => setTimeout(resolve, duration));
+        const time = 100;
+        Api.search.mockImplementation(async () => {
+          await wait(time);
+          return {data: {results}};
+        });
+        await wrapper.setData({userSearchQuery: "asdf"});
+        await wrapper.vm.$nextTick();
+        expect(wrapper.vm.userSearchLoading).toBe(true);
+        await wait(time);
+        expect(wrapper.vm.userSearchLoading).toBe(false);
+      });
 
-  test("user search loading is set and reset after API loads; successful API call", async () => {
-    const wait = (duration) => new Promise(resolve => setTimeout(resolve, duration));
-    const time = 100;
-    Api.search.mockImplementation(async () => {
-      await wait(time);
-      return { data: { results }};
-    });
-    await wrapper.setData({ userSearchQuery: "asdf" });
-    await wrapper.vm.$nextTick();
-    expect(wrapper.vm.userSearchLoading).toBe(true);
-    await wait(time);
-    expect(wrapper.vm.userSearchLoading).toBe(false);
-  });
-
-  test("user search loading is set and reset after API loads: failed API call", async () => {
-    const wait = (duration) => new Promise(resolve => setTimeout(resolve, duration));
-    const time = 100;
-    Api.search.mockImplementation(async () => {
-      await wait(time);
-      return Promise.reject({ userFacingErrorMessage: "err" });
-    });
-    await wrapper.setData({ userSearchQuery: "asdf" });
-    await wrapper.vm.$nextTick();
-    expect(wrapper.vm.userSearchLoading).toBe(true);
-    await wait(time);
-    expect(wrapper.vm.userSearchLoading).toBe(false);
-  });
+  test("user search loading is set and reset after API loads: failed API call",
+      async () => {
+        const wait = (duration) => new Promise(
+            resolve => setTimeout(resolve, duration));
+        const time = 100;
+        Api.search.mockImplementation(async () => {
+          await wait(time);
+          return Promise.reject({userFacingErrorMessage: "err"});
+        });
+        await wrapper.setData({userSearchQuery: "asdf"});
+        await wrapper.vm.$nextTick();
+        expect(wrapper.vm.userSearchLoading).toBe(true);
+        await wait(time);
+        expect(wrapper.vm.userSearchLoading).toBe(false);
+      });
 });

@@ -155,7 +155,8 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any>>}
    */
   addBusinessAdmin: (businessId, userId) => {
-    return instance.put(`/businesses/${businessId}/makeAdministrator`, { userId }).catch(err => {
+    return instance.put(`/businesses/${businessId}/makeAdministrator`,
+        {userId}).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         400: "The user does not exist or is already an admin",
         403: "Only the primary business administrator or GAA can add or remove business administrators"
@@ -170,7 +171,8 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any>>}
    */
   removeBusinessAdmin: (businessId, userId) => {
-    return instance.put(`/businesses/${businessId}/removeAdministrator`, { userId }).catch(err => {
+    return instance.put(`/businesses/${businessId}/removeAdministrator`,
+        {userId}).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         400: "The user does not exist, is not an admin or is the primary business administrator",
         403: "Only the primary business administrator or GAA can add or remove business administrators"
@@ -213,7 +215,7 @@ export const Api = {
    */
   search: (params) => {
     params.searchQuery = (params.searchQuery) ? params.searchQuery : "";
-    return instance.get('/users/search', { params: params })
+    return instance.get('/users/search', {params: params})
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error);
     });
@@ -350,7 +352,8 @@ export const Api = {
    * @returns axios response or ApiRequestError
    */
   getBusinessListings: (businessId, params) => {
-    return instance.get(`/businesses/${businessId}/listings`, { params: params }).catch(err => {
+    return instance.get(`/businesses/${businessId}/listings`,
+        {params: params}).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         406: "The business does not exist - either the URL was typed in wrong or the business was deleted"
       });
@@ -363,7 +366,8 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any>>} Promise containing the inventory
    */
   getBusinessInventory: (businessId, params) => {
-    return instance.get(`/businesses/${businessId}/inventory`, { params: params }).catch(err => {
+    return instance.get(`/businesses/${businessId}/inventory`,
+        {params: params}).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         403: "You don't have permission view this businesses inventory",
         406: "The business does not exist - either the URL was typed in wrong or the business was deleted"

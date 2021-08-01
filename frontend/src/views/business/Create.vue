@@ -150,7 +150,7 @@ export default {
     /**
      * Returns the age from a given date of birth
      */
-    getAge: function(birthDateString) {
+    getAge: function (birthDateString) {
       let today = new Date();
       let birthDate = new Date(birthDateString);
       let age = today.getFullYear() - birthDate.getFullYear();

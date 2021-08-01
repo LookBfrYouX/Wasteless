@@ -79,8 +79,8 @@ describe("API error handling", () => {
 describe("Keyword functionality", () => {
   test("Successfully fetch all keywords", async () => {
     const mockKeywords = {
-      data: [ { name: "First keyword" },
-              { name: "Second keyword"}]
+      data: [{name: "First keyword"},
+        {name: "Second keyword"}]
     }
     Api.getAllKeywords.mockResolvedValue(mockKeywords);
     mountCard();

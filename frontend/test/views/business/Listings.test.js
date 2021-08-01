@@ -2,7 +2,6 @@ import BusinessListings from "@/views/business/Listings";
 import {mount} from "@vue/test-utils";
 import {Api} from "@/Api";
 import {globalStateMocks} from "#/testHelper";
-import SortedPaginatedItemList from "@/components/SortedPaginatedItemList";
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import {ApiRequestError} from "@/ApiRequestError";

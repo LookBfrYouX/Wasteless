@@ -43,10 +43,10 @@
           class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center justify-content-center product-image-width"
       >
         <button
+            aria-label="Upload image"
             class="bg-transparent border-0"
             type="button"
             @click="onPickFile"
-            aria-label="Upload image"
         >
           <span class="material-icons add-product-icon py-4 mb-4 mt-2">
             add_circle_outline

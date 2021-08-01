@@ -16,20 +16,21 @@ const errorMessages = {
 
 window.scrollTo = jest.fn()
 
-const testData = { results: [
-  {
-    id: 1,
-    product: {
-      name: "Watties Baked Beans - 200g can"
+const testData = {
+  results: [
+    {
+      id: 1,
+      product: {
+        name: "Watties Baked Beans - 200g can"
+      }
+    },
+    {
+      id: 2,
+      product: {
+        name: "Watties Baked Beans - 400g can"
+      }
     }
-  },
-  {
-    id: 2,
-    product: {
-      name: "Watties Baked Beans - 400g can"
-    }
-  }
-],
+  ],
   totalCount: 2
 }
 

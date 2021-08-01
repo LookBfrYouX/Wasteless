@@ -25,7 +25,7 @@ export default [
     component: () => import("@/views/user/Detail.vue"),
     props: route => {
       let userId = route.params.userId ? parseInt(route.params.userId, 10)
-        : NaN;
+          : NaN;
       // Using \d so parseInt should never fail
       if (isNaN(userId) && store.getters.isSignedIn()) {
         userId = store.getters.getAuthUser().id;
