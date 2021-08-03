@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,21 @@ public class ListingController {
   @Autowired
   public ListingController(ListingService listingService) {
     this.listingService = listingService;
+  }
+
+
+  @GetMapping("/listings/search")
+  @Operation(summary = "Search through sales listings", description = "Search and filter all sales listings")
+  public ResponseEntity<Object> searchListings(
+          @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(value = 0) int pagStartIndex,
+          @Parameter(description = "Pagination end index") @RequestParam(required = false) Integer pagEndIndex,
+          @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
+          @Parameter(description = "Search key") @RequestParam(required = false) String searchKey,
+          @Parameter(description = "Search value") @RequestParam(required = false) String searchParam
+  ) {
+    log.info("GETTING LISTINGS FOR: " + searchKey + " = " + searchParam + " PAG: " + pagStartIndex + " - " + pagEndIndex);
+    // TODO connect to service method to get result list
+    return new ResponseEntity<>("Success", HttpStatus.OK);
   }
 
   /**
