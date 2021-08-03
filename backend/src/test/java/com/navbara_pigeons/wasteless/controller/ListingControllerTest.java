@@ -39,7 +39,7 @@ public class ListingControllerTest extends ControllerTestProvider {
   void searchListings_withValidParams_expectOk() throws Exception {
     mockMvc.perform(
             get("/listings/search")
-                    .param("pagStartIndex", "0")
+                    .param("pagStartIndex", "1")
                     .param("pagEndIndex", "1")
                     .param("searchKey", "country")
                     .param("searchParam", "New Zealand")

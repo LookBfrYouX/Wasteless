@@ -20,6 +20,8 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import java.util.ArrayList;
 import javax.management.InvalidAttributeValueException;
+import javax.validation.ConstraintViolationException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -208,6 +210,12 @@ public class ControllerExceptionHandler {
   @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad address given")
   public void handleAddressValidationException(AddressValidationException exc) {
     log.error("ADDRESS VALIDATION ERROR: 400 - " + exc.getMessage());
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Validation failed")
+  public void handleConstraintViolationException(ConstraintViolationException exc) {
+    log.error("CONSTRAINT VALIDATION ERROR: 400 - " + exc.getMessage());
   }
 
   @ExceptionHandler(UserAuthenticationException.class)

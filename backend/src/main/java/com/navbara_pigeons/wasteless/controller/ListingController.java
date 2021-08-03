@@ -21,6 +21,7 @@ import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Slf4j
+@Validated
 @RequestMapping("")
 @Tag(name = "Listing Endpoint", description = "The API endpoint for Product Listing related requests")
 public class ListingController {
@@ -49,7 +51,7 @@ public class ListingController {
   @GetMapping("/listings/search")
   @Operation(summary = "Search through sales listings", description = "Search and filter all sales listings")
   public ResponseEntity<Object> searchListings(
-          @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(value = 0) int pagStartIndex,
+          @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(0) Integer pagStartIndex,
           @Parameter(description = "Pagination end index") @RequestParam(required = false) Integer pagEndIndex,
           @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
           @Parameter(description = "Search key") @RequestParam(required = false) String searchKey,
