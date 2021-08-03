@@ -52,12 +52,12 @@ public class ListingController {
   @Operation(summary = "Search through sales listings", description = "Search and filter all sales listings")
   public ResponseEntity<Object> searchListings(
           @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(0) Integer pagStartIndex,
-          @Parameter(description = "Pagination end index") @RequestParam(required = false) Integer pagEndIndex,
+          @Parameter(description = "Pagination end index") @RequestParam(required = false) @Min(0) Integer pagEndIndex,
           @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
           @Parameter(description = "Search key") @RequestParam(required = false) String searchKey,
           @Parameter(description = "Search value") @RequestParam(required = false) String searchParam
   ) {
-    log.info("GETTING LISTINGS FOR: " + searchKey + " = " + searchParam + " PAG: " + pagStartIndex + " - " + pagEndIndex);
+    log.info("GETTING LISTINGS FOR: " + searchKey + " = " + searchParam);
     // TODO connect to service method to get result list
     return new ResponseEntity<>("Success", HttpStatus.OK);
   }
