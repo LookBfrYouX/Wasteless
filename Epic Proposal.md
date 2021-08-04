@@ -9,15 +9,16 @@
 The number of people on specific diets is on the rise. Whether the goal in mind is to lose weight or
 to live a healthier life, it is clear that the number of diets is increasing. From 2017 to 2018,
 there has been an increase of 22 percent of people on specific diets, from 14% to
-36% ([and more recently 43](chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/viewer.html?pdfurl=https%3A%2F%2Ffoodinsight.org%2Fwp-content%2Fuploads%2F2020%2F06%2F2020-Food-and-Health-Survey-.pdf&clen=321577&chunk=true))
+36% ([and more recently 43](https://foodinsight.org/wp-content/uploads/2020/06/2020-Food-and-Health-Survey-.pdf))
 according to
 [Food & Health Survey](https://foodinsight.org/one-third-of-americans-are-dieting-including-one-in-10-who-fast-while-consumers-also-hunger-for-organic-natural-and-sustainable/)
 .
 
 There is a clear need for a diet recognising sales platform that the Epic can provide. This will
 ultimately **differentiate our application from our competitors and create an advantage**.
-Additionally, the Epic can provide features that make product uploading easier for Business
-Owners [seen here](#value-added-to-business-owners).
+Specifically, as there is a gap in the market for a health focussed wholesaler and by focussing on a
+more niche market segment. Additionally, the Epic can provide features that make product uploading
+easier for Business Owners.
 
 ### Value added to Business Owners
 
@@ -27,7 +28,10 @@ barcode an external API can return information such as:
 
 - Product Title (e.g. "Marmite - Sanitarium - 250 g")
 - Images of the product
-  - Saves the Owner time by not needing to upload their own
+    - Saves the Owner time by not needing to upload their own
+- Nutritional, ingredient & diet information that can be displayed on the product listing page
+    - Additionally, this can increase the likelihood of a sale as the products can cater to the
+      users diet
 
 ### Value added to Users
 
