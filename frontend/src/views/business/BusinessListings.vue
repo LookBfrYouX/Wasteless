@@ -3,7 +3,14 @@
       class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2 align-items-center container-fluid">
     <div class="d-flex flex-sm-wrap pb-3 pb-md-0 align-items-center container-fluid">
       <div class="row mt-4 align-items-center">
-        <h2 class="col-lg-8 pl-0">TODO: Header</h2>
+        <h2 class="col-lg-8 pl-0">Listings for {{ businessName }}</h2>
+        <router-link
+            v-if="$stateStore.getters.canEditBusiness(businessId)"
+            :to="{ name: 'BusinessListingCreate', params: { businessId }}"
+            class="btn col-12 col-lg-4 btn-info d-flex h-100">
+          <span class="material-icons mr-1">add</span>
+          Create Listing
+        </router-link>
       </div>
     </div>
     <div v-if="listings.length" class="container-fluid align-items-center">
@@ -17,7 +24,12 @@
               :to="{ name: 'BusinessListingDetail', params: { businessId, listingId: listing.id }}"
               class="text-decoration-none text-reset"
           >
-            Card goes here
+            <listing-item-card
+                :businessId="businessId"
+                :currency="currency"
+                :item="listing"
+                class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-1 rounded"
+            />
           </router-link>
         </li>
       </ul>
@@ -27,10 +39,12 @@
           :length="totalPages"
           class="w-100"
           @input="pageUpdate"
+          @next="pageUpdate"
+          @previous="pageUpdate"
       />
     </div>
     <div v-else>
-      TODO: NO LISTINGS FOUND TEXT (MAYBE IMAGE ON VUETIFY ICONS?)
+      No listings yet
     </div>
 
     <error-modal
@@ -46,12 +60,14 @@
   </div>
 </template>
 <script>
+import ListingItemCard from "@/components/cards/BusinessListingCard";
 import ErrorModal from "@/components/ErrorModal";
 import {Api} from "@/Api";
 import SimpleSortBar from "@/components/SimpleSortBar";
 
 export default {
   components: {
+    ListingItemCard,
     SimpleSortBar,
     ErrorModal
   },
@@ -76,6 +92,8 @@ export default {
       },
       listings: [],
       apiErrorMessage: null,
+      businessName: null,
+      currency: null,
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
         {key: "Lowest Quantity", value: "quantity", isAscending: true},
         {key: "Highest Quantity", value: "quantity", isAscending: false},
@@ -115,12 +133,12 @@ export default {
       this.searchParams.pagStartIndex = ((this.page - 1) * this.itemsPerPage);
       this.searchParams.pagEndIndex = Math.max(0,
           Math.min((this.page * this.itemsPerPage) - 1, this.totalResults - 1));
-      await this.getListingsPipeline();
+      await this.getBusinessListingsPipeline();
       window.scrollTo(0, 0);
     },
-    getListingsPipeline: async function () {
+    getBusinessListingsPipeline: async function () {
       try {
-        const response = (await Api.getListings(this.searchParams)).data;
+        const response = (await Api.getBusinessListings(this.businessId, this.searchParams)).data;
         this.listings = response.results;
         this.totalResults = response.totalCount;
       } catch (err) {
@@ -130,6 +148,27 @@ export default {
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
+
+    loadBusinessName: async function () {
+      this.businessName = await this.$helper.tryGetBusinessName(this.businessId);
+    },
+
+    /**
+     * Gets currency object.
+     * @returns {Promise<void>} Currency object, null when the currency doesn't exist or API request error.
+     */
+    getCurrency: async function () {
+      this.currency = await this.$helper.tryGetCurrencyForBusiness(this.businessId,
+          this.$stateStore);
+    },
   },
+
+  watch: {
+    businessName() {
+      if (this.businessName != null) {
+        document.title = `Listings for ${this.businessName}`
+      }
+    }
+  }
 }
 </script>

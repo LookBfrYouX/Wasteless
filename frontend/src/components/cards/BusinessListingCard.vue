@@ -38,7 +38,7 @@
 
 <script>
 export default {
-  name: "ListingItemCard",
+  name: "BusinessListingItemCard",
   props: {
     // Listing item object (See API spec for details)
     item: Object,

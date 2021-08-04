@@ -1,4 +1,4 @@
-import BusinessListings from "@/views/business/Listings";
+import BusinessListings from "@/views/business/BusinessListings";
 import {mount} from "@vue/test-utils";
 import {Api} from "@/Api";
 import {globalStateMocks} from "#/testHelper";
@@ -37,7 +37,7 @@ describe("API handling", () => {
     Api.getBusinessListings.mockResolvedValue({
       data: listings
     });
-    await wrapper.vm.getListingsPipeline();
+    await wrapper.vm.getBusinessListingsPipeline();
     expect(
         wrapper.vm.$data.listings).toEqual(
         listings.results);
@@ -47,7 +47,7 @@ describe("API handling", () => {
     const message = "It's a Mario!";
     Api.getBusinessListings.mockImplementation(
         () => Promise.reject(new ApiRequestError(message)));
-    await wrapper.vm.getListingsPipeline();
+    await wrapper.vm.getBusinessListingsPipeline();
     expect(wrapper.vm.apiErrorMessage).toEqual(message);
   });
 });
