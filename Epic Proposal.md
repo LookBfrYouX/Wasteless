@@ -31,7 +31,7 @@ barcode an external API can return information such as:
     - Saves the Owner time by not needing to upload their own
 - Nutritional, ingredient & diet information that can be displayed on the product listing page
     - Additionally, this can increase the likelihood of a sale as the products can cater to the
-      users diet
+      user's diet
 
 ### Value added to Users
 
