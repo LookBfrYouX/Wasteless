@@ -138,6 +138,15 @@ export default [{
     props: route => ({businessId: parseInt(route.params.businessId, 10)})
   },
   {
+    name: "Listings",
+    path: "/listings",
+    meta: {
+      title: "Listings | Wasteless",
+      requiresNotBusinessAdmin: true,
+    },
+    component: () => import("@/views/business/Listings")
+  },
+  {
     name: "BusinessListingDetail",
     path: "/business/:businessId(\\d+)/listings/:listingId(\\d+)",
     component: () => import("@/views/business/ListingDetail.vue"),

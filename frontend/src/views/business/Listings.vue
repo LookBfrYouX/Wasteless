@@ -1,26 +1,29 @@
 <template>
   <div
-      class="w-100 col-12 col-md-8 col-lg-6 pt-0 pt-md-15 pt-lg-2 align-items-center container-fluid">
-    <div class="d-flex flex-sm-wrap pb-3 pb-md-0 align-items-center container-fluid">
-      <div class="row mt-4 align-items-center">
-        <h2 class="col-lg-8 pl-0">TODO: Header</h2>
-      </div>
+      class="w-100 col-12 col-md-8 col-lg-6 align-items-center">
+    <div class="row mt-4 align-items-center">
+      <h2 class="col-lg-8">TODO: Header</h2>
     </div>
-    <div v-if="listings.length" class="container-fluid align-items-center">
+    <div v-if="listings.length">
       <div class="col-12 col-lg-6 pb-0">
         <simple-sort-bar :items="items" @update="sortUpdate"/>
       </div>
       <!-- Product List   -->
-      <ul class="list-unstyled pl-0">
-        <li v-for="listing in listings" :key="listing.id">
-          <router-link
-              :to="{ name: 'BusinessListingDetail', params: { businessId, listingId: listing.id }}"
-              class="text-decoration-none text-reset"
-          >
-            Card goes here
-          </router-link>
-        </li>
-      </ul>
+      <div class="row">
+        <div v-for="listing in listings" :key="listing.id">
+          <div class="my-0">
+            <router-link
+                :to="{ name: 'BusinessListingDetail', params: { businessId:listing.inventoryItem.businessId, listingId: listing.id }}"
+                class="text-decoration-none text-reset"
+            >
+              <v-card class="col-12 col-md-6 col-lg-4 w-100" fluid>
+                <v-card-title>{{ listing.inventoryItem.product.name }}</v-card-title>
+              </v-card>
+            </router-link>
+          </div>
+        </div>
+      </div>
+
       <!-- Pagination Bar   -->
       <v-pagination
           v-model="page"
@@ -37,7 +40,7 @@
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
         :refresh="true"
-        :retry="this.getBusinessListingsPipeline"
+        :retry="this.getListingsPipeline"
         :show="apiErrorMessage !== null"
         title="Error viewing listings"
     >
@@ -54,13 +57,6 @@ export default {
   components: {
     SimpleSortBar,
     ErrorModal
-  },
-
-  props: {
-    businessId: {
-      type: Number,
-      required: true
-    }
   },
 
   data() {
@@ -84,9 +80,9 @@ export default {
   },
 
   beforeMount: async function () {
-    await this.getBusinessListingsPipeline();
+    await this.getListingsPipeline();
     return Promise.allSettled(
-        [this.loadBusinessName(), this.getCurrency(), this.pageUpdate()]);
+        [this.pageUpdate()]);
   },
 
   computed: {
@@ -116,14 +112,16 @@ export default {
       this.searchParams.pagEndIndex = Math.max(0,
           Math.min((this.page * this.itemsPerPage) - 1, this.totalResults - 1));
       await this.getListingsPipeline();
+      console.log('hi')
       window.scrollTo(0, 0);
     },
     getListingsPipeline: async function () {
       try {
-        const response = (await Api.getListings(this.searchParams)).data;
+        const response = (await Api.getListings(this.searchParams));
         this.listings = response.results;
         this.totalResults = response.totalCount;
       } catch (err) {
+        console.log(err)
         if (await Api.handle401.call(this, err)) {
           return false;
         }
