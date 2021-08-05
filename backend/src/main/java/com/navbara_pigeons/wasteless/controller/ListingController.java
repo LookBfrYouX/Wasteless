@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * This controller class provides the endpoints for dealing with business listings
  */
@@ -54,12 +56,11 @@ public class ListingController {
           @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(0) Integer pagStartIndex,
           @Parameter(description = "Pagination end index") @RequestParam(required = false) @Min(0) Integer pagEndIndex,
           @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
-          @Parameter(description = "Search key") @RequestParam(required = false) String searchKey,
+          @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKey,
           @Parameter(description = "Search value") @RequestParam(required = false) String searchParam
   ) {
     log.info("GETTING LISTINGS FOR: " + searchKey + " = " + searchParam);
-    // TODO connect to service method to get result list
-    return new ResponseEntity<>("Success", HttpStatus.OK);
+    return new ResponseEntity<>(listingService.searchListings(pagStartIndex, pagEndIndex, sortBy, searchKey, searchParam), HttpStatus.OK);
   }
 
   /**
