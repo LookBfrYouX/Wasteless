@@ -22,7 +22,7 @@ will provide us with information such as nutrient facts, ratings, images and ing
 use to implement our desired features.
 
 We believe this epic will be able to be expanded on over the coming sprints, and we already have
-some ideas in mind. These stories could include features such as searching / filtering by diet,
+some ideas in mind. These stories could include features such as searching/filtering by diet,
 barcode scanning for uploading/editing and encouraging the use of this feature through a reward
 system.
 
