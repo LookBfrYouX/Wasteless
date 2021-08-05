@@ -6,7 +6,7 @@
 
 ### Introduction
 
-Our goal is to provide a platform for people with special dietary. We believe that this can be
+Our goal is to provide a platform for people with special dietary needs. We believe that this can be
 achieved by providing our customers with more detailed information about the food they are
 purchasing.
 
