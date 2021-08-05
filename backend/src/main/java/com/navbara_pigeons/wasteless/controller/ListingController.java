@@ -56,11 +56,12 @@ public class ListingController {
           @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(0) Integer pagStartIndex,
           @Parameter(description = "Pagination end index") @RequestParam(required = false) @Min(0) Integer pagEndIndex,
           @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
-          @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKey,
+          @Parameter(description = "Is Ascending") @RequestParam(required = false) Boolean isAscending,
+          @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
           @Parameter(description = "Search value") @RequestParam(required = false) String searchParam
   ) {
-    log.info("GETTING LISTINGS FOR: " + searchKey + " = " + searchParam);
-    return new ResponseEntity<>(listingService.searchListings(pagStartIndex, pagEndIndex, sortBy, searchKey, searchParam), HttpStatus.OK);
+    log.info("GETTING LISTINGS FOR: " + searchKeys + " = " + searchParam);
+    return new ResponseEntity<>(listingService.searchListings(pagStartIndex, pagEndIndex, sortBy, isAscending, searchKeys, searchParam), HttpStatus.OK);
   }
 
   /**

@@ -120,4 +120,10 @@ public class ListingServiceImpl implements ListingService {
 
     return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
+
+  @Override
+  public PaginationDto<FullListingDto> searchListings(Integer pagStartIndex, Integer pagEndIndex, ListingSortByOption sortBy, boolean isAscending, List searchKey, String searchValue) {
+    return null;
+  }
+
 }
