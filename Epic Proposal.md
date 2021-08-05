@@ -68,13 +68,3 @@ ingredient information to help filter down the search results to what the user w
 purchase. This also includes filtering by diets like vegan, Paleo or Keto. Users can also avoid
 specific ingredients such as nuts or certain preservatives. Value could also be added in future
 stories such as implementing a calorie counter into the application.
-
-## Technical Details
-
-### Implementation Notes
-
-How are we going to implement it (technical details)
-
-### API Specification Modifications and Extensions
-
-Self-explanatory
