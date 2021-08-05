@@ -1,38 +1,42 @@
 <template>
-  <div
-      class="w-100 col-12 align-items-center">
-    <div class="row mt-4">
-      <h2 class="col-lg-8">TODO: Header</h2>
-    </div>
-    <div v-if="listings.length">
-      <div class="col-12 col-lg-6 pb-0">
-        <simple-sort-bar :items="items" @update="sortUpdate"/>
-      </div>
-      <!-- Product List   -->
-      <div class="row w-100 justify-content-center">
-        <div v-for="listing in listings" :key="listing.id">
-          <div class="my-0">
+  <div>
+    <v-container>
+      <v-flex>
+        <h2>TODO: Header</h2>
+      </v-flex>
+      <v-layout v-if="listings.length" row>
+        <v-layout row>
+          <v-flex class="w-100 col-12 col-sm-6 col-md-4 col-lg-3 p-4">
+            <simple-sort-bar :items="items" @update="sortUpdate"/>
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex
+              v-for="listing in listings"
+              :key="listing.id"
+              class="col-12 col-sm-6 col-md-4 col-lg-3 p-4"
+          >
             <router-link
                 :to="{ name: 'BusinessListingDetail', params: { businessId:listing.inventoryItem.businessId, listingId: listing.id }}"
                 class="text-decoration-none text-reset"
             >
               <listing-item-card :item="listing"/>
             </router-link>
-          </div>
-        </div>
-      </div>
+          </v-flex>
 
-      <!-- Pagination Bar   -->
-      <v-pagination
-          v-model="page"
-          :length="totalPages"
-          class="w-100"
-          @input="pageUpdate"
-      />
-    </div>
-    <div v-else>
-      TODO: NO LISTINGS FOUND TEXT (MAYBE IMAGE ON VUETIFY ICONS?)
-    </div>
+        </v-layout>
+        <!-- Pagination Bar   -->
+        <v-pagination
+            v-model="page"
+            :length="totalPages"
+            class="w-100 pt-4"
+            @input="pageUpdate"
+        />
+      </v-layout>
+      <v-layout v-else row>
+        TODO: NO LISTINGS FOUND TEXT (MAYBE IMAGE ON VUETIFY ICONS?)
+      </v-layout>
+    </v-container>
 
     <error-modal
         :goBack="false"
@@ -130,3 +134,7 @@ export default {
   },
 }
 </script>
+<style scoped>
+
+
+</style>

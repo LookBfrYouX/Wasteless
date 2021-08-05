@@ -1,19 +1,18 @@
 <template>
-  <!-- this component produces the item card component from the given props -->
-  <v-card class="col-6 p-0">
+  <v-card class="w-100">
     <img
         v-if="item.inventoryItem.product.images.length"
         :src="item.inventoryItem.product.images[0].thumbnailFilename"
         alt="Product Image"
-        class="w-100 m-0"
+        class="image-fluid w-100 m-0"
     >
     <img
         v-else
         alt="Product Image"
-        class="image-fluid w-100 mb-2"
+        class="image-fluid w-100 m-0"
         src="@/../assets/images/default-product-thumbnail.svg"
     >
-    <v-card-title>
+    <v-card-title class="truncate-overflow ">
       {{ item.inventoryItem.product.name }}
     </v-card-title>
     <v-card-text>
@@ -63,8 +62,4 @@ export default {
 </script>
 
 <style scoped>
-.v-card {
-  min-width: 300px;
-}
-
 </style>
