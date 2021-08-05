@@ -10,7 +10,7 @@ Our goal is to provide a platform for people with special dietary needs. We beli
 achieved by providing our customers with more detailed information about the food they are
 purchasing.
 
-Our vision includes using data from trusted external sources to be integrated with our
+Our vision includes using data from a trusted external source to be integrated with our
 current system. This will provide our users with nutrient information on the food they are
 purchasing, the ability to search for and filter by their dietary requirements, allow businesses and
 individuals to upload products by scanning barcodes and much more!
