@@ -1,7 +1,7 @@
 <template>
   <div
-      class="w-100 col-12 col-md-8 col-lg-6 align-items-center">
-    <div class="row mt-4 align-items-center">
+      class="w-100 col-12 align-items-center">
+    <div class="row mt-4">
       <h2 class="col-lg-8">TODO: Header</h2>
     </div>
     <div v-if="listings.length">
@@ -9,16 +9,14 @@
         <simple-sort-bar :items="items" @update="sortUpdate"/>
       </div>
       <!-- Product List   -->
-      <div class="row">
+      <div class="row w-100 justify-content-center">
         <div v-for="listing in listings" :key="listing.id">
           <div class="my-0">
             <router-link
                 :to="{ name: 'BusinessListingDetail', params: { businessId:listing.inventoryItem.businessId, listingId: listing.id }}"
                 class="text-decoration-none text-reset"
             >
-              <v-card class="col-12 col-md-6 col-lg-4 w-100" fluid>
-                <v-card-title>{{ listing.inventoryItem.product.name }}</v-card-title>
-              </v-card>
+              <listing-item-card :item="listing"/>
             </router-link>
           </div>
         </div>
@@ -52,9 +50,11 @@
 import ErrorModal from "@/components/ErrorModal";
 import {Api} from "@/Api";
 import SimpleSortBar from "@/components/SimpleSortBar";
+import ListingItemCard from "@/components/cards/ListingCard";
 
 export default {
   components: {
+    ListingItemCard,
     SimpleSortBar,
     ErrorModal
   },
@@ -112,7 +112,6 @@ export default {
       this.searchParams.pagEndIndex = Math.max(0,
           Math.min((this.page * this.itemsPerPage) - 1, this.totalResults - 1));
       await this.getListingsPipeline();
-      console.log('hi')
       window.scrollTo(0, 0);
     },
     getListingsPipeline: async function () {
@@ -120,8 +119,8 @@ export default {
         const response = (await Api.getListings(this.searchParams));
         this.listings = response.results;
         this.totalResults = response.totalCount;
+        console.log(response.results)
       } catch (err) {
-        console.log(err)
         if (await Api.handle401.call(this, err)) {
           return false;
         }
