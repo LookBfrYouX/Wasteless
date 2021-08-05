@@ -2,6 +2,30 @@
 
 ## Epic Summary
 
+## Proposal description
+
+### Introduction
+
+Our goal is to provide a platform for people with special dietary. We believe that this can be
+achieved by providing our customers with more detailed information about the food they are
+purchasing.
+
+Our vision includes using data from trusted external sources to be integrated with our
+current system. This will provide our users with nutrient information on the food they are
+purchasing, the ability to search for and filter by their dietary requirements, allow businesses and
+individuals to upload products by scanning barcodes and much more!
+
+### Initial plan
+
+This epic will be composed of various stories and features around the use of an external API. This
+will provide us with information such as nutrient facts, ratings, images and ingredients that we can
+use to implement our desired features.
+
+We believe this epic will be able to be expanded on over the coming sprints, and we already have
+some ideas in mind. These stories could include features such as searching / filtering by diet,
+barcode scanning for uploading / editing and encouraging the use of this feature by through a reward
+system.
+
 ## Value Added
 
 ### Introduction
