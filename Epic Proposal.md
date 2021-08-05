@@ -17,7 +17,7 @@ individuals to upload products by scanning barcodes and much more!
 
 ### Initial plan
 
-This epic will be composed of various stories and features around the use of an external API. This
+This epic will be composed of various stories and features around the use of the [Open Food Facts API](https://world.openfoodfacts.org/). This
 will provide us with information such as nutrient facts, ratings, images and ingredients that we can
 use to implement our desired features.
 
