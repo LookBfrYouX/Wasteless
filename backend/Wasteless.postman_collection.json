@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "a09248dd-094f-47e0-b465-7188839fb771",
+    "_postman_id": "b6e0646e-b9c1-4941-b037-9df076dc9adc",
     "name": "Wasteless",
     "description": "API specification for the SENG302 2021 project\n\nContact Support:\n Email: seng302@canterbury.ac.nz",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -1183,7 +1183,7 @@
                   "",
                   "",
                   "// Increment the test index value, used to cycle through query params",
-                  "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                  "utils.incrementTestIndex();",
                   "",
                   "sortBy = pm.environment.get(\"sortBy\");",
                   "// Match the lodash format (asc/desc)",
@@ -1206,21 +1206,23 @@
               "listen": "prerequest",
               "script": {
                 "exec": [
-                  "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
                   "",
+                  "",
+                  "var index = utils.getTestIndex();  // getting the current index value",
                   "// List the possible values to cycle through",
                   "sortByValues = [\"firstName\", \"middleName\", \"lastName\", \"nickname\"];",
-                  "isAscedingValues = [\"yes\", \"no\"];",
+                  "isAscendingValues = [\"yes\", \"no\"];",
                   "pagIndexValues = [[0, \"\"], [0, 1], [2, 5]]  // In (start, end) format where `start` is pagStartIndex",
                   "",
                   "// Set the values as env vars, used as query params",
                   "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
-                  "isAscedingIndex = index % isAscedingValues.length;",
+                  "isAscendingIndex = index % isAscendingValues.length;",
                   "pagIndexIndex = index % pagIndexValues.length;",
                   "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                  "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);",
+                  "pm.environment.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
                   "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
-                  "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
+                  "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);",
+                  "pm.environment.set(\"searchQuery\", \"\");"
                 ],
                 "type": "text/javascript"
               }
@@ -1384,19 +1386,19 @@
                       "listen": "prerequest",
                       "script": {
                         "exec": [
-                          "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
+                          "var index = utils.getTestIndex();  // getting the current index value",
                           "",
                           "// List the possible values to cycle through",
                           "sortByValues = [\"name\", \"manufacturer\", \"recommendedRetailPrice\", \"created\"];",
-                          "isAscedingValues = [\"yes\", \"no\"];",
+                          "isAscendingValues = [\"yes\", \"no\"];",
                           "pagIndexValues = [[0, \"\"], [0, 1], [2, 5]]  // In (start, end) format where `start` is pagStartIndex",
                           "",
                           "// Set the values as env vars, used as query params",
                           "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
-                          "isAscedingIndex = index % isAscedingValues.length;",
+                          "isAscendingIndex = index % isAscendingValues.length;",
                           "pagIndexIndex = index % pagIndexValues.length;",
                           "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);",
+                          "pm.environment.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
                           "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
                           "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                         ],
@@ -1412,7 +1414,7 @@
                           "var jsonData = pm.response.json();",
                           "",
                           "// Increment the test index value, used to cycle through query params",
-                          "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                          "utils.incrementTestIndex();",
                           "",
                           "",
                           "// Test status code",
@@ -1896,19 +1898,19 @@
                       "listen": "prerequest",
                       "script": {
                         "exec": [
-                          "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
+                          "var index = utils.getTestIndex(); // getting the current index value",
                           "",
                           "// List the possible values to cycle through",
                           "sortByValues = [\"quantity\", \"pricePerItem\", \"totalPrice\", \"manufactured\", \"sellBy\", \"bestBefore\"];",
-                          "isAscedingValues = [\"yes\", \"no\"];",
+                          "isAscendingValues = [\"yes\", \"no\"];",
                           "pagIndexValues = [[0, \"\"], [0, 1], [2, 5]]  // In (start, end) format where `start` is pagStartIndex",
                           "",
                           "// Set the values as env vars, used as query params",
                           "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
-                          "isAscedingIndex = index % isAscedingValues.length;",
+                          "isAscendingIndex = index % isAscendingValues.length;",
                           "pagIndexIndex = index % pagIndexValues.length;",
                           "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);",
+                          "pm.environment.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
                           "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
                           "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                         ],
@@ -1977,7 +1979,7 @@
                           "",
                           "",
                           "// Increment the test index value, used to cycle through query params",
-                          "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                          "utils.incrementTestIndex();",
                           "",
                           "sortBy = pm.environment.get(\"sortBy\");",
                           "// Match the lodash format (asc/desc)",
@@ -2415,19 +2417,19 @@
                       "listen": "prerequest",
                       "script": {
                         "exec": [
-                          "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
+                          "var index = utils.getTestIndex();  // getting the current index value",
                           "",
                           "// List the possible values to cycle through",
                           "sortByValues = [\"quantity\", \"price\", \"created\", \"closes\"];",
-                          "isAscedingValues = [\"yes\", \"no\"];",
+                          "isAscendingValues = [\"yes\", \"no\"];",
                           "pagIndexValues = [[0, \"\"], [0, 1], [2, 5]]  // In (start, end) format where `start` is pagStartIndex",
                           "",
                           "// Set the values as env vars, used as query params",
                           "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
-                          "isAscedingIndex = index % isAscedingValues.length;",
+                          "isAscendingIndex = index % isAscendingValues.length;",
                           "pagIndexIndex = index % pagIndexValues.length;",
                           "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                          "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);",
+                          "pm.environment.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
                           "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
                           "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                         ],
@@ -2496,7 +2498,7 @@
                           "",
                           "",
                           "// Increment the test index value, used to cycle through query params",
-                          "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                          "utils.incrementTestIndex();",
                           "",
                           "sortBy = pm.environment.get(\"sortBy\");",
                           "// Match the lodash format (asc/desc)",
@@ -5795,19 +5797,19 @@
               "listen": "prerequest",
               "script": {
                 "exec": [
-                  "var index = Number(pm.environment.get(\"testIndex\"));  // getting the current index value",
+                  "var index = utils.getTestIndex(); // getting the current index value",
                   "",
                   "// List the possible values to cycle through",
                   "sortByValues = [\"title\", \"created\", \"displayPeriodEnd\"];",
-                  "isAscedingValues = [\"yes\", \"no\"];",
+                  "isAscendingValues = [\"yes\", \"no\"];",
                   "pagIndexValues = [[0, \"\"], [0, 1], [1, 2]]  // In (start, end) format where `start` is pagStartIndex",
                   "",
                   "// Set the values as env vars, used as query params",
                   "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
-                  "isAscedingIndex = index % isAscedingValues.length;",
+                  "isAscendingIndex = index % isAscendingValues.length;",
                   "pagIndexIndex = index % pagIndexValues.length;",
                   "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                  "pm.environment.set(\"isAscending\", isAscedingValues[isAscedingIndex]);",
+                  "pm.environment.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
                   "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
                   "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                 ],
@@ -5876,7 +5878,7 @@
                   "",
                   "",
                   "// Increment the test index value, used to cycle through query params",
-                  "pm.environment.set(\"testIndex\", Number(pm.environment.get(\"testIndex\") + 1));",
+                  "utils.incrementTestIndex();",
                   "",
                   "sortBy = pm.environment.get(\"sortBy\");",
                   "// Match the lodash format (asc/desc)",
@@ -6744,32 +6746,33 @@
       ]
     }
   ],
-  "auth": {
-    "type": "apikey",
-    "apikey": [
-      {
-        "key": "key",
-        "value": "JSESSIONID",
-        "type": "string"
-      },
-      {
-        "key": "value",
-        "value": true,
-        "type": "boolean"
-      },
-      {
-        "key": "in",
-        "value": "header",
-        "type": "string"
-      }
-    ]
-  },
   "event": [
     {
       "listen": "prerequest",
       "script": {
         "type": "text/javascript",
         "exec": [
+          "const TEST_INDEX = \"testIndex\";",
+          "const store = pm.collectionVariables;",
+          "",
+          "const getTestIndex = () => {",
+          "    const val = Number(store.get(TEST_INDEX));",
+          "    if (isNaN(val)) {",
+          "        return 0;",
+          "    }",
+          "",
+          "    return val;",
+          "}",
+          "",
+          "const incrementTestIndex = (i = 1) => {",
+          "    store.set(TEST_INDEX, getTestIndex() + i);",
+          "}",
+          "",
+          "utils = {",
+          "    getTestIndex,",
+          "    incrementTestIndex",
+          "}",
+          "",
           ""
         ]
       }
@@ -6782,6 +6785,16 @@
           ""
         ]
       }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "localhost:9499"
+    },
+    {
+      "key": "testIndex",
+      "value": 0
     }
   ]
 }
