@@ -68,3 +68,36 @@ ingredient information to help filter down the search results to what the user w
 purchase. This also includes filtering by diets like vegan, Paleo or Keto. Users can also avoid
 specific ingredients such as nuts or certain preservatives. Value could also be added in future
 stories such as implementing a calorie counter into the application.
+
+## Stories Draft
+
+### EU1 Products with nutrition facts
+
+As an administrator of a business, I can add a product with nutrition facts via an appropriate form,
+so that the nutrition information are visible to potential customers on sales listings.
+
+AC1: As a business admin, I can enter a barcode number in a form field to get nutrition facts from
+a food API.
+
+AC2: Input field of nutrition facts are auto completed if the product exists in the food API.
+The filled values can be overridden.
+
+AC3: If a product has or not have factors related to the three criteria below, they have to be
+declared.
+
+- Food allergy
+- Special dietary requirement
+- Religious reasons
+
+For example, a gluten-free cheese berger may have declaration of "Gluten-free", "Diary",
+"Non-vegan", "Beef", "Honey-free". If there is no declaration, "Unknown" is set as default.
+
+AC4: All the mandatory field (see U15) should be filled. Otherwise, the form is prevented
+from submitting with appropriate message.
+
+AC5: As a logged in user, I can view all of the nutrition facts of a product listed on sale.
+For simplicity, full details of product is not visible on a sales listing view.
+Pop-up on clicking the sales listing card or any suitable interaction will reveal the detail.
+
+*Note: Future stories might include upvote and downvote on products. For example, vegan users could
+'upvote' a product as 'vegan' if they believe it is vegan or vice-versa if it is not.*
