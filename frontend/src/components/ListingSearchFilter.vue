@@ -123,7 +123,7 @@ export default {
   },
   computed: {
     /**
-     * Returns formatted text for dates
+     * Returns formatted text for dates that will fit in a small text box
      */
     dateText() {
       let options = {year: undefined, month: 'numeric', day: 'numeric'};
@@ -132,7 +132,7 @@ export default {
       }
 
       if (this.dates.length == 1) {
-        return "Before: " + Date(this.dates[0]).toLocaleDateString('nz-NZ', options);
+        return "Before: " + new Date(this.dates[0]).toLocaleDateString('nz-NZ', options);
       } else if (this.dates.length == 2) {
         return new Date(this.dates[0]).toLocaleDateString('nz-NZ', options) + " to " +
             new Date(this.dates[1]).toLocaleDateString('nz-NZ', options);
