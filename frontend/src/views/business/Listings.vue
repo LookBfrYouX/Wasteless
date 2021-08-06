@@ -17,7 +17,7 @@
               class="col-12 col-md-6 col-lg-4 p-4"
           >
             <router-link
-                :to="{ name: 'BusinessListingDetail', params: { businessId:listing.inventoryItem.businessId, listingId: listing.id }}"
+                :to="{ name: 'BusinessListingDetail', params: { businessId:listing.inventoryItem.business.id, listingId: listing.id }}"
                 class="text-decoration-none text-reset"
             >
               <listing-item-card :item="listing"/>
@@ -73,12 +73,14 @@ export default {
       searchParams: {
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
-        sortBy: "quantity",
+        sortBy: "name",
         isAscending: false
       },
       listings: [],
       apiErrorMessage: null,
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
+        {key: "Name A-Z", value: "name", isAscending: true},
+        {key: "Name Z-A", value: "name", isAscending: false},
         {key: "Lowest Quantity", value: "quantity", isAscending: true},
         {key: "Highest Quantity", value: "quantity", isAscending: false},
       ],
@@ -120,6 +122,7 @@ export default {
       await this.getListingsPipeline();
       window.scrollTo(0, 0);
     },
+
     getListingsPipeline: async function () {
       try {
         const response = (await Api.getListings(this.searchParams));
