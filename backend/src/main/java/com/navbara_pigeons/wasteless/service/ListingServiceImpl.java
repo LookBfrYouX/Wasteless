@@ -120,4 +120,26 @@ public class ListingServiceImpl implements ListingService {
 
     return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
+
+  /**
+   * Get all sales listings from every businesses
+   * @param pagStartIndex The start index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param pagEndIndex   The stop index of the list to return, implemented for pagination, Can be
+   *                      Null. This index is inclusive.
+   * @param sortBy        Defines the field to be sorted, can be null.
+   * @param isAscending   Boolean value, whether the sort order should be in ascending order. Is not
+   *                      required and defaults to True.
+   * @return All sales listings
+   */
+  @Override
+  public PaginationDto<FullListingDto> searchListings(Integer pagStartIndex, Integer pagEndIndex,
+      ListingSortByOption sortBy, boolean isAscending, List searchKey, String searchValue) throws InvalidPaginationInputException {
+
+    PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, sortBy);
+    pagBuilder.withPagStartIndex(pagStartIndex)
+        .withPagEndIndex(pagEndIndex)
+        .withSortAscending(isAscending);
+    return null;
+  }
 }

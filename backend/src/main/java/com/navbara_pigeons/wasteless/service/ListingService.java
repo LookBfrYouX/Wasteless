@@ -10,6 +10,7 @@ import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import java.util.List;
 
 public interface ListingService {
 
@@ -19,4 +20,7 @@ public interface ListingService {
   PaginationDto<FullListingDto> getListings(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, ListingSortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, UserNotFoundException, InvalidPaginationInputException;
+
+  PaginationDto<FullListingDto> searchListings(Integer pagStartIndex, Integer pagEndIndex,
+      ListingSortByOption sortBy, boolean isAscending, List searchKey, String searchValue) throws InvalidPaginationInputException;
 }
