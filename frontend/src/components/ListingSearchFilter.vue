@@ -107,12 +107,12 @@
 </style>
 
 <script>
+import {constants} from '@/constants';
 export default {
   name: "listingSearchFilter",
   data() {
     return {
-      businesses: ["Hospitality", "Retail", "Charity",
-        "Non-profit"],
+      businesses: Object.keys(constants.BUSINESSES.SHORT_LONG_TYPES),
       filteredBusinesses: [],
       dates: [],
       min: null,
@@ -122,14 +122,18 @@ export default {
     }
   },
   computed: {
+    /**
+     * Returns formatted text for dates
+     */
     dateText() {
+      let options = {year: undefined, month: 'numeric', day: 'numeric'};
+      if (new Date(this.dates[1]).getFullYear() !== new Date().getFullYear()) {
+        options = {year: 'numeric', month: 'numeric', day: 'numeric'};
+      }
+
       if (this.dates.length == 1) {
-        return "Before: " + this.dates;
+        return "Before: " + Date(this.dates[0]).toLocaleDateString('nz-NZ', options);
       } else if (this.dates.length == 2) {
-        let options = {year: undefined, month: 'numeric', day: 'numeric'};
-        if (new Date(this.dates[1]).getFullYear() !== new Date().getFullYear()) {
-          options = {year: 'numeric', month: 'numeric', day: 'numeric'};
-        }
         return new Date(this.dates[0]).toLocaleDateString('nz-NZ', options) + " to " +
             new Date(this.dates[1]).toLocaleDateString('nz-NZ', options);
       }
