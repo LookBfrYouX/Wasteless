@@ -13,7 +13,12 @@
     font-size: 1rem;
   }
 
-  // Navbar lists, lists of businesses etc. have left padding without this rule
+  // Subheader is way too tall for some reason; this makes it just a bit taller than one line
+  .v-subheader {
+    height: 1.3em;
+  }
+
+    // Navbar lists, lists of businesses etc. have left padding without this rule
   ol, ul {
     padding-left: 0;
   }
