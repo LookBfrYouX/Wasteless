@@ -12,7 +12,24 @@
         class="image-fluid w-100 m-0"
         src="@/../assets/images/default-product-thumbnail.svg"
     >
-    <v-card-title class="truncate-overflow ">
+    <v-card-text class="pt-2 pb-0">
+      <div class="row">
+        <div class="col-6 text-truncate">
+          {{ item.inventoryItem.business.name }}
+        </div>
+        <div class="col-6">
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <div v-on="on" class="text-end text-truncate">
+                {{ item.inventoryItem.business.address.city }}
+              </div>
+            </template>
+            <span>{{ $helper.addressToString(item.inventoryItem.business.address, true) }}</span>
+          </v-tooltip>
+        </div>
+      </div>
+    </v-card-text>
+    <v-card-title class="py-0">
       {{ item.inventoryItem.product.name }}
     </v-card-title>
     <v-card-text>
@@ -21,7 +38,7 @@
           {{ $helper.makeCurrencyString(item.price, currency, false) }} <small> for </small>
           {{ item.quantity }}
         </div>
-        <div class="col-7">
+        <div class="col-7 text-end">
           Closes
           {{ $helper.isoToDateString(item.closes) }}
         </div>
@@ -53,13 +70,34 @@ export default {
      */
     getCurrency: async function () {
       this.currency = await this.$helper.tryGetCurrencyForBusiness(
-          this.item.inventoryItem.businessId,
+          this.item.inventoryItem.business.id,
           this.$stateStore);
-      console.log(this.currency);
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "~/src/styles/grid-breakpoints.scss";
+
+.v-card {
+  height: 500px;
+  overflow: auto;
+}
+
+@media (max-width: map-get($grid-breakpoints, "sm")) {
+  .v-card {
+    height: inherit;
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, "md")) {
+  .v-card {
+    height: inherit;
+  }
+}
+
+.listing-container img {
+  max-height: 30vh;
+}
 </style>

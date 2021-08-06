@@ -2,11 +2,11 @@
   <div>
     <v-container>
       <v-flex>
-        <h2>TODO: Header</h2>
+        <h2>Results for '{{ "search query here" }}'</h2>
       </v-flex>
       <v-layout v-if="listings.length" row>
         <v-layout row>
-          <v-flex class="w-100 col-12 col-sm-6 col-md-4 col-lg-3 p-4">
+          <v-flex class="w-100 col-12 col-sm-6 col-md-4 p-4">
             <simple-sort-bar :items="items" @update="sortUpdate"/>
           </v-flex>
         </v-layout>
@@ -14,7 +14,7 @@
           <v-flex
               v-for="listing in listings"
               :key="listing.id"
-              class="col-12 col-sm-6 col-md-4 col-lg-3 p-4"
+              class="col-12 col-md-6 col-lg-4 p-4"
           >
             <router-link
                 :to="{ name: 'BusinessListingDetail', params: { businessId:listing.inventoryItem.businessId, listingId: listing.id }}"
@@ -29,12 +29,14 @@
         <v-pagination
             v-model="page"
             :length="totalPages"
-            class="w-100 pt-4"
+            class="w-100 py-4"
             @input="pageUpdate"
         />
       </v-layout>
       <v-layout v-else row>
-        TODO: NO LISTINGS FOUND TEXT (MAYBE IMAGE ON VUETIFY ICONS?)
+        <v-flex class="text-center pt-5">
+          Sorry! No Results Found
+        </v-flex>
       </v-layout>
     </v-container>
 
@@ -123,7 +125,6 @@ export default {
         const response = (await Api.getListings(this.searchParams));
         this.listings = response.results;
         this.totalResults = response.totalCount;
-        console.log(response.results)
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return false;
@@ -135,6 +136,5 @@ export default {
 }
 </script>
 <style scoped>
-
 
 </style>

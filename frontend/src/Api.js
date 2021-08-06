@@ -376,7 +376,23 @@ export const Api = {
             "id": 5004,
             "inventoryItem": {
                 "id": 5003,
-                "businessId": 1001,
+                "business": {
+                    "id": 1001,
+                    "primaryAdministratorId": 5004,
+                    "name": "TestName",
+                    "description": "A Good business",
+                    "address": {
+                        "streetNumber": "79",
+                        "streetName": "Place Road",
+                        "suburb": "Ilam",
+                        "postcode": "8041",
+                        "city": "Christchurch",
+                        "region": "Canterbury",
+                        "country": "New Zealand"
+                    },
+                    "businessType": "Retail Trade",
+                    "created": "2020-07-14T14:32:00+12:00"
+                },
                 "product": {
                     "id": 5005,
                     "name": "Sanitarium So Good Oat Milk No Added Sugar",
@@ -405,7 +421,23 @@ export const Api = {
             "id": 5003,
             "inventoryItem": {
                 "id": 5002,
-                "businessId": 1001,
+                "business": {
+                    "id": 1001,
+                    "primaryAdministratorId": 5004,
+                    "name": "TestName",
+                    "description": "A Good business",
+                    "address": {
+                        "streetNumber": "79",
+                        "streetName": "Place Road",
+                        "suburb": "Ilam",
+                        "postcode": "8041",
+                        "city": "Christchurch",
+                        "region": "Canterbury",
+                        "country": "New Zealand"
+                    },
+                    "businessType": "Retail Trade",
+                    "created": "2020-07-14T14:32:00+12:00"
+                },
                 "product": {
                     "id": 5003,
                     "name": "Sanitarium So Good Almond Milk Unsweetened Long Life",
@@ -434,7 +466,23 @@ export const Api = {
             "id": 5002,
             "inventoryItem": {
                 "id": 5001,
-                "businessId": 1001,
+                "business": {
+                    "id": 1001,
+                    "primaryAdministratorId": 5004,
+                    "name": "TestName",
+                    "description": "A Good business",
+                    "address": {
+                        "streetNumber": "79",
+                        "streetName": "Place Road",
+                        "suburb": "Ilam",
+                        "postcode": "8041",
+                        "city": "Christchurch",
+                        "region": "Canterbury",
+                        "country": "New Zealand"
+                    },
+                    "businessType": "Retail Trade",
+                    "created": "2020-07-14T14:32:00+12:00"
+                },
                 "product": {
                     "id": 5001,
                     "name": "Anchor Milk Standard Blue Top",
@@ -469,7 +517,23 @@ export const Api = {
             "id": 5001,
             "inventoryItem": {
                 "id": 5001,
-                "businessId": 1001,
+                "business": {
+                    "id": 1001,
+                    "primaryAdministratorId": 5004,
+                    "name": "TestName",
+                    "description": "A Good business",
+                    "address": {
+                        "streetNumber": "79",
+                        "streetName": "Place Road",
+                        "suburb": "Ilam",
+                        "postcode": "8041",
+                        "city": "Christchurch",
+                        "region": "Canterbury",
+                        "country": "New Zealand"
+                    },
+                    "businessType": "Retail Trade",
+                    "created": "2020-07-14T14:32:00+12:00"
+                },
                 "product": {
                     "id": 5001,
                     "name": "Anchor Milk Standard Blue Top",
