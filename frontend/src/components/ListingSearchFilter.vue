@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div class="container col-6">
     <v-row align="end">
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="8" class="filter-business">
         <v-subheader>Filter businesses</v-subheader>
         <v-select
             v-model="filteredBusinesses"
@@ -25,7 +25,8 @@
           </template>
         </v-select>
       </v-col>
-      <v-col cols="12" md="3">
+
+      <v-col cols="12" md="8" class="date-range">
         <v-subheader>Date range</v-subheader>
         <v-menu
             ref="menu"
@@ -37,7 +38,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
-                v-model="dates"
+                v-model="dateText"
                 label="Anytime"
                 prepend-inner-icon="date_range"
                 readonly
@@ -70,16 +71,14 @@
           </v-date-picker>
         </v-menu>
       </v-col>
-    </v-row>
 
-    <v-row>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4" class="min-price">
         <v-subheader>Min price</v-subheader>
         <v-text-field label="Min" type="number" min="0.01"
                       max="10000000" step="0.01" solo dense></v-text-field>
-
       </v-col>
-      <v-col cols="12" md="3">
+
+      <v-col cols="12" md="4" class="max-price">
         <v-subheader>Max price</v-subheader>
         <v-text-field label="Max" type="number" min="0.01"
                       max="10000000" step="0.01" solo dense></v-text-field>
@@ -87,6 +86,25 @@
     </v-row>
   </div>
 </template>
+
+<style lang="scss" scoped>
+@import "~/src/styles/grid-breakpoints.scss";
+
+@media (min-width: map-get($grid-breakpoints, "md")) {
+  .filter-business {
+    order: 1;
+  }
+  .min-price {
+    order: 2;
+  }
+  .date-range {
+    order: 3;
+  }
+  .max-price {
+    order: 4;
+  }
+}
+</style>
 
 <script>
 export default {
@@ -103,5 +121,20 @@ export default {
       shownChips: 1,
     }
   },
+  computed: {
+    dateText() {
+      if (this.dates.length == 1) {
+        return "Before: " + this.dates;
+      } else if (this.dates.length == 2) {
+        let options = {year: undefined, month: 'numeric', day: 'numeric'};
+        if (new Date(this.dates[1]).getFullYear() !== new Date().getFullYear()) {
+          options = {year: 'numeric', month: 'numeric', day: 'numeric'};
+        }
+        return new Date(this.dates[0]).toLocaleDateString('nz-NZ', options) + " to " +
+            new Date(this.dates[1]).toLocaleDateString('nz-NZ', options);
+      }
+      return null;
+    }
+  }
 }
 </script>
