@@ -16,12 +16,7 @@
               :key="listing.id"
               class="col-12 col-md-6 col-lg-4 p-4"
           >
-            <router-link
-                :to="{ name: 'BusinessListingDetail', params: { businessId:listing.inventoryItem.business.id, listingId: listing.id }}"
-                class="text-decoration-none text-reset"
-            >
               <listing-item-card :item="listing"/>
-            </router-link>
           </v-flex>
 
         </v-layout>
