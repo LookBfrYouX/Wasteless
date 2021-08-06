@@ -1144,11 +1144,11 @@
                   "",
                   "",
                   "// Test the size of results match pagination indexes",
-                  "pm.test(\"Paginination indicies return valid results\", function () {",
-                  "    pagStartIndex = pm.environment.get(\"pagStartIndex\");",
+                  "pm.test(\"Pagination indicies return valid results\", function () {",
+                  "    pagStartIndex = pm.collectionVariables.get(\"pagStartIndex\");",
                   "    // If start index is null then simplify it to zero",
                   "    pagStartIndex = !pagStartIndex ? 0 : pagStartIndex;",
-                  "    pagEndIndex = pm.environment.get(\"pagEndIndex\");",
+                  "    pagEndIndex = pm.collectionVariables.get(\"pagEndIndex\");",
                   "    resLength = jsonData.results.length;",
                   "    totalCount = Number(jsonData.totalCount);",
                   "",
@@ -1176,22 +1176,22 @@
                   "    \"required\": [\"results\", \"totalCount\"]",
                   "};",
                   "",
-                  "pm.test('Response body is in expeced schema', function () {",
+                  "pm.test('Response body is in expected schema', function () {",
                   "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
                   "});",
                   "",
                   "",
                   "",
                   "// Increment the test index value, used to cycle through query params",
-                  "utils.incrementTestIndex();",
+                  "utils.incrementTestIndex(pm.collectionVariables)(pm.collectionVariables);",
                   "",
-                  "sortBy = pm.environment.get(\"sortBy\");",
+                  "sortBy = pm.collectionVariables.get(\"sortBy\");",
                   "// Match the lodash format (asc/desc)",
-                  "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
+                  "isAscending = pm.collectionVariables.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
                   "",
                   "pm.test('User ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
                   "   // Using the orderBy function from lodash ",
-                  "   // Read docs: https://lodash.com/docs/4.17.10#orderBy",
+                  "   // Read docs: https://lodash.com/docs/4.17.10#orderBy    ",
                   "",
                   "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
                   "    var expectedSortedOrder = _.orderBy(jsonData.results, [( o ) => { return o[sortBy] || ''}],[isAscending]);",
@@ -1207,8 +1207,7 @@
               "script": {
                 "exec": [
                   "",
-                  "",
-                  "var index = utils.getTestIndex();  // getting the current index value",
+                  "var index = utils.getTestIndex(pm.collectionVariables);  // getting the current index value",
                   "// List the possible values to cycle through",
                   "sortByValues = [\"firstName\", \"middleName\", \"lastName\", \"nickname\"];",
                   "isAscendingValues = [\"yes\", \"no\"];",
@@ -1218,11 +1217,11 @@
                   "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
                   "isAscendingIndex = index % isAscendingValues.length;",
                   "pagIndexIndex = index % pagIndexValues.length;",
-                  "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                  "pm.environment.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
-                  "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
-                  "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);",
-                  "pm.environment.set(\"searchQuery\", \"\");"
+                  "pm.collectionVariables.set(\"sortBy\", sortByValues[sortByIndex]);",
+                  "pm.collectionVariables.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
+                  "pm.collectionVariables.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
+                  "pm.collectionVariables.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);",
+                  "pm.collectionVariables.set(\"searchQuery\", \"\");"
                 ],
                 "type": "text/javascript"
               }
@@ -1386,7 +1385,7 @@
                       "listen": "prerequest",
                       "script": {
                         "exec": [
-                          "var index = utils.getTestIndex();  // getting the current index value",
+                          "var index = utils.getTestIndex(pm.collectionVariables);  // getting the current index value",
                           "",
                           "// List the possible values to cycle through",
                           "sortByValues = [\"name\", \"manufacturer\", \"recommendedRetailPrice\", \"created\"];",
@@ -1397,10 +1396,10 @@
                           "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
                           "isAscendingIndex = index % isAscendingValues.length;",
                           "pagIndexIndex = index % pagIndexValues.length;",
-                          "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                          "pm.environment.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
-                          "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
-                          "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
+                          "pm.collectionVariables.set(\"sortBy\", sortByValues[sortByIndex]);",
+                          "pm.collectionVariables.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
+                          "pm.collectionVariables.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
+                          "pm.collectionVariables.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                         ],
                         "type": "text/javascript"
                       }
@@ -1414,7 +1413,7 @@
                           "var jsonData = pm.response.json();",
                           "",
                           "// Increment the test index value, used to cycle through query params",
-                          "utils.incrementTestIndex();",
+                          "utils.incrementTestIndex(pm.collectionVariables)();",
                           "",
                           "",
                           "// Test status code",
@@ -1431,11 +1430,11 @@
                           "",
                           "",
                           "// Test the size of results match pagination indexes",
-                          "pm.test(\"Paginination indicies return valid results\", function () {",
-                          "    pagStartIndex = pm.environment.get(\"pagStartIndex\");",
+                          "pm.test(\"Pagination indicies return valid results\", function () {",
+                          "    pagStartIndex = pm.collectionVariables.get(\"pagStartIndex\");",
                           "    // If start index is null then simplify it to zero",
                           "    pagStartIndex = !pagStartIndex ? 0 : pagStartIndex;",
-                          "    pagEndIndex = pm.environment.get(\"pagEndIndex\");",
+                          "    pagEndIndex = pm.collectionVariables.get(\"pagEndIndex\");",
                           "    resLength = jsonData.results.length;",
                           "    totalCount = Number(jsonData.totalCount);",
                           "",
@@ -1463,15 +1462,15 @@
                           "    \"required\": [\"results\", \"totalCount\"]",
                           "};",
                           "",
-                          "pm.test('Response body is in expeced schema', function () {",
+                          "pm.test('Response body is in expected schema', function () {",
                           "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
                           "});",
                           "",
                           "",
                           "",
-                          "sortBy = pm.environment.get(\"sortBy\");",
+                          "sortBy = pm.collectionVariables.get(\"sortBy\");",
                           "// Match the lodash format (asc/desc)",
-                          "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
+                          "isAscending = pm.collectionVariables.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
                           "",
                           "pm.test('Product ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
                           "   // Using the orderBy function from lodash ",
@@ -1898,7 +1897,7 @@
                       "listen": "prerequest",
                       "script": {
                         "exec": [
-                          "var index = utils.getTestIndex(); // getting the current index value",
+                          "var index = utils.getTestIndex(pm.collectionVariables); // getting the current index value",
                           "",
                           "// List the possible values to cycle through",
                           "sortByValues = [\"quantity\", \"pricePerItem\", \"totalPrice\", \"manufactured\", \"sellBy\", \"bestBefore\"];",
@@ -1909,10 +1908,10 @@
                           "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
                           "isAscendingIndex = index % isAscendingValues.length;",
                           "pagIndexIndex = index % pagIndexValues.length;",
-                          "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                          "pm.environment.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
-                          "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
-                          "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
+                          "pm.collectionVariables.set(\"sortBy\", sortByValues[sortByIndex]);",
+                          "pm.collectionVariables.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
+                          "pm.collectionVariables.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
+                          "pm.collectionVariables.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                         ],
                         "type": "text/javascript"
                       }
@@ -1940,11 +1939,11 @@
                           "",
                           "",
                           "// Test the size of results match pagination indexes",
-                          "pm.test(\"Paginination indicies return valid results\", function () {",
-                          "    pagStartIndex = pm.environment.get(\"pagStartIndex\");",
+                          "pm.test(\"Pagination indices return valid results\", function () {",
+                          "    pagStartIndex = pm.collectionVariables.get(\"pagStartIndex\");",
                           "    // If start index is null then simplify it to zero",
                           "    pagStartIndex = !pagStartIndex ? 0 : pagStartIndex;",
-                          "    pagEndIndex = pm.environment.get(\"pagEndIndex\");",
+                          "    pagEndIndex = pm.collectionVariables.get(\"pagEndIndex\");",
                           "    resLength = jsonData.results.length;",
                           "    totalCount = Number(jsonData.totalCount);",
                           "",
@@ -1972,18 +1971,18 @@
                           "    \"required\": [\"results\", \"totalCount\"]",
                           "};",
                           "",
-                          "pm.test('Response body is in expeced schema', function () {",
+                          "pm.test('Response body is in expected schema', function () {",
                           "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
                           "});",
                           "",
                           "",
                           "",
                           "// Increment the test index value, used to cycle through query params",
-                          "utils.incrementTestIndex();",
+                          "utils.incrementTestIndex(pm.collectionVariables)();",
                           "",
-                          "sortBy = pm.environment.get(\"sortBy\");",
+                          "sortBy = pm.collectionVariables.get(\"sortBy\");",
                           "// Match the lodash format (asc/desc)",
-                          "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
+                          "isAscending = pm.collectionVariables.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
                           "",
                           "pm.test('Inventory ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
                           "   // Using the orderBy function from lodash ",
@@ -2411,13 +2410,58 @@
               "name": "listings",
               "item": [
                 {
+                  "name": "global listings",
+                  "item": [
+                    {
+                      "name": "Search Listings",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                          "raw": "{{baseUrl}}/listings/search?searchQuery={{searchQuery}}&sortBy={{sortBy}}&isAscending={{isAscending}}&pagStartIndex={{pagStartIndex}}&pagEndIndex={{pagEndIndex}}",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "listings",
+                            "search"
+                          ],
+                          "query": [
+                            {
+                              "key": "searchQuery",
+                              "value": "{{searchQuery}}"
+                            },
+                            {
+                              "key": "sortBy",
+                              "value": "{{sortBy}}"
+                            },
+                            {
+                              "key": "isAscending",
+                              "value": "{{isAscending}}"
+                            },
+                            {
+                              "key": "pagStartIndex",
+                              "value": "{{pagStartIndex}}"
+                            },
+                            {
+                              "key": "pagEndIndex",
+                              "value": "{{pagEndIndex}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
                   "name": "Retrieve a business's listings",
                   "event": [
                     {
                       "listen": "prerequest",
                       "script": {
                         "exec": [
-                          "var index = utils.getTestIndex();  // getting the current index value",
+                          "var index = utils.getTestIndex(pm.collectionVariables);  // getting the current index value",
                           "",
                           "// List the possible values to cycle through",
                           "sortByValues = [\"quantity\", \"price\", \"created\", \"closes\"];",
@@ -2428,10 +2472,10 @@
                           "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
                           "isAscendingIndex = index % isAscendingValues.length;",
                           "pagIndexIndex = index % pagIndexValues.length;",
-                          "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                          "pm.environment.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
-                          "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
-                          "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
+                          "pm.collectionVariables.set(\"sortBy\", sortByValues[sortByIndex]);",
+                          "pm.collectionVariables.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
+                          "pm.collectionVariables.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
+                          "pm.collectionVariables.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                         ],
                         "type": "text/javascript"
                       }
@@ -2459,11 +2503,11 @@
                           "",
                           "",
                           "// Test the size of results match pagination indexes",
-                          "pm.test(\"Paginination indicies return valid results\", function () {",
-                          "    pagStartIndex = pm.environment.get(\"pagStartIndex\");",
+                          "pm.test(\"Pagination indicies return valid results\", function () {",
+                          "    pagStartIndex = pm.collectionVariables.get(\"pagStartIndex\");",
                           "    // If start index is null then simplify it to zero",
                           "    pagStartIndex = !pagStartIndex ? 0 : pagStartIndex;",
-                          "    pagEndIndex = pm.environment.get(\"pagEndIndex\");",
+                          "    pagEndIndex = pm.collectionVariables.get(\"pagEndIndex\");",
                           "    resLength = jsonData.results.length;",
                           "    totalCount = Number(jsonData.totalCount);",
                           "",
@@ -2491,18 +2535,18 @@
                           "    \"required\": [\"results\", \"totalCount\"]",
                           "};",
                           "",
-                          "pm.test('Response body is in expeced schema', function () {",
+                          "pm.test('Response body is in expected schema', function () {",
                           "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
                           "});",
                           "",
                           "",
                           "",
                           "// Increment the test index value, used to cycle through query params",
-                          "utils.incrementTestIndex();",
+                          "utils.incrementTestIndex(pm.collectionVariables)();",
                           "",
-                          "sortBy = pm.environment.get(\"sortBy\");",
+                          "sortBy = pm.collectionVariables.get(\"sortBy\");",
                           "// Match the lodash format (asc/desc)",
-                          "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
+                          "isAscending = pm.collectionVariables.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
                           "",
                           "pm.test('Listing ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
                           "   // Using the orderBy function from lodash ",
@@ -5797,7 +5841,7 @@
               "listen": "prerequest",
               "script": {
                 "exec": [
-                  "var index = utils.getTestIndex(); // getting the current index value",
+                  "var index = utils.getTestIndex(pm.collectionVariables); // getting the current index value",
                   "",
                   "// List the possible values to cycle through",
                   "sortByValues = [\"title\", \"created\", \"displayPeriodEnd\"];",
@@ -5808,10 +5852,10 @@
                   "sortByIndex = (Math.floor(index / 2)) % sortByValues.length;",
                   "isAscendingIndex = index % isAscendingValues.length;",
                   "pagIndexIndex = index % pagIndexValues.length;",
-                  "pm.environment.set(\"sortBy\", sortByValues[sortByIndex]);",
-                  "pm.environment.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
-                  "pm.environment.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
-                  "pm.environment.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
+                  "pm.collectionVariables.set(\"sortBy\", sortByValues[sortByIndex]);",
+                  "pm.collectionVariables.set(\"isAscending\", isAscendingValues[isAscendingIndex]);",
+                  "pm.collectionVariables.set(\"pagStartIndex\", pagIndexValues[pagIndexIndex][0]);",
+                  "pm.collectionVariables.set(\"pagEndIndex\", pagIndexValues[pagIndexIndex][1]);"
                 ],
                 "type": "text/javascript"
               }
@@ -5839,11 +5883,11 @@
                   "",
                   "",
                   "// Test the size of results match pagination indexes",
-                  "pm.test(\"Paginination indicies return valid results\", function () {",
-                  "    pagStartIndex = pm.environment.get(\"pagStartIndex\");",
+                  "pm.test(\"Pagination indicies return valid results\", function () {",
+                  "    pagStartIndex = pm.collectionVariables.get(\"pagStartIndex\");",
                   "    // If start index is null then simplify it to zero",
                   "    pagStartIndex = !pagStartIndex ? 0 : pagStartIndex;",
-                  "    pagEndIndex = pm.environment.get(\"pagEndIndex\");",
+                  "    pagEndIndex = pm.collectionVariables.get(\"pagEndIndex\");",
                   "    resLength = jsonData.results.length;",
                   "    totalCount = Number(jsonData.totalCount);",
                   "",
@@ -5871,18 +5915,18 @@
                   "    \"required\": [\"results\", \"totalCount\"]",
                   "};",
                   "",
-                  "pm.test('Response body is in expeced schema', function () {",
+                  "pm.test('Response body is in expected schema', function () {",
                   "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
                   "});",
                   "",
                   "",
                   "",
                   "// Increment the test index value, used to cycle through query params",
-                  "utils.incrementTestIndex();",
+                  "utils.incrementTestIndex(pm.collectionVariables)();",
                   "",
-                  "sortBy = pm.environment.get(\"sortBy\");",
+                  "sortBy = pm.collectionVariables.get(\"sortBy\");",
                   "// Match the lodash format (asc/desc)",
-                  "isAscending = pm.environment.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
+                  "isAscending = pm.collectionVariables.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";",
                   "",
                   "pm.test('Marketplace Card ' + sortBy + 's are in ' + isAscending + ' sorted order', () => {",
                   "   // Using the orderBy function from lodash ",
@@ -6753,9 +6797,8 @@
         "type": "text/javascript",
         "exec": [
           "const TEST_INDEX = \"testIndex\";",
-          "const store = pm.collectionVariables;",
           "",
-          "const getTestIndex = () => {",
+          "const getTestIndex = (store) => {",
           "    const val = Number(store.get(TEST_INDEX));",
           "    if (isNaN(val)) {",
           "        return 0;",
@@ -6764,13 +6807,13 @@
           "    return val;",
           "}",
           "",
-          "const incrementTestIndex = (i = 1) => {",
-          "    store.set(TEST_INDEX, getTestIndex() + i);",
+          "const incrementTestIndex(pm.collectionVariables) = (store, i = 1) => {",
+          "    store.set(TEST_INDEX, getTestIndex(store) + i);",
           "}",
           "",
           "utils = {",
           "    getTestIndex,",
-          "    incrementTestIndex",
+          "    incrementTestIndex(pm.collectionVariables)",
           "}",
           "",
           ""
