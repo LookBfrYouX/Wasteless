@@ -22,5 +22,5 @@ public interface ListingService {
       throws BusinessNotFoundException, UserNotFoundException, InvalidPaginationInputException;
 
   PaginationDto<FullListingDto> searchListings(Integer pagStartIndex, Integer pagEndIndex,
-      ListingSortByOption sortBy, boolean isAscending, List searchKey, String searchValue) throws InvalidPaginationInputException;
+      ListingSortByOption sortBy, boolean isAscending, List<String> searchKey, String searchValue) throws InvalidPaginationInputException;
 }
