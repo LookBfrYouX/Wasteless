@@ -3,7 +3,7 @@
       :to="{ name: 'BusinessListingDetail', params: { businessId:item.inventoryItem.business.id, listingId: item.id }}"
       class="text-decoration-none text-reset"
   >
-    <v-card class="w-100">
+    <v-card class="w-100 hover-scale-effect">
       <img
           v-if="item.inventoryItem.product.images.length"
           :src="item.inventoryItem.product.images[0].thumbnailFilename"
