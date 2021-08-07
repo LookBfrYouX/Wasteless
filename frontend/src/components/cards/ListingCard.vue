@@ -87,13 +87,7 @@ export default {
 
 .v-card {
   height: 500px;
-  overflow: auto;
-}
-
-@media (max-width: map-get($grid-breakpoints, "sm")) {
-  .v-card {
-    height: inherit;
-  }
+  overflow: hidden;
 }
 
 @media (max-width: map-get($grid-breakpoints, "md")) {

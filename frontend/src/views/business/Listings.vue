@@ -68,16 +68,22 @@ export default {
       searchParams: {
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
-        sortBy: "name",
+        sortBy: "closes",
         isAscending: false
       },
       listings: [],
       apiErrorMessage: null,
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
+        {key: "Closing Soon", value: "closes", isAscending: true},
+        {key: "Closing Latest", value: "closes", isAscending: false},
         {key: "Name A-Z", value: "name", isAscending: true},
         {key: "Name Z-A", value: "name", isAscending: false},
+        {key: "Lowest Price", value: "price", isAscending: true},
+        {key: "Highest Price", value: "price", isAscending: false},
         {key: "Lowest Quantity", value: "quantity", isAscending: true},
         {key: "Highest Quantity", value: "quantity", isAscending: false},
+        {key: "City A-Z", value: "city", isAscending: true},
+        {key: "City Z-A", value: "city", isAscending: false}
       ],
     };
   },

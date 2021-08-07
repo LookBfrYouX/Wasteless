@@ -73,9 +73,9 @@ describe("Pagination methods correctly set values", () => {
   });
 
   test("Calling sortUpdate changes sort", async () => {
-    await wrapper.vm.sortUpdate("quantity", false);
+    await wrapper.vm.sortUpdate("closes", false);
     expect(wrapper.vm.$data.searchParams.sortBy).toEqual(
-        "quantity")
+        "closes")
     expect(wrapper.vm.$data.searchParams.isAscending).toBeFalsy();
   });
 });
