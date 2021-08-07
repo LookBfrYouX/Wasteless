@@ -17,7 +17,8 @@ const listing = {
       }
     },
     "product": {
-      "name": listingName
+      "name": listingName,
+      "images": []
     }
   },
   "closes": closesDate

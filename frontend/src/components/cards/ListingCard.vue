@@ -21,16 +21,16 @@
           <div class="col-6 text-truncate">
             {{ item.inventoryItem.business.name }}
           </div>
-          <div class="col-6">
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <div class="col-6">
                 <div v-on="on" class="text-end text-truncate">
                   {{ item.inventoryItem.business.address.city }}
                 </div>
-              </template>
-              <span>{{ $helper.addressToString(item.inventoryItem.business.address, true) }}</span>
-            </v-tooltip>
-          </div>
+              </div>
+            </template>
+            <span>{{ $helper.addressToString(item.inventoryItem.business.address, true) }}</span>
+          </v-tooltip>
         </div>
       </v-card-text>
       <v-card-title class="py-0">
@@ -74,9 +74,8 @@ export default {
      * @returns {Promise<void>} Currency object, null when the currency doesn't exist or API request error.
      */
     getCurrency: async function () {
-      this.currency = await this.$helper.tryGetCurrencyForBusiness(
-          this.item.inventoryItem.business.id,
-          this.$stateStore);
+      this.currency = await this.$helper.getCurrencyForBusinessByCountry(
+          this.item.inventoryItem.business.address.country);
     }
   }
 }

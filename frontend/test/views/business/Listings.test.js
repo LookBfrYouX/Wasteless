@@ -17,7 +17,9 @@ const listings = {
         "name": "TestName",
         "address": {}
       },
-      "product": {},
+      "product": {
+        "images": []
+      },
       "quantity": 20
     },
     {
@@ -69,7 +71,7 @@ describe("Pagination methods correctly set values", () => {
     expect(wrapper.vm.$data.page).toEqual(1);
     expect(wrapper.vm.$data.totalResults).toEqual(listings.totalCount);
     expect(wrapper.vm.$data.searchParams).toBeDefined();
-    expect(wrapper.vm.$data.searchParams.sortBy).toEqual("name");
+    expect(wrapper.vm.$data.searchParams.sortBy).toEqual("closes");
   });
 
   test("Calling sortUpdate changes sort", async () => {
