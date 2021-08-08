@@ -105,7 +105,6 @@ export default {
      * All data is stored in searchParams.
      */
     doUpdate: function () {
-      console.log(this.searchParams);
       this.$emit('multi-search-bar-update', this.searchParams);
     }
   },
