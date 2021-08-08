@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid col-6">
+  <div class="container-fluid col-md-6">
     <v-row align="end">
       <v-col cols="12" md="8" class="filter-business">
         <v-subheader>Filter businesses</v-subheader>
