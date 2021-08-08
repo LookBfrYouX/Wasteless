@@ -76,7 +76,7 @@ stories such as implementing a calorie counter into the application.
 As an administrator of a business, I can add a product with nutrition facts via an appropriate form,
 so that the nutrition information are visible to potential customers on sales listings.
 
-AC1: As a business admin, I can enter a barcode number in a form field to get nutrition facts from
+AC1: As a business admin, I can enter a barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) in a form field to get nutrition facts from
 a food API.
 
 AC2: Input field of nutrition facts are auto completed if the product exists in the food API.
@@ -101,3 +101,11 @@ Pop-up on clicking the sales listing card or any suitable interaction will revea
 
 *Note: Future stories might include upvote and downvote on products. For example, vegan users could
 'upvote' a product as 'vegan' if they believe it is vegan or vice-versa if it is not.*
+
+### EU2 Search sale listings by nutrition facts
+
+As a logged-in individual user, I want to search for sale listings based on the nutrition facts of the product. 
+
+### EU3 Barcode scanning
+
+As an administrator of a business, I can add a product by either scanning a barcode or inputting a barcode number (EAN-13) manually.
