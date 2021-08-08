@@ -23,11 +23,11 @@ describe("Date text", () => {
   test("singleDateFuture", async () => {
     let [d, m, y] = new Date().toLocaleDateString("en-NZ").split("/");
     if (d.length < 2) {d = "0" + d}
-    const date = y+1 + "-" + m + "-" + d;
+    const date = parseInt(y)+1 + "-" + m + "-" + d;
 
     await wrapper.setData({dates: [date]})
 
-    expect(wrapper.vm.dateText).toContain(y);
+    expect(wrapper.vm.dateText).toContain(parseInt(y)+1);
   }),
 
   test("multipleDate", async () => {
@@ -43,10 +43,10 @@ describe("Date text", () => {
   test("multipleDateFuture", async () => {
     let [d, m, y] = new Date().toLocaleDateString("en-NZ").split("/");
     if (d.length < 2) {d = "0" + d}
-    const date = y+1 + "-" + m + "-" + d;
+    const date = parseInt(y)+1 + "-" + m + "-" + d;
 
     await wrapper.setData({dates: [date, date]})
 
-    expect(2).toEqual(wrapper.vm.dateText.split(y+1).length - 1);
+    expect(2).toEqual(wrapper.vm.dateText.split(parseInt(y)+1).length - 1);
   });
 });
