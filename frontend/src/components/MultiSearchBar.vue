@@ -1,43 +1,68 @@
 <template>
-<!--Test div - page width  -->
-  <div class="col-lg-8 d-flex flex-wrap">
-<!--  Test div search and filter container  -->
-    <div class="col-12 col-lg-6">
-      <div class="col-12 d-flex flex-wrap container-fluid p-0">
-    <!--  search 6col  -->
-        <v-text-field
-            class="col-12 pl-3"
-            v-model="searchParams.searchString"
-            label="Search"
-            solo
-            dense
-            @keydown.enter="doSearch"
-        ></v-text-field>
-    <!--  keys 6col  -->
-        <v-select
-            class="col-lg-6 pr-1 pl-3"
-            :items="sortKeys"
-            v-model="searchParams.selectedKeys"
-            chips
-            dense
-            clearable
-            label="Chips"
-            multiple
-            solo
-            @change="doUpdate"
-        ></v-select>
-    <!--  sort 6col  -->
-        <simple-sort-bar
-            class="col-lg-6 p-0"
-            :items="sortItems"
-            @update="sortUpdate"
-        />
-      </div>
-    </div>
-    <div class="col-12 col-lg-6 bg-dark">
-      Filter area
-    </div>
-  </div>
+<!--  Test div search and filter container - remove this when integrating  -->
+  <v-container class="col-12 col-lg-8" fluid>
+    <v-row>
+      <!--    Main COL starts here  -->
+      <v-col cols="12" lg="6" class="p-2">
+        <v-row class="px-2">
+          <!--  search 6col  -->
+          <v-col cols="12" class="p-2">
+            <v-subheader>Search businesses</v-subheader>
+            <v-text-field
+                class="col-12"
+                v-model="searchParams.searchString"
+                label="Search"
+                prepend-inner-icon="search"
+                solo
+                dense
+                @keydown.enter="doSearch"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="px-2">
+          <!--  keys 6col  -->
+          <v-col cols="12" lg="6" class="p-2">
+            <v-subheader>Search criteria</v-subheader>
+            <v-select
+                :items="sortKeys"
+                v-model="searchParams.selectedKeys"
+                chips
+                dense
+                label="Search By"
+                prepend-inner-icon="check"
+                multiple
+                solo
+                @change="doUpdate"
+            >
+                <template v-slot:selection="{ item, index }">
+                  <v-chip v-if="index === 0">
+                    <span>{{ item }}</span>
+                  </v-chip>
+                  <span
+                      v-if="index === 1"
+                      class="grey--text text-caption"
+                  >
+                  (+{{ searchParams.selectedKeys.length - 1 }} others)
+                </span>
+              </template>
+            </v-select>
+          </v-col>
+          <!--  sort 6col  -->
+          <v-col cols="12" lg="6" class="p-2">
+            <v-subheader>Sort</v-subheader>
+            <simple-sort-bar
+                :items="sortItems"
+                @update="sortUpdate"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+      <!--    Main COL finishes here  -->
+      <v-col cols="12" lg="6" class="bg-dark">
+        Filter area
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -60,14 +85,25 @@ export default {
     }
   },
   methods: {
+    /**
+     * This method is for calling event emitter on keystrokes or button press etc.
+     */
     doSearch: function () {
       this.doUpdate();
     },
+    /**
+     * This method is called when sort update is caught.
+     * Updates the sortBy and isAscending attributes before calling main update function.
+     */
     sortUpdate: function (sortBy, isAscending) {
       this.searchParams.sortBy = sortBy;
       this.searchParams.isAscending = isAscending;
       this.doUpdate();
     },
+    /**
+     * This method emits the update to the parent component.
+     * All data is stored in searchParams.
+     */
     doUpdate: function () {
       console.log(this.searchParams);
       this.$emit('multi-search-bar-update', this.searchParams);
