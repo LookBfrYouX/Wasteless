@@ -43,6 +43,9 @@ describe("MultiSearchBar test", () => {
         wrapper.vm.doSearch();
         expect(wrapper.emitted('multi-search-bar-update')[0][0].searchString).toEqual("search");
         expect(wrapper.emitted('multi-search-bar-update')[0][0].selectedKeys).toEqual(['Location']);
+        wrapper.vm.sortUpdate("name", false);
+        expect(wrapper.vm.$data.searchParams.sortBy).toEqual("name");
+        expect(wrapper.vm.$data.searchParams.isAscending).toEqual(false);
     })
 
 })
