@@ -115,15 +115,36 @@ export default {
   data() {
     return {
       businesses: constants.BUSINESSES.SHORT_LONG_TYPES,
-      selectedBusinessTypes: [],
-      dates: [],
       todayDate: null,
-      minPrice: null,
-      maxPrice: null,
       menu: false,
       shownChips: 1,
+
+      // Remove below when integrating with main page
+      minPrice: null,
+      maxPrice: null,
+      dates: null,
+      selectedBusinessTypes: null,
     }
   },
+  // Remove comments when integrating with main page
+  // model: {
+  //   minPrice: {
+  //     type: Number,
+  //     required: true
+  //   },
+  //   maxPrice: {
+  //     type: Number,
+  //     required: true
+  //   },
+  //   selectedBusinessTypes: {
+  //     type: Array,
+  //     required: true
+  //   },
+  //   dates: {
+  //     type: Array,
+  //     required: true
+  //   },
+  // },
   /**
    * Sets sets the todayDate variable to be used when restricting date ranges
    */
