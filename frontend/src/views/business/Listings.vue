@@ -16,7 +16,7 @@
               :key="listing.id"
               class="col-12 col-md-6 col-lg-4 p-4"
           >
-              <listing-item-card :item="listing"/>
+            <listing-item-card :item="listing"/>
           </v-flex>
 
         </v-layout>
@@ -63,7 +63,7 @@ export default {
   data() {
     return {
       page: 1, // The default starting page.
-      itemsPerPage: this.$constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_PAGE, // The number of items to display on each page.
+      itemsPerPage: this.$constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_LISTINGS_PAGE, // The number of items to display on each page.
       totalResults: 0, // The total number of results. Only 1 page is retrieved at a time.
       searchParams: {
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.

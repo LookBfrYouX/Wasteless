@@ -243,7 +243,6 @@ export const helper = {
    * @returns {Promise<null|*>} currency, or null if not found
    */
   getCurrencyForBusinessByCountry: async function (countryName) {
-    console.log(countryName)
     const country = countryData.find(
         countryEl => countryEl.name === countryName);
     if (country) {

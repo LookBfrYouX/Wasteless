@@ -56,7 +56,8 @@ export const constants = {
   ],
 
   SORTED_PAGINATED_ITEM_LIST: {
-    RESULTS_PER_PAGE: 5
+    RESULTS_PER_PAGE: 5,
+    RESULTS_PER_LISTINGS_PAGE: 12
   },
 
   BUSINESSES: {
