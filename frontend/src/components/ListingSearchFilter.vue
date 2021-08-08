@@ -54,6 +54,7 @@
               range
               @change="$refs.menu.save(dates)"
               :min="todayDate"
+              :title-date-format="getDateText"
           >
             <v-btn
                 text
@@ -152,6 +153,14 @@ export default {
     let [d, m, y] = new Date().toLocaleDateString("en-NZ").split("/");
     if (d.length < 2) {d = "0" + d}
     this.todayDate = y + "-" + m + "-" + d;
+  },
+  methods: {
+    /**
+     * Returns the dateText computed variable
+     */
+    getDateText() {
+      return this.dateText;
+    }
   },
   computed: {
     /**
