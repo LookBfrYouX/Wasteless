@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "58731f8f-d44e-4eea-9614-dfe6a91664c9",
+    "_postman_id": "b409dd54-44f7-4b8f-9333-84f393575a47",
     "name": "Wasteless",
     "description": "API specification for the SENG302 2021 project\n\nContact Support:\n Email: seng302@canterbury.ac.nz",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -1183,7 +1183,7 @@
                   "",
                   "",
                   "// Increment the test index value, used to cycle through query params",
-                  "utils.incrementTestIndex(pm.collectionVariables)(pm.collectionVariables);",
+                  "utils.incrementTestIndex(pm.collectionVariables);",
                   "",
                   "sortBy = pm.collectionVariables.get(\"sortBy\");",
                   "// Match the lodash format (asc/desc)",
@@ -6759,7 +6759,7 @@
                   "const testIndex = utils.getTestIndex(store);\r",
                   "\r",
                   "// Increment the test index value, used to cycle through query params\r",
-                  "utils.incrementTestIndex(pm.collectionVariables)(pm.collectionVariables);\r",
+                  "utils.incrementTestIndex(pm.collectionVariables);\r",
                   "\r",
                   "\r",
                   "const setRequestVariables = params => {\r",
@@ -6773,8 +6773,18 @@
                   "    });\r",
                   "}\r",
                   "\r",
+                  "// TODO add business name, location etc.?\r",
+                  "// Using utils so it can be used in tests\r",
+                  "utils.listingsSortByKeyPaths = {\r",
+                  "    \"quantity\": obj => obj.quantity,\r",
+                  "    \"price\": obj => obj.price,\r",
+                  "    \"created\": obj => obj.created,\r",
+                  "    \"closes\": obj => obj.closes,\r",
+                  "    \"name\": obj => obj.listing.product.name\r",
+                  "};\r",
+                  "\r",
                   "setRequestVariables({\r",
-                  "    sortBy       : [\"quantity\", \"price\", \"created\", \"closes\", \"name\"], // TODO add business name, location etc.?\r",
+                  "    sortBy       : Object.keys(listingsSortByKeyPaths),\r",
                   "    isAscending  : [true, false],\r",
                   "    pagStartIndex: [ 0, 0, 2],\r",
                   "    pagEndIndex  : [\"\", 1, 5],\r",
@@ -6789,15 +6799,12 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "const _ = require('lodash');\r",
+                  "_ = require('lodash');\r",
                   "const store = pm.collectionVariables;\r",
                   "\r",
                   "const jsonData = pm.response.json();\r",
                   "\r",
-                  "const schema = \r",
-                  "\r",
-                  "\r",
-                  "\r",
+                  "console.log(\"REQ\", utils.test);\r",
                   "\r",
                   "// Test status code\r",
                   "pm.test(\"Status code is 200\", function () {\r",
@@ -7106,14 +7113,16 @@
                   "\r",
                   "sortBy = store.get(\"sortBy\");\r",
                   "// Match the lodash format (asc/desc)\r",
-                  "isAscending = store.get(\"isAscending\") == \"yes\" ? \"asc\" : \"desc\";\r",
+                  "isAscending = store.get(\"isAscending\")? \"asc\" : \"desc\";\r",
                   "\r",
-                  "pm.test(`Listing sorted by ${sortBy} in ${store.get(\"isAscending\")? \"ascending\": \"descending\"} order`, () => {\r",
+                  "pm.test(`Listing sorted by ${sortBy} in ${isAscending}ending order`, () => {\r",
                   "   // Using the orderBy function from lodash \r",
                   "   // Read docs: https://lodash.com/docs/4.17.10#orderBy    \r",
                   "\r",
+                  "    const keyPath = utils.listingsSortByKeyPaths[sortBy];\r",
+                  "\r",
                   "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API\r",
-                  "    var expectedSortedOrder = _.orderBy(jsonData.results, [( o ) => { return o[sortBy] || ''}],[isAscending]);\r",
+                  "    var expectedSortedOrder = _.orderBy(jsonData.results, [(obj) => { return keyPath(obj) || ''}],[isAscending]);\r",
                   "\r",
                   "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    \r",
                   "});"
@@ -7215,26 +7224,6 @@
     {
       "key": "testIndex",
       "value": 0
-    },
-    {
-      "key": "sortBy",
-      "value": ""
-    },
-    {
-      "key": "isAscending",
-      "value": ""
-    },
-    {
-      "key": "pagStartIndex",
-      "value": ""
-    },
-    {
-      "key": "pagEndIndex",
-      "value": ""
-    },
-    {
-      "key": "businessId",
-      "value": "1001"
     }
   ]
 }
