@@ -122,8 +122,8 @@ export default {
       // Remove below when integrating with main page
       minPrice: null,
       maxPrice: null,
-      dates: null,
-      selectedBusinessTypes: null,
+      dates: [],
+      selectedBusinessTypes: [],
     }
   },
   // Remove comments when integrating with main page
