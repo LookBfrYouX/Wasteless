@@ -98,7 +98,8 @@ For simplicity, full details of product is not visible on a sales listing view.
 Pop-up on clicking the sales listing card or any suitable interaction will reveal the detail.
 
 *Note: Future stories might include upvote and downvote on products. For example, vegan users could
-'upvote' a product as 'vegan' if they believe it is vegan or vice-versa if it is not.*
+*Note: Future stories may include an upvote/downvote feature for the products' dietary tags. For example, users could 'upvote' a product as 'vegan' if they believe it is vegan or vice-versa if it is not.*
+
 
 ### EU2 Search sale listings by nutrition facts
 
