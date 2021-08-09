@@ -69,6 +69,7 @@ purchase. This also includes filtering by diets like vegan, Paleo or Keto. Users
 specific ingredients such as nuts or certain preservatives. Value could also be added in future
 stories such as implementing a calorie counter into the application.
 
+
 ## Stories Draft
 
 ### EU1 Products with nutrition facts
@@ -108,3 +109,21 @@ As a logged-in individual user, I want to search for sale listings based on the 
 ### EU3 Barcode scanning
 
 As an administrator of a business, I can add a product by either scanning a barcode from my device or by inputting a barcode number (EAN-13) manually. This is so that I can quickly add products and their nutritional information
+
+## API changes
+
+### EU1 Products with nutrition facts
+
+*/businesses/{id}/products*:
+- Known allergens: Gluten free, Dairy free
+- Certifications: Vegan, Vegetarian, Plant based
+- Nutrition score: From A (good) to E (bad)
+- Nutrition facts: Energy, Fat (Saturated fat), Carbohydrates (Sugars), Salt (Sodium), Proteins
+- Ingredients: Plain text
+
+### EU2 Search sale listings by nutrition facts
+
+*listings/search*:
+- Filter for allergens
+- Filter for certifications
+- Sort by nutrition facts
