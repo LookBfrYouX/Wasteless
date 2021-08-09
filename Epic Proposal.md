@@ -73,8 +73,8 @@ stories such as implementing a calorie counter into the application.
 
 ### EU1 Products with nutrition facts
 
-As an administrator of a business, I can add a product with nutrition facts via an appropriate form,
-so that the nutrition information are visible to potential customers on sales listings.
+As an administrator of a business, I can add a product with its nutrition facts by manually entering the barcode number (EAN-13) number, so that the nutrition information is visible to potential customers on the sales listings.
+
 
 AC1: As a business admin, I can enter a barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) in a form field to get nutrition facts from
 a food API.
