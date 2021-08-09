@@ -13,7 +13,7 @@ Link to [Jira task](url)
 - Code peer-reviewed by two other team members using GitLab's Merge Request
     - [ ] Reviewer 1
     - [ ] Reviewer 2
-- Tests are written and pass with minimum 70% code coverage and that tests are of reasonable quality
+- Tests are written and pass with minimum 70% line coverage and that tests are of reasonable quality
     - [ ] Reviewer 1
     - [ ] Reviewer 2
 - UI is tested on mobile
