@@ -91,8 +91,7 @@ declared.
 For example, a gluten-free cheese berger may have declaration of "Gluten-free", "Diary",
 "Non-vegan", "Beef", "Honey-free". If there is no declaration, "Unknown" is set as default.
 
-AC4: All the mandatory field (see U15) should be filled. Otherwise, the form is prevented
-from submitting with appropriate message.
+AC4: All of the mandatory fields (see U15) must be filled before continuing. Otherwise, the user is prevented from submitting the form.
 
 AC5: As a logged in user, I can view all of the nutrition facts of a product listed on sale.
 For simplicity, full details of product is not visible on a sales listing view.
