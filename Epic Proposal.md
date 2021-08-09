@@ -114,7 +114,9 @@ As an administrator of a business, I can add a product by either scanning a barc
 
 ### EU1 Products with nutrition facts
 
-*/businesses/{id}/products*:
+*/businesses/{id}/products*:  
+This endpoint may include these additions
+
 - Known allergens: Gluten free, Dairy free
 - Certifications: Vegan, Vegetarian, Plant based
 - Nutrition score: From A (good) to E (bad)
@@ -123,7 +125,9 @@ As an administrator of a business, I can add a product by either scanning a barc
 
 ### EU2 Search sale listings by nutrition facts
 
-*listings/search*:
+*listings/search*:  
+This endpoint may include these additions
+
 - Filter for allergens
 - Filter for certifications
 - Sort by nutrition facts
