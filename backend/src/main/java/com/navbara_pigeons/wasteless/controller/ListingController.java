@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -13,6 +14,7 @@ import com.navbara_pigeons.wasteless.service.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -53,15 +56,30 @@ public class ListingController {
   @GetMapping("/listings/search")
   @Operation(summary = "Search through sales listings", description = "Search and filter all sales listings")
   public ResponseEntity<Object> searchListings(
-          @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(0) Integer pagStartIndex,
-          @Parameter(description = "Pagination end index") @RequestParam(required = false) @Min(0) Integer pagEndIndex,
-          @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
-          @Parameter(description = "Is Ascending") @RequestParam(required = false) Boolean isAscending,
-          @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
-          @Parameter(description = "Search value") @RequestParam(required = false) String searchParam
+      @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(0) Integer pagStartIndex,
+      @Parameter(description = "Pagination end index") @RequestParam(required = false) @Min(0) Integer pagEndIndex,
+      @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
+      @Parameter(description = "Is Ascending") @RequestParam(required = false) Boolean isAscending,
+      @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
+      @Parameter(description = "Search value") @RequestParam(required = false) String searchParam,
+      @Parameter(description = "") @RequestParam(required = false) Double minPrice,
+      @Parameter(description = "") @RequestParam(required = false) Double maxPrice,
+      @Parameter(description = "") @RequestParam(required = false) List<LocalDate> filterDates,
+      @Parameter(description = "") @RequestParam(required = false) List<BusinessType> businessTypes
   ) {
     log.info("GETTING LISTINGS FOR: " + searchKeys + " = " + searchParam);
-    return new ResponseEntity<>(listingService.searchListings(pagStartIndex, pagEndIndex, sortBy, isAscending, searchKeys, searchParam), HttpStatus.OK);
+    return new ResponseEntity<>(listingService.searchListings(
+        pagStartIndex,
+        pagEndIndex,
+        sortBy,
+        isAscending,
+        searchKeys,
+        searchParam,
+        minPrice,
+        maxPrice,
+        filterDates,
+        businessTypes
+    ), HttpStatus.OK);
   }
 
   /**

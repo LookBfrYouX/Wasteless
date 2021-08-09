@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -14,6 +15,7 @@ import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -121,8 +123,25 @@ public class ListingServiceImpl implements ListingService {
     return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
 
+  /**
+   *
+   * @param pagStartIndex Pagination start index.
+   * @param pagEndIndex Pagination end index.
+   * @param sortBy Sort by term. (sort)
+   * @param isAscending (sort)
+   * @param searchKeys A list of keys to sort by. E.g. business name, product name, etc. (search)
+   * @param searchValue The search term. (search)
+   * @param minPrice Minimum price of listing. (filter)
+   * @param maxPrice Maximum price of listing. (filter)
+   * @param filterDates One date if max date, two if range. (filter)
+   * @param businessTypes Types of business to filter by. (filter)
+   * @return PaginationDto containing search results.
+   */
   @Override
-  public PaginationDto<FullListingDto> searchListings(Integer pagStartIndex, Integer pagEndIndex, ListingSortByOption sortBy, boolean isAscending, List searchKey, String searchValue) {
+  public PaginationDto<FullListingDto> searchListings(Integer pagStartIndex, Integer pagEndIndex,
+      ListingSortByOption sortBy, boolean isAscending, List searchKeys, String searchValue,
+      Double minPrice, Double maxPrice, List<LocalDate> filterDates,
+      List<BusinessType> businessTypes) {
     return null;
   }
 
