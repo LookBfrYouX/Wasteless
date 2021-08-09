@@ -238,6 +238,20 @@ export const helper = {
   },
 
   /**
+   * Given the country name, return currency
+   * @param countryName The country of the business
+   * @returns {Promise<null|*>} currency, or null if not found
+   */
+  getCurrencyForBusinessByCountry: async function (countryName) {
+    const country = countryData.find(
+        countryEl => countryEl.name === countryName);
+    if (country) {
+      return country.currency;
+    }
+    return null;
+  },
+
+  /**
    * getCurrencyForBusiness with error handling
    * @param {*} businessId
    * @param {*} stateStore
