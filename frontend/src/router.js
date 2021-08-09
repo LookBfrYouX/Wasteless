@@ -53,8 +53,10 @@ export const router = new VueRouter({
           {key: "Name Z-A", value: "name", isAscending: false},
           {key: "Lowest RRP", value: "recommendedRetailPrice", isAscending: true},
           {key: "Highest RRP", value: "recommendedRetailPrice", isAscending: false},
+          {key: "Location", value: "location", isAscending: true},
+          {key: "Location", value: "location", isAscending: false},
         ],
-        sortKeys: ['Business Name', 'Location'],
+        sortKeys: ['Business Name', 'Location', 'Address'],
       }
     },
     //  END TESTING ZONE

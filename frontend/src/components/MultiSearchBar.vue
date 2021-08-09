@@ -22,7 +22,7 @@
         <v-row class="px-2">
           <!--  keys 6col  -->
           <v-col cols="12" lg="6" class="p-2">
-            <v-subheader>Search criteria</v-subheader>
+            <v-subheader>Search By</v-subheader>
             <v-select
                 :items="sortKeys"
                 v-model="searchParams.selectedKeys"
