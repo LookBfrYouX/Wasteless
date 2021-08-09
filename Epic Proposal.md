@@ -107,4 +107,4 @@ As a logged-in individual user, I want to search for sale listings based on the 
 
 ### EU3 Barcode scanning
 
-As an administrator of a business, I can add a product by either scanning a barcode or inputting a barcode number (EAN-13) manually.
+As an administrator of a business, I can add a product by either scanning a barcode from my device or by inputting a barcode number (EAN-13) manually. This is so that I can quickly add products and their nutritional information
