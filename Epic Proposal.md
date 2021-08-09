@@ -73,7 +73,7 @@ stories such as implementing a calorie counter into the application.
 
 ### EU1 Products with nutrition facts
 
-*/businesses/{id}/products*:  
+*/businesses/{id}/products, /businesses/{id}/inventory, /businesses/{id}/listings*:  
 This endpoint may include these additions
 
 - Known allergens: Gluten free, Dairy free
