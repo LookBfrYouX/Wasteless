@@ -78,8 +78,8 @@ As an administrator of a business, I can add a product with its nutrition facts 
 
 AC1: As a business admin, I can enter a barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) in a text field to add nutrition facts from a food API to my product.
 
-AC2: Input field of nutrition facts are auto completed if the product exists in the food API.
-The filled values can be overridden.
+AC2: Text fields of nutrition facts are auto-completed if the product exists in the food API.
+The filled-in values can be overridden by the business administer.
 
 AC3: If a product has or not have factors related to the three criteria below, they have to be
 declared.
