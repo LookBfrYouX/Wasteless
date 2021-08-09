@@ -103,7 +103,7 @@ Pop-up on clicking the sales listing card or any suitable interaction will revea
 
 ### EU2 Search sale listings by nutrition facts
 
-As a logged-in individual user, I want to search for sale listings based on the nutrition facts of the product. 
+As a logged-in individual user, I want to search for sale listings based on the nutrition facts of the product. E.g. Only return results that are Gluten Free.
 
 ### EU3 Barcode scanning
 
