@@ -76,8 +76,7 @@ stories such as implementing a calorie counter into the application.
 As an administrator of a business, I can add a product with its nutrition facts by manually entering the barcode number (EAN-13) number, so that the nutrition information is visible to potential customers on the sales listings.
 
 
-AC1: As a business admin, I can enter a barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) in a form field to get nutrition facts from
-a food API.
+AC1: As a business admin, I can enter a barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) in a text field to add nutrition facts from a food API to my product.
 
 AC2: Input field of nutrition facts are auto completed if the product exists in the food API.
 The filled values can be overridden.
