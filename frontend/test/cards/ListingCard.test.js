@@ -24,14 +24,19 @@ const listing = {
   "closes": closesDate
 };
 
+let wrapper;
+beforeEach(() => {
+  wrapper = shallowMount(ListingItemCard, {
+    propsData: {
+      item: listing
+    },
+    mocks: globalStateMocks(),
+    stubs: ["router-link"]
+  });
+});
+
 describe("Test passing props to Listing card component", () => {
   test("Correct title shows", () => {
-    let wrapper = shallowMount(ListingItemCard, {
-      propsData: {
-        item: listing
-      },
-      mocks: globalStateMocks()
-    })
     expect(wrapper.props().item.inventoryItem.product.name).toEqual(
         listingName);
     expect(wrapper.props().item.inventoryItem.business.name).toEqual(
@@ -40,12 +45,6 @@ describe("Test passing props to Listing card component", () => {
   })
 
   test("Calculates and displays correct date info", () => {
-    let wrapper = shallowMount(ListingItemCard, {
-      propsData: {
-        item: listing
-      },
-      mocks: globalStateMocks(),
-    });
     expect(wrapper.text()).toContain(
         globalStateMocks().$helper.isoToDateString(closesDate));
   })
