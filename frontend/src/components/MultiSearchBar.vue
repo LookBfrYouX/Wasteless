@@ -1,6 +1,6 @@
 <template>
 <!--  Test div search and filter container - remove this when integrating  -->
-  <v-container class="col-12 col-lg-8" fluid>
+  <v-container fluid>
     <v-row>
       <!--    Main COL starts here  -->
       <v-col cols="12" lg="6" class="p-2">
