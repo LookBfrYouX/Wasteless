@@ -68,3 +68,41 @@ ingredient information to help filter down the search results to what the user w
 purchase. This also includes filtering by diets like vegan, Paleo or Keto. Users can also avoid
 specific ingredients such as nuts or certain preservatives. Value could also be added in future
 stories such as implementing a calorie counter into the application.
+
+## Stories Draft
+
+### EU1 Products with nutrition facts
+
+As an administrator of a business, when I add a product, I can add nutrition and alergy information from a Food API by manually entering the barcode number (EAN-13) number, so that the nutrition information is visible to potential customers on the sales listings.
+
+AC1: As a business admin, I can enter a barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) in a text field to add nutrition facts from a food API to my product.
+
+AC2: Text fields of nutrition facts are auto-completed if the product exists in the food API.
+The filled-in values can be overridden by the business administer.
+
+AC3: If a product has or not have or is not known to have factors related to the three criteria below, they have to be
+declared.
+
+- Food allergy
+- Special dietary requirement
+- Religious reasons
+
+For example, a gluten-free cheese berger may have declaration of "Gluten-free", "Diary",
+"Non-vegan", "Beef", "Honey-free". If there is no declaration, "Unknown" is set as default.
+
+AC4: All of the mandatory fields (see U15) must be filled before continuing. Otherwise, the user is prevented from submitting the form.
+
+AC5: As a logged in user, I can view all of the nutrition facts of a product listed on sale.
+For simplicity, full details of product is not visible on a sales listing view.
+Pop-up on clicking the sales listing card or any suitable interaction will reveal the detail.
+
+*Note: Future stories may include an upvote/downvote feature for the products' dietary tags. For example, users could 'upvote' a product as 'vegan' if they believe it is vegan or vice-versa if it is not.*
+
+
+### EU2 Search sale listings by nutrition facts
+
+As a logged-in individual user, I want to search for sale listings based on the nutrition facts of the product. E.g. Only return results that are Gluten Free.
+
+### EU3 Barcode scanning
+
+As an administrator of a business, I can add a product by either scanning a barcode from my device or by inputting a barcode number (EAN-13) manually. This is so that I can quickly add products and their nutritional information
