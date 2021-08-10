@@ -58,9 +58,6 @@
         </v-row>
       </v-col>
       <!--    Main COL finishes here  -->
-      <v-col cols="12" lg="6" class="bg-dark">
-        Filter area
-      </v-col>
     </v-row>
   </v-container>
 </template>

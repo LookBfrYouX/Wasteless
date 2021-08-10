@@ -43,23 +43,6 @@ export const router = new VueRouter({
         anyone: true
       }
     },
-    //  FOR TESTING PURPOSES ONLY!!!
-    {
-      path: "/test",
-      component: MultiSearchBar,
-      props: {
-        sortItems: [ // Sort options. Key is displayed and value is emitted when selection changes.
-          {key: "Name A-Z", value: "name", isAscending: true},
-          {key: "Name Z-A", value: "name", isAscending: false},
-          {key: "Lowest RRP", value: "recommendedRetailPrice", isAscending: true},
-          {key: "Highest RRP", value: "recommendedRetailPrice", isAscending: false},
-          {key: "Location", value: "location", isAscending: true},
-          {key: "Location", value: "location", isAscending: false},
-        ],
-        sortKeys: ['Business Name', 'Location', 'Address'],
-      }
-    },
-    //  END TESTING ZONE
     {
       name: "Home",
       path: "/home",
