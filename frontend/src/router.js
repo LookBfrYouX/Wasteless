@@ -8,7 +8,6 @@ import User from "@/routes/User"
 import Marketplace from "@/routes/Marketplace"
 
 import {store} from "@/store"
-import MultiSearchBar from "@/components/MultiSearchBar";
 
 export default [];
 
