@@ -134,8 +134,17 @@ export default [{
     meta: {
       title: "Business Listings | Wasteless",
     },
-    component: () => import("@/views/business/Listings.vue"),
+    component: () => import("@/views/business/BusinessListings.vue"),
     props: route => ({businessId: parseInt(route.params.businessId, 10)})
+  },
+  {
+    name: "Listings",
+    path: "/listings",
+    meta: {
+      title: "Listings | Wasteless",
+      requiresNotBusinessAdmin: true,
+    },
+    component: () => import("@/views/business/Listings")
   },
   {
     name: "BusinessListingDetail",
