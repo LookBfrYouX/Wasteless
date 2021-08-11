@@ -56,7 +56,8 @@ export const constants = {
   ],
 
   SORTED_PAGINATED_ITEM_LIST: {
-    RESULTS_PER_PAGE: 5
+    RESULTS_PER_PAGE: 5,
+    RESULTS_PER_LISTINGS_PAGE: 12
   },
 
   BUSINESSES: {
@@ -65,6 +66,12 @@ export const constants = {
       "Retail Trade",
       "Charitable organisation",
       "Non-profit organisation"
+    ],
+    SHORT_LONG_TYPES: [
+      {short: "Hospitality", long: "Accommodation and Food Services"},
+      {short: "Retail", long: "Retail Trade"},
+      {short: "Charity", long: "Charitable organisation"},
+      {short: "Non-profit", long: "Non-profit organisation"}
     ]
   },
 
