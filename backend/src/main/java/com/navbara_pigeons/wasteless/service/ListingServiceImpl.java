@@ -1,10 +1,14 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
+import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -14,6 +18,7 @@ import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -134,12 +139,24 @@ public class ListingServiceImpl implements ListingService {
    */
   @Override
   public PaginationDto<FullListingDto> searchListings(Integer pagStartIndex, Integer pagEndIndex,
-      ListingSortByOption sortBy, boolean isAscending, List<String> searchKey, String searchValue) throws InvalidPaginationInputException {
+      ListingSortByOption sortBy, boolean isAscending, List<String> searchKey, String searchValue,
+      Double minPrice, Double maxPrice, List<LocalDate> filterDates, List<BusinessType> businessTypes) throws InvalidPaginationInputException {
+
 
     PaginationBuilder pagBuilder = new PaginationBuilder(Listing.class, sortBy);
     pagBuilder.withPagStartIndex(pagStartIndex)
         .withPagEndIndex(pagEndIndex)
         .withSortAscending(isAscending);
+
+    //TODO Comment out when ListingDao is integrated.
+//    Pair<List<Listing>, Long> dataAndTotalCount = listingDao
+//        .searchAllListings(searchKey, searchValue);
+
+//    List<FullListingDto> listingResults = new ArrayList<>();
+//    for (Listing listing : dataAndTotalCount.getFirst()) {
+//      listingResults.add(new FullListingDto(listing, publicPathPrefix));
+//    }
+//    return new PaginationDto<>(listingResults, dataAndTotalCount.getSecond());
     return null;
   }
 }
