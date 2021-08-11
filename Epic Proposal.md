@@ -82,29 +82,14 @@ AC1: As a business admin, I have the option when adding a product to the catalog
 barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) to add
 nutritional information from a Food API.
 
-AC2: Text fields of nutrition facts are auto-completed if the product exists in the food API. The
-filled-in values can be overridden by the business administer.
+AC2: Text fields for adding a product are automatically filled with any existing data from the Food
+API. The filled-in values can be overridden by the business administer.
 
-AC3: If a product has or not have or is not known to have factors related to the three criteria
-below, they have to be declared.
+AC3: All of the mandatory fields (see U15) must be filled-in before continuing. Otherwise, the user
+is prevented from submitting the form.
 
-- Food allergy
-- Special dietary requirement
-- Religious reasons
-
-For example, a gluten-free cheese berger may have declaration of "Gluten-free", "Diary",
-"Non-vegan", "Beef", "Honey-free". If there is no declaration, "Unknown" is set as default.
-
-AC4: All of the mandatory fields (see U15) must be filled before continuing. Otherwise, the user is
-prevented from submitting the form.
-
-AC5: As a logged in user, I can view all of the nutrition facts of a product listed on sale. For
-simplicity, full details of product is not visible on a sales listing view. Pop-up on clicking the
-sales listing card or any suitable interaction will reveal the detail.
-
-*Note: Future stories may include an upvote/downvote feature for the products' dietary tags. For
-example, users could 'upvote' a product as 'vegan' if they believe it is vegan or vice-versa if it
-is not.*
+AC4: As a logged-in user, I can view the nutritional facts of a product listed for sale on the
+listing's details page.
 
 ### EU2 Search sale listings by nutrition facts
 
