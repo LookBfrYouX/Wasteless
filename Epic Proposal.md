@@ -10,16 +10,17 @@ Our goal is to provide a platform for people with special dietary needs. We beli
 achieved by providing our customers with more detailed information about the food they are
 purchasing.
 
-Our vision includes using data from a trusted external source to be integrated with our
-current system. This will provide our users with nutrient information on the food they are
-purchasing, the ability to search for and filter by their dietary requirements, allow businesses and
-individuals to upload products by scanning barcodes and much more!
+Our vision includes using data from a trusted external source to be integrated with our current
+system. This will provide our users with nutrient information on the food they are purchasing, the
+ability to search for and filter by their dietary requirements, allow businesses and individuals to
+upload products by scanning barcodes and much more!
 
 ### Initial plan
 
-This epic will be composed of various stories and features around the use of the [Open Food Facts API](https://world.openfoodfacts.org/). This
-will provide us with information such as nutrient facts, ratings, images and ingredients that we can
-use to implement our desired features.
+This epic will be composed of various stories and features around the use of
+the [Open Food Facts API](https://world.openfoodfacts.org/). This will provide us with information
+such as nutrient facts, ratings, images and ingredients that we can use to implement our desired
+features.
 
 We believe this epic will be able to be expanded on over the coming sprints, and we already have
 some ideas in mind. These stories could include features such as searching/filtering by diet,
@@ -73,15 +74,19 @@ stories such as implementing a calorie counter into the application.
 
 ### EU1 Products with nutrition facts
 
-As an administrator of a business, when I add a product, I can add nutrition and alergy information from a Food API by manually entering the barcode number (EAN-13) number, so that the nutrition information is visible to potential customers on the sales listings.
+As an administrator of a business, when I add a product, I can add nutrition and allergy information
+from a Food API by manually entering the barcode number (EAN-13) number, so that the nutrition
+information is visible to potential customers on the sales listings.
 
-AC1: As a business admin, I can enter a barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) in a text field to add nutrition facts from a food API to my product.
+AC1: As a business admin, I have the option when adding a product to the catalogue to enter a
+barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) to add
+nutritional information from a Food API.
 
-AC2: Text fields of nutrition facts are auto-completed if the product exists in the food API.
-The filled-in values can be overridden by the business administer.
+AC2: Text fields of nutrition facts are auto-completed if the product exists in the food API. The
+filled-in values can be overridden by the business administer.
 
-AC3: If a product has or not have or is not known to have factors related to the three criteria below, they have to be
-declared.
+AC3: If a product has or not have or is not known to have factors related to the three criteria
+below, they have to be declared.
 
 - Food allergy
 - Special dietary requirement
@@ -90,19 +95,24 @@ declared.
 For example, a gluten-free cheese berger may have declaration of "Gluten-free", "Diary",
 "Non-vegan", "Beef", "Honey-free". If there is no declaration, "Unknown" is set as default.
 
-AC4: All of the mandatory fields (see U15) must be filled before continuing. Otherwise, the user is prevented from submitting the form.
+AC4: All of the mandatory fields (see U15) must be filled before continuing. Otherwise, the user is
+prevented from submitting the form.
 
-AC5: As a logged in user, I can view all of the nutrition facts of a product listed on sale.
-For simplicity, full details of product is not visible on a sales listing view.
-Pop-up on clicking the sales listing card or any suitable interaction will reveal the detail.
+AC5: As a logged in user, I can view all of the nutrition facts of a product listed on sale. For
+simplicity, full details of product is not visible on a sales listing view. Pop-up on clicking the
+sales listing card or any suitable interaction will reveal the detail.
 
-*Note: Future stories may include an upvote/downvote feature for the products' dietary tags. For example, users could 'upvote' a product as 'vegan' if they believe it is vegan or vice-versa if it is not.*
-
+*Note: Future stories may include an upvote/downvote feature for the products' dietary tags. For
+example, users could 'upvote' a product as 'vegan' if they believe it is vegan or vice-versa if it
+is not.*
 
 ### EU2 Search sale listings by nutrition facts
 
-As a logged-in individual user, I want to search for sale listings based on the nutrition facts of the product. E.g. Only return results that are Gluten Free.
+As a logged-in individual user, I want to search for sale listings based on the nutrition facts of
+the product. E.g. Only return results that are Gluten Free.
 
 ### EU3 Barcode scanning
 
-As an administrator of a business, I can add a product by either scanning a barcode from my device or by inputting a barcode number (EAN-13) manually. This is so that I can quickly add products and their nutritional information
+As an administrator of a business, I can add a product by either scanning a barcode from my device
+or by inputting a barcode number (EAN-13) manually. This is so that I can quickly add products and
+their nutritional information
