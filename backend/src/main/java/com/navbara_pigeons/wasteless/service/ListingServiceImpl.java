@@ -1,14 +1,11 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
-import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
-import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
-import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -150,8 +147,8 @@ public class ListingServiceImpl implements ListingService {
 
     //TODO Comment out when ListingDao is integrated.
 //    Pair<List<Listing>, Long> dataAndTotalCount = listingDao
-//        .searchAllListings(searchKey, searchValue);
-
+//        .searchAllListings(searchKey, searchValue, minPrice, maxPrice, filterDates, businessTypes, pagBuilder);
+//
 //    List<FullListingDto> listingResults = new ArrayList<>();
 //    for (Listing listing : dataAndTotalCount.getFirst()) {
 //      listingResults.add(new FullListingDto(listing, publicPathPrefix));
