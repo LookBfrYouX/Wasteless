@@ -73,14 +73,14 @@ stories such as implementing a calorie counter into the application.
 
 ### EU1 Products with nutrition facts
 
-As an administrator of a business, I can add a product with its nutrition facts by entering the barcode number (EAN-13) number so that the nutrition information is visible to potential customers on the sales listings.
+As an administrator of a business, I can add a product with nutrition facts and allergy information by entering the barcode number (EAN-13) number so that these details are visible to potential customers on the sales listing.
 
 AC1: As a business admin, I can enter a barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) in a text field to add nutrition facts from a food API to my product.
 
 AC2: Text fields of nutrition facts are auto-completed if the product exists in the food API.
 The filled-in values can be overridden by the business administer.
 
-AC3: If a product has or not have factors related to the three criteria below, they have to be
+AC3: If a product has or not have or is not known to have factors related to the three criteria below, they have to be
 declared.
 
 - Food allergy
@@ -96,7 +96,6 @@ AC5: As a logged in user, I can view all of the nutrition facts of a product lis
 For simplicity, full details of product is not visible on a sales listing view.
 Pop-up on clicking the sales listing card or any suitable interaction will reveal the detail.
 
-*Note: Future stories might include upvote and downvote on products. For example, vegan users could
 *Note: Future stories may include an upvote/downvote feature for the products' dietary tags. For example, users could 'upvote' a product as 'vegan' if they believe it is vegan or vice-versa if it is not.*
 
 ### EU2 Search sale listings by nutrition facts
@@ -105,4 +104,26 @@ As a logged-in individual user, I want to search for sale listings based on nutr
 
 ### EU3 Barcode scanning
 
-As an administrator of a business, I want to add a product by scanning a barcode from my device so that I can quickly add nutritional information about a product. This builds on *EU1* which requires me to type the barcode manually.
+As an administrator of a business, I can add a product by scanning a barcode from my device so that I can quickly add nutritional and allergy information about a product. This builds on *EU1* which requires me to type in the barcode manually.
+
+## API changes
+
+### EU1 Products with nutrition facts
+
+*/businesses/{id}/products, /businesses/{id}/inventory, /businesses/{id}/listings*:  
+This endpoint may include these additions
+
+- Known allergens: Gluten free, Dairy free
+- Certifications: Vegan, Vegetarian, Plant based
+- Nutrition score: From A (good) to E (bad)
+- Nutrition facts: Energy, Fat (Saturated fat), Carbohydrates (Sugars), Salt (Sodium), Proteins
+- Ingredients: Plain text
+
+### EU2 Search sale listings by nutrition facts
+
+*listings/search*:  
+This endpoint may include these additions
+
+- Filter for allergens
+- Filter for certifications
+- Sort by nutrition facts

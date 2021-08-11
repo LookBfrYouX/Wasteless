@@ -1,56 +1,101 @@
 <template>
-  <!-- this component produces the item card component from the given props -->
-  <div class="container card item-card collapsed">
-    <div class="row card-body">
-      <div class="col-sm-4 p-0">
-        <img
-            v-if="item.inventoryItem.product.images.length"
-            :src="item.inventoryItem.product.images[0].thumbnailFilename"
-            alt="Product Image"
-            class="image-fluid w-100 rounded-circle mb-2"
-        >
-        <img
-            v-else
-            alt="Product Image"
-            class="image-fluid w-100 rounded-circle mb-2"
-            src="@/../assets/images/default-product-thumbnail.svg"
-        >
-      </div>
-      <div class="col-sm-8">
-        <h2 class="card-title">{{ item.inventoryItem.product.name }}</h2>
-        <h4>
-          {{ $helper.makeCurrencyString(item.price, currency, false) }} <small> for </small>
-          {{ item.quantity }}
-        </h4>
-        <h6 v-if="item.moreInfo"> About this price: {{ item.moreInfo }}</h6>
-        <div class="d-flex flex-wrap">
-          <div class="mr-3 text-nowrap"> Listed on: {{
-              $helper.isoToDateString(item.created)
-            }}
+  <router-link
+      :to="{ name: 'BusinessListingDetail', params: { businessId:item.inventoryItem.business.id, listingId: item.id }}"
+      class="text-decoration-none text-reset"
+  >
+    <v-card class="w-100 hover-scale-effect">
+      <img
+          v-if="item.inventoryItem.product.images.length"
+          :src="item.inventoryItem.product.images[0].thumbnailFilename"
+          alt="Product Image"
+          class="image-fluid w-100 m-0"
+      >
+      <img
+          v-else
+          alt="Product Image"
+          class="image-fluid w-100 m-0"
+          src="@/../assets/images/default-product-thumbnail.svg"
+      >
+      <v-card-text class="pt-2 pb-0">
+        <div class="row">
+          <div class="col-6 text-truncate">
+            {{ item.inventoryItem.business.name }}
           </div>
-          <div class="text-nowrap"> Closes on: {{ $helper.isoToDateString(item.closes) }}</div>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <div class="col-6">
+                <div v-on="on" class="text-end text-truncate">
+                  {{ item.inventoryItem.business.address.city }}
+                </div>
+              </div>
+            </template>
+            <span>{{ $helper.addressToString(item.inventoryItem.business.address, true) }}</span>
+          </v-tooltip>
         </div>
-      </div>
-    </div>
+      </v-card-text>
+      <v-card-title class="py-0">
+        {{ item.inventoryItem.product.name }}
+      </v-card-title>
+      <v-card-text>
+        <div class="row">
+          <div class="col-5">
+            {{ $helper.makeCurrencyString(item.price, currency, false) }} <small> for </small>
+            {{ item.quantity }}
+          </div>
+          <div class="col-7 text-end">
+            Closes
+            {{ $helper.isoToDateString(item.closes) }}
+          </div>
+        </div>
 
-  </div>
+      </v-card-text>
+    </v-card>
+  </router-link>
 </template>
 
 <script>
 export default {
   name: "ListingItemCard",
-  props: {
-    // Listing item object (See API spec for details)
-    item: Object,
-    businessId: {
-      type: Number,
-      required: true
-    },
-    currency: Object,
+  data() {
+    return {
+      currency: null
+    }
   },
+  props: {
+    item: Object
+  },
+  beforeMount: async function () {
+    return Promise.allSettled(
+        [this.getCurrency()]);
+  },
+  methods: {
+    /**
+     * Gets currency object.
+     * @returns {Promise<void>} Currency object, null when the currency doesn't exist or API request error.
+     */
+    getCurrency: async function () {
+      this.currency = await this.$helper.getCurrencyForBusinessByCountry(
+          this.item.inventoryItem.business.address.country);
+    }
+  }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "~/src/styles/grid-breakpoints.scss";
 
+.v-card {
+  height: 500px;
+  overflow: hidden;
+}
+
+@media (max-width: map-get($grid-breakpoints, "md")) {
+  .v-card {
+    height: inherit;
+  }
+}
+
+.listing-container img {
+  max-height: 30vh;
+}
 </style>
