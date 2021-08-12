@@ -29,6 +29,6 @@ public interface InventoryService {
   InventoryItem getInventoryItemById(long businessId, long itemId)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InventoryItemNotFoundException;
 
-  void updateInventoryItemQuantity(long businessId, long inventoryItemId, long quantity)
+  void updateInventoryItemQuantity(Long businessId, Long inventoryItemId, Long quantity)
       throws BusinessNotFoundException, InventoryItemNotFoundException, InventoryUpdateException;
 }

@@ -177,7 +177,7 @@ public class InventoryServiceImpl implements InventoryService {
    */
   @Override
   @Transactional
-  public void updateInventoryItemQuantity(long businessId, long inventoryItemId, long quantity)
+  public void updateInventoryItemQuantity(Long businessId, Long inventoryItemId, Long quantity)
       throws BusinessNotFoundException, InventoryItemNotFoundException, InventoryUpdateException {
     InventoryItem inventoryItem = getInventoryItemById(businessId, inventoryItemId);
     inventoryItem.removeQuantity(quantity);
