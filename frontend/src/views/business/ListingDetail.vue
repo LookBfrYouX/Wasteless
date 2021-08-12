@@ -3,21 +3,43 @@
     <div class="p-3 bg-white rounded">
       <div class="row">
         <div class="col-12">
-          <div class="d-flex flex-wrap justify-content-between mb-2">
+          <div class="d-flex flex-wrap mb-2">
             <h2 class="card-title mb-0">
               {{ name }} (ID:
               <code class="text-dark">{{ listingId }}</code>)
             </h2>
           </div>
-          <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
-                  @click="$router.go(-1)">
-            <span class="material-icons mr-1">arrow_back</span>
-            Back
-          </button>
+          <div class="btn-group" role="group" aria-label="Basic example" style="flex-wrap: wrap;">
+            <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
+                    @click="$router.go(-1)">
+              <span class="material-icons mr-1">arrow_back</span>
+              Back
+            </button>
+            <button class="btn btn-white-bg-primary d-flex align-items-end" type="button">
+              <span class="material-icons mr-1">business</span>
+              <router-link
+                  :to="{ name: 'BusinessDetail', params: { businessId, showBackButton: true}}"
+                  class="text-reset text-decoration-none"
+              >
+                View Business
+              </router-link>
+            </button>
+
+          </div>
+
           <image-carousel :images="productImages"/>
 
-          <div class="mt-2">{{ description }}</div>
+          <div class="mt-2 d-inline">{{ description }}</div>
+
+          <button class="btn btn-primary d-flex float-right" type="button">
+            <span class="material-icons mr-1">shopping_bag</span>
+            Buy now
+          </button>
+
+          <div class="mt-2">RRP (each): {{ $helper.makeCurrencyString(recommendedRetailPrice, currency) }}</div>
+
           <div class="mt-2">Quantity: {{ quantity }}</div>
+
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
           <div v-if="moreInfo" class="mt-2 mb-5">More Information: {{ moreInfo }}</div>
           <div class="d-flex flex-wrap justify-content-between mb-2">
@@ -75,6 +97,7 @@ export default {
       sellBy: "",
       bestBefore: "",
       expires: "",
+      recommendedRetailPrice: "",
       apiErrorMessage: null,
       currency: null
     }
@@ -173,6 +196,7 @@ export default {
       this.sellBy = listing.inventoryItem.sellBy;
       this.bestBefore = listing.inventoryItem.bestBefore;
       this.expires = listing.inventoryItem.expires;
+      this.recommendedRetailPrice = listing.inventoryItem.product.recommendedRetailPrice;
     }
   }
 }
