@@ -11,6 +11,8 @@ import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 
+import javax.transaction.Transactional;
+
 public interface ListingService {
 
   Long addListing(long businessId, long inventoryItemId, Listing listing)
@@ -19,4 +21,7 @@ public interface ListingService {
   PaginationDto<FullListingDto> getListings(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, ListingSortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, UserNotFoundException, InvalidPaginationInputException;
+
+  @Transactional
+  void deleteListing(Listing listing);
 }

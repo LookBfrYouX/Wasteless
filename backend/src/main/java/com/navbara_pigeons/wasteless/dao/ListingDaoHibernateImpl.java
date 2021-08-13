@@ -51,7 +51,7 @@ public class ListingDaoHibernateImpl implements ListingDao {
   }
 
   /**
-   * This method saves a given inventoryItem to the database.
+   * This method saves a given listing to the database.
    *
    * @param listing The listing item to be saved or updated.
    */
@@ -59,6 +59,16 @@ public class ListingDaoHibernateImpl implements ListingDao {
   public void saveListing(Listing listing) {
     Session currentSession = getSession();
     currentSession.saveOrUpdate(listing);
+  }
+
+  /**
+   * Deletes the given listing
+   * @param listing listing to delete
+   */
+  @Override
+  public void deleteListing(Listing listing) {
+    Session currentSession = getSession();
+    currentSession.delete(listing);
   }
 
   /**
