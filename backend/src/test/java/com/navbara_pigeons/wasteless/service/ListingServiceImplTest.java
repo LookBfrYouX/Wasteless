@@ -6,14 +6,18 @@ import static org.mockito.Mockito.when;
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -123,5 +127,40 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     when(inventoryService.getInventoryItemById(businessId, inventoryItem.getId()))
         .thenReturn(inventoryItem);
     return listing;
+  }
+
+  @Test
+  @WithMockUser(username = "notTony@notTony.notTony", password = "notTonyNotTony1")
+  void getAllListings_isAuthenticated() throws Exception {
+
+    List<Listing> mockListings = new ArrayList<>();
+
+    List<String> mockBusinessNames = new ArrayList<>();
+    mockBusinessNames.add("Business A");
+    mockBusinessNames.add("Business B");
+    mockBusinessNames.add("Business C");
+
+    List<String> mockProductNames = new ArrayList<String>();
+    mockProductNames.add("Product A");
+    mockProductNames.add("Product B");
+    mockProductNames.add("Product C");
+
+    for (int i = 0; i < 3; i++) {
+      Business business = makeBusiness(mockBusinessNames.get(i));
+      Product product = makeProduct(mockProductNames.get(i));
+      InventoryItem inventoryItem = makeInventoryItem(product, business);
+      Listing listing = makeListing(inventoryItem);
+      mockListings.add(listing);
+    }
+
+    assert(true);
+    //TODO Uncomment once integrated with the DAO method.
+//    when(listingDao.searchAllListings())
+//        .thenReturn(Pair.of(mockListings, 10L));
+
+//    Assertions.assertEquals(listingService.searchListings(
+//        1, 10, ListingSortByOption.name, true,
+//        new ArrayList<String>(), "searchValue", 20D, 80D,
+//        new ArrayList<LocalDate>(), new ArrayList<BusinessType>()).getTotalCount(), 5);
   }
 }
