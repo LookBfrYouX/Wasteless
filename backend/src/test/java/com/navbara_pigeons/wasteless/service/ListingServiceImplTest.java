@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
@@ -102,6 +103,19 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     Assertions.assertThrows(InsufficientPrivilegesException.class, () -> {
       listingService.addListing(businessId, listing.getInventoryItem().getId(), listing);
     });
+  }
+
+  /**
+   * Tests that the delete listing service methods passes the correct arguments to the DAO
+   * @throws Exception
+   */
+  @Test
+  void deleteListing_success() throws Exception {
+    Listing listing = makeListing();
+
+    doNothing().when(listingDao).deleteListing(any(Listing.class));
+    listingService.deleteListing(listing);
+    Mockito.verify(listingDao).deleteListing(listing);
   }
 
   // Creates a business, product, inventory item and listing
