@@ -91,10 +91,42 @@ is prevented from submitting the form.
 AC4: As a logged-in user, I can view the nutritional facts of a product listed for sale on the
 listing's details page.
 
+AC5: The nutritional information is collapsable on the listing's details page, so that I can save
+screen real estate if I am not interested in the information.
+
+AC6: The user can choose not to use the Barcode input field and instead enter data as previously
+possible.
+
+AC7: Products can have a 'Nutrient Score' from A (being good) to E (being Bad nutritional quality).
+This should reflect the ['Nutri-Score' rating system](https://en.wikipedia.org/wiki/Nutri-Score).
+
+AC7: Products can have a 'NOVA classification' from 1 (unprocessed) to 4 (ultra-processed). This
+should reflect the [NOVA groups for food processing](https://world.openfoodfacts.org/nova).
+
+AC8: Products can have simple quantity measurements (low, moderate and high) for the amounts of Fat,
+Saturated Fat, Sugars and Salt in the product.
+
 ### EU2 Search sale listings by nutrition facts
 
 As a logged-in individual user, I want to search for sale listings based on the nutrition facts of
 the product. E.g. Only return results that are Gluten Free.
+
+AC1: I can select one or more diets (e.g. GF, Vegetarian, etc.) to filter all listings by. Only the
+listings that match the selected diets appear.
+
+AC2: I can filter listings by specifying a min and
+max [Nutri-Score](https://en.wikipedia.org/wiki/Nutri-Score), being from A to E. By default the
+filter values are set to include all ratings and products without ratings.
+
+AC3: I can filter listings by specifying a min and
+max [NOVA group](https://world.openfoodfacts.org/nova), being from group 1 to group 4. By default,
+the filter values are set to include all groups and products without a NOVA specification.
+
+AC4: I can select quantity measurements for the amounts of Fat, Saturated Fat, Sugars and Salt in
+the product to filter by. For each nutrient I can choose from Low, Moderate, High and All.
+
+AC5: The default filter settings are to search for **all** listings. A user should not be required
+to enter any nutritional filtering information to search.
 
 ### EU3 Barcode scanning
 
@@ -102,24 +134,38 @@ As an administrator of a business, I can add a product by either scanning a barc
 or by inputting a barcode number (EAN-13) manually. This is so that I can quickly add products and
 their nutritional information
 
+AC1: Business Administrators can scan EAN-13 barcodes (either by uploading an image or from a live
+camera).
+
+AC2: The EAN-13 number can be used by the Food API to add products (from EU1).
+
+AC3: The Business Administrator can also manually type in the EAN-13.
+
+AC4: On a successful scan, the EAN-13 number is applied to the barcode text field.
+
+AC5: After a successful scan I can manually override the EAN-13 text field.
+
+AC6: The cameras image should not display on page load.There is a button to activate the device's
+camera.
+
 ## API changes
 
 ### EU1 Products with nutrition facts
 
 */businesses/{id}/products, /businesses/{id}/inventory, /businesses/{id}/listings*:  
-This endpoint may include these additions
+This endpoint may include these additions:
 
-- Known allergens: Gluten free, Dairy free
-- Certifications: Vegan, Vegetarian, Plant based
-- Nutrition score: From A (good) to E (bad)
+- Dietary Requirements: Gluten free, Dairy free, Vegan, Vegetarian
+- [Nutri-score](https://en.wikipedia.org/wiki/Nutri-Score): From A (good) to E (bad)
+- [NOVA group](https://world.openfoodfacts.org/nova): From group 1 to group 4
 - Nutrition facts: Energy, Fat (Saturated fat), Carbohydrates (Sugars), Salt (Sodium), Proteins
-- Ingredients: Plain text
 
 ### EU2 Search sale listings by nutrition facts
 
 *listings/search*:  
-This endpoint may include these additions
+This endpoint may include these additions:
 
-- Filter for allergens
-- Filter for certifications
+- Filter for Dietary Requirements
+- Filter for Nutri-score
+- Filter for NOVA group
 - Sort by nutrition facts
