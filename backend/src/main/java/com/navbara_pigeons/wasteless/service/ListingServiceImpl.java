@@ -120,4 +120,9 @@ public class ListingServiceImpl implements ListingService {
 
     return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
+
+  @Override
+  public void purchaseListing(long listingId) {
+    throw new UnsupportedOperationException();
+  }
 }

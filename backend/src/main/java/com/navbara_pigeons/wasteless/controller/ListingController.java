@@ -110,6 +110,13 @@ public class ListingController {
         HttpStatus.OK);
   }
 
+  /**
+   * This controller endpoint is used for a user to purchase a listing from a business. The listing
+   * is then removed and a transactional log is kept.
+   *
+   * @param listingId The identifier of the listing to be purchased
+   * @return String specifying that the purchase was successful
+   */
   @DeleteMapping("/purchase/{listingId}")
   @Operation(summary = "Purchase a specific listing", description = "Purchase a specific listing, record the transaction and delete the purchased listing")
   public ResponseEntity<String> purchaseListing(
