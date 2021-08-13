@@ -19,4 +19,6 @@ public interface ListingService {
   PaginationDto<FullListingDto> getListings(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, ListingSortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, UserNotFoundException, InvalidPaginationInputException;
+
+  void purchaseListing(long listingId);
 }

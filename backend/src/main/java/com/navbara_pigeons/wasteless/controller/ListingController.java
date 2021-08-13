@@ -19,6 +19,7 @@ import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -108,4 +109,13 @@ public class ListingController {
         listingService.getListings(id, pagStartIndex, pagEndIndex, sortBy, isAscending),
         HttpStatus.OK);
   }
+
+  @DeleteMapping("/purchase/{listingId}")
+  @Operation(summary = "Purchase a specific listing", description = "Purchase a specific listing, record the transaction and delete the purchased listing")
+  public ResponseEntity<String> purchaseListing(
+      @Parameter(description = "The identifier of the listing to be purchased") @PathVariable long listingId) {
+    log.info("PURCHASING LISTING WITH ID " + listingId);
+    listingService.purchaseListing(listingId);
+    return new ResponseEntity<>("Successfully purchases listing " + listingId, HttpStatus.OK);
+  } // TODO Add custom exception for failed to find listing
 }
