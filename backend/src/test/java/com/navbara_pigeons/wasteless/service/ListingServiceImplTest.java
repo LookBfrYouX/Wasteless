@@ -1,6 +1,9 @@
 package com.navbara_pigeons.wasteless.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
@@ -153,14 +156,14 @@ public class ListingServiceImplTest extends ServiceTestProvider {
       mockListings.add(listing);
     }
 
-    assert(true);
-    //TODO Uncomment once integrated with the DAO method.
-//    when(listingDao.searchAllListings())
-//        .thenReturn(Pair.of(mockListings, 10L));
+    when(listingDao
+        .searchAllListings(anyList(), anyString(), anyDouble(), anyDouble(), anyList(), anyList(),
+            any(PaginationBuilder.class)))
+        .thenReturn(Pair.of(mockListings, 10L));
 
-//    Assertions.assertEquals(listingService.searchListings(
-//        1, 10, ListingSortByOption.name, true,
-//        new ArrayList<String>(), "searchValue", 20D, 80D,
-//        new ArrayList<LocalDate>(), new ArrayList<BusinessType>()).getTotalCount(), 5);
+    Assertions.assertEquals(listingService.searchListings(
+        1, 10, ListingSortByOption.name, true,
+        new ArrayList<String>(), "searchValue", 20D, 80D,
+        new ArrayList<LocalDate>(), new ArrayList<BusinessType>()).getTotalCount(), 10);
   }
 }

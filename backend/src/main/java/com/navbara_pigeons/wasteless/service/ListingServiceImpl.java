@@ -145,15 +145,13 @@ public class ListingServiceImpl implements ListingService {
         .withPagEndIndex(pagEndIndex)
         .withSortAscending(isAscending);
 
-    //TODO Comment out when ListingDao is integrated.
-//    Pair<List<Listing>, Long> dataAndTotalCount = listingDao
-//        .searchAllListings(searchKey, searchValue, minPrice, maxPrice, filterDates, businessTypes, pagBuilder);
-//
-//    List<FullListingDto> listingResults = new ArrayList<>();
-//    for (Listing listing : dataAndTotalCount.getFirst()) {
-//      listingResults.add(new FullListingDto(listing, publicPathPrefix));
-//    }
-//    return new PaginationDto<>(listingResults, dataAndTotalCount.getSecond());
-    return null;
+    Pair<List<Listing>, Long> dataAndTotalCount = listingDao
+        .searchAllListings(searchKey, searchValue, minPrice, maxPrice, filterDates, businessTypes, pagBuilder);
+
+    List<FullListingDto> listingResults = new ArrayList<>();
+    for (Listing listing : dataAndTotalCount.getFirst()) {
+      listingResults.add(new FullListingDto(listing, publicPathPrefix));
+    }
+    return new PaginationDto<>(listingResults, dataAndTotalCount.getSecond());
   }
 }
