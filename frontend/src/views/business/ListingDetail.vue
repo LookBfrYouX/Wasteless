@@ -77,7 +77,7 @@ import {Api} from "@/Api";
 import ImageCarousel from '../../components/ImageCarousel.vue';
 
 export default {
-  name: "salesListingDetail",
+  name: "ListingDetail",
   components: {
     ImageCarousel,
     ErrorModal
@@ -121,7 +121,6 @@ export default {
   },
 
   methods: {
-
     /**
      * Loads currency info
      * @return true on success
