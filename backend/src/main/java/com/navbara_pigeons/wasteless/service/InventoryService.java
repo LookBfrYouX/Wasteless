@@ -29,6 +29,5 @@ public interface InventoryService {
   InventoryItem getInventoryItemById(long businessId, long itemId)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InventoryItemNotFoundException;
 
-    @Transactional
     void deleteInventoryItem(InventoryItem inventoryItem);
 }

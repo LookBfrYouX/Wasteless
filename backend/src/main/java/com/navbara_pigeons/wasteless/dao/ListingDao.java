@@ -14,6 +14,4 @@ public interface ListingDao {
       throws InvalidPaginationInputException;
 
   void saveListing(Listing listing);
-
-  void deleteListing(Listing listing);
 }

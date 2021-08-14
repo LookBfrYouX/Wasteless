@@ -61,16 +61,7 @@ public class ListingDaoHibernateImpl implements ListingDao {
     currentSession.saveOrUpdate(listing);
   }
 
-  /**
-   * Deletes the given listing
-   * @param listing listing to delete
-   */
-  @Override
-  public void deleteListing(Listing listing) {
-    Session currentSession = getSession();
-    currentSession.delete(listing);
-  }
-
+  
   /**
    * Get the entity manager session
    *
