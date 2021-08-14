@@ -60,6 +60,17 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
     currentSession.saveOrUpdate(inventory);
   }
 
+
+  /**
+   * Deletes the given inventory item
+   * @param inventoryItem inventory item to delete
+   */
+  @Override
+  public void deleteInventoryItem(InventoryItem inventoryItem) {
+    Session currentSession = getSession();
+    currentSession.delete(inventoryItem);
+  }
+
   /**
    * Get the entity manager session
    *

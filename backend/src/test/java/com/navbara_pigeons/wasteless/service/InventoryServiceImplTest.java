@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.service;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.data.util.Pair;
 import org.springframework.security.test.context.support.WithMockUser;
 
@@ -283,5 +285,23 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
   public void updateInventory_quantityGreaterThenZero()
       throws BusinessNotFoundException, InventoryItemNotFoundException {
     updateInventoryTestWrapper(1L, false);
+  }
+
+
+  /**
+   * Tests that the inventory item is passed to the DAO delete layer - all tests mock DAO so can't really test
+   * if DAO layer works in these tests
+   */
+  @Test
+  void deleteInventoryItem_sanityCheck() {
+    InventoryItem item = new InventoryItem()
+            .setProduct(makeProduct("ame").setId(1))
+            .setBusiness(makeBusiness().setId(2))
+            .setId(3);
+
+    doNothing().when(inventoryDaoMock).deleteInventoryItem(any(InventoryItem.class));
+    inventoryService.deleteInventoryItem(item);
+
+    Mockito.verify(inventoryDaoMock).deleteInventoryItem(item);
   }
 }

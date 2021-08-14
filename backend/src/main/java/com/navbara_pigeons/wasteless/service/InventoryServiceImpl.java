@@ -169,6 +169,16 @@ public class InventoryServiceImpl implements InventoryService {
   }
 
   /**
+   * Deletes the given inventory item
+   * @param inventoryItem inventory item to delete
+   */
+  @Override
+  @Transactional
+  public void deleteInventoryItem(InventoryItem inventoryItem) {
+    inventoryDao.deleteInventoryItem(inventoryItem);
+  }
+
+  /**
    * Updates the quantity of the inventory item This is called when a listing has been purchased and
    * the inventory quantity needs to be updated
    *

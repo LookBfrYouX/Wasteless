@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -68,6 +69,7 @@ public class Business {
       joinColumns = @JoinColumn(name = "BUSINESS_ID"),
       inverseJoinColumns = @JoinColumn(name = "USER_ID")
   )
+  @ToString.Exclude
   private List<User> administrators = new ArrayList<>();
 
   @OneToMany(
@@ -84,6 +86,7 @@ public class Business {
       joinColumns = @JoinColumn(name = "BUSINESS_ID"),
       inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
   )
+  @ToString.Exclude
   private List<Product> productsCatalogue = new ArrayList<>();
 
   @OneToMany(
@@ -96,6 +99,12 @@ public class Business {
       }
   )
   @JoinColumn(name = "BUSINESS_ID")
+  @ToString.Exclude
+  /* If some tests fail, they try to print out the expected and received objects.
+   Inventory items reference listings which reference inventory items, creating an infinite loop
+   and stack overflow. So if a test fails, the test harness trying to print out the the objects
+   causes an exception. See https://stackoverflow.com/a/37727206
+  */
   private List<InventoryItem> inventory = new ArrayList<>();
 
   public Business(FullBusinessDto business) {
