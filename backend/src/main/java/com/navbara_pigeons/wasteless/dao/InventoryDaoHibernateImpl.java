@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.dao;
 import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.InventoryQueryBuilder;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -58,6 +59,17 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
   public void saveInventoryItem(InventoryItem inventory) {
     Session currentSession = getSession();
     currentSession.saveOrUpdate(inventory);
+  }
+
+
+  /**
+   * Deletes the given inventory item
+   * @param inventoryItem inventory item to delete
+   */
+  @Override
+  public void deleteInventoryItem(InventoryItem inventoryItem) {
+    Session currentSession = getSession();
+    currentSession.delete(inventoryItem);
   }
 
   /**

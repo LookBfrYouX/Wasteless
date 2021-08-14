@@ -160,4 +160,14 @@ public class InventoryServiceImpl implements InventoryService {
       throw new InventoryRegistrationException("BUSINESS, PRODUCT OR USER NOT FOUND");
     }
   }
+
+  /**
+   * Deletes the given inventory item
+   * @param inventoryItem inventory item to delete
+   */
+  @Override
+  @Transactional
+  public void deleteInventoryItem(InventoryItem inventoryItem) {
+    inventoryDao.deleteInventoryItem(inventoryItem);
+  }
 }

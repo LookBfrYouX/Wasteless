@@ -13,4 +13,6 @@ public interface InventoryDao {
 
   Pair<List<InventoryItem>, Long> getInventoryItems(Business business, PaginationBuilder pagBuilder)
       throws InvalidPaginationInputException;
+
+  void deleteInventoryItem(InventoryItem inventoryItem);
 }
