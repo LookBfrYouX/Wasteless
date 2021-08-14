@@ -131,7 +131,6 @@ public class InventoryServiceImpl implements InventoryService {
    *
    * @param businessId, Create The ID of the business whose products are to be retrieved.
    * @return A List<Product> of products that are in the business product catalogue.
-   * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
   @Transactional
@@ -170,6 +169,7 @@ public class InventoryServiceImpl implements InventoryService {
 
   /**
    * Deletes the given inventory item
+   *
    * @param inventoryItem inventory item to delete
    */
   @Override
@@ -197,9 +197,9 @@ public class InventoryServiceImpl implements InventoryService {
     } else if (inventoryItem.getQuantity() == 0) {
       // Remove listings associated with this inventory item
       for (Listing listing : inventoryItem.getListings()) {
-        //listingService.deleteListing(listing); TODO uncomment when Alec has merged to dev
+        listingService.deleteListing(listing.getId());
       }
-      //this.deleteInventoryItem(businessId, inventoryItemId); TODO uncomment when Rio has merged to dev
+      this.deleteInventoryItem(inventoryItem);
     } else {
       inventoryDao.saveInventoryItem(inventoryItem);
     }
