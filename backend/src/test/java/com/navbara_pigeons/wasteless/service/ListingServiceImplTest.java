@@ -133,7 +133,7 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  @WithMockUser(username = "notTony@notTony.notTony", password = "notTonyNotTony1")
+  @WithMockUser(username = "ntony@tony.tony", password = "tonyTony1")
   void getAllListings_isAuthenticated() throws Exception {
 
     List<Listing> mockListings = new ArrayList<>();
@@ -165,5 +165,21 @@ public class ListingServiceImplTest extends ServiceTestProvider {
         1, 10, ListingSortByOption.name, true,
         new ArrayList<String>(), "searchValue", 20D, 80D,
         new ArrayList<LocalDate>(), new ArrayList<BusinessType>()).getTotalCount(), 10);
+  }
+
+  @Test
+  @WithMockUser(username = "notTony@notTony.notTony", password = "notTonyNotTony1")
+  void getAllListings_noMatchResults() throws Exception {
+    List<Listing> mockListings = new ArrayList<>();
+
+    when(listingDao
+        .searchAllListings(anyList(), anyString(), anyDouble(), anyDouble(), anyList(), anyList(),
+            any(PaginationBuilder.class)))
+        .thenReturn(Pair.of(mockListings, 0L));
+
+    Assertions.assertEquals(listingService.searchListings(
+        1, 10, ListingSortByOption.name, true,
+        new ArrayList<String>(), "searchValue", 20D, 80D,
+        new ArrayList<LocalDate>(), new ArrayList<BusinessType>()).getResults().size(), 0);
   }
 }
