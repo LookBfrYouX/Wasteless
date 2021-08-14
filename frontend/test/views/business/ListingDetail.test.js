@@ -66,7 +66,7 @@ describe("Test currencies", () => {
     wrapper.vm.$stateStore.getters.isSignedIn = () => false;
 
     expect(await wrapper.vm.loadCurrencies()).toEqual(false);
-  }),
+  });
 
   test("Fail, expect 'return;'", async () => {
     wrapper.vm.$stateStore.getters.isSignedIn = () => true;
@@ -77,7 +77,7 @@ describe("Test currencies", () => {
 
     // Nothing returned
     expect(await wrapper.vm.loadCurrencies()).toEqual(undefined);
-  }),
+  });
 
   test("Fail, expect Api handle fails", async () => {
     wrapper.vm.$stateStore.getters.isSignedIn = () => true;
@@ -87,7 +87,7 @@ describe("Test currencies", () => {
     Api.handle401.call = () => false;
 
     expect(await wrapper.vm.loadCurrencies()).toEqual(false);
-  }),
+  });
 
   test("Success", async () => {
     const mockCurrency = "NZD";
@@ -95,7 +95,6 @@ describe("Test currencies", () => {
     wrapper.vm.$helper.getCurrencyForBusiness = () => mockCurrency;
 
     expect(await wrapper.vm.loadCurrencies()).toEqual(true);
-    // await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.currency).toEqual(mockCurrency)
   });
 });
@@ -104,7 +103,7 @@ describe("ParseAPI", () => {
   test("Expect success", async () => {
     // Expect no error thrown
     expect(await wrapper.vm.parseApiResponse(Promise.resolve(listings))).toBe(undefined);
-  }),
+  });
 
   test("Undefined listing, expect ApiRequestError", async () => {
     // Expect error thrown
