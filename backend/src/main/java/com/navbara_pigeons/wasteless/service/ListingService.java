@@ -11,8 +11,6 @@ import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 
-import javax.transaction.Transactional;
-
 public interface ListingService {
 
   Long addListing(long businessId, long inventoryItemId, Listing listing)

@@ -1,6 +1,5 @@
 package com.navbara_pigeons.wasteless.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;

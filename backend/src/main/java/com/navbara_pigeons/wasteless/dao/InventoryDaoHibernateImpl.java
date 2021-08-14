@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.dao;
 import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.InventoryQueryBuilder;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
-import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
 import javax.persistence.EntityManager;

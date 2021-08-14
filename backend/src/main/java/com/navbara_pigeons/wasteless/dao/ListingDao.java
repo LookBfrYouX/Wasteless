@@ -5,11 +5,10 @@ import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
-
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.util.Pair;
 
 public interface ListingDao {
+
   Pair<List<Listing>, Long> getListings(Business business, PaginationBuilder pagBuilder)
       throws InvalidPaginationInputException;
 

@@ -13,7 +13,6 @@ import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import javax.management.InvalidAttributeValueException;
-import javax.transaction.Transactional;
 
 public interface InventoryService {
 
