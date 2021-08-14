@@ -63,6 +63,18 @@ public class ListingDaoHibernateImpl implements ListingDao {
 
   
   /**
+   * This method deletes a given listing to the database.
+   *
+   * @param listingId of the the listing to be deleted.
+   */
+  @Override
+  public void deleteListing(Long listingId) {
+    Session currentSession = getSession();
+    Listing listing = currentSession.load(Listing.class, listingId);
+    currentSession.delete(listing);
+  }
+
+  /**
    * Get the entity manager session
    *
    * @return Instance of the Session class

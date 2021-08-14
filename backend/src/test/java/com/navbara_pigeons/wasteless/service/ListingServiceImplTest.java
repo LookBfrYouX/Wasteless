@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.service;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -25,7 +24,7 @@ import org.mockito.Mockito;
 import org.springframework.data.util.Pair;
 import org.springframework.security.test.context.support.WithMockUser;
 
-public class ListingServiceImplTest extends ServiceTestProvider {
+class ListingServiceImplTest extends ServiceTestProvider {
 
   private final String email = "tony@tony.tony";
   private final String password = "tonyTony1";
@@ -102,6 +101,15 @@ public class ListingServiceImplTest extends ServiceTestProvider {
 
     Assertions.assertThrows(InsufficientPrivilegesException.class, () -> {
       listingService.addListing(businessId, listing.getInventoryItem().getId(), listing);
+    });
+  }
+
+  @Test
+  void deleteListingExpectOk() {
+    doNothing().when(listingDao).deleteListing(any(Long.class));
+
+    Assertions.assertDoesNotThrow(() -> {
+      listingService.deleteListing(1L); // ListingId doesnt matter here (dao being mocked)
     });
   }
 
