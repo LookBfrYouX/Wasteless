@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -36,6 +37,7 @@ public class Listing {
       }
   )
   @JoinColumn(name = "INVENTORY_ITEM_ID")
+  @ToString.Exclude
   private InventoryItem inventoryItem;
 
   @Column(name = "QUANTITY")

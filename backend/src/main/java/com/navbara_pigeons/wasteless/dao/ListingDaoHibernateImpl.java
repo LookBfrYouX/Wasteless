@@ -61,6 +61,7 @@ public class ListingDaoHibernateImpl implements ListingDao {
     currentSession.saveOrUpdate(listing);
   }
 
+  
   /**
    * This method deletes a given listing to the database.
    *
