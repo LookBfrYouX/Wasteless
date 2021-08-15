@@ -20,5 +20,7 @@ public interface ListingService {
       Integer pagEndIndex, ListingSortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, UserNotFoundException, InvalidPaginationInputException;
 
+  void deleteListing(Long listingId);
+
   void purchaseListing(long listingId);
 }
