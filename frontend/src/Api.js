@@ -571,8 +571,9 @@ export const Api = {
     // return instance.get('/listings/search',
     //     {params: params}).catch(err => {
     //   throw ApiRequestError.createFromMessageMap(err, {
-    //     400: error => `Invalid pagination parameters: ${error.response.data.message}`,
-    //     500: 'Failed to find the listings'
+    //     400: 'Invalid pagination parameters sent',
+    //     404: 'No listings could not be found',
+    //     500: 'Oops! Something went wrong on our end! Try again later'
     //   });
     // });
   },
