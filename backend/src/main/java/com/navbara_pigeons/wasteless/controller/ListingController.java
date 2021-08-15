@@ -7,6 +7,7 @@ import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.service.ListingService;
@@ -117,12 +118,14 @@ public class ListingController {
    * @param listingId The identifier of the listing to be purchased
    * @return String specifying that the purchase was successful
    */
-  @DeleteMapping("/purchase/{listingId}")
+  @DeleteMapping("/businesses/{businessId}/listings/{listingId}/purchase")
   @Operation(summary = "Purchase a specific listing", description = "Purchase a specific listing, record the transaction and delete the purchased listing")
   public ResponseEntity<String> purchaseListing(
-      @Parameter(description = "The identifier of the listing to be purchased") @PathVariable long listingId) {
+      @Parameter(description = "The identifier of the business that the listing belongs to") @PathVariable long businessId,
+      @Parameter(description = "The identifier of the listing to be purchased") @PathVariable long listingId
+  ) throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException {
     log.info("PURCHASING LISTING WITH ID " + listingId);
-    listingService.purchaseListing(listingId);
+    listingService.purchaseListing(businessId, listingId);
     return new ResponseEntity<>("Successfully purchases listing " + listingId, HttpStatus.OK);
-  } // TODO Add custom exception for failed to find listing
+  }
 }

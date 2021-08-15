@@ -15,4 +15,6 @@ public interface ListingDao {
   void saveListing(Listing listing);
 
   void deleteListing(Long listingId);
+
+  Listing getListing(long listingId);
 }

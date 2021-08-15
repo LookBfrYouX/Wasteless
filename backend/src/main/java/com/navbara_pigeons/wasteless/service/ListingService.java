@@ -8,6 +8,7 @@ import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 
@@ -22,5 +23,6 @@ public interface ListingService {
 
   void deleteListing(Long listingId);
 
-  void purchaseListing(long listingId);
+  void purchaseListing(long businessId, long listingId)
+      throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException;
 }

@@ -36,4 +36,15 @@ public class Transaction {
   @Column(name = "AMOUNT")
   private Double amount;
 
+  public Transaction(ZonedDateTime saleDate, ZonedDateTime listingDate, Product product,
+      Double amount) {
+    this.saleDate = saleDate;
+    this.listingDate = listingDate;
+    this.product = product;
+    this.amount = amount;
+  }
+
+  public Transaction() {
+
+  }
 }

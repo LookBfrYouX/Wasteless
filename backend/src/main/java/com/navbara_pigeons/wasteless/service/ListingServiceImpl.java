@@ -5,11 +5,13 @@ import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.entity.Transaction;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
@@ -36,6 +38,7 @@ public class ListingServiceImpl implements ListingService {
   private final BusinessService businessService;
   private final ListingDao listingDao;
   private final InventoryService inventoryService;
+  private final TransactionService transactionService;
   @Value("${public_path_prefix}")
   private String publicPathPrefix;
 
@@ -45,11 +48,13 @@ public class ListingServiceImpl implements ListingService {
    */
   @Autowired
   public ListingServiceImpl(UserService userService, BusinessService businessService,
-      ListingDao listingDao, InventoryService inventoryService) {
+      ListingDao listingDao, InventoryService inventoryService,
+      TransactionService transactionService) {
     this.userService = userService;
     this.businessService = businessService;
     this.listingDao = listingDao;
     this.inventoryService = inventoryService;
+    this.transactionService = transactionService;
   }
 
   /**
@@ -83,6 +88,10 @@ public class ListingServiceImpl implements ListingService {
     listing.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     listingDao.saveListing(listing);
     return listing.getId();
+  }
+
+  private Listing getListing(long listingId) {
+    return listingDao.getListing(listingId);
   }
 
   /**
@@ -133,7 +142,17 @@ public class ListingServiceImpl implements ListingService {
   }
 
   @Override
-  public void purchaseListing(long listingId) {
-    throw new UnsupportedOperationException();
+  @Transactional
+  public void purchaseListing(long businessId, long listingId)
+      throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException {
+    Listing listing = this.getListing(listingId);
+
+    this.deleteListing(listingId);
+    inventoryService.updateInventoryItemQuantity(businessId, listingId, listing.getQuantity());
+
+    Transaction transaction = new Transaction(ZonedDateTime.now(), listing.getCreated(),
+        listing.getInventoryItem().getProduct(), listing.getPrice());
+
+    transactionService.saveTransaction(transaction);
   }
 }

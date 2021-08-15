@@ -26,6 +26,12 @@ public class ListingDaoHibernateImpl implements ListingDao {
     this.entityManager = entityManager;
   }
 
+  @Override
+  public Listing getListing(long listingId) {
+    Session currentSession = getSession();
+    return currentSession.get(Listing.class, listingId);
+  }
+
   /**
    * Get a list of Listings for a specific Business.
    *
