@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid col-md-6">
+  <v-container fluid>
     <v-row align="end">
       <v-col cols="12" md="8" class="filter-business">
         <v-subheader>Filter businesses</v-subheader>
@@ -77,16 +77,18 @@
       <v-col cols="12" md="4" class="min-price">
         <v-subheader>Min price</v-subheader>
         <v-text-field label="Min" type="number" min="0.01"
-                      max="10000000" step="0.01" solo dense v-model="minPrice"></v-text-field>
+                      max="10000000" step="0.01" solo dense :value="minPrice"
+                      @change="event => $emit('newMin', event)"></v-text-field>
       </v-col>
 
       <v-col cols="12" md="4" class="max-price">
         <v-subheader>Max price</v-subheader>
         <v-text-field label="Max" type="number" min="0.01"
-                      max="10000000" step="0.01" solo dense v-model="maxPrice"></v-text-field>
+                      max="10000000" step="0.01" solo dense :value="maxPrice"
+                      @change="event => $emit('newMax', event)"></v-text-field>
       </v-col>
     </v-row>
-  </div>
+  </v-container>
 </template>
 
 <style lang="scss" scoped>
@@ -111,6 +113,7 @@
 
 <script>
 import {constants} from '@/constants';
+
 export default {
   name: "listingSearchFilter",
   data() {
@@ -120,38 +123,36 @@ export default {
       menu: false,
       shownChips: 1,
 
-      // Remove below when integrating with main page
-      minPrice: null,
-      maxPrice: null,
       dates: [],
-      selectedBusinessTypes: [],
+      selectedBusinessTypes: []
     }
   },
-  // Remove comments when integrating with main page
-  // model: {
-  //   minPrice: {
-  //     type: Number,
-  //     required: true
-  //   },
-  //   maxPrice: {
-  //     type: Number,
-  //     required: true
-  //   },
-  //   selectedBusinessTypes: {
-  //     type: Array,
-  //     required: true
-  //   },
-  //   dates: {
-  //     type: Array,
-  //     required: true
-  //   },
-  // },
+  watch: {
+    dates() {
+      this.$emit('newDates', this.dates);
+    },
+    selectedBusinessTypes() {
+      this.$emit('newTypes', this.selectedBusinessTypes);
+    }
+  },
+  props: {
+    minPrice: {
+      type: Number,
+      required: false
+    },
+    maxPrice: {
+      type: Number,
+      required: false
+    },
+  },
   /**
    * Sets sets the todayDate variable to be used when restricting date ranges
    */
   mounted() {
     let [d, m, y] = new Date().toLocaleDateString("en-NZ").split("/");
-    if (d.length < 2) {d = "0" + d}
+    if (d.length < 2) {
+      d = "0" + d
+    }
     this.todayDate = y + "-" + m + "-" + d;
   },
   methods: {
@@ -188,7 +189,7 @@ export default {
       /**
        * Run when "x" clicked on the date range text box
        */
-      set(newName){
+      set(newName) {
         this.dates = [];
         return newName;
       }

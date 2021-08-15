@@ -4,6 +4,23 @@
       <v-flex>
         <h2>Results for '{{ "search query here" }}'</h2>
       </v-flex>
+
+      <v-row>
+<!--        <v-col>-->
+<!--          <MultiSearchBar sort-items="items"></MultiSearchBar>-->
+<!--        </v-col>-->
+
+        <v-col>
+          <ListingSearchFilter v-bind:maxPrice="maxPrice"
+                               v-bind:minPrice="minPrice"
+                               @newTypes="event => this.selectedBusinessTypes = event"
+                               @newMin="event => this.minPrice = event ? parseFloat(event) : null"
+                               @newMax="event => this.maxPrice = event ? parseFloat(event) : null"
+                               @newDates="event => this.dates = event"
+          ></ListingSearchFilter>
+        </v-col>
+      </v-row>
+
       <v-layout v-if="listings.length" row>
         <v-layout row>
           <v-flex class="w-100 col-12 col-sm-6 col-md-4 p-4">
@@ -52,12 +69,16 @@ import ErrorModal from "@/components/ErrorModal";
 import {Api} from "@/Api";
 import SimpleSortBar from "@/components/SimpleSortBar";
 import ListingItemCard from "@/components/cards/ListingCard";
+import ListingSearchFilter from "@/components/ListingSearchFilter";
+// import MultiSearchBar from "@/components/MultiSearchBar";
 
 export default {
   components: {
     ListingItemCard,
     SimpleSortBar,
-    ErrorModal
+    ErrorModal,
+    ListingSearchFilter,
+    // MultiSearchBar
   },
 
   data() {
@@ -85,6 +106,11 @@ export default {
         {key: "City A-Z", value: "city", isAscending: true},
         {key: "City Z-A", value: "city", isAscending: false}
       ],
+
+      minPrice: null,
+      maxPrice: null,
+      dates: [],
+      selectedBusinessTypes: [],
     };
   },
 
