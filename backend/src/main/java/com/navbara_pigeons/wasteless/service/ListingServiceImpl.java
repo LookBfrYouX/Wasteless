@@ -147,12 +147,13 @@ public class ListingServiceImpl implements ListingService {
       throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException {
     Listing listing = this.getListing(listingId);
 
-    this.deleteListing(listingId);
-    inventoryService.updateInventoryItemQuantity(businessId, listingId, listing.getQuantity());
-
     Transaction transaction = new Transaction(ZonedDateTime.now(), listing.getCreated(),
         listing.getInventoryItem().getProduct(), listing.getPrice());
 
     transactionService.saveTransaction(transaction);
+
+    inventoryService.updateInventoryItemFromPurchase(businessId, listing);
+
+
   }
 }
