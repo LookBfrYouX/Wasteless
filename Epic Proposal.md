@@ -94,10 +94,7 @@ listing's details page.
 AC5: The nutritional information is collapsable on the listing's details page, so that I can save
 screen real estate if I am not interested in the information.
 
-AC6: The user can choose not to use the Barcode input field and instead enter data as previously
-possible.
-
-AC7: Products can have a 'Nutrient Score' from A (being good) to E (being Bad nutritional quality).
+AC6: Products can have a 'Nutrient Score' from A (being good) to E (being Bad nutritional quality).
 This should reflect the ['Nutri-Score' rating system](https://en.wikipedia.org/wiki/Nutri-Score).
 
 AC7: Products can have a 'NOVA classification' from 1 (unprocessed) to 4 (ultra-processed). This
@@ -105,6 +102,8 @@ should reflect the [NOVA groups for food processing](https://world.openfoodfacts
 
 AC8: Products can have simple quantity measurements (low, moderate and high) for the amounts of Fat,
 Saturated Fat, Sugars and Salt in the product.
+
+AC9: By default, the results are sorted by the listings closing the soonest first.
 
 ### EU2 Search sale listings by nutrition facts
 
