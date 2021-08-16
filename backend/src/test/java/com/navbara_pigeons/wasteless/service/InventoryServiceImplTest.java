@@ -1,11 +1,10 @@
 package com.navbara_pigeons.wasteless.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
@@ -19,13 +18,16 @@ import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -35,35 +37,30 @@ import org.mockito.Mockito;
 import org.springframework.data.util.Pair;
 import org.springframework.security.test.context.support.WithMockUser;
 
-public class InventoryServiceImplTest extends ServiceTestProvider {
+class InventoryServiceImplTest extends ServiceTestProvider {
 
   @Mock
   UserDao userDaoMock;
-
   @Mock
   BusinessDao businessDaoMock;
-
   @Mock
   UserService userServiceMock;
-
   @Mock
   BusinessService businessServiceMock;
-
   @Mock
   ProductDao productDaoMock;
-
   @Mock
   ProductService productServiceMock;
-
   @Mock
   InventoryDao inventoryDaoMock;
-
+  @Mock
+  ListingService listingServiceMock;
   @InjectMocks
   InventoryServiceImpl inventoryService;
 
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  public void getInventory_isBusinessAdmin()
+  void getInventory_isBusinessAdmin()
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException, InvalidPaginationInputException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     user.setId(100);
@@ -102,14 +99,14 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser(username = EMAIL_2)
-  public void getInventory_isNotBusinessAdmin() {
+  void getInventory_isNotBusinessAdmin() {
     assertThrows(InsufficientPrivilegesException.class,
         () -> inventoryService.getInventory(1, null, null, null, true));
   }
 
   @Test
   @WithMockUser(authorities = {"ADMIN"})
-  public void getInventory_isAdmin()
+  void getInventory_isAdmin()
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException, InsufficientPrivilegesException, InvalidPaginationInputException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     user.setId(100);
@@ -148,15 +145,14 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  public void getInventory_notFound() throws BusinessNotFoundException, UserNotFoundException {
+  void getInventory_notFound() throws BusinessNotFoundException, UserNotFoundException {
     when(userServiceMock.isAdmin()).thenReturn(false);
     when(businessServiceMock.isBusinessAdmin(1000)).thenThrow(BusinessNotFoundException.class);
     assertThrows(BusinessNotFoundException.class,
         () -> inventoryService.getInventory(1000, null, null, null, true));
   }
 
-
-  public void makeInventoryTestWrapper(CreateInventoryItemDto item, boolean shouldFail)
+  void makeInventoryTestWrapper(CreateInventoryItemDto item, boolean shouldFail)
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
     Business business = makeBusiness().setId(2);
     Product product = makeProduct("ame").setId(1);
@@ -179,7 +175,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  public void invalidMakeInventory_bestBeforeBeforeManufactured()
+  void invalidMakeInventory_bestBeforeBeforeManufactured()
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
     CreateInventoryItemDto item = new CreateInventoryItemDto();
     item.setManufactured(LocalDate.now().minusDays(2));
@@ -189,7 +185,7 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  public void invalidMakeInventory_sellByBeforeBestBefore()
+  void invalidMakeInventory_sellByBeforeBestBefore()
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
     CreateInventoryItemDto item = new CreateInventoryItemDto();
     item.setSellBy(LocalDate.now().minusDays(2));
@@ -197,10 +193,9 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     makeInventoryTestWrapper(item, true);
   }
 
-
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  public void invalidMakeInventory_expiryBeforeSellBy()
+  void invalidMakeInventory_expiryBeforeSellBy()
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
     CreateInventoryItemDto item = new CreateInventoryItemDto();
     item.setExpires(LocalDate.now().minusDays(2));
@@ -208,10 +203,9 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     makeInventoryTestWrapper(item, true);
   }
 
-
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  public void invalidMakeInventory_bestBeforeBeforeExpiry()
+  void invalidMakeInventory_bestBeforeBeforeExpiry()
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
     CreateInventoryItemDto item = new CreateInventoryItemDto();
     item.setBestBefore(LocalDate.now().plusDays(4));
@@ -219,10 +213,9 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     makeInventoryTestWrapper(item, true);
   }
 
-
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  public void makeInventory_allDatesAreToday()
+  void makeInventory_allDatesAreToday()
       throws UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
     CreateInventoryItemDto item = new CreateInventoryItemDto();
     item.setExpires(LocalDate.now());
@@ -232,17 +225,72 @@ public class InventoryServiceImplTest extends ServiceTestProvider {
     makeInventoryTestWrapper(item, false);
   }
 
+  /**
+   * Helper method for testing the update inventory item method (note the items quantity is 5)
+   *
+   * @param quantity   quantity to remove from the inventory item
+   * @param shouldFail boolean to determine whether an exception should be thrown or not
+   */
+  void updateInventoryTestWrapper(Long quantity, boolean shouldFail)
+      throws BusinessNotFoundException {
+    Long mockBusinessId = 2L;
+    Long mockInventoryId = 2L;
+    Long mockInventoryQuantity = 5L;
+
+    Product mockProduct = makeProduct("Cheese");
+    Business mockBusiness = makeBusiness("Tony's Cheese");
+    mockBusiness.setId(mockBusinessId);
+    InventoryItem mockInventoryItem = makeInventoryItem(mockProduct, mockBusiness);
+    mockInventoryItem.setQuantity(mockInventoryQuantity);
+    mockInventoryItem.setId(mockInventoryId);
+    mockInventoryItem.setListings(Collections.emptyList());
+    mockBusiness.addInventoryItem(mockInventoryItem);
+
+    when(businessDaoMock.getBusinessById(mockBusinessId)).thenReturn(mockBusiness);
+    doNothing().when(listingServiceMock).deleteListing(any(Long.class));
+    doNothing().when(inventoryDaoMock).deleteInventoryItem(any(InventoryItem.class));
+    doNothing().when(inventoryDaoMock).saveInventoryItem(any(InventoryItem.class));
+
+    if (shouldFail) {
+      assertThrows(InventoryUpdateException.class, () -> inventoryService
+          .updateInventoryItemQuantity(mockBusinessId, mockInventoryId, quantity));
+    } else {
+      assertDoesNotThrow(() -> inventoryService
+          .updateInventoryItemQuantity(mockBusinessId, mockInventoryId, quantity));
+    }
+  }
+
+  @Test
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
+  void updateInventory_quantityLessThanZero()
+      throws BusinessNotFoundException {
+    updateInventoryTestWrapper(10L, true);
+  }
+
+  @Test
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
+  void updateInventory_quantityEqualToZero()
+      throws BusinessNotFoundException {
+    updateInventoryTestWrapper(5L, false);
+  }
+
+  @Test
+  @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
+  void updateInventory_quantityGreaterThenZero()
+      throws BusinessNotFoundException {
+    updateInventoryTestWrapper(1L, false);
+  }
 
   /**
-   * Tests that the inventory item is passed to the DAO delete layer - all tests mock DAO so can't really test
-   * if DAO layer works in these tests
+   * Tests that the inventory item is passed to the DAO delete layer - all tests mock DAO so can't
+   * really test if DAO layer works in these tests
    */
   @Test
   void deleteInventoryItem_sanityCheck() {
     InventoryItem item = new InventoryItem()
-            .setProduct(makeProduct("ame").setId(1))
-            .setBusiness(makeBusiness().setId(2))
-            .setId(3);
+        .setProduct(makeProduct("ame").setId(1))
+        .setBusiness(makeBusiness().setId(2))
+        .setId(3);
 
     doNothing().when(inventoryDaoMock).deleteInventoryItem(any(InventoryItem.class));
     inventoryService.deleteInventoryItem(item);
