@@ -69,7 +69,6 @@ export default {
   components: {SimpleSortBar},
   props: {
     sortItems: Array,
-    sortKeys: Array,
   },
   data() {
     return {
@@ -78,7 +77,8 @@ export default {
         selectedKeys: [],
         sortBy: "",
         isAscending: true,
-      }
+      },
+      sortKeys: ['Product Name', 'Business Name', 'Address'],
     }
   },
   methods: {
