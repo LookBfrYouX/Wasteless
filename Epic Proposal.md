@@ -72,11 +72,10 @@ stories such as implementing a calorie counter into the application.
 
 ## Stories Draft
 
-### EU1 Products with nutrition facts
+### EU1 Add product nutrition facts
 
 As an administrator of a business, I can add a product with nutrition facts and allergy information
-by entering the barcode number (EAN-13) number so that these details are visible to potential
-customers on the sales listing.
+by entering the barcode number (EAN-13) number.
 
 AC1: As a business admin, I have the option when adding a product to the catalogue to enter a
 barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) to add
@@ -85,24 +84,32 @@ nutritional information from a Food API.
 AC2: Text fields for adding a product are automatically filled with any existing data from the Food
 API. The filled-in values can be overridden by the business administer.
 
-AC3: As a logged-in user, I can view the nutritional facts of a product listed for sale on the
-listing's details page.
-
-AC4: The nutritional information is collapsable on the listing's details page, so that I can save
-screen real estate if I am not interested in the information.
-
-AC5: Products can have a 'Nutrient Score' from A (being good) to E (being Bad nutritional quality).
+AC3: Products can have a 'Nutrient Score' from A (being good) to E (being Bad nutritional quality).
 This should reflect the ['Nutri-Score' rating system](https://en.wikipedia.org/wiki/Nutri-Score).
 
-AC6: Products can have a 'NOVA classification' from 1 (unprocessed) to 4 (ultra-processed). This
+AC4: Products can have a 'NOVA classification' from 1 (unprocessed) to 4 (ultra-processed). This
 should reflect the [NOVA groups for food processing](https://world.openfoodfacts.org/nova).
 
-AC7: Products can have simple quantity measurements (low, moderate and high) for the amounts of Fat,
+AC5: Products can have simple quantity measurements (low, moderate and high) for the amounts of Fat,
 Saturated Fat, Sugars and Salt in the product.
 
-AC8: By default, the results are sorted by the listings closing the soonest first.
+#### EU2 View product nutrition facts
 
-### EU2 Search sale listings by nutrition facts
+As a potential customer, I can see nutrition facts and allergy information of a listing.
+
+AC1: As a logged-in user, I can view the nutritional facts of a product listed for sale on the
+listing's details page.
+
+AC2: As a business adminstrator, I can view the nutritional facts of any product of my business on the
+products's details page.
+
+AC3: The nutritional information is collapsable on the listing's details page, so that I can save
+screen real estate if I am not interested in the information.
+
+AC4: On the listings search page, the search results have labels depending on their allergy information
+(e.g. a gluten-free product may have a 'GF' tag next to the title)
+
+### EU3 Search sale listings by nutrition facts
 
 As a logged-in individual user, I want to search for sale listings based on nutritional information
 so that I can filter products based on my dietary needs e.g. only return results that are gluten
@@ -125,7 +132,7 @@ the product to filter by. For each nutrient I can choose from Low, Moderate, Hig
 AC5: The default filter settings are to search for **all** listings. A user should not be required
 to enter any nutritional filtering information to search.
 
-### EU3 Barcode scanning
+### EU4 Barcode scanning
 
 As an administrator of a business, I can add a product by scanning a barcode from my device so that
 I can quickly add nutritional and allergy information about a product. This builds on *EU1* which
