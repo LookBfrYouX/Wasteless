@@ -29,4 +29,6 @@ public interface ListingService {
       Double minPrice, Double maxPrice, List<LocalDate> filterDates,
       List<BusinessType> businessTypes);
 
+
+  void deleteListing(Long listingId);
 }

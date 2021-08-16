@@ -1,53 +1,83 @@
-import BusinessListings from "@/views/business/Listings";
-import {mount} from "@vue/test-utils";
+import {shallowMount} from "@vue/test-utils";
 import {Api} from "@/Api";
 import {globalStateMocks} from "#/testHelper";
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import {ApiRequestError} from "@/ApiRequestError";
+import Listings from "@/views/business/Listings";
 
 Vue.use(Vuetify);
 let vuetify = new Vuetify();
 
 const listings = {
-  results: [{id: 20, inventoryItem: {product: {images: []}}},
-    {id: 40, inventoryItem: {product: {images: []}}}],
-  totalCount: 2
-}
+  "results": [
+    {
+      "inventoryItem": {
+        "id": 1,
+        "name": "TestName",
+        "address": {}
+      },
+      "product": {
+        "images": []
+      },
+      "quantity": 20
+    },
+    {
+      "inventoryItem": {
+        "id": 2,
+        "name": "TestName",
+        "address": {}
+      },
+      "product": {},
+      "quantity": 10
+    }
+  ],
+  "totalCount": 2
+};
 
 jest.mock("@/Api");
 window.scrollTo = jest.fn()
 
 let wrapper;
 beforeEach(() => {
-  wrapper = mount(BusinessListings, {
+  wrapper = shallowMount(Listings, {
     vuetify,
     mocks: globalStateMocks(),
-    stubs: ["error-modal", "router-link"], // Add the name of the business listings item component to here
-    propsData: {
-      businessId: 1
-    }
+    stubs: ["error-modal", "router-link"]
   });
+  Api.getListings.mockResolvedValue(listings);
 });
 
 afterEach(() => wrapper.destroy());
 
-describe("API handling", () => {
-  test("Items actually get set", async () => {
-    Api.getBusinessListings.mockResolvedValue({
-      data: listings
-    });
+describe("API Handling", () => {
+  test("Listings are set", async () => {
     await wrapper.vm.getListingsPipeline();
-    expect(
-        wrapper.vm.$data.listings).toEqual(
-        listings.results);
+    expect(wrapper.vm.$data.listings).toEqual(listings.results);
   });
 
-  test("API returns error", async () => {
-    const message = "It's a Mario!";
-    Api.getBusinessListings.mockImplementation(
+  test("API Handles Error", async () => {
+    const message = "Error Message!";
+    Api.getListings.mockImplementation(
         () => Promise.reject(new ApiRequestError(message)));
     await wrapper.vm.getListingsPipeline();
     expect(wrapper.vm.apiErrorMessage).toEqual(message);
+  });
+});
+
+describe("Pagination methods correctly set values", () => {
+  test("Check data values are set", async () => {
+    await wrapper.vm.pageUpdate();
+    expect(wrapper.vm.$data.page).toEqual(1);
+    expect(wrapper.vm.$data.totalResults).toEqual(listings.totalCount);
+    expect(wrapper.vm.$data.searchParams).toBeDefined();
+    expect(wrapper.vm.$data.searchParams.sortBy).toEqual("closes");
+  });
+
+  test("Calling sortUpdate changes sort", async () => {
+    await wrapper.vm.sortUpdate("closes", false);
+    expect(wrapper.vm.$data.searchParams.sortBy).toEqual(
+        "closes")
+    expect(wrapper.vm.$data.searchParams.isAscending).toBeFalsy();
   });
 });

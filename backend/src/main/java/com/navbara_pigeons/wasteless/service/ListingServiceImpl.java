@@ -145,4 +145,15 @@ public class ListingServiceImpl implements ListingService {
     return null;
   }
 
+
+  /**
+   * Deletes a listing
+   *
+   * @param listingId of the listing to be deleted
+   */
+  @Override
+  @Transactional
+  public void deleteListing(Long listingId) {
+    this.listingDao.deleteListing(listingId);
+  }
 }
