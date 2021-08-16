@@ -85,25 +85,22 @@ nutritional information from a Food API.
 AC2: Text fields for adding a product are automatically filled with any existing data from the Food
 API. The filled-in values can be overridden by the business administer.
 
-AC3: All of the mandatory fields (see U15) must be filled-in before continuing. Otherwise, the user
-is prevented from submitting the form.
-
-AC4: As a logged-in user, I can view the nutritional facts of a product listed for sale on the
+AC3: As a logged-in user, I can view the nutritional facts of a product listed for sale on the
 listing's details page.
 
-AC5: The nutritional information is collapsable on the listing's details page, so that I can save
+AC4: The nutritional information is collapsable on the listing's details page, so that I can save
 screen real estate if I am not interested in the information.
 
-AC6: Products can have a 'Nutrient Score' from A (being good) to E (being Bad nutritional quality).
+AC5: Products can have a 'Nutrient Score' from A (being good) to E (being Bad nutritional quality).
 This should reflect the ['Nutri-Score' rating system](https://en.wikipedia.org/wiki/Nutri-Score).
 
-AC7: Products can have a 'NOVA classification' from 1 (unprocessed) to 4 (ultra-processed). This
+AC6: Products can have a 'NOVA classification' from 1 (unprocessed) to 4 (ultra-processed). This
 should reflect the [NOVA groups for food processing](https://world.openfoodfacts.org/nova).
 
-AC8: Products can have simple quantity measurements (low, moderate and high) for the amounts of Fat,
+AC7: Products can have simple quantity measurements (low, moderate and high) for the amounts of Fat,
 Saturated Fat, Sugars and Salt in the product.
 
-AC9: By default, the results are sorted by the listings closing the soonest first.
+AC8: By default, the results are sorted by the listings closing the soonest first.
 
 ### EU2 Search sale listings by nutrition facts
 
