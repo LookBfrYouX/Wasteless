@@ -97,16 +97,12 @@ Saturated Fat, Sugars and Salt in the product.
 
 As a potential customer, I can see nutrition facts and allergy information of a listing.
 
-AC1: As a logged-in user, I can view the nutritional facts of a product listed for sale on the
-listing's details page.
+AC1: I can view the nutritional facts of a product on the listing's detail and product detail page.
 
-AC2: As a business adminstrator, I can view the nutritional facts of any product of my business on the
-products's details page.
-
-AC3: The nutritional information is collapsable on the listing's details page, so that I can save
+AC2: The nutritional information is collapsable on the listing's details page, so that I can save
 screen real estate if I am not interested in the information.
 
-AC4: On the listings search page, the search results have labels depending on their allergy information
+AC3: On the listings search page, the search results have labels depending on their allergy information
 (e.g. a gluten-free product may have a 'GF' tag next to the title)
 
 ### EU3 Search sale listings by nutrition facts (5 pts)
