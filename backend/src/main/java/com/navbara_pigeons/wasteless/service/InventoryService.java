@@ -10,6 +10,7 @@ import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import javax.management.InvalidAttributeValueException;
@@ -28,5 +29,7 @@ public interface InventoryService {
   InventoryItem getInventoryItemById(long businessId, long itemId)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InventoryItemNotFoundException;
 
+  void updateInventoryItemQuantity(Long businessId, Long inventoryItemId, Long quantity)
+      throws BusinessNotFoundException, InventoryItemNotFoundException, InventoryUpdateException;
     void deleteInventoryItem(InventoryItem inventoryItem);
 }
