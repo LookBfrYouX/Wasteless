@@ -29,10 +29,16 @@
 
           <image-carousel :images="productImages"/>
           <div class="mt-2 d-inline">{{ description }}</div>
-          <button class="btn btn-primary d-flex float-right" type="button">
+          <button
+            class="btn btn-primary d-flex float-right"
+            type="button"
+            :disabled="!listingLoaded"
+            @click="buyConfirmationDialogOpen = true"
+          >
             <span class="material-icons mr-1">shopping_bag</span>
             Buy now
           </button>
+
           <div class="mt-2">RRP (each): {{
               $helper.makeCurrencyString(recommendedRetailPrice, currency)
             }}
@@ -54,6 +60,29 @@
         <div class="date mt-2">Expires: {{ $helper.isoToDateString(expires) }}</div>
       </div>
     </div>
+    
+    <v-dialog v-model="buyConfirmationDialogOpen" max-width="500px" >
+      <v-card v-if="listingLoaded" class="buy-confirmation-dialog">
+        <!-- Business information needs to be loaded; otherwise business name and address can't be accessed -->
+        <v-card-title class="text-h5">Buy this listing?
+        </v-card-title>
+        <v-card-text>
+          Buy <b>{{ quantity }} </b><b>'{{name}}'</b> from <b>'{{ business.name }}'</b> for <b>{{ $helper.makeCurrencyString(price, currency) }}?</b>
+        </v-card-text>
+        <v-spacer> </v-spacer>
+        <v-card-text>
+          Pickup will be at {{ $helper.addressToString(business.address) }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer> </v-spacer>
+          <v-btn color="blue darken-1" text @click="() => buyConfirmationDialogOpen = false">Cancel
+          </v-btn>
+          <v-btn color="blue darken-1" text @click="buyButtonClicked">Yes!</v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <error-modal
         :goBack="false"
         :hideCallback="() => apiErrorMessage = null"
@@ -78,13 +107,15 @@ export default {
   name: "ListingDetail",
   components: {
     ImageCarousel,
-    ErrorModal
+    ErrorModal,
   },
 
   data() {
     return {
+      listingLoaded: false,
       name: "",
       description: "",
+      business: null,
       productImages: [],
       quantity: null,
       price: null,
@@ -96,6 +127,7 @@ export default {
       bestBefore: "",
       expires: "",
       recommendedRetailPrice: "",
+      buyConfirmationDialogOpen: false,
       apiErrorMessage: null,
       currency: null
     }
@@ -112,34 +144,31 @@ export default {
   },
 
   beforeMount: async function () {
-    const success = await this.apiPipeline();
-    if (success) {
-      await this.loadCurrencies();
-    }
+    await this.apiPipeline();
   },
 
   methods: {
-    /**
-     * Loads currency info
-     * @return true on success
-     */
-    loadCurrencies: async function () {
-      if (!this.$stateStore.getters.isSignedIn()) {
-        return false;
-      }
+    // /**
+    //  * Loads currency info
+    //  * @return true on success
+    //  */
+    // loadCurrencies: async function () {
+    //   if (!this.$stateStore.getters.isSignedIn()) {
+    //     return false;
+    //   }
 
-      try {
-        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
-            this.$stateStore);
-      } catch (err) {
-        // If can't get currency not that big of a deal
-        if (await Api.handle401.call(this, err)) {
-          return;
-        }
-        return false;
-      }
-      return true;
-    },
+    //   try {
+    //     this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+    //         this.$stateStore);
+    //   } catch (err) {
+    //     // If can't get currency not that big of a deal
+    //     if (await Api.handle401.call(this, err)) {
+    //       return;
+    //     }
+    //     return false;
+    //   }
+    //   return true;
+    // },
 
     /**
      * Calls the API and updates the component's data with the result
@@ -182,6 +211,19 @@ export default {
             `Couldn't find listing with the ID ${this.listingId}.`);
       }
       this.name = listing.inventoryItem.product.name;
+      if (listing.business) {
+        this.business = listing.business; // NOT IN BACKEND AS OF TIME OF WRITING
+        this.currency = this.$helper.getCurrencyForBusinessByCountry(this.business.address.country);
+      } else {
+        this.business = {
+          name: "TODO BUSINESS NAME",
+          address: {
+            country: "TODO COUNTRY"
+          }
+        }
+      }
+
+      this.listingLoaded = true;
       this.description = listing.inventoryItem.product.description;
       this.productImages = listing.inventoryItem.product.images;
       this.quantity = listing.quantity;
@@ -194,6 +236,10 @@ export default {
       this.bestBefore = listing.inventoryItem.bestBefore;
       this.expires = listing.inventoryItem.expires;
       this.recommendedRetailPrice = listing.inventoryItem.product.recommendedRetailPrice;
+    },
+
+    buyButtonClicked: async function() {
+      console.log("Buy button clicked");
     }
   }
 }
@@ -205,6 +251,10 @@ export default {
 .date {
   font-size: smaller;
   display: inline-block
+}
+
+.buy-confirmation-dialog .v-card__text {
+  color: black;
 }
 
 </style>
