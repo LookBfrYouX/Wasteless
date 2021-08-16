@@ -112,6 +112,7 @@ public class InventoryServiceImpl implements InventoryService {
    * @param itemId     id of the item to be retrieved
    * @return inventory item or null
    */
+  @Transactional
   public InventoryItem getInventoryItemById(long businessId, long itemId)
       throws BusinessNotFoundException, InventoryItemNotFoundException {
     Business business = businessDao.getBusinessById(businessId);

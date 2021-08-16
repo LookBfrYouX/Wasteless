@@ -100,7 +100,7 @@ public class ListingServiceImpl implements ListingService {
    * @return The Listing
    * @throws ListingNotFoundException A listing with that id was not found
    */
-  private Listing getListing(long listingId) throws ListingNotFoundException {
+  public Listing getListing(long listingId) throws ListingNotFoundException {
     return listingDao.getListing(listingId);
   }
 
