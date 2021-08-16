@@ -6,9 +6,9 @@
       </v-flex>
 
       <v-row>
-<!--        <v-col>-->
-<!--          <MultiSearchBar sort-items="items"></MultiSearchBar>-->
-<!--        </v-col>-->
+        <v-col>
+          <multi-search-bar :sort-items="items" />
+        </v-col>
 
         <v-col>
           <ListingSearchFilter v-bind:maxPrice="maxPrice"
@@ -22,11 +22,6 @@
       </v-row>
 
       <v-layout v-if="listings.length" row>
-        <v-layout row>
-          <v-flex class="w-100 col-12 col-sm-6 col-md-4 p-4">
-            <simple-sort-bar :items="items" @update="sortUpdate"/>
-          </v-flex>
-        </v-layout>
         <v-layout row>
           <v-flex
               v-for="listing in listings"
@@ -67,18 +62,16 @@
 <script>
 import ErrorModal from "@/components/ErrorModal";
 import {Api} from "@/Api";
-import SimpleSortBar from "@/components/SimpleSortBar";
 import ListingItemCard from "@/components/cards/ListingCard";
 import ListingSearchFilter from "@/components/ListingSearchFilter";
-// import MultiSearchBar from "@/components/MultiSearchBar";
+import MultiSearchBar from "@/components/MultiSearchBar";
 
 export default {
   components: {
+    MultiSearchBar,
     ListingItemCard,
-    SimpleSortBar,
     ErrorModal,
     ListingSearchFilter,
-    // MultiSearchBar
   },
 
   data() {

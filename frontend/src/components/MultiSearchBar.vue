@@ -3,7 +3,7 @@
   <v-container fluid>
     <v-row>
       <!--    Main COL starts here  -->
-      <v-col cols="12" lg="6" class="p-2">
+      <v-col cols="12" lg="12" class="p-2">
         <v-row class="px-2">
           <!--  search 6col  -->
           <v-col cols="12" class="p-2">
