@@ -22,6 +22,12 @@
         </v-col>
       </v-row>
 
+      <v-row>
+        <div class="btn btn-primary ml-8" @click="getListingsPipeline()">
+          Search
+        </div>
+      </v-row>
+
       <v-layout v-if="listings.length" row>
         <v-layout row>
           <v-flex
