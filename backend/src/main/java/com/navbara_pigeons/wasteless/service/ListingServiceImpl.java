@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
+import com.navbara_pigeons.wasteless.dto.CreateTransactionDto;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -177,9 +178,10 @@ public class ListingServiceImpl implements ListingService {
     }
 
     // Create and save a transaction
-    Transaction transaction = new Transaction(ZonedDateTime.now(), listing.getCreated(),
+    CreateTransactionDto transactionDto = new CreateTransactionDto(ZonedDateTime.now(),
+        listing.getCreated(),
         listing.getInventoryItem().getProduct(), listing.getPrice());
-    transactionService.saveTransaction(transaction);
+    transactionService.saveTransaction(new Transaction(transactionDto));
 
     // Update inventory item quantity, delete listing & delete inventory Item when quantity reaches zero
     inventoryService.updateInventoryItemFromPurchase(businessId, listing);

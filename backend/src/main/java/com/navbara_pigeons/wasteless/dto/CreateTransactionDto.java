@@ -1,7 +1,6 @@
 package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.Transaction;
 import java.time.ZonedDateTime;
 import lombok.Data;
 
@@ -14,11 +13,12 @@ public class CreateTransactionDto {
   private Double amount;
 
 
-  public CreateTransactionDto(Transaction transaction) {
-    this.saleDate = transaction.getSaleDate();
-    this.listingDate = transaction.getListingDate();
-    this.product = transaction.getProduct();
-    this.amount = transaction.getAmount();
+  public CreateTransactionDto(ZonedDateTime saleDate, ZonedDateTime listingDate, Product product,
+      Double amount) {
+    this.saleDate = saleDate;
+    this.listingDate = listingDate;
+    this.product = product;
+    this.amount = amount;
   }
 
   public CreateTransactionDto() {

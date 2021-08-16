@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
+import com.navbara_pigeons.wasteless.dto.CreateTransactionDto;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,12 +37,11 @@ public class Transaction {
   @Column(name = "AMOUNT")
   private Double amount;
 
-  public Transaction(ZonedDateTime saleDate, ZonedDateTime listingDate, Product product,
-      Double amount) {
-    this.saleDate = saleDate;
-    this.listingDate = listingDate;
-    this.product = product;
-    this.amount = amount;
+  public Transaction(CreateTransactionDto transactionDto) {
+    this.saleDate = transactionDto.getSaleDate();
+    this.listingDate = transactionDto.getListingDate();
+    this.product = transactionDto.getProduct();
+    this.amount = transactionDto.getAmount();
   }
 
   public Transaction() {
