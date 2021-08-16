@@ -29,10 +29,11 @@
 
           <image-carousel :images="productImages"/>
           <div class="mt-2 d-inline">{{ description }}</div>
+
           <v-tooltip bottom :disabled="!$stateStore.getters.isActingAsBusiness()">
-            <template class="float-right" v-slot:activator="{ on }">
+            <template v-slot:activator="{ on }">
               <!-- https://stackoverflow.com/a/56370288 -->
-              <div v-on="on" class="d-inline">
+              <div v-on="on" class="float-right">
                 <button
                   class="btn btn-primary d-flex float-right"
                   type="button"
@@ -82,7 +83,7 @@
         </v-card-text>
         <v-spacer></v-spacer>
         <v-card-text>
-          Pickup will be at {{ $helper.addressToString(business.address) }}
+          Pickup will be at <b>{{ $helper.addressToString(business.address) }}</b>
         </v-card-text>
         <v-spacer></v-spacer>
         <v-alert type="warning" v-if="buyApiErrorMessage !== null" class="mx-4">
@@ -101,7 +102,7 @@
             class="ma-2 buy-button"
             :loading="buyApiCallOngoing"
             :disabled="buyApiCallOngoing"
-            @click="buyButtonClicked"
+            @click.stop="buyButtonClicked"
           >
             Buy
           </v-btn>
@@ -115,7 +116,7 @@
         :refresh="true"
         :retry="this.apiPipeline"
         :show="apiErrorMessage !== null"
-        title="Error fetching product information"
+        title="Error fetching listing information"
     >
       <p>{{ apiErrorMessage }}</p>
     </error-modal>
@@ -236,7 +237,7 @@ export default {
       const listing = listings.find(({id}) => id === this.listingId);
       if (listing === undefined) {
         throw new ApiRequestError(
-            `Couldn't find listing with the ID ${this.listingId}.`);
+            `Couldn't find listing with the ID '${this.listingId}'. It may have been purchased by another user`);
       }
       this.name = listing.inventoryItem.product.name;
       if (listing.business) {
@@ -286,7 +287,6 @@ export default {
 
       this.buyApiCallOngoing = false;
       this.buyApiErrorMessage = null;
-      this.buyConfirmationDialogOpen = false;
     },
 
     /**
