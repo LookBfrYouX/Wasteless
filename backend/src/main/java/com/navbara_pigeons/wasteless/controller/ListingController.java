@@ -10,6 +10,7 @@ import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.service.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,7 +60,7 @@ public class ListingController {
       @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(0) Integer pagStartIndex,
       @Parameter(description = "Pagination end index") @RequestParam(required = false) @Min(0) Integer pagEndIndex,
       @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
-      @Parameter(description = "Is Ascending") @RequestParam(required = false) Boolean isAscending,
+      @Parameter(description = "Is Ascending") @RequestParam(required = false) boolean isAscending,
       @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
       @Parameter(description = "Search value") @RequestParam(required = false) String searchParam,
       @Parameter(description = "") @RequestParam(required = false) Double minPrice,
@@ -68,6 +69,17 @@ public class ListingController {
       @Parameter(description = "") @RequestParam(required = false) List<BusinessType> businessTypes
   ) {
     log.info("GETTING LISTINGS FOR: " + searchKeys + " = " + searchParam);
+    ListingsSearchParams params = new ListingsSearchParams();
+    params.setPagStartIndex(pagStartIndex)
+        .setPagEndIndex(pagEndIndex)
+        .setSortBy(sortBy)
+        .setAscending(isAscending)
+        .setSearchKeys(searchKeys)
+        .setSearchParam(searchParam)
+        .setMinPrice(minPrice)
+        .setMaxPrice(maxPrice)
+        .setFilterDates(filterDates)
+        .setBusinessTypes(businessTypes);
     return new ResponseEntity<>(listingService.searchListings(
         pagStartIndex,
         pagEndIndex,
