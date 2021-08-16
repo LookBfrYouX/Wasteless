@@ -7,8 +7,8 @@ import {ApiRequestError} from "@/ApiRequestError";
 jest.mock("@/Api");
 let wrapper;
 
-let listingId = 57;
-let listings = {
+const listingId = 57;
+const listings = {
   "data": {
     "results": [{
       "id": listingId,
@@ -41,12 +41,30 @@ let listings = {
       "price": 17.99,
       "moreInfo": "Seller may be willing to consider near offers",
       "created": "2021-07-14T11:44:00Z",
-      "closes": "2021-07-21T23:59:00Z"
+      "closes": "2021-07-21T23:59:00Z",
+      "business": {
+        "id": 1,
+        "name": "TestName",
+        "address": {
+          "streetNumber": "STREETNUMBER",
+          "streetName": "STREETNAME",
+          "suburb": "SUBURB",
+          "postcode": "POSTCODE",
+          "city": "CITY",
+          "region": "REGION",
+          "country": "COUNTRY"
+        },
+      }
     }]
   }
 };
 
+
+
 beforeEach(() => {
+  jest.clearAllMocks();
+
+  Api.getBusinessListings = jest.fn().mockResolvedValue(listings);
   wrapper = shallowMount(ListingDetail, {
     propsData: {
       businessId: 1,
@@ -61,54 +79,86 @@ beforeEach(() => {
 
 afterEach(() => wrapper.destroy());
 
-describe("Test currencies", () => {
-  test("Fail Not Signed In", async () => {
-    wrapper.vm.$stateStore.getters.isSignedIn = () => false;
+// describe("Test currencies", () => {
+//   test("Fail Not Signed In", async () => {
+//     wrapper.vm.$stateStore.getters.isSignedIn = () => false;
 
-    expect(await wrapper.vm.loadCurrencies()).toEqual(false);
-  });
+//     expect(await wrapper.vm.loadCurrencies()).toEqual(false);
+//   });
 
-  test("Fail, expect 'return;'", async () => {
-    wrapper.vm.$stateStore.getters.isSignedIn = () => true;
-    wrapper.vm.$helper.getCurrencyForBusiness = () => {
-      throw new Error()
-    };
-    Api.handle401.call = () => true;
+//   test("Fail, expect 'return;'", async () => {
+//     wrapper.vm.$stateStore.getters.isSignedIn = () => true;
+//     wrapper.vm.$helper.getCurrencyForBusiness = () => {
+//       throw new Error()
+//     };
+//     Api.handle401.call = () => true;
 
-    // Nothing returned
-    expect(await wrapper.vm.loadCurrencies()).toEqual(undefined);
-  });
+//     // Nothing returned
+//     expect(await wrapper.vm.loadCurrencies()).toEqual(undefined);
+//   });
 
-  test("Fail, expect Api handle fails", async () => {
-    wrapper.vm.$stateStore.getters.isSignedIn = () => true;
-    wrapper.vm.$helper.getCurrencyForBusiness = () => {
-      throw new Error()
-    };
-    Api.handle401.call = () => false;
+//   test("Fail, expect Api handle fails", async () => {
+//     wrapper.vm.$stateStore.getters.isSignedIn = () => true;
+//     wrapper.vm.$helper.getCurrencyForBusiness = () => {
+//       throw new Error()
+//     };
+//     Api.handle401.call = () => false;
 
-    expect(await wrapper.vm.loadCurrencies()).toEqual(false);
-  });
+//     expect(await wrapper.vm.loadCurrencies()).toEqual(false);
+//   });
 
-  test("Success", async () => {
-    const mockCurrency = "NZD";
-    wrapper.vm.$stateStore.getters.isSignedIn = () => true;
-    wrapper.vm.$helper.getCurrencyForBusiness = () => mockCurrency;
+//   test("Success", async () => {
+//     const mockCurrency = "NZD";
+//     wrapper.vm.$stateStore.getters.isSignedIn = () => true;
+//     wrapper.vm.$helper.getCurrencyForBusiness = () => mockCurrency;
 
-    expect(await wrapper.vm.loadCurrencies()).toEqual(true);
-    expect(wrapper.vm.$data.currency).toEqual(mockCurrency)
-  });
-});
+//     expect(await wrapper.vm.loadCurrencies()).toEqual(true);
+//     expect(wrapper.vm.$data.currency).toEqual(mockCurrency)
+//   });
+// });
 
-describe("ParseAPI", () => {
+
+describe("Get listings API call", () => {
   test("Expect success", async () => {
     // Expect no error thrown
-    expect(await wrapper.vm.parseApiResponse(Promise.resolve(listings))).toBe(undefined);
+    await wrapper.vm.$nextTick();
+    expect(Api.getBusinessListings.mock.calls.length).toBe(1);
   });
 
-  test("Undefined listing, expect ApiRequestError", async () => {
-    // Expect error thrown
-    listings = Promise.resolve({data: {results: []}});
+  test("API failure", async () => {
+    // Expect no error thrown
+    await wrapper.vm.$nextTick();
+    Api.getBusinessListings = jest.fn().mockImplementation(() => Promise.reject(
+        new ApiRequestError("ERR TEXT")
+    ));
+    await wrapper.vm.apiPipeline();
+    await wrapper.vm.$nextTick();
+    expect(Api.getBusinessListings.mock.calls.length).toBe(1);
+    expect(wrapper.vm.apiErrorMessage).toBe("ERR TEXT");
+  });
 
-    await expect(wrapper.vm.parseApiResponse(listings)).rejects.toThrow(ApiRequestError);
+
+  test("listing not found, expect ApiRequestError", async () => {
+    // Expect error thrown
+    await expect(
+        wrapper.vm.parseApiResponse(Promise.resolve({data: {results: []}}))
+    ).rejects.toThrow(ApiRequestError);
+  });
+
+  // Currency/business information sent with listing information
+  test("Currency parsed correctly", async () => {
+    const mockCurrency = {
+      "code": "FAB",
+      "name": "Fabulous Fabian",
+      "symbol": "F"
+    };
+
+    wrapper.vm.$helper.getCurrencyForBusinessByCountry = jest.fn().mockReturnValue(mockCurrency);
+    await wrapper.vm.apiPipeline();
+    // ApiPipeline called in lifecycle so can't mock calls before the method is called. Hence, need to run it twice
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$helper.getCurrencyForBusinessByCountry.mock.calls.length).toBe(1);
+    expect(wrapper.vm.$helper.getCurrencyForBusinessByCountry.mock.calls[0][0]).toBe("COUNTRY");
+    expect(wrapper.vm.currency).toEqual(mockCurrency);
   });
 });

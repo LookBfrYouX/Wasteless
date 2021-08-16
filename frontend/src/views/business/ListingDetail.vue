@@ -30,14 +30,14 @@
           <image-carousel :images="productImages"/>
           <div class="mt-2 d-inline">{{ description }}</div>
 
-          <v-tooltip bottom :disabled="!$stateStore.getters.isActingAsBusiness()">
+          <v-tooltip bottom :disabled="!$stateStore.getters.isActingAsBusiness() && !listingWasPurchased">
             <template v-slot:activator="{ on }">
               <!-- https://stackoverflow.com/a/56370288 -->
               <div v-on="on" class="float-right">
                 <button
                   class="btn btn-primary d-flex float-right"
                   type="button"
-                  :disabled="!listingLoaded || $stateStore.getters.isActingAsBusiness()"
+                  :disabled="!listingLoaded || listingWasPurchased || $stateStore.getters.isActingAsBusiness()"
                   v-on="on"
                   @click="openConfirmationDialog"
                 >
@@ -46,8 +46,11 @@
                 </button>
               </div>
             </template>
-            <span class="text-grey">
+            <span class="text-grey" v-if="$stateStore.getters.isActingAsBusiness()">
               You cannot buy an item while acting as a business
+            </span>
+            <span class="text-grey" v-else-if="listingWasPurchased">
+              This listing has been purchased
             </span>
           </v-tooltip>
 
@@ -139,7 +142,6 @@ export default {
 
   data() {
     return {
-      listingLoaded: false,
       name: "",
       description: "",
       business: null,
@@ -154,11 +156,15 @@ export default {
       bestBefore: "",
       expires: "",
       recommendedRetailPrice: "",
+      
+      currency: null,
+
+      listingLoaded: false,
       buyConfirmationDialogOpen: false,
       apiErrorMessage: null,
-      currency: null,
       buyApiCallOngoing: false,
       buyApiErrorMessage: null,
+      listingWasPurchased: false
     }
   },
   props: {
@@ -177,28 +183,6 @@ export default {
   },
 
   methods: {
-    // /**
-    //  * Loads currency info
-    //  * @return true on success
-    //  */
-    // loadCurrencies: async function () {
-    //   if (!this.$stateStore.getters.isSignedIn()) {
-    //     return false;
-    //   }
-
-    //   try {
-    //     this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
-    //         this.$stateStore);
-    //   } catch (err) {
-    //     // If can't get currency not that big of a deal
-    //     if (await Api.handle401.call(this, err)) {
-    //       return;
-    //     }
-    //     return false;
-    //   }
-    //   return true;
-    // },
-
     /**
      * Calls the API and updates the component's data with the result
      * Does not run pipeline if user should not be able to edit business
@@ -287,6 +271,7 @@ export default {
 
       this.buyApiCallOngoing = false;
       this.buyApiErrorMessage = null;
+      this.listingWasPurchased = true;
     },
 
     /**
