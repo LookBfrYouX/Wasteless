@@ -14,6 +14,7 @@ import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
+import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -138,10 +139,8 @@ public class ListingServiceImpl implements ListingService {
    * @return PaginationDto containing search results.
    */
   @Override
-  public PaginationDto<FullListingDto> searchListings(Integer pagStartIndex, Integer pagEndIndex,
-      ListingSortByOption sortBy, boolean isAscending, List searchKeys, String searchValue,
-      Double minPrice, Double maxPrice, List<LocalDate> filterDates,
-      List<BusinessType> businessTypes) {
+  public PaginationDto<FullListingDto> searchListings(ListingsSearchParams params) {
+    System.out.println(params.toString());
     return null;
   }
 

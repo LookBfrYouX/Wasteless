@@ -80,18 +80,7 @@ public class ListingController {
         .setMaxPrice(maxPrice)
         .setFilterDates(filterDates)
         .setBusinessTypes(businessTypes);
-    return new ResponseEntity<>(listingService.searchListings(
-        pagStartIndex,
-        pagEndIndex,
-        sortBy,
-        isAscending,
-        searchKeys,
-        searchParam,
-        minPrice,
-        maxPrice,
-        filterDates,
-        businessTypes
-    ), HttpStatus.OK);
+    return new ResponseEntity<>(listingService.searchListings(params), HttpStatus.OK);
   }
 
   /**
