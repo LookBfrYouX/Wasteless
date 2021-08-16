@@ -11,6 +11,7 @@ import com.navbara_pigeons.wasteless.exception.InvalidMarketListingSectionExcept
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
@@ -137,11 +138,24 @@ public class ControllerExceptionHandler {
   }
 
   @ExceptionHandler(InventoryItemNotFoundException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
   public ResponseEntity<String> handleInventoryItemNotFoundException(
       InventoryItemNotFoundException exc) {
-    log.error("INVENTORY ITEM ERROR: 406 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+    log.error("INVENTORY ITEM ERROR: 404 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_FOUND);
+  }
+
+  /**
+   * This is the exception handler for ListingNotFoundException.
+   *
+   * @param exc The thrown exception
+   * @return ResponseEntity with the exception message
+   */
+  @ExceptionHandler(ListingNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ResponseEntity<String> handleListingNotFoundException(ListingNotFoundException exc) {
+    log.error("LISTING NOT FOUND ERROR: 404 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_FOUND);
   }
 
   /**

@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
+import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
@@ -91,7 +92,14 @@ public class ListingServiceImpl implements ListingService {
     return listing.getId();
   }
 
-  private Listing getListing(long listingId) {
+  /**
+   * Get a specific listing from its identifier
+   *
+   * @param listingId The specific identifier of the listing
+   * @return The Listing
+   * @throws ListingNotFoundException A listing with that id was not found
+   */
+  private Listing getListing(long listingId) throws ListingNotFoundException {
     return listingDao.getListing(listingId);
   }
 
@@ -157,14 +165,14 @@ public class ListingServiceImpl implements ListingService {
   @Override
   @Transactional
   public void purchaseListing(long businessId, long listingId)
-      throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException {
+      throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException, ListingNotFoundException {
     Listing listing = this.getListing(listingId);
 
     // Check if there is a mismatch between passed in businessId and the listing's businessId
     long listingsBusinessId = listing.getInventoryItem().getBusiness().getId();
     if (listingsBusinessId != businessId) {
       throw new BusinessAndListingMismatchException(String.format(
-          "Listing ans Business mismatch, passed in businessId %d not equal to owners businessId %d",
+          "Listing ans Business mismatch, passed in businessId %d is not equal to owners businessId %d",
           businessId, listingsBusinessId));
     }
 
