@@ -97,7 +97,8 @@ Saturated Fat, Sugars and Salt in the product.
 
 As a potential customer, I can see nutrition facts and allergy information of a listing.
 
-AC1: I can view the nutritional facts of a product on the listing's detail and product detail page.
+AC1: As a logged-in user, I can view the nutritional facts of a product listed for sale on the
+listing's details page.
 
 AC2: The nutritional information is collapsable on the listing's details page, so that I can save
 screen real estate if I am not interested in the information.
