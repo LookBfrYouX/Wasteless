@@ -26,3 +26,10 @@ Feature: U31 Purchases
 #  AC5: Information about the sale (e.g. sale date, listing date, product, amount, number of likes, …)
 #  is recorded in a sales history for the seller’s business.
 #  Note: in future stories we may wish to analyse this information to help businesses to understand and improve their processes.
+  Scenario: AC5 - On listing purchase, transaction is created
+    Given A business owner has a business named "Count Up"
+    And the business has a product "Pineapple Juice" with price 3.99 and manufacturer "We make PJ"
+    And the business has 6 of them with a total price of 23.00
+    And there are 2 listings for 3 of the products with a price of 11.40 for each listing
+    When A user purchases one of the listings
+    Then A transaction is created with a valid Id

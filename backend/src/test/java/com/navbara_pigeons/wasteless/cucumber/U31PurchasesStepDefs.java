@@ -1,6 +1,5 @@
 package com.navbara_pigeons.wasteless.cucumber;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,6 +23,7 @@ public class U31PurchasesStepDefs extends CucumberTestProvider {
   private long productId;
   private long inventoryItemId;
   private long listingId;
+  private long transactionId;
 
   @Given("A business owner has a business named {string}")
   public void aBusinessOwnerHasABusinessNamed(String businessName) throws Exception {
@@ -94,9 +94,13 @@ public class U31PurchasesStepDefs extends CucumberTestProvider {
 
   @When("A user purchases one of the listings")
   public void aUserPurchasesOneOfTheListings() throws Exception {
-    mockMvc.perform(delete(
-        String.format("/businesses/%d/listings/%d/purchase", businessId, listingId)
-    ));
+    JsonNode response = makePostRequestGetJson(
+        String.format("/businesses/%d/listings/%d/purchase", businessId, listingId),
+        null,
+        status().isOk()
+    );
+
+    transactionId = response.get("transactionId").asLong();
   }
 
   @Then("the corresponding inventory-item's quantity decreases by the correct amount")
@@ -113,5 +117,10 @@ public class U31PurchasesStepDefs extends CucumberTestProvider {
         ListingNotFoundException.class,
         () -> listingService.getListing(listingId)
     );
+  }
+
+  @Then("A transaction is created with a valid Id")
+  public void aTransactionIsCreatedWithAValidId() {
+    Assertions.assertTrue(transactionId > 0);
   }
 }

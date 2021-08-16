@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
+import com.navbara_pigeons.wasteless.dto.purchaseDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
@@ -22,7 +23,6 @@ import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -118,17 +118,17 @@ public class ListingController {
    * is then removed and a transactional log is kept.
    *
    * @param listingId The identifier of the listing to be purchased
-   * @return String specifying that the purchase was successful
+   * @return The identifier of the stored transaction
    */
-  @DeleteMapping("/businesses/{businessId}/listings/{listingId}/purchase")
+  @PostMapping("/businesses/{businessId}/listings/{listingId}/purchase")
   @Operation(summary = "Purchase a specific listing", description = "Purchase a specific listing, record the transaction and delete the purchased listing")
-  public ResponseEntity<String> purchaseListing(
+  public ResponseEntity<purchaseDto> purchaseListing(
       @Parameter(description = "The identifier of the business that the listing belongs to") @PathVariable long businessId,
       @Parameter(description = "The identifier of the listing to be purchased") @PathVariable long listingId
   )
       throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException, ListingNotFoundException {
     log.info("PURCHASING LISTING WITH ID " + listingId);
-    listingService.purchaseListing(businessId, listingId);
-    return new ResponseEntity<>("Successfully purchases listing " + listingId, HttpStatus.OK);
+    return new ResponseEntity<>(listingService.purchaseListing(businessId, listingId),
+        HttpStatus.OK);
   }
 }

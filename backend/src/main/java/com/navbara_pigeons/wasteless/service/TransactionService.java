@@ -4,5 +4,5 @@ import com.navbara_pigeons.wasteless.entity.Transaction;
 
 public interface TransactionService {
 
-  void saveTransaction(Transaction transaction);
+  Long saveTransaction(Transaction transaction);
 }

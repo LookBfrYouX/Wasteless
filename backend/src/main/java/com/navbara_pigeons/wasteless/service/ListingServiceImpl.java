@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.CreateTransactionDto;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
+import com.navbara_pigeons.wasteless.dto.purchaseDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Transaction;
@@ -156,6 +157,7 @@ public class ListingServiceImpl implements ListingService {
    *
    * @param businessId The identifier of the business that owns the listing.
    * @param listingId  The identifier of the listing to be purchased.
+   * @return The identifier of the stored transaction
    * @throws InventoryItemNotFoundException      An associated inventory item could not be found
    * @throws BusinessNotFoundException           An associated business could not be found
    * @throws InventoryUpdateException            The quantity of the inventory item reached bellow
@@ -165,7 +167,7 @@ public class ListingServiceImpl implements ListingService {
    */
   @Override
   @Transactional
-  public void purchaseListing(long businessId, long listingId)
+  public purchaseDto purchaseListing(long businessId, long listingId)
       throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException, ListingNotFoundException {
     Listing listing = this.getListing(listingId);
 
@@ -181,9 +183,11 @@ public class ListingServiceImpl implements ListingService {
     CreateTransactionDto transactionDto = new CreateTransactionDto(ZonedDateTime.now(),
         listing.getCreated(),
         listing.getInventoryItem().getProduct(), listing.getPrice());
-    transactionService.saveTransaction(new Transaction(transactionDto));
+    Long transactionId = transactionService.saveTransaction(new Transaction(transactionDto));
 
     // Update inventory item quantity, delete listing & delete inventory Item when quantity reaches zero
     inventoryService.updateInventoryItemFromPurchase(businessId, listing);
+
+    return new purchaseDto(transactionId);
   }
 }
