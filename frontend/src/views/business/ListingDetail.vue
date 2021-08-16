@@ -38,7 +38,7 @@
                   type="button"
                   :disabled="!listingLoaded || $stateStore.getters.isActingAsBusiness()"
                   v-on="on"
-                  @click="buyConfirmationDialogOpen = true"
+                  @click="openConfirmationDialog"
                 >
                   <span class="material-icons mr-1">shopping_bag</span>
                   Buy now
@@ -46,7 +46,7 @@
               </div>
             </template>
             <span class="text-grey">
-              You cannot purchase an item while acting as a business
+              You cannot buy an item while acting as a business
             </span>
           </v-tooltip>
 
@@ -72,7 +72,7 @@
       </div>
     </div>
     
-    <v-dialog v-model="buyConfirmationDialogOpen" max-width="500px" >
+    <v-dialog v-model="buyConfirmationDialogOpen" max-width="500px">
       <v-card v-if="listingLoaded" class="buy-confirmation-dialog">
         <!-- Business information needs to be loaded; otherwise business name and address can't be accessed -->
         <v-card-title class="text-h5">Buy this listing?
@@ -80,16 +80,31 @@
         <v-card-text>
           Buy <b>{{ quantity }} </b><b>'{{name}}'</b> from <b>'{{ business.name }}'</b> for <b>{{ $helper.makeCurrencyString(price, currency) }}?</b>
         </v-card-text>
-        <v-spacer> </v-spacer>
+        <v-spacer></v-spacer>
         <v-card-text>
           Pickup will be at {{ $helper.addressToString(business.address) }}
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="() => buyConfirmationDialogOpen = false">Cancel
+        <v-spacer></v-spacer>
+        <v-alert type="warning" v-if="buyApiErrorMessage !== null" class="mx-4">
+          {{buyApiErrorMessage}}
+        </v-alert>
+        <v-card-actions class="justify-content-around">
+          <v-btn
+            class="cancel-button"
+            color="grey darken-4"
+            text
+            @click="() => buyConfirmationDialogOpen = false"
+          >
+            Cancel
           </v-btn>
-          <v-btn color="blue darken-1" text @click="buyButtonClicked">Yes</v-btn>
-          <v-spacer></v-spacer>
+          <v-btn
+            class="ma-2 buy-button"
+            :loading="buyApiCallOngoing"
+            :disabled="buyApiCallOngoing"
+            @click="buyButtonClicked"
+          >
+            Buy
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -140,7 +155,9 @@ export default {
       recommendedRetailPrice: "",
       buyConfirmationDialogOpen: false,
       apiErrorMessage: null,
-      currency: null
+      currency: null,
+      buyApiCallOngoing: false,
+      buyApiErrorMessage: null,
     }
   },
   props: {
@@ -249,17 +266,36 @@ export default {
       this.recommendedRetailPrice = listing.inventoryItem.product.recommendedRetailPrice;
     },
 
+    /**
+     * Handles API call to buy product and its error handling
+     */
     buyButtonClicked: async function() {
-      console.log("Buy button clicked");
+      this.buyApiCallOngoing = true;
+      
+      await new Promise(resolve => setTimeout(resolve, 1000));
       try {
-        await this.$api.purchaseListing(this.businessId, this.listingId);
+        await Api.buyListing(this.businessId, this.listingId);
       } catch(err) {
-        if (await this.$api.handle401.call(this, err)) {
+        this.buyApiCallOngoing = false;
+        if (await Api.handle401.call(this, err)) {
           return;
         }
-
-        console.log(err);
+        this.buyApiErrorMessage = err.userFacingErrorMessage;
+        return;
       }
+
+      this.buyApiCallOngoing = false;
+      this.buyApiErrorMessage = null;
+      this.buyConfirmationDialogOpen = false;
+    },
+
+    /**
+     * Open buy listing confirmation dialog and reset its state
+     */
+    openConfirmationDialog() {
+      this.buyApiCallOngoing = false;
+      this.buyApiErrorMessage = null;
+      this.buyConfirmationDialogOpen = true;
     }
   }
 }
@@ -275,6 +311,11 @@ export default {
 
 .buy-confirmation-dialog .v-card__text {
   color: black;
+}
+
+.buy-confirmation-dialog .buy-button {
+  background-color: var(--primary);
+  color: white;
 }
 
 </style>
