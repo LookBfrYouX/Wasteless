@@ -13,7 +13,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ListingDaoHibernateImpl implements ListingDao {
+public class ListingDaoHibernateImpl implements ListingDaoHibernate {
 
   private final EntityManager entityManager;
 

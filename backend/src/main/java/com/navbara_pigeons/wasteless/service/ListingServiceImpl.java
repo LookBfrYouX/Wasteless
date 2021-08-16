@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
+import com.navbara_pigeons.wasteless.dao.specifications.ListingSpecifications;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -124,24 +125,16 @@ public class ListingServiceImpl implements ListingService {
     return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
 
-  /**
-   *
-   * @param pagStartIndex Pagination start index.
-   * @param pagEndIndex Pagination end index.
-   * @param sortBy Sort by term. (sort)
-   * @param isAscending (sort)
-   * @param searchKeys A list of keys to sort by. E.g. business name, product name, etc. (search)
-   * @param searchValue The search term. (search)
-   * @param minPrice Minimum price of listing. (filter)
-   * @param maxPrice Maximum price of listing. (filter)
-   * @param filterDates One date if max date, two if range. (filter)
-   * @param businessTypes Types of business to filter by. (filter)
-   * @return PaginationDto containing search results.
-   */
+
   @Override
-  public PaginationDto<FullListingDto> searchListings(ListingsSearchParams params) {
+  @Transactional
+  public List<FullListingDto> searchListings(ListingsSearchParams params) {
     System.out.println(params.toString());
-    return null;
+    ArrayList<FullListingDto> listings = new ArrayList<>();
+    for (Listing listing : listingDao.findAll(ListingSpecifications.meetsSearchCriteria(params))) {
+      listings.add(new FullListingDto(listing, this.publicPathPrefix));
+    }
+    return listings;
   }
 
 
