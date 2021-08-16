@@ -1,9 +1,6 @@
 package com.navbara_pigeons.wasteless.dao.specifications;
 
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.InventoryItem;
-import com.navbara_pigeons.wasteless.entity.Listing;
-import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.entity.*;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import java.util.ArrayList;
 import javax.persistence.criteria.Join;
@@ -19,6 +16,7 @@ public class ListingSpecifications {
       Join<Listing, InventoryItem> inventoryItemJoin = root.join("inventoryItem");
       Join<Product, InventoryItem> productInventoryItemJoin = inventoryItemJoin.join("product");
       Join<Business, InventoryItem> businessInventoryItemJoin = inventoryItemJoin.join("business");
+      Join<Address, Business> addressBusinessJoin = businessInventoryItemJoin.join("address");
       ArrayList<Predicate> predicates = new ArrayList<>();
       if (params.getSearchKeys().contains("Product Name")) {
         predicates.add(criteriaBuilder.like(productInventoryItemJoin.get("name"), "%" + params.getSearchParam() + "%"));
@@ -26,7 +24,11 @@ public class ListingSpecifications {
       if (params.getSearchKeys().contains("Business Name")) {
         predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("name"), "%" + params.getSearchParam() + "%"));
       }
-
+      if (params.getSearchKeys().contains("Address")) {
+        Predicate countrySearch = criteriaBuilder.like(addressBusinessJoin.get("country"), "%" + params.getSearchParam() + "%");
+        Predicate citySearch = criteriaBuilder.like(addressBusinessJoin.get("city"), "%" + params.getSearchParam() + "%");
+        predicates.add(criteriaBuilder.or(countrySearch, citySearch));
+      }
       return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     };
   }
