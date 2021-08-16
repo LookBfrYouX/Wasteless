@@ -7,6 +7,7 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Transaction;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
+import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
@@ -141,19 +142,38 @@ public class ListingServiceImpl implements ListingService {
     this.listingDao.deleteListing(listingId);
   }
 
+  /**
+   * Purchase a listing from a specific business then save purchase details in a transaction.
+   *
+   * @param businessId The identifier of the business that owns the listing.
+   * @param listingId  The identifier of the listing to be purchased.
+   * @throws InventoryItemNotFoundException      An associated inventory item could not be found
+   * @throws BusinessNotFoundException           An associated business could not be found
+   * @throws InventoryUpdateException            The quantity of the inventory item reached bellow
+   *                                             zero. Invalid State.
+   * @throws BusinessAndListingMismatchException There is a mismatch between passed in businessId
+   *                                             and the listing's businessId
+   */
   @Override
   @Transactional
   public void purchaseListing(long businessId, long listingId)
-      throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException {
+      throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException {
     Listing listing = this.getListing(listingId);
 
+    // Check if there is a mismatch between passed in businessId and the listing's businessId
+    long listingsBusinessId = listing.getInventoryItem().getBusiness().getId();
+    if (listingsBusinessId != businessId) {
+      throw new BusinessAndListingMismatchException(String.format(
+          "Listing ans Business mismatch, passed in businessId %d not equal to owners businessId %d",
+          businessId, listingsBusinessId));
+    }
+
+    // Create and save a transaction
     Transaction transaction = new Transaction(ZonedDateTime.now(), listing.getCreated(),
         listing.getInventoryItem().getProduct(), listing.getPrice());
-
     transactionService.saveTransaction(transaction);
 
+    // Update inventory item quantity, delete listing & delete inventory Item when quantity reaches zero
     inventoryService.updateInventoryItemFromPurchase(businessId, listing);
-
-
   }
 }

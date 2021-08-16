@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.controller;
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
+import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
@@ -123,7 +124,8 @@ public class ListingController {
   public ResponseEntity<String> purchaseListing(
       @Parameter(description = "The identifier of the business that the listing belongs to") @PathVariable long businessId,
       @Parameter(description = "The identifier of the listing to be purchased") @PathVariable long listingId
-  ) throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException {
+  )
+      throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException {
     log.info("PURCHASING LISTING WITH ID " + listingId);
     listingService.purchaseListing(businessId, listingId);
     return new ResponseEntity<>("Successfully purchases listing " + listingId, HttpStatus.OK);

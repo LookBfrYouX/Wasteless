@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
+import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
@@ -64,7 +65,21 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(BusinessNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
   public ResponseEntity<String> handleBusinessNotFoundException(BusinessNotFoundException exc) {
-    log.error("BUSINESS NOT FOUND: 406 - " + exc.getMessage());
+    log.error("BUSINESS NOT FOUND: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * This is the exception handler for BusinessAndListingMismatchException.
+   *
+   * @param exc The thrown exception
+   * @return ResponseEntity with the exception message
+   */
+  @ExceptionHandler(BusinessAndListingMismatchException.class)
+  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+  public ResponseEntity<String> handleBusinessAndListingMismatchException(
+      BusinessAndListingMismatchException exc) {
+    log.error("BUSINESS AND LISTING MISMATCH: 406 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_ACCEPTABLE);
   }
 
