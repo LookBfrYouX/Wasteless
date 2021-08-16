@@ -73,7 +73,7 @@ stories such as implementing a calorie counter into the application.
 
 ### EU1 Products with nutrition facts
 
-As an administrator of a business, when I add a product, I can add nutrition and alergy information from a Food API by manually entering the barcode number (EAN-13) number, so that the nutrition information is visible to potential customers on the sales listings.
+As an administrator of a business, I can add a product with nutrition facts and allergy information by entering the barcode number (EAN-13) number so that these details are visible to potential customers on the sales listing.
 
 AC1: As a business admin, I can enter a barcode number ([EAN-13](https://en.wikipedia.org/wiki/International_Article_Number)) in a text field to add nutrition facts from a food API to my product.
 
@@ -98,14 +98,13 @@ Pop-up on clicking the sales listing card or any suitable interaction will revea
 
 *Note: Future stories may include an upvote/downvote feature for the products' dietary tags. For example, users could 'upvote' a product as 'vegan' if they believe it is vegan or vice-versa if it is not.*
 
-
 ### EU2 Search sale listings by nutrition facts
 
-As a logged-in individual user, I want to search for sale listings based on the nutrition facts of the product. E.g. Only return results that are Gluten Free.
+As a logged-in individual user, I want to search for sale listings based on nutritional information so that I can filter products based on my dietary needs e.g. only return results that are gluten free.
 
 ### EU3 Barcode scanning
 
-As an administrator of a business, I can add a product by either scanning a barcode from my device or by inputting a barcode number (EAN-13) manually. This is so that I can quickly add products and their nutritional information
+As an administrator of a business, I can add a product by scanning a barcode from my device so that I can quickly add nutritional and allergy information about a product. This builds on *EU1* which requires me to type in the barcode manually.
 
 ## API changes
 
