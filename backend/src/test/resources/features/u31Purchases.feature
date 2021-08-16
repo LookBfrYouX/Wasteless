@@ -13,9 +13,15 @@ Feature: U31 Purchases
     And there are 2 listings for 3 of the products with a price of 11.40 for each listing
     When A user purchases one of the listings
     Then the corresponding inventory-item's quantity decreases by the correct amount
-    And the inventory-item's listing no longer exists
 
 #  AC4: The sale listing is removed and will not appear in future searches (see U29).
+  Scenario: AC4 - On listing purchase, listing is removed
+    Given A business owner has a business named "Old World"
+    And the business has a product "Apple Juice" with price 3.99 and manufacturer "We make AJ"
+    And the business has 6 of them with a total price of 23.00
+    And there are 2 listings for 3 of the products with a price of 11.40 for each listing
+    When A user purchases one of the listings
+    Then the inventory-item's listing no longer exists
 
 #  AC5: Information about the sale (e.g. sale date, listing date, product, amount, number of likes, …)
 #  is recorded in a sales history for the seller’s business.

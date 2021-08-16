@@ -107,7 +107,7 @@ public class U31PurchasesStepDefs extends CucumberTestProvider {
     Assertions.assertEquals(3, inventoryItem.getQuantity());
   }
 
-  @And("the inventory-item's listing no longer exists")
+  @Then("the inventory-item's listing no longer exists")
   public void theInventoryItemSListingNoLongerExists() {
     Assertions.assertThrows(
         ListingNotFoundException.class,
