@@ -3,10 +3,10 @@
   <v-container fluid>
     <v-row>
       <!--    Main COL starts here  -->
-      <v-col cols="12" lg="12" class="p-2">
-        <v-row class="px-2">
+      <v-col cols="12" lg="12">
+        <v-row>
           <!--  search 6col  -->
-          <v-col cols="12" class="p-2">
+          <v-col cols="12">
             <v-subheader>Search businesses</v-subheader>
             <v-text-field
                 class="col-12"
@@ -19,9 +19,9 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-row class="px-2">
+        <v-row>
           <!--  keys 6col  -->
-          <v-col cols="12" lg="6" class="p-2">
+          <v-col cols="12" lg="6">
             <v-subheader>Search By</v-subheader>
             <v-select
                 :items="sortKeys"
@@ -29,13 +29,12 @@
                 chips
                 dense
                 label="Search By"
-                prepend-inner-icon="check"
                 multiple
                 solo
                 @change="doUpdate"
             >
                 <template v-slot:selection="{ item, index }">
-                  <v-chip v-if="index === 0">
+                  <v-chip v-if="index === 0" small>
                     <span>{{ item }}</span>
                   </v-chip>
                   <span
@@ -48,7 +47,7 @@
             </v-select>
           </v-col>
           <!--  sort 6col  -->
-          <v-col cols="12" lg="6" class="p-2">
+          <v-col cols="12" lg="6">
             <v-subheader>Sort</v-subheader>
             <simple-sort-bar
                 :items="sortItems"
@@ -109,5 +108,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

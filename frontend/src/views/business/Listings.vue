@@ -6,17 +6,18 @@
       </v-flex>
 
       <v-row>
-        <v-col>
-          <multi-search-bar :sort-items="items" />
+        <v-col cols="12" md="6">
+          <multi-search-bar :sort-items="items"
+                            @multi-search-bar-update="event => Object.assign(this.searchParams, event)"/>
         </v-col>
 
-        <v-col>
-          <ListingSearchFilter v-bind:maxPrice="maxPrice"
-                               v-bind:minPrice="minPrice"
-                               @newTypes="event => this.selectedBusinessTypes = event"
-                               @newMin="event => this.minPrice = event ? parseFloat(event) : null"
-                               @newMax="event => this.maxPrice = event ? parseFloat(event) : null"
-                               @newDates="event => this.dates = event"
+        <v-col cols="12" md="6">
+          <ListingSearchFilter v-bind:maxPrice="searchParams.maxPrice"
+                               v-bind:minPrice="searchParams.minPrice"
+                               @newTypes="event => this.searchParams.selectedBusinessTypes = event"
+                               @newMin="event => this.searchParams.minPrice = event ? parseFloat(event) : null"
+                               @newMax="event => this.searchParams.maxPrice = event ? parseFloat(event) : null"
+                               @newDates="event => this.searchParams.dates = event"
           ></ListingSearchFilter>
         </v-col>
       </v-row>
@@ -79,12 +80,6 @@ export default {
       page: 1, // The default starting page.
       itemsPerPage: this.$constants.SORTED_PAGINATED_ITEM_LIST.RESULTS_PER_LISTINGS_PAGE, // The number of items to display on each page.
       totalResults: 0, // The total number of results. Only 1 page is retrieved at a time.
-      searchParams: {
-        pagStartIndex: 0, // The default start index. Overridden in beforeMount.
-        pagEndIndex: 0, // The default end index. Overridden in beforeMount.
-        sortBy: "closes",
-        isAscending: false
-      },
       listings: [],
       apiErrorMessage: null,
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
@@ -100,10 +95,17 @@ export default {
         {key: "City Z-A", value: "city", isAscending: false}
       ],
 
-      minPrice: null,
-      maxPrice: null,
-      dates: [],
-      selectedBusinessTypes: [],
+      searchParams: {
+        pagStartIndex: 0, // The default start index. Overridden in beforeMount.
+        pagEndIndex: 0, // The default end index. Overridden in beforeMount.
+        sortBy: "closes",
+        isAscending: false,
+
+        minPrice: null,
+        maxPrice: null,
+        dates: [],
+        selectedBusinessTypes: [],
+      }
     };
   },
 
