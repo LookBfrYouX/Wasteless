@@ -29,7 +29,7 @@ public class ListingSpecifications {
         Predicate citySearch = criteriaBuilder.like(addressBusinessJoin.get("city"), "%" + params.getSearchParam() + "%");
         predicates.add(criteriaBuilder.or(countrySearch, citySearch));
       }
-      return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
+      return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
     };
   }
 
