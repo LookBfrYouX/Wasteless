@@ -127,4 +127,13 @@ public class InventoryItem {
     }
     listings.add(listing);
   }
+
+  /**
+   * Updates the inventory items quantity by removing a given value
+   *
+   * @param quantity to remove by
+   */
+  public void removeQuantity(long quantity) {
+    this.setQuantity(this.quantity - quantity);
+  }
 }
