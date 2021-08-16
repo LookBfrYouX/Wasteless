@@ -257,7 +257,6 @@ export default {
     buyButtonClicked: async function() {
       this.buyApiCallOngoing = true;
       
-      await new Promise(resolve => setTimeout(resolve, 1000));
       try {
         await Api.buyListing(this.businessId, this.listingId);
       } catch(err) {

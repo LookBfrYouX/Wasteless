@@ -79,44 +79,6 @@ beforeEach(() => {
 
 afterEach(() => wrapper.destroy());
 
-// describe("Test currencies", () => {
-//   test("Fail Not Signed In", async () => {
-//     wrapper.vm.$stateStore.getters.isSignedIn = () => false;
-
-//     expect(await wrapper.vm.loadCurrencies()).toEqual(false);
-//   });
-
-//   test("Fail, expect 'return;'", async () => {
-//     wrapper.vm.$stateStore.getters.isSignedIn = () => true;
-//     wrapper.vm.$helper.getCurrencyForBusiness = () => {
-//       throw new Error()
-//     };
-//     Api.handle401.call = () => true;
-
-//     // Nothing returned
-//     expect(await wrapper.vm.loadCurrencies()).toEqual(undefined);
-//   });
-
-//   test("Fail, expect Api handle fails", async () => {
-//     wrapper.vm.$stateStore.getters.isSignedIn = () => true;
-//     wrapper.vm.$helper.getCurrencyForBusiness = () => {
-//       throw new Error()
-//     };
-//     Api.handle401.call = () => false;
-
-//     expect(await wrapper.vm.loadCurrencies()).toEqual(false);
-//   });
-
-//   test("Success", async () => {
-//     const mockCurrency = "NZD";
-//     wrapper.vm.$stateStore.getters.isSignedIn = () => true;
-//     wrapper.vm.$helper.getCurrencyForBusiness = () => mockCurrency;
-
-//     expect(await wrapper.vm.loadCurrencies()).toEqual(true);
-//     expect(wrapper.vm.$data.currency).toEqual(mockCurrency)
-//   });
-// });
-
 
 describe("Get listings API call", () => {
   test("Expect success", async () => {
@@ -160,5 +122,51 @@ describe("Get listings API call", () => {
     expect(wrapper.vm.$helper.getCurrencyForBusinessByCountry.mock.calls.length).toBe(1);
     expect(wrapper.vm.$helper.getCurrencyForBusinessByCountry.mock.calls[0][0]).toBe("COUNTRY");
     expect(wrapper.vm.currency).toEqual(mockCurrency);
+  });
+});
+
+describe("buyButtonClicked", () => {
+  test("Standard flow", async () => {
+    Api.buyListing = jest.fn().mockResolvedValue(undefined);
+    await wrapper.vm.buyButtonClicked();
+    expect(wrapper.vm.listingWasPurchased).toBe(true);
+  });
+
+  test("Error cleared on success", async () => {
+    wrapper.vm.buyApiErrorMessage = "SDF";
+    Api.buyListing = jest.fn().mockResolvedValue(undefined);
+    await wrapper.vm.buyButtonClicked();
+    expect(wrapper.vm.buyApiErrorMessage).toBe(null);
+  });
+
+  test("Handles error gracefully", async () => {
+    Api.buyListing = jest.fn().mockImplementation(() => Promise.reject(new ApiRequestError("ERR")));
+    await wrapper.vm.buyButtonClicked();
+    expect(wrapper.vm.buyApiErrorMessage).toBe("ERR");
+  });
+
+  test("Handles 401 error", async () => {
+    Api.buyListing = jest.fn().mockImplementation(() => Promise.reject(new ApiRequestError("ERR")));
+    Api.handle401 = jest.fn();
+    await wrapper.vm.buyButtonClicked();
+    expect(Api.handle401.mock.calls.length).toBe(1);
+  });
+
+  test("Clears loading indicator after success", async () => {
+    Api.buyListing = jest.fn().mockResolvedValue(new Promise(resolve => setTimeout(resolve, 1000)));
+    const promise = wrapper.vm.buyButtonClicked();
+    expect(wrapper.vm.buyApiCallOngoing).toBe(true);
+    await promise;
+    expect(wrapper.vm.buyApiCallOngoing).toBe(false);
+  });
+
+  test("Clears loading indicator after failure", async () => {
+    Api.buyListing = jest.fn().mockResolvedValue(new Promise((_, reject) => setTimeout(
+        () => reject(new ApiRequestError("ERR")),
+        1000)));
+    const promise = wrapper.vm.buyButtonClicked();
+    expect(wrapper.vm.buyApiCallOngoing).toBe(true);
+    await promise;
+    expect(wrapper.vm.buyApiCallOngoing).toBe(false);
   });
 });
