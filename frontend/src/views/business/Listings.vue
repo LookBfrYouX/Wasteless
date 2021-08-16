@@ -2,10 +2,10 @@
   <div>
     <v-container>
       <v-flex>
-        <h2>Results for '{{ "search query here" }}'</h2>
+        <h2>Results {{ searchParams.searchString ? "for: " + searchParams.searchString : null }}</h2>
       </v-flex>
 
-      <v-row>
+      <v-row no-gutters>
         <v-col cols="12" md="6">
           <multi-search-bar :sort-items="items"
                             @multi-search-bar-update="event => Object.assign(this.searchParams, event)"/>
@@ -22,8 +22,8 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <div class="btn btn-primary ml-8" @click="getListingsPipeline()">
+      <v-row no-gutters>
+        <div class="btn btn-primary ml-4" @click="getListingsPipeline()">
           Search
         </div>
       </v-row>
@@ -102,6 +102,7 @@ export default {
       ],
 
       searchParams: {
+        searchString: "",
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
         sortBy: "closes",

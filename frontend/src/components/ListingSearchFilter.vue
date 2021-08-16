@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
-    <v-row align="end">
-      <v-col cols="12" lg="8" class="filter-business">
+    <v-row>
+      <v-col cols="12" lg="8" class="filter-business my-0 py-0">
         <v-subheader>Filter businesses</v-subheader>
         <v-select
             v-model="selectedBusinessTypes"
@@ -28,7 +28,7 @@
         </v-select>
       </v-col>
 
-      <v-col cols="12" lg="8" class="date-range">
+      <v-col cols="12" lg="8" class="date-range my-0 py-0">
         <v-subheader>Closing date range</v-subheader>
         <v-dialog
             ref="menu"
@@ -74,14 +74,14 @@
         </v-dialog>
       </v-col>
 
-      <v-col cols="12" lg="4" class="min-price">
+      <v-col cols="12" lg="4" class="min-price my-0 py-0">
         <v-subheader>Min price</v-subheader>
         <v-text-field label="Min" type="number" min="0.01"
                       max="10000000" step="0.01" solo dense :value="minPrice"
                       @change="event => $emit('newMin', event)"></v-text-field>
       </v-col>
 
-      <v-col cols="12" lg="4" class="max-price">
+      <v-col cols="12" lg="4" class="max-price my-0 py-0">
         <v-subheader>Max price</v-subheader>
         <v-text-field label="Max" type="number" min="0.01"
                       max="10000000" step="0.01" solo dense :value="maxPrice"
