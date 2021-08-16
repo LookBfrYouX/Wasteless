@@ -29,15 +29,26 @@
 
           <image-carousel :images="productImages"/>
           <div class="mt-2 d-inline">{{ description }}</div>
-          <button
-            class="btn btn-primary d-flex float-right"
-            type="button"
-            :disabled="!listingLoaded"
-            @click="buyConfirmationDialogOpen = true"
-          >
-            <span class="material-icons mr-1">shopping_bag</span>
-            Buy now
-          </button>
+          <v-tooltip bottom :disabled="!$stateStore.getters.isActingAsBusiness()">
+            <template class="float-right" v-slot:activator="{ on }">
+              <!-- https://stackoverflow.com/a/56370288 -->
+              <div v-on="on" class="d-inline">
+                <button
+                  class="btn btn-primary d-flex float-right"
+                  type="button"
+                  :disabled="!listingLoaded || $stateStore.getters.isActingAsBusiness()"
+                  v-on="on"
+                  @click="buyConfirmationDialogOpen = true"
+                >
+                  <span class="material-icons mr-1">shopping_bag</span>
+                  Buy now
+                </button>
+              </div>
+            </template>
+            <span class="text-grey">
+              You cannot purchase an item while acting as a business
+            </span>
+          </v-tooltip>
 
           <div class="mt-2">RRP (each): {{
               $helper.makeCurrencyString(recommendedRetailPrice, currency)
@@ -74,10 +85,10 @@
           Pickup will be at {{ $helper.addressToString(business.address) }}
         </v-card-text>
         <v-card-actions>
-          <v-spacer> </v-spacer>
+          <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="() => buyConfirmationDialogOpen = false">Cancel
           </v-btn>
-          <v-btn color="blue darken-1" text @click="buyButtonClicked">Yes!</v-btn>
+          <v-btn color="blue darken-1" text @click="buyButtonClicked">Yes</v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -240,6 +251,15 @@ export default {
 
     buyButtonClicked: async function() {
       console.log("Buy button clicked");
+      try {
+        await this.$api.purchaseListing(this.businessId, this.listingId);
+      } catch(err) {
+        if (await this.$api.handle401.call(this, err)) {
+          return;
+        }
+
+        console.log(err);
+      }
     }
   }
 }
