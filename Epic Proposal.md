@@ -72,7 +72,7 @@ stories such as implementing a calorie counter into the application.
 
 ## Stories Draft
 
-### EU1 Add product nutrition facts
+### EU1 Add product nutrition facts (5 pts)
 
 As an administrator of a business, I can add a product with nutrition facts and allergy information
 by entering the barcode number (EAN-13) number.
@@ -93,7 +93,7 @@ should reflect the [NOVA groups for food processing](https://world.openfoodfacts
 AC5: Products can have simple quantity measurements (low, moderate and high) for the amounts of Fat,
 Saturated Fat, Sugars and Salt in the product.
 
-#### EU2 View product nutrition facts
+### EU2 View product nutrition facts (3 pts)
 
 As a potential customer, I can see nutrition facts and allergy information of a listing.
 
@@ -109,7 +109,7 @@ screen real estate if I am not interested in the information.
 AC4: On the listings search page, the search results have labels depending on their allergy information
 (e.g. a gluten-free product may have a 'GF' tag next to the title)
 
-### EU3 Search sale listings by nutrition facts
+### EU3 Search sale listings by nutrition facts (5 pts)
 
 As a logged-in individual user, I want to search for sale listings based on nutritional information
 so that I can filter products based on my dietary needs e.g. only return results that are gluten
@@ -132,7 +132,7 @@ the product to filter by. For each nutrient I can choose from Low, Moderate, Hig
 AC5: The default filter settings are to search for **all** listings. A user should not be required
 to enter any nutritional filtering information to search.
 
-### EU4 Barcode scanning
+### EU4 Barcode scanning (8 pts)
 
 As an administrator of a business, I can add a product by scanning a barcode from my device so that
 I can quickly add nutritional and allergy information about a product. This builds on *EU1* which
