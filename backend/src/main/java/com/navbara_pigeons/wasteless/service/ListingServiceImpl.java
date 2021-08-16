@@ -4,7 +4,7 @@ import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.CreateTransactionDto;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
-import com.navbara_pigeons.wasteless.dto.purchaseDto;
+import com.navbara_pigeons.wasteless.dto.PurchaseDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Transaction;
@@ -167,7 +167,7 @@ public class ListingServiceImpl implements ListingService {
    */
   @Override
   @Transactional
-  public purchaseDto purchaseListing(long businessId, long listingId)
+  public PurchaseDto purchaseListing(long businessId, long listingId)
       throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException, ListingNotFoundException {
     Listing listing = this.getListing(listingId);
 
@@ -188,6 +188,6 @@ public class ListingServiceImpl implements ListingService {
     // Update inventory item quantity, delete listing & delete inventory Item when quantity reaches zero
     inventoryService.updateInventoryItemFromPurchase(businessId, listing);
 
-    return new purchaseDto(transactionId);
+    return new PurchaseDto(transactionId);
   }
 }

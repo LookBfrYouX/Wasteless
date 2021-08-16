@@ -2,7 +2,7 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
-import com.navbara_pigeons.wasteless.dto.purchaseDto;
+import com.navbara_pigeons.wasteless.dto.PurchaseDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
@@ -28,6 +28,6 @@ public interface ListingService {
 
   void deleteListing(Long listingId);
 
-  purchaseDto purchaseListing(long businessId, long listingId)
+  PurchaseDto purchaseListing(long businessId, long listingId)
       throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException, ListingNotFoundException;
 }

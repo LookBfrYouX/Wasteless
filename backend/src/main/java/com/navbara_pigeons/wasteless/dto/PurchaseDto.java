@@ -3,7 +3,7 @@ package com.navbara_pigeons.wasteless.dto;
 import lombok.Data;
 
 @Data
-public class purchaseDto {
+public class PurchaseDto {
 
   private Long transactionId;
 
@@ -12,11 +12,11 @@ public class purchaseDto {
    *
    * @param transactionId the transaction Id
    */
-  public purchaseDto(Long transactionId) {
+  public PurchaseDto(Long transactionId) {
     this.transactionId = transactionId;
   }
 
-  public purchaseDto() {
+  public PurchaseDto() {
 
   }
 
