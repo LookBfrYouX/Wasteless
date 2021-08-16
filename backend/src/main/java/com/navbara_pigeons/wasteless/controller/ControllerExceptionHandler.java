@@ -64,10 +64,10 @@ public class ControllerExceptionHandler {
    * @return ResponseEntity with the exception message
    */
   @ExceptionHandler(BusinessNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
   public ResponseEntity<String> handleBusinessNotFoundException(BusinessNotFoundException exc) {
-    log.error("BUSINESS NOT FOUND: 400 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+    log.error("BUSINESS NOT FOUND: 404 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_FOUND);
   }
 
   /**
