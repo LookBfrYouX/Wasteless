@@ -120,4 +120,15 @@ public class ListingServiceImpl implements ListingService {
 
     return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
+
+  /**
+   * Deletes a listing
+   *
+   * @param listingId of the listing to be deleted
+   */
+  @Override
+  @Transactional
+  public void deleteListing(Long listingId) {
+    this.listingDao.deleteListing(listingId);
+  }
 }
