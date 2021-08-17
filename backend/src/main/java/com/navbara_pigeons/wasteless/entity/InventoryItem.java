@@ -75,9 +75,10 @@ public class InventoryItem {
           CascadeType.MERGE,
           CascadeType.PERSIST,
           CascadeType.REFRESH
-      }
+      },
+      orphanRemoval = true,
+      mappedBy = "inventoryItem"
   )
-  @JoinColumn(name = "INVENTORY_ITEM_ID")
   private List<Listing> listings;
 
   public InventoryItem(BasicInventoryItemDto inventory) {
