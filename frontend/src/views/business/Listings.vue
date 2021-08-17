@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-flex>
-        <h2>Results {{ searchParams.searchString ? "for: " + searchParams.searchString : null }}</h2>
+        <h2>{{ titleString }}</h2>
       </v-flex>
 
       <v-row no-gutters>
@@ -101,6 +101,7 @@ export default {
         {key: "City Z-A", value: "city", isAscending: false}
       ],
 
+      titleString: "Results",
       searchParams: {
         searchString: "",
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
@@ -157,11 +158,13 @@ export default {
         const response = (await Api.getListings(this.searchParams));
         this.listings = response.results;
         this.totalResults = response.totalCount;
+        this.titleString = `Results ${this.searchParams.searchString ? "for: " + this.searchParams.searchString : ""}`;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return false;
         }
         this.apiErrorMessage = err.userFacingErrorMessage;
+        this.titleString = "Results";
       }
     },
   },
