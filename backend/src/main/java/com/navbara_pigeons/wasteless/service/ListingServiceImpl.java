@@ -14,6 +14,7 @@ import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PageableBuilder;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
@@ -27,6 +28,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -131,7 +133,9 @@ public class ListingServiceImpl implements ListingService {
   public List<FullListingDto> searchListings(ListingsSearchParams params) {
     System.out.println(params.toString());
     ArrayList<FullListingDto> listings = new ArrayList<>();
-    for (Listing listing : listingDao.findAll(ListingSpecifications.meetsSearchCriteria(params))) {
+    for (Listing listing : listingDao.findAll(ListingSpecifications.meetsSearchCriteria(params),
+        PageableBuilder.makePageable(params.getPagStartIndex(), params.getPagEndIndex(), params.getSortBy().toString(),
+            params.isAscending()))) {
       listings.add(new FullListingDto(listing, this.publicPathPrefix));
     }
     return listings;
