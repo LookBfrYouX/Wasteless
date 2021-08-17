@@ -25,7 +25,7 @@ public interface ListingService {
       Integer pagEndIndex, ListingSortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, UserNotFoundException, InvalidPaginationInputException;
 
-  List<FullListingDto> searchListings(ListingsSearchParams params);
+  PaginationDto<FullListingDto> searchListings(ListingsSearchParams params);
 
 
   void deleteListing(Long listingId);

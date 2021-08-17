@@ -17,5 +17,4 @@ public class PageableBuilder {
       return PageRequest.of(pageNumber, itemsPerPage, Sort.by(sortBy).descending());
     }
   }
-
 }

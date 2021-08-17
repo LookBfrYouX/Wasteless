@@ -130,15 +130,17 @@ public class ListingServiceImpl implements ListingService {
 
   @Override
   @Transactional
-  public List<FullListingDto> searchListings(ListingsSearchParams params) {
-    System.out.println(params.toString());
+  public PaginationDto<FullListingDto> searchListings(ListingsSearchParams params) {
     ArrayList<FullListingDto> listings = new ArrayList<>();
+    Long totalCount = listingDao.findAll(ListingSpecifications.meetsSearchCriteria(params),
+        PageableBuilder.makePageable(params.getPagStartIndex(), params.getPagEndIndex(), params.getSortBy().toString(),
+            params.isAscending())).getTotalElements();
     for (Listing listing : listingDao.findAll(ListingSpecifications.meetsSearchCriteria(params),
         PageableBuilder.makePageable(params.getPagStartIndex(), params.getPagEndIndex(), params.getSortBy().toString(),
             params.isAscending()))) {
       listings.add(new FullListingDto(listing, this.publicPathPrefix));
     }
-    return listings;
+    return new PaginationDto<>(listings, totalCount);
   }
 
 
