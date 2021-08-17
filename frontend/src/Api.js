@@ -645,7 +645,8 @@ export const Api = {
       throw ApiRequestError.createFromMessageMap(error, {
         400: err => `The listing could not be purchased: ${err.response.data}`,
         403: "You don't have permission to purchase the listing",
-        404: "The inventory item does not exist - it may have been purchased by another user"
+        404: "The business or inventory item does not exist - it may have been purchased by another user",
+        406: "The business does not have a listing with that ID"
       });
     });
   }
