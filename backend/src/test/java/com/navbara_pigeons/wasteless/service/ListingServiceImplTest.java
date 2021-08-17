@@ -2,13 +2,14 @@ package com.navbara_pigeons.wasteless.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
-import com.navbara_pigeons.wasteless.dto.PurchaseDto;
+import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
@@ -155,13 +156,20 @@ class ListingServiceImplTest extends ServiceTestProvider {
     Business business = listing.getInventoryItem().getBusiness();
     Long transactionId = 123L;
     when(listingDao.getListing(anyLong())).thenReturn(listing);
-    when(transactionService.saveTransaction(any(Transaction.class))).thenReturn(transactionId);
+    // Because the saveTransaction method returns void but also sets the transaction ID this
+    // is how you mock setting the ID.
+    doAnswer(invocation -> {
+      Object[] args = invocation.getArguments();
+      ((Transaction) args[0]).setId(transactionId);
+      return null; // void method, so return null
+    }).when(transactionService).saveTransaction(any(Transaction.class));
 
     // Act
-    PurchaseDto purchaseDto = listingService.purchaseListing(business.getId(), listing.getId());
+    TransactionDto transactionDto = listingService
+        .purchaseListing(business.getId(), listing.getId());
 
     // Assert
-    Assertions.assertEquals(transactionId, purchaseDto.getTransactionId());
+    Assertions.assertEquals(transactionId, transactionDto.getTransactionId());
   }
 
   @Test

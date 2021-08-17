@@ -1,10 +1,9 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
-import com.navbara_pigeons.wasteless.dto.CreateTransactionDto;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
-import com.navbara_pigeons.wasteless.dto.PurchaseDto;
+import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Transaction;
@@ -167,7 +166,7 @@ public class ListingServiceImpl implements ListingService {
    */
   @Override
   @Transactional
-  public PurchaseDto purchaseListing(long businessId, long listingId)
+  public TransactionDto purchaseListing(long businessId, long listingId)
       throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException, ListingNotFoundException {
     Listing listing = this.getListing(listingId);
 
@@ -175,19 +174,18 @@ public class ListingServiceImpl implements ListingService {
     long listingsBusinessId = listing.getInventoryItem().getBusiness().getId();
     if (listingsBusinessId != businessId) {
       throw new BusinessAndListingMismatchException(String.format(
-          "Listing ans Business mismatch, passed in businessId %d is not equal to owners businessId %d",
+          "Listing and Business mismatch, passed in businessId %d is not equal to owners businessId %d",
           businessId, listingsBusinessId));
     }
 
     // Create and save a transaction
-    CreateTransactionDto transactionDto = new CreateTransactionDto(ZonedDateTime.now(),
-        listing.getCreated(),
+    Transaction transaction = new Transaction(ZonedDateTime.now(), listing.getCreated(),
         listing.getInventoryItem().getProduct(), listing.getPrice());
-    Long transactionId = transactionService.saveTransaction(new Transaction(transactionDto));
+    transactionService.saveTransaction(transaction);
 
     // Update inventory item quantity, delete listing & delete inventory Item when quantity reaches zero
     inventoryService.updateInventoryItemFromPurchase(businessId, listing);
 
-    return new PurchaseDto(transactionId);
+    return new TransactionDto(transaction);
   }
 }

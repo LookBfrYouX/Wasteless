@@ -28,10 +28,9 @@ public class TransactionServiceImpl implements TransactionService {
    * Method to save a Transaction entity to the database.
    *
    * @param transaction Passed in Transaction model
-   * @return The id of the transaction
    */
-  public Long saveTransaction(Transaction transaction) {
-    return transactionDao.save(transaction).getId();
+  public void saveTransaction(Transaction transaction) {
+    transactionDao.save(transaction).getId();
   }
 
 }

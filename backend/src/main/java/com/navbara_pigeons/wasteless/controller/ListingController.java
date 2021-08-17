@@ -1,7 +1,7 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
-import com.navbara_pigeons.wasteless.dto.PurchaseDto;
+import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
@@ -122,7 +122,7 @@ public class ListingController {
    */
   @PostMapping("/businesses/{businessId}/listings/{listingId}/purchase")
   @Operation(summary = "Purchase a specific listing", description = "Purchase a specific listing, record the transaction and delete the purchased listing")
-  public ResponseEntity<PurchaseDto> purchaseListing(
+  public ResponseEntity<TransactionDto> purchaseListing(
       @Parameter(description = "The identifier of the business that the listing belongs to") @PathVariable long businessId,
       @Parameter(description = "The identifier of the listing to be purchased") @PathVariable long listingId
   )
