@@ -105,6 +105,11 @@ public class ListingSpecifications {
     } else if (params.getFilterDates() != null && params.getFilterDates().size() == 2) {
       predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThan(root.get("created"), params.getFilterDates().get(0)), criteriaBuilder.lessThan(root.get("created"), params.getFilterDates().get(1))));
     }
+    if (params.getBusinessTypes() != null) {
+      for (int i = 0; i < params.getBusinessTypes().size(); i++ ) {
+        predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("businessType"), params.getBusinessTypes().get(i).toString()));
+      }
+    }
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 

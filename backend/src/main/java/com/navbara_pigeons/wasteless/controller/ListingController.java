@@ -12,10 +12,12 @@ import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.service.ListingService;
+import com.navbara_pigeons.wasteless.validation.constraints.StringEnumeration;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import javax.persistence.Enumerated;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
@@ -69,7 +71,7 @@ public class ListingController {
           @Parameter(description = "") @RequestParam(required = false) Double minPrice,
           @Parameter(description = "") @RequestParam(required = false) Double maxPrice,
           @Parameter(description = "") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<ZonedDateTime> filterDates,
-          @Parameter(description = "") @RequestParam(required = false) List<BusinessType> businessTypes
+          @Parameter(description = "") @RequestParam(required = false)  List<BusinessType> businessTypes
   ) {
     log.info("GETTING LISTINGS FOR: " + searchKeys + " = " + searchParam);
     ListingsSearchParams params = new ListingsSearchParams();
