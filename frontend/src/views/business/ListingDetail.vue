@@ -178,6 +178,9 @@ export default {
     }
   },
 
+  /**
+   * Make API request to get listing information when component is initialized
+   */
   beforeMount: async function () {
     await this.apiPipeline();
   },
@@ -206,7 +209,7 @@ export default {
     },
 
     /**
-     * Calls the API to get profile information with the given user ID
+     * Calls the API to get all listings for the business
      * Returns the promise, not the response
      */
     callApi: async function () {
@@ -214,9 +217,10 @@ export default {
     },
 
     /**
-     * Parses the API response given a promise to the request.
+     * Parses the API response given a promise to the listings request
      */
     parseApiResponse: async function (apiCall) {
+      // No endpoint to fetch just one listing, so fetch all listings and find the right one
       const listings = (await apiCall).data.results;
       const listing = listings.find(({id}) => id === this.listingId);
       if (listing === undefined) {
@@ -224,6 +228,7 @@ export default {
             `Couldn't find listing with the ID '${this.listingId}'. It may have been purchased by another user`);
       }
       this.name = listing.inventoryItem.product.name;
+
       if (listing.inventoryItem.business) {
         this.business = listing.inventoryItem.business; // NOT IN BACKEND AS OF TIME OF WRITING
         this.currency = this.$helper.getCurrencyForBusinessByCountry(this.business.address.country);
@@ -284,6 +289,9 @@ export default {
   },
 
   watch: {
+    /**
+     * Update page title with product and business name
+     */
     name() {
       if (typeof this.name === "string" && this.name.trim().length) {
         document.title = `Buy '${this.name}' from ${this.business.name}`;
@@ -291,11 +299,8 @@ export default {
     }
   }
 }
-
 </script>
-
 <style scoped>
-
 .date {
   font-size: smaller;
   display: inline-block
@@ -309,5 +314,4 @@ export default {
   background-color: var(--primary);
   color: white;
 }
-
 </style>
