@@ -2,8 +2,8 @@ package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
-import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.dto.FullInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
@@ -78,8 +78,8 @@ public class InventoryServiceImpl implements InventoryService {
    * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
-  public PaginationDto<BasicInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
-      Integer pagEndIndex, InventorySortByOption sortBy, boolean isAscending)
+  public PaginationDto<FullInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
+                                                          Integer pagEndIndex, InventorySortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, IllegalArgumentException, InvalidPaginationInputException {
 
     if (!this.userService.isAdmin() && !this.businessService.isBusinessAdmin(businessId)) {
@@ -97,9 +97,9 @@ public class InventoryServiceImpl implements InventoryService {
     Pair<List<InventoryItem>, Long> dataAndTotalCount = inventoryDao
         .getInventoryItems(business, pagBuilder);
 
-    ArrayList<BasicInventoryItemDto> inventory = new ArrayList<>();
+    ArrayList<FullInventoryItemDto> inventory = new ArrayList<>();
     for (InventoryItem inventoryItem : dataAndTotalCount.getFirst()) {
-      inventory.add(new BasicInventoryItemDto(inventoryItem, publicPathPrefix));
+      inventory.add(new FullInventoryItemDto(inventoryItem, publicPathPrefix));
     }
     return new PaginationDto<>(inventory, dataAndTotalCount.getSecond());
 
