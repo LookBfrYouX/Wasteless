@@ -112,6 +112,7 @@ public class InventoryServiceImpl implements InventoryService {
    * @param itemId     id of the item to be retrieved
    * @return inventory item or null
    */
+  @Transactional
   public InventoryItem getInventoryItemById(long businessId, long itemId)
       throws BusinessNotFoundException, InventoryItemNotFoundException {
     Business business = businessDao.getBusinessById(businessId);
@@ -179,29 +180,28 @@ public class InventoryServiceImpl implements InventoryService {
   }
 
   /**
-   * Updates the quantity of the inventory item This is called when a listing has been purchased and
-   * the inventory quantity needs to be updated
+   * Updates the quantity of the inventory item. This is called when a listing has been purchased
+   * and the inventory quantity needs to be updated. When the quantity of the inventory item reaches
+   * zero the inventory item and all of it's listings are deleted.
    *
-   * @param inventoryItemId of the inventory item to
-   * @param quantity        to remove from the inventory item
+   * @param businessId The id of the business
+   * @param listing    The listing that has been purchased
    */
   @Override
   @Transactional
-  public void updateInventoryItemQuantity(Long businessId, Long inventoryItemId, Long quantity)
-      throws BusinessNotFoundException, InventoryItemNotFoundException, InventoryUpdateException {
-    InventoryItem inventoryItem = getInventoryItemById(businessId, inventoryItemId);
-    inventoryItem.removeQuantity(quantity);
+  public void updateInventoryItemFromPurchase(Long businessId, Listing listing)
+      throws InventoryUpdateException {
+
+    InventoryItem inventoryItem = listing.getInventoryItem();
+    inventoryItem.removeQuantity(listing.getQuantity());
 
     if (inventoryItem.getQuantity() < 0) {
       throw new InventoryUpdateException("Quantity cannot be less than 0");
     } else if (inventoryItem.getQuantity() == 0) {
-      // Remove listings associated with this inventory item
-      for (Listing listing : inventoryItem.getListings()) {
-        listingService.deleteListing(listing.getId());
-      }
       this.deleteInventoryItem(inventoryItem);
     } else {
       inventoryDao.saveInventoryItem(inventoryItem);
+      listingService.deleteListing(listing.getId());
     }
   }
 }

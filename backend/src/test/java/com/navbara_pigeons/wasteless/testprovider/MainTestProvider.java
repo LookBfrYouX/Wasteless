@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Keyword;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.service.BusinessService;
@@ -47,6 +48,14 @@ public class MainTestProvider {
   @Autowired
   protected WebApplicationContext webApplicationContext;
 
+  protected Listing makeListing(InventoryItem inventoryItem) {
+    Listing listing = new Listing();
+    listing.setInventoryItem(inventoryItem)
+        .setQuantity(6)
+        .setPrice(10.00)
+        .setMoreInfo("Mocked more info");
+    return listing;
+  }
 
   protected InventoryItem makeInventoryItem(Product product, Business business) {
     InventoryItem inventoryItem = new InventoryItem();
