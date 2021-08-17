@@ -97,6 +97,9 @@ public class ListingSpecifications {
     if( params.getMinPrice() != null ) {
       predicates.add(criteriaBuilder.greaterThan(root.get("price"), params.getMinPrice()));
     }
+    if( params.getMaxPrice() != null ) {
+      predicates.add(criteriaBuilder.lessThan(root.get("price"), params.getMaxPrice()));
+    }
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 
