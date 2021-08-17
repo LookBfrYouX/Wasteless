@@ -22,6 +22,7 @@ import javax.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -34,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,16 +60,16 @@ public class ListingController {
   @GetMapping("/listings/search")
   @Operation(summary = "Search through sales listings", description = "Search and filter all sales listings")
   public ResponseEntity<Object> searchListings(
-      @Parameter(description = "Pagination start index") @RequestParam @Min(0) Integer pagStartIndex,
-      @Parameter(description = "Pagination end index") @RequestParam @Min(0) Integer pagEndIndex,
-      @Parameter(description = "Sort option") @RequestParam ListingSortByOption sortBy,
-      @Parameter(description = "Is Ascending") @RequestParam boolean isAscending,
-      @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
-      @Parameter(description = "Search value") @RequestParam(required = false) String searchParam,
-      @Parameter(description = "") @RequestParam(required = false) Double minPrice,
-      @Parameter(description = "") @RequestParam(required = false) Double maxPrice,
-      @Parameter(description = "") @RequestParam(required = false) List<LocalDate> filterDates,
-      @Parameter(description = "") @RequestParam(required = false) List<BusinessType> businessTypes
+          @Parameter(description = "Pagination start index") @RequestParam @Min(0) Integer pagStartIndex,
+          @Parameter(description = "Pagination end index") @RequestParam @Min(0) Integer pagEndIndex,
+          @Parameter(description = "Sort option") @RequestParam ListingSortByOption sortBy,
+          @Parameter(description = "Is Ascending") @RequestParam boolean isAscending,
+          @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
+          @Parameter(description = "Search value") @RequestParam(required = false) String searchParam,
+          @Parameter(description = "") @RequestParam(required = false) Double minPrice,
+          @Parameter(description = "") @RequestParam(required = false) Double maxPrice,
+          @Parameter(description = "") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<ZonedDateTime> filterDates,
+          @Parameter(description = "") @RequestParam(required = false) List<BusinessType> businessTypes
   ) {
     log.info("GETTING LISTINGS FOR: " + searchKeys + " = " + searchParam);
     ListingsSearchParams params = new ListingsSearchParams();

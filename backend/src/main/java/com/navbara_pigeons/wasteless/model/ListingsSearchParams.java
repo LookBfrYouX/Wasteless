@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.model;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Data;
 
@@ -22,7 +23,7 @@ public class ListingsSearchParams {
   private String searchParam;
   private Double minPrice;
   private Double maxPrice;
-  private List<LocalDate> filterDates;
+  private List<ZonedDateTime> filterDates;
   private List<BusinessType> businessTypes;
 
   public ListingsSearchParams() {

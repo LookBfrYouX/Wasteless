@@ -100,6 +100,11 @@ public class ListingSpecifications {
     if( params.getMaxPrice() != null ) {
       predicates.add(criteriaBuilder.lessThan(root.get("price"), params.getMaxPrice()));
     }
+    if (params.getFilterDates() != null && params.getFilterDates().size() == 1) {
+      predicates.add(criteriaBuilder.lessThan(root.get("created"), params.getFilterDates().get(0)));
+    } else if (params.getFilterDates() != null && params.getFilterDates().size() == 2) {
+      predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThan(root.get("created"), params.getFilterDates().get(0)), criteriaBuilder.lessThan(root.get("created"), params.getFilterDates().get(1))));
+    }
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 
