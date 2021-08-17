@@ -637,5 +637,16 @@ export const Api = {
         400: "Cannot fetch keywords"
       });
     });
+  },
+
+  buyListing: (businessId, listingId) => {
+    return instance.post(`/businesses/${businessId}/listings/${listingId}/purchase`)
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        400: err => `The listing could not be purchased: ${err.response.data}`,
+        403: "You don't have permission to purchase the listing",
+        404: "The inventory item does not exist - it may have been purchased by another user"
+      });
+    });
   }
 }

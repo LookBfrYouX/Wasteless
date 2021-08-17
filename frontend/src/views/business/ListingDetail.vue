@@ -224,14 +224,14 @@ export default {
             `Couldn't find listing with the ID '${this.listingId}'. It may have been purchased by another user`);
       }
       this.name = listing.inventoryItem.product.name;
-      if (listing.business) {
-        this.business = listing.business; // NOT IN BACKEND AS OF TIME OF WRITING
+      if (listing.inventoryItem.business) {
+        this.business = listing.inventoryItem.business; // NOT IN BACKEND AS OF TIME OF WRITING
         this.currency = this.$helper.getCurrencyForBusinessByCountry(this.business.address.country);
       } else {
         this.business = {
-          name: "TODO BUSINESS NAME",
+          name: "Unknown business",
           address: {
-            country: "TODO COUNTRY"
+            country: "Unknown location"
           }
         }
       }
@@ -280,6 +280,14 @@ export default {
       this.buyApiCallOngoing = false;
       this.buyApiErrorMessage = null;
       this.buyConfirmationDialogOpen = true;
+    }
+  },
+
+  watch: {
+    name() {
+      if (typeof this.name === "string" && this.name.trim().length) {
+        document.title = `Buy '${this.name}' from ${this.business.name}`;
+      }
     }
   }
 }

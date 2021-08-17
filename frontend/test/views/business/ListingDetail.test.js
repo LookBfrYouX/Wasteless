@@ -35,26 +35,26 @@ const listings = {
         "manufactured": "2021-08-14",
         "sellBy": "2021-08-14",
         "bestBefore": "2021-08-14",
-        "expires": "2021-08-14"
+        "expires": "2021-08-14",
+        "business": {
+          "id": 1,
+          "name": "TestName",
+          "address": {
+            "streetNumber": "STREETNUMBER",
+            "streetName": "STREETNAME",
+            "suburb": "SUBURB",
+            "postcode": "POSTCODE",
+            "city": "CITY",
+            "region": "REGION",
+            "country": "COUNTRY"
+          },
+        }
       },
       "quantity": 3,
       "price": 17.99,
       "moreInfo": "Seller may be willing to consider near offers",
       "created": "2021-07-14T11:44:00Z",
       "closes": "2021-07-21T23:59:00Z",
-      "business": {
-        "id": 1,
-        "name": "TestName",
-        "address": {
-          "streetNumber": "STREETNUMBER",
-          "streetName": "STREETNAME",
-          "suburb": "SUBURB",
-          "postcode": "POSTCODE",
-          "city": "CITY",
-          "region": "REGION",
-          "country": "COUNTRY"
-        },
-      }
     }]
   }
 };
