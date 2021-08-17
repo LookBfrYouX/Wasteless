@@ -30,16 +30,17 @@
           <image-carousel :images="productImages"/>
           <div class="mt-2 d-inline">{{ description }}</div>
 
-          <v-tooltip bottom :disabled="!$stateStore.getters.isActingAsBusiness() && !listingWasPurchased">
+          <v-tooltip bottom
+                     :disabled="!$stateStore.getters.isActingAsBusiness() && !listingWasPurchased">
             <template v-slot:activator="{ on }">
               <!-- https://stackoverflow.com/a/56370288 -->
               <div v-on="on" class="float-right">
                 <button
-                  class="btn btn-primary d-flex float-right"
-                  type="button"
-                  :disabled="!listingLoaded || listingWasPurchased || $stateStore.getters.isActingAsBusiness()"
-                  v-on="on"
-                  @click="openConfirmationDialog"
+                    class="btn btn-primary d-flex float-right"
+                    type="button"
+                    :disabled="!listingLoaded || listingWasPurchased || $stateStore.getters.isActingAsBusiness()"
+                    v-on="on"
+                    @click="openConfirmationDialog"
                 >
                   <span class="material-icons mr-1">shopping_bag</span>
                   Buy now
@@ -75,37 +76,42 @@
         <div class="date mt-2">Expires: {{ $helper.isoToDateString(expires) }}</div>
       </div>
     </div>
-    
-    <v-dialog v-model="buyConfirmationDialogOpen" max-width="500px">
+
+    <v-dialog v-model="buyConfirmationDialogOpen" max-width="500px" @click:outside="onDialogClose">
       <v-card v-if="listingLoaded" class="buy-confirmation-dialog">
         <!-- Business information needs to be loaded; otherwise business name and address can't be accessed -->
         <v-card-title class="text-h5">Buy this listing?
         </v-card-title>
         <v-card-text>
-          Buy <b>{{ quantity }} </b><b>'{{name}}'</b> from <b>'{{ business.name }}'</b> for <b>{{ $helper.makeCurrencyString(price, currency) }}?</b>
+          Buy <strong>{{ quantity }} </strong><strong>'{{ name }}'</strong> from <strong>'{{ business.name }}'</strong> for
+          <strong>{{ $helper.makeCurrencyString(price, currency) }}?</strong>
         </v-card-text>
         <v-spacer></v-spacer>
         <v-card-text>
-          Pickup will be at <b>{{ $helper.addressToString(business.address) }}</b>
+          Pickup will be at <strong>{{ $helper.addressToString(business.address) }}</strong>
         </v-card-text>
         <v-spacer></v-spacer>
         <v-alert type="warning" v-if="buyApiErrorMessage !== null" class="mx-4">
-          {{buyApiErrorMessage}}
+          {{ buyApiErrorMessage }}
+        </v-alert>
+        <v-alert type="success" v-if="listingWasPurchased" class="mx-4">
+          You have successfully purchased the listing!
         </v-alert>
         <v-card-actions class="justify-content-around">
           <v-btn
-            class="cancel-button"
-            color="grey darken-4"
-            text
-            @click="() => buyConfirmationDialogOpen = false"
+              class="cancel-button"
+              color="grey darken-4"
+              text
+              @click="onDialogClose"
           >
-            Cancel
+            {{ listingWasPurchased ? "Go back" : "Cancel" }}
           </v-btn>
           <v-btn
-            class="ma-2 buy-button"
-            :loading="buyApiCallOngoing"
-            :disabled="buyApiCallOngoing"
-            @click.stop="buyButtonClicked"
+              class="ma-2 buy-button"
+              :loading="buyApiCallOngoing"
+              :disabled="buyApiCallOngoing"
+              @click.stop="buyButtonClicked"
+              v-if="!listingWasPurchased"
           >
             Buy
           </v-btn>
@@ -156,7 +162,7 @@ export default {
       bestBefore: "",
       expires: "",
       recommendedRetailPrice: "",
-      
+
       currency: null,
 
       listingLoaded: false,
@@ -183,6 +189,18 @@ export default {
   },
 
   methods: {
+    /**
+     * This method is called when the user clicks cancel or go back, functionality depends on
+     * whether the user has purchased the item or not
+     */
+    onDialogClose() {
+      if (this.listingWasPurchased) {
+        this.$router.go(-1);
+      } else {
+        this.buyConfirmationDialogOpen = false;
+      }
+    },
+
     /**
      * Calls the API and updates the component's data with the result
      * Does not run pipeline if user should not be able to edit business
@@ -254,12 +272,12 @@ export default {
     /**
      * Handles API call to buy product and its error handling
      */
-    buyButtonClicked: async function() {
+    buyButtonClicked: async function () {
       this.buyApiCallOngoing = true;
-      
+
       try {
         await Api.buyListing(this.businessId, this.listingId);
-      } catch(err) {
+      } catch (err) {
         this.buyApiCallOngoing = false;
         if (await Api.handle401.call(this, err)) {
           return;
