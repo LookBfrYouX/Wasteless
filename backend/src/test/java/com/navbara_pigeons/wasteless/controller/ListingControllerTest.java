@@ -20,7 +20,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 
-public class ListingControllerTest extends ControllerTestProvider {
+class ListingControllerTest extends ControllerTestProvider {
 
   @Test
   @WithAnonymousUser
@@ -36,6 +36,7 @@ public class ListingControllerTest extends ControllerTestProvider {
         .param("pagEndIndex", "2")
         .param("sortBy", "quantity")
         .param("isAscending", "true")
+        .param("searchKeys", "Product Name")
     ).andExpect(status().isOk());
   }
 
@@ -47,8 +48,8 @@ public class ListingControllerTest extends ControllerTestProvider {
                     .param("pagStartIndex", "1")
                     .param("pagEndIndex", "2")
                     .param("sortBy", "quantity")
-                    .param("isAscending", "true")
                     .param("searchKeys", "Address")
+                    .param("isAscending", "true")
                     .param("searchParam", "New Zealand")
     ).andExpect(status().isOk());
   }
