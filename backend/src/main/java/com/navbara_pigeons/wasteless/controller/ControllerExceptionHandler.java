@@ -29,6 +29,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -234,10 +235,18 @@ public class ControllerExceptionHandler {
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleMissingServletRequestParameterException(MissingServletRequestParameterException exc) {
+    log.error("PARAMERTER EXCEPTION: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<String> handleGeneralException(Exception exc) {
     log.error("CRITICAL ERROR: 500 - " + exc.getMessage());
+    exc.printStackTrace();
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 

@@ -57,10 +57,10 @@ public class ListingController {
   @GetMapping("/listings/search")
   @Operation(summary = "Search through sales listings", description = "Search and filter all sales listings")
   public ResponseEntity<Object> searchListings(
-      @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(0) Integer pagStartIndex,
-      @Parameter(description = "Pagination end index") @RequestParam(required = false) @Min(0) Integer pagEndIndex,
-      @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
-      @Parameter(description = "Is Ascending") @RequestParam(required = false) boolean isAscending,
+      @Parameter(description = "Pagination start index") @RequestParam @Min(0) Integer pagStartIndex,
+      @Parameter(description = "Pagination end index") @RequestParam @Min(0) Integer pagEndIndex,
+      @Parameter(description = "Sort option") @RequestParam ListingSortByOption sortBy,
+      @Parameter(description = "Is Ascending") @RequestParam boolean isAscending,
       @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
       @Parameter(description = "Search value") @RequestParam(required = false) String searchParam,
       @Parameter(description = "") @RequestParam(required = false) Double minPrice,
@@ -70,16 +70,16 @@ public class ListingController {
   ) {
     log.info("GETTING LISTINGS FOR: " + searchKeys + " = " + searchParam);
     ListingsSearchParams params = new ListingsSearchParams();
-    params.setPagStartIndex(pagStartIndex)
-        .setPagEndIndex(pagEndIndex)
-        .setSortBy(sortBy)
-        .setAscending(isAscending)
-        .setSearchKeys(searchKeys)
-        .setSearchParam(searchParam)
-        .setMinPrice(minPrice)
-        .setMaxPrice(maxPrice)
-        .setFilterDates(filterDates)
-        .setBusinessTypes(businessTypes);
+    params.setPagStartIndex(pagStartIndex);
+    params.setPagEndIndex(pagEndIndex);
+    params.setSortBy(sortBy);
+    params.setAscending(isAscending);
+    params.setSearchKeys(searchKeys);
+    params.setSearchParam(searchParam);
+    params.setMinPrice(minPrice);
+    params.setMaxPrice(maxPrice);
+    params.setFilterDates(filterDates);
+    params.setBusinessTypes(businessTypes);
     return new ResponseEntity<>(listingService.searchListings(params), HttpStatus.OK);
   }
 
