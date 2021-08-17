@@ -40,7 +40,7 @@ describe("MultiSearchBar test", () => {
         });
         wrapper.vm.$data.searchParams.searchString = "search";
         wrapper.vm.$data.searchParams.selectedKeys = ['Location'];
-        wrapper.vm.doSearch();
+        wrapper.vm.doUpdate();
         expect(wrapper.emitted('multi-search-bar-update')[0][0].searchString).toEqual("search");
         expect(wrapper.emitted('multi-search-bar-update')[0][0].selectedKeys).toEqual(['Location']);
         wrapper.vm.sortUpdate("name", false);
