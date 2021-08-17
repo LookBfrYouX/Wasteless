@@ -2,7 +2,6 @@ package com.navbara_pigeons.wasteless.model;
 
 import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Data;
@@ -25,11 +24,6 @@ public class ListingsSearchParams {
   private Double maxPrice;
   private List<ZonedDateTime> filterDates;
   private List<BusinessType> businessTypes;
-
-  public ListingsSearchParams() {
-    // Setting defaults
-    this.searchParam = "";
-  }
 
   public void setSearchParam(String searchParam) {
     if (searchParam == null) {
@@ -57,15 +51,11 @@ public class ListingsSearchParams {
 
 
   public void setAscending(boolean ascending) {
-    if (ascending != true && ascending != false) {
-      this.isAscending = true;
-    } else {
       this.isAscending = ascending;
-    }
   }
 
   public void setSearchKeys(List<String> searchKeys) {
-    if (searchKeys.contains("Product Name") || searchKeys.contains("Address") || searchKeys.contains("Business Name")) {
+    if (searchKeys == null){
       this.searchKeys = searchKeys;
     } else {
       this.searchKeys.add("Product Name");
@@ -77,7 +67,14 @@ public class ListingsSearchParams {
   }
 
   public void setBusinessTypes(List<BusinessType> businessTypes) {
-    System.out.println(businessTypes);
     this.businessTypes = businessTypes;
+  }
+
+  public void setSortBy(ListingSortByOption sortBy) {
+    if (sortBy == null) {
+      this.sortBy = ListingSortByOption.valueOf("created");
+    } else {
+      this.sortBy = sortBy;
+    }
   }
 }

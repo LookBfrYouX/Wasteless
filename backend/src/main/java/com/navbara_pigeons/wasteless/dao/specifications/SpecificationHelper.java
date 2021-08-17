@@ -10,10 +10,13 @@ public class SpecificationHelper {
         return token.matches("\"\\S*.+?\"");
     }
 
+    /**
+     * Method to create tokens from search query
+     * @param searchQuery query to tokenize
+     */
     public static List<String> tokenize(String searchQuery) {
         List<String> tokens = new ArrayList<>();
         searchQuery = searchQuery.strip();
-        System.out.println(searchQuery);
         Matcher matcher = Pattern.compile("(\"[^\"]+\")|([^\"\\s]+)").matcher(searchQuery);
         while (matcher.find()) {
             tokens.add(matcher.group(0));

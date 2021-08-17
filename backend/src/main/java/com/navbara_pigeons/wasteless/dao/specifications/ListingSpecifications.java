@@ -17,8 +17,13 @@ public class ListingSpecifications {
 
   private ListingSpecifications() {}
 
+  /**
+  * Method to check whether an of the values in the database matches the search criteria sent by the user
+  * @param params search query and other request parameters
+   */
   public static Specification<Listing> meetsSearchCriteria(ListingsSearchParams params) {
     return (root, query, criteriaBuilder) -> {
+
       Join<Listing, InventoryItem> inventoryItemJoin = root.join("inventoryItem");
       Join<Product, InventoryItem> productInventoryItemJoin = inventoryItemJoin.join("product");
       Join<Business, InventoryItem> businessInventoryItemJoin = inventoryItemJoin.join("business");
@@ -60,30 +65,57 @@ public class ListingSpecifications {
     };
   }
 
+  /**
+   * Method to check whether an of the values in the database partially matches the search criteria sent by the user
+   * @param params search query and other request parameters
+   * @param token that the predicate is being made for
+   * @param inventoryItemJoin join listing with inventory item table
+   * @param productInventoryItemJoin join inventoryitem table with product table
+   * @param businessInventoryItemJoin join inventoryitem table with business table
+   * @param addressBusinessJoin join business table with address table
+   */
   private static Predicate getListingPartialMatch(ListingsSearchParams params, String token,  Join<Listing, InventoryItem> inventoryItemJoin, Join<Product, InventoryItem> productInventoryItemJoin, Join<Business, InventoryItem> businessInventoryItemJoin, Join<Address, Business> addressBusinessJoin, CriteriaBuilder criteriaBuilder ) {
     ArrayList<Predicate> predicates = new ArrayList<>();
+    // if user searches by product name
     if (params.getSearchKeys().contains("Product Name")) {
       predicates.add(criteriaBuilder.like(productInventoryItemJoin.get("name"), "%" + token + "%"));
     }
+    // if user searches by business name
     if (params.getSearchKeys().contains("Business Name")) {
       predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("name"), "%" + token + "%"));
     }
+    // if user searches by address name
     if (params.getSearchKeys().contains("Address")) {
+      // creates predicate for the address being a country
       Predicate countrySearch = criteriaBuilder.like(addressBusinessJoin.get("country"), "%" + token + "%");
+      // creates predicate for the address being a city
       Predicate citySearch = criteriaBuilder.like(addressBusinessJoin.get("city"), "%" + token + "%");
+      // creates predicate for being a city or a country
       predicates.add(criteriaBuilder.or(countrySearch, citySearch));
     }
     return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
   }
 
+  /**
+   * Method to check whether an of the values in the database fully matches the search criteria sent by the user
+   * @param params search query and other request parameters
+   * @param token that the predicate is being made for
+   * @param inventoryItemJoin join listing with inventory item table
+   * @param productInventoryItemJoin join inventoryitem table with product table
+   * @param businessInventoryItemJoin join inventoryitem table with business table
+   * @param addressBusinessJoin join business table with address table
+   */
   private static Predicate getListingFullMatch(ListingsSearchParams params, String token, Join<Listing, InventoryItem> inventoryItemJoin, Join<Product, InventoryItem> productInventoryItemJoin, Join<Business, InventoryItem> businessInventoryItemJoin, Join<Address, Business> addressBusinessJoin, CriteriaBuilder criteriaBuilder ) {
     ArrayList<Predicate> predicates = new ArrayList<>();
+    // user searches by product name
     if (params.getSearchKeys().contains("Product Name")) {
       predicates.add(criteriaBuilder.like(productInventoryItemJoin.get("name"),token));
     }
+    // user searches by business name
     if (params.getSearchKeys().contains("Business Name")) {
       predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("name"), token));
     }
+    // user searches by address name
     if (params.getSearchKeys().contains("Address")) {
       Predicate countrySearch = criteriaBuilder.like(addressBusinessJoin.get("country"), token );
       Predicate citySearch = criteriaBuilder.like(addressBusinessJoin.get("city"), token );
@@ -92,19 +124,31 @@ public class ListingSpecifications {
     return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
   }
 
+  /**
+   * Method to create filters for the listings
+   * @param params search query and other request parameters
+   * @param root the root table
+   * @param businessInventoryItemJoin join inventoryitem table with business table
+   * @param criteriaBuilder to build the predicates
+   */
   private static Predicate getListingFilterMatch(ListingsSearchParams params, Root<Listing> root, Join<Business, InventoryItem> businessInventoryItemJoin, CriteriaBuilder criteriaBuilder) {
     ArrayList<Predicate> predicates = new ArrayList<>();
+    // if min price included by the user
     if( params.getMinPrice() != null ) {
       predicates.add(criteriaBuilder.greaterThan(root.get("price"), params.getMinPrice()));
     }
+    // if max price included by the user
     if( params.getMaxPrice() != null ) {
       predicates.add(criteriaBuilder.lessThan(root.get("price"), params.getMaxPrice()));
     }
+    // if one date included it is taken as the max date
     if (params.getFilterDates() != null && params.getFilterDates().size() == 1) {
       predicates.add(criteriaBuilder.lessThan(root.get("created"), params.getFilterDates().get(0)));
+    // if two dates included it is taken as a date range
     } else if (params.getFilterDates() != null && params.getFilterDates().size() == 2) {
       predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThan(root.get("created"), params.getFilterDates().get(0)), criteriaBuilder.lessThan(root.get("created"), params.getFilterDates().get(1))));
     }
+    // if business types are included by the user
     if (params.getBusinessTypes() != null) {
       for (int i = 0; i < params.getBusinessTypes().size(); i++ ) {
         predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("businessType"), params.getBusinessTypes().get(i).toString()));

@@ -64,8 +64,8 @@ public class ListingController {
   public ResponseEntity<Object> searchListings(
           @Parameter(description = "Pagination start index") @RequestParam @Min(0) Integer pagStartIndex,
           @Parameter(description = "Pagination end index") @RequestParam @Min(0) Integer pagEndIndex,
-          @Parameter(description = "Sort option") @RequestParam ListingSortByOption sortBy,
-          @Parameter(description = "Is Ascending") @RequestParam boolean isAscending,
+          @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
+          @Parameter(description = "Is Ascending") @RequestParam(required = false) boolean isAscending,
           @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
           @Parameter(description = "Search value") @RequestParam(required = false) String searchParam,
           @Parameter(description = "") @RequestParam(required = false) Double minPrice,
