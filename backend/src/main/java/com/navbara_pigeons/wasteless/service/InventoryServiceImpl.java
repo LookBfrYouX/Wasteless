@@ -184,7 +184,8 @@ public class InventoryServiceImpl implements InventoryService {
    * and the inventory quantity needs to be updated. When the quantity of the inventory item reaches
    * zero the inventory item and all of it's listings are deleted.
    *
-   * @param listing The listing that has been purchased
+   * @param businessId The id of the business
+   * @param listing    The listing that has been purchased
    */
   @Override
   @Transactional
