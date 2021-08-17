@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
@@ -13,12 +14,12 @@ import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
-import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
 import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
@@ -245,6 +246,8 @@ class InventoryServiceImplTest extends ServiceTestProvider {
     mockInventoryItem.setId(mockInventoryId);
     mockInventoryItem.setListings(Collections.emptyList());
     mockBusiness.addInventoryItem(mockInventoryItem);
+    Listing mockListing = makeListing(mockInventoryItem);
+    mockListing.setQuantity(quantity);
 
     when(businessDaoMock.getBusinessById(mockBusinessId)).thenReturn(mockBusiness);
     doNothing().when(listingServiceMock).deleteListing(any(Long.class));
@@ -253,10 +256,10 @@ class InventoryServiceImplTest extends ServiceTestProvider {
 
     if (shouldFail) {
       assertThrows(InventoryUpdateException.class, () -> inventoryService
-          .updateInventoryItemQuantity(mockBusinessId, mockInventoryId, quantity));
+          .updateInventoryItemFromPurchase(mockBusinessId, mockListing));
     } else {
       assertDoesNotThrow(() -> inventoryService
-          .updateInventoryItemQuantity(mockBusinessId, mockInventoryId, quantity));
+          .updateInventoryItemFromPurchase(mockBusinessId, mockListing));
     }
   }
 

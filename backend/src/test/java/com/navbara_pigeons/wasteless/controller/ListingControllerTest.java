@@ -30,7 +30,7 @@ public class ListingControllerTest extends ControllerTestProvider {
   @Test
   @WithMockUser
   void getListings_badId() throws Exception {
-    mockMvc.perform(get("/businesses/10000/listings")).andExpect(status().isNotAcceptable());
+    mockMvc.perform(get("/businesses/10000/listings")).andExpect(status().isNotFound());
   }
 
   // Return 201 on successful request to controller

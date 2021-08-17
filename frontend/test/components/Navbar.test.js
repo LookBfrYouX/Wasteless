@@ -66,3 +66,86 @@ describe("sign out", () => {
     expect(wrapper.vm.signOutErrorMessage).toBe("MSG");
   });
 })
+
+describe("Search functionality", () => {
+  test("Same page, refresh", async () => {
+    const query = "";
+    const searchName = "Search";
+
+    wrapper = shallowMount(Navbar, {
+      mocks: globalStateMocks(),
+      propsData: {
+        query: query,
+      }
+    });
+
+    wrapper.vm.$route.name = searchName;
+    wrapper.vm.$route.params.query = query;
+
+    await wrapper.vm.search();
+    expect(wrapper.vm.$router.go).toBeCalledTimes(1);
+    expect(wrapper.vm.$router.push).toBeCalledTimes(0);
+  });
+
+  test("Different page, push", async () => {
+    const query1 = "Something";
+    const query2 = "Hello";
+    const searchName = "Search";
+
+    wrapper = shallowMount(Navbar, {
+      mocks: globalStateMocks(),
+      propsData: {
+        query: query1,
+      }
+    });
+
+    wrapper.vm.$route.name = searchName;
+    wrapper.vm.$route.params.query = query2;
+
+    await wrapper.vm.search();
+    expect(wrapper.vm.$router.go).toBeCalledTimes(0);
+    expect(wrapper.vm.$router.push).toBeCalledTimes(1);
+  });
+})
+
+describe("pushOrGoToBusinessPage functionality", () => {
+  test("Acting as business, user already on same page", async () => {
+    const routeName = "CurrentPage";
+    wrapper = shallowMount(Navbar, {
+      mocks: globalStateMocks()
+    });
+
+    wrapper.vm.$route.name = routeName;
+    wrapper.vm.$route.params.businessId = GLOBAL_STATE.authUser.businessesAdministered[0].id;
+
+    await wrapper.vm.pushOrGoToBusinessPage(routeName);
+    expect(wrapper.vm.$router.go).toBeCalledTimes(1);
+    expect(wrapper.vm.$router.push).toBeCalledTimes(0);
+  });
+
+  test("Acting as business, user already on same page", async () => {
+    const routeName = "CurrentPage";
+    wrapper = shallowMount(Navbar, {
+      mocks: globalStateMocks()
+    });
+    wrapper.vm.$router.go.mock.calls.length = 0;
+    wrapper.vm.$router.push.mock.calls.length = 0;
+    wrapper.vm.$route.name = routeName;
+    wrapper.vm.$route.params.businessId = GLOBAL_STATE.authUser.businessesAdministered[0].id + "1";
+
+    await wrapper.vm.pushOrGoToBusinessPage(routeName);
+    expect(wrapper.vm.$router.go).toBeCalledTimes(0);
+    expect(wrapper.vm.$router.push).toBeCalledTimes(1);
+  });
+
+  test("Not acting as business", async () => {
+    wrapper = shallowMount(Navbar, {
+      mocks: globalStateMocks()
+    });
+    wrapper.vm.$stateStore.getters.getActingAs = () => null;
+
+    await wrapper.vm.pushOrGoToBusinessPage("Any Page");
+    expect(wrapper.vm.$router.go).toBeCalledTimes(0);
+    expect(wrapper.vm.$router.push).toBeCalledTimes(0);
+  });
+})
