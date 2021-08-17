@@ -25,4 +25,17 @@ public class ListingsSearchParams {
   private List<LocalDate> filterDates;
   private List<BusinessType> businessTypes;
 
+  public ListingsSearchParams() {
+    // Setting defaults
+    this.searchParam = "";
+  }
+
+  public void setSearchParam(String searchParam) {
+    if (searchParam == null) {
+      this.searchParam = "";
+    } else {
+      this.searchParam = searchParam;
+    }
+  }
+
 }
