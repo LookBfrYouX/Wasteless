@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "4ab3b480-6edc-429b-8931-cef0231b17b2",
+    "_postman_id": "de20bdcd-26b6-422b-b149-2e9587e889f8",
     "name": "Wasteless",
     "description": "API specification for Team 300's SENG302 2021 project\n\nContact Support:\n Email: seng302@canterbury.ac.nz",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -1079,7 +1079,8 @@
               "script": {
                 "exec": [
                   "var jsonData = JSON.parse(responseBody);",
-                  "pm.environment.set(\"userId\", jsonData.userId);"
+                  "pm.environment.set(\"userId\", jsonData.userId);",
+                  "pm.environment.set(\"loginRequest\", pm.request);"
                 ],
                 "type": "text/javascript"
               }
@@ -1183,7 +1184,7 @@
                   "",
                   "",
                   "// Increment the test index value, used to cycle through query params",
-                  "utils.incrementTestIndex(pm.environment);",
+                  "utils.incrementTestIndex(pm.collectionVariables);",
                   "",
                   "sortBy = pm.environment.get(\"sortBy\");",
                   "// Match the lodash format (asc/desc)",
@@ -1206,7 +1207,7 @@
               "listen": "prerequest",
               "script": {
                 "exec": [
-                  "var index = utils.getTestIndex(pm.environment);  // getting the current index value",
+                  "var index = utils.getTestIndex(pm.collectionVariables);  // getting the current index value",
                   "",
                   "// List the possible values to cycle through",
                   "sortByValues = [\"firstName\", \"middleName\", \"lastName\", \"nickname\"];",
@@ -2237,7 +2238,7 @@
                   "listen": "prerequest",
                   "script": {
                     "exec": [
-                      "var index = utils.getTestIndex(pm.environment);  // getting the current index value",
+                      "var index = utils.getTestIndex(pm.collectionVariables);  // getting the current index value",
                       "",
                       "// List the possible values to cycle through",
                       "sortByValues = [\"name\", \"manufacturer\", \"recommendedRetailPrice\", \"created\"];",
@@ -2265,7 +2266,7 @@
                       "var jsonData = pm.response.json();",
                       "",
                       "// Increment the test index value, used to cycle through query params",
-                      "utils.incrementTestIndex(pm.environment);",
+                      "utils.incrementTestIndex(pm.collectionVariables);",
                       "",
                       "",
                       "// Test status code",
@@ -2950,7 +2951,7 @@
                   "listen": "prerequest",
                   "script": {
                     "exec": [
-                      "var index = utils.getTestIndex(pm.environment);  // getting the current index value",
+                      "var index = utils.getTestIndex(pm.collectionVariables);  // getting the current index value",
                       "",
                       "// List the possible values to cycle through",
                       "sortByValues = [\"quantity\", \"pricePerItem\", \"totalPrice\", \"manufactured\", \"sellBy\", \"bestBefore\"];",
@@ -3031,7 +3032,7 @@
                       "",
                       "",
                       "// Increment the test index value, used to cycle through query params",
-                      "utils.incrementTestIndex(pm.environment);",
+                      "utils.incrementTestIndex(pm.collectionVariables);",
                       "",
                       "sortBy = pm.environment.get(\"sortBy\");",
                       "// Match the lodash format (asc/desc)",
@@ -3670,7 +3671,7 @@
                   "listen": "prerequest",
                   "script": {
                     "exec": [
-                      "var index = utils.getTestIndex(pm.environment);  // getting the current index value",
+                      "var index = utils.getTestIndex(pm.collectionVariables);  // getting the current index value",
                       "",
                       "// List the possible values to cycle through",
                       "sortByValues = [\"quantity\", \"price\", \"created\", \"closes\"];",
@@ -3751,7 +3752,7 @@
                       "",
                       "",
                       "// Increment the test index value, used to cycle through query params",
-                      "utils.incrementTestIndex(pm.environment);",
+                      "utils.incrementTestIndex(pm.collectionVariables);",
                       "",
                       "sortBy = pm.environment.get(\"sortBy\");",
                       "// Match the lodash format (asc/desc)",
@@ -5203,7 +5204,7 @@
               "listen": "prerequest",
               "script": {
                 "exec": [
-                  "var index = utils.getTestIndex(pm.environment);  // getting the current index value",
+                  "var index = utils.getTestIndex(pm.collectionVariables);  // getting the current index value",
                   "",
                   "// List the possible values to cycle through",
                   "sortByValues = [\"title\", \"created\", \"displayPeriodEnd\"];",
@@ -5284,7 +5285,7 @@
                   "",
                   "",
                   "// Increment the test index value, used to cycle through query params",
-                  "utils.incrementTestIndex(pm.environment);",
+                  "utils.incrementTestIndex(pm.collectionVariables);",
                   "",
                   "sortBy = pm.environment.get(\"sortBy\");",
                   "// Match the lodash format (asc/desc)",
@@ -6774,10 +6775,11 @@
                 "exec": [
                   "const store = pm.environment;",
                   "",
-                  "const index = utils.getTestIndex(store);",
-                  "",
+                  "const testIndex = utils.getTestIndex(pm.collectionVariables);",
                   "// Increment the test index value, used to cycle through query params",
-                  "utils.incrementTestIndex(store);",
+                  "utils.incrementTestIndex(pm.collectionVariables);",
+                  "",
+                  "utils.autoLogin(pm);",
                   "",
                   "",
                   "const setRequestVariables = params => {",
@@ -6785,7 +6787,7 @@
                   "    const cycleLength = Math.max(...Object.values(params).map(arr => arr.length));",
                   "    // If some parameters have more values in the array, other parameters will loop through",
                   "    Object.keys(params).forEach(paramName => {",
-                  "        const index = (test % cycleLength) % params[paramName].length;",
+                  "        const index = (testIndex % cycleLength) % params[paramName].length;",
                   "        // cycleLength can be greater than length of array, so in this case another modulus operation is needed",
                   "        store.set(paramName, params[paramName][index]);",
                   "    });",
@@ -6798,16 +6800,35 @@
                   "    \"price\": obj => obj.price,",
                   "    \"created\": obj => obj.created,",
                   "    \"closes\": obj => obj.closes,",
-                  "    \"name\": obj => obj.listing.product.name",
+                  "    \"name\": obj => obj.inventoryItem.product.name",
                   "};",
+                  "",
+                  "const searchKeys = [\"ProductName\", \"Business Name\", \"Address\"];",
+                  "",
+                  "const allPossibleCombinations = elements => {",
+                  "    let combinations = [[]];",
+                  "    const addOneElement = (combination, elementsToAdd) => {",
+                  "        // Given a combination, creates a new combination with an element from `elementsToAdd`",
+                  "        for(let i = 0; i < elementsToAdd.length; i++) {",
+                  "            const el = elementsToAdd[i];",
+                  "            const newCombination = [...combination];",
+                  "            newCombination.push(el);",
+                  "            combinations.push(newCombination);",
+                  "            addOneElement(newCombination, elementsToAdd.slice(i + 1));",
+                  "        }",
+                  "    }",
+                  "",
+                  "    addOneElement([], elements);",
+                  "    return combinations;",
+                  "}",
                   "",
                   "setRequestVariables({",
                   "    sortBy       : Object.keys(utils.listingsSortByKeyPaths),",
                   "    isAscending  : [true, false],",
-                  "    pagStartIndex: [ 0, 0, 2],",
-                  "    pagEndIndex  : [\"\", 1, 5],",
-                  "    searchKeys   : [[\"\"]],",
-                  "    searchValue  : [\"Pie Palace\"]",
+                  "    pagStartIndex: [0, 2],",
+                  "    pagEndIndex  : [100 , 1, 5],",
+                  "    searchKeys   : allPossibleCombinations(searchKeys),",
+                  "    searchValue  : [\"Pie Palace\", null, \"%%\"]",
                   "})"
                 ],
                 "type": "text/javascript"
@@ -6855,7 +6876,6 @@
                   "// Test the response schema is correct",
                   "// Made using https://app.quicktype.io/#l=schema",
                   "",
-                  "// TODO add business to schema; property of listing or product?",
                   "const schema = {",
                   "    \"$ref\": \"#/definitions/Root\",",
                   "    \"definitions\": {",
@@ -6867,6 +6887,7 @@
                   "                    \"type\": \"array\",",
                   "                    \"items\": {",
                   "                        \"$ref\": \"#/definitions/Listing\"",
+                  "",
                   "                    }",
                   "                },",
                   "                \"totalCount\": {",
@@ -6967,10 +6988,14 @@
                   "                \"bestBefore\": {",
                   "                    \"type\": \"string\",",
                   "                    \"format\": \"date\"",
+                  "                },",
+                  "                \"business\": {",
+                  "                    \"$ref\": \"#/definitions/Business\"",
                   "                }",
                   "            },",
                   "            \"required\": [",
                   "                \"bestBefore\",",
+                  "                \"business\",",
                   "                \"expires\",",
                   "                \"id\",",
                   "                \"manufactured\",",
@@ -7196,14 +7221,14 @@
     "type": "apikey",
     "apikey": [
       {
-        "key": "key",
-        "value": "JSESSIONID",
+        "key": "value",
+        "value": "{{JSESSIONID}",
         "type": "string"
       },
       {
-        "key": "value",
-        "value": true,
-        "type": "boolean"
+        "key": "key",
+        "value": "JSESSIONID",
+        "type": "string"
       },
       {
         "key": "in",
@@ -7223,7 +7248,7 @@
           "const getTestIndex = (store) => {",
           "    const val = Number(store.get(TEST_INDEX));",
           "    if (isNaN(val)) {",
-          "        store.set(TEST_INDEX, 0);",
+          "        store.set(TEST_INDEX, 50);",
           "        return 0;",
           "    }",
           "",
@@ -7234,9 +7259,39 @@
           "    store.set(TEST_INDEX, getTestIndex(store) + i);",
           "}",
           "",
+          "const autoLogin = (pm) => {",
+          "    // pm needs to be sent for some reason",
+          "    pm.sendRequest({",
+          "        url: `${pm.collectionVariables.get(\"baseUrl\")}/login`,",
+          "        method: \"POST\",",
+          "        header: {",
+          "            \"Content-Type\": \"application/json\"",
+          "        },",
+          "        body: {",
+          "            mode: \"raw\",",
+          "            raw: JSON.stringify({ ",
+          "                \"email\": \"dnb36@uclive.ac.nz\",",
+          "                \"password\": \"fun123\"",
+          "            })",
+          "        }",
+          "    }, (...response) => {",
+          "        if (response.length < 2 || response[1].code != 200) {",
+          "            throw new Error(`Could not log in: got ${JSON.stringify(response, null, 2)}`)",
+          "        }",
+          "",
+          "        const sessionCookie = response[2].cookies.find(el => el.name == \"JSESSIONID\");",
+          "        pm.variables.set(\"SESSION_COOKIE\", sessionCookie);",
+          "        pm.request.addHeader(pm.variables.get(\"SESSION_COOKIE\"));",
+          "    });",
+          "",
+          "",
+          "",
+          "}",
+          "",
           "utils = {",
           "    getTestIndex,",
-          "    incrementTestIndex",
+          "    incrementTestIndex,",
+          "    autoLogin",
           "}",
           ""
         ]
@@ -7256,6 +7311,10 @@
     {
       "key": "baseUrl",
       "value": "localhost:9499"
+    },
+    {
+      "key": "testIndex",
+      "value": ""
     }
   ]
 }

@@ -83,8 +83,11 @@ public class Product {
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
     this.created = product.getCreated();
-    for (BasicImageDto image : product.getImages()) {
-      this.productImages.add(new Image(image));
+    if (product.getImages() != null) {
+      this.productImages = new ArrayList<>();
+      for (BasicImageDto image : product.getImages()) {
+        this.productImages.add(new Image(image));
+      }
     }
 
     if (this.productImages.size() > 0) {
