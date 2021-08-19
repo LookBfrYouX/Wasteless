@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "de20bdcd-26b6-422b-b149-2e9587e889f8",
+    "_postman_id": "8ce3bfef-bb42-46ae-a56f-f2259d842b73",
     "name": "Wasteless",
     "description": "API specification for Team 300's SENG302 2021 project\n\nContact Support:\n Email: seng302@canterbury.ac.nz",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -6767,7 +6767,7 @@
       "name": "listings",
       "item": [
         {
-          "name": "Search Listings",
+          "name": "Search Listings Tests",
           "event": [
             {
               "listen": "prerequest",
@@ -6826,9 +6826,9 @@
                   "    sortBy       : Object.keys(utils.listingsSortByKeyPaths),",
                   "    isAscending  : [true, false],",
                   "    pagStartIndex: [0, 2],",
-                  "    pagEndIndex  : [100 , 1, 5],",
+                  "    pagEndIndex  : [null, 100, 1, 5],",
                   "    searchKeys   : allPossibleCombinations(searchKeys),",
-                  "    searchValue  : [\"Pie Palace\", null, \"%%\"]",
+                  "    searchParam  : [\"Pie Palace\", null, \"%%\", \"palace AND macs\", \"new zealand\"]",
                   "})"
                 ],
                 "type": "text/javascript"
@@ -7176,7 +7176,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/listings/search?searchKeys={{searchKeys}}&searchValue={{searchValue}}&sortBy={{sortBy}}&isAscending={{isAscending}}&pagStartIndex={{pagStartIndex}}&pagEndIndex={{pagEndIndex}}",
+              "raw": "{{baseUrl}}/listings/search?searchKeys={{searchKeys}}&searchParam={{searchParam}}&sortBy={{sortBy}}&isAscending={{isAscending}}&pagStartIndex={{pagStartIndex}}&pagEndIndex={{pagEndIndex}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -7190,8 +7190,8 @@
                   "value": "{{searchKeys}}"
                 },
                 {
-                  "key": "searchValue",
-                  "value": "{{searchValue}}"
+                  "key": "searchParam",
+                  "value": "{{searchParam}}"
                 },
                 {
                   "key": "sortBy",
@@ -7208,6 +7208,79 @@
                 {
                   "key": "pagEndIndex",
                   "value": "{{pagEndIndex}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Listings",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "utils.autoLogin(pm);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/listings/search?searchKeys=Business Name&searchKeys=Product Name&searchParam=palace AND macs&sortBy=&isAscending=true&pagStartIndex=0&pagEndIndex=100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "listings",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "searchKeys",
+                  "value": "Business Name"
+                },
+                {
+                  "key": "searchKeys",
+                  "value": "Product Name"
+                },
+                {
+                  "key": "searchKeys",
+                  "value": "Address",
+                  "disabled": true
+                },
+                {
+                  "key": "searchParam",
+                  "value": "palace AND macs"
+                },
+                {
+                  "key": "sortBy",
+                  "value": ""
+                },
+                {
+                  "key": "isAscending",
+                  "value": "true"
+                },
+                {
+                  "key": "pagStartIndex",
+                  "value": "0"
+                },
+                {
+                  "key": "pagEndIndex",
+                  "value": "100"
                 }
               ]
             }
