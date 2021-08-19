@@ -13,10 +13,12 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 
 import static com.navbara_pigeons.wasteless.enums.ListingSearchKeys.*;
 
+@Slf4j
 public class ListingSpecifications {
 
   private ListingSpecifications() {}
@@ -25,6 +27,7 @@ public class ListingSpecifications {
   * Method to check whether an of the values in the database matches the search criteria sent by the user
   * @param params search query and other request parameters
    */
+
   public static Specification<Listing> meetsSearchCriteria(ListingsSearchParams params) {
     return (root, query, criteriaBuilder) -> {
 
@@ -61,7 +64,7 @@ public class ListingSpecifications {
             predicates.add(getListingPartialMatch(params, nextToken, productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
           }
         } else {
-          System.out.println();
+          log.error("Malformed Search Query");
         }
       }
       predicates.add(getListingFilterMatch(params, root, businessInventoryItemJoin, criteriaBuilder));
