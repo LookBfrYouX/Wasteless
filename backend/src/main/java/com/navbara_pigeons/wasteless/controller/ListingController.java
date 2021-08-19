@@ -46,8 +46,8 @@ import java.util.List;
  */
 @RestController
 @Slf4j
-@Validated
 @RequestMapping("")
+@Validated
 @Tag(name = "Listing Endpoint", description = "The API endpoint for Product Listing related requests")
 public class ListingController {
 
@@ -68,10 +68,10 @@ public class ListingController {
           @Parameter(description = "Is Ascending") @RequestParam(required = false) boolean isAscending,
           @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
           @Parameter(description = "Search value") @RequestParam(required = false) String searchParam,
-          @Parameter(description = "") @RequestParam(required = false) Double minPrice,
-          @Parameter(description = "") @RequestParam(required = false) Double maxPrice,
-          @Parameter(description = "") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<ZonedDateTime> filterDates,
-          @Parameter(description = "") @RequestParam(required = false)  List<BusinessType> businessTypes
+          @Parameter(description = "Minimum Price of Listing") @RequestParam(required = false) Double minPrice,
+          @Parameter(description = "Maximum Price of Listing") @RequestParam(required = false) Double maxPrice,
+          @Parameter(description = "Dates to Filter Listings By") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<ZonedDateTime> filterDates,
+          @Parameter(description = "Types of Businesses to Filter Listings By") @RequestParam(required = false)  List<BusinessType> businessTypes
   ) {
     log.info("GETTING LISTINGS FOR: " + searchKeys + " = " + searchParam);
     ListingsSearchParams params = new ListingsSearchParams();

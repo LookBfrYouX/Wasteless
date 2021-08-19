@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.model;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 
@@ -55,11 +56,13 @@ public class ListingsSearchParams {
   }
 
   public void setSearchKeys(List<String> searchKeys) {
-    if (searchKeys == null){
-      this.searchKeys = searchKeys;
-    } else {
+    if (searchKeys == null) {
+      this.searchKeys = new ArrayList<>();
       this.searchKeys.add("Product Name");
+    } else {
+      this.searchKeys = searchKeys;
     }
+
   }
 
   public void setFilterDates(List<ZonedDateTime> filterDates) {

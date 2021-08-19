@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.dao.specifications;
 
 import com.navbara_pigeons.wasteless.entity.*;
+import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,8 +11,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 
 import org.springframework.data.jpa.domain.Specification;
+
+import static com.navbara_pigeons.wasteless.enums.ListingSearchKeys.*;
 
 public class ListingSpecifications {
 
@@ -35,29 +39,29 @@ public class ListingSpecifications {
         // First Query token
         if (predicates.isEmpty()) {
           if (SpecificationHelper.isFullMatching(currentToken)) {
-            predicates.add(getListingFullMatch(params, currentToken.replace("\"",""), inventoryItemJoin, productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
+            predicates.add(getListingFullMatch(params, currentToken.replace("\"",""), productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
           } else {
-            predicates.add(getListingPartialMatch(params, currentToken, inventoryItemJoin, productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
+            predicates.add(getListingPartialMatch(params, currentToken, productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
           }
           // Check if OR Operator
         } else if (currentToken.toUpperCase().matches("OR") && predicates.size() > 0 && tokenIterator.hasNext()) {
           String nextToken = tokenIterator.next();
           Predicate lastPredicate = predicates.remove(predicates.size() - 1);
           if (SpecificationHelper.isFullMatching(nextToken)) {
-            predicates.add(criteriaBuilder.or(lastPredicate, getListingFullMatch(params, nextToken.replace("\"",""), inventoryItemJoin, productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder)));
+            predicates.add(criteriaBuilder.or(lastPredicate, getListingFullMatch(params, nextToken.replace("\"",""), productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder)));
           } else {
-            predicates.add(criteriaBuilder.or(lastPredicate, getListingPartialMatch(params, nextToken, inventoryItemJoin, productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder)));
+            predicates.add(criteriaBuilder.or(lastPredicate, getListingPartialMatch(params, nextToken, productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder)));
           }
           // Check if AND Operator
         } else if (currentToken.toUpperCase().matches("AND") && predicates.size() > 0 && tokenIterator.hasNext()) {
           String nextToken = tokenIterator.next();
           if (SpecificationHelper.isFullMatching(nextToken)) {
-            predicates.add(getListingFullMatch(params, nextToken.replace("\"",""), inventoryItemJoin, productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
+            predicates.add(getListingFullMatch(params, nextToken.replace("\"",""), productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
           } else {
-            predicates.add(getListingPartialMatch(params, nextToken, inventoryItemJoin, productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
+            predicates.add(getListingPartialMatch(params, nextToken, productInventoryItemJoin, businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
           }
         } else {
-          System.out.println("Check your syntax");
+          System.out.println();
         }
       }
       predicates.add(getListingFilterMatch(params, root, businessInventoryItemJoin, criteriaBuilder));
@@ -69,23 +73,22 @@ public class ListingSpecifications {
    * Method to check whether an of the values in the database partially matches the search criteria sent by the user
    * @param params search query and other request parameters
    * @param token that the predicate is being made for
-   * @param inventoryItemJoin join listing with inventory item table
    * @param productInventoryItemJoin join inventoryitem table with product table
    * @param businessInventoryItemJoin join inventoryitem table with business table
    * @param addressBusinessJoin join business table with address table
    */
-  private static Predicate getListingPartialMatch(ListingsSearchParams params, String token,  Join<Listing, InventoryItem> inventoryItemJoin, Join<Product, InventoryItem> productInventoryItemJoin, Join<Business, InventoryItem> businessInventoryItemJoin, Join<Address, Business> addressBusinessJoin, CriteriaBuilder criteriaBuilder ) {
+  private static Predicate getListingPartialMatch(ListingsSearchParams params, String token, Join<Product, InventoryItem> productInventoryItemJoin, Join<Business, InventoryItem> businessInventoryItemJoin, Join<Address, Business> addressBusinessJoin, CriteriaBuilder criteriaBuilder ) {
     ArrayList<Predicate> predicates = new ArrayList<>();
     // if user searches by product name
-    if (params.getSearchKeys().contains("Product Name")) {
+    if (params.getSearchKeys().contains(PRODUCT_NAME.toString())) {
       predicates.add(criteriaBuilder.like(productInventoryItemJoin.get("name"), "%" + token + "%"));
     }
     // if user searches by business name
-    if (params.getSearchKeys().contains("Business Name")) {
+    if (params.getSearchKeys().contains(BUSINESS_NAME.toString())) {
       predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("name"), "%" + token + "%"));
     }
     // if user searches by address name
-    if (params.getSearchKeys().contains("Address")) {
+    if (params.getSearchKeys().contains(ADDRESS.toString())) {
       // creates predicate for the address being a country
       Predicate countrySearch = criteriaBuilder.like(addressBusinessJoin.get("country"), "%" + token + "%");
       // creates predicate for the address being a city
@@ -100,12 +103,11 @@ public class ListingSpecifications {
    * Method to check whether an of the values in the database fully matches the search criteria sent by the user
    * @param params search query and other request parameters
    * @param token that the predicate is being made for
-   * @param inventoryItemJoin join listing with inventory item table
    * @param productInventoryItemJoin join inventoryitem table with product table
    * @param businessInventoryItemJoin join inventoryitem table with business table
    * @param addressBusinessJoin join business table with address table
    */
-  private static Predicate getListingFullMatch(ListingsSearchParams params, String token, Join<Listing, InventoryItem> inventoryItemJoin, Join<Product, InventoryItem> productInventoryItemJoin, Join<Business, InventoryItem> businessInventoryItemJoin, Join<Address, Business> addressBusinessJoin, CriteriaBuilder criteriaBuilder ) {
+  private static Predicate getListingFullMatch(ListingsSearchParams params, String token, Join<Product, InventoryItem> productInventoryItemJoin, Join<Business, InventoryItem> businessInventoryItemJoin, Join<Address, Business> addressBusinessJoin, CriteriaBuilder criteriaBuilder ) {
     ArrayList<Predicate> predicates = new ArrayList<>();
     // user searches by product name
     if (params.getSearchKeys().contains("Product Name")) {
@@ -154,9 +156,7 @@ public class ListingSpecifications {
         predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("businessType"), params.getBusinessTypes().get(i).toString()));
       }
     }
-
     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-
   }
 
 }
