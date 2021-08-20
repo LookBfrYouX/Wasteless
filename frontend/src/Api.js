@@ -637,5 +637,16 @@ export const Api = {
         400: "Cannot fetch keywords"
       });
     });
+  },
+
+  buyListing: (businessId, listingId) => {
+    return instance.post(`/businesses/${businessId}/listings/${listingId}/purchase`)
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        400: err => `The listing could not be purchased: ${err.response.data}`,
+        404: "The business or inventory item does not exist - it may have been purchased by another user",
+        406: "The business does not have a listing with that ID"
+      });
+    });
   }
 }
