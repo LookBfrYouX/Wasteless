@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "8ce3bfef-bb42-46ae-a56f-f2259d842b73",
+    "_postman_id": "401553b1-7a45-4cf1-a0e2-354e8192a76f",
     "name": "Wasteless",
     "description": "API specification for Team 300's SENG302 2021 project\n\nContact Support:\n Email: seng302@canterbury.ac.nz",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -6784,13 +6784,17 @@
                   "",
                   "const setRequestVariables = params => {",
                   "    // params = { paramName: [paramValues]}",
+                  "    const consoleStrings = [];",
                   "    const cycleLength = Math.max(...Object.values(params).map(arr => arr.length));",
                   "    // If some parameters have more values in the array, other parameters will loop through",
                   "    Object.keys(params).forEach(paramName => {",
                   "        const index = (testIndex % cycleLength) % params[paramName].length;",
                   "        // cycleLength can be greater than length of array, so in this case another modulus operation is needed",
                   "        store.set(paramName, params[paramName][index]);",
+                  "        consoleStrings.push(`${paramName}: ${params[paramName][index]}`);",
                   "    });",
+                  "",
+                  "    console.log(consoleStrings.join(\", \"));",
                   "}",
                   "",
                   "// TODO add business name, location etc.?",
@@ -6826,10 +6830,16 @@
                   "    sortBy       : Object.keys(utils.listingsSortByKeyPaths),",
                   "    isAscending  : [true, false],",
                   "    pagStartIndex: [0, 2],",
-                  "    pagEndIndex  : [null, 100, 1, 5],",
+                  "    pagEndIndex  : [\"\", 100, 1, 5],",
                   "    searchKeys   : allPossibleCombinations(searchKeys),",
-                  "    searchParam  : [\"Pie Palace\", null, \"%%\", \"palace AND macs\", \"new zealand\"]",
-                  "})"
+                  "    searchParam  : [\"Pie Palace\", null, \"%%\", \"palace AND macs\", \"new zealand\"],",
+                  "",
+                  "    // pagStartIndex: [\"\"],",
+                  "    // pagEndIndex  : [\"\"],",
+                  "    // searchKeys   : [\"\"],",
+                  "    // searchParam  : [\"\"]",
+                  "});",
+                  ""
                 ],
                 "type": "text/javascript"
               }
@@ -6868,7 +6878,7 @@
                   "    if (!pagEndIndex || pagEndIndex >= totalCount) {",
                   "        pm.expect(resLength).to.eql(totalCount - pagStartIndex);",
                   "    } else {",
-                  "        pm.expect(resLength).to.eql(pagEndIndex - pagStartIndex + 1);",
+                  "        pm.expect(resLength).to.eql(Math.max(-1, pagEndIndex - pagStartIndex) + 1);",
                   "    }",
                   "});",
                   "",
@@ -7161,10 +7171,9 @@
                   "   // Read docs: https://lodash.com/docs/4.17.10#orderBy    ",
                   "",
                   "    const keyPath = utils.listingsSortByKeyPaths[sortBy];",
-                  "",
                   "   // I use `({ sortBy }) => sortBy || ''` so that nulls are ordered last in Ascending order to match the API",
-                  "    var expectedSortedOrder = _.orderBy(jsonData.results, [(obj) => { return keyPath(obj) || ''}],[isAscending]);",
-                  "",
+                  "    const expectedSortedOrder = _.orderBy(jsonData.results, [el => keyPath(el) || \"\"], [isAscending]);",
+                  "    ",
                   "    pm.expect(jsonData.results).to.eql(expectedSortedOrder);    ",
                   "});"
                 ],
