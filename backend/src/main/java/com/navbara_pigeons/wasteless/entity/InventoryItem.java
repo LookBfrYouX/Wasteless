@@ -75,9 +75,10 @@ public class InventoryItem {
           CascadeType.MERGE,
           CascadeType.PERSIST,
           CascadeType.REFRESH
-      }
+      },
+      orphanRemoval = true,
+      mappedBy = "inventoryItem"
   )
-  @JoinColumn(name = "INVENTORY_ITEM_ID")
   private List<Listing> listings;
 
   public InventoryItem(BasicInventoryItemDto inventory) {
@@ -126,5 +127,14 @@ public class InventoryItem {
       listings = new ArrayList<>();
     }
     listings.add(listing);
+  }
+
+  /**
+   * Updates the inventory items quantity by removing a given value
+   *
+   * @param quantity to remove by
+   */
+  public void removeQuantity(long quantity) {
+    this.setQuantity(this.quantity - quantity);
   }
 }

@@ -236,6 +236,11 @@ export default {
             active: viewName == "UserProfile",
           },
           {
+            name: "Browse Listings",
+            click: () => this.pushOrGo('Listings'),
+            active: viewName == "Listings",
+          },
+          {
             name: "Marketplace",
             click: () => this.pushOrGo('Marketplace'),
             active: viewName == "Marketplace",

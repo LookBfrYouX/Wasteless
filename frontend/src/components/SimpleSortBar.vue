@@ -3,6 +3,7 @@
     <v-select
         :items="items.map(a => a.key)"
         dense
+        prepend-inner-icon="sort"
         label="Sort By"
         solo @change="sortChange"
     ></v-select>

@@ -7,6 +7,7 @@ import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.enums.InventorySortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -14,6 +15,7 @@ import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
@@ -23,6 +25,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,7 @@ public class InventoryServiceImpl implements InventoryService {
   private final UserService userService;
   private final BusinessService businessService;
   private final ProductService productService;
+  private final ListingService listingService;
   private final InventoryDao inventoryDao;
   @Value("${public_path_prefix}")
   private String publicPathPrefix;
@@ -46,12 +50,15 @@ public class InventoryServiceImpl implements InventoryService {
    */
   @Autowired
   public InventoryServiceImpl(BusinessDao businessDao, UserService userService,
-      BusinessService businessService, ProductService productService, InventoryDao inventoryDao) {
+      BusinessService businessService, ProductService productService,
+      InventoryDao inventoryDao, @Lazy ListingService listingService) {
+    // Using @Lazy to prevent Circular Dependencies
     this.businessDao = businessDao;
     this.userService = userService;
     this.businessService = businessService;
     this.productService = productService;
     this.inventoryDao = inventoryDao;
+    this.listingService = listingService;
   }
 
   /**
@@ -105,6 +112,7 @@ public class InventoryServiceImpl implements InventoryService {
    * @param itemId     id of the item to be retrieved
    * @return inventory item or null
    */
+  @Transactional
   public InventoryItem getInventoryItemById(long businessId, long itemId)
       throws BusinessNotFoundException, InventoryItemNotFoundException {
     Business business = businessDao.getBusinessById(businessId);
@@ -124,7 +132,6 @@ public class InventoryServiceImpl implements InventoryService {
    *
    * @param businessId, Create The ID of the business whose products are to be retrieved.
    * @return A List<Product> of products that are in the business product catalogue.
-   * @throws BusinessNotFoundException If the business is not listed in the database.
    */
   @Override
   @Transactional
@@ -158,6 +165,43 @@ public class InventoryServiceImpl implements InventoryService {
 
     } catch (BusinessNotFoundException | ProductNotFoundException | UserNotFoundException exc) {
       throw new InventoryRegistrationException("BUSINESS, PRODUCT OR USER NOT FOUND");
+    }
+  }
+
+  /**
+   * Deletes the given inventory item
+   *
+   * @param inventoryItem inventory item to delete
+   */
+  @Override
+  @Transactional
+  public void deleteInventoryItem(InventoryItem inventoryItem) {
+    inventoryDao.deleteInventoryItem(inventoryItem);
+  }
+
+  /**
+   * Updates the quantity of the inventory item. This is called when a listing has been purchased
+   * and the inventory quantity needs to be updated. When the quantity of the inventory item reaches
+   * zero the inventory item and all of it's listings are deleted.
+   *
+   * @param businessId The id of the business
+   * @param listing    The listing that has been purchased
+   */
+  @Override
+  @Transactional
+  public void updateInventoryItemFromPurchase(Long businessId, Listing listing)
+      throws InventoryUpdateException {
+
+    InventoryItem inventoryItem = listing.getInventoryItem();
+    inventoryItem.removeQuantity(listing.getQuantity());
+
+    if (inventoryItem.getQuantity() < 0) {
+      throw new InventoryUpdateException("Quantity cannot be less than 0");
+    } else if (inventoryItem.getQuantity() == 0) {
+      this.deleteInventoryItem(inventoryItem);
+    } else {
+      inventoryDao.saveInventoryItem(inventoryItem);
+      listingService.deleteListing(listing.getId());
     }
   }
 }

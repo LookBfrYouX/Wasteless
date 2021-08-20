@@ -32,7 +32,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
   void getProductsFromOneNonExistingBusinessTest() throws Exception {
     String endpointUrl = "/businesses/9999/products";
-    mockMvc.perform(get(endpointUrl)).andExpect(status().is(406));
+    mockMvc.perform(get(endpointUrl)).andExpect(status().isNotFound());
   }
 
   @Test
@@ -46,7 +46,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   @WithMockUser
   void getProductsFromOneBusinessTestInvalidId() throws Exception {
     String enpointUrl = "/businesses/-1/products";
-    mockMvc.perform(get(enpointUrl)).andExpect(status().is(406));
+    mockMvc.perform(get(enpointUrl)).andExpect(status().isNotFound());
   }
 
   // Return 201 on successful request to controller
