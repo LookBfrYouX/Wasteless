@@ -2,7 +2,7 @@
   <v-dialog
     @click:outside="hideCallbackEvent"
     :value="show"
-    @change="hideCallback"
+    @change="hideCallbackEvent"
     max-width="500px"
   >
       <v-card class="error-modal-card">
@@ -82,7 +82,7 @@ export default {
 
     /**
      * If false or not given, retry button will not be shown
-     * If boolean, will determine if shown or not and use default refresh handler
+     * Else, retry method called
      */
     retry: {
       required: true
@@ -107,7 +107,7 @@ export default {
       if (this.refresh === true) {
         // boolean
         this.$router.go();
-      } else {
+      } else if (typeof this.refresh == "function") {
         this.refresh(event);
       }
     },
@@ -117,7 +117,7 @@ export default {
      */
     retryClicked: function (event) {
       this.hideCallback();
-      if (this.retry) {
+      if (typeof this.retry === "function") {
         this.retry(event);
       }
     },
@@ -127,15 +127,16 @@ export default {
      */
     goBackClicked: function (event) {
       this.hideCallback();
-      if (typeof this.goBack === "boolean") {
-        if (this.goBack === true) {
-          this.$router.go(-1);
-        }
-      } else {
+      if (this.goBack === true) {
+        this.$router.go(-1);
+      } else if (typeof this.goBack == "function") {
         this.goBack(event);
       }
     },
 
+    /**
+     * Wrapper around hide callback prop/method
+     */
     hideCallbackEvent: function (event) {
       if (this.hideCallback) {
         this.hideCallback(event);
