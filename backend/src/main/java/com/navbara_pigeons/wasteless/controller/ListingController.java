@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import javax.naming.directory.InvalidAttributesException;
 import javax.persistence.Enumerated;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -28,13 +29,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -61,18 +56,19 @@ public class ListingController {
 
   @GetMapping("/listings/search")
   @Operation(summary = "Search through sales listings", description = "Search and filter all sales listings")
+  @ExceptionHandler(InvalidAttributesException.class)
   public ResponseEntity<Object> searchListings(
-          @Parameter(description = "Pagination start index") @RequestParam @Min(0) Integer pagStartIndex,
-          @Parameter(description = "Pagination end index") @RequestParam @Min(0) Integer pagEndIndex,
+          @Parameter(description = "Pagination start index") @RequestParam(required = false) @Min(0) Integer pagStartIndex,
+          @Parameter(description = "Pagination end index") @RequestParam(required = false) @Min(0) Integer pagEndIndex,
           @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
-          @Parameter(description = "Is Ascending") @RequestParam(required = false) boolean isAscending,
+          @Parameter(description = "Is Ascending") @RequestParam(required = false) Boolean isAscending,
           @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
           @Parameter(description = "Search value") @RequestParam(required = false) String searchParam,
           @Parameter(description = "Minimum Price of Listing") @RequestParam(required = false) Double minPrice,
           @Parameter(description = "Maximum Price of Listing") @RequestParam(required = false) Double maxPrice,
           @Parameter(description = "Dates to Filter Listings By") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<ZonedDateTime> filterDates,
           @Parameter(description = "Types of Businesses to Filter Listings By") @RequestParam(required = false)  List<BusinessType> businessTypes
-  ) {
+  ) throws ListingValidationException {
     log.info("GETTING LISTINGS FOR: " + searchKeys + " = " + searchParam);
     ListingsSearchParams params = new ListingsSearchParams();
     params.setPagStartIndex(pagStartIndex);

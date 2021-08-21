@@ -32,4 +32,6 @@ public interface InventoryService {
   void updateInventoryItemQuantity(Long businessId, Long inventoryItemId, Long quantity)
       throws BusinessNotFoundException, InventoryItemNotFoundException, InventoryUpdateException;
     void deleteInventoryItem(InventoryItem inventoryItem);
+
+    InventoryItem getInventoryItemById(Long inventoryItemId) throws InventoryItemNotFoundException;
 }

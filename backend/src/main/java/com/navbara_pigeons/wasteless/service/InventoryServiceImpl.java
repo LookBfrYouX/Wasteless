@@ -204,4 +204,10 @@ public class InventoryServiceImpl implements InventoryService {
       inventoryDao.saveInventoryItem(inventoryItem);
     }
   }
+
+  @Override
+  @Transactional
+  public InventoryItem getInventoryItemById(Long inventoryItemId) throws InventoryItemNotFoundException {
+    return inventoryDao.getInventoryItemById(inventoryItemId);
+  }
 }

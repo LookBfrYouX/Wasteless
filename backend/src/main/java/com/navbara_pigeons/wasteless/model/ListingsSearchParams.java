@@ -1,11 +1,17 @@
 package com.navbara_pigeons.wasteless.model;
 
 import com.navbara_pigeons.wasteless.entity.BusinessType;
+import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.naming.directory.InvalidAttributeValueException;
 
 /**
  * This model class maps to the request parameters sent to the /listings/search endpoint.
@@ -13,13 +19,14 @@ import lombok.Data;
  */
 
 @Data
+@Slf4j
 public class ListingsSearchParams {
 
   private Integer pagStartIndex;
   private Integer pagEndIndex;
   private ListingSortByOption sortBy;
   private boolean isAscending;
-  private List<String> searchKeys;
+  private List<ListingSearchKeys> searchKeys;
   private String searchParam;
   private Double minPrice;
   private Double maxPrice;
@@ -44,29 +51,44 @@ public class ListingsSearchParams {
 
   public void setPagEndIndex(Integer pagEndIndex) {
     if (pagEndIndex == null) {
-      this.pagEndIndex = 10;
+      this.pagEndIndex = 9;
     } else {
       this.pagEndIndex = pagEndIndex;
     }
   }
 
 
-  public void setAscending(boolean ascending) {
-      this.isAscending = ascending;
+  public void setAscending(Boolean ascending) {
+    if (ascending == null) {
+      this.isAscending = true;
+    }
   }
 
-  public void setSearchKeys(List<String> searchKeys) {
-    if (searchKeys == null) {
-      this.searchKeys = new ArrayList<>();
-      this.searchKeys.add("Product Name");
+  public void setSearchKeys(List<String> searchKeys) throws ListingValidationException {
+    this.searchKeys = new ArrayList<>();
+    if (searchKeys == null || searchKeys.isEmpty()) {
+      this.searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
     } else {
-      this.searchKeys = searchKeys;
+      for (String key : searchKeys) {
+        try {
+          this.searchKeys.add(ListingSearchKeys.fromString(key));
+        } catch (IllegalArgumentException e){
+          throw new ListingValidationException();
+        }
+      }
     }
 
   }
 
   public void setFilterDates(List<ZonedDateTime> filterDates) {
-    this.filterDates = filterDates;
+    this.filterDates = new ArrayList<>();
+    if (filterDates != null) {
+      for (ZonedDateTime date : filterDates) {
+        if (date != null) {
+          this.filterDates.add(date);
+        }
+      }
+    }
   }
 
   public void setBusinessTypes(List<BusinessType> businessTypes) {

@@ -56,10 +56,10 @@ class ListingControllerTest extends ControllerTestProvider {
 
   @Test
   @WithMockUser(value = "mbi47@uclive.ac.nz")
-  void searchListings_withInvalidSearchParams_expectBadRequest() throws Exception {
+  void searchListings_withInvalidSearchKeys_expectBadRequest() throws Exception {
     mockMvc.perform(
             get("/listings/search")
-                    .param("searchKey", "Big Mac?")
+                    .param("searchKeys", "Big Mac?")
     ).andExpect(status().isBadRequest());
   }
 

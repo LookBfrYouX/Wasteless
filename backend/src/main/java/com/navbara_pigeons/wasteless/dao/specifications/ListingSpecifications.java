@@ -83,15 +83,15 @@ public class ListingSpecifications {
   private static Predicate getListingPartialMatch(ListingsSearchParams params, String token, Join<Product, InventoryItem> productInventoryItemJoin, Join<Business, InventoryItem> businessInventoryItemJoin, Join<Address, Business> addressBusinessJoin, CriteriaBuilder criteriaBuilder ) {
     ArrayList<Predicate> predicates = new ArrayList<>();
     // if user searches by product name
-    if (params.getSearchKeys().contains(PRODUCT_NAME.toString())) {
+    if (params.getSearchKeys().contains(PRODUCT_NAME)) {
       predicates.add(criteriaBuilder.like(productInventoryItemJoin.get("name"), "%" + token + "%"));
     }
     // if user searches by business name
-    if (params.getSearchKeys().contains(BUSINESS_NAME.toString())) {
+    if (params.getSearchKeys().contains(BUSINESS_NAME)) {
       predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("name"), "%" + token + "%"));
     }
     // if user searches by address name
-    if (params.getSearchKeys().contains(ADDRESS.toString())) {
+    if (params.getSearchKeys().contains(ADDRESS)) {
       // creates predicate for the address being a country
       Predicate countrySearch = criteriaBuilder.like(addressBusinessJoin.get("country"), "%" + token + "%");
       // creates predicate for the address being a city
@@ -113,15 +113,15 @@ public class ListingSpecifications {
   private static Predicate getListingFullMatch(ListingsSearchParams params, String token, Join<Product, InventoryItem> productInventoryItemJoin, Join<Business, InventoryItem> businessInventoryItemJoin, Join<Address, Business> addressBusinessJoin, CriteriaBuilder criteriaBuilder ) {
     ArrayList<Predicate> predicates = new ArrayList<>();
     // user searches by product name
-    if (params.getSearchKeys().contains("Product Name")) {
+    if (params.getSearchKeys().contains(PRODUCT_NAME)) {
       predicates.add(criteriaBuilder.like(productInventoryItemJoin.get("name"),token));
     }
     // user searches by business name
-    if (params.getSearchKeys().contains("Business Name")) {
+    if (params.getSearchKeys().contains(BUSINESS_NAME)) {
       predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("name"), token));
     }
     // user searches by address name
-    if (params.getSearchKeys().contains("Address")) {
+    if (params.getSearchKeys().contains(ADDRESS)) {
       Predicate countrySearch = criteriaBuilder.like(addressBusinessJoin.get("country"), token );
       Predicate citySearch = criteriaBuilder.like(addressBusinessJoin.get("city"), token );
       predicates.add(criteriaBuilder.or(countrySearch, citySearch));
@@ -140,18 +140,18 @@ public class ListingSpecifications {
     ArrayList<Predicate> predicates = new ArrayList<>();
     // if min price included by the user
     if( params.getMinPrice() != null ) {
-      predicates.add(criteriaBuilder.greaterThan(root.get("price"), params.getMinPrice()));
+      predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), params.getMinPrice()));
     }
     // if max price included by the user
     if( params.getMaxPrice() != null ) {
-      predicates.add(criteriaBuilder.lessThan(root.get("price"), params.getMaxPrice()));
+      predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), params.getMaxPrice()));
     }
     // if one date included it is taken as the max date
     if (params.getFilterDates() != null && params.getFilterDates().size() == 1) {
-      predicates.add(criteriaBuilder.lessThan(root.get("created"), params.getFilterDates().get(0)));
+      predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0)));
     // if two dates included it is taken as a date range
     } else if (params.getFilterDates() != null && params.getFilterDates().size() == 2) {
-      predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThan(root.get("created"), params.getFilterDates().get(0)), criteriaBuilder.lessThan(root.get("created"), params.getFilterDates().get(1))));
+      predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0)), criteriaBuilder.lessThanOrEqualTo(root.get("created"), params.getFilterDates().get(1))));
     }
     // if business types are included by the user
     if (params.getBusinessTypes() != null) {
