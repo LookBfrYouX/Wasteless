@@ -10,8 +10,8 @@ import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
-import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.dto.FullInventoryItemDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
@@ -92,7 +92,7 @@ class InventoryServiceImplTest extends ServiceTestProvider {
     when(inventoryDaoMock.getInventoryItems(any(Business.class), any(PaginationBuilder.class)))
         .thenReturn(Pair.of(inventory, 0L));
 
-    List<BasicInventoryItemDto> inventoryDto = inventoryService
+    List<FullInventoryItemDto> inventoryDto = inventoryService
         .getInventory(business.getId(), null, null, null, true).getResults();
 
     assertInventoryListEquals(inventory, inventoryDto);
@@ -138,7 +138,7 @@ class InventoryServiceImplTest extends ServiceTestProvider {
     when(inventoryDaoMock.getInventoryItems(any(Business.class), any(PaginationBuilder.class)))
         .thenReturn(Pair.of(inventoryItemList, 0L));
 
-    List<BasicInventoryItemDto> inventory = inventoryService
+    List<FullInventoryItemDto> inventory = inventoryService
         .getInventory(business.getId(), null, null, null, true).getResults();
 
     assertInventoryListEquals(inventoryItemList, inventory);

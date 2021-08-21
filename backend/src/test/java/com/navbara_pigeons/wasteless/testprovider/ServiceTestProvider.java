@@ -3,14 +3,7 @@ package com.navbara_pigeons.wasteless.testprovider;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import com.navbara_pigeons.wasteless.dto.BasicAddressDto;
-import com.navbara_pigeons.wasteless.dto.BasicBusinessDto;
-import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
-import com.navbara_pigeons.wasteless.dto.BasicProductDto;
-import com.navbara_pigeons.wasteless.dto.BasicUserDto;
-import com.navbara_pigeons.wasteless.dto.FullAddressDto;
-import com.navbara_pigeons.wasteless.dto.FullBusinessDto;
-import com.navbara_pigeons.wasteless.dto.FullUserDto;
+import com.navbara_pigeons.wasteless.dto.*;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
@@ -80,9 +73,9 @@ public class ServiceTestProvider extends MainTestProvider {
    * @param inventoryDto
    */
   protected void assertInventoryListEquals(List<InventoryItem> inventory,
-      List<BasicInventoryItemDto> inventoryDto) {
+      List<FullInventoryItemDto> inventoryDto) {
     inventory.sort(Comparator.comparing(InventoryItem::getId));
-    inventoryDto.sort(Comparator.comparing(BasicInventoryItemDto::getId));
+    inventoryDto.sort(Comparator.comparing(FullInventoryItemDto::getId));
     assertEquals(inventory.size(), inventoryDto.size());
     for (int i = 0; i < inventory.size(); i++) {
       assertInventoryEquals(inventory.get(i), inventoryDto.get(i));
@@ -91,12 +84,11 @@ public class ServiceTestProvider extends MainTestProvider {
 
   /**
    * Asserts that a given inventory and its DTO are equal
-   *
-   * @param inventory
+   *  @param inventory
    * @param inventoryDto
    */
   protected void assertInventoryEquals(InventoryItem inventory,
-      BasicInventoryItemDto inventoryDto) {
+                                       FullInventoryItemDto inventoryDto) {
     assertEquals(inventory.getId(), inventoryDto.getId());
     assertProductEquals(inventory.getProduct(), inventoryDto.getProduct());
     assertEquals(inventory.getQuantity(), inventoryDto.getQuantity());
@@ -105,6 +97,7 @@ public class ServiceTestProvider extends MainTestProvider {
     assertEquals(inventory.getSellBy(), inventoryDto.getSellBy());
     assertEquals(inventory.getBestBefore(), inventoryDto.getBestBefore());
     assertEquals(inventory.getExpires(), inventoryDto.getExpires());
+    assertBusinessEquals(inventory.getBusiness(), inventoryDto.getBusiness());
   }
 
   /**

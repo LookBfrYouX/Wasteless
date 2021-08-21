@@ -1,7 +1,6 @@
 package com.navbara_pigeons.wasteless.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.FullInventoryItemDto;
 import java.time.LocalDate;
@@ -81,7 +80,7 @@ public class InventoryItem {
   )
   private List<Listing> listings;
 
-  public InventoryItem(BasicInventoryItemDto inventory) {
+  public InventoryItem(FullInventoryItemDto inventory) {
     this.id = inventory.getId();
     this.product = new Product(inventory.getProduct());
     this.quantity = inventory.getQuantity();
@@ -91,17 +90,7 @@ public class InventoryItem {
     this.manufactured = inventory.getManufactured();
     this.sellBy = inventory.getSellBy();
     this.bestBefore = inventory.getBestBefore();
-  }
-
-  public InventoryItem(FullInventoryItemDto inventory) {
-    this.product = new Product(inventory.getProduct());
-    this.quantity = inventory.getQuantity();
-    this.pricePerItem = inventory.getPricePerItem();
-    this.totalPrice = inventory.getTotalPrice();
-    this.expires = inventory.getExpires();
-    this.manufactured = inventory.getManufactured();
-    this.sellBy = inventory.getSellBy();
-    this.bestBefore = inventory.getBestBefore();
+    this.business = new Business(inventory.getBusiness());
   }
 
   public InventoryItem(CreateInventoryItemDto inventory) {
