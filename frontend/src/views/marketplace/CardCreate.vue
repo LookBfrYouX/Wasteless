@@ -4,7 +4,6 @@
         autocomplete="on"
         class="container slightly-transparent-inputs"
         method="POST"
-        @submit.prevent="create"
     >
       <div class="row">
         <div class="col">
@@ -102,7 +101,8 @@
         <div class="col-12">
           <button
               class="btn btn-primary"
-              type="submit"
+              type="button"
+              @click="create"
           >
             Create card
           </button>

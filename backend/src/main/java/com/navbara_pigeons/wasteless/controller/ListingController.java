@@ -2,12 +2,16 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
+import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
+import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
+import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
@@ -15,7 +19,6 @@ import com.navbara_pigeons.wasteless.service.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
@@ -146,6 +149,25 @@ public class ListingController {
     log.info("GETTING LISTINGS FOR BUSINESS WITH ID " + id);
     return new ResponseEntity<>(
         listingService.getListings(id, pagStartIndex, pagEndIndex, sortBy, isAscending),
+        HttpStatus.OK);
+  }
+
+  /**
+   * This controller endpoint is used for a user to purchase a listing from a business. The listing
+   * is then removed and a transactional log is kept.
+   *
+   * @param listingId The identifier of the listing to be purchased
+   * @return The identifier of the stored transaction
+   */
+  @PostMapping("/businesses/{businessId}/listings/{listingId}/purchase")
+  @Operation(summary = "Purchase a specific listing", description = "Purchase a specific listing, record the transaction and delete the purchased listing")
+  public ResponseEntity<TransactionDto> purchaseListing(
+      @Parameter(description = "The identifier of the business that the listing belongs to") @PathVariable long businessId,
+      @Parameter(description = "The identifier of the listing to be purchased") @PathVariable long listingId
+  )
+      throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException, ListingNotFoundException {
+    log.info("PURCHASING LISTING WITH ID " + listingId);
+    return new ResponseEntity<>(listingService.purchaseListing(businessId, listingId),
         HttpStatus.OK);
   }
 }

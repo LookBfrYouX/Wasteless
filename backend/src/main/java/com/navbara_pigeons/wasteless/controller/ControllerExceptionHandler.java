@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
+import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
@@ -10,6 +11,7 @@ import com.navbara_pigeons.wasteless.exception.InvalidMarketListingSectionExcept
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
@@ -64,9 +66,23 @@ public class ControllerExceptionHandler {
    * @return ResponseEntity with the exception message
    */
   @ExceptionHandler(BusinessNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
   public ResponseEntity<String> handleBusinessNotFoundException(BusinessNotFoundException exc) {
-    log.error("BUSINESS NOT FOUND: 406 - " + exc.getMessage());
+    log.error("BUSINESS NOT FOUND: 404 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_FOUND);
+  }
+
+  /**
+   * This is the exception handler for BusinessAndListingMismatchException.
+   *
+   * @param exc The thrown exception
+   * @return ResponseEntity with the exception message
+   */
+  @ExceptionHandler(BusinessAndListingMismatchException.class)
+  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+  public ResponseEntity<String> handleBusinessAndListingMismatchException(
+      BusinessAndListingMismatchException exc) {
+    log.error("BUSINESS AND LISTING MISMATCH: 406 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_ACCEPTABLE);
   }
 
@@ -124,11 +140,24 @@ public class ControllerExceptionHandler {
   }
 
   @ExceptionHandler(InventoryItemNotFoundException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
   public ResponseEntity<String> handleInventoryItemNotFoundException(
       InventoryItemNotFoundException exc) {
-    log.error("INVENTORY ITEM ERROR: 406 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+    log.error("INVENTORY ITEM ERROR: 404 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_FOUND);
+  }
+
+  /**
+   * This is the exception handler for ListingNotFoundException.
+   *
+   * @param exc The thrown exception
+   * @return ResponseEntity with the exception message
+   */
+  @ExceptionHandler(ListingNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ResponseEntity<String> handleListingNotFoundException(ListingNotFoundException exc) {
+    log.error("LISTING NOT FOUND ERROR: 404 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_FOUND);
   }
 
   /**

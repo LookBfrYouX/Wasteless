@@ -5,6 +5,14 @@
         <h5 class="text-muted mt-3">Quick Links</h5>
         <div class="profile-buttons d-flex flex-wrap">
           <router-link
+            v-if="isActingAsUser"
+            :to="{ name: 'Listings' }"
+            class="btn btn-white-bg-primary m-1 d-flex"
+            >
+            <span class="material-icons mr-1">shopping_cart</span>
+            Shop now
+          </router-link>
+          <router-link
               v-if="isActingAsUser"
               :to="{ name: 'Marketplace' }"
               class="btn btn-white-bg-primary m-1 d-flex"

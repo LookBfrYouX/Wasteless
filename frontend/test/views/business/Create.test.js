@@ -18,6 +18,9 @@ describe("Register business", () => {
     const mockRegisterBusinessResponse = {data: {businessId: 1}};
     wrapper = shallowMount(Create, {
       mocks,
+      props: {
+        userId: 100
+      }
     });
     Api.registerBusiness.mockResolvedValue(mockRegisterBusinessResponse);
     wrapper.vm.register();
@@ -39,6 +42,9 @@ describe("Register business", () => {
     const mockRegisterBusinessResponse = {data: {businessId: 1}};
     wrapper = shallowMount(Create, {
       mocks,
+      props: {
+        userId: 20
+      }
     });
     Api.registerBusiness.mockResolvedValue(mockRegisterBusinessResponse);
     wrapper.vm.register();

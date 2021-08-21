@@ -10,7 +10,8 @@ import com.navbara_pigeons.wasteless.controller.BusinessController;
 import com.navbara_pigeons.wasteless.controller.ProductController;
 import com.navbara_pigeons.wasteless.controller.UserController;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
-import com.navbara_pigeons.wasteless.security.service.BasicUserDetailsServiceImpl;
+import com.navbara_pigeons.wasteless.service.InventoryService;
+import com.navbara_pigeons.wasteless.service.ListingService;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import io.cucumber.spring.CucumberContextConfiguration;
 import javax.annotation.PostConstruct;
@@ -34,7 +35,10 @@ public class CucumberTestProvider extends MainTestProvider {
   protected ProductController productController;
 
   @Autowired
-  protected BasicUserDetailsServiceImpl basicUserDetailsService;
+  protected InventoryService inventoryService;
+
+  @Autowired
+  protected ListingService listingService;
 
   protected Long loggedInUserId = null;
 

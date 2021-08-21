@@ -3,14 +3,19 @@ package com.navbara_pigeons.wasteless.service;
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
+import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.entity.Transaction;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
+import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
+import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
@@ -39,6 +44,7 @@ public class ListingServiceImpl implements ListingService {
   private final BusinessService businessService;
   private final ListingDao listingDao;
   private final InventoryService inventoryService;
+  private final TransactionService transactionService;
   @Value("${public_path_prefix}")
   private String publicPathPrefix;
 
@@ -48,11 +54,13 @@ public class ListingServiceImpl implements ListingService {
    */
   @Autowired
   public ListingServiceImpl(UserService userService, BusinessService businessService,
-      ListingDao listingDao, InventoryService inventoryService) {
+      ListingDao listingDao, InventoryService inventoryService,
+      TransactionService transactionService) {
     this.userService = userService;
     this.businessService = businessService;
     this.listingDao = listingDao;
     this.inventoryService = inventoryService;
+    this.transactionService = transactionService;
   }
 
   /**
@@ -86,6 +94,17 @@ public class ListingServiceImpl implements ListingService {
     listing.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
     listingDao.saveListing(listing);
     return listing.getId();
+  }
+
+  /**
+   * Get a specific listing from its identifier
+   *
+   * @param listingId The specific identifier of the listing
+   * @return The Listing
+   * @throws ListingNotFoundException A listing with that id was not found
+   */
+  public Listing getListing(long listingId) throws ListingNotFoundException {
+    return listingDao.getListing(listingId);
   }
 
   /**
@@ -154,5 +173,43 @@ public class ListingServiceImpl implements ListingService {
   @Transactional
   public void deleteListing(Long listingId) {
     this.listingDao.deleteListing(listingId);
+  }
+
+  /**
+   * Purchase a listing from a specific business then save purchase details in a transaction.
+   *
+   * @param businessId The identifier of the business that owns the listing.
+   * @param listingId  The identifier of the listing to be purchased.
+   * @return The identifier of the stored transaction
+   * @throws InventoryItemNotFoundException      An associated inventory item could not be found
+   * @throws BusinessNotFoundException           An associated business could not be found
+   * @throws InventoryUpdateException            The quantity of the inventory item reached bellow
+   *                                             zero. Invalid State.
+   * @throws BusinessAndListingMismatchException There is a mismatch between passed in businessId
+   *                                             and the listing's businessId
+   */
+  @Override
+  @Transactional
+  public TransactionDto purchaseListing(long businessId, long listingId)
+      throws InventoryItemNotFoundException, BusinessNotFoundException, InventoryUpdateException, BusinessAndListingMismatchException, ListingNotFoundException {
+    Listing listing = this.getListing(listingId);
+
+    // Check if there is a mismatch between passed in businessId and the listing's businessId
+    long listingsBusinessId = listing.getInventoryItem().getBusiness().getId();
+    if (listingsBusinessId != businessId) {
+      throw new BusinessAndListingMismatchException(String.format(
+          "Listing and Business mismatch, passed in businessId %d is not equal to owners businessId %d",
+          businessId, listingsBusinessId));
+    }
+
+    // Create and save a transaction
+    Transaction transaction = new Transaction(ZonedDateTime.now(), listing.getCreated(),
+        listing.getInventoryItem().getProduct(), listing.getPrice());
+    transactionService.saveTransaction(transaction);
+
+    // Update inventory item quantity, delete listing & delete inventory Item when quantity reaches zero
+    inventoryService.updateInventoryItemFromPurchase(businessId, listing);
+
+    return new TransactionDto(transaction);
   }
 }
