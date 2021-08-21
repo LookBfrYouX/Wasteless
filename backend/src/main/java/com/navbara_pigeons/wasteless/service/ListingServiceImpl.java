@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
+import com.navbara_pigeons.wasteless.dao.specifications.ListingSpecifications;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.dto.TransactionDto;
@@ -18,6 +19,7 @@ import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PageableBuilder;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
@@ -31,6 +33,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -143,24 +146,20 @@ public class ListingServiceImpl implements ListingService {
     return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
 
-  /**
-   *
-   * @param pagStartIndex Pagination start index.
-   * @param pagEndIndex Pagination end index.
-   * @param sortBy Sort by term. (sort)
-   * @param isAscending (sort)
-   * @param searchKeys A list of keys to sort by. E.g. business name, product name, etc. (search)
-   * @param searchValue The search term. (search)
-   * @param minPrice Minimum price of listing. (filter)
-   * @param maxPrice Maximum price of listing. (filter)
-   * @param filterDates One date if max date, two if range. (filter)
-   * @param businessTypes Types of business to filter by. (filter)
-   * @return PaginationDto containing search results.
-   */
+
   @Override
+  @Transactional
   public PaginationDto<FullListingDto> searchListings(ListingsSearchParams params) {
-    System.out.println(params.toString());
-    return null;
+    ArrayList<FullListingDto> listings = new ArrayList<>();
+    Long totalCount = listingDao.findAll(ListingSpecifications.meetsSearchCriteria(params),
+        PageableBuilder.makePageable(params.getPagStartIndex(), params.getPagEndIndex(), params.getSortBy().toString(),
+            params.isAscending())).getTotalElements();
+    for (Listing listing : listingDao.findAll(ListingSpecifications.meetsSearchCriteria(params),
+        PageableBuilder.makePageable(params.getPagStartIndex(), params.getPagEndIndex(), params.getSortBy().toString(),
+            params.isAscending()))) {
+      listings.add(new FullListingDto(listing, this.publicPathPrefix));
+    }
+    return new PaginationDto<>(listings, totalCount);
   }
 
 

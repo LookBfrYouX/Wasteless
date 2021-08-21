@@ -25,15 +25,19 @@ import javax.management.InvalidAttributeValueException;
 import javax.validation.ConstraintViolationException;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionException;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
@@ -221,6 +225,20 @@ public class ControllerExceptionHandler {
     log.error("BUSINESS REGISTRATION ERROR: 400 - " + exc.getMessage());
   }
 
+  @ExceptionHandler(ConversionFailedException.class)
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "")
+  public ResponseEntity<String> handleFailedConversionException(ConversionFailedException exc) {
+    log.error("CONVERSION FAILED ERROR: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad Request")
+  public void handleMethodTypeMismatchException(MethodArgumentTypeMismatchException exc) {
+    log.error("METHOD TYPE MISMATCH EXCEPTION: 400 - " + exc.getMessage());
+  }
+
+
   @ExceptionHandler(BusinessTypeException.class)
   @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad Request")
   public void handleBusinessTypeException(BusinessTypeException exc) {
@@ -260,6 +278,13 @@ public class ControllerExceptionHandler {
   public ResponseEntity<String> handleInvalidMarketListingSectionException(
       InvalidMarketListingSectionException exc) {
     log.error("BAD REQUEST: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleMissingServletRequestParameterException(MissingServletRequestParameterException exc) {
+    log.error("PARAMERTER EXCEPTION: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
