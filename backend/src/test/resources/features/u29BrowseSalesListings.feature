@@ -1,19 +1,13 @@
 Feature: U29 Browse Sales Listings
 
-#So that I can find sales I might be interested in, as a logged-in individual user, I need a way to browse currently-available sales listings.
-# Check for no 404 on going to listings page (i.e. endpoint exists).
   Scenario: Endpoint exists
-    When I send a request to the endpoint "/listings/search"
+    When I send an empty request to the endpoint "/listings/search"
     Then I do not receive a 404 error.
 
-#AC1: FRONTEND!
+  Scenario: AC2 - Check all listings are returned when no filtering is applied
+    When I send a valid request with no filters to "/listings/search"
+    Then I recieve all the current listings
 
-
-#AC2: If no filtering is applied then all current sales listings are displayed.  There could be a large number of these.  For each listing, the relevant data from U22 is included, together with information about the seller (a business) — such as name and some location detail.
-# Check total count is total with no filters applied.
-# Check product name, expiry, sales listing end, other U22 data is returned.
-
-#AC3: FRONTEND!
 
 #AC4: The sales listings may be ordered in various ways (product name, country/city of seller, expiry date, seller, price, …).
 # Check that filtering/sorting works.
