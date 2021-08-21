@@ -43,7 +43,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
     InventoryService inventoryService;
 
     @Test
-    void resultsMeetSearchCriteriaTestPartialMatching() throws ListingValidationException, InventoryItemNotFoundException {
+    void resultsMeetSearchCriteriaTestPartialMatchingProductName() throws ListingValidationException {
         List<String> searchKeys = new ArrayList<String>();
         searchKeys.add("Product Name");
         listingsSearchParams.setSearchKeys(searchKeys);
@@ -54,7 +54,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
     }
 
     @Test
-    void resultsMeetSearchCriteriaTestFullMatching() throws ListingValidationException, InventoryItemNotFoundException {
+    void resultsMeetSearchCriteriaTestFullMatchingProductName() throws ListingValidationException {
         List<String> searchKeys = new ArrayList<String>();
         searchKeys.add("Product Name");
         listingsSearchParams.setSearchKeys(searchKeys);
@@ -62,6 +62,30 @@ public class ListingSpecificationsTest extends MainTestProvider {
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
         assertEquals(5004, results.get(0).getId());
+    }
+
+    @Test
+    void resultsMeetSearchCriteriaTestFullMatchingAddress() throws ListingValidationException {
+        List<String> searchKeys = new ArrayList<String>();
+        searchKeys.add("Address");
+        listingsSearchParams.setSearchKeys(searchKeys);
+        listingsSearchParams.setSearchParam("\"Christchurch\"");
+        Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
+        List<Listing> results = listingDao.findAll(specification);
+        assertEquals(5001, results.get(0).getId());
+    }
+
+    @Test
+    void resultsMeetSearchCriteriaTestFilteredByPrice() throws ListingValidationException {
+        List<String> searchKeys = new ArrayList<String>();
+        searchKeys.add("Product Name");
+        listingsSearchParams.setSearchKeys(searchKeys);
+        listingsSearchParams.setSearchParam("");
+        listingsSearchParams.setMinPrice(12.0);
+        listingsSearchParams.setMaxPrice(12.0);
+        Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
+        List<Listing> results = listingDao.findAll(specification);
+        assertEquals(5002, results.get(0).getId());
     }
 
 }
