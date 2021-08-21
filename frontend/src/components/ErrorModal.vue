@@ -1,8 +1,8 @@
 <template>
   <v-dialog
-    @click:outside="hideCallbackEvent"
+    @click:outside="hideCallback"
     :value="show"
-    @change="hideCallbackEvent"
+    @change="hideCallback"
     max-width="500px"
   >
       <v-card class="error-modal-card">
@@ -131,15 +131,6 @@ export default {
         this.$router.go(-1);
       } else if (typeof this.goBack == "function") {
         this.goBack(event);
-      }
-    },
-
-    /**
-     * Wrapper around hide callback prop/method
-     */
-    hideCallbackEvent: function (event) {
-      if (this.hideCallback) {
-        this.hideCallback(event);
       }
     }
   }
