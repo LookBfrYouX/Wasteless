@@ -6,7 +6,7 @@ Feature: U29 Browse Sales Listings
 
   Scenario: AC2 - Check all listings are returned when no filtering is applied
     When I send a valid request with no filters to "/listings/search"
-    Then I recieve all the current listings
+    Then I receive all the current listings
 
 
 #AC4: The sales listings may be ordered in various ways (product name, country/city of seller, expiry date, seller, price, …).
