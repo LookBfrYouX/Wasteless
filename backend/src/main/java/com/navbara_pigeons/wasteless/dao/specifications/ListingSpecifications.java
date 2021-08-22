@@ -160,9 +160,9 @@ public class ListingSpecifications {
     }
     // if business types are included by the user
     if (params.getBusinessTypes() != null) {
-      for (int i = 0; i < params.getBusinessTypes().size(); i++ ) {
-        log.info("WITH BUSSINESS TYPES: " + params.getBusinessTypes());
-        predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("businessType"), params.getBusinessTypes().get(i).toString()));
+      for (BusinessType businessType : params.getBusinessTypes()) {
+        log.info("WITH BUSINESS TYPES: " + businessType.name());
+        predicates.add(criteriaBuilder.equal(businessInventoryItemJoin.get("businessType"), businessType));
       }
     }
     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
