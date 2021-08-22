@@ -155,7 +155,6 @@ export default {
 
     getListingsPipeline: async function () {
       try {
-        console.log(this.searchParams.businessTypes.join(','))
         const response = (await Api.getListings(this.searchParams)).data;
         this.listings = response.results;
         this.totalResults = response.totalCount;
