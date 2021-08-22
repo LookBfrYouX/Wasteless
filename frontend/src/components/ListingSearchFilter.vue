@@ -179,10 +179,10 @@ export default {
         }
 
         if (this.dates.length == 1) {
-          return "Before: " + new Date(this.dates[0]).toLocaleDateString('en-NZ', options);
+          return "Before: " + new Date(this.dates[0]).toLocaleDateString('en-NZ', options) + "11:59:59.999";
         } else if (this.dates.length == 2) {
-          return new Date(this.dates[0]).toLocaleDateString('en-NZ', options) + " to " +
-              new Date(this.dates[1]).toLocaleDateString('en-NZ', options);
+          return new Date(this.dates[0]).toLocaleDateString('en-NZ', options) + "00:00:00" + " to " +
+              new Date(this.dates[1]).toLocaleDateString('en-NZ', options) + "11:59:59.999";
         }
         return null;
       },
