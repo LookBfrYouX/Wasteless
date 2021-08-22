@@ -567,12 +567,15 @@ export const Api = {
     ],
     "totalCount": 4
 }`);
-    // return instance.get(`TODO: decide on endpoints`,
+    // Uncomment and remove above JSON once the backend is working
+    // return instance.get('/listings/search',
     //     {params: params}).catch(err => {
     //   throw ApiRequestError.createFromMessageMap(err, {
-    //     406: "TODO: handle errors!"
+    //     400: 'Invalid pagination parameters sent',
+    //     404: 'No listings could not be found',
+    //     500: 'Oops! Something went wrong on our end! Try again later'
     //   });
-    // })
+    // });
   },
 
   /**
@@ -635,6 +638,17 @@ export const Api = {
     return instance.get(`/keywords`).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         400: "Cannot fetch keywords"
+      });
+    });
+  },
+
+  buyListing: (businessId, listingId) => {
+    return instance.post(`/businesses/${businessId}/listings/${listingId}/purchase`)
+    .catch(error => {
+      throw ApiRequestError.createFromMessageMap(error, {
+        400: err => `The listing could not be purchased: ${err.response.data}`,
+        404: "The business or inventory item does not exist - it may have been purchased by another user",
+        406: "The business does not have a listing with that ID"
       });
     });
   }

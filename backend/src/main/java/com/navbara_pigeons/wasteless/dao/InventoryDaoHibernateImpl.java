@@ -3,6 +3,8 @@ package com.navbara_pigeons.wasteless.dao;
 import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.InventoryQueryBuilder;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
+import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -60,6 +62,17 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
     currentSession.saveOrUpdate(inventory);
   }
 
+
+  /**
+   * Deletes the given inventory item
+   * @param inventoryItem inventory item to delete
+   */
+  @Override
+  public void deleteInventoryItem(InventoryItem inventoryItem) {
+    Session currentSession = getSession();
+    currentSession.delete(inventoryItem);
+  }
+
   /**
    * Get the entity manager session
    *
@@ -67,5 +80,15 @@ public class InventoryDaoHibernateImpl implements InventoryDao {
    */
   private Session getSession() {
     return this.entityManager.unwrap(Session.class);
+  }
+
+  public InventoryItem getInventoryItemById(Long id) throws InventoryItemNotFoundException {
+    Session currentSession = getSession();
+    // InventoryItem inventoryItem = new InventoryItem();
+    InventoryItem inventoryItem = currentSession.get(InventoryItem.class, id);
+    if (inventoryItem == null) {
+      throw new InventoryItemNotFoundException(id);
+    }
+    return inventoryItem;
   }
 }

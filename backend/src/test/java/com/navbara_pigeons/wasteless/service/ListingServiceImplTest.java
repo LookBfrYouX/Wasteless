@@ -1,6 +1,10 @@
 package com.navbara_pigeons.wasteless.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -8,14 +12,19 @@ import static org.mockito.Mockito.when;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
+import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.entity.Transaction;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
+import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
+import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
+import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
@@ -27,24 +36,25 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.data.util.Pair;
 import org.springframework.security.test.context.support.WithMockUser;
 
-public class ListingServiceImplTest extends ServiceTestProvider {
+class ListingServiceImplTest extends ServiceTestProvider {
 
   private final String email = "tony@tony.tony";
   private final String password = "tonyTony1";
   @Mock
-  UserService userService;
+  private UserService userService;
   @Mock
-  InventoryService inventoryService;
+  private InventoryService inventoryService;
   @Mock
-  ListingDao listingDao;
-  @InjectMocks
-  private ListingServiceImpl listingService;
+  private ListingDao listingDao;
   @Mock
   private BusinessService businessService;
+  @Mock
+  private TransactionService transactionService;
+  @InjectMocks
+  private ListingServiceImpl listingService;
   private Long userId;
   private Long businessId;
 
@@ -62,9 +72,34 @@ public class ListingServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
+  void getExistingListing() throws Exception {
+    // Arrange
+    Listing listing = makeListing();
+    when(listingDao.getListing(anyLong())).thenReturn(listing);
+
+    // Act
+    Listing returnedListing = listingService.getListing(listing.getId());
+
+    // Assert
+    Assertions.assertEquals(listing, returnedListing);
+  }
+
+  @Test
+  void getNonExistingListing() throws Exception {
+    // Arrange
+    when(listingDao.getListing(anyLong())).thenThrow(ListingNotFoundException.class);
+
+    // Act & Assert
+    Assertions.assertThrows(
+        ListingNotFoundException.class,
+        () -> listingService.getListing(123)
+    );
+  }
+
+  @Test
   void getListings_one_product_multiple_inventory_multiple_listings() throws Exception {
     Business mockBusiness = getMockBusiness();
-    when(businessService.getBusiness(Mockito.anyLong())).thenReturn(mockBusiness);
+    when(businessService.getBusiness(anyLong())).thenReturn(mockBusiness);
     when(listingDao.getListings(any(Business.class), any(PaginationBuilder.class)))
         .thenReturn(Pair.of(getMockBusinessListings(mockBusiness), 0L));
 
@@ -109,6 +144,82 @@ public class ListingServiceImplTest extends ServiceTestProvider {
     Assertions.assertThrows(InsufficientPrivilegesException.class, () -> {
       listingService.addListing(businessId, listing.getInventoryItem().getId(), listing);
     });
+  }
+
+  @Test
+  void deleteListingExpectOk() {
+    doNothing().when(listingDao).deleteListing(any(Long.class));
+
+    Assertions.assertDoesNotThrow(() -> {
+      listingService.deleteListing(1L); // ListingId doesnt matter here (dao being mocked)
+    });
+  }
+
+  @Test
+  void purchaseListingWithValidParameters()
+      throws Exception {
+    // Arrange
+    Listing listing = makeListing();
+    Business business = listing.getInventoryItem().getBusiness();
+    Long transactionId = 123L;
+    when(listingDao.getListing(anyLong())).thenReturn(listing);
+    // Because the saveTransaction method returns void but also sets the transaction ID this
+    // is how you mock setting the ID.
+    doAnswer(invocation -> {
+      Object[] args = invocation.getArguments();
+      ((Transaction) args[0]).setId(transactionId);
+      return null; // void method, so return null
+    }).when(transactionService).saveTransaction(any(Transaction.class));
+
+    // Act
+    TransactionDto transactionDto = listingService
+        .purchaseListing(business.getId(), listing.getId());
+
+    // Assert
+    Assertions.assertEquals(transactionId, transactionDto.getTransactionId());
+  }
+
+  @Test
+  void purchaseListingFromMismatchBusiness() throws Exception {
+    // Arrange
+    Listing listing = makeListing();
+    Business business = listing.getInventoryItem().getBusiness();
+    when(listingDao.getListing(anyLong())).thenReturn(listing);
+
+    // Act & Assert
+    Assertions.assertThrows(BusinessAndListingMismatchException.class,
+        () -> listingService.purchaseListing(business.getId() + 1, listing.getId())
+    );
+  }
+
+  @Test
+  void purchaseListingWithNonExistingListingId() throws Exception {
+    // Arrange
+    Listing listing = makeListing();
+    Business business = listing.getInventoryItem().getBusiness();
+    when(listingDao.getListing(anyLong())).thenThrow(ListingNotFoundException.class);
+
+    // Act & Assert
+    Assertions.assertThrows(
+        ListingNotFoundException.class,
+        () -> listingService.purchaseListing(business.getId(), listing.getId())
+    );
+  }
+
+  @Test
+  void purchaseListingWithInvalidQuantityRemaining() throws Exception {
+    // Arrange
+    Listing listing = makeListing();
+    Business business = listing.getInventoryItem().getBusiness();
+    when(listingDao.getListing(anyLong())).thenReturn(listing);
+    doThrow(InventoryUpdateException.class).when(inventoryService)
+        .updateInventoryItemFromPurchase(anyLong(), any(Listing.class));
+
+    // Act & Assert
+    Assertions.assertThrows(
+        InventoryUpdateException.class,
+        () -> listingService.purchaseListing(business.getId(), listing.getId())
+    );
   }
 
   // Creates a business, product, inventory item and listing
