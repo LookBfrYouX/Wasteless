@@ -6,7 +6,7 @@
       <v-col class="my-0 py-0">
         <v-subheader>Search businesses</v-subheader>
         <v-text-field
-            v-model="searchParams.searchString"
+            v-model="searchParams.searchParam"
             label="Search"
             prepend-inner-icon="search"
             solo
@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       searchParams: {
-        searchString: "",
+        searchParam: "",
         selectedKeys: [],
         sortBy: "",
         isAscending: true,
