@@ -83,12 +83,15 @@ public class Product {
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
     this.created = product.getCreated();
-    // If image exists
-    if (product.getPrimaryProductImage() != null) {
-      this.primaryProductImage = new Image(product.getPrimaryProductImage());
+    if (product.getImages() != null) {
+      this.productImages = new ArrayList<>();
       for (BasicImageDto image : product.getImages()) {
         this.productImages.add(new Image(image));
       }
+    }
+
+    if (this.productImages.size() > 0) {
+      this.primaryProductImage = this.productImages.get(0);
     }
   }
 
