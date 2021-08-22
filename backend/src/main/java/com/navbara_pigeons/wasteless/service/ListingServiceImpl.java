@@ -147,7 +147,11 @@ public class ListingServiceImpl implements ListingService {
     return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
 
-
+  /**
+   * Search listings matching ListingSearchParams
+   * @param params ListingSearchParams containing, searchParam, PagStartIndex, PagEndIndex, isAscending, and searchKeys
+   * @return PaginationDto of listings and total count of the returned listings
+   */
   @Override
   @Transactional
   public PaginationDto<FullListingDto> searchListings(ListingsSearchParams params) {
