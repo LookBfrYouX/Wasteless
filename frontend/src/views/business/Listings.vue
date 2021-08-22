@@ -103,7 +103,7 @@ export default {
 
       titleString: "Results",
       searchParams: {
-        searchString: "",
+        searchParam: "",
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
         sortBy: "closes",
