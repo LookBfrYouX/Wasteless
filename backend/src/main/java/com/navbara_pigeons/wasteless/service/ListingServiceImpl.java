@@ -1,10 +1,12 @@
 package com.navbara_pigeons.wasteless.service;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
+import com.navbara_pigeons.wasteless.dao.specifications.ListingSpecifications;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Transaction;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
@@ -17,8 +19,11 @@ import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
+import com.navbara_pigeons.wasteless.helper.PageableBuilder;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
+import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.validation.ListingServiceValidation;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -28,6 +33,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -139,6 +146,22 @@ public class ListingServiceImpl implements ListingService {
 
     return new PaginationDto<>(listings, dataAndTotalCount.getSecond());
   }
+
+
+  @Override
+  @Transactional
+  public PaginationDto<FullListingDto> searchListings(ListingsSearchParams params) {
+    ArrayList<FullListingDto> listings = new ArrayList<>();
+    Page<Listing> allListings = listingDao.findAll(ListingSpecifications.meetsSearchCriteria(params),
+        new PageableBuilder(params.getPagStartIndex(), params.getPagEndIndex(), params.getSortBy().toString(),
+            params.isAscending()));
+    Long totalCount = allListings.getTotalElements();
+    for (Listing listing : allListings) {
+      listings.add(new FullListingDto(listing, this.publicPathPrefix));
+    }
+    return new PaginationDto<>(listings, totalCount);
+  }
+
 
   /**
    * Deletes a listing
