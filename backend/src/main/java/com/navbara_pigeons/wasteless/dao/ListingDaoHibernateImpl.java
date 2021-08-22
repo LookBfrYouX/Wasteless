@@ -94,26 +94,6 @@ public class ListingDaoHibernateImpl implements ListingDaoHibernate {
     currentSession.delete(listing);
   }
 
-  /**
-   * Implemented for passing tests because this method is to be implemented on other branch.
-   * Replace with proper implementation afterwards.
-   * @param searchKey
-   * @param searchValue
-   * @param minPrice
-   * @param maxPrice
-   * @param filterDates
-   * @param businessTypes
-   * @param pagBuilder
-   * @return
-   */
-  @Override
-  public Pair<List<Listing>, Long> searchAllListings(List<String> searchKey, String searchValue,
-      Double minPrice, Double maxPrice, List<LocalDate> filterDates,
-      List<BusinessType> businessTypes, PaginationBuilder pagBuilder) {
-    // Returns empty listings for testing purpose.
-    List<Listing> listings = new ArrayList<>();
-    return Pair.of(listings, 40L);
-  }
 
   /**
    * Get the entity manager session
