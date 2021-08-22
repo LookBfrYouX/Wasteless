@@ -215,9 +215,6 @@ public class U29BrowsSalesStepDefs extends CucumberTestProvider {
     Iterator<JsonNode> results = jsonResponse.get("results").elements();
     while (results.hasNext()) {
       JsonNode timeNode = results.next().get("closes");
-      System.out.println(ZonedDateTime.now().minusMonths(3));
-      System.out.println(ZonedDateTime.parse(timeNode.asText()));
-      System.out.println(ZonedDateTime.now());
       Assertions.assertTrue(
           ZonedDateTime.parse(timeNode.asText()).isBefore(ZonedDateTime.now()) &&
               ZonedDateTime.parse(timeNode.asText()).isAfter(ZonedDateTime.now().minusMonths(3)));
