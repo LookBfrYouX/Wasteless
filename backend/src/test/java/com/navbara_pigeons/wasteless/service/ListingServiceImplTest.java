@@ -286,6 +286,6 @@ class ListingServiceImplTest extends ServiceTestProvider {
         .findAll(any(Specification.class), any(Pageable.class)))
         .thenReturn(new PageImpl<Listing>(mockListings));
 
-    Assertions.assertEquals(listingService.searchListings(listingsSearchParams).getTotalCount(), 3);
+    Assertions.assertEquals(3, listingService.searchListings(listingsSearchParams).getTotalCount());
   }
 }
