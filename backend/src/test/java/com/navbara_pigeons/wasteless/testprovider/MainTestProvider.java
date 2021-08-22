@@ -44,10 +44,13 @@ public class MainTestProvider {
   protected Listing makeListing(InventoryItem inventoryItem) {
     Listing listing = new Listing();
     listing.setInventoryItem(inventoryItem)
-            .setCreated(ZonedDateTime.now())
-            .setCloses(ZonedDateTime.now().plusDays(12))
-            .setQuantity(1)
-            .setPrice(12.0);
+        .setQuantity(6)
+        .setPrice(10.00)
+        .setMoreInfo("Mocked more info");
+        .setCreated(ZonedDateTime.now())
+        .setCloses(ZonedDateTime.now().plusDays(12))
+        .setQuantity(1)
+        .setPrice(12.0);
     return listing;
   }
 

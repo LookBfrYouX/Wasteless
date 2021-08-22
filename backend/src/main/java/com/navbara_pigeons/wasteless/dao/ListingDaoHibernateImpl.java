@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dao.HibernateQueryBuilders.ListingQueryBuil
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
+import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -24,6 +25,23 @@ public class ListingDaoHibernateImpl implements ListingDaoHibernate {
    */
   public ListingDaoHibernateImpl(@Autowired EntityManager entityManager) {
     this.entityManager = entityManager;
+  }
+
+  /**
+   * Get a specific listing from its identifier
+   *
+   * @param listingId The specific identifier of the listing
+   * @return The Listing
+   * @throws ListingNotFoundException A listing with that id was not found
+   */
+  @Override
+  public Listing getListing(long listingId) throws ListingNotFoundException {
+    Session currentSession = getSession();
+    Listing listing = currentSession.get(Listing.class, listingId);
+    if (listing == null) {
+      throw new ListingNotFoundException(listingId);
+    }
+    return listing;
   }
 
   /**

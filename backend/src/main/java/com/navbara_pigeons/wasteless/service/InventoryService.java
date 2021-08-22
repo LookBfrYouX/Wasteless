@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.InventorySortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -29,7 +30,7 @@ public interface InventoryService {
   InventoryItem getInventoryItemById(long businessId, long itemId)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InventoryItemNotFoundException;
 
-  void updateInventoryItemQuantity(Long businessId, Long inventoryItemId, Long quantity)
+  void updateInventoryItemFromPurchase(Long businessId, Listing listing)
       throws BusinessNotFoundException, InventoryItemNotFoundException, InventoryUpdateException;
     void deleteInventoryItem(InventoryItem inventoryItem);
 
