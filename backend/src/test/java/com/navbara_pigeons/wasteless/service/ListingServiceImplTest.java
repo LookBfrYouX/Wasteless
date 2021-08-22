@@ -269,6 +269,7 @@ class ListingServiceImplTest extends ServiceTestProvider {
 
     for (int i = 0; i < 3; i++) {
       Business business = makeBusiness(mockBusinessNames.get(i));
+      business.setPrimaryAdministratorId(1L);
       Product product = makeProduct(mockProductNames.get(i));
       InventoryItem inventoryItem = makeInventoryItem(product, business);
       Listing listing = makeListing(inventoryItem);
