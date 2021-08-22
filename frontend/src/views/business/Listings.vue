@@ -14,7 +14,7 @@
         <v-col cols="12" md="6">
           <ListingSearchFilter v-bind:maxPrice="searchParams.maxPrice"
                                v-bind:minPrice="searchParams.minPrice"
-                               @newTypes="event => this.searchParams.selectedBusinessTypes = event"
+                               @newTypes="event => this.searchParams.businessTypes = event"
                                @newMin="event => this.searchParams.minPrice = event ? parseFloat(event) : null"
                                @newMax="event => this.searchParams.maxPrice = event ? parseFloat(event) : null"
                                @newDates="event => this.searchParams.dates = event"
@@ -112,7 +112,7 @@ export default {
         minPrice: null,
         maxPrice: null,
         dates: [],
-        selectedBusinessTypes: [],
+        businessTypes: [],
       }
     };
   },
@@ -155,10 +155,12 @@ export default {
 
     getListingsPipeline: async function () {
       try {
-        const response = (await Api.getListings(this.searchParams));
+        console.log(this.searchParams.businessTypes.join(','))
+        const response = (await Api.getListings(this.searchParams)).data;
         this.listings = response.results;
         this.totalResults = response.totalCount;
-        this.titleString = `Results ${this.searchParams.searchString ? "for: " + this.searchParams.searchString : ""}`;
+        this.titleString = `Results ${this.searchParams.searchString ? "for: "
+            + this.searchParams.searchString : ""}`;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return false;

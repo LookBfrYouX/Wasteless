@@ -4,7 +4,7 @@
       <v-col cols="12" lg="8" class="filter-business my-0 py-0">
         <v-subheader>Filter businesses</v-subheader>
         <v-select
-            v-model="selectedBusinessTypes"
+            v-model="businessTypes"
             :items="businesses"
             label="Select"
             multiple
@@ -22,7 +22,7 @@
                 v-if="index === shownChips"
                 class="grey--text text-caption"
             >
-              (+{{ selectedBusinessTypes.length - shownChips }} others)
+              (+{{ businessTypes.length - shownChips }} others)
             </span>
           </template>
         </v-select>
@@ -124,15 +124,15 @@ export default {
       shownChips: 1,
 
       dates: [],
-      selectedBusinessTypes: []
+      businessTypes: []
     }
   },
   watch: {
     dates() {
       this.$emit('newDates', this.dates);
     },
-    selectedBusinessTypes() {
-      this.$emit('newTypes', this.selectedBusinessTypes);
+    businessTypes() {
+      this.$emit('newTypes', this.businessTypes);
     }
   },
   props: {

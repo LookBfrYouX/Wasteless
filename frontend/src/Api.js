@@ -364,13 +364,50 @@ export const Api = {
    * Get the listings that match the parameters.
    * This is the General listing search for all businesses.
    *
-   * @param params The Query Parameters
+   * @param parameters The Query Parameters
    * @returns {Promise<AxiosResponse<any>>} response or ApiRequestError
    */
-  // eslint-disable-next-line no-unused-vars
-  getListings: (params) => {
+  getListings: (parameters) => {
     return instance.get('/listings/search',
-        {params: params}).catch(err => {
+        {
+          params: parameters,
+          paramsSerializer: params => {
+            const parts = [];
+
+            const encode = val => {
+              return encodeURIComponent(val).replace(/%3A/gi, ':')
+              .replace(/%24/g, '$')
+              .replace(/%2C/gi, ',')
+              .replace(/%20/g, '+')
+              .replace(/%5B/gi, '[')
+              .replace(/%5D/gi, ']');
+            }
+
+            const convertPart = (key, val) => {
+              if (val instanceof Date) {
+                val = val.toISOString()
+              } else if (val instanceof Object) {
+                val = JSON.stringify(val)
+              }
+
+              parts.push(encode(key) + '=' + encode(val));
+            }
+
+            Object.entries(params).forEach(([key, val]) => {
+              if (val === null || typeof val === 'undefined') {
+                return
+              }
+
+              if (Array.isArray(val)) {
+                val.forEach((v) => convertPart(`${key}`, v))
+              } else {
+                convertPart(key, val)
+              }
+            })
+
+            return parts.join('&')
+          }
+        }).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         400: 'Invalid pagination parameters sent',
         404: 'No listings could not be found',
