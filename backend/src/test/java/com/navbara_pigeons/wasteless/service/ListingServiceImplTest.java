@@ -11,6 +11,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.navbara_pigeons.wasteless.dao.ListingDao;
+import com.navbara_pigeons.wasteless.dao.specifications.ListingSpecifications;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -26,7 +27,9 @@ import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
+import com.navbara_pigeons.wasteless.helper.PageableBuilder;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
+import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,6 +39,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
 import org.springframework.security.test.context.support.WithMockUser;
 
@@ -267,30 +275,16 @@ class ListingServiceImplTest extends ServiceTestProvider {
       mockListings.add(listing);
     }
 
-    when(listingDao
-        .searchAllListings(anyList(), anyString(), anyDouble(), anyDouble(), anyList(), anyList(),
-            any(PaginationBuilder.class)))
-        .thenReturn(Pair.of(mockListings, 10L));
 
-    Assertions.assertEquals(listingService.searchListings(
-        1, 10, ListingSortByOption.name, true,
-        new ArrayList<String>(), "searchValue", 20D, 80D,
-        new ArrayList<LocalDate>(), new ArrayList<BusinessType>()).getTotalCount(), 10);
-  }
-
-  @Test
-  @WithMockUser(username = "notTony@notTony.notTony", password = "notTonyNotTony1")
-  void getAllListings_noMatchResults() throws Exception {
-    List<Listing> mockListings = new ArrayList<>();
+    ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
+    listingsSearchParams.setPagStartIndex(0);
+    listingsSearchParams.setPagEndIndex(1);
+    listingsSearchParams.setSortBy(ListingSortByOption.name);
 
     when(listingDao
-        .searchAllListings(anyList(), anyString(), anyDouble(), anyDouble(), anyList(), anyList(),
-            any(PaginationBuilder.class)))
-        .thenReturn(Pair.of(mockListings, 0L));
+        .findAll(any(Specification.class), any(Pageable.class)))
+        .thenReturn(new PageImpl<Listing>(mockListings));
 
-    Assertions.assertEquals(listingService.searchListings(
-        1, 10, ListingSortByOption.name, true,
-        new ArrayList<String>(), "searchValue", 20D, 80D,
-        new ArrayList<LocalDate>(), new ArrayList<BusinessType>()).getResults().size(), 0);
+    Assertions.assertEquals(listingService.searchListings(listingsSearchParams).getTotalCount(), 3);
   }
 }

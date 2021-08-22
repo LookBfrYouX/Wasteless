@@ -61,6 +61,8 @@ public class ListingsSearchParams {
   public void setAscending(Boolean ascending) {
     if (ascending == null) {
       this.isAscending = true;
+    } else {
+      this.isAscending = ascending;
     }
   }
 

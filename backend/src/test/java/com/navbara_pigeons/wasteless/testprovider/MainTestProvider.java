@@ -91,6 +91,7 @@ public class MainTestProvider {
   protected Business makeBusiness(String businessName) {
     Business business = new Business();
     business.setName(businessName)
+        .setPrimaryAdministratorId(1L)
         .setCreated(ZonedDateTime.now(ZoneOffset.UTC))
         .setBusinessType(BusinessType.NON_PROFIT)
         .setAddress(makeAddress())
