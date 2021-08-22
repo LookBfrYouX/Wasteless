@@ -34,7 +34,6 @@ public class ListingDaoHibernateImpl implements ListingDaoHibernate {
    * @return The Listing
    * @throws ListingNotFoundException A listing with that id was not found
    */
-  @Override
   public Listing getListing(long listingId) throws ListingNotFoundException {
     Session currentSession = getSession();
     Listing listing = currentSession.get(Listing.class, listingId);

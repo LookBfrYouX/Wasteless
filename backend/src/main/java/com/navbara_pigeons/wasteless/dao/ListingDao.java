@@ -19,5 +19,4 @@ public interface ListingDao extends ListingDaoHibernate, JpaRepository<Listing, 
 
   void deleteListing(Long listingId);
 
-  Listing getListing(long listingId) throws ListingNotFoundException;
 }

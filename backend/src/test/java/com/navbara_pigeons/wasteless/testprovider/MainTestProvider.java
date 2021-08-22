@@ -46,7 +46,7 @@ public class MainTestProvider {
     listing.setInventoryItem(inventoryItem)
         .setQuantity(6)
         .setPrice(10.00)
-        .setMoreInfo("Mocked more info");
+        .setMoreInfo("Mocked more info")
         .setCreated(ZonedDateTime.now())
         .setCloses(ZonedDateTime.now().plusDays(12))
         .setQuantity(1)
