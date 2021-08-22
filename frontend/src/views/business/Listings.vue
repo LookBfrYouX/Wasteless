@@ -155,7 +155,7 @@ export default {
 
     getListingsPipeline: async function () {
       try {
-        const response = (await Api.getListings(this.searchParams));
+        const response = (await Api.getListings(this.searchParams)).data;
         this.listings = response.results;
         this.totalResults = response.totalCount;
         this.titleString = `Results ${this.searchParams.searchString ? "for: " + this.searchParams.searchString : ""}`;
