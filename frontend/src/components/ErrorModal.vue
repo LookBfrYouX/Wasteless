@@ -1,50 +1,61 @@
 <template>
-  <div ref="modal" class="modal fade">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <button
-            class="btn btn-danger d-flex p-0 justify-content-center align-items-center rounded-circle close-button"
-            type="button" @click="hideCallback">
-          <span class="material-icons">close</span>
-        </button>
-        <div class="modal-header">
-          <h4 class="modal-title">{{ title }}</h4>
-        </div>
-        <div class="modal-body">
+  <v-dialog
+    @click:outside="hideCallback"
+    :value="show"
+    @change="hideCallback"
+    max-width="500px"
+  >
+      <v-card class="error-modal-card">
+        <v-card-title class="text-h5">
+          {{title}}
+        </v-card-title>
+        <v-spacer></v-spacer>
+        <div class="p-4">
           <slot></slot>
         </div>
-        <div class="modal-footer">
-          <button v-if="retry" class="btn btn-primary" type="button" @click="retryClicked">
+        <v-spacer></v-spacer>
+        <v-card-actions class="justify-content-around">
+          <v-btn
+            class="ma-2 retry-button"
+            v-if="retry"
+            text
+            @click.stop="retryClicked"
+          >
             Retry
-          </button>
-          <button v-if="refresh" class="btn btn-primary" type="button" @click="refreshClicked">
+          </v-btn>
+          <v-btn
+            class="ma-2 refresh-button"
+            v-if="refresh"
+            text
+            @click.stop="refreshClicked"
+          >
             Refresh Page
-          </button>
-          <button v-if="goBack" class="btn btn-primary" type="button" @click="goBackClicked">
+          </v-btn>
+          <v-btn
+            class="ma-2 go-back-button"
+            v-if="goBack"
+            text
+            @click.stop="goBackClicked"
+          >
             Go back
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+  </v-dialog>
 </template>
-<style scoped>
-.close-button {
-  position: absolute;
-  top: -0.5em;
-  right: -0.5em;
-  height: 1.5em;
-  width: 1.5em;
+<style scoped lang="scss">
+.error-modal-card {
+  .retry-button, .refresh-button, .go-back-button {
+    background-color: var(--primary);
+    color: white;
+  }
 }
 </style>
 <script>
 // When there's an unrecoverable error, but not a 404
 
-// import {Modal} from "bootstrap";
-const $ = require("jquery");
-
 export default {
-  name: "errorModal",
+  name: "ErrorModal",
   props: {
     title: {
       type: String
@@ -71,7 +82,7 @@ export default {
 
     /**
      * If false or not given, retry button will not be shown
-     * If boolean, will determine if shown or not and use default refresh handler
+     * Else, retry method called
      */
     retry: {
       required: true
@@ -86,20 +97,8 @@ export default {
       required: true
     }
   },
-  watch: {
-    show: function () {
-      this.updateModalVisibility();
-    }
-  },
-
+  
   methods: {
-    /**
-     * Synchronizes modal visibility with state
-     */
-    updateModalVisibility: function () {
-      this.show ? this.modal.modal("show") : this.modal.modal("hide");
-    },
-
     /**
      * Refresh button clicked; send modal hidden callback and refresh
      */
@@ -108,7 +107,7 @@ export default {
       if (this.refresh === true) {
         // boolean
         this.$router.go();
-      } else {
+      } else if (typeof this.refresh == "function") {
         this.refresh(event);
       }
     },
@@ -118,7 +117,7 @@ export default {
      */
     retryClicked: function (event) {
       this.hideCallback();
-      if (this.retry) {
+      if (typeof this.retry === "function") {
         this.retry(event);
       }
     },
@@ -128,44 +127,12 @@ export default {
      */
     goBackClicked: function (event) {
       this.hideCallback();
-      if (this.goBack == true) {
+      if (this.goBack === true) {
         this.$router.go(-1);
-      } else {
+      } else if (typeof this.goBack == "function") {
         this.goBack(event);
       }
-    },
-
-    hideCallbackEvent: function (event) {
-      if (this.hideCallback) {
-        this.hideCallback(event);
-      }
-    }
-  },
-
-  mounted() {
-    this.modal = $(this.$refs.modal).modal({
-      show: this.show
-    });
-    // Not in data so Vue won't track updates to it that we don't care about
-    this.updateModalVisibility();
-    this.modal.on("hidden.bs.modal", this.hideCallbackEvent);
-  },
-
-  /**
-   * Hide the modal if it is open
-   */
-  beforeDestroy() {
-    try {
-      this.modal.modal("hide"); // If navigation occurs while modal open, modal disapears but body has the modal open class
-      this.modal.modal("dispose"); // dipose of the modal
-    } catch (err) {
-      console.warn("Modal destroy failed. Removing it manually...")
-      document.body.classList.remove("modal-open");
-      document.body.style.paddingRight = "inherit";
-      const backdrops = document.body.querySelectorAll(".modal-backdrop");
-      backdrops.forEach(backdrop => backdrop.remove());
     }
   }
-
 }
 </script>

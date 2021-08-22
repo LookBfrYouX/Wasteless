@@ -18,8 +18,69 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.web.servlet.MvcResult;
 
-public class ListingControllerTest extends ControllerTestProvider {
+class ListingControllerTest extends ControllerTestProvider {
+
+  @Test
+  @WithAnonymousUser
+  void searchListings_anonUser_expectUnauthorized() throws Exception {
+    mockMvc.perform(get("/listings/search")).andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_validUser_expectOk() throws Exception {
+    mockMvc.perform(get("/listings/search")
+        .param("pagStartIndex", "1")
+        .param("pagEndIndex", "2")
+        .param("sortBy", "quantity")
+        .param("isAscending", "true")
+        .param("searchKeys", "Product Name")
+    ).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withValidParams_expectOk() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("pagStartIndex", "1")
+                    .param("pagEndIndex", "2")
+                    .param("sortBy", "quantity")
+                    .param("searchKeys", "Address")
+                    .param("isAscending", "true")
+                    .param("searchParam", "New Zealand")
+    ).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidSearchKeys_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("searchKeys", "Big Mac?")
+    ).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidPaginationParams_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("pagStartIndex", "-1")
+                    .param("pagEndIndex", "-1")
+    ).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidParams_expectException() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("pagStartIndex", "-1")
+    ).andExpect(status().isBadRequest());
+  }
 
   @Test
   @WithMockUser

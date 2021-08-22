@@ -1,14 +1,7 @@
 package com.navbara_pigeons.wasteless.testprovider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.navbara_pigeons.wasteless.entity.Address;
-import com.navbara_pigeons.wasteless.entity.Business;
-import com.navbara_pigeons.wasteless.entity.BusinessType;
-import com.navbara_pigeons.wasteless.entity.InventoryItem;
-import com.navbara_pigeons.wasteless.entity.Keyword;
-import com.navbara_pigeons.wasteless.entity.Listing;
-import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.entity.*;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -53,9 +46,14 @@ public class MainTestProvider {
     listing.setInventoryItem(inventoryItem)
         .setQuantity(6)
         .setPrice(10.00)
-        .setMoreInfo("Mocked more info");
+        .setMoreInfo("Mocked more info")
+        .setCreated(ZonedDateTime.now())
+        .setCloses(ZonedDateTime.now().plusDays(12))
+        .setQuantity(1)
+        .setPrice(12.0);
     return listing;
   }
+
 
   protected InventoryItem makeInventoryItem(Product product, Business business) {
     InventoryItem inventoryItem = new InventoryItem();
