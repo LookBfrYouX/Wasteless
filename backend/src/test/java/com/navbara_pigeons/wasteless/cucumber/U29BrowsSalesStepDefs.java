@@ -193,7 +193,7 @@ public class U29BrowsSalesStepDefs extends CucumberTestProvider {
     }
   }
 
-  @When("I send a valid request searching for listings created between three months ago and now to {string}")
+  @When("I send a valid request searching for listings closing between now and in three months to {string}")
   public void iSendAValidRequestSearchingForListingsCreatedBetweenThreeMonthAgoAndNowTo(String endpointUrl)
       throws Exception {
     ZonedDateTime oneMonthAgo = ZonedDateTime.now().minusMonths(3);
@@ -208,7 +208,7 @@ public class U29BrowsSalesStepDefs extends CucumberTestProvider {
     Assertions.assertNotNull(this.response);
   }
 
-  @Then("Listings created in the last month are shown")
+  @Then("Listings closing in the next three months are shown")
   public void listingsCreatedInTheLastMonthAreShown()
       throws UnsupportedEncodingException, JsonProcessingException {
     JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
