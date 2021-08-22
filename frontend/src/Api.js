@@ -567,12 +567,15 @@ export const Api = {
     ],
     "totalCount": 4
 }`);
-    // return instance.get(`TODO: decide on endpoints`,
+    // Uncomment and remove above JSON once the backend is working
+    // return instance.get('/listings/search',
     //     {params: params}).catch(err => {
     //   throw ApiRequestError.createFromMessageMap(err, {
-    //     406: "TODO: handle errors!"
+    //     400: 'Invalid pagination parameters sent',
+    //     404: 'No listings could not be found',
+    //     500: 'Oops! Something went wrong on our end! Try again later'
     //   });
-    // })
+    // });
   },
 
   /**

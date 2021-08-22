@@ -11,6 +11,8 @@ public class PageableBuilder {
   public static Pageable makePageable(int pagStartIndex, int pagEndIndex, String sortBy, boolean isAscending) {
     int itemsPerPage = pagEndIndex - pagStartIndex;
     int pageNumber = (pagStartIndex / itemsPerPage);
+    if (sortBy == "name")
+      sortBy = "inventoryItem.product.id";
     if (isAscending) {
       return PageRequest.of(pageNumber, itemsPerPage, Sort.by(sortBy).ascending());
     } else {

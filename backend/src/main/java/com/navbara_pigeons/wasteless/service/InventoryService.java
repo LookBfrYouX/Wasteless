@@ -1,7 +1,7 @@
 package com.navbara_pigeons.wasteless.service;
 
-import com.navbara_pigeons.wasteless.dto.BasicInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
+import com.navbara_pigeons.wasteless.dto.FullInventoryItemDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
@@ -18,7 +18,7 @@ import javax.management.InvalidAttributeValueException;
 
 public interface InventoryService {
 
-  PaginationDto<BasicInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
+  PaginationDto<FullInventoryItemDto> getInventory(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, InventorySortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, InsufficientPrivilegesException, UserNotFoundException, InventoryItemNotFoundException, InvalidAttributeValueException, InvalidPaginationInputException;
 
@@ -32,6 +32,7 @@ public interface InventoryService {
 
   void updateInventoryItemFromPurchase(Long businessId, Listing listing)
       throws BusinessNotFoundException, InventoryItemNotFoundException, InventoryUpdateException;
+    void deleteInventoryItem(InventoryItem inventoryItem);
 
-  void deleteInventoryItem(InventoryItem inventoryItem);
+    InventoryItem getInventoryItemById(Long inventoryItemId) throws InventoryItemNotFoundException;
 }

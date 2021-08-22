@@ -19,4 +19,6 @@ public interface ListingDaoHibernate {
 
   void deleteListing(Long listingId);
 
+  Listing getListing(long listingId) throws ListingNotFoundException;
+
 }
