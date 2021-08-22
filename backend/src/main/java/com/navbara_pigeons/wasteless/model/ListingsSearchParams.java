@@ -51,6 +51,7 @@ public class ListingsSearchParams {
    * @param pagStartIndex
    */
   public void setPagStartIndex(Integer pagStartIndex) {
+    System.out.println(pagStartIndex);
     if (pagStartIndex == null) {
       this.pagStartIndex = 0;
     } else {
@@ -81,22 +82,13 @@ public class ListingsSearchParams {
       this.isAscending = ascending;
     }
   }
-  /**
-   * setting default values for search keys if given null acts as a setter otherwise
-   * @param searchKeys
-   */
-  public void setSearchKeys(List<String> searchKeys) throws ListingValidationException {
-    this.searchKeys = new ArrayList<>();
+
+  public void setSearchKeys(List<ListingSearchKeys> searchKeys) {
     if (searchKeys == null || searchKeys.isEmpty()) {
+      this.searchKeys = new ArrayList<>();
       this.searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
     } else {
-      for (String key : searchKeys) {
-        try {
-          this.searchKeys.add(ListingSearchKeys.fromString(key));
-        } catch (IllegalArgumentException e){
-          throw new ListingValidationException("One or more search keys are Invalid");
-        }
-      }
+      this.searchKeys = searchKeys;
     }
 
   }

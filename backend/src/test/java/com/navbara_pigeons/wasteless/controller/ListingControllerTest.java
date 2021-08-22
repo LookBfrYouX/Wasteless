@@ -36,7 +36,7 @@ class ListingControllerTest extends ControllerTestProvider {
         .param("pagEndIndex", "2")
         .param("sortBy", "quantity")
         .param("isAscending", "true")
-        .param("searchKeys", "Product Name")
+        .param("searchKeys", "PRODUCT_NAME")
     ).andExpect(status().isOk());
   }
 
@@ -48,7 +48,7 @@ class ListingControllerTest extends ControllerTestProvider {
                     .param("pagStartIndex", "1")
                     .param("pagEndIndex", "2")
                     .param("sortBy", "quantity")
-                    .param("searchKeys", "Address")
+                    .param("searchKeys", "ADDRESS")
                     .param("isAscending", "true")
                     .param("searchParam", "New Zealand")
     ).andExpect(status().isOk());
