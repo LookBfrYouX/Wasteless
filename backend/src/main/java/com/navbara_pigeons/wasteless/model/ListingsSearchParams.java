@@ -42,6 +42,7 @@ public class ListingsSearchParams {
   }
 
   public void setPagStartIndex(Integer pagStartIndex) {
+    System.out.println(pagStartIndex);
     if (pagStartIndex == null) {
       this.pagStartIndex = 0;
     } else {
