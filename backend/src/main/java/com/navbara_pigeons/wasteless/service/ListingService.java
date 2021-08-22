@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.service;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.dto.TransactionDto;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
@@ -15,6 +16,10 @@ import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 
+import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
+import java.time.LocalDate;
+import java.util.List;
+
 public interface ListingService {
 
   Long addListing(long businessId, long inventoryItemId, Listing listing)
@@ -25,6 +30,9 @@ public interface ListingService {
   PaginationDto<FullListingDto> getListings(long businessId, Integer pagStartIndex,
       Integer pagEndIndex, ListingSortByOption sortBy, boolean isAscending)
       throws BusinessNotFoundException, UserNotFoundException, InvalidPaginationInputException;
+
+  PaginationDto<FullListingDto> searchListings(ListingsSearchParams params);
+
 
   void deleteListing(Long listingId);
 

@@ -14,7 +14,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ListingDaoHibernateImpl implements ListingDao {
+public class ListingDaoHibernateImpl implements ListingDaoHibernate {
 
   private final EntityManager entityManager;
 
@@ -34,7 +34,6 @@ public class ListingDaoHibernateImpl implements ListingDao {
    * @return The Listing
    * @throws ListingNotFoundException A listing with that id was not found
    */
-  @Override
   public Listing getListing(long listingId) throws ListingNotFoundException {
     Session currentSession = getSession();
     Listing listing = currentSession.get(Listing.class, listingId);

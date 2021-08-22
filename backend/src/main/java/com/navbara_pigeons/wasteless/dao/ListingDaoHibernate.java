@@ -6,11 +6,9 @@ import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
 import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.util.Pair;
 
-public interface ListingDao extends ListingDaoHibernate, JpaRepository<Listing, Long>, JpaSpecificationExecutor<Listing> {
+public interface ListingDaoHibernate {
 
   Pair<List<Listing>, Long> getListings(Business business, PaginationBuilder pagBuilder)
       throws InvalidPaginationInputException;
@@ -18,5 +16,7 @@ public interface ListingDao extends ListingDaoHibernate, JpaRepository<Listing, 
   void saveListing(Listing listing);
 
   void deleteListing(Long listingId);
+
+  Listing getListing(long listingId) throws ListingNotFoundException;
 
 }
