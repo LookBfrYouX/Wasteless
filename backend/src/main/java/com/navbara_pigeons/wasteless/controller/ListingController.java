@@ -1,12 +1,10 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
-<<<<<<<<< Temporary merge branch 1
 import com.navbara_pigeons.wasteless.entity.BusinessType;
-=========
 import com.navbara_pigeons.wasteless.dto.TransactionDto;
->>>>>>>>> Temporary merge branch 2
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -69,7 +67,7 @@ public class ListingController {
           @Parameter(description = "Pagination end index") @RequestParam(required = false) @Min(0) Integer pagEndIndex,
           @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
           @Parameter(description = "Is Ascending") @RequestParam(required = false) Boolean isAscending,
-          @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
+          @Parameter(description = "Search key") @RequestParam(required = false) List<ListingSearchKeys> searchKeys,
           @Parameter(description = "Search value") @RequestParam(required = false) String searchParam,
           @Parameter(description = "Minimum Price of Listing") @RequestParam(required = false) Double minPrice,
           @Parameter(description = "Maximum Price of Listing") @RequestParam(required = false) Double maxPrice,

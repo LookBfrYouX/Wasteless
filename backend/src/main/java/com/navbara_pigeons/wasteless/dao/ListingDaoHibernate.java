@@ -10,8 +10,6 @@ import org.springframework.data.util.Pair;
 
 public interface ListingDaoHibernate {
 
-  Listing getListing(long listingId) throws ListingNotFoundException;
-
   Pair<List<Listing>, Long> getListings(Business business, PaginationBuilder pagBuilder)
       throws InvalidPaginationInputException;
 
