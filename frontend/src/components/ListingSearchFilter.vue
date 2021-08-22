@@ -4,7 +4,7 @@
       <v-col cols="12" lg="8" class="filter-business my-0 py-0">
         <v-subheader>Filter businesses</v-subheader>
         <v-select
-            v-model="selectedBusinessTypes"
+            v-model="businessTypes"
             :items="businesses"
             label="Select"
             multiple
@@ -22,7 +22,7 @@
                 v-if="index === shownChips"
                 class="grey--text text-caption"
             >
-              (+{{ selectedBusinessTypes.length - shownChips }} others)
+              (+{{ businessTypes.length - shownChips }} others)
             </span>
           </template>
         </v-select>
@@ -124,15 +124,15 @@ export default {
       shownChips: 1,
 
       dates: [],
-      selectedBusinessTypes: []
+      businessTypes: []
     }
   },
   watch: {
     dates() {
       this.$emit('newDates', this.dates);
     },
-    selectedBusinessTypes() {
-      this.$emit('newTypes', this.selectedBusinessTypes);
+    businessTypes() {
+      this.$emit('newTypes', this.businessTypes);
     }
   },
   props: {
@@ -179,10 +179,10 @@ export default {
         }
 
         if (this.dates.length == 1) {
-          return "Before: " + new Date(this.dates[0]).toLocaleDateString('en-NZ', options);
+          return "Before: " + new Date(this.dates[0]).toLocaleDateString('en-NZ', options) + "11:59:59.999";
         } else if (this.dates.length == 2) {
-          return new Date(this.dates[0]).toLocaleDateString('en-NZ', options) + " to " +
-              new Date(this.dates[1]).toLocaleDateString('en-NZ', options);
+          return new Date(this.dates[0]).toLocaleDateString('en-NZ', options) + "00:00:00" + " to " +
+              new Date(this.dates[1]).toLocaleDateString('en-NZ', options) + "11:59:59.999";
         }
         return null;
       },
