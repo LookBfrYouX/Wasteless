@@ -88,6 +88,7 @@ public class ListingSpecifications {
     }
     // if user searches by business name
     if (params.getSearchKeys().contains(BUSINESS_NAME)) {
+
       predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("name"), "%" + token + "%"));
     }
     // if user searches by address name
@@ -140,22 +141,27 @@ public class ListingSpecifications {
     ArrayList<Predicate> predicates = new ArrayList<>();
     // if min price included by the user
     if( params.getMinPrice() != null ) {
+      log.info("WITH MIN PRICE: " + params.getMinPrice());
       predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), params.getMinPrice()));
     }
     // if max price included by the user
     if( params.getMaxPrice() != null ) {
+      log.info("WITH MAX PRICE: " + params.getMinPrice());
       predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), params.getMaxPrice()));
     }
     // if one date included it is taken as the max date
     if (params.getFilterDates() != null && params.getFilterDates().size() == 1) {
+      log.info("WITH CLOSING DATE BEFORE: " + params.getFilterDates().get(0));
       predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0)));
     // if two dates included it is taken as a date range
     } else if (params.getFilterDates() != null && params.getFilterDates().size() == 2) {
+      log.info("WITH CLOSING DATES BETWEEN: " + params.getFilterDates().get(0) + " AND " + params.getFilterDates().get(1));
       predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0)), criteriaBuilder.lessThanOrEqualTo(root.get("created"), params.getFilterDates().get(1))));
     }
     // if business types are included by the user
     if (params.getBusinessTypes() != null) {
       for (int i = 0; i < params.getBusinessTypes().size(); i++ ) {
+        log.info("WITH BUSSINESS TYPES: " + params.getBusinessTypes());
         predicates.add(criteriaBuilder.like(businessInventoryItemJoin.get("businessType"), params.getBusinessTypes().get(i).toString()));
       }
     }
