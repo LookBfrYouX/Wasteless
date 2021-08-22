@@ -33,7 +33,7 @@ public class ListingsSearchParams {
   private List<ZonedDateTime> filterDates;
   private List<BusinessType> businessTypes;
   // returns all listings by default
-  private int DEFAULT_PAGE_END_INDEX = Integer.MAX_VALUE;
+  private int DEFAULT_PAGE_END_INDEX = 1000000000;
 
   /**
   * setting default value for search string so returns all values if user searches for nothing, acts as a setter otherwise
