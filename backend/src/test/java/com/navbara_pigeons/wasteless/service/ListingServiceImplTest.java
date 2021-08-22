@@ -16,19 +16,25 @@ import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.entity.Transaction;
 import com.navbara_pigeons.wasteless.entity.User;
+import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.InventoryUpdateException;
 import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.helper.PaginationBuilder;
+import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
 import org.springframework.security.test.context.support.WithMockUser;
 
@@ -234,5 +240,43 @@ class ListingServiceImplTest extends ServiceTestProvider {
     when(inventoryService.getInventoryItemById(businessId, inventoryItem.getId()))
         .thenReturn(inventoryItem);
     return listing;
+  }
+
+  @Test
+  @WithMockUser(username = "ntony@tony.tony", password = "tonyTony1")
+  void getAllListings_isAuthenticated() throws Exception {
+
+    List<Listing> mockListings = new ArrayList<>();
+
+    List<String> mockBusinessNames = new ArrayList<>();
+    mockBusinessNames.add("Business A");
+    mockBusinessNames.add("Business B");
+    mockBusinessNames.add("Business C");
+
+    List<String> mockProductNames = new ArrayList<String>();
+    mockProductNames.add("Product A");
+    mockProductNames.add("Product B");
+    mockProductNames.add("Product C");
+
+    for (int i = 0; i < 3; i++) {
+      Business business = makeBusiness(mockBusinessNames.get(i));
+      business.setPrimaryAdministratorId(1L);
+      Product product = makeProduct(mockProductNames.get(i));
+      InventoryItem inventoryItem = makeInventoryItem(product, business);
+      Listing listing = makeListing(inventoryItem);
+      mockListings.add(listing);
+    }
+
+
+    ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
+    listingsSearchParams.setPagStartIndex(0);
+    listingsSearchParams.setPagEndIndex(1);
+    listingsSearchParams.setSortBy(ListingSortByOption.name);
+
+    when(listingDao
+        .findAll(any(Specification.class), any(Pageable.class)))
+        .thenReturn(new PageImpl<Listing>(mockListings));
+
+    Assertions.assertEquals(3, listingService.searchListings(listingsSearchParams).getTotalCount());
   }
 }
