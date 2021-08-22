@@ -17,7 +17,7 @@
                                @newTypes="event => this.searchParams.businessTypes = event"
                                @newMin="event => this.searchParams.minPrice = event ? parseFloat(event) : null"
                                @newMax="event => this.searchParams.maxPrice = event ? parseFloat(event) : null"
-                               @newDates="event => this.searchParams.dates = event"
+                               @newDates="event => this.searchParams.filterDates = event"
           ></ListingSearchFilter>
         </v-col>
       </v-row>
@@ -111,7 +111,7 @@ export default {
         searchKeys: [],
         minPrice: null,
         maxPrice: null,
-        dates: [],
+        filterDates: [],
         businessTypes: [],
       }
     };
@@ -155,6 +155,7 @@ export default {
 
     getListingsPipeline: async function () {
       try {
+
         const response = (await Api.getListings(this.searchParams)).data;
         this.listings = response.results;
         this.totalResults = response.totalCount;

@@ -368,6 +368,29 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any>>} response or ApiRequestError
    */
   getListings: (parameters) => {
+
+    const setTime = (dateString, hours, minutes, seconds, milliseconds) => {
+      const date = new Date(dateString);
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      date.setSeconds(seconds);
+      date.setMilliseconds(milliseconds);
+      return date.toISOString();
+    }
+    if (Array.isArray(parameters.filterDates)) {
+      if (parameters.filterDates.length) {
+        const lastEl = parameters.filterDates.length - 1;
+        parameters.filterDates[lastEl] = setTime(
+            parameters.filterDates[lastEl], 23, 59, 59, 999
+        );
+      }
+      if (parameters.filterDates.length == 2) {
+        parameters.filterDates[0] = setTime(
+            parameters.filterDates[0], 0, 0, 0, 0
+        );
+      }
+    }
+
     return instance.get('/listings/search',
         {
           params: parameters,
