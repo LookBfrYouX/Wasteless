@@ -204,4 +204,10 @@ public class InventoryServiceImpl implements InventoryService {
       listingService.deleteListing(listing.getId());
     }
   }
+
+  @Override
+  @Transactional
+  public InventoryItem getInventoryItemById(Long inventoryItemId) throws InventoryItemNotFoundException {
+    return inventoryDao.getInventoryItemById(inventoryItemId);
+  }
 }
