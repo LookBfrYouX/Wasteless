@@ -181,7 +181,7 @@ export default {
         if (this.dates.length == 1) {
           return "Before: " + new Date(this.dates[0]).toLocaleDateString('en-NZ', options);
         } else if (this.dates.length == 2) {
-          return new Date(this.dates[0]).toLocaleDateString('en-NZ', options) + " to " +
+          return new Date(this.dates[0]).toLocaleDateString('en-NZ', options) + "" + " to " +
               new Date(this.dates[1]).toLocaleDateString('en-NZ', options);
         }
         return null;
