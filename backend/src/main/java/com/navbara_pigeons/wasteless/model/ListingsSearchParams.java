@@ -61,6 +61,8 @@ public class ListingsSearchParams {
   public void setAscending(Boolean ascending) {
     if (ascending == null) {
       this.isAscending = true;
+    } else {
+      this.isAscending = ascending;
     }
   }
 
@@ -73,7 +75,7 @@ public class ListingsSearchParams {
         try {
           this.searchKeys.add(ListingSearchKeys.fromString(key));
         } catch (IllegalArgumentException e){
-          throw new ListingValidationException();
+          throw new ListingValidationException("One or more search keys are Invalid");
         }
       }
     }
