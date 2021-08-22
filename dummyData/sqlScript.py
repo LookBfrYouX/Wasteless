@@ -4,7 +4,7 @@ newFile = codecs.open("result.sql", "x", "utf-8")
 
 # This list needs to be in order
 itemsToAdd = ["address", "user", "business", "user_business", "product",
-              "catalogue", "inventory_item", "listing", "marketlisting"]
+              "catalogue", "inventory_item", "listing", "marketlisting", "transaction"]
 
 # Add items to new newFile
 for item in itemsToAdd:
