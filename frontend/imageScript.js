@@ -3,7 +3,6 @@ const FormData = require("form-data");
 const fs = require("fs");
 const path = require('path');
 // const SERVER_URL = "http://localhost:9499";
-// const SERVER_URL = "https://csse-s302g3.canterbury.ac.nz/test/api";
 const SERVER_URL = "https://csse-s302g3.canterbury.ac.nz/prod/api";
 const NUMBER_OF_INSERTS = 5000;
 const NUM_BUSINESSES = 1000;
