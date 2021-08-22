@@ -2,18 +2,13 @@ package com.navbara_pigeons.wasteless.cucumber;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.navbara_pigeons.wasteless.dto.BasicProductDto;
-import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.PaginationDto;
-import com.navbara_pigeons.wasteless.entity.Listing;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.time.ZonedDateTime;
 import java.util.Iterator;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.web.servlet.MvcResult;
@@ -99,7 +94,133 @@ public class U29BrowsSalesStepDefs extends CucumberTestProvider {
     JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
     Iterator<JsonNode> results = jsonResponse.get("results").elements();
     while (results.hasNext()) {
-      System.out.println(results.next().get("id"));
+      Assertions.assertTrue(results.next().get("inventoryItem").get("business").get("businessType").asText().equalsIgnoreCase(businessType));
+    }
+  }
+
+  @When("I send a valid request searching for listings with products containing {string} to {string}")
+  public void iSendAValidRequestSearchingForListingsWithProductsContainingTo(String searchParam, String endpointUrl)
+      throws Exception {
+    this.response = mockMvc.perform(
+        get(endpointUrl)
+            .param("pagStartIndex", "0")
+            .param("pagEndIndex", "3")
+            .param("searchKeys", "PRODUCT_NAME")
+            .param("searchParam", searchParam)
+    ).andReturn();
+    Assertions.assertNotNull(this.response);
+  }
+
+  @Then("Listings with products containing the word {string} are shown")
+  public void listingsWithProductsContainingTheWordAreShown(String searchParam)
+      throws UnsupportedEncodingException, JsonProcessingException {
+    JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
+    Iterator<JsonNode> results = jsonResponse.get("results").elements();
+    while (results.hasNext()) {
+      Assertions.assertTrue(results.next().get("inventoryItem").get("product").get("name").asText().contains(searchParam));
+    }
+  }
+
+  @When("I send a valid request with a price range of {double} to {double} to {string}")
+  public void iSendAValidRequestWithAPriceRangeOfToTo(double minPrice, double maxPrice, String endpointUrl)
+      throws Exception {
+    this.response = mockMvc.perform(
+        get(endpointUrl)
+            .param("pagStartIndex", "0")
+            .param("pagEndIndex", "3")
+            .param("minPrice", Double.toString(minPrice))
+            .param("maxPrice", Double.toString(maxPrice))
+    ).andReturn();
+    Assertions.assertNotNull(this.response);
+  }
+
+  @Then("I am only shown listings more than {double} and less than {double}")
+  public void iAmOnlyShownListingsMoreThanAndLessThan(double minPrice, double maxPrice)
+      throws UnsupportedEncodingException, JsonProcessingException {
+    JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
+    Iterator<JsonNode> results = jsonResponse.get("results").elements();
+    while (results.hasNext()) {
+      JsonNode priceNode = results.next().get("price");
+      Assertions.assertTrue(Double.parseDouble(priceNode.asText()) >= minPrice);
+      Assertions.assertTrue(Double.parseDouble(priceNode.asText()) <= maxPrice);
+    }
+  }
+
+  @When("I send a valid request searching for listings with products offered by {string} to {string}")
+  public void iSendAValidRequestSearchingForListingsWithProductsOfferedByTo(String businessName,
+      String endpointUrl) throws Exception {
+    this.response = mockMvc.perform(
+        get(endpointUrl)
+            .param("pagStartIndex", "0")
+            .param("pagEndIndex", "3")
+            .param("searchKeys", "BUSINESS_NAME")
+            .param("searchParam", businessName)
+    ).andReturn();
+    Assertions.assertNotNull(this.response);
+  }
+
+  @Then("Listings from sellers called {string} are shown")
+  public void listingsFromSellersCalledAreShown(String businessName)
+      throws UnsupportedEncodingException, JsonProcessingException {
+    JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
+    Iterator<JsonNode> results = jsonResponse.get("results").elements();
+    while (results.hasNext()) {
+      Assertions.assertTrue(results.next().get("inventoryItem").get("business").get("name").asText().contains(businessName));
+    }
+  }
+
+  @When("I send a valid request searching for listings with business located in {string} to {string}")
+  public void iSendAValidRequestSearchingForListingsWithBusinessLocatedInTo(String address,
+      String endpointUrl) throws Exception {
+    this.response = mockMvc.perform(
+        get(endpointUrl)
+            .param("pagStartIndex", "0")
+            .param("pagEndIndex", "3")
+            .param("searchKeys", "ADDRESS")
+            .param("searchParam", address)
+    ).andReturn();
+    Assertions.assertNotNull(this.response);
+  }
+
+  @Then("Listings from sellers located in {string} are shown")
+  public void listingsFromSellersLocatedInAreShown(String address)
+      throws UnsupportedEncodingException, JsonProcessingException {
+    JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
+    Iterator<JsonNode> results = jsonResponse.get("results").elements();
+    while (results.hasNext()) {
+      JsonNode addressNode = results.next().get("inventoryItem").get("business").get("address");
+      Assertions.assertTrue(addressNode.get("city").asText().contains(address) || addressNode.get("country").asText().contains(address));
+    }
+  }
+
+  @When("I send a valid request searching for listings created between three months ago and now to {string}")
+  public void iSendAValidRequestSearchingForListingsCreatedBetweenThreeMonthAgoAndNowTo(String endpointUrl)
+      throws Exception {
+    ZonedDateTime oneMonthAgo = ZonedDateTime.now().minusMonths(3);
+    ZonedDateTime now = ZonedDateTime.now();
+    this.response = mockMvc.perform(
+        get(endpointUrl)
+            .param("pagStartIndex", "0")
+            .param("pagEndIndex", "3")
+            .param("filterDates", oneMonthAgo.toString())
+            .param("filterDates", now.toString())
+    ).andReturn();
+    Assertions.assertNotNull(this.response);
+  }
+
+  @Then("Listings created in the last month are shown")
+  public void listingsCreatedInTheLastMonthAreShown()
+      throws UnsupportedEncodingException, JsonProcessingException {
+    JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
+    Iterator<JsonNode> results = jsonResponse.get("results").elements();
+    while (results.hasNext()) {
+      JsonNode timeNode = results.next().get("closes");
+      System.out.println(ZonedDateTime.now().minusMonths(3));
+      System.out.println(ZonedDateTime.parse(timeNode.asText()));
+      System.out.println(ZonedDateTime.now());
+      Assertions.assertTrue(
+          ZonedDateTime.parse(timeNode.asText()).isBefore(ZonedDateTime.now()) &&
+              ZonedDateTime.parse(timeNode.asText()).isAfter(ZonedDateTime.now().minusMonths(3)));
     }
   }
 }
