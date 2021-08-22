@@ -42,6 +42,7 @@ public class ListingsSearchParams {
   }
 
   public void setPagStartIndex(Integer pagStartIndex) {
+    System.out.println(pagStartIndex);
     if (pagStartIndex == null) {
       this.pagStartIndex = 0;
     } else {
@@ -61,21 +62,17 @@ public class ListingsSearchParams {
   public void setAscending(Boolean ascending) {
     if (ascending == null) {
       this.isAscending = true;
+    } else {
+      this.isAscending = ascending;
     }
   }
 
-  public void setSearchKeys(List<String> searchKeys) throws ListingValidationException {
-    this.searchKeys = new ArrayList<>();
+  public void setSearchKeys(List<ListingSearchKeys> searchKeys) {
     if (searchKeys == null || searchKeys.isEmpty()) {
+      this.searchKeys = new ArrayList<>();
       this.searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
     } else {
-      for (String key : searchKeys) {
-        try {
-          this.searchKeys.add(ListingSearchKeys.fromString(key));
-        } catch (IllegalArgumentException e){
-          throw new ListingValidationException();
-        }
-      }
+      this.searchKeys = searchKeys;
     }
 
   }
