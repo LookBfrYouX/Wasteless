@@ -21,7 +21,7 @@
         <v-subheader>Search By</v-subheader>
         <v-select
             :items="sortKeys"
-            v-model="searchParams.selectedKeys"
+            v-model="searchParams.searchKeys"
             chips
             dense
             label="Search By"
@@ -37,7 +37,7 @@
                 v-if="index === 1"
                 class="grey--text text-caption"
             >
-                  (+{{ searchParams.selectedKeys.length - 1 }} others)
+                  (+{{ searchParams.searchKeys.length - 1 }} others)
                 </span>
           </template>
         </v-select>
@@ -67,11 +67,11 @@ export default {
     return {
       searchParams: {
         searchParam: "",
-        selectedKeys: [],
+        searchKeys: [],
         sortBy: "",
         isAscending: true,
       },
-      sortKeys: ['Product Name', 'Business Name', 'Address'],
+      sortKeys: ['PRODUCT_NAME', 'BUSINESS_NAME', 'ADDRESS'],
     }
   },
   methods: {
