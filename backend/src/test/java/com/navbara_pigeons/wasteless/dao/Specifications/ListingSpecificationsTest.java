@@ -44,8 +44,8 @@ public class ListingSpecificationsTest extends MainTestProvider {
 
     @Test
     void resultsMeetSearchCriteriaTestPartialMatchingProductName() throws ListingValidationException {
-        List<String> searchKeys = new ArrayList<String>();
-        searchKeys.add("Product Name");
+        List<ListingSearchKeys> searchKeys = new ArrayList<>();
+        searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
         listingsSearchParams.setSearchKeys(searchKeys);
         listingsSearchParams.setSearchParam("Sanitarium");
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
@@ -55,8 +55,8 @@ public class ListingSpecificationsTest extends MainTestProvider {
 
     @Test
     void resultsMeetSearchCriteriaTestFullMatchingProductName() throws ListingValidationException {
-        List<String> searchKeys = new ArrayList<String>();
-        searchKeys.add("Product Name");
+        List<ListingSearchKeys> searchKeys = new ArrayList<>();
+        searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
         listingsSearchParams.setSearchKeys(searchKeys);
         listingsSearchParams.setSearchParam("\"Sanitarium So Good Oat Milk No Added Sugar\"");
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
@@ -66,8 +66,8 @@ public class ListingSpecificationsTest extends MainTestProvider {
 
     @Test
     void resultsMeetSearchCriteriaTestFullMatchingAddress() throws ListingValidationException {
-        List<String> searchKeys = new ArrayList<String>();
-        searchKeys.add("Address");
+        List<ListingSearchKeys> searchKeys = new ArrayList<>();
+        searchKeys.add(ListingSearchKeys.ADDRESS);
         listingsSearchParams.setSearchKeys(searchKeys);
         listingsSearchParams.setSearchParam("\"Christchurch\"");
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
@@ -77,8 +77,8 @@ public class ListingSpecificationsTest extends MainTestProvider {
 
     @Test
     void resultsMeetSearchCriteriaTestFilteredByPrice() throws ListingValidationException {
-        List<String> searchKeys = new ArrayList<String>();
-        searchKeys.add("Product Name");
+        List<ListingSearchKeys> searchKeys = new ArrayList<>();
+        searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
         listingsSearchParams.setSearchKeys(searchKeys);
         listingsSearchParams.setSearchParam("");
         listingsSearchParams.setMinPrice(12.0);

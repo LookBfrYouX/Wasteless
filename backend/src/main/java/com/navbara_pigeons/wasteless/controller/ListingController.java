@@ -1,9 +1,10 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
-import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.BusinessType;
+import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
@@ -16,13 +17,11 @@ import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.service.ListingService;
-import com.navbara_pigeons.wasteless.validation.constraints.StringEnumeration;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import javax.naming.directory.InvalidAttributesException;
-import javax.persistence.Enumerated;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
@@ -35,9 +34,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,7 +54,23 @@ public class ListingController {
     this.listingService = listingService;
   }
 
-
+  /**
+   * This endpoint allows searching and filtering listings. All listings matching the search parameters are returned.
+   * Listings are wrapped in a PaginationDTO object which gives a total count and a list of Listings.
+   *
+   * @param pagStartIndex The start index for pagination
+   * @param pagEndIndex The end index for pagination
+   * @param sortBy The sortBy ENUM mapped by ListingSortByOption
+   * @param isAscending Modifies the sortBy direction
+   * @param searchKeys A list of ENUMs to search by. Mapped to ListingSearchKeys
+   * @param searchParam The search string
+   * @param minPrice The minimum price to filter by
+   * @param maxPrice The maximum price to filter by
+   * @param filterDates A max date if only one supplied, otherwise a min and a max closing date
+   * @param businessTypes A list of ENUMs to filter by business type.
+   * @return
+   * @throws ListingValidationException
+   */
   @GetMapping("/listings/search")
   @Operation(summary = "Search through sales listings", description = "Search and filter all sales listings")
   @ExceptionHandler(InvalidAttributesException.class)
@@ -66,14 +79,14 @@ public class ListingController {
           @Parameter(description = "Pagination end index") @RequestParam(required = false) @Min(0) Integer pagEndIndex,
           @Parameter(description = "Sort option") @RequestParam(required = false) ListingSortByOption sortBy,
           @Parameter(description = "Is Ascending") @RequestParam(required = false) Boolean isAscending,
-          @Parameter(description = "Search key") @RequestParam(required = false) List<String> searchKeys,
+          @Parameter(description = "Search key") @RequestParam(required = false) List<ListingSearchKeys> searchKeys,
           @Parameter(description = "Search value") @RequestParam(required = false) String searchParam,
           @Parameter(description = "Minimum Price of Listing") @RequestParam(required = false) Double minPrice,
           @Parameter(description = "Maximum Price of Listing") @RequestParam(required = false) Double maxPrice,
           @Parameter(description = "Dates to Filter Listings By") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<ZonedDateTime> filterDates,
           @Parameter(description = "Types of Businesses to Filter Listings By") @RequestParam(required = false)  List<BusinessType> businessTypes
-  ) throws ListingValidationException {
-    log.info("GETTING LISTINGS FOR: " + searchKeys + " = " + searchParam);
+  ) {
+    log.info("GETTING LISTINGS FOR: SEARCH KEYS " + searchKeys + " - SEARCHPARAM " + searchParam + " - PAG START:END " + pagStartIndex + ":" + pagEndIndex + " - BUSINESSTYPES " + businessTypes + " - DATERANGE " + filterDates);
     ListingsSearchParams params = new ListingsSearchParams();
     params.setPagStartIndex(pagStartIndex);
     params.setPagEndIndex(pagEndIndex);
