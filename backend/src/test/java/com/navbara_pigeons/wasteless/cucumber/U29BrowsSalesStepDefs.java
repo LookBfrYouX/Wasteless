@@ -57,9 +57,9 @@ public class U29BrowsSalesStepDefs extends CucumberTestProvider {
   }
 
   @When("I send a valid request sorted by price to {string}")
-  public void iSendAValidRequestSortedByPriceTo(String enpointUrl) throws Exception {
+  public void iSendAValidRequestSortedByPriceTo(String endpointUrl) throws Exception {
     this.response = mockMvc.perform(
-        get(enpointUrl)
+        get(endpointUrl)
             .param("pagStartIndex", "0")
             .param("pagEndIndex", "3")
             .param("sortBy", "price")
@@ -78,6 +78,28 @@ public class U29BrowsSalesStepDefs extends CucumberTestProvider {
       Double listingPrice = results.next().get("price").asDouble();
       Assertions.assertTrue(listingPrice >= minPrice);
       minPrice = listingPrice;
+    }
+  }
+
+  @When("I send a valid request filtered by business type {string} to {string}")
+  public void iSendAValidRequestFilteredByBusinessTypeTo(String businessType, String endpointUrl)
+      throws Exception {
+    this.response = mockMvc.perform(
+        get(endpointUrl)
+            .param("pagStartIndex", "0")
+            .param("pagEndIndex", "3")
+            .param("businessTypes", businessType)
+    ).andReturn();
+    Assertions.assertNotNull(this.response);
+  }
+
+  @Then("Only listings for businesses of type {string} are returned")
+  public void onlyListingsForBusinessesOfTypeAreReturned(String businessType)
+      throws UnsupportedEncodingException, JsonProcessingException {
+    JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
+    Iterator<JsonNode> results = jsonResponse.get("results").elements();
+    while (results.hasNext()) {
+      System.out.println(results.next().get("id"));
     }
   }
 }

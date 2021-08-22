@@ -9,14 +9,14 @@ Feature: U29 Browse Sales Listings
     Then I receive all the current listings
 
 
-#AC4: The sales listings may be ordered in various ways (product name, country/city of seller, expiry date, seller, price, …).
   Scenario: AC4 - Check that filtering and sorting works
     When I send a valid request sorted by price to "/listings/search"
     Then The listings are ordered by price
-# Check that filtering/sorting works.
 
 #AC5: A suitable UI control allows me to limit the results to one or more business types.  You may add more business types if you wish (e.g. from the source given in AC3 of U5 ) in order to make this filter more useful.
-# Check filtering by business type works.
+  Scenario: AC5 - Check the filtering by business types works
+    When I send a valid request filtered by business type "RETAIL" to "/listings/search"
+    Then Only listings for businesses of type "RETAIL" are returned
 
 #AC6: I can limit the results by typing, in a suitable field, all or part of a product name.
 # Check search product name works.
