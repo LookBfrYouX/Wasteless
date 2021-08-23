@@ -40,12 +40,12 @@ window.scrollTo = jest.fn()
 
 let wrapper;
 beforeEach(() => {
+  Api.getListings.mockResolvedValue({ data: listings });
   wrapper = shallowMount(Listings, {
     vuetify,
     mocks: globalStateMocks(),
     stubs: ["error-modal", "router-link"]
   });
-  Api.getListings.mockResolvedValue({data: listings});
 });
 
 afterEach(() => wrapper.destroy());

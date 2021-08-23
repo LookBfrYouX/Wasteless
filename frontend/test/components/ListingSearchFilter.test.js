@@ -18,7 +18,7 @@ describe("Date text", () => {
     await wrapper.setData({filterDates: [date]})
 
     expect(wrapper.vm.dateText).toContain("Before");
-  }),
+  });
 
   test("singleDateFuture", async () => {
     let [d, m, y] = new Date().toLocaleDateString("en-NZ").split("/");
@@ -28,7 +28,7 @@ describe("Date text", () => {
     await wrapper.setData({filterDates: [date]})
 
     expect(wrapper.vm.dateText).toContain(parseInt(y)+1);
-  }),
+  });
 
   test("multipleDate", async () => {
     let [d, m, y] = new Date().toLocaleDateString("en-NZ").split("/");
@@ -38,7 +38,7 @@ describe("Date text", () => {
     await wrapper.setData({filterDates: [date, date]})
 
     expect(wrapper.vm.dateText).toContain("to");
-  }),
+  });
 
   test("multipleDateFuture", async () => {
     let [d, m, y] = new Date().toLocaleDateString("en-NZ").split("/");
