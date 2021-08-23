@@ -21,6 +21,8 @@
         <v-subheader>Search By</v-subheader>
         <v-select
             :items="sortKeys"
+            item-text="fancy"
+            item-value="enum"
             v-model="searchParams.searchKeys"
             chips
             dense
@@ -31,7 +33,7 @@
         >
           <template v-slot:selection="{ item, index }">
             <v-chip v-if="index === 0" small>
-              <span>{{ item }}</span>
+              <span>{{ item.fancy }}</span>
             </v-chip>
             <span
                 v-if="index === 1"
@@ -58,7 +60,6 @@
 import SimpleSortBar from "@/components/SimpleSortBar";
 
 export default {
-  name: "MultiSearchBar",
   components: {SimpleSortBar},
   props: {
     sortItems: Array,
@@ -71,7 +72,11 @@ export default {
         sortBy: "",
         isAscending: true,
       },
-      sortKeys: ['PRODUCT_NAME', 'BUSINESS_NAME', 'ADDRESS'],
+      sortKeys: [
+        {fancy: "Product Name", enum: "PRODUCT_NAME"},
+        {fancy: "Business Name", enum: "BUSINESS_NAME"},
+        {fancy: "Address", enum: "ADDRESS"}
+      ]
     }
   },
   methods: {
