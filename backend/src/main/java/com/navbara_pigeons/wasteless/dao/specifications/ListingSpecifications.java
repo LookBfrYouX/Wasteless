@@ -155,15 +155,22 @@ public class ListingSpecifications {
       predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0)));
     // if two dates included it is taken as a date range
     } else if (params.getFilterDates() != null && params.getFilterDates().size() == 2) {
+      if (params.getFilterDates().get(0).isBefore(params.getFilterDates().get(1))) {
+        predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0)), criteriaBuilder.lessThanOrEqualTo(root.get("closes"), params.getFilterDates().get(1))));
+      } else {
+        predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("closes"), params.getFilterDates().get(1)), criteriaBuilder.lessThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0))));
+      }
       log.info("WITH CLOSING DATES BETWEEN: " + params.getFilterDates().get(0) + " AND " + params.getFilterDates().get(1));
-      predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0)), criteriaBuilder.lessThanOrEqualTo(root.get("created"), params.getFilterDates().get(1))));
+
     }
     // if business types are included by the user
     if (params.getBusinessTypes() != null) {
+      ArrayList<Predicate> businessTypePredicates = new ArrayList<>();
       for (BusinessType businessType : params.getBusinessTypes()) {
         log.info("WITH BUSINESS TYPES: " + businessType.name());
-        predicates.add(criteriaBuilder.equal(businessInventoryItemJoin.get("businessType"), businessType));
+        businessTypePredicates.add(criteriaBuilder.equal(businessInventoryItemJoin.get("businessType"), businessType));
       }
+      predicates.add(criteriaBuilder.or(businessTypePredicates.toArray(new Predicate[businessTypePredicates.size()])));
     }
     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
   }

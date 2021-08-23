@@ -6,7 +6,7 @@
       <v-col class="my-0 py-0">
         <v-subheader>Search businesses</v-subheader>
         <v-text-field
-            v-model="searchParams.searchString"
+            v-model="searchParams.searchParam"
             label="Search"
             prepend-inner-icon="search"
             solo
@@ -21,7 +21,9 @@
         <v-subheader>Search By</v-subheader>
         <v-select
             :items="sortKeys"
-            v-model="searchParams.selectedKeys"
+            item-text="fancy"
+            item-value="enum"
+            v-model="searchParams.searchKeys"
             chips
             dense
             label="Search By"
@@ -31,13 +33,13 @@
         >
           <template v-slot:selection="{ item, index }">
             <v-chip v-if="index === 0" small>
-              <span>{{ item }}</span>
+              <span>{{ item.fancy }}</span>
             </v-chip>
             <span
                 v-if="index === 1"
                 class="grey--text text-caption"
             >
-                  (+{{ searchParams.selectedKeys.length - 1 }} others)
+                  (+{{ searchParams.searchKeys.length - 1 }} others)
                 </span>
           </template>
         </v-select>
@@ -58,7 +60,6 @@
 import SimpleSortBar from "@/components/SimpleSortBar";
 
 export default {
-  name: "MultiSearchBar",
   components: {SimpleSortBar},
   props: {
     sortItems: Array,
@@ -66,12 +67,16 @@ export default {
   data() {
     return {
       searchParams: {
-        searchString: "",
-        selectedKeys: [],
+        searchParam: "",
+        searchKeys: [],
         sortBy: "",
         isAscending: true,
       },
-      sortKeys: ['Product Name', 'Business Name', 'Address'],
+      sortKeys: [
+        {fancy: "Product Name", enum: "PRODUCT_NAME"},
+        {fancy: "Business Name", enum: "BUSINESS_NAME"},
+        {fancy: "Address", enum: "ADDRESS"}
+      ]
     }
   },
   methods: {

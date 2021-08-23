@@ -4,7 +4,7 @@
       <v-col cols="12" lg="8" class="filter-business my-0 py-0">
         <v-subheader>Filter businesses</v-subheader>
         <v-select
-            v-model="selectedBusinessTypes"
+            v-model="businessTypes"
             :items="businesses"
             label="Select"
             multiple
@@ -22,7 +22,7 @@
                 v-if="index === shownChips"
                 class="grey--text text-caption"
             >
-              (+{{ selectedBusinessTypes.length - shownChips }} others)
+              (+{{ businessTypes.length - shownChips }} others)
             </span>
           </template>
         </v-select>
@@ -33,7 +33,7 @@
         <v-dialog
             ref="menu"
             v-model="menu"
-            :return-value.sync="dates"
+            :return-value.sync="filterDates"
             width="290px"
         >
           <template v-slot:activator="{ on, attrs }">
@@ -50,9 +50,9 @@
             ></v-text-field>
           </template>
           <v-date-picker
-              v-model="dates"
+              v-model="filterDates"
               range
-              @change="$refs.menu.save(dates)"
+              @change="$refs.menu.save(filterDates)"
               :min="todayDate"
               :title-date-format="getDateText"
           >
@@ -66,7 +66,7 @@
             <v-btn
                 text
                 color="primary"
-                @click="$refs.menu.save(dates)"
+                @click="$refs.menu.save(filterDates)"
             >
               OK
             </v-btn>
@@ -123,16 +123,16 @@ export default {
       menu: false,
       shownChips: 1,
 
-      dates: [],
-      selectedBusinessTypes: []
+      filterDates: [],
+      businessTypes: []
     }
   },
   watch: {
-    dates() {
-      this.$emit('newDates', this.dates);
+    filterDates() {
+      this.$emit('newDates', this.filterDates);
     },
-    selectedBusinessTypes() {
-      this.$emit('newTypes', this.selectedBusinessTypes);
+    businessTypes() {
+      this.$emit('newTypes', this.businessTypes);
     }
   },
   props: {
@@ -173,16 +173,18 @@ export default {
     dateText: {
       get() {
         let options = {year: undefined, month: 'numeric', day: 'numeric'};
-        if ((this.dates[1] && new Date(this.dates[1]).getFullYear() !== new Date().getFullYear()) ||
-            (this.dates[0] && new Date(this.dates[0]).getFullYear() !== new Date().getFullYear())) {
+        if ((this.filterDates[1] && new Date(this.filterDates[1]).getFullYear()
+            !== new Date().getFullYear()) ||
+            (this.filterDates[0] && new Date(this.filterDates[0]).getFullYear()
+                !== new Date().getFullYear())) {
           options.year = 'numeric';
         }
 
-        if (this.dates.length == 1) {
-          return "Before: " + new Date(this.dates[0]).toLocaleDateString('en-NZ', options);
-        } else if (this.dates.length == 2) {
-          return new Date(this.dates[0]).toLocaleDateString('en-NZ', options) + "" + " to " +
-              new Date(this.dates[1]).toLocaleDateString('en-NZ', options);
+        if (this.filterDates.length == 1) {
+          return "Before: " + new Date(this.filterDates[0]).toLocaleDateString('en-NZ', options);
+        } else if (this.filterDates.length == 2) {
+          return new Date(this.filterDates[0]).toLocaleDateString('en-NZ', options) + " to " +
+              new Date(this.filterDates[1]).toLocaleDateString('en-NZ', options);
         }
         return null;
       },
@@ -190,7 +192,7 @@ export default {
        * Run when "x" clicked on the date range text box
        */
       set(newName) {
-        this.dates = [];
+        this.filterDates = [];
         return newName;
       }
     }

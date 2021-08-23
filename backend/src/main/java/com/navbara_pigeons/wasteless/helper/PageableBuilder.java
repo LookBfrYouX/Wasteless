@@ -67,6 +67,8 @@ public class PageableBuilder implements Pageable {
     Sort sort = Sort.by(this.sortBy);
     if (sortBy == "name") {
        sort = Sort.by("inventoryItem.product.id");
+    } else if (sortBy == "city") {
+      sort = Sort.by("inventoryItem.business.address.city");
     }
 
     if (isAscending) {

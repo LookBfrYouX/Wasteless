@@ -14,10 +14,10 @@
         <v-col cols="12" md="6">
           <ListingSearchFilter v-bind:maxPrice="searchParams.maxPrice"
                                v-bind:minPrice="searchParams.minPrice"
-                               @newTypes="event => this.searchParams.selectedBusinessTypes = event"
+                               @newTypes="event => this.searchParams.businessTypes = event"
                                @newMin="event => this.searchParams.minPrice = event ? parseFloat(event) : null"
                                @newMax="event => this.searchParams.maxPrice = event ? parseFloat(event) : null"
-                               @newDates="event => this.searchParams.dates = event"
+                               @newDates="event => this.searchParams.filterDates = event"
           ></ListingSearchFilter>
         </v-col>
       </v-row>
@@ -103,16 +103,16 @@ export default {
 
       titleString: "Results",
       searchParams: {
-        searchString: "",
+        searchParam: "",
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
         sortBy: "closes",
-        isAscending: false,
-
+        isAscending: true,
+        searchKeys: [],
         minPrice: null,
         maxPrice: null,
-        dates: [],
-        selectedBusinessTypes: [],
+        filterDates: [],
+        businessTypes: [],
       }
     };
   },
@@ -155,10 +155,12 @@ export default {
 
     getListingsPipeline: async function () {
       try {
-        const response = (await Api.getListings(this.searchParams));
+
+        const response = (await Api.getListings(this.searchParams)).data;
         this.listings = response.results;
         this.totalResults = response.totalCount;
-        this.titleString = `Results ${this.searchParams.searchString ? "for: " + this.searchParams.searchString : ""}`;
+        this.titleString = `Results ${this.searchParams.searchString ? "for: "
+            + this.searchParams.searchString : ""}`;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return false;
