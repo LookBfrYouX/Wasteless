@@ -41,6 +41,11 @@ public class MainTestProvider {
   @Autowired
   protected WebApplicationContext webApplicationContext;
 
+  /**
+   * This test helper method creates and returns listings given an inventory item.
+   * @param inventoryItem
+   * @return
+   */
   protected Listing makeListing(InventoryItem inventoryItem) {
     Listing listing = new Listing();
     listing.setInventoryItem(inventoryItem)

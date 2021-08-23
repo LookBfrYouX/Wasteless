@@ -248,7 +248,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(ListingValidationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleListingValidationException(ListingValidationException exc) {
-    log.error("BAD REQUEST: 400 - " + exc.getMessage());
+    log.error("LISTING VALIDATION EXCEPTION: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
@@ -284,7 +284,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(MissingServletRequestParameterException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResponseEntity<String> handleMissingServletRequestParameterException(MissingServletRequestParameterException exc) {
-    log.error("PARAMERTER EXCEPTION: 400 - " + exc.getMessage());
+    log.error("PARAMETER EXCEPTION: 400 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
