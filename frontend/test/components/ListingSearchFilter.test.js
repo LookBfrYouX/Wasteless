@@ -15,7 +15,7 @@ describe("Date text", () => {
     if (d.length < 2) {d = "0" + d}
     const date = y + "-" + m + "-" + d;
 
-    await wrapper.setData({dates: [date]})
+    await wrapper.setData({filterDates: [date]})
 
     expect(wrapper.vm.dateText).toContain("Before");
   }),
@@ -25,7 +25,7 @@ describe("Date text", () => {
     if (d.length < 2) {d = "0" + d}
     const date = parseInt(y)+1 + "-" + m + "-" + d;
 
-    await wrapper.setData({dates: [date]})
+    await wrapper.setData({filterDates: [date]})
 
     expect(wrapper.vm.dateText).toContain(parseInt(y)+1);
   }),
@@ -35,7 +35,7 @@ describe("Date text", () => {
     if (d.length < 2) {d = "0" + d}
     const date = y + "-" + m + "-" + d;
 
-    await wrapper.setData({dates: [date, date]})
+    await wrapper.setData({filterDates: [date, date]})
 
     expect(wrapper.vm.dateText).toContain("to");
   }),
@@ -45,7 +45,7 @@ describe("Date text", () => {
     if (d.length < 2) {d = "0" + d}
     const date = parseInt(y)+1 + "-" + m + "-" + d;
 
-    await wrapper.setData({dates: [date, date]})
+    await wrapper.setData({filterDates: [date, date]})
 
     expect(2).toEqual(wrapper.vm.dateText.split(parseInt(y)+1).length - 1);
   });

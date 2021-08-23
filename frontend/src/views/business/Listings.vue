@@ -107,7 +107,7 @@ export default {
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
         sortBy: "closes",
-        isAscending: false,
+        isAscending: true,
         searchKeys: [],
         minPrice: null,
         maxPrice: null,
