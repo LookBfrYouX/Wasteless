@@ -155,8 +155,13 @@ public class ListingSpecifications {
       predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0)));
     // if two dates included it is taken as a date range
     } else if (params.getFilterDates() != null && params.getFilterDates().size() == 2) {
+      if (params.getFilterDates().get(0).isBefore(params.getFilterDates().get(1))) {
+        predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0)), criteriaBuilder.lessThanOrEqualTo(root.get("closes"), params.getFilterDates().get(1))));
+      } else {
+        predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("closes"), params.getFilterDates().get(1)), criteriaBuilder.lessThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0))));
+      }
       log.info("WITH CLOSING DATES BETWEEN: " + params.getFilterDates().get(0) + " AND " + params.getFilterDates().get(1));
-      predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("closes"), params.getFilterDates().get(0)), criteriaBuilder.lessThanOrEqualTo(root.get("closes"), params.getFilterDates().get(1))));
+
     }
     // if business types are included by the user
     if (params.getBusinessTypes() != null) {
