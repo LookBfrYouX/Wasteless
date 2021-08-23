@@ -2,6 +2,7 @@ package com.navbara_pigeons.wasteless.controller;
 
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessAdminException;
+import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
@@ -10,6 +11,7 @@ import com.navbara_pigeons.wasteless.exception.InvalidMarketListingSectionExcept
 import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InventoryRegistrationException;
+import com.navbara_pigeons.wasteless.exception.ListingNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.exception.NotAcceptableException;
 import com.navbara_pigeons.wasteless.exception.ProductNotFoundException;
@@ -20,16 +22,22 @@ import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import java.util.ArrayList;
 import javax.management.InvalidAttributeValueException;
+import javax.validation.ConstraintViolationException;
+
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionException;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
@@ -62,9 +70,23 @@ public class ControllerExceptionHandler {
    * @return ResponseEntity with the exception message
    */
   @ExceptionHandler(BusinessNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
   public ResponseEntity<String> handleBusinessNotFoundException(BusinessNotFoundException exc) {
-    log.error("BUSINESS NOT FOUND: 406 - " + exc.getMessage());
+    log.error("BUSINESS NOT FOUND: 404 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_FOUND);
+  }
+
+  /**
+   * This is the exception handler for BusinessAndListingMismatchException.
+   *
+   * @param exc The thrown exception
+   * @return ResponseEntity with the exception message
+   */
+  @ExceptionHandler(BusinessAndListingMismatchException.class)
+  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+  public ResponseEntity<String> handleBusinessAndListingMismatchException(
+      BusinessAndListingMismatchException exc) {
+    log.error("BUSINESS AND LISTING MISMATCH: 406 - " + exc.getMessage());
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_ACCEPTABLE);
   }
 
@@ -122,11 +144,24 @@ public class ControllerExceptionHandler {
   }
 
   @ExceptionHandler(InventoryItemNotFoundException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
   public ResponseEntity<String> handleInventoryItemNotFoundException(
       InventoryItemNotFoundException exc) {
-    log.error("INVENTORY ITEM ERROR: 406 - " + exc.getMessage());
-    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+    log.error("INVENTORY ITEM ERROR: 404 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_FOUND);
+  }
+
+  /**
+   * This is the exception handler for ListingNotFoundException.
+   *
+   * @param exc The thrown exception
+   * @return ResponseEntity with the exception message
+   */
+  @ExceptionHandler(ListingNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ResponseEntity<String> handleListingNotFoundException(ListingNotFoundException exc) {
+    log.error("LISTING NOT FOUND ERROR: 404 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_FOUND);
   }
 
   /**
@@ -190,6 +225,20 @@ public class ControllerExceptionHandler {
     log.error("BUSINESS REGISTRATION ERROR: 400 - " + exc.getMessage());
   }
 
+  @ExceptionHandler(ConversionFailedException.class)
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "")
+  public ResponseEntity<String> handleFailedConversionException(ConversionFailedException exc) {
+    log.error("CONVERSION FAILED ERROR: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad Request")
+  public void handleMethodTypeMismatchException(MethodArgumentTypeMismatchException exc) {
+    log.error("METHOD TYPE MISMATCH EXCEPTION: 400 - " + exc.getMessage());
+  }
+
+
   @ExceptionHandler(BusinessTypeException.class)
   @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad Request")
   public void handleBusinessTypeException(BusinessTypeException exc) {
@@ -210,6 +259,12 @@ public class ControllerExceptionHandler {
     log.error("ADDRESS VALIDATION ERROR: 400 - " + exc.getMessage());
   }
 
+  @ExceptionHandler(ConstraintViolationException.class)
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Validation failed")
+  public void handleConstraintViolationException(ConstraintViolationException exc) {
+    log.error("CONSTRAINT VALIDATION ERROR: 400 - " + exc.getMessage());
+  }
+
   @ExceptionHandler(UserAuthenticationException.class)
   @ResponseStatus(
       code = HttpStatus.BAD_REQUEST,
@@ -226,10 +281,18 @@ public class ControllerExceptionHandler {
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleMissingServletRequestParameterException(MissingServletRequestParameterException exc) {
+    log.error("PARAMERTER EXCEPTION: 400 - " + exc.getMessage());
+    return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<String> handleGeneralException(Exception exc) {
     log.error("CRITICAL ERROR: 500 - " + exc.getMessage());
+    exc.printStackTrace();
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 

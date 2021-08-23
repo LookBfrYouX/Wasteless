@@ -1,5 +1,6 @@
 /* MAIN SCHEMA DEFINITION */
 
+DROP TABLE IF EXISTS transaction CASCADE;
 DROP TABLE IF EXISTS marketlisting_keyword CASCADE;
 DROP TABLE IF EXISTS keyword CASCADE;
 DROP TABLE IF EXISTS marketlisting CASCADE;
@@ -182,6 +183,16 @@ CREATE TABLE marketlisting_keyword
         FOREIGN KEY (KEYWORD_ID) REFERENCES keyword (ID)
 );
 
+CREATE TABLE transaction
+(
+    ID           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    SALE_DATE    DATETIME NOT NULL,
+    LISTING_DATE DATETIME NOT NULL,
+    PRODUCT_ID   BIGINT   NOT NULL,
+    AMOUNT       DOUBLE   NOT NULL,
+    CONSTRAINT TRANSACTION_PRODUCT_FK
+        FOREIGN KEY (PRODUCT_ID) REFERENCES product (ID)
+);
 
 -- INSERTING TEST DATA BELOW
 
@@ -344,7 +355,7 @@ VALUES (1001,
         'Pie Palace',
         5002,
         'Pies for all',
-        6004,
+        6001,
         'RETAIL',
         '2020-07-14T14:32:00.000000');
 

@@ -12,16 +12,13 @@ public class FullInventoryItemDto {
   private long id;
   private BasicProductDto product;
   private long quantity;
-  @DecimalMin(message = "pricePerItem must be above 0.01", value = "0.01")
-  @DecimalMax(message = "pricePerItem must be below 10,000,000", value = "10000000.00")
   private Double pricePerItem;
-  @DecimalMin(message = "totalPrice must be above 0.01", value = "0.01")
-  @DecimalMax(message = "totalPrice must be below 10,000,000", value = "10000000.00")
   private Double totalPrice;
   private LocalDate expires;
   private LocalDate manufactured;
   private LocalDate sellBy;
   private LocalDate bestBefore;
+  private BasicBusinessDto business;
 
   public FullInventoryItemDto(InventoryItem inventoryItem, String publicPathPrefix) {
     id = inventoryItem.getId();
@@ -33,6 +30,11 @@ public class FullInventoryItemDto {
     manufactured = inventoryItem.getManufactured();
     sellBy = inventoryItem.getSellBy();
     bestBefore = inventoryItem.getBestBefore();
+    if (inventoryItem.getBusiness() == null) {
+      business = null;
+    } else {
+      business = new BasicBusinessDto(inventoryItem.getBusiness());
+    }
   }
 
   public FullInventoryItemDto() {
