@@ -1,6 +1,8 @@
 # Navbar Pigeons
 
-Basic project template using `gradle`, `npm`, `Spring Boot`, `Vue.js` and `Gitlab CI`.
+WebApp for the Wasteless project using `gradle`, `npm`, `Spring Boot`, `Vue.js`, `Gitlab CI` and
+more!  
+Refer to our wiki for more information [HERE](https://eng-git.canterbury.ac.nz/seng302-2021/team-300/-/wikis/home)
 
 ## Project Structure
 
@@ -34,11 +36,16 @@ web page at http://localhost:9499/swagger-ui.
 ## Credentials
 
 - Admin Role
-  - Admin@wasteless.co.nz
-  - admin
-- Use Role
-  - test@gmail.com
-  - Password123
+    - Username: admin@wasteless.co.nz
+    - Password: admin
+
+- Regular user:
+    - Username: fdi19@uclive.ac.nz
+    - Password: fun123
+
+- User with business:
+    - Username: dnb36@uclive.ac.nz
+    - Password: fun123
 
 ## How to run
 
@@ -57,9 +64,18 @@ Running on: http://localhost:9500/ by default
 
 Running on: http://localhost:9499/ by default
 
+You will need to have a database instance running somewhere  
+Look [HERE](https://www.cosc.canterbury.ac.nz/policy/labs/remoteconnection.shtml) to see how to SSH into the UC network
+
+Add these environment variables to your run configurations:
+- DB_USERNAME=abc123; <-- (Database username)
+- DB_URL_TEST=jdbc:mariadb://localhost:3306/abc123_seng302; <-- (Database url)  
+- DB_PASSWORD=123456789 <-- (Database password)
+
 ### Adding dummy data
 
-Wiki page on how to add the data here: https://eng-git.canterbury.ac.nz/seng302-2021/team-300/-/wikis/Inserting%20test%20data
+Wiki page on how to add the data
+here: https://eng-git.canterbury.ac.nz/seng302-2021/team-300/-/wikis/Inserting%20test%20data
 
 ## Contributors
 
