@@ -91,6 +91,7 @@ public class ListingDaoHibernateImpl implements ListingDaoHibernate {
     currentSession.delete(listing);
   }
 
+
   /**
    * Get the entity manager session
    *

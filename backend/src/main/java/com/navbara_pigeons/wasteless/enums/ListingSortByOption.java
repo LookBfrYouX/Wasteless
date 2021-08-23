@@ -7,6 +7,7 @@ public enum ListingSortByOption implements SortByOption {
   price,
   created,
   closes,
+  city,
   name; // From Product entity
 
   @Override

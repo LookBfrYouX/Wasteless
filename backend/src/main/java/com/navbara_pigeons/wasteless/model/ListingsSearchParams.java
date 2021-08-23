@@ -32,7 +32,13 @@ public class ListingsSearchParams {
   private Double maxPrice;
   private List<ZonedDateTime> filterDates;
   private List<BusinessType> businessTypes;
+  // returns all listings by default
+  private int DEFAULT_PAGE_END_INDEX = 1000000000;
 
+  /**
+  * setting default value for search string so returns all values if user searches for nothing, acts as a setter otherwise
+   * @param searchParam
+   */
   public void setSearchParam(String searchParam) {
     if (searchParam == null) {
       this.searchParam = "";
@@ -40,7 +46,10 @@ public class ListingsSearchParams {
       this.searchParam = searchParam;
     }
   }
-
+  /**
+   * setting default value for page start index if given null, acts as a setter otherwise
+   * @param pagStartIndex
+   */
   public void setPagStartIndex(Integer pagStartIndex) {
     System.out.println(pagStartIndex);
     if (pagStartIndex == null) {
@@ -50,15 +59,22 @@ public class ListingsSearchParams {
     }
   }
 
+  /**
+   * setting default value for page start index if given null, acts as a setter otherwise
+   * @param pagEndIndex
+   */
   public void setPagEndIndex(Integer pagEndIndex) {
     if (pagEndIndex == null) {
-      this.pagEndIndex = 9;
+      this.pagEndIndex = DEFAULT_PAGE_END_INDEX;
     } else {
       this.pagEndIndex = pagEndIndex;
     }
   }
 
-
+  /**
+   * setting default value for isAscending property if given null, acts as a setter otherwise
+   * @param ascending
+   */
   public void setAscending(Boolean ascending) {
     if (ascending == null) {
       this.isAscending = true;
@@ -76,7 +92,10 @@ public class ListingsSearchParams {
     }
 
   }
-
+  /**
+   * setting default values for filtering dates if given null acts as a setter otherwise
+   * @param filterDates
+   */
   public void setFilterDates(List<ZonedDateTime> filterDates) {
     this.filterDates = new ArrayList<>();
     if (filterDates != null) {
@@ -88,10 +107,18 @@ public class ListingsSearchParams {
     }
   }
 
+  /**
+   * setter for business types property
+   * @param businessTypes
+   */
   public void setBusinessTypes(List<BusinessType> businessTypes) {
     this.businessTypes = businessTypes;
   }
 
+  /**
+   * Sets default value for sortBy to created if given null, acts as setter otherwise
+   * @param sortBy
+   */
   public void setSortBy(ListingSortByOption sortBy) {
     if (sortBy == null) {
       this.sortBy = ListingSortByOption.valueOf("created");

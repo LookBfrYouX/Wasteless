@@ -24,7 +24,6 @@ public class BasicProductDto {
   @DecimalMax(message = "RRP must be below 10,000,000", value = "10000000.00")
   private Double recommendedRetailPrice;
   private ZonedDateTime created;
-  private BasicImageDto primaryProductImage;
   private List<BasicImageDto> images;
 
   public BasicProductDto(Product product, String publicPathPrefix) {

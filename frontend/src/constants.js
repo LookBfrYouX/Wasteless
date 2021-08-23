@@ -68,10 +68,10 @@ export const constants = {
       "Non-profit organisation"
     ],
     SHORT_LONG_TYPES: [
-      {short: "Hospitality", long: "Accommodation and Food Services"},
-      {short: "Retail", long: "Retail Trade"},
-      {short: "Charity", long: "Charitable organisation"},
-      {short: "Non-profit", long: "Non-profit organisation"}
+      {short: "Hospitality", long: "ACCOMMODATION_AND_FOOD"},
+      {short: "Retail", long: "RETAIL"},
+      {short: "Charity", long: "CHARITY"},
+      {short: "Non-profit", long: "NON_PROFIT"}
     ]
   },
 

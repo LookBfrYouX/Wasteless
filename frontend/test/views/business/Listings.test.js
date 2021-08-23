@@ -40,12 +40,12 @@ window.scrollTo = jest.fn()
 
 let wrapper;
 beforeEach(() => {
+  Api.getListings.mockResolvedValue({ data: listings });
   wrapper = shallowMount(Listings, {
     vuetify,
     mocks: globalStateMocks(),
     stubs: ["error-modal", "router-link"]
   });
-  Api.getListings.mockResolvedValue(listings);
 });
 
 afterEach(() => wrapper.destroy());
@@ -75,9 +75,9 @@ describe("Pagination methods correctly set values", () => {
   });
 
   test("Calling sortUpdate changes sort", async () => {
-    await wrapper.vm.sortUpdate("closes", false);
+    await wrapper.vm.sortUpdate("closes", true);
     expect(wrapper.vm.$data.searchParams.sortBy).toEqual(
         "closes")
-    expect(wrapper.vm.$data.searchParams.isAscending).toBeFalsy();
+    expect(wrapper.vm.$data.searchParams.isAscending).toBeTruthy();
   });
 });

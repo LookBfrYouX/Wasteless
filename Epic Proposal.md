@@ -70,7 +70,7 @@ purchase. This also includes filtering by diets like vegan, Paleo or Keto. Users
 specific ingredients such as nuts or certain preservatives. Value could also be added in future
 stories such as implementing a calorie counter into the application.
 
-## Stories Draft
+## User Stories
 
 ### EU1 Add product nutrition facts (5 pts)
 
