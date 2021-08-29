@@ -54,6 +54,24 @@ public class Product {
   @Column(name = "CREATED")
   private ZonedDateTime created;
 
+  @Column(name = "NUTRI_SCORE")
+  private char nutriScore;
+
+  @Column(name = "NOVA_GROUP")
+  private char novaGroup;
+
+  @Column(name = "FAT")
+  private String fat;
+
+  @Column(name = "SATURATED_FAT")
+  private String saturatedFat;
+
+  @Column(name = "SUGAR")
+  private String sugar;
+
+  @Column(name = "SALT")
+  private String salt;
+
   @JsonIgnore
   @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "PRIMARY_IMAGE_ID", referencedColumnName = "ID")
@@ -83,6 +101,12 @@ public class Product {
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
     this.created = product.getCreated();
+    this.nutriScore = product.getNutriScore();
+    this.novaGroup = product.getNovaGroup();
+    this.fat = product.getFat();
+    this.saturatedFat = product.getSaturatedFat();
+    this.sugar = product.getSugar();
+    this.salt = product.getSalt();
     if (product.getImages() != null) {
       this.productImages = new ArrayList<>();
       for (BasicImageDto image : product.getImages()) {
