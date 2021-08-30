@@ -70,14 +70,6 @@ CREATE TABLE image
     THUMBNAIL_FILENAME VARCHAR(120) NOT NULL
 );
 
-CREATE TABLE dietary_options
-(
-    ID          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    VEGETARIAN  BOOL,
-    VEGAN       BOOL,
-    GLUTEN_FREE BOOL
-);
-
 CREATE TABLE product
 (
     ID               BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -92,11 +84,7 @@ CREATE TABLE product
     FAT              ENUM('low', 'moderate','high'),
     SATURATED_FAT    ENUM('low', 'moderate','high'),
     SUGAR            ENUM('low', 'moderate','high'),
-    SODIUM           ENUM('low', 'moderate','high'),
-    NOVA            ENUM('1', '2','3','4'),
-    NUTRIENTS_SCORE ENUM('A','B','C','D','E'),
-    DIETARY_OPTIONS BIGINT,
-    FOREIGN KEY (DIETARY_OPTIONS) REFERENCES dietary_options (ID)
+    SODIUM           ENUM('low', 'moderate','high')
 );
 
 CREATE TABLE product_image
