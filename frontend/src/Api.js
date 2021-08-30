@@ -535,7 +535,7 @@ export const Api = {
         500: serverDownMessage,
         502: serverDownMessage,
         503: serverDownMessage,
-        301: "You we're redirected to another product."
+        301: "You were redirected to another product."
       });
     });
   }
