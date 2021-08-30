@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS product_image CASCADE;
 DROP TABLE IF EXISTS catalogue CASCADE;
 DROP TABLE IF EXISTS product CASCADE;
 DROP TABLE IF EXISTS image CASCADE;
+DROP TABLE IF EXISTS dietary_options CASCADE;
 DROP TABLE IF EXISTS user_business CASCADE;
 DROP TABLE IF EXISTS business CASCADE;
 DROP TABLE IF EXISTS user CASCADE;
@@ -69,6 +70,14 @@ CREATE TABLE image
     THUMBNAIL_FILENAME VARCHAR(120) NOT NULL
 );
 
+CREATE TABLE dietary_options
+(
+    ID          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    VEGETARIAN  BOOL,
+    VEGAN       BOOL,
+    GLUTEN_FREE BOOL
+);
+
 CREATE TABLE product
 (
     ID               BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -85,7 +94,9 @@ CREATE TABLE product
     SUGAR            ENUM('low', 'moderate','high'),
     SODIUM           ENUM('low', 'moderate','high'),
     NOVA            ENUM('1', '2','3','4'),
-    NUTRIENTS_SCORE ENUM('A','B','C','D','E')
+    NUTRIENTS_SCORE ENUM('A','B','C','D','E'),
+    DIETARY_OPTIONS BIGINT,
+    FOREIGN KEY (DIETARY_OPTIONS) REFERENCES dietary_options (ID)
 );
 
 CREATE TABLE product_image
