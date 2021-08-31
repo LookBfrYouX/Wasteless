@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.navbara_pigeons.wasteless.dto.BasicImageDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.dto.CreateProductDto;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +25,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -60,17 +64,24 @@ public class Product {
   @Column(name = "NOVA_GROUP")
   private char novaGroup;
 
-  @Column(name = "FAT")
-  private String fat;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "NUTRITION_FACTS_LEVEL")
+  private NutritionFactsLevel nutritionFactsLevel;
 
-  @Column(name = "SATURATED_FAT")
-  private String saturatedFat;
+  @Column(name = "IS_GLUTEN_FREE")
+  private boolean isGlutenFree;
 
-  @Column(name = "SUGAR")
-  private String sugar;
+  @Column(name = "IS_DAIRY_FREE")
+  private boolean isDairyFree;
 
-  @Column(name = "SALT")
-  private String salt;
+  @Column(name = "IS_VEGETARIAN")
+  private boolean isVegetarian;
+
+  @Column(name = "IS_VEGAN")
+  private boolean isVegan;
+
+  @Column(name = "IS_PALM_OIL_FREE")
+  private boolean isPalmOilFree;
 
   @JsonIgnore
   @OneToOne(fetch = FetchType.EAGER)
