@@ -79,6 +79,8 @@ CREATE TABLE product
     RRP              DOUBLE,
     CREATED          DATETIME,
     PRIMARY_IMAGE_ID BIGINT,
+    NUTRITION_SCORE ENUM('A','B','C','D','E'),
+    NOVA_SCORE ENUM('1','2','3','4'),
     CONSTRAINT product_image_fk FOREIGN KEY (PRIMARY_IMAGE_ID) REFERENCES image (ID)
 );
 
