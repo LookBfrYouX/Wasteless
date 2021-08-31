@@ -125,7 +125,7 @@ public class Product {
       }
     }
 
-    if (this.productImages.size() > 0) {
+    if (!this.productImages.isEmpty()) {
       this.primaryProductImage = this.productImages.get(0);
     }
   }
