@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.navbara_pigeons.wasteless.dto.BasicImageDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.dto.CreateProductDto;
+import com.navbara_pigeons.wasteless.enums.NovaGroup;
+import com.navbara_pigeons.wasteless.enums.NutriScore;
 import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import java.time.ZonedDateTime;
@@ -58,11 +60,13 @@ public class Product {
   @Column(name = "CREATED")
   private ZonedDateTime created;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "NUTRI_SCORE")
-  private char nutriScore;
+  private NutriScore nutriScore;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "NOVA_GROUP")
-  private char novaGroup;
+  private NovaGroup novaGroup;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "FAT")
