@@ -65,8 +65,20 @@ public class Product {
   private char novaGroup;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "NUTRITION_FACTS_LEVEL")
-  private NutritionFactsLevel nutritionFactsLevel;
+  @Column(name = "FAT")
+  private NutritionFactsLevel fat;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "SATURATED_FAT")
+  private NutritionFactsLevel saturatedFat;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "SUGAR")
+  private NutritionFactsLevel sugar;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "SALT")
+  private NutritionFactsLevel salt;
 
   @Column(name = "IS_GLUTEN_FREE")
   private boolean isGlutenFree;
