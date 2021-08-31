@@ -79,6 +79,10 @@ CREATE TABLE product
     RRP              DOUBLE,
     CREATED          DATETIME,
     PRIMARY_IMAGE_ID BIGINT,
+    FAT              ENUM('LOW', 'MODERATE','HIGH'),
+    SATURATED_FAT    ENUM('LOW', 'MODERATE','HIGH'),
+    SUGAR            ENUM('LOW', 'MODERATE','HIGH'),
+    SODIUM           ENUM('LOW', 'MODERATE','HIGH'),
     CONSTRAINT product_image_fk FOREIGN KEY (PRIMARY_IMAGE_ID) REFERENCES image (ID)
 );
 
