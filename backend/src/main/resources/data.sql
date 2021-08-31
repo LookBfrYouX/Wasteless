@@ -10,7 +10,6 @@ DROP TABLE IF EXISTS product_image CASCADE;
 DROP TABLE IF EXISTS catalogue CASCADE;
 DROP TABLE IF EXISTS product CASCADE;
 DROP TABLE IF EXISTS image CASCADE;
-DROP TABLE IF EXISTS dietary_options CASCADE;
 DROP TABLE IF EXISTS user_business CASCADE;
 DROP TABLE IF EXISTS business CASCADE;
 DROP TABLE IF EXISTS user CASCADE;
@@ -81,10 +80,10 @@ CREATE TABLE product
     CREATED          DATETIME,
     PRIMARY_IMAGE_ID BIGINT,
     CONSTRAINT product_image_fk FOREIGN KEY (PRIMARY_IMAGE_ID) REFERENCES image (ID),
-    FAT              ENUM('low', 'moderate','high'),
-    SATURATED_FAT    ENUM('low', 'moderate','high'),
-    SUGAR            ENUM('low', 'moderate','high'),
-    SODIUM           ENUM('low', 'moderate','high')
+    FAT              ENUM('LOW', 'MODERATE','HIGH'),
+    SATURATED_FAT    ENUM('LOW', 'MODERATE','HIGH'),
+    SUGAR            ENUM('LOW', 'MODERATE','HIGH'),
+    SODIUM           ENUM('LOW', 'MODERATE','HIGH')
 );
 
 CREATE TABLE product_image
