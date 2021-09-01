@@ -9,7 +9,7 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CreateProductDtoTest extends MainTestProvider {
+ class CreateProductDtoTest extends MainTestProvider {
 
   private Set<ConstraintViolation<CreateProductDto>> validate(CreateProductDto dto) {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -19,29 +19,31 @@ public class CreateProductDtoTest extends MainTestProvider {
   }
 
   @Test
-  public void validBusinessType() {
+  void validBusinessType() {
     Assertions.assertEquals(0, validate(new CreateProductDto(makeProduct("product"))).size());
   }
 
   @Test
-  public void invalidCreateProductDtoWithLargeLengths() {
+  void invalidCreateProductDtoWithLargeLengths() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product"));
     String string = "1";
     dto.setName(string.repeat(101));
     dto.setDescription(string.repeat(501));
     dto.setManufacturer(string.repeat(101));
-    Assertions.assertEquals(3, validate(dto).size());
+    dto.setNovaGroup("AD");
+    dto.setNutriScore("5");
+    Assertions.assertEquals(5, validate(dto).size());
   }
 
   @Test
-  public void invalidCreateProductDtoWithNegativeFields() {
+  void invalidCreateProductDtoWithNegativeFields() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product"));
     dto.setRecommendedRetailPrice(-1.0);
     Assertions.assertEquals(1, validate(dto).size());
   }
 
   @Test
-  public void invalidCreateProductDtoWithBlankFields() {
+  void invalidCreateProductDtoWithBlankFields() {
     CreateProductDto dto = new CreateProductDto(makeProduct(""));
     Assertions.assertEquals(1, validate(dto).size());
   }
