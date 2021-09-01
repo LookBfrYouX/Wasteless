@@ -83,6 +83,8 @@ CREATE TABLE product
     SATURATED_FAT    ENUM('LOW', 'MODERATE','HIGH'),
     SUGAR            ENUM('LOW', 'MODERATE','HIGH'),
     SODIUM           ENUM('LOW', 'MODERATE','HIGH'),
+    NUTRITION_SCORE ENUM('A','B','C','D','E'),
+    NOVA_SCORE ENUM('1','2','3','4'),
     CONSTRAINT product_image_fk FOREIGN KEY (PRIMARY_IMAGE_ID) REFERENCES image (ID)
 );
 
