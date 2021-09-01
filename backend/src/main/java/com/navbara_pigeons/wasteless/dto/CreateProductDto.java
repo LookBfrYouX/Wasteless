@@ -7,6 +7,8 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.navbara_pigeons.wasteless.enums.NovaGroup;
+import com.navbara_pigeons.wasteless.enums.NutriScore;
 import com.navbara_pigeons.wasteless.validation.constraints.StringEnumeration;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -31,11 +33,11 @@ public class CreateProductDto {
   @DecimalMax(message = "RRP must be below 10,000,000", value = "10000000.00")
   private Double recommendedRetailPrice;
 
-  @StringEnumeration(enumClass = NutriScore.class, message = "Invalid business type given")
-  private String NOVAScore;
+  @StringEnumeration(enumClass = NovaGroup.class, message = "Invalid  type given")
+  private String novaGroup;
 
-  @StringEnumeration(enumClass = NovaScore.class, message = "Invalid business type given")
-  private String nutritionScore;
+  @StringEnumeration(enumClass = NutriScore.class, message = "Invalid business type given")
+  private String nutriScore;
 
 
   public CreateProductDto() {
