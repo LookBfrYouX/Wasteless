@@ -80,6 +80,17 @@ public class CreateProductDto {
     this.description = product.getDescription();
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
+    this.nutriScore = product.getNutriScore();
+    this.novaGroup = product.getNovaGroup();
+    this.fat = product.getFat();
+    this.saturatedFat = product.getSaturatedFat();
+    this.sugar = product.getSugar();
+    this.salt = product.getSalt();
+    this.isGlutenFree = product.getIsGlutenFree();
+    this.isDairyFree = product.getIsDairyFree();
+    this.isVegetarian = product.getIsVegetarian();
+    this.isVegan = product.getIsVegan();
+    this.isPalmOilFree = product.getIsPalmOilFree();
   }
 
 }
