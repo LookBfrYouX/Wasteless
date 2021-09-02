@@ -11,6 +11,7 @@ import javax.validation.constraints.Pattern;
 import jdk.jfr.BooleanFlag;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.lang.Nullable;
 
 /**
  * Product DTO which contains only information required when creating a product
@@ -50,18 +51,23 @@ public class CreateProductDto {
   @StringEnumeration(enumClass = NutritionFactsLevel.class, message = "Invalid salt level given")
   private String salt;
 
+  @Nullable
   @Pattern(regexp = "^true$|^false$|^null$", message = "allowed input: true or false or null")
   private boolean isGlutenFree;
 
+  @Nullable
   @Pattern(regexp = "^true$|^false$|^null$", message = "allowed input: true or false or null")
   private boolean isDairyFree;
 
+  @Nullable
   @Pattern(regexp = "^true$|^false$|^null$", message = "allowed input: true or false or null")
   private boolean isVegetarian;
 
+  @Nullable
   @Pattern(regexp = "^true$|^false$|^null$", message = "allowed input: true or false or null")
   private boolean isVegan;
 
+  @Nullable
   @Pattern(regexp = "^true$|^false$|^null$", message = "allowed input: true or false or null")
   private boolean isPalmOilFree;
 
