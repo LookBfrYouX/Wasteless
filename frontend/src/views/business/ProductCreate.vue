@@ -172,6 +172,15 @@ export default {
       }
     },
 
+    getUsedNutritionalInformationWithBarcode: async function (barcode) {
+      const data = await Api.getOpenFoodFacts(barcode);
+      var results = {};
+      results.product_name = data.product.product_name;
+      results.manufacturer = data.product.brands;
+      results.nutrient_levels_tags = data.product.nutrient_levels_tags;
+      results.ingredients_analysis_tags = data.product.ingredients_analysis_tags;
+    },
+
     /**
      * Wrapper which simply calls the sign up method of the api
      */
