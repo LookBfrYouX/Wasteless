@@ -1,7 +1,15 @@
 <template>
 <v-form>
   <label>Barcode</label>
-  <v-text-field label="Barcode No." placeholder="EAN-13 Barcode" v-model="barcode" solo dense />
+  <div class="d-flex">
+    <v-text-field class="mr-2" label="Barcode No." placeholder="EAN-13 Barcode" v-model="barcode" solo dense />
+    <v-btn>Find</v-btn>
+  </div>
+  <div v-if="errorMessage != null" class="row mt-2">
+    <div class="col">
+      <p class="alert alert-warning">{{ errorMessage }}</p>
+    </div>
+  </div>
 </v-form>
 </template>
 
@@ -11,6 +19,7 @@ export default {
   data() {
     return {
       barcode: "",
+      errorMessage: null,
     }
   }
 }
