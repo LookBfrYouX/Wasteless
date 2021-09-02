@@ -2,7 +2,7 @@
 <v-form>
   <label>Barcode</label>
   <div class="d-flex">
-    <v-text-field class="mr-2" label="Barcode No." placeholder="EAN-13 Barcode" v-model="barcode" solo dense />
+    <v-text-field class="mr-2" label="Barcode No." placeholder="EAN-13 Barcode" maxLength="13" v-model="barcode" solo dense />
     <v-btn>Find</v-btn>
   </div>
   <div v-if="errorMessage != null" class="row mt-2">
