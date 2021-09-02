@@ -174,11 +174,52 @@ export default {
 
     getUsedNutritionalInformationWithBarcode: async function (barcode) {
       const data = await Api.getOpenFoodFacts(barcode);
-      var results = {};
-      results.product_name = data.product.product_name;
+      var results = {
+        name = "",
+        manufacturer = "",
+        fat = "",
+        saturated_fat = "",
+        sugars = "",
+        salt = "",
+        palmOilFree = "",
+        vegan = "",
+        vegetarian = "",
+        glutenFree = "",
+        dairyFree = "",
+      };
+      results.name = data.product.product_name;
       results.manufacturer = data.product.brands;
-      results.nutrient_levels_tags = data.product.nutrient_levels_tags;
+      const nutrient_levels_tags = data.product.nutrient_levels_tags;
+      if (nutrient_levels_tags.includes("en:fat-in-low-quantity")) {
+        results.fat = "LOW"
+      } else if (nutrient_levels_tags.includes("en:fat-in-moderate-quantity")) {
+        results.fat = "MODERATE"
+      } else if (nutrient_levels_tags.includes("en:fat-in-high-quantity")) {
+        results.fat = "HIGH"
+      }
+      if (nutrient_levels_tags.includes("en:saturated-fat-in-low-quantity")) {
+        results.saturated_fat = "LOW"
+      } else if (nutrient_levels_tags.includes("en:saturated-fat-in-moderate-quantity")) {
+        results.saturated_fat = "MODERATE"
+      } else if (nutrient_levels_tags.includes("en:saturated-fat-in-high-quantity")) {
+        results.saturated_fat = "HIGH"
+      }
+      if (nutrient_levels_tags.includes("en:sugars-in-low-quantity")) {
+        results.sugars = "LOW"
+      } else if (nutrient_levels_tags.includes("en:sugars-in-moderate-quantity")) {
+        results.sugars = "MODERATE"
+      } else if (nutrient_levels_tags.includes("en:sugars-in-high-quantity")) {
+        results.sugars = "HIGH"
+      }
+      if (nutrient_levels_tags.includes("en:salt-in-low-quantity")) {
+        results.salt = "LOW"
+      } else if (nutrient_levels_tags.includes("en:salt-in-moderate-quantity")) {
+        results.salt = "MODERATE"
+      } else if (nutrient_levels_tags.includes("en:salt-in-high-quantity")) {
+        results.salt = "HIGH"
+      }
       results.ingredients_analysis_tags = data.product.ingredients_analysis_tags;
+      return results
     },
 
     /**
