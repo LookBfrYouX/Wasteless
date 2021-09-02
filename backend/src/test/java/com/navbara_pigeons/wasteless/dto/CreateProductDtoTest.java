@@ -19,12 +19,12 @@ import org.junit.jupiter.api.Test;
   }
 
   @Test
-  void validBusinessType() {
+  void createProductDto_createValidProduct_expectZeroErrors() {
     Assertions.assertEquals(0, validate(new CreateProductDto(makeProduct("product"))).size());
   }
 
   @Test
-  void invalidCreateProductDtoWithLargeLengths() {
+  void createProductDto_outOfBoundLengths_expectFiveErrors() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product"));
     String string = "1";
     dto.setName(string.repeat(101));
@@ -36,14 +36,14 @@ import org.junit.jupiter.api.Test;
   }
 
   @Test
-  void invalidCreateProductDtoWithNegativeFields() {
+  void createProductDto_negativeFields_expectOneError() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product"));
     dto.setRecommendedRetailPrice(-1.0);
     Assertions.assertEquals(1, validate(dto).size());
   }
 
   @Test
-  void invalidCreateProductDtoWithBlankFields() {
+  void createProductDto_blankFields_expectOneError() {
     CreateProductDto dto = new CreateProductDto(makeProduct(""));
     Assertions.assertEquals(1, validate(dto).size());
   }

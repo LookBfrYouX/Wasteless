@@ -1,11 +1,9 @@
 package com.navbara_pigeons.wasteless.dto;
 
-import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.Product;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.navbara_pigeons.wasteless.enums.NovaGroup;
 import com.navbara_pigeons.wasteless.enums.NutriScore;
@@ -33,10 +31,10 @@ public class CreateProductDto {
   @DecimalMax(message = "RRP must be below 10,000,000", value = "10000000.00")
   private Double recommendedRetailPrice;
 
-  @StringEnumeration(enumClass = NovaGroup.class, message = "Invalid  type given")
+  @StringEnumeration(enumClass = NovaGroup.class, message = "Invalid Nova Group given")
   private String novaGroup;
 
-  @StringEnumeration(enumClass = NutriScore.class, message = "Invalid business type given")
+  @StringEnumeration(enumClass = NutriScore.class, message = "Invalid Nutrition Score given")
   private String nutriScore;
 
 
