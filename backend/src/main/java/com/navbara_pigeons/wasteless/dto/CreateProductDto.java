@@ -1,14 +1,13 @@
 package com.navbara_pigeons.wasteless.dto;
 
-import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.Product;
-import com.navbara_pigeons.wasteless.validation.constraints.StringEnumeration;
+import com.navbara_pigeons.wasteless.enums.NutriScore;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import jdk.jfr.BooleanFlag;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.Nullable;
@@ -33,49 +32,34 @@ public class CreateProductDto {
   @DecimalMax(message = "RRP must be below 10,000,000", value = "10000000.00")
   private Double recommendedRetailPrice;
 
-  @StringEnumeration(enumClass = NutriScore.class, message = "Invalid Nutri-Score given")
-  private String nutriScore;
+  private NutriScore nutriScore;
 
-  @StringEnumeration(enumClass = NovaGroup.class, message = "Invalid Nova Group given")
-  private String novaGroup;
+  @Min(1)
+  @Max(4)
+  private Integer novaScore;
 
-  @StringEnumeration(enumClass = NutritionFactsLevel.class, message = "Invalid fat level given")
-  private String fat;
+  private NutritionFactsLevel fat;
 
-  @StringEnumeration(enumClass = NutritionFactsLevel.class, message = "Invalid saturated fat level given")
-  private String saturatedFat;
+  private NutritionFactsLevel saturatedFat;
 
-  @StringEnumeration(enumClass = NutritionFactsLevel.class, message = "Invalid sugar level given")
-  private String sugar;
+  private NutritionFactsLevel sugar;
 
-  @StringEnumeration(enumClass = NutritionFactsLevel.class, message = "Invalid salt level given")
-  private String salt;
+  private NutritionFactsLevel sodium;
 
   @Nullable
-  @Pattern(regexp = "^true$|^false$|^null$", message = "allowed input: true or false or null")
-  private boolean isGlutenFree;
+  private Boolean isGlutenFree;
 
   @Nullable
-  @Pattern(regexp = "^true$|^false$|^null$", message = "allowed input: true or false or null")
-  private boolean isDairyFree;
+  private Boolean isDairyFree;
 
   @Nullable
-  @Pattern(regexp = "^true$|^false$|^null$", message = "allowed input: true or false or null")
-  private boolean isVegetarian;
+  private Boolean isVegetarian;
 
   @Nullable
-  @Pattern(regexp = "^true$|^false$|^null$", message = "allowed input: true or false or null")
-  private boolean isVegan;
+  private Boolean isVegan;
 
   @Nullable
-  @Pattern(regexp = "^true$|^false$|^null$", message = "allowed input: true or false or null")
-  private boolean isPalmOilFree;
-
-  @NotNull(message = "Business Type is Required")
-  @Length(max = 50, message = "Business Type has to be less than or equal to 50 Characters")
-  @StringEnumeration(enumClass = BusinessType.class, message = "Invalid business type given")
-  private String businessType;
-
+  private Boolean isPalmOilFree;
 
   public CreateProductDto() {
 
@@ -87,11 +71,11 @@ public class CreateProductDto {
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
     this.nutriScore = product.getNutriScore();
-    this.novaGroup = product.getNovaGroup();
+    this.novaScore = product.getNovaScore();
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
     this.sugar = product.getSugar();
-    this.salt = product.getSalt();
+    this.sodium = product.getSodium();
     this.isGlutenFree = product.getIsGlutenFree();
     this.isDairyFree = product.getIsDairyFree();
     this.isVegetarian = product.getIsVegetarian();
