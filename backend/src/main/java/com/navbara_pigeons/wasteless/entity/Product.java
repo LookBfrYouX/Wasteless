@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.navbara_pigeons.wasteless.dto.BasicImageDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.dto.CreateProductDto;
+import com.navbara_pigeons.wasteless.enums.NovaGroup;
+import com.navbara_pigeons.wasteless.enums.NutriScore;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -11,6 +14,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +27,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -54,6 +60,45 @@ public class Product {
   @Column(name = "CREATED")
   private ZonedDateTime created;
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "NUTRI_SCORE")
+  private NutriScore nutriScore;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "NOVA_GROUP")
+  private NovaGroup novaGroup;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "FAT")
+  private NutritionFactsLevel fat;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "SATURATED_FAT")
+  private NutritionFactsLevel saturatedFat;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "SUGAR")
+  private NutritionFactsLevel sugar;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "SALT")
+  private NutritionFactsLevel salt;
+
+  @Column(name = "IS_GLUTEN_FREE")
+  private boolean isGlutenFree;
+
+  @Column(name = "IS_DAIRY_FREE")
+  private boolean isDairyFree;
+
+  @Column(name = "IS_VEGETARIAN")
+  private boolean isVegetarian;
+
+  @Column(name = "IS_VEGAN")
+  private boolean isVegan;
+
+  @Column(name = "IS_PALM_OIL_FREE")
+  private boolean isPalmOilFree;
+
   @JsonIgnore
   @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "PRIMARY_IMAGE_ID", referencedColumnName = "ID")
@@ -83,6 +128,12 @@ public class Product {
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
     this.created = product.getCreated();
+    this.nutriScore = product.getNutriScore();
+    this.novaGroup = product.getNovaGroup();
+    this.fat = product.getFat();
+    this.saturatedFat = product.getSaturatedFat();
+    this.sugar = product.getSugar();
+    this.salt = product.getSalt();
     if (product.getImages() != null) {
       this.productImages = new ArrayList<>();
       for (BasicImageDto image : product.getImages()) {
@@ -90,7 +141,7 @@ public class Product {
       }
     }
 
-    if (this.productImages.size() > 0) {
+    if (!this.productImages.isEmpty()) {
       this.primaryProductImage = this.productImages.get(0);
     }
   }
