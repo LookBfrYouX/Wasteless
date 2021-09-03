@@ -1,12 +1,13 @@
 package com.navbara_pigeons.wasteless.dto;
 
+import com.navbara_pigeons.wasteless.enums.NutriScore;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import org.h2.command.ddl.CreateTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -48,186 +49,109 @@ public class CreateProductDtoTest extends MainTestProvider {
   }
 
   @Test
-  public void validCreateProductDtoWithNutriScore() {
+  public void createProductDto_withNutriScore_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("test123"));
-    dto.setNutriScore("A");
-    Assertions.assertEquals("A", dto.getNutriScore());
+    dto.setNutriScore(NutriScore.E);
+    Assertions.assertEquals("E", dto.getNutriScore().name());
   }
 
   @Test
-  public void invalidCreateProductDtoWithInvalidNutriScore() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("test456"));
-    dto.setNutriScore("Z");
-    Assertions.assertEquals(1, validate(dto).size());
-  }
-
-  @Test
-  public void validCreateProductDtoWithNovaGroup() {
+  public void createProductDto_withNovaScore_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("test789"));
-    dto.setNovaGroup("1");
-    Assertions.assertEquals("1", dto.getNovaGroup());
+    dto.setNovaScore(1);
+    Assertions.assertEquals(1, dto.getNovaScore());
   }
 
   @Test
-  public void invalidCreateProductDtoWithInvalidNovaGroup() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("test987"));
-    dto.setNovaGroup("5");
-    Assertions.assertEquals(1, validate(dto).size());
-  }
-
-  @Test
-  public void validCreateProductDtoWithFat() {
+  public void createProductDto_withFat_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product123"));
-    dto.setFat("LOW");
-    Assertions.assertEquals("LOW", dto.getFat());
+    dto.setFat(NutritionFactsLevel.LOW);
+    Assertions.assertEquals("LOW", dto.getFat().name());
   }
 
   @Test
-  public void invalidCreateProductDtoWithInvalidFat() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("product456"));
-    dto.setFat("BLA");
-    Assertions.assertEquals(1, validate(dto).size());
-  }
-
-  @Test
-  public void validCreateProductDtoWithSaturatedFat() {
+  public void createProductDto_withSaturatedFat_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product789"));
-    dto.setSaturatedFat("MODERATE");
-    Assertions.assertEquals("MODERATE", dto.getSaturatedFat());
+    dto.setSaturatedFat(NutritionFactsLevel.MODERATE);
+    Assertions.assertEquals("MODERATE", dto.getSaturatedFat().name());
   }
 
   @Test
-  public void invalidCreateProductDtoWithInvalidSaturatedFat() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("product987"));
-    dto.setSaturatedFat("BLA");
-    Assertions.assertEquals(1, validate(dto).size());
-  }
-
-  @Test
-  public void validCreateProductDtoWithSugar() {
+  public void createProductDto_withSugar_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product654"));
-    dto.setSugar("HIGH");
-    Assertions.assertEquals("HIGH", dto.getSugar());
+    dto.setSugar(NutritionFactsLevel.HIGH);
+    Assertions.assertEquals("HIGH", dto.getSugar().name());
   }
 
   @Test
-  public void invalidCreateProductDtoWithInvalidSugar() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("product321"));
-    dto.setSugar("BLA");
-    Assertions.assertEquals(1, validate(dto).size());
-  }
-
-  @Test
-  public void validCreateProductDtoWithSalt() {
+  public void createProductDto_withSodium_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product654"));
-    dto.setSalt("LOW");
-    Assertions.assertEquals("LOW", dto.getSalt());
+    dto.setSodium(NutritionFactsLevel.LOW);
+    Assertions.assertEquals("LOW", dto.getSodium().name());
   }
 
   @Test
-  public void invalidCreateProductDtoWithInvalidSalt() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("example123"));
-    dto.setSalt("BLA");
-    Assertions.assertEquals(1, validate(dto).size());
-  }
-
-  @Test
-  public void validCreateProductDtoWithIsGlutenFree() {
+  public void createProductDto_withIsGlutenFree_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example456"));
-    dto.setGlutenFree(true);
-    Assertions.assertEquals(true, dto.isGlutenFree());
+    dto.setIsGlutenFree(true);
+    Assertions.assertEquals(true, dto.getIsGlutenFree());
   }
 
   @Test
-  public void validCreateProductDtoWithNullIsGlutenFree() {
+  public void createProductDto_withNullIsGlutenFree_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    Assertions.assertEquals(null, dto.isGlutenFree());
+    Assertions.assertEquals(null, dto.getIsGlutenFree());
   }
 
   @Test
-  public void invalidCreateProductDtoWithInvalidIsGlutenFree() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    dto.setDairyFree("BLA");
-    Assertions.assertEquals(1, validate(dto).size());
-  }
-
-  @Test
-  public void validCreateProductDtoWithIsDairyFree() {
+  public void createProductDto_withIsDairyFree_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example456"));
-    dto.setDairyFree(true);
-    Assertions.assertEquals(true, dto.isDairyFree());
+    dto.setIsDairyFree(true);
+    Assertions.assertEquals(true, dto.getIsDairyFree());
   }
 
   @Test
-  public void validCreateProductDtoWithNullIsDairyFree() {
+  public void createProductDto_withNullIsDairyFree_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    Assertions.assertEquals(null, dto.isGlutenFree());
+    Assertions.assertEquals(null, dto.getIsDairyFree());
   }
 
   @Test
-  public void invalidCreateProductDtoWithInvalidIsGlutenFree() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    dto.setDairyFree("BLA");
-    Assertions.assertEquals(1, validate(dto).size());
-  }
-
-  @Test
-  public void validCreateProductDtoWithIsVegetarian() {
+  public void createProductDto_withIsVegetarian_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example456"));
-    dto.setVegetarian(true);
-    Assertions.assertEquals(true, dto.isVegetarian());
+    dto.setIsVegetarian(true);
+    Assertions.assertEquals(true, dto.getIsVegetarian());
   }
 
   @Test
-  public void validCreateProductDtoWithNullIsVegetarian() {
+  public void createProductDto_withNullIsVegetarian_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    Assertions.assertEquals(null, dto.isVegetarian());
+    Assertions.assertEquals(null, dto.getIsVegetarian());
   }
 
   @Test
-  public void invalidCreateProductDtoWithInvalidIsVegetarian() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    dto.setVegetarian("BLA");
-    Assertions.assertEquals(1, validate(dto).size());
-  }
-
-  @Test
-  public void validCreateProductDtoWithIsVegan() {
+  public void createProductDto_withIsVegan_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example456"));
-    dto.setVegetarian(false);
-    Assertions.assertEquals(false, dto.isVegetarian());
+    dto.setIsVegan(false);
+    Assertions.assertEquals(false, dto.getIsVegan());
   }
 
   @Test
-  public void validCreateProductDtoWithNullIsVegan() {
+  public void createProductDto_withNullIsVegan_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    Assertions.assertEquals(null, dto.isVegetarian());
+    Assertions.assertEquals(null, dto.getIsVegan());
   }
 
   @Test
-  public void invalidCreateProductDtoWithInvalidIsVegan() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    dto.setVegetarian("BLA");
-    Assertions.assertEquals(1, validate(dto).size());
-  }
-
-  @Test
-  public void validCreateProductDtoWithIsPalmOilFree() {
+  public void createProductDto_withIsPalmOilFree_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example456"));
-    dto.setPalmOilFree(false);
-    Assertions.assertEquals(false, dto.isPalmOilFree());
+    dto.setIsPalmOilFree(false);
+    Assertions.assertEquals(false, dto.getIsPalmOilFree());
   }
 
   @Test
-  public void validCreateProductDtoWithNullIsPalmOilFree() {
+  public void createProductDto_withNullIsPalmOilFree_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    Assertions.assertEquals(null, dto.isPalmOilFree());
-  }
-
-  @Test
-  public void invalidCreateProductDtoWithInvalidIsVegan() {
-    CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    dto.setPalmOilFree("BLA");
-    Assertions.assertEquals(1, validate(dto).size());
+    Assertions.assertEquals(null, dto.getIsPalmOilFree());
   }
 }
