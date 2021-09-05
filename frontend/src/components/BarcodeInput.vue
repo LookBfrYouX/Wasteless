@@ -42,61 +42,44 @@ export default {
      * Calls Open Food Facts API with User Barcode
      */
     getUsedNutritionalInformationWithBarcode: async function (barcode) {
-      const response = await Api.getOpenFoodFacts(barcode);
-      return response.data;
-    },
+      try {
+        const response = await Api.getOpenFoodFacts(barcode);
+        return response.data;
+      } catch (err) {
+        this.errorMessage = err.userFacingErrorMessage;
+      }
 
+    },
 
     /**
      * Sets data variable with Data from open food facts API, Includes calling methods that parse information into required format
      */
     setProductInformation: async function() {
       const data = await this.getUsedNutritionalInformationWithBarcode(this.barcode);
-      this.name = data.product.product_name;
-      this.manufacturer = data.product.brands;
-      this.nutriScore = data.product.nutriscore_grade;
-      this.novaGroup = data.product.nova_group;
-      const nutrient_levels_tags = data.product.nutrient_levels_tags;
-      const ingredients_analysis_tags = data.product.ingredients_analysis_tags;
-      this.setNutritionalLevelInformation(nutrient_levels_tags);
-      this.setIngredientAnalysisInformation(ingredients_analysis_tags);
+      if (data.status == 0) {
+        this.errorMessage = data.status_verbose;
+      } else {
+        console.log(data)
+        this.name = data.product.product_name;
+        this.manufacturer = data.product.brands;
+        this.nutriScore = data.product.nutriscore_grade;
+        this.novaGroup = data.product.nova_group;
+        const nutrient_levels = data.product.nutrient_levels;
+        const ingredients_analysis_tags = data.product.ingredients_analysis_tags;
+        this.setNutritionalLevelInformation(nutrient_levels);
+        this.setIngredientAnalysisInformation(ingredients_analysis_tags);
+      }
     },
 
     /**
      * Parses and sets nutritional level tags in required format
      */
-    setNutritionalLevelInformation: function(nutrient_levels_tags) {
-      if (nutrient_levels_tags.includes("en:fat-in-low-quantity")) {
-        this.fat = "LOW";
-      } else if (nutrient_levels_tags.includes("en:fat-in-moderate-quantity")) {
-        this.fat = "MODERATE";
-      } else if (nutrient_levels_tags.includes("en:fat-in-high-quantity")) {
-        this.fat = "HIGH";
-      }
-
-      if (nutrient_levels_tags.includes("en:saturated-fat-in-low-quantity")) {
-        this.saturated_fat = "LOW";
-      } else if (nutrient_levels_tags.includes("en:saturated-fat-in-moderate-quantity")) {
-        this.saturated_fat = "MODERATE";
-      } else if (nutrient_levels_tags.includes("en:saturated-fat-in-high-quantity")) {
-        this.saturated_fat = "HIGH";
-      }
-
-      if (nutrient_levels_tags.includes("en:sugars-in-low-quantity")) {
-        this.sugars = "LOW";
-      } else if (nutrient_levels_tags.includes("en:sugars-in-moderate-quantity")) {
-        this.sugars = "MODERATE";
-      } else if (nutrient_levels_tags.includes("en:sugars-in-high-quantity")) {
-        this.sugars = "HIGH";
-      }
-
-      if (nutrient_levels_tags.includes("en:salt-in-low-quantity")) {
-        this.salt = "LOW";
-      } else if (nutrient_levels_tags.includes("en:salt-in-moderate-quantity")) {
-        this.salt = "MODERATE";
-      } else if (nutrient_levels_tags.includes("en:salt-in-high-quantity")) {
-        this.salt = "HIGH";
-      }
+    setNutritionalLevelInformation: function(nutrient_levels) {
+      console.log(nutrient_levels)
+      this.fat = nutrient_levels.fat.toUpperCase();
+      this.saturated_fat = nutrient_levels["saturated-fat"].toUpperCase();
+      this.sugars = nutrient_levels.sugars.toUpperCase();
+      this.salt = nutrient_levels.salt.toUpperCase();
     },
 
     /**
