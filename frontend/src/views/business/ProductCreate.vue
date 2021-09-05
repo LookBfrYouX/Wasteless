@@ -15,17 +15,20 @@
             </div>
           </div>
 
+          <barcode-input />
+
           <div class="row">
             <div class="form-group required col px-3">
               <label>Name</label>
-              <input
+              <v-text-field
                   v-model="name"
-                  class="form-control"
                   maxlength="100"
-                  name="name"
+                  label="Product Name"
                   placeholder="Name"
                   required
                   type="text"
+                  solo
+                  dense
               />
             </div>
           </div>
@@ -113,9 +116,11 @@ import {ApiRequestError} from "@/ApiRequestError";
 import ErrorModal from "@/components/ErrorModal";
 
 import {Api} from "@/Api";
+import BarcodeInput from "@/components/BarcodeInput";
 
 export default {
   components: {
+    BarcodeInput,
     ErrorModal
   },
 
