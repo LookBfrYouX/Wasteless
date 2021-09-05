@@ -101,13 +101,13 @@ public class ProductServiceImpl implements ProductService {
    * This method adds a new product to a specific business catalogue
    *
    * @param businessId   The ID of the business.
-   * @param basicProduct basic product details for the product to be added.
+   * @param product basic product details for the product to be added.
    * @return JSONObject with `productId`
    * @throws ProductRegistrationException If data supplied is not expected (bad request)
    * @throws ForbiddenException           If user if not an admin of the business (forbidden)
    */
   @Transactional
-  public JSONObject addProduct(long businessId, Product basicProduct)
+  public JSONObject addProduct(long businessId, Product product)
       throws ProductRegistrationException,
       InsufficientPrivilegesException {
     // Throw 400 if bad request, 403 if user is not business admin
@@ -121,13 +121,6 @@ public class ProductServiceImpl implements ProductService {
     } catch (UserNotFoundException | BusinessNotFoundException exc) {
       throw new ProductRegistrationException("User or business not found");
     }
-
-    Product product = new Product();
-
-    product.setName(basicProduct.getName());
-    product.setDescription(basicProduct.getDescription());
-    product.setRecommendedRetailPrice(basicProduct.getRecommendedRetailPrice());
-    product.setManufacturer(basicProduct.getManufacturer());
 
     Currency currency = countryDataFetcherService
         .getCurrencyForCountry(business.getAddress().getCountry());
