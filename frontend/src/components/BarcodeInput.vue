@@ -62,7 +62,6 @@ export default {
       } else {
         this.errorMessage = null;
         this.name = data.product.product_name;
-        console.log(this.name)
         this.manufacturer = data.product.brands;
         this.nutriScore = data.product.nutriscore_grade.toUpperCase();
         this.novaGroup = data.product.nova_group;
