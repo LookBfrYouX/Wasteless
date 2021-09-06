@@ -1,56 +1,44 @@
 <template>
   <div class="row">
-    <div class="col-3 form-group">
-      <label for="nova-score">
-        Nova Score
-      </label>
-      <select
-        id="nova-score"
-        name="nova-score"
-        class="form-control"
-        :value="value.novaScore"
-        @change="event => $emit('input', {...value, novaScore: event.target.value })"
-      >
-        <option
-          v-for="value in [1, 2, 3, 4]"
-          :key="value"
-          :value="value"
-        >
-          {{ value }}
-        </option>
-      </select>
-    </div>
-    <div class="col-3 form-group">
-      <label for="nutri-score">
-        NutriScore
-      </label>
-      <select
-        id="nutri-score"
-        name="nutri-score"
-        class="form-control"
-        :value="value.nutriScore"
-        @change="event => $emit('input', {...value, nutriScore: event.target.value })"
-      >
-        <option
-          v-for="value in NUTRI_SCORE_VALUES"
-          :key="value"
-          :value="value"
-        >
-          {{ value }}
-        </option>
-      </select>
-    </div>
-  </div>
+    <div
+      v-for="{key, name} in nutrientTypes"
+      class="form-group col-6 bg-white rounded"
+      :key="key"
+    >
+      <label :for="key">{{name}}</label>
+      <v-slider
+          :id="key"
+          :name="key"
 
+          :value="NUTRIENT_LEVELS.findIndex(el => el.value == value[key])"
+          @change="index => $emit('input', {...value, [key]: NUTRIENT_LEVELS[index].value })"
+
+          :tick-labels="NUTRIENT_LEVELS.map(el => el.name)"
+          :max="NUTRIENT_LEVELS.length - 1"
+          step="1"
+          ticks="always"
+          tick-size="4"
+        ></v-slider>
+      </div>
+  </div>
 </template>
 <script>
-const NUTRI_SCORE_VALUES = ['A','B','C','D','E'];
-// const NUTRIENT_LEVELS_MAP = {
-//   null: "Unknown",
-//   "LOW": "Low",
-//   "MODERATE": "Moderate",
-//   "HIGH": "High"
-// }
+// const NUTRI_SCORE_VALUES = ['A','B','C','D','E'];
+const NUTRIENT_LEVELS = [
+  {
+    value: null,
+    name: "Unknown",
+  }, {
+    value: "LOW",
+    name: "Low"
+  }, {
+    value: "MODERATE",
+    name: "Moderate"
+  }, {
+    value: "HIGH",
+    name: "High"
+  }
+]
 export default {
   props: {
     value: {
@@ -92,7 +80,23 @@ export default {
 
   data() {
     return {
-      NUTRI_SCORE_VALUES
+      // NUTRI_SCORE_VALUES
+      NUTRIENT_LEVELS,
+      nutrientTypes: [
+        {
+          name: "Fat",
+          key: "fat"
+        }, {
+          name: "Saturated Fat",
+          key: "saturatedFat"
+        }, {
+          name: "Sugars",
+          key: "sugars"
+        }, {
+          name: "Sodium",
+          key: "sodium"
+        }
+      ]
     }
   }
 }

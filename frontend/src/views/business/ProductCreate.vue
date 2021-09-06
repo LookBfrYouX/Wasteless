@@ -190,7 +190,6 @@ export default {
       },
 
       set(nutrientInfo) {
-        console.log(nutrientInfo);
         this.nutriScore = nutrientInfo.nutriScore;
         this.novaScore = nutrientInfo.novaScore;
         this.fat = nutrientInfo.fat;
