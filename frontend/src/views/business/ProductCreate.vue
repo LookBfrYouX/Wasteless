@@ -23,7 +23,7 @@
               <div class="form-group required col px-3">
                 <label>Name</label>
                 <v-text-field
-                    v-model="name"
+                    v-model="queryParams.name"
                     dense
                     elevation="0"
                     label="Product Name"
@@ -40,7 +40,7 @@
               <div class="form-group required col px-3">
                 <label>Price {{ currencyText }}</label>
                 <input
-                    v-model="price"
+                    v-model="queryParams.recommendedRetailPrice"
                     :placeholder="currencyText"
                     class="form-control"
                     max="10000000"
@@ -57,7 +57,7 @@
               <div class="form-group col px-3">
                 <label>Manufacturer</label>
                 <input
-                    v-model="manufacturer"
+                    v-model="queryParams.manufacturer"
                     class="form-control"
                     maxlength="100"
                     name="manufacturer"
@@ -71,7 +71,7 @@
               <div class="form-group col px-0">
                 <label>Description</label>
                 <textarea
-                    v-model="description"
+                    v-model="queryParams.description"
                     class="form-control"
                     maxlength="500"
                     name="description"
@@ -88,7 +88,9 @@
           >
             <barcode-input/>
             <h4>Nutritional Information</h4>
-            <dietary-certifications-input/>
+            <dietary-certifications-input
+                @input="event => Object.assign(this.queryParams, event)"
+            />
           </v-card>
 
           <div class="row">
@@ -143,12 +145,18 @@ export default {
       apiErrorMessage: null, // if admin and getting currency nifo fails
       errorMessage: null,
 
-      name: "",
-      description: "",
-      manufacturer: "",
-      price: "",
-      currency: null,
-
+      queryParams: {
+        name: "",
+        description: "",
+        manufacturer: "",
+        recommendedRetailPrice: "",
+        currency: null,
+        isGlutenFree: false,
+        isDairyFree: false,
+        isVegetarian: false,
+        isVegan: false,
+        isPalmOilFree: false,
+      },
       typeRequired: false, // If phone entered but not country code
     };
   },
@@ -166,10 +174,10 @@ export default {
 
   computed: {
     currencyText() {
-      if (this.currency == null) {
+      if (this.queryParams.currency == null) {
         return "(Unknown currency)";
       }
-      return `${this.currency.symbol} (${this.currency.code})`;
+      return `${this.queryParams.currency.symbol} (${this.queryParams.currency.code})`;
     }
   },
 
@@ -181,7 +189,7 @@ export default {
       try {
         const currency = await this.$helper.getCurrencyForBusiness(this.businessId,
             this.$stateStore);
-        this.currency = currency;
+        this.queryParams.currency = currency;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -208,7 +216,7 @@ export default {
      * @returns {Promise<void>} a promise
      */
     createProduct: async function () {
-      let price = parseFloat(this.price);
+      let price = parseFloat(this.queryParams.recommendedRetailPrice);
 
       if (isNaN(price)) {
         this.errorMessage = "Please enter a valid price";
@@ -217,16 +225,11 @@ export default {
 
       if (price <= 0) {
         this.errorMessage = "Please enter a valid price greater than 0";
-      } else if (this.name.trim().length === 0) {
+      } else if (this.queryParams.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
       } else {
         try {
-          await this.callApi({
-            name: this.name,
-            recommendedRetailPrice: this.price,
-            manufacturer: this.manufacturer,
-            description: this.description,
-          });
+          await this.callApi(this.queryParams);
         } catch (err) {
           if (await Api.handle401.call(this, err)) {
             return;
