@@ -2,14 +2,17 @@
   <v-row>
     <div
       v-for="{key, name} in nutrientTypes"
-      class="form-group col-6 bg-white rounded"
+      class="col-12 col-md-6"
       :key="key"
     >
       <!-- Each of the four nutrients have the same logic and HTML so it is in a for-loop
       the reduce repetition. The only things that need to be modified are the names to display,
       the model for the sliders and ensuring the updated value is emitted on a change
        -->
-      <label :for="key">{{name}}</label>
+    <label :for="key">{{name}}</label>
+    <div class="bg-white rounded px-2">
+      <!-- If slider is given background color, the labels clip. Surrounding it in a div
+      and giving background color to the container fixes this -->
       <v-slider
           :id="key"
           :name="key"
@@ -35,23 +38,25 @@
           e.g. if key is 'fat' and the slider value is 3, it becomes {...value, fat: 'HIGH' }.
           The [] makes it use the value of the variable, not the name of the variable
         -->
-        
+    </div> 
       </div>
   </v-row>
 </template>
 <script>
 /*
-Use using <this-component :model="myModel"/> where
+Use this component using <this-component :model="myModel"/> where
 myModel = {
   fat: null,
   saturatedFat: "LOW",
   sugars: "MODERATE",
   sodium: "HIGH"
 }
+or something similar
 
 The values are grouped together in an object as it means there only needs to be 
 a single prop and event handler. By calling it `value` instead of something more
-descriptive like `nutrientLevels`, `v-model` can be used.
+descriptive like `nutrientLevels`, `v-model` (replacing :value="" and @input) can
+be used, which makes it simpler for the parent
 */
 export default {
   props: {

@@ -16,9 +16,6 @@
           </div>
 
           <barcode-input />
-          <nutrient-levels-edit
-            v-model="nutrientInfo"
-          />
           <div class="row">
             <div class="form-group required col px-3">
               <label>Name</label>
@@ -80,7 +77,9 @@
               />
             </div>
           </div>
-
+          <nutrient-levels-edit
+            v-model="nutrientLevels"
+          />
           <div class="row">
             <div class="col">
               <input
@@ -142,9 +141,9 @@ export default {
       typeRequired: false, // If phone entered but not country code
 
       fat: null,
-      saturatedFat: "LOW",
-      sugars: "MODERATE",
-      sodium: "HIGH"
+      saturatedFat: null,
+      sugars: null,
+      sodium: null 
     };
   },
 
@@ -167,7 +166,14 @@ export default {
       return `${this.currency.symbol} (${this.currency.code})`;
     },
 
-    nutrientInfo: {
+    /**
+     * Nutrient levels (fat, sugar etc.) wrapped in an object for use in the
+     * NutrientLevelsEdit component
+     */
+    nutrientLevels: {
+      /**
+       * Wraps nutrient levels in an object
+       */
       get() {
         return {
           fat: this.fat,
@@ -177,11 +183,15 @@ export default {
         };
       },
 
-      set(nutrientInfo) {
-        this.fat = nutrientInfo.fat;
-        this.saturatedFat = nutrientInfo.saturatedFat;
-        this.sugars = nutrientInfo.sugars;
-        this.sodium = nutrientInfo.sodium;
+      /**
+       * Sets nutrient levels after it has been modified by the NutrientLevelsEdit
+       * component, unwrapping the values of the object
+       */
+      set(nutrientLevels) {
+        this.fat = nutrientLevels.fat;
+        this.saturatedFat = nutrientLevels.saturatedFat;
+        this.sugars = nutrientLevels.sugars;
+        this.sodium = nutrientLevels.sodium;
       }
     }
   },
