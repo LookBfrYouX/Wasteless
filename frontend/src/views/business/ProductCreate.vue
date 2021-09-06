@@ -15,69 +15,81 @@
             </div>
           </div>
 
-          <barcode-input />
-
-          <div class="row">
-            <div class="form-group required col px-3">
-              <label>Name</label>
-              <v-text-field
-                  v-model="name"
-                  maxlength="100"
-                  label="Product Name"
-                  placeholder="Name"
-                  required
-                  type="text"
-                  solo
-                  dense
-              />
+          <v-card
+              class="card"
+              elevation="2"
+          >
+            <div class="row">
+              <div class="form-group required col px-3">
+                <label>Name</label>
+                <v-text-field
+                    v-model="name"
+                    dense
+                    elevation="0"
+                    label="Product Name"
+                    maxlength="100"
+                    placeholder="Name"
+                    required
+                    solo
+                    type="text"
+                />
+              </div>
             </div>
-          </div>
 
-          <div class="row">
-            <div class="form-group required col px-3">
-              <label>Price {{ currencyText }}</label>
-              <input
-                  v-model="price"
-                  :placeholder="currencyText"
-                  class="form-control"
-                  max="10000000"
-                  min="0.01"
-                  name="price"
-                  required
-                  step="0.01"
-                  type="number"
-              />
+            <div class="row">
+              <div class="form-group required col px-3">
+                <label>Price {{ currencyText }}</label>
+                <input
+                    v-model="price"
+                    :placeholder="currencyText"
+                    class="form-control"
+                    max="10000000"
+                    min="0.01"
+                    name="price"
+                    required
+                    step="0.01"
+                    type="number"
+                />
+              </div>
             </div>
-          </div>
 
-          <div class="row">
-            <div class="form-group col px-3">
-              <label>Manufacturer</label>
-              <input
-                  v-model="manufacturer"
-                  class="form-control"
-                  maxlength="100"
-                  name="manufacturer"
-                  placeholder="Manufacturer"
-                  type="text"
-              />
+            <div class="row">
+              <div class="form-group col px-3">
+                <label>Manufacturer</label>
+                <input
+                    v-model="manufacturer"
+                    class="form-control"
+                    maxlength="100"
+                    name="manufacturer"
+                    placeholder="Manufacturer"
+                    type="text"
+                />
+              </div>
             </div>
-          </div>
 
-          <div class="row>">
-            <div class="form-group col px-0">
-              <label>Description</label>
-              <textarea
-                  v-model="description"
-                  class="form-control"
-                  maxlength="500"
-                  name="description"
-                  placeholder="Description"
-                  rows="5"
-                  type="text"
-              />
+            <div class="row>">
+              <div class="form-group col px-0">
+                <label>Description</label>
+                <textarea
+                    v-model="description"
+                    class="form-control"
+                    maxlength="500"
+                    name="description"
+                    placeholder="Description"
+                    rows="5"
+                    type="text"
+                />
+              </div>
             </div>
-          </div>
+          </v-card>
+          <v-card
+              class="card"
+              elevation="2"
+          >
+            <barcode-input/>
+            <h4>Nutritional Information</h4>
+            <dietary-certifications-input/>
+          </v-card>
 
           <div class="row">
             <div class="col">
@@ -117,10 +129,12 @@ import ErrorModal from "@/components/ErrorModal";
 
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
+import DietaryCertificationsInput from "@/components/DietaryCertificationsInput";
 
 export default {
   components: {
     BarcodeInput,
+    DietaryCertificationsInput,
     ErrorModal
   },
 
@@ -235,5 +249,11 @@ export default {
 <style scoped>
 .product-page-container > div {
   max-width: 50em;
+}
+
+.card {
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 </style>
