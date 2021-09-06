@@ -11,7 +11,7 @@
               v-model="nutritionScore"
               :items="options"
               item-text="score"
-              @change="test()"
+              @change="nutriScore => $emit('input', nutriScore)"
               solo
               clearable
           ></v-select>
@@ -47,11 +47,6 @@ export default {
       options: ['A', 'B', 'C', 'D', 'E'],
       nutritionScore: null,
     };
-  },
-  methods: {
-    test() {
-      console.log(this.nutritionScore);
-    }
   },
 
   computed: {

@@ -84,7 +84,9 @@
               <nutrition-score-input/>
             </div>
             <div class="col-6">
-              <nutrition-score-input/>
+              <nutrition-score-input
+                @input="nutriScore => this.nutriScore = nutriScore"
+              />
             </div>
 
           </div>
@@ -147,6 +149,7 @@ export default {
       manufacturer: "",
       price: "",
       currency: null,
+      nutriScore: null,
 
       typeRequired: false, // If phone entered but not country code
     };
