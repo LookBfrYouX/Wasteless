@@ -22,7 +22,7 @@ export default {
         isDairyFree: false,
         isVegetarian: false,
         isVegan: false,
-        isPalmOilFree: false,
+        isPalmOilFree: false
       },
       certifications: [],
       options: ['Gluten Free', 'Dairy Free', 'Vegetarian', 'Vegan', 'Palm Oil Free']

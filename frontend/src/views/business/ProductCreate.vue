@@ -155,7 +155,7 @@ export default {
         isDairyFree: false,
         isVegetarian: false,
         isVegan: false,
-        isPalmOilFree: false,
+        isPalmOilFree: false
       },
       typeRequired: false, // If phone entered but not country code
     };
