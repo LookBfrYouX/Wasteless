@@ -25,6 +25,9 @@
           step="1"
           ticks="always"
           tick-size="4"
+          thumb-color="#1ec996"
+          track-color="#1cd9a1"
+          track-fill-color="#0e6e51"
         ></v-slider>
         <!--
           Vuetify uses indexes for v-slider so levels (LOW, MODERATE etc.) needs to be
@@ -66,9 +69,13 @@ export default {
     }
   },
 
-  data() {
-    return {
-      nutrientTypes: [
+  computed: {
+    nutrientLevelsMap() {
+      return this.$constants.PRODUCT.NUTRIENT_LEVELS_MAP;
+    },
+
+    nutrientTypes() {
+      return [
         {
           name: "Fat",
           key: "fat"
@@ -83,12 +90,6 @@ export default {
           key: "sodium"
         }
       ]
-    }
-  },
-
-  computed: {
-    nutrientLevelsMap() {
-      return this.$constants.PRODUCT.NUTRIENT_LEVELS_MAP;
     }
   }
 }
