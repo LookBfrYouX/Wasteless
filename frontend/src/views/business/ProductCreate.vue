@@ -80,6 +80,17 @@
           </div>
 
           <div class="row">
+            <div class="col-6">
+              <nutrition-score-input/>
+            </div>
+            <div class="col-6">
+              <nutrition-score-input/>
+            </div>
+
+          </div>
+
+
+          <div class="row">
             <div class="col">
               <input
                   class="btn btn-block btn-primary"
@@ -117,10 +128,12 @@ import ErrorModal from "@/components/ErrorModal";
 
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
+import NutritionScoreInput from "@/components/NutritionScoreInput";
 
 export default {
   components: {
     BarcodeInput,
+    NutritionScoreInput,
     ErrorModal
   },
 
