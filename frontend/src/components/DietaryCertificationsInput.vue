@@ -4,8 +4,8 @@
     <v-select
         v-model="certifications"
         :items=options
+        @change="onChange"
         chips
-        item-text="fancy"
         multiple
         solo
     ></v-select>
@@ -13,24 +13,27 @@
 </template>
 
 <script>
-
 export default {
   name: "DietaryCertificationsInput",
   data() {
     return {
+      isGlutenFree: false,
+      isDairyFree: false,
+      isVegetarian: false,
+      isVegan: false,
+      isPalmOilFree: false,
       certifications: [],
-      options: [
-        {fancy: "Gluten Free", enum: "PRODUCT_NAME"},
-        {fancy: "Dairy Free", enum: "BUSINESS_NAME"},
-        {fancy: "Vegetarian", enum: "PRODUCT_NAME"},
-        {fancy: "Vegan", enum: "PRODUCT_NAME"},
-        {fancy: "Palm Oil Free", enum: "PRODUCT_NAME"},
-      ]
+      options: ['Gluten Free', 'Dairy Free', 'Vegetarian', 'Vegan', 'Palm Oil Free']
+    }
+  },
+  methods: {
+    onChange() {
+      this.isGlutenFree = this.certifications.includes('Gluten Free');
+      this.isDairyFree = this.certifications.includes('Dairy Free');
+      this.isVegetarian = this.certifications.includes('Vegetarian');
+      this.isVegan = this.certifications.includes('Vegan');
+      this.isPalmOilFree = this.certifications.includes('Palm Oil Free');
     }
   }
 }
 </script>
-
-<style scoped>
-
-</style>
