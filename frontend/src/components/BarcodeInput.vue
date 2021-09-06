@@ -24,7 +24,7 @@ export default {
       name: "",
       manufacturer: "",
       fat: "",
-      saturated_fat: "",
+      saturatedFat: "",
       sugars: "",
       salt: "",
       novaGroup: "",
@@ -41,12 +41,13 @@ export default {
     /**
      * Calls Open Food Facts API with User Barcode
      */
-    getUsedNutritionalInformationWithBarcode: async function (barcode) {
+    getNutritionalInformationWithBarcode: async function (barcode) {
       try {
         const response = await Api.getOpenFoodFacts(barcode);
         return response.data;
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
+        return null;
       }
 
     },
@@ -55,14 +56,15 @@ export default {
      * Sets data variable with Data from open food facts API, Includes calling methods that parse information into required format
      */
     setProductInformation: async function() {
-      const data = await this.getUsedNutritionalInformationWithBarcode(this.barcode);
+      const data = await this.getNutritionalInformationWithBarcode(this.barcode);
       if (data.status == 0) {
         this.errorMessage = data.status_verbose;
       } else {
-        console.log(data)
+        this.errorMessage = null;
         this.name = data.product.product_name;
+        console.log(this.name)
         this.manufacturer = data.product.brands;
-        this.nutriScore = data.product.nutriscore_grade;
+        this.nutriScore = data.product.nutriscore_grade.toUpperCase();
         this.novaGroup = data.product.nova_group;
         const nutrient_levels = data.product.nutrient_levels;
         const ingredients_analysis_tags = data.product.ingredients_analysis_tags;
@@ -75,9 +77,8 @@ export default {
      * Parses and sets nutritional level tags in required format
      */
     setNutritionalLevelInformation: function(nutrient_levels) {
-      console.log(nutrient_levels)
       this.fat = nutrient_levels.fat.toUpperCase();
-      this.saturated_fat = nutrient_levels["saturated-fat"].toUpperCase();
+      this.saturatedFat = nutrient_levels["saturated-fat"].toUpperCase();
       this.sugars = nutrient_levels.sugars.toUpperCase();
       this.salt = nutrient_levels.salt.toUpperCase();
     },
@@ -86,7 +87,7 @@ export default {
      * Parses and sets Analysis level tags (e.g. gluten free, dairy free etc) in required format
      */
     setIngredientAnalysisInformation: function(ingredients_analysis_tags) {
-      for (const tag in ingredients_analysis_tags) {
+      for (const tag of ingredients_analysis_tags) {
         switch (tag) {
           case 'en:palm-oil-free':
             this.palmOilFree = true;
