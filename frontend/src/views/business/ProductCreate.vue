@@ -16,17 +16,9 @@
           </div>
 
           <barcode-input />
-          <nameme
+          <nutrient-levels-edit
             v-model="nutrientInfo"
           />
-            <!-- :nutriScore="nutriScore"
-            :novaScore="novaScore"
-            :fat="fat"
-            :saturatedFat="saturatedFat"
-            :sugars="sugars"
-            :sodium="sodium" -->
-          
-
           <div class="row">
             <div class="form-group required col px-3">
               <label>Name</label>
@@ -127,13 +119,13 @@ import ErrorModal from "@/components/ErrorModal";
 
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
-import NAMEME from "@/components/NAMEME"
+import NutrientLevelsEdit from "@/components/NutrientLevelsEdit"
 
 export default {
   components: {
     BarcodeInput,
     ErrorModal,
-    nameme: NAMEME
+    NutrientLevelsEdit
   },
 
   data() {
@@ -149,8 +141,6 @@ export default {
 
       typeRequired: false, // If phone entered but not country code
 
-      nutriScore: "B",
-      novaScore: 3,
       fat: null,
       saturatedFat: "LOW",
       sugars: "MODERATE",
@@ -180,8 +170,6 @@ export default {
     nutrientInfo: {
       get() {
         return {
-          nutriScore: this.nutriScore,
-          novaScore: this.novaScore,
           fat: this.fat,
           saturatedFat: this.saturatedFat,
           sugars: this.sugars,
@@ -190,8 +178,6 @@ export default {
       },
 
       set(nutrientInfo) {
-        this.nutriScore = nutrientInfo.nutriScore;
-        this.novaScore = nutrientInfo.novaScore;
         this.fat = nutrientInfo.fat;
         this.saturatedFat = nutrientInfo.saturatedFat;
         this.sugars = nutrientInfo.sugars;

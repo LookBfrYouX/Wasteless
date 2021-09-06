@@ -83,6 +83,24 @@ export const constants = {
     }
   },
 
+  PRODUCT: {
+    NUTRIENT_LEVELS_MAP: [
+      {
+        value: null,
+        name: "Unknown",
+      }, {
+        value: "LOW",
+        name: "Low"
+      }, {
+        value: "MODERATE",
+        name: "Moderate"
+      }, {
+        value: "HIGH",
+        name: "High"
+      }
+    ]
+  },
+
   API: {
     TIMEOUT_SHORT: 2500,
     TIMEOUT_LONG: 10000
