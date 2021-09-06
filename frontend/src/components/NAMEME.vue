@@ -1,10 +1,14 @@
 <template>
-  <div class="row">
+  <v-row>
     <div
       v-for="{key, name} in nutrientTypes"
       class="form-group col-6 bg-white rounded"
       :key="key"
     >
+      <!-- Each of the four nutrients have the same logic and HTML so it is in a for-loop
+      the reduce repetition. The only things that need to be modified are the names to display,
+      the model for the sliders and ensuring the updated value is emitted on a change
+       -->
       <label :for="key">{{name}}</label>
       <v-slider
           :id="key"
@@ -19,8 +23,21 @@
           ticks="always"
           tick-size="4"
         ></v-slider>
+        <!--
+          Vuetify uses indexes for v-slider so levels (LOW, MODERATE etc.) needs to be
+          converted to an index.
+
+          On change, gets index, maps this to a nutrient level value (LOW, MODERATE etc.), 
+          creates a new object containing the existing values, adds the new value
+          for the nutrient, and emits the event.
+          This new value is after the `...value` so it overrides the existing property
+
+          e.g. if key is 'fat' and the slider value is 3, it becomes {...value, fat: 'HIGH' }.
+          The [] makes it use the value of the variable, not the name of the variable
+        -->
+        
       </div>
-  </div>
+  </v-row>
 </template>
 <script>
 // const NUTRI_SCORE_VALUES = ['A','B','C','D','E'];
@@ -39,6 +56,20 @@ const NUTRIENT_LEVELS = [
     name: "High"
   }
 ]
+
+/*
+Use using <this-component :model="myModel"/> where
+myModel = {
+  fat: null,
+  saturatedFat: "LOW",
+  sugars: "MODERATE",
+  sodium: "HIGH"
+}
+
+The values are grouped together in an object as it means there only needs to be 
+a single prop and event handler. By calling it `value` instead of something more
+descriptive like `nutrientLevels`, `v-model` can be used.
+*/
 export default {
   props: {
     value: {
