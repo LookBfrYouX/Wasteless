@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.navbara_pigeons.wasteless.dto.BasicImageDto;
 import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.dto.CreateProductDto;
-import com.navbara_pigeons.wasteless.enums.NovaGroup;
 import com.navbara_pigeons.wasteless.enums.NutriScore;
 import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.exception.ImageNotFoundException;
@@ -27,7 +26,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import lombok.Data;
 
 @Data
@@ -61,12 +61,11 @@ public class Product {
   private ZonedDateTime created;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "NUTRI_SCORE")
+  @Column(name = "NUTRITION_SCORE")
   private NutriScore nutriScore;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "NOVA_GROUP")
-  private NovaGroup novaGroup;
+  @Column(name = "NOVA_SCORE")
+  private Integer novaScore;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "FAT")
@@ -81,23 +80,23 @@ public class Product {
   private NutritionFactsLevel sugar;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "SALT")
-  private NutritionFactsLevel salt;
+  @Column(name = "SODIUM")
+  private NutritionFactsLevel sodium;
 
   @Column(name = "IS_GLUTEN_FREE")
-  private boolean isGlutenFree;
+  private Boolean isGlutenFree;
 
   @Column(name = "IS_DAIRY_FREE")
-  private boolean isDairyFree;
+  private Boolean isDairyFree;
 
   @Column(name = "IS_VEGETARIAN")
-  private boolean isVegetarian;
+  private Boolean isVegetarian;
 
   @Column(name = "IS_VEGAN")
-  private boolean isVegan;
+  private Boolean isVegan;
 
   @Column(name = "IS_PALM_OIL_FREE")
-  private boolean isPalmOilFree;
+  private Boolean isPalmOilFree;
 
   @JsonIgnore
   @OneToOne(fetch = FetchType.EAGER)
@@ -128,12 +127,6 @@ public class Product {
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
     this.created = product.getCreated();
-    this.nutriScore = product.getNutriScore();
-    this.novaGroup = product.getNovaGroup();
-    this.fat = product.getFat();
-    this.saturatedFat = product.getSaturatedFat();
-    this.sugar = product.getSugar();
-    this.salt = product.getSalt();
     if (product.getImages() != null) {
       this.productImages = new ArrayList<>();
       for (BasicImageDto image : product.getImages()) {
@@ -151,6 +144,17 @@ public class Product {
     this.description = product.getDescription();
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
+    this.nutriScore = product.getNutriScore();
+    this.novaScore = product.getNovaScore();
+    this.fat = product.getFat();
+    this.saturatedFat = product.getSaturatedFat();
+    this.sugar = product.getSugar();
+    this.sodium = product.getSodium();
+    this.isGlutenFree = product.getIsGlutenFree();
+    this.isDairyFree = product.getIsDairyFree();
+    this.isVegetarian = product.getIsVegetarian();
+    this.isVegan = product.getIsVegan();
+    this.isPalmOilFree = product.getIsPalmOilFree();
   }
 
 

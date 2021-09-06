@@ -1,11 +1,16 @@
 package com.navbara_pigeons.wasteless.dto;
 
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.enums.NutriScore;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.lang.Nullable;
 
 /**
  * Product DTO which contains only information required when creating a product
@@ -27,6 +32,34 @@ public class CreateProductDto {
   @DecimalMax(message = "RRP must be below 10,000,000", value = "10000000.00")
   private Double recommendedRetailPrice;
 
+  private NutriScore nutriScore;
+
+  @Min(1)
+  @Max(4)
+  private Integer novaScore;
+
+  private NutritionFactsLevel fat;
+
+  private NutritionFactsLevel saturatedFat;
+
+  private NutritionFactsLevel sugar;
+
+  private NutritionFactsLevel sodium;
+
+  @Nullable
+  private Boolean isGlutenFree;
+
+  @Nullable
+  private Boolean isDairyFree;
+
+  @Nullable
+  private Boolean isVegetarian;
+
+  @Nullable
+  private Boolean isVegan;
+
+  @Nullable
+  private Boolean isPalmOilFree;
 
   public CreateProductDto() {
 
@@ -37,6 +70,17 @@ public class CreateProductDto {
     this.description = product.getDescription();
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
+    this.nutriScore = product.getNutriScore();
+    this.novaScore = product.getNovaScore();
+    this.fat = product.getFat();
+    this.saturatedFat = product.getSaturatedFat();
+    this.sugar = product.getSugar();
+    this.sodium = product.getSodium();
+    this.isGlutenFree = product.getIsGlutenFree();
+    this.isDairyFree = product.getIsDairyFree();
+    this.isVegetarian = product.getIsVegetarian();
+    this.isVegan = product.getIsVegan();
+    this.isPalmOilFree = product.getIsPalmOilFree();
   }
 
 }
