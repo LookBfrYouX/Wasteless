@@ -7,7 +7,8 @@
         @change="onChange"
         chips
         multiple
-        solo
+        dense
+        outlined
     ></v-select>
   </v-form>
 </template>

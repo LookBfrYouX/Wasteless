@@ -82,13 +82,15 @@
             />
           </v-card>
 
-          <v-card
-              class="card"
-          >
-            <h4>Nutritional Information</h4>
-            <dietary-certifications-input
-                @input="event => Object.assign(this.queryParams, event)"
-            />
+          <v-card class="card">
+            <v-row>
+              <v-col cols="12" md="6">
+                <h4>Nutritional Information</h4>
+                <dietary-certifications-input
+                    @input="event => Object.assign(this.queryParams, event)"
+                />
+              </v-col>
+            </v-row>
           </v-card>
 
           <v-row>
