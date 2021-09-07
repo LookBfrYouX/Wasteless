@@ -80,6 +80,17 @@
           </div>
 
           <div class="row">
+            <div class="col-6">
+              <nova-group-input
+                  :nova-group="novaGroup"
+                  @input="newVal => novaGroup = newVal"
+              />
+            </div>
+            <div class="col-6">
+            </div>
+          </div>
+
+          <div class="row">
             <div class="col">
               <input
                   class="btn btn-block btn-primary"
@@ -117,10 +128,12 @@ import ErrorModal from "@/components/ErrorModal";
 
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
+import NovaGroupInput from "@/components/NovaGroupInput";
 
 export default {
   components: {
     BarcodeInput,
+    NovaGroupInput,
     ErrorModal
   },
 
@@ -134,7 +147,7 @@ export default {
       manufacturer: "",
       price: "",
       currency: null,
-
+      novaGroup: null,
       typeRequired: false, // If phone entered but not country code
     };
   },
@@ -165,9 +178,8 @@ export default {
      */
     currencyPipeline: async function () {
       try {
-        const currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
             this.$stateStore);
-        this.currency = currency;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
