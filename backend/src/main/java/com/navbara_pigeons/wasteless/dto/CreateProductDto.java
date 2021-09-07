@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.dto;
 
+import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.enums.NutriScore;
 import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
@@ -8,6 +9,8 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+
+import com.navbara_pigeons.wasteless.validation.constraints.StringEnumeration;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.Nullable;
@@ -32,6 +35,7 @@ public class CreateProductDto {
   @DecimalMax(message = "RRP must be below 10,000,000", value = "10000000.00")
   private Double recommendedRetailPrice;
 
+  @StringEnumeration(enumClass = NutriScore.class, message = "Invalid NutriScore given")
   private NutriScore nutriScore;
 
   @Min(1)
