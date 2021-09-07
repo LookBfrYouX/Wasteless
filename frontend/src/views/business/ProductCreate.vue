@@ -81,7 +81,6 @@
 
           <div class="row">
             <div class="col-6">
-              <nutri-score-input/>
             </div>
             <div class="col-6">
               <nutri-score-input

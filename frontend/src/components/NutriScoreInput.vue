@@ -24,10 +24,7 @@
         </v-col>
       </v-row>
     </v-container>
-
-
   </div>
-
 </template>
 
 <script>
@@ -53,6 +50,10 @@ export default {
   },
 
   computed: {
+    /**
+     * Loads a Nutri-Score image of a selected score by users.
+     * @returns Path to the Nuti-Score image.
+     */
     imgSrc() {
       let src;
       switch (this.nutriScore) {
