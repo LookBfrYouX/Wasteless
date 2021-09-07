@@ -8,7 +8,7 @@
             Nutri-Score
           </label>
           <v-select
-              :value="nutritionScore"
+              :value="nutriScore"
               :items="options"
               item-text="score"
               @change="nutriScore => $emit('input', nutriScore)"
@@ -40,7 +40,7 @@ import nutriScoreDImage from "@/../assets/images/nutriscore_D.png";
 import nutriScoreEImage from "@/../assets/images/nutriscore_E.png";
 
 export default {
-  name: "NutritionScoreInput",
+  name: "NutriScoreInput",
 
   data() {
     return {
@@ -49,13 +49,13 @@ export default {
   },
 
   props: {
-    nutritionScore: null
+    nutriScore: null
   },
 
   computed: {
     imgSrc() {
       let src;
-      switch (this.nutritionScore) {
+      switch (this.nutriScore) {
         case 'A':
           src = nutriScoreAImage;
           break;

@@ -1,16 +1,16 @@
 import {mount} from "@vue/test-utils"
 
 import Vuetify from 'vuetify'
-import NutritionScoreInput from "@/components/NutritionScoreInput";
+import NutriScoreInput from "@/components/NutriScoreInput";
 
 let vuetify = new Vuetify();
 let wrapper;
 
 beforeEach(() => {
-  wrapper = mount(NutritionScoreInput, {
+  wrapper = mount(NutriScoreInput, {
     vuetify,
     propsData: {
-      nutritionScore: null
+      nutriScore: null
     }
   });
 });
@@ -20,11 +20,10 @@ afterEach(() => wrapper.destroy());
 describe("Nutrition score input test", () => {
   test("Test component is properly mounted", () => {
     expect(wrapper.vm.$data.options).toEqual(['A', 'B', 'C', 'D', 'E']);
-    expect(wrapper.vm.$props.nutritionScore).toEqual(null);
+    expect(wrapper.vm.$props.nutriScore).toEqual(null);
   });
   test("Score is emitted to parent component", async () => {
     let inputEl = wrapper.find("input");
-    console.log(inputEl);
     inputEl.trigger("focus");
     await wrapper.vm.$nextTick();
     inputEl.trigger("keydown.space");

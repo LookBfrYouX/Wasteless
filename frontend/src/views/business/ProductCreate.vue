@@ -81,11 +81,11 @@
 
           <div class="row">
             <div class="col-6">
-              <nutrition-score-input/>
+              <nutri-score-input/>
             </div>
             <div class="col-6">
-              <nutrition-score-input
-                  :nutrition-score="nutriScore"
+              <nutri-score-input
+                :nutri-score="nutriScore"
                 @input="newVal => nutriScore = newVal"
               />
             </div>
@@ -131,12 +131,12 @@ import ErrorModal from "@/components/ErrorModal";
 
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
-import NutritionScoreInput from "@/components/NutritionScoreInput";
+import NutriScoreInput from "@/components/NutriScoreInput";
 
 export default {
   components: {
     BarcodeInput,
-    NutritionScoreInput,
+    NutriScoreInput,
     ErrorModal
   },
 
