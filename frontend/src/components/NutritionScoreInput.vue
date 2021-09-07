@@ -8,7 +8,7 @@
             Nutri-Score
           </label>
           <v-select
-              v-model="nutritionScore"
+              :value="nutritionScore"
               :items="options"
               item-text="score"
               @change="nutriScore => $emit('input', nutriScore)"
@@ -45,8 +45,11 @@ export default {
   data() {
     return {
       options: ['A', 'B', 'C', 'D', 'E'],
-      nutritionScore: null,
     };
+  },
+
+  props: {
+    nutritionScore: null
   },
 
   computed: {

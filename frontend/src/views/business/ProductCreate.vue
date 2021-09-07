@@ -85,7 +85,8 @@
             </div>
             <div class="col-6">
               <nutrition-score-input
-                @input="nutriScore => this.nutriScore = nutriScore"
+                  :nutrition-score="nutriScore"
+                @input="newVal => nutriScore = newVal"
               />
             </div>
 
@@ -181,9 +182,8 @@ export default {
      */
     currencyPipeline: async function () {
       try {
-        const currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
             this.$stateStore);
-        this.currency = currency;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
