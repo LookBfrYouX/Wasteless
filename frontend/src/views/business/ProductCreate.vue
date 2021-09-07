@@ -3,97 +3,95 @@
     <div
         class="w-100 d-flex justify-content-center product-page-container gradient-background my-3"
     >
-      <div class="container">
+      <v-container>
         <form
             class="slightly-transparent-inputs"
             method="POST"
             @submit.prevent="createProduct"
         >
-          <div class="row">
-            <div class="col">
-              <h1>Add product to Catalogue</h1>
-            </div>
-          </div>
+          <v-row>
+            <v-col><h1>Add product to Catalogue</h1></v-col>
+          </v-row>
 
           <v-card
               class="card"
-              elevation="2"
           >
-            <div class="row">
-              <div class="form-group required col px-3">
-                <label>Name</label>
-                <v-text-field
-                    v-model="queryParams.name"
-                    dense
-                    elevation="0"
-                    label="Product Name"
-                    maxlength="100"
-                    placeholder="Name"
-                    required
-                    solo
-                    type="text"
-                />
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="form-group required col px-3">
-                <label>Price {{ currencyText }}</label>
-                <input
-                    v-model="queryParams.recommendedRetailPrice"
-                    :placeholder="currencyText"
-                    class="form-control"
-                    max="10000000"
-                    min="0.01"
-                    name="price"
-                    required
-                    step="0.01"
-                    type="number"
-                />
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="form-group col px-3">
-                <label>Manufacturer</label>
-                <input
-                    v-model="queryParams.manufacturer"
-                    class="form-control"
-                    maxlength="100"
-                    name="manufacturer"
-                    placeholder="Manufacturer"
-                    type="text"
-                />
-              </div>
-            </div>
-
-            <div class="row>">
-              <div class="form-group col px-0">
-                <label>Description</label>
-                <textarea
-                    v-model="queryParams.description"
-                    class="form-control"
-                    maxlength="500"
-                    name="description"
-                    placeholder="Description"
-                    rows="5"
-                    type="text"
-                />
-              </div>
-            </div>
-          </v-card>
-          <v-card
-              class="card"
-              elevation="2"
-          >
+            <h4>
+              Auto-fill fields via Barcode
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                      v-on="on"
+                      color="blue"
+                  >
+                    information
+                  </v-icon>
+                </template>
+                <span>Auto-fill product title and nutritional information by entering the products EAN-13 barcode.</span>
+              </v-tooltip>
+            </h4>
             <barcode-input/>
+          </v-card>
+
+          <v-card
+              class="card"
+          >
+            <h4>Product Information</h4>
+            <v-text-field
+                v-model="queryParams.name"
+                :rules="[() => !!queryParams.name || 'This field is required']"
+                class="form-group required"
+                dense
+                label="Name"
+                maxlength="100"
+                outlined
+                required
+                type="text"
+            />
+
+            <v-text-field
+                v-model="queryParams.recommendedRetailPrice"
+                :prefix="currencyText"
+                :rules="[() => !!queryParams.recommendedRetailPrice || 'This field is required']"
+                class="form-group required"
+                dense
+                label="Recommended Retail Price"
+                max="10000000"
+                min="0.01"
+                outlined
+                required
+                step="0.01"
+                type="number"
+            />
+
+            <v-text-field
+                v-model="queryParams.manufacturer"
+                dense
+                label="Manufacturer"
+                maxlength="100"
+                outlined
+                type="text"
+            />
+
+            <v-textarea
+                v-model="queryParams.description"
+                label="Description"
+                maxlength="500"
+                outlined
+                type="text"
+            />
+          </v-card>
+
+          <v-card
+              class="card"
+          >
             <h4>Nutritional Information</h4>
             <dietary-certifications-input
                 @input="event => Object.assign(this.queryParams, event)"
             />
           </v-card>
 
-          <div class="row">
+          <v-row>
             <div class="col">
               <input
                   class="btn btn-block btn-primary"
@@ -101,7 +99,7 @@
                   value="Add Product"
               />
             </div>
-          </div>
+          </v-row>
 
           <div v-if="errorMessage != null" class="row mt-2">
             <div class="col">
@@ -109,7 +107,7 @@
             </div>
           </div>
         </form>
-      </div>
+      </v-container>
     </div>
     <error-modal
         :goBack="false"
