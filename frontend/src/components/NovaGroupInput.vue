@@ -72,7 +72,6 @@ export default {
         default:
           src= null;
       }
-      console.log(src);
       return src;
     }
   }
