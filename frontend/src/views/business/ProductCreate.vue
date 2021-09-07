@@ -140,10 +140,16 @@ export default {
 
       typeRequired: false, // If phone entered but not country code
 
-      fat: null,
-      saturatedFat: null,
-      sugars: null,
-      sodium: null 
+      /**
+       * Nutrient levels (fat, sugar etc.) wrapped in an object for use in the
+       * NutrientLevelsEdit component
+       */
+      nutrientLevels: {
+        fat: null,
+        saturatedFat: null,
+        sugars: null,
+        sodium: null 
+      }
     };
   },
 
@@ -165,35 +171,6 @@ export default {
       }
       return `${this.currency.symbol} (${this.currency.code})`;
     },
-
-    /**
-     * Nutrient levels (fat, sugar etc.) wrapped in an object for use in the
-     * NutrientLevelsEdit component
-     */
-    nutrientLevels: {
-      /**
-       * Wraps nutrient levels in an object
-       */
-      get() {
-        return {
-          fat: this.fat,
-          saturatedFat: this.saturatedFat,
-          sugars: this.sugars,
-          sodium: this.sodium
-        };
-      },
-
-      /**
-       * Sets nutrient levels after it has been modified by the NutrientLevelsEdit
-       * component, unwrapping the values of the object
-       */
-      set(nutrientLevels) {
-        this.fat = nutrientLevels.fat;
-        this.saturatedFat = nutrientLevels.saturatedFat;
-        this.sugars = nutrientLevels.sugars;
-        this.sodium = nutrientLevels.sodium;
-      }
-    }
   },
 
   methods: {
