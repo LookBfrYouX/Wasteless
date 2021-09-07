@@ -79,16 +79,19 @@
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-6">
+          <v-row>
+            <v-col cols="12" md="6">
               <nova-group-input
                   :nova-group="novaGroup"
                   @input="newVal => novaGroup = newVal"
               />
-            </div>
-            <div class="col-6">
-            </div>
-          </div>
+            </v-col>
+            <v-col cols="12" md="6">
+
+            </v-col>
+
+          </v-row>
+
 
           <div class="row">
             <div class="col">

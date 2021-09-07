@@ -19,7 +19,7 @@
         <v-col cols="6">
           <v-img
               contain
-              max-height="150"
+              max-height="110"
               :src="imgSrc"
           ></v-img>
         </v-col>
