@@ -142,7 +142,7 @@ export default {
 
   data() {
     return {
-      apiErrorMessage: null, // if admin and getting currency nifo fails
+      apiErrorMessage: null, // if admin and getting currency info fails
       errorMessage: null,
 
       queryParams: {
@@ -225,7 +225,7 @@ export default {
 
       if (price <= 0) {
         this.errorMessage = "Please enter a valid price greater than 0";
-      } else if (this.queryParams.name.trim().length === 0) {
+      } else if (this.queryParams.name === null || this.queryParams.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
       } else {
         try {
