@@ -16,7 +16,6 @@
           </div>
 
           <barcode-input />
-
           <div class="row">
             <div class="form-group required col px-3">
               <label>Name</label>
@@ -78,7 +77,9 @@
               />
             </div>
           </div>
-
+          <nutrient-levels-edit
+            v-model="nutrientLevels"
+          />
           <div class="row">
             <div class="col">
               <input
@@ -117,11 +118,13 @@ import ErrorModal from "@/components/ErrorModal";
 
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
+import NutrientLevelsEdit from "@/components/NutrientLevelsEdit"
 
 export default {
   components: {
     BarcodeInput,
-    ErrorModal
+    ErrorModal,
+    NutrientLevelsEdit
   },
 
   data() {
@@ -136,6 +139,17 @@ export default {
       currency: null,
 
       typeRequired: false, // If phone entered but not country code
+
+      /**
+       * Nutrient levels (fat, sugar etc.) wrapped in an object for use in the
+       * NutrientLevelsEdit component
+       */
+      nutrientLevels: {
+        fat: null,
+        saturatedFat: null,
+        sugars: null,
+        sodium: null 
+      }
     };
   },
 
@@ -156,7 +170,7 @@ export default {
         return "(Unknown currency)";
       }
       return `${this.currency.symbol} (${this.currency.code})`;
-    }
+    },
   },
 
   methods: {
