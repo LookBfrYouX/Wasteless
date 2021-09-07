@@ -3,7 +3,7 @@
   <label>Barcode</label>
   <div class="d-flex">
     <v-text-field class="mr-2" label="Barcode No." placeholder="EAN-13 Barcode" maxLength="13" v-model="barcode" solo dense />
-    <v-btn v-on:click="setProductInformation">Find</v-btn>
+    <v-btn v-on:click="setProductInformation" :disabled="barcode == ''">Find</v-btn>
   </div>
   <div v-if="errorMessage != null" class="row mt-2">
     <div class="col">
@@ -47,7 +47,6 @@ export default {
         return response.data;
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
-        return null;
       }
 
     },
