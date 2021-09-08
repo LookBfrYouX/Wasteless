@@ -60,11 +60,11 @@ describe("BarcodeInput test", () => {
 
   test("Test analysis tags have been set correctly", () => {
     wrapper.vm.setIngredientAnalysisInformation(['en:palm-oil-free', 'en:vegan', 'en:vegetarian', 'en:gluten-free', 'en:dairy-free']);
-    expect(wrapper.vm.$data.palmOilFree).toBeTruthy();
-    expect(wrapper.vm.$data.vegan).toBeTruthy();
-    expect(wrapper.vm.$data.vegetarian).toBeTruthy();
-    expect(wrapper.vm.$data.glutenFree).toBeTruthy();
-    expect(wrapper.vm.$data.dairyFree).toBeTruthy();
+    expect(wrapper.vm.$data.isPalmOilFree).toBeTruthy();
+    expect(wrapper.vm.$data.isVegan).toBeTruthy();
+    expect(wrapper.vm.$data.isVegetarian).toBeTruthy();
+    expect(wrapper.vm.$data.isGlutenFree).toBeTruthy();
+    expect(wrapper.vm.$data.isDairyFree).toBeTruthy();
   });
 
 });
