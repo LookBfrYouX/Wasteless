@@ -56,13 +56,15 @@ export default {
      * @returns Path to the Nuti-Score image.
      */
     imgSrc() {
-      let src;
       const imgSrcDict = {
-        'A': nutriScoreAImage, 'B': nutriScoreBImage, 'C': nutriScoreCImage, 'D': nutriScoreDImage,
-        'E': nutriScoreEImage, null: nutriScoreNoneImage
+        'A': nutriScoreAImage,
+        'B': nutriScoreBImage,
+        'C': nutriScoreCImage,
+        'D': nutriScoreDImage,
+        'E': nutriScoreEImage,
+        null: nutriScoreNoneImage
       };
-      src = imgSrcDict[this.nutriScore];
-      return src;
+      return imgSrcDict[this.nutriScore];
     }
   }
 }
