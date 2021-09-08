@@ -3,7 +3,7 @@
   <label>Barcode</label>
   <div class="d-flex">
     <v-text-field class="mr-2" label="Barcode No." placeholder="EAN-13 Barcode" maxLength="13" v-model="barcode" solo dense />
-    <v-btn v-on:click="setProductInformation" :disabled="barcode == ''">Find</v-btn>
+    <v-btn v-on:click="setProductInformation" :disabled="barcode.length!=13" :loading="apiIsLoading">Find</v-btn>
   </div>
   <div v-if="errorMessage != null" class="row mt-2">
     <div class="col">
@@ -29,12 +29,13 @@ export default {
       salt: "",
       novaGroup: "",
       nutriScore: "",
-      palmOilFree: false,
-      vegan: false,
-      vegetarian: false,
-      glutenFree: false,
-      dairyFree: false,
-      errorMessage: null
+      isPalmOilFree: false,
+      isVegan: false,
+      isVegetarian: false,
+      isGlutenFree: false,
+      isDairyFree: false,
+      errorMessage: null,
+      apiIsLoading:false
     }
   },
   methods: {
@@ -42,11 +43,14 @@ export default {
      * Calls Open Food Facts API with User Barcode
      */
     getNutritionalInformationWithBarcode: async function (barcode) {
+      this.apiIsLoading = true;
       try {
         const response = await Api.getOpenFoodFacts(barcode);
         return response.data;
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
+      } finally {
+        this.apiIsLoading = false;
       }
 
     },
@@ -57,17 +61,21 @@ export default {
     setProductInformation: async function() {
       const data = await this.getNutritionalInformationWithBarcode(this.barcode);
       if (data.status == 0) {
-        this.errorMessage = data.status_verbose;
+        this.errorMessage = "Product Not Found: Please enter details manually";
       } else {
         this.errorMessage = null;
         this.name = data.product.product_name;
         this.manufacturer = data.product.brands;
         this.nutriScore = data.product.nutriscore_grade.toUpperCase();
         this.novaGroup = data.product.nova_group;
-        const nutrient_levels = data.product.nutrient_levels;
-        const ingredients_analysis_tags = data.product.ingredients_analysis_tags;
-        this.setNutritionalLevelInformation(nutrient_levels);
-        this.setIngredientAnalysisInformation(ingredients_analysis_tags);
+        if (data.product.nutrient_levels) {
+          const nutrient_levels = data.product.nutrient_levels;
+          this.setNutritionalLevelInformation(nutrient_levels);
+        }
+        if (data.product.ingredients_analysis_tags) {
+          const ingredients_analysis_tags = data.product.ingredients_analysis_tags;
+          this.setIngredientAnalysisInformation(ingredients_analysis_tags);
+        }
       }
     },
 
@@ -88,23 +96,23 @@ export default {
       for (const tag of ingredients_analysis_tags) {
         switch (tag) {
           case 'en:palm-oil-free':
-            this.palmOilFree = true;
+            this.isPalmOilFree = true;
             break;
 
           case 'en:vegan':
-            this.vegan = true;
+            this.isVegan = true;
             break;
 
           case 'en:vegetarian':
-            this.vegetarian = true;
+            this.isVegetarian = true;
             break;
 
           case 'en:gluten-free':
-            this.glutenFree = true;
+            this.isGlutenFree = true;
             break;
 
           case 'en:dairy-free':
-            this.dairyFree = true;
+            this.isDairyFree = true;
             break;
         }
       }
