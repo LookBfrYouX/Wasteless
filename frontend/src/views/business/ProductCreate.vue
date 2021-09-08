@@ -6,8 +6,7 @@
       <v-container>
         <form
             class="slightly-transparent-inputs"
-            method="POST"
-            @submit.prevent="createProduct"
+            v-on:keydown.enter.prevent
         >
           <v-row>
             <v-col><h1>Add product to Catalogue</h1></v-col>
@@ -100,6 +99,7 @@
                   class="btn btn-block btn-primary"
                   type="submit"
                   value="Add Product"
+                  @click="createProduct"
               />
             </div>
           </v-row>

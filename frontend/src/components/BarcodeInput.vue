@@ -11,6 +11,7 @@
         outlined
         prefix="EAN-13"
         type="number"
+        v-on:keydown.enter="() => barcode.length == 13 && !apiIsLoading && setProductInformation()"
     />
     <v-btn
       v-on:click="setProductInformation"
