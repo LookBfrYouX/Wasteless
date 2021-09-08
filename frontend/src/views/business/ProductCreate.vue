@@ -79,17 +79,17 @@
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-6">
-            </div>
-            <div class="col-6">
+          <v-row>
+            <v-col cols="12" md="6">
+            </v-col>
+            <v-col cols="12" md="6">
               <nutri-score-input
-                :nutri-score="nutriScore"
-                @input="newVal => nutriScore = newVal"
+                  :nutri-score="nutriScore"
+                  @input="newVal => nutriScore = newVal"
               />
-            </div>
+            </v-col>
 
-          </div>
+          </v-row>
 
 
           <div class="row">
