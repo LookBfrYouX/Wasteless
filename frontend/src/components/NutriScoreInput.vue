@@ -35,6 +35,7 @@ import nutriScoreBImage from "@/../assets/images/nutriscore_B.png";
 import nutriScoreCImage from "@/../assets/images/nutriscore_C.png";
 import nutriScoreDImage from "@/../assets/images/nutriscore_D.png";
 import nutriScoreEImage from "@/../assets/images/nutriscore_E.png";
+import nutriScoreNoneImage from "@/../assets/images/nutriscore_none.png";
 
 export default {
   name: "NutriScoreInput",
@@ -56,25 +57,11 @@ export default {
      */
     imgSrc() {
       let src;
-      switch (this.nutriScore) {
-        case 'A':
-          src = nutriScoreAImage;
-          break;
-        case 'B':
-          src = nutriScoreBImage;
-          break;
-        case 'C':
-          src = nutriScoreCImage;
-          break;
-        case 'D':
-          src = nutriScoreDImage;
-          break;
-        case 'E':
-          src = nutriScoreEImage;
-          break;
-        default:
-          src= null;
-      }
+      const imgSrcDict = {
+        'A': nutriScoreAImage, 'B': nutriScoreBImage, 'C': nutriScoreCImage, 'D': nutriScoreDImage,
+        'E': nutriScoreEImage, null: nutriScoreNoneImage
+      };
+      src = imgSrcDict[this.nutriScore];
       return src;
     }
   }
