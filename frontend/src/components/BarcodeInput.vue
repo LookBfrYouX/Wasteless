@@ -12,7 +12,13 @@
         prefix="EAN-13"
         type="number"
     />
-    <v-btn v-on:click="setProductInformation">Fill</v-btn>
+    <v-btn
+      v-on:click="setProductInformation"
+     :disabled="barcode.length != 13"
+     :loading="apiIsLoading"
+    >
+      Fill
+    </v-btn>
   </div>
   <div v-if="errorMessage != null" class="row mt-2">
     <div class="col">
@@ -31,6 +37,7 @@ export default {
     return {
       barcode: "",
       errorMessage: null,
+      apiIsLoading:false,
       info: {
         name: "",
         manufacturer: "",
@@ -53,12 +60,14 @@ export default {
      * Calls Open Food Facts API with User Barcode
      */
     getNutritionalInformationWithBarcode: async function (barcode) {
+      this.apiIsLoading = true;
       try {
         const response = await Api.getOpenFoodFacts(barcode);
         return response.data;
       } catch (err) {
         this.errorMessage = err.userFacingErrorMessage;
-        return null;
+      } finally {
+        this.apiIsLoading = false;
       }
 
     },
@@ -71,18 +80,22 @@ export default {
 
       if (data == null) return;
       if (data.status == 0) {
-        this.errorMessage = data.status_verbose;
+        this.errorMessage = "Product Not Found: Please enter details manually";
       } else {
         this.errorMessage = null;
         this.info.name = data.product.product_name;
         this.info.manufacturer = data.product.brands;
         this.info.nutriScore = data.product.nutriscore_grade.toUpperCase();
         this.info.novaGroup = data.product.nova_group;
-        const nutrient_levels = data.product.nutrient_levels;
-        const ingredients_analysis_tags = data.product.ingredients_analysis_tags;
-        this.setNutritionalLevelInformation(nutrient_levels);
-        this.setIngredientAnalysisInformation(ingredients_analysis_tags);
-        console.log("HERE");
+        if (data.product.nutrient_levels) {
+          const nutrient_levels = data.product.nutrient_levels;
+          this.setNutritionalLevelInformation(nutrient_levels);
+        }
+        if (data.product.ingredients_analysis_tags) {
+          const ingredients_analysis_tags = data.product.ingredients_analysis_tags;
+          this.setIngredientAnalysisInformation(ingredients_analysis_tags);
+        }
+
         this.$emit("info", this.info);
       }
     },
