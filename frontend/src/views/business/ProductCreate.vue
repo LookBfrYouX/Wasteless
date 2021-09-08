@@ -39,7 +39,7 @@
             <h4>Product Information</h4>
             <v-text-field
                 v-model="queryParams.name"
-                :rules="[() => queryParams.name.trim().length > 0 || 'This field is required']"
+                :rules="[() => !!queryParams.name && queryParams.name.trim().length > 0 || 'This field is required']"
                 class="form-group required"
                 dense
                 label="Name"
@@ -86,9 +86,7 @@
             <v-row>
               <v-col cols="12" md="6">
                 <h4>Nutritional Information</h4>
-                <dietary-certifications-input
-                    @input="event => Object.assign(this.queryParams, event)"
-                />
+                <dietary-certifications-input v-model="queryParams"/>
               </v-col>
             </v-row>
           </v-card>
