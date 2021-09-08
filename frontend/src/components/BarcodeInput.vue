@@ -30,20 +30,22 @@ export default {
   data() {
     return {
       barcode: "",
-      name: "",
-      manufacturer: "",
-      fat: "",
-      saturatedFat: "",
-      sugars: "",
-      salt: "",
-      novaGroup: "",
-      nutriScore: "",
-      palmOilFree: false,
-      vegan: false,
-      vegetarian: false,
-      glutenFree: false,
-      dairyFree: false,
-      errorMessage: null
+      errorMessage: null,
+      info: {
+        name: "",
+        manufacturer: "",
+        fat: "",
+        saturatedFat: "",
+        sugars: "",
+        salt: "",
+        novaGroup: "",
+        nutriScore: "",
+        isPalmOilFree: false,
+        isVegan: false,
+        isVegetarian: false,
+        isGlutenFree: false,
+        isDairyFree: false,
+      }
     }
   },
   methods: {
@@ -66,18 +68,22 @@ export default {
      */
     setProductInformation: async function() {
       const data = await this.getNutritionalInformationWithBarcode(this.barcode);
+
+      if (data == null) return;
       if (data.status == 0) {
         this.errorMessage = data.status_verbose;
       } else {
         this.errorMessage = null;
-        this.name = data.product.product_name;
-        this.manufacturer = data.product.brands;
-        this.nutriScore = data.product.nutriscore_grade.toUpperCase();
-        this.novaGroup = data.product.nova_group;
+        this.info.name = data.product.product_name;
+        this.info.manufacturer = data.product.brands;
+        this.info.nutriScore = data.product.nutriscore_grade.toUpperCase();
+        this.info.novaGroup = data.product.nova_group;
         const nutrient_levels = data.product.nutrient_levels;
         const ingredients_analysis_tags = data.product.ingredients_analysis_tags;
         this.setNutritionalLevelInformation(nutrient_levels);
         this.setIngredientAnalysisInformation(ingredients_analysis_tags);
+        console.log("HERE");
+        this.$emit("info", this.info);
       }
     },
 
@@ -85,10 +91,10 @@ export default {
      * Parses and sets nutritional level tags in required format
      */
     setNutritionalLevelInformation: function(nutrient_levels) {
-      this.fat = nutrient_levels.fat.toUpperCase();
-      this.saturatedFat = nutrient_levels["saturated-fat"].toUpperCase();
-      this.sugars = nutrient_levels.sugars.toUpperCase();
-      this.salt = nutrient_levels.salt.toUpperCase();
+      this.info.fat = nutrient_levels.fat.toUpperCase();
+      this.info.saturatedFat = nutrient_levels["saturated-fat"].toUpperCase();
+      this.info.sugars = nutrient_levels.sugars.toUpperCase();
+      this.info.salt = nutrient_levels.salt.toUpperCase();
     },
 
     /**
@@ -98,23 +104,23 @@ export default {
       for (const tag of ingredients_analysis_tags) {
         switch (tag) {
           case 'en:palm-oil-free':
-            this.palmOilFree = true;
+            this.info.isPalmOilFree = true;
             break;
 
           case 'en:vegan':
-            this.vegan = true;
+            this.info.isVegan = true;
             break;
 
           case 'en:vegetarian':
-            this.vegetarian = true;
+            this.info.isVegetarian = true;
             break;
 
           case 'en:gluten-free':
-            this.glutenFree = true;
+            this.info.isGlutenFree = true;
             break;
 
           case 'en:dairy-free':
-            this.dairyFree = true;
+            this.info.isDairyFree = true;
             break;
         }
       }
@@ -122,7 +128,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

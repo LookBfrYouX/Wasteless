@@ -30,7 +30,9 @@
                 <span>Auto-fill product title and nutritional information by entering the products EAN-13 barcode.</span>
               </v-tooltip>
             </h4>
-            <barcode-input/>
+            <barcode-input
+              @info="autofill"
+            />
           </v-card>
 
           <v-card
@@ -154,11 +156,11 @@ export default {
         recommendedRetailPrice: "",
 
         // dietary certifications
-        isGlutenFree: false,
-        isDairyFree: false,
-        isVegetarian: false,
-        isVegan: false,
-        isPalmOilFree: false,
+        isGlutenFree: null,
+        isDairyFree: null,
+        isVegetarian: null,
+        isVegan: null,
+        isPalmOilFree: null,
 
         // nutrient levels
         fat: null,
@@ -216,6 +218,20 @@ export default {
             "Must be signed in as a business before making the request");
       }
       return Api.createProduct(this.businessId, data);
+    },
+
+    autofill: function(info) {
+      Object.keys(info).forEach(prop => {
+        if (typeof this.queryParams[prop] == "string") {
+          if (this.queryParams[prop].trim().length == 0) {
+            this.queryParams[prop] = info[prop];
+          }
+        }
+
+        if (this.queryParams[prop] == null) {
+          this.queryParams[prop] = info[prop];
+        }
+      });
     },
 
     /**
