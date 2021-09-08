@@ -39,7 +39,7 @@
             <h4>Product Information</h4>
             <v-text-field
                 v-model="queryParams.name"
-                :rules="[() => !!queryParams.name || 'This field is required']"
+                :rules="[() => queryParams.name.trim().length > 0 || 'This field is required']"
                 class="form-group required"
                 dense
                 label="Name"
@@ -77,8 +77,8 @@
                 v-model="queryParams.description"
                 label="Description"
                 maxlength="500"
-                outlined
                 type="text"
+                solo
             />
           </v-card>
 
@@ -144,20 +144,19 @@ export default {
     return {
       apiErrorMessage: null, // if admin and getting currency info fails
       errorMessage: null,
-
+      currency: null,
+      typeRequired: false, // If phone entered but not country code
       queryParams: {
         name: "",
         description: "",
         manufacturer: "",
         recommendedRetailPrice: "",
-        currency: null,
         isGlutenFree: false,
         isDairyFree: false,
         isVegetarian: false,
         isVegan: false,
         isPalmOilFree: false
-      },
-      typeRequired: false, // If phone entered but not country code
+      }
     };
   },
 
@@ -174,10 +173,10 @@ export default {
 
   computed: {
     currencyText() {
-      if (this.queryParams.currency == null) {
+      if (this.currency == null) {
         return "(Unknown currency)";
       }
-      return `${this.queryParams.currency.symbol} (${this.queryParams.currency.code})`;
+      return `${this.currency.symbol} (${this.currency.code})`;
     }
   },
 
@@ -189,7 +188,7 @@ export default {
       try {
         const currency = await this.$helper.getCurrencyForBusiness(this.businessId,
             this.$stateStore);
-        this.queryParams.currency = currency;
+        this.currency = currency;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -249,7 +248,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .product-page-container > div {
   max-width: 50em;
 }
@@ -258,5 +257,9 @@ export default {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.v-textarea_content {
+  box-shadow: none !important;
 }
 </style>
