@@ -39,7 +39,7 @@
             <h4>Product Information</h4>
             <v-text-field
                 v-model="queryParams.name"
-                :rules="[() => !!queryParams.name || 'This field is required']"
+                :rules="[() => !!queryParams.name && queryParams.name.trim().length > 0 || 'This field is required']"
                 class="form-group required"
                 dense
                 label="Name"
@@ -77,8 +77,8 @@
                 v-model="queryParams.description"
                 label="Description"
                 maxlength="500"
-                outlined
                 type="text"
+                solo
             />
           </v-card>
 
@@ -86,11 +86,10 @@
             <v-row>
               <v-col cols="12" md="6">
                 <h4>Nutritional Information</h4>
-                <dietary-certifications-input
-                    @input="event => Object.assign(this.queryParams, event)"
-                />
+                <dietary-certifications-input v-model="queryParams"/>
               </v-col>
             </v-row>
+            <nutrient-levels-edit v-model="queryParams"/>
           </v-card>
 
           <v-row>
@@ -153,19 +152,15 @@ export default {
         description: "",
         manufacturer: "",
         recommendedRetailPrice: "",
+
+        // dietary certifications
         isGlutenFree: false,
         isDairyFree: false,
         isVegetarian: false,
         isVegan: false,
-        isPalmOilFree: false
-      },
-      typeRequired: false, // If phone entered but not country code
+        isPalmOilFree: false,
 
-      /**
-       * Nutrient levels (fat, sugar etc.) wrapped in an object for use in the
-       * NutrientLevelsEdit component
-       */
-      nutrientLevels: {
+        // nutrient levels
         fat: null,
         saturatedFat: null,
         sugars: null,
@@ -262,7 +257,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .product-page-container > div {
   max-width: 50em;
 }
@@ -271,5 +266,9 @@ export default {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.v-textarea_content {
+  box-shadow: none !important;
 }
 </style>

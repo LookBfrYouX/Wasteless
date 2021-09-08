@@ -2,12 +2,11 @@
   <v-form>
     <label>Dietary Certifications</label>
     <v-select
-        v-model="certifications"
+        :value="certifications"
+        @input="certificationSetter"
         :items=options
-        @change="onChange"
         chips
         multiple
-        dense
         outlined
     ></v-select>
   </v-form>
@@ -18,29 +17,51 @@ export default {
   name: "DietaryCertificationsInput",
   data() {
     return {
-      queryParams: {
-        isGlutenFree: false,
-        isDairyFree: false,
-        isVegetarian: false,
-        isVegan: false,
-        isPalmOilFree: false
-      },
-      certifications: [],
       options: ['Gluten Free', 'Dairy Free', 'Vegetarian', 'Vegan', 'Palm Oil Free']
     }
   },
+  props: {
+    value: {
+      isGlutenFree: false,
+      isDairyFree: false,
+      isVegetarian: false,
+      isVegan: false,
+      isPalmOilFree: false
+    }
+  },
   methods: {
-    /**
-     * This method updates the boolean values and emits the search queries to the parent component.
-     */
-    onChange() {
-      this.queryParams.isGlutenFree = this.certifications.includes('Gluten Free');
-      this.queryParams.isDairyFree = this.certifications.includes('Dairy Free');
-      this.queryParams.isVegetarian = this.certifications.includes('Vegetarian');
-      this.queryParams.isVegan = this.certifications.includes('Vegan');
-      this.queryParams.isPalmOilFree = this.certifications.includes('Palm Oil Free');
+    certificationSetter(newList) {
+      let queryParams = {
+        ...this.value,
+        isGlutenFree: newList.includes('Gluten Free'),
+        isDairyFree: newList.includes('Dairy Free'),
+        isVegetarian: newList.includes('Vegetarian'),
+        isVegan: newList.includes('Vegan'),
+        isPalmOilFree: newList.includes('Palm Oil Free')
+      };
 
-      this.$emit('input', this.queryParams);
+      this.$emit('input', queryParams);
+    }
+  },
+  computed: {
+    certifications() {
+      const arr = [];
+      if (this.value.isGlutenFree) {
+        arr.push("Gluten Free");
+      }
+      if (this.value.isDairyFree) {
+        arr.push("Dairy Free");
+      }
+      if (this.value.isVegetarian) {
+        arr.push("Vegetarian");
+      }
+      if (this.value.isVegan) {
+        arr.push("Vegan");
+      }
+      if (this.value.isPalmOilFree) {
+        arr.push("Palm Oil Free");
+      }
+      return arr;
     }
   }
 }

@@ -6,121 +6,115 @@ import DietaryCertificationsInput
 
 let vuetify = new Vuetify();
 
-let data = {
-  queryParams: {
-    isGlutenFree: false,
-    isDairyFree: false,
-    isVegetarian: false,
-    isVegan: false,
-    isPalmOilFree: false
-  },
-  certifications: [],
-  options: ['Gluten Free', 'Dairy Free', 'Vegetarian', 'Vegan', 'Palm Oil Free']
-};
-
 let wrapper;
 
 beforeEach(() => {
   wrapper = mount(DietaryCertificationsInput, {
     vuetify,
-    propsData: data
+    propsData: {
+      value: {
+        isGlutenFree: false,
+        isDairyFree: false,
+        isVegetarian: false,
+        isVegan: false,
+        isPalmOilFree: false
+      }
+    }
   });
 });
 
 afterEach(() => wrapper.destroy());
 
 describe("DietaryCertificationsInput test", () => {
-  test("Component is properly mounted", () => {
-    expect(wrapper.vm.$data).toEqual(data);
-  });
-
-  test("Test onChange method output with empty certifications", () => {
+  test("Test props with empty certifications", async () => {
     // Arrange
-    wrapper.vm.$data.certifications = [];
-    let expectedParams = {
+    const props = {
       isGlutenFree: false,
       isDairyFree: false,
       isVegetarian: false,
       isVegan: false,
       isPalmOilFree: false
     };
+    const expectedList = [];
 
     // Action
-    wrapper.vm.onChange();
+    wrapper.setProps({value: props});
+    await wrapper.vm.$nextTick();
 
     // Assert
-    expect(wrapper.vm.$data.queryParams).toEqual(expectedParams);
+    expect(wrapper.vm.certifications).toEqual(expectedList);
   });
 
-  test("Test onChange method output with invalid certification", () => {
+  test("Test invalid props", async () => {
     // Arrange
-    wrapper.vm.$data.certifications = ['Invalid Input!'];
-    let expectedParams = {
-      isGlutenFree: false,
-      isDairyFree: false,
-      isVegetarian: false,
-      isVegan: false,
-      isPalmOilFree: false
+    const props = {
+      sillyProp1: false,
+      isDairyFree: null
     };
+    const expectedList = [];
 
     // Action
-    wrapper.vm.onChange();
+    wrapper.setProps({value: props});
+    await wrapper.vm.$nextTick();
 
     // Assert
-    expect(wrapper.vm.$data.queryParams).toEqual(expectedParams);
+    expect(wrapper.vm.certifications).toEqual(expectedList);
   });
 
-  test("Test onChange method output with single certification", () => {
+  test("Test props with single certification", async () => {
     // Arrange
-    wrapper.vm.$data.certifications = ['Dairy Free'];
-    let expectedParams = {
+    const props = {
       isGlutenFree: false,
       isDairyFree: true,
       isVegetarian: false,
       isVegan: false,
       isPalmOilFree: false
     };
+    const expectedList = ['Dairy Free'];
 
     // Action
-    wrapper.vm.onChange();
+    wrapper.setProps({value: props});
+    await wrapper.vm.$nextTick();
 
     // Assert
-    expect(wrapper.vm.$data.queryParams).toEqual(expectedParams);
+    expect(wrapper.vm.certifications).toEqual(expectedList);
   });
 
-  test("Test onChange method output with all certifications", () => {
+  test("Test props with all certifications", async () => {
     // Arrange
-    wrapper.vm.$data.certifications = wrapper.vm.$data.options;
-    let expectedParams = {
+    const props = {
       isGlutenFree: true,
       isDairyFree: true,
       isVegetarian: true,
       isVegan: true,
       isPalmOilFree: true
     };
+    const expectedList = ['Gluten Free', 'Dairy Free', 'Vegetarian', 'Vegan',
+      'Palm Oil Free'];
 
     // Action
-    wrapper.vm.onChange();
+    wrapper.setProps({value: props});
+    await wrapper.vm.$nextTick();
 
     // Assert
-    expect(wrapper.vm.$data.queryParams).toEqual(expectedParams);
+    expect(wrapper.vm.certifications).toEqual(expectedList);
   });
 
-  test("Test onChange method emits correctly", () => {
+  test("Test certificationSetter method emits correctly", async () => {
     // Arrange
-    wrapper.vm.$data.certifications = ['Dairy Free', 'Vegetarian', 'Vegan'];
-    let expectedParams = {
+    let expectedProps = {
       isGlutenFree: false,
       isDairyFree: true,
       isVegetarian: true,
       isVegan: true,
       isPalmOilFree: false
     };
+    const list = ['Dairy Free', 'Vegetarian', 'Vegan'];
 
     // Action
-    wrapper.vm.onChange();
+    wrapper.vm.certificationSetter(list);
 
     // Assert
-    expect(wrapper.emitted('input')[0][0]).toEqual(expectedParams);
+    expect(wrapper.emitted('input')[0][0]).toEqual(expectedProps);
   });
 });
