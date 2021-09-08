@@ -55,24 +55,14 @@ export default {
      * @returns Path to the Nova group image.
      */
     imgSrc() {
-      let src;
-      switch (this.novaGroup) {
-        case '1':
-          src = novaGroup1Image;
-          break;
-        case '2':
-          src = novaGroup2Image;
-          break;
-        case '3':
-          src = novaGroup3Image;
-          break;
-        case '4':
-          src = novaGroup4Image;
-          break;
-        default:
-          src= null;
-      }
-      return src;
+      const imgSrcDict = {
+        '1': novaGroup1Image,
+        '2': novaGroup2Image,
+        '3': novaGroup3Image,
+        '4': novaGroup4Image,
+        null: null
+      };
+      return imgSrcDict[this.novaGroup];
     }
   }
 }
