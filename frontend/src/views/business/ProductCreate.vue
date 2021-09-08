@@ -90,9 +90,9 @@
               </v-col>
             </v-row>
             <v-row>
-              <nutrient-levels-edit
-                  v-model="nutrientLevels"
-              />
+              <v-col cols="12">
+                <nutrient-levels-edit v-model="queryParams.nutrientLevels"/>
+              </v-col>
             </v-row>
           </v-card>
 
@@ -171,25 +171,6 @@ export default {
           sugars: null,
           sodium: null
         }
-      }
-
-      name: "",
-      description: "",
-      manufacturer: "",
-      price: "",
-      currency: null,
-
-      typeRequired: false, // If phone entered but not country code
-
-      /**
-       * Nutrient levels (fat, sugar etc.) wrapped in an object for use in the
-       * NutrientLevelsEdit component
-       */
-      nutrientLevels: {
-        fat: null,
-        saturatedFat: null,
-        sugars: null,
-        sodium: null
       }
     };
   },
