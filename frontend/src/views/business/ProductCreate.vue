@@ -123,8 +123,8 @@ import NutrientLevelsEdit from "@/components/NutrientLevelsEdit"
 export default {
   components: {
     BarcodeInput,
-    ErrorModal,
-    NutrientLevelsEdit
+    NutrientLevelsEdit,
+    ErrorModal
   },
 
   data() {
