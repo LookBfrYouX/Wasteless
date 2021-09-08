@@ -83,11 +83,16 @@
           </v-card>
 
           <v-card class="card">
+            <h4>Nutritional Information</h4>
             <v-row>
               <v-col cols="12" md="6">
-                <h4>Nutritional Information</h4>
                 <dietary-certifications-input v-model="queryParams"/>
               </v-col>
+            </v-row>
+            <v-row>
+              <nutrient-levels-edit
+                  v-model="nutrientLevels"
+              />
             </v-row>
           </v-card>
 
@@ -130,12 +135,14 @@ import ErrorModal from "@/components/ErrorModal";
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
 import DietaryCertificationsInput from "@/components/DietaryCertificationsInput";
+import NutrientLevelsEdit from "@/components/NutrientLevelsEdit"
 
 export default {
   components: {
     BarcodeInput,
     DietaryCertificationsInput,
-    ErrorModal
+    ErrorModal,
+    NutrientLevelsEdit
   },
 
   data() {
@@ -153,7 +160,36 @@ export default {
         isDairyFree: false,
         isVegetarian: false,
         isVegan: false,
-        isPalmOilFree: false
+        isPalmOilFree: false,
+        /**
+         * Nutrient levels (fat, sugar etc.) wrapped in an object for use in the
+         * NutrientLevelsEdit component
+         */
+        nutrientLevels: {
+          fat: null,
+          saturatedFat: null,
+          sugars: null,
+          sodium: null
+        }
+      }
+
+      name: "",
+      description: "",
+      manufacturer: "",
+      price: "",
+      currency: null,
+
+      typeRequired: false, // If phone entered but not country code
+
+      /**
+       * Nutrient levels (fat, sugar etc.) wrapped in an object for use in the
+       * NutrientLevelsEdit component
+       */
+      nutrientLevels: {
+        fat: null,
+        saturatedFat: null,
+        sugars: null,
+        sodium: null
       }
     };
   },
@@ -246,7 +282,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .product-page-container > div {
   max-width: 50em;
 }
@@ -255,9 +291,5 @@ export default {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
-}
-
-.v-textarea_content {
-  box-shadow: none !important;
 }
 </style>
