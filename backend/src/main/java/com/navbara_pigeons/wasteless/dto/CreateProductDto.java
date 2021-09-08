@@ -44,7 +44,7 @@ public class CreateProductDto {
 
   private NutritionFactsLevel sugar;
 
-  private NutritionFactsLevel sodium;
+  private NutritionFactsLevel salt;
 
   @Nullable
   private Boolean isGlutenFree;
@@ -75,7 +75,7 @@ public class CreateProductDto {
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
     this.sugar = product.getSugar();
-    this.sodium = product.getSodium();
+    this.salt = product.getsalt();
     this.isGlutenFree = product.getIsGlutenFree();
     this.isDairyFree = product.getIsDairyFree();
     this.isVegetarian = product.getIsVegetarian();

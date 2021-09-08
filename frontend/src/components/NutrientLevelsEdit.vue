@@ -52,7 +52,7 @@ myModel = {
   fat: null,
   saturatedFat: "LOW",
   sugars: "MODERATE",
-  sodium: "HIGH"
+  salt: "HIGH"
 }
 or something similar
 
@@ -86,8 +86,8 @@ export default {
           name: "Sugars",
           key: "sugars"
         }, {
-          name: "Sodium",
-          key: "sodium"
+          name: "Salt",
+          key: "salt"
         }
       ]
     }

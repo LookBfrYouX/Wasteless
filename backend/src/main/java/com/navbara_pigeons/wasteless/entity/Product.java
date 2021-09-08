@@ -80,8 +80,8 @@ public class Product {
   private NutritionFactsLevel sugar;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "SODIUM")
-  private NutritionFactsLevel sodium;
+  @Column(name = "SALT")
+  private NutritionFactsLevel salt;
 
   @Column(name = "IS_GLUTEN_FREE")
   private Boolean isGlutenFree;
@@ -149,7 +149,7 @@ public class Product {
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
     this.sugar = product.getSugar();
-    this.sodium = product.getSodium();
+    this.salt = product.getsalt();
     this.isGlutenFree = product.getIsGlutenFree();
     this.isDairyFree = product.getIsDairyFree();
     this.isVegetarian = product.getIsVegetarian();

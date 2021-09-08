@@ -166,7 +166,7 @@ export default {
         fat: null,
         saturatedFat: null,
         sugars: null,
-        sodium: null 
+        salt: null 
       }
     };
   },
