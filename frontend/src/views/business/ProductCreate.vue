@@ -83,10 +83,7 @@
             <v-col cols="12" md="6">
             </v-col>
             <v-col cols="12" md="6">
-              <nutri-score-input
-                  :nutri-score="nutriScore"
-                  @input="newVal => nutriScore = newVal"
-              />
+              <nutri-score-input v-model="nutriScore"/>
             </v-col>
 
           </v-row>

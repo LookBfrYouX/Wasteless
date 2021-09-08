@@ -7,11 +7,14 @@
           <label>
             Nutri-Score
           </label>
+          <!-- return-object required for test to work; event not emitted in jest test otherwise -->
           <v-select
-              :value="nutriScore"
+              :value="value"
+              @input="option => $emit('input', option.value)"
+              :return-object="true"
               :items="options"
-              item-text="score"
-              @change="nutriScore => $emit('input', nutriScore)"
+              item-text="text"
+              item-value="value"
               solo
               clearable
           ></v-select>
@@ -42,12 +45,32 @@ export default {
 
   data() {
     return {
-      options: ['A', 'B', 'C', 'D', 'E'],
+      options:[
+        {
+          text: 'N/A',
+          value: null
+        }, {
+          text: 'A',
+          value: 'A'
+        }, {
+          text: 'B',
+          value: 'B',
+        }, {
+          text: 'C',
+          value: 'C'
+        }, {
+          text: 'D',
+          value: 'D'
+        }, {
+          text: 'E',
+          value: 'E'
+        }
+      ]
     };
   },
 
   props: {
-    nutriScore: null
+    value: null
   },
 
   computed: {
@@ -64,7 +87,7 @@ export default {
         'E': nutriScoreEImage,
         null: nutriScoreNoneImage
       };
-      return imgSrcDict[this.nutriScore];
+      return imgSrcDict[this.value];
     }
   }
 }
