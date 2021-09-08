@@ -85,9 +85,9 @@
           </v-card>
 
           <v-card class="card">
+            <h4>Nutritional Information</h4>
             <v-row>
               <v-col cols="12" md="6">
-                <h4>Nutritional Information</h4>
                 <dietary-certifications-input v-model="queryParams"/>
               </v-col>
             </v-row>
@@ -188,7 +188,7 @@ export default {
         return "(Unknown currency)";
       }
       return `${this.currency.symbol} (${this.currency.code})`;
-    },
+    }
   },
 
   methods: {
@@ -273,7 +273,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .product-page-container > div {
   max-width: 50em;
 }
@@ -282,9 +282,5 @@ export default {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
-}
-
-.v-textarea_content {
-  box-shadow: none !important;
 }
 </style>

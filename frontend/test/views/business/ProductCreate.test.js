@@ -59,7 +59,7 @@ describe("Test currencyText Computed Value", () => {
 
   test("Test currencyText with valid currency", async () => {
     // Arrange
-    wrapper.vm.$data.queryParams.currency = null;
+    wrapper.vm.$data.currency = null;
 
     // Action
     const computedValue = wrapper.vm.currencyText;
