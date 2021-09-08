@@ -3,84 +3,97 @@
     <div
         class="w-100 d-flex justify-content-center product-page-container gradient-background my-3"
     >
-      <div class="container">
+      <v-container>
         <form
             class="slightly-transparent-inputs"
             method="POST"
             @submit.prevent="createProduct"
         >
-          <div class="row">
-            <div class="col">
-              <h1>Add product to Catalogue</h1>
-            </div>
-          </div>
+          <v-row>
+            <v-col><h1>Add product to Catalogue</h1></v-col>
+          </v-row>
 
-          <barcode-input />
-          <div class="row">
-            <div class="form-group required col px-3">
-              <label>Name</label>
-              <v-text-field
-                  v-model="name"
-                  maxlength="100"
-                  label="Product Name"
-                  placeholder="Name"
-                  required
-                  type="text"
-                  solo
-                  dense
-              />
-            </div>
-          </div>
+          <v-card
+              class="card"
+          >
+            <h4>
+              Auto-fill fields via Barcode
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                      v-on="on"
+                      color="blue"
+                  >
+                    information
+                  </v-icon>
+                </template>
+                <span>Auto-fill product title and nutritional information by entering the products EAN-13 barcode.</span>
+              </v-tooltip>
+            </h4>
+            <barcode-input/>
+          </v-card>
 
-          <div class="row">
-            <div class="form-group required col px-3">
-              <label>Price {{ currencyText }}</label>
-              <input
-                  v-model="price"
-                  :placeholder="currencyText"
-                  class="form-control"
-                  max="10000000"
-                  min="0.01"
-                  name="price"
-                  required
-                  step="0.01"
-                  type="number"
-              />
-            </div>
-          </div>
+          <v-card
+              class="card"
+          >
+            <h4>Product Information</h4>
+            <v-text-field
+                v-model="queryParams.name"
+                :rules="[() => !!queryParams.name || 'This field is required']"
+                class="form-group required"
+                dense
+                label="Name"
+                maxlength="100"
+                outlined
+                required
+                type="text"
+            />
 
-          <div class="row">
-            <div class="form-group col px-3">
-              <label>Manufacturer</label>
-              <input
-                  v-model="manufacturer"
-                  class="form-control"
-                  maxlength="100"
-                  name="manufacturer"
-                  placeholder="Manufacturer"
-                  type="text"
-              />
-            </div>
-          </div>
+            <v-text-field
+                v-model="queryParams.recommendedRetailPrice"
+                :prefix="currencyText"
+                :rules="[() => !!queryParams.recommendedRetailPrice || 'This field is required']"
+                class="form-group required"
+                dense
+                label="Recommended Retail Price"
+                max="10000000"
+                min="0.01"
+                outlined
+                required
+                step="0.01"
+                type="number"
+            />
 
-          <div class="row>">
-            <div class="form-group col px-0">
-              <label>Description</label>
-              <textarea
-                  v-model="description"
-                  class="form-control"
-                  maxlength="500"
-                  name="description"
-                  placeholder="Description"
-                  rows="5"
-                  type="text"
-              />
-            </div>
-          </div>
-          <nutrient-levels-edit
-            v-model="nutrientLevels"
-          />
-          <div class="row">
+            <v-text-field
+                v-model="queryParams.manufacturer"
+                dense
+                label="Manufacturer"
+                maxlength="100"
+                outlined
+                type="text"
+            />
+
+            <v-textarea
+                v-model="queryParams.description"
+                label="Description"
+                maxlength="500"
+                outlined
+                type="text"
+            />
+          </v-card>
+
+          <v-card class="card">
+            <v-row>
+              <v-col cols="12" md="6">
+                <h4>Nutritional Information</h4>
+                <dietary-certifications-input
+                    @input="event => Object.assign(this.queryParams, event)"
+                />
+              </v-col>
+            </v-row>
+          </v-card>
+
+          <v-row>
             <div class="col">
               <input
                   class="btn btn-block btn-primary"
@@ -88,7 +101,7 @@
                   value="Add Product"
               />
             </div>
-          </div>
+          </v-row>
 
           <div v-if="errorMessage != null" class="row mt-2">
             <div class="col">
@@ -96,7 +109,7 @@
             </div>
           </div>
         </form>
-      </div>
+      </v-container>
     </div>
     <error-modal
         :goBack="false"
@@ -119,25 +132,33 @@ import ErrorModal from "@/components/ErrorModal";
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
 import NutrientLevelsEdit from "@/components/NutrientLevelsEdit"
+import DietaryCertificationsInput from "@/components/DietaryCertificationsInput";
 
 export default {
   components: {
     BarcodeInput,
     NutrientLevelsEdit,
+    DietaryCertificationsInput,
     ErrorModal
   },
 
   data() {
     return {
-      apiErrorMessage: null, // if admin and getting currency nifo fails
+      apiErrorMessage: null, // if admin and getting currency info fails
       errorMessage: null,
 
-      name: "",
-      description: "",
-      manufacturer: "",
-      price: "",
       currency: null,
-
+      queryParams: {
+        name: "",
+        description: "",
+        manufacturer: "",
+        recommendedRetailPrice: "",
+        isGlutenFree: false,
+        isDairyFree: false,
+        isVegetarian: false,
+        isVegan: false,
+        isPalmOilFree: false
+      },
       typeRequired: false, // If phone entered but not country code
 
       /**
@@ -208,7 +229,7 @@ export default {
      * @returns {Promise<void>} a promise
      */
     createProduct: async function () {
-      let price = parseFloat(this.price);
+      let price = parseFloat(this.queryParams.recommendedRetailPrice);
 
       if (isNaN(price)) {
         this.errorMessage = "Please enter a valid price";
@@ -217,16 +238,11 @@ export default {
 
       if (price <= 0) {
         this.errorMessage = "Please enter a valid price greater than 0";
-      } else if (this.name.trim().length === 0) {
+      } else if (this.queryParams.name === null || this.queryParams.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
       } else {
         try {
-          await this.callApi({
-            name: this.name,
-            recommendedRetailPrice: this.price,
-            manufacturer: this.manufacturer,
-            description: this.description,
-          });
+          await this.callApi(this.queryParams);
         } catch (err) {
           if (await Api.handle401.call(this, err)) {
             return;
@@ -249,5 +265,11 @@ export default {
 <style scoped>
 .product-page-container > div {
   max-width: 50em;
+}
+
+.card {
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 </style>
