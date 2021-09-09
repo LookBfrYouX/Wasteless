@@ -47,6 +47,11 @@ const instanceLongTimeouts = axios.create({
   withCredentials: true
 });
 
+const openFoodFactsInstance = axios.create({
+  baseURL: constants.OPEN_FOOD_FACTS_URL,
+  timeout: constants.API.TIMEOUT_SHORT
+});
+
 export const Api = {
   /**
    * Sends login request
@@ -504,7 +509,8 @@ export const Api = {
   },
 
   buyListing: (businessId, listingId) => {
-    return instance.post(`/businesses/${businessId}/listings/${listingId}/purchase`)
+    return instance.post(
+        `/businesses/${businessId}/listings/${listingId}/purchase`)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
         400: err => `The listing could not be purchased: ${err.response.data}`,
@@ -512,5 +518,26 @@ export const Api = {
         406: "The business does not have a listing with that ID"
       });
     });
+  },
+
+  /**
+   * Send GET request to the Open Food Facts API to get nutritiant information
+   * for the product.
+   * @param ean13 The EAN13 barcode number of the product
+   * @returns {Promise<AxiosResponse<any>>} The object containing the
+   * nutritional information of the product
+   */
+  getOpenFoodFacts: (ean13) => {
+    return openFoodFactsInstance.get(ean13.toString()).catch(err => {
+      const serverDownMessage = 'The Open Food Facts API is currently unavailable. Please try again later.'
+      // Possible error codes listed at https://world.openfoodfacts.org/files/api-documentation.html
+      throw ApiRequestError.createFromMessageMap(err, {
+        500: serverDownMessage,
+        502: serverDownMessage,
+        503: serverDownMessage,
+        301: "You were redirected to another product."
+      });
+    });
   }
+
 }
