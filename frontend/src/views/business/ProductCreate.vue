@@ -79,6 +79,16 @@
             </div>
           </div>
 
+          <v-row>
+            <v-col cols="12" md="6">
+            </v-col>
+            <v-col cols="12" md="6">
+              <nutri-score-input v-model="nutriScore"/>
+            </v-col>
+
+          </v-row>
+
+
           <div class="row">
             <div class="col">
               <input
@@ -117,10 +127,12 @@ import ErrorModal from "@/components/ErrorModal";
 
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
+import NutriScoreInput from "@/components/NutriScoreInput";
 
 export default {
   components: {
     BarcodeInput,
+    NutriScoreInput,
     ErrorModal
   },
 
@@ -134,6 +146,7 @@ export default {
       manufacturer: "",
       price: "",
       currency: null,
+      nutriScore: null,
 
       typeRequired: false, // If phone entered but not country code
     };
@@ -165,9 +178,8 @@ export default {
      */
     currencyPipeline: async function () {
       try {
-        const currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
             this.$stateStore);
-        this.currency = currency;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
