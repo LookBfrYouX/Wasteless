@@ -81,10 +81,7 @@
 
           <v-row>
             <v-col cols="12" md="6">
-              <nova-group-input
-                  :nova-group="novaGroup"
-                  @input="newVal => novaGroup = newVal"
-              />
+              <nova-group-input v-model="novaGroup"/>
             </v-col>
             <v-col cols="12" md="6">
               <nutri-score-input v-model="nutriScore"/>

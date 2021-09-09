@@ -8,12 +8,14 @@
             Nova Group
           </label>
           <v-select
-              :value="novaGroup"
+              :value="value"
               :items="options"
-              item-text="score"
-              @change="novaGroup => $emit('input', novaGroup)"
+              item-text="text"
+              item-value="value"
+              :return-object="true"
+              @input="option => $emit('input', option == null? null: option.value)"
               solo
-              clearable
+              :clearable="value != null"
           ></v-select>
         </v-col>
         <v-col cols="6">
@@ -41,12 +43,29 @@ export default {
 
   data() {
     return {
-      options: ['1', '2', '3', '4'],
+      options: [
+        {
+          text: 'N/A',
+          value: null
+        }, {
+          text: '1',
+          value: '1',
+        }, {
+          text: '2',
+          value: '2',
+        }, {
+          text: '3',
+          value: '3'
+        }, {
+          text: '4',
+          value: '4'
+        }
+      ]
     };
   },
 
   props: {
-    novaGroup: null
+    value: null
   },
 
   computed: {
@@ -62,7 +81,7 @@ export default {
         '4': novaGroup4Image,
         null: null
       };
-      return imgSrcDict[this.novaGroup];
+      return imgSrcDict[this.value];
     }
   }
 }

@@ -10,13 +10,13 @@
           <!-- return-object required for test to work; event not emitted in jest test otherwise -->
           <v-select
               :value="value"
-              @input="option => $emit('input', option.value)"
+              @input="option => $emit('input', option == null? null: option.value)"
               :return-object="true"
               :items="options"
               item-text="text"
               item-value="value"
               solo
-              clearable
+              :clearable="value != null"
           ></v-select>
         </v-col>
         <v-col cols="6">
