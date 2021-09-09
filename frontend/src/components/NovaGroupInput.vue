@@ -50,16 +50,16 @@ export default {
           value: null
         }, {
           text: '1',
-          value: '1',
+          value: 1,
         }, {
           text: '2',
-          value: '2',
+          value: 2,
         }, {
           text: '3',
-          value: '3'
+          value: 3
         }, {
           text: '4',
-          value: '4'
+          value: 4
         }
       ]
     };
@@ -76,10 +76,10 @@ export default {
      */
     imgSrc() {
       const imgSrcDict = {
-        '1': novaGroup1Image,
-        '2': novaGroup2Image,
-        '3': novaGroup3Image,
-        '4': novaGroup4Image,
+        1: novaGroup1Image,
+        2: novaGroup2Image,
+        3: novaGroup3Image,
+        4: novaGroup4Image,
         null: novaGroupNullImage 
       };
       return imgSrcDict[this.value];

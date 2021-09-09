@@ -32,6 +32,10 @@ j<template>
 <script>
 import {Api} from "@/Api";
 
+/**
+ * No props. When autofill is triggered, the parsed information is sent through
+ * an `info` event. The barcode itself is not part of this
+ */
 export default {
   name: "BarcodeInput",
   data() {

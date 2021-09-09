@@ -242,15 +242,18 @@ export default {
      */  
     autofill: function(info) {
       Object.keys(info).forEach(prop => {
+        // name, manufacturer, salt/fat etc. levels
         if (typeof this.queryParams[prop] == "string") {
           if (this.queryParams[prop].trim().length == 0) {
             this.queryParams[prop] = info[prop];
           }
         }
+        // certifications (e.g. gluten free)
         else if (typeof info[prop] == "boolean" && this.queryParams[prop] === false) {
           this.queryParams[prop] = info[prop];
         }
 
+        // nova group
         else if (this.queryParams[prop] == null) {
           this.queryParams[prop] = info[prop];
         }
