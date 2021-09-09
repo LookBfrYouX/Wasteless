@@ -188,3 +188,134 @@ describe("Test createProduct method", () => {
         });
   });
 });
+
+describe("autofill behaviour", () => {
+  const clearFields = async () => {
+    wrapper.setData({
+      queryParams: {
+        name: "",
+        description: "",
+        manufacturer: "",
+        recommendedRetailPrice: "",
+
+        // dietary certifications
+        isGlutenFree: false,
+        isDairyFree: false,
+        isVegetarian: false,
+        isVegan: false,
+        isPalmOilFree: false,
+
+        // nutrient levels
+        fat: null,
+        saturatedFat: null,
+        sugars: null,
+        salt: null 
+      }
+    });
+    await wrapper.vm.$nextTick();
+  }
+
+  const exampleResponse = () => ({
+    name: "Hi There",
+    manufacturer: "Beautiful weather today, isn't it?",
+
+    // dietary certifications
+    isGlutenFree: true,
+    isDairyFree: true,
+    isVegetarian: true,
+    isVegan: true,
+    isPalmOilFree: true,
+
+    // nutrient levels
+    fat: "High",
+    saturatedFat: "Moderate",
+    sugars: "Low",
+    salt: "High" 
+  });
+
+  test("all default values - all values set", async () => {
+    // Arrange
+    await clearFields();
+    const info = exampleResponse();
+
+    // Act
+    wrapper.vm.autofill(info);
+
+    // Assert
+    // expect everything to be set
+    Object.keys(info).forEach(key => expect(wrapper.vm.queryParams[key]).toEqual(info[key]));
+  });
+
+  test("empty strings overwritten", async () => {
+    // Arrange
+    await clearFields();
+    const info = exampleResponse();
+    wrapper.vm.queryParams.name = "    ";
+
+    // Act
+    wrapper.vm.autofill(info);
+
+    // Assert
+    expect(wrapper.vm.queryParams.name).toEqual(info.name);
+  });
+
+  test("non-empty strings not overwritten", async () => {
+    // Arrange
+    await clearFields();
+    const info = exampleResponse();
+    const expected = "Don't overwrite meeeeeee. I have so much to live for!";
+    wrapper.vm.queryParams.name = expected;
+
+    // Act
+    wrapper.vm.autofill(info);
+
+    // Assert
+    expect(wrapper.vm.queryParams.name).toEqual(expected);
+  });
+
+
+  test("non-empty strings not overwritten", async () => {
+    // Arrange
+    await clearFields();
+    const info = exampleResponse();
+    const expected = "Don't overwrite meeeeeee. I have so much to live for!";
+    wrapper.vm.queryParams.name = expected;
+
+    // Act
+    wrapper.vm.autofill(info);
+
+    // Assert
+    expect(wrapper.vm.queryParams.name).toEqual(expected);
+  });
+
+
+  test("true booleans not overwritten", async () => {
+    // Arrange
+    await clearFields();
+    const info = exampleResponse();
+    info.isGlutenFree = false;
+    wrapper.vm.queryParams.isGlutenFree = true;
+
+    // Act
+    wrapper.vm.autofill(info);
+
+    // Assert
+    expect(wrapper.vm.queryParams.isGlutenFree).toEqual(true);
+  });
+
+
+
+  test("true booleans not overwritten", async () => {
+    // Arrange
+    await clearFields();
+    const info = exampleResponse();
+    info.isGlutenFree = false;
+    wrapper.vm.queryParams.isGlutenFree = true;
+
+    // Act
+    wrapper.vm.autofill(info);
+
+    // Assert
+    expect(wrapper.vm.queryParams.isGlutenFree).toEqual(true);
+  });
+});
