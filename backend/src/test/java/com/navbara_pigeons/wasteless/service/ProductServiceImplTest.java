@@ -21,11 +21,12 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
-public class ProductServiceImplTest extends ServiceTestProvider {
+class ProductServiceImplTest extends ServiceTestProvider {
 
     private final String email = "tony@tony.tony";
     private final String password = "tonyTony1";
@@ -65,19 +66,31 @@ public class ProductServiceImplTest extends ServiceTestProvider {
         business.setPrimaryAdministratorId(userId);
     }
 
-//    @Test
-//    @WithMockUser(username = email, password = password)
-//    void getProductsWithAdequatePrivilegesExpectResponse() throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InvalidPaginationInputException {
-//        Product product = makeProduct(productName);
-//        business.addCatalogueProduct(product);
-//        when(userService.isAdmin()).thenReturn(true);
-//        when(businessService.isBusinessAdmin(businessId)).thenReturn(true);
-//        when(productDao.getProducts(any(Business.class), any(PaginationBuilder.class)))
-//                .thenReturn(Pair.of(business.getProductsCatalogue(), Long.valueOf(business.getProductsCatalogue().size())));
-//        PaginationDto<BasicProductDto> products = productService.getProducts(businessId, 0,1, null, true);
-//        Assertions.assertEquals(1, products.getTotalCount());
-//    }
-//
+    @Test
+    @WithMockUser(username = email, password = password)
+    void getProductsWithAdequatePrivilegesExpectResponse() throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException, InvalidPaginationInputException {
+        Product product = makeProduct(productName);
+        business.addCatalogueProduct(product);
+        when(userService.isAdmin()).thenReturn(true);
+        when(businessService.isBusinessAdmin(businessId)).thenReturn(true);
+        when(businessDao.getBusinessById(any(Long.class))).thenReturn(business);
+        when(productDao.getProducts(any(Business.class), any(PaginationBuilder.class)))
+                .thenReturn(Pair.of(business.getProductsCatalogue(), Long.valueOf(business.getProductsCatalogue().size())));
+        PaginationDto<BasicProductDto> products = productService.getProducts(businessId, 0,1, null, true);
+        Assertions.assertEquals(1, products.getTotalCount());
+    }
+
+    @Test
+    void getProductsWithNonAdequatePrivilegesExpectInsufficientPrivilegesException() throws InsufficientPrivilegesException {
+        Assertions.assertThrows(InsufficientPrivilegesException.class, () -> {
+                    Product product = makeProduct(productName);
+                    business.addCatalogueProduct(product);
+                    when(userService.isAdmin()).thenReturn(false);
+                    when(productDao.getProducts(any(Business.class), any(PaginationBuilder.class)))
+                            .thenReturn(Pair.of(business.getProductsCatalogue(), Long.valueOf(business.getProductsCatalogue().size())));
+            PaginationDto<BasicProductDto> products = productService.getProducts(businessId, 0,1, null, true);
+        });
+    }
 
 
 }
