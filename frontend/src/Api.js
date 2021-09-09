@@ -509,7 +509,8 @@ export const Api = {
   },
 
   buyListing: (businessId, listingId) => {
-    return instance.post(`/businesses/${businessId}/listings/${listingId}/purchase`)
+    return instance.post(
+        `/businesses/${businessId}/listings/${listingId}/purchase`)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
         400: err => `The listing could not be purchased: ${err.response.data}`,

@@ -78,6 +78,7 @@
                 v-model="queryParams.description"
                 label="Description"
                 maxlength="500"
+                counter="500"
                 type="text"
                 solo
             />
@@ -93,6 +94,7 @@
             <nutrient-levels-edit v-model="queryParams"/>
             <v-row>
               <v-col cols="12" md="6">
+                <nova-group-input v-model="queryParams.novaGroup"/>
               </v-col>
               <v-col cols="12" md="6">
                 <nutri-score-input v-model="queryParams.nutriScore"/>
@@ -142,6 +144,7 @@ import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
 import NutrientLevelsEdit from "@/components/NutrientLevelsEdit"
 import DietaryCertificationsInput from "@/components/DietaryCertificationsInput";
+import NovaGroupInput from "@/components/NovaGroupInput";
 import NutriScoreInput from "@/components/NutriScoreInput";
 
 export default {
@@ -149,6 +152,7 @@ export default {
     BarcodeInput,
     NutrientLevelsEdit,
     DietaryCertificationsInput,
+    NovaGroupInput,
     NutriScoreInput,
     ErrorModal
   },

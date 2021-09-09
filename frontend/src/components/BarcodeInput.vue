@@ -1,4 +1,4 @@
-<template>
+j<template>
 <v-form>
   <div class="d-flex">
     <v-text-field
@@ -38,7 +38,7 @@ export default {
     return {
       barcode: "",
       errorMessage: null,
-      apiIsLoading:false,
+      apiIsLoading: false,
       info: {
         name: "",
         manufacturer: "",
@@ -78,9 +78,8 @@ export default {
      */
     setProductInformation: async function() {
       const data = await this.getNutritionalInformationWithBarcode(this.barcode);
-
-      if (data == null) return;
-      if (data.status == 0) {
+      
+      if (data == null || data.status == 0) {
         this.errorMessage = "Product Not Found: Please enter details manually";
       } else {
         this.errorMessage = null;
