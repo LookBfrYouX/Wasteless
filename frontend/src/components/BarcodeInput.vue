@@ -60,7 +60,10 @@ export default {
      */
     setProductInformation: async function() {
       const data = await this.getNutritionalInformationWithBarcode(this.barcode);
-      if (data.status == 0) {
+      if (data == null) {
+        return this.errorMessage = "Product Not Found: Please enter details manually";
+      }
+      if (data == null || data.status == 0) {
         this.errorMessage = "Product Not Found: Please enter details manually";
       } else {
         this.errorMessage = null;
