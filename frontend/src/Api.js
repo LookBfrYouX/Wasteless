@@ -529,7 +529,7 @@ export const Api = {
    */
   getOpenFoodFacts: (ean13) => {
     return openFoodFactsInstance.get(ean13.toString()).catch(err => {
-      const serverDownMessage = 'Our Food Facts API is currently unavailable. Please try again later.'
+      const serverDownMessage = 'The Open Food Facts API is currently unavailable. Please try again later.'
       // Possible error codes listed at https://world.openfoodfacts.org/files/api-documentation.html
       throw ApiRequestError.createFromMessageMap(err, {
         500: serverDownMessage,
@@ -539,4 +539,5 @@ export const Api = {
       });
     });
   }
+
 }

@@ -110,4 +110,5 @@ export const constants = {
   },
 
   OPEN_FOOD_FACTS_URL: "https://world.openfoodfacts.org/api/v0/product/"
+
 };
