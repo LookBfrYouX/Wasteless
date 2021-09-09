@@ -209,7 +209,10 @@ describe("autofill behaviour", () => {
         fat: null,
         saturatedFat: null,
         sugars: null,
-        salt: null 
+        salt: null,
+
+        nutriScore: null,
+        novaScore: null
       }
     });
     await wrapper.vm.$nextTick();
@@ -230,7 +233,10 @@ describe("autofill behaviour", () => {
     fat: "High",
     saturatedFat: "Moderate",
     sugars: "Low",
-    salt: "High" 
+    salt: "High",
+
+    nutriScore: "A",
+    novaScore: "B"
   });
 
   test("all default values - all values set", async () => {

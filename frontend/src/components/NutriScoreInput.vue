@@ -7,16 +7,20 @@
           <label>
             Nutri-Score
           </label>
-          <!-- return-object required for test to work; event not emitted in jest test otherwise -->
+          <!--
+            return-object required for test to work; event not emitted in jest test otherwise.
+            If the item value is null, it assumes it is not a valid key and hence
+            returns null instead of an object. Hence, a null check is required
+          -->
           <v-select
               :value="value"
-              @input="option => $emit('input', option.value)"
+              @input="option => $emit('input', option == null? null: option.value)"
               :return-object="true"
               :items="options"
               item-text="text"
               item-value="value"
               solo
-              clearable
+              :clearable="value != null"
           ></v-select>
         </v-col>
         <v-col cols="6">
