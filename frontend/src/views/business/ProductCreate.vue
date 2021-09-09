@@ -87,7 +87,7 @@
               />
             </v-col>
             <v-col cols="12" md="6">
-
+              <nutri-score-input v-model="nutriScore"/>
             </v-col>
 
           </v-row>
@@ -132,11 +132,13 @@ import ErrorModal from "@/components/ErrorModal";
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
 import NovaGroupInput from "@/components/NovaGroupInput";
+import NutriScoreInput from "@/components/NutriScoreInput";
 
 export default {
   components: {
     BarcodeInput,
     NovaGroupInput,
+    NutriScoreInput,
     ErrorModal
   },
 
@@ -151,6 +153,8 @@ export default {
       price: "",
       currency: null,
       novaGroup: null,
+      nutriScore: null,
+
       typeRequired: false, // If phone entered but not country code
     };
   },
