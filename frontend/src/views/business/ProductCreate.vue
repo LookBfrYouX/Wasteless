@@ -91,9 +91,17 @@
               </v-col>
             </v-row>
             <nutrient-levels-edit v-model="queryParams"/>
+            <v-row>
+              <v-col cols="12" md="6">
+              </v-col>
+              <v-col cols="12" md="6">
+                <nutri-score-input v-model="queryParams.nutriScore"/>
+              </v-col>
+            </v-row>
           </v-card>
 
-          <v-row>
+
+          <div class="row">
             <div class="col">
               <input
                   class="btn btn-block btn-primary"
@@ -102,7 +110,7 @@
                   @click="createProduct"
               />
             </div>
-          </v-row>
+          </div>
 
           <div v-if="errorMessage != null" class="row mt-2">
             <div class="col">
@@ -134,12 +142,14 @@ import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
 import NutrientLevelsEdit from "@/components/NutrientLevelsEdit"
 import DietaryCertificationsInput from "@/components/DietaryCertificationsInput";
+import NutriScoreInput from "@/components/NutriScoreInput";
 
 export default {
   components: {
     BarcodeInput,
     NutrientLevelsEdit,
     DietaryCertificationsInput,
+    NutriScoreInput,
     ErrorModal
   },
 
@@ -166,7 +176,10 @@ export default {
         fat: null,
         saturatedFat: null,
         sugars: null,
-        salt: null 
+        salt: null,
+
+        nutriScore: null,
+        novaScore: null
       }
     };
   },
@@ -197,9 +210,8 @@ export default {
      */
     currencyPipeline: async function () {
       try {
-        const currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
             this.$stateStore);
-        this.currency = currency;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
