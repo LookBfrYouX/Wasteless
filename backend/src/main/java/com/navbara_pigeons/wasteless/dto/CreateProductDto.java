@@ -75,7 +75,7 @@ public class CreateProductDto {
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
     this.sugar = product.getSugar();
-    this.salt = product.getsalt();
+    this.salt = product.getSalt();
     this.isGlutenFree = product.getIsGlutenFree();
     this.isDairyFree = product.getIsDairyFree();
     this.isVegetarian = product.getIsVegetarian();

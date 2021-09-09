@@ -82,7 +82,7 @@ CREATE TABLE product
     FAT              ENUM('LOW', 'MODERATE','HIGH'),
     SATURATED_FAT    ENUM('LOW', 'MODERATE','HIGH'),
     SUGAR            ENUM('LOW', 'MODERATE','HIGH'),
-    SODIUM           ENUM('LOW', 'MODERATE','HIGH'),
+    SALT             ENUM('LOW', 'MODERATE','HIGH'),
     NUTRITION_SCORE  ENUM('A','B','C','D','E'),
     NOVA_SCORE       INT CHECK (NOVA_SCORE <= 4 AND NOVA_SCORE >= 1),
     IS_GLUTEN_FREE BOOL,
