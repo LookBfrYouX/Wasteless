@@ -86,7 +86,7 @@
           <v-card class="card">
             <h4>Nutritional Information</h4>
             <v-row>
-              <v-col cols="12" md="6">
+              <v-col cols="12">
                 <dietary-certifications-input v-model="queryParams"/>
               </v-col>
             </v-row>
@@ -156,11 +156,11 @@ export default {
         recommendedRetailPrice: "",
 
         // dietary certifications
-        isGlutenFree: null,
-        isDairyFree: null,
-        isVegetarian: null,
-        isVegan: null,
-        isPalmOilFree: null,
+        isGlutenFree: false,
+        isDairyFree: false,
+        isVegetarian: false,
+        isVegan: false,
+        isPalmOilFree: false,
 
         // nutrient levels
         fat: null,
@@ -220,6 +220,10 @@ export default {
       return Api.createProduct(this.businessId, data);
     },
 
+    /**
+     * Method that is run when barcode component emits event with nutrition info,
+     * autofilling values that are 'untouched' or in their default position
+     */  
     autofill: function(info) {
       Object.keys(info).forEach(prop => {
         if (typeof this.queryParams[prop] == "string") {
@@ -227,8 +231,11 @@ export default {
             this.queryParams[prop] = info[prop];
           }
         }
+        else if (typeof info[prop] == "boolean" && this.queryParams[prop] === false) {
+          this.queryParams[prop] = info[prop];
+        }
 
-        if (this.queryParams[prop] == null) {
+        else if (this.queryParams[prop] == null) {
           this.queryParams[prop] = info[prop];
         }
       });
