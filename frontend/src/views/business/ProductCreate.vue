@@ -183,7 +183,7 @@ export default {
         salt: null,
 
         nutriScore: null,
-        novaScore: null
+        novaGroup: null
       }
     };
   },

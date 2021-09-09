@@ -212,7 +212,7 @@ describe("autofill behaviour", () => {
         salt: null,
 
         nutriScore: null,
-        novaScore: null
+        novaGroup: null
       }
     });
     await wrapper.vm.$nextTick();
@@ -236,7 +236,7 @@ describe("autofill behaviour", () => {
     salt: "High",
 
     nutriScore: "A",
-    novaScore: "B"
+    novaGroup: "B"
   });
 
   test("all default values - all values set", async () => {

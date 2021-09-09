@@ -33,6 +33,7 @@
 <script>
 
 // Importing image allows Vue to copy the file to /public on build
+import novaGroupNullImage from "@/../assets/images/nova-group-null.svg";
 import novaGroup1Image from "@/../assets/images/nova-group-1.svg";
 import novaGroup2Image from "@/../assets/images/nova-group-2.svg";
 import novaGroup3Image from "@/../assets/images/nova-group-3.svg";
@@ -79,7 +80,7 @@ export default {
         '2': novaGroup2Image,
         '3': novaGroup3Image,
         '4': novaGroup4Image,
-        null: null
+        null: novaGroupNullImage 
       };
       return imgSrcDict[this.value];
     }
