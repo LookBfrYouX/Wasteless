@@ -280,37 +280,6 @@ describe("autofill behaviour", () => {
   });
 
 
-  test("non-empty strings not overwritten", async () => {
-    // Arrange
-    await clearFields();
-    const info = exampleResponse();
-    const expected = "Don't overwrite meeeeeee. I have so much to live for!";
-    wrapper.vm.queryParams.name = expected;
-
-    // Act
-    wrapper.vm.autofill(info);
-
-    // Assert
-    expect(wrapper.vm.queryParams.name).toEqual(expected);
-  });
-
-
-  test("true booleans not overwritten", async () => {
-    // Arrange
-    await clearFields();
-    const info = exampleResponse();
-    info.isGlutenFree = false;
-    wrapper.vm.queryParams.isGlutenFree = true;
-
-    // Act
-    wrapper.vm.autofill(info);
-
-    // Assert
-    expect(wrapper.vm.queryParams.isGlutenFree).toEqual(true);
-  });
-
-
-
   test("true booleans not overwritten", async () => {
     // Arrange
     await clearFields();

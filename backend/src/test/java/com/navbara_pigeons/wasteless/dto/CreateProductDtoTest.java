@@ -56,10 +56,10 @@ class CreateProductDtoTest extends MainTestProvider {
   }
 
   @Test
-  void createProductDto_withNovaScore_expectOk() {
+  void createProductDto_withNovaGroup_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("test789"));
-    dto.setNovaScore(1);
-    Assertions.assertEquals(1, dto.getNovaScore());
+    dto.setNovaGroup(1);
+    Assertions.assertEquals(1, dto.getNovaGroup());
   }
 
   @Test

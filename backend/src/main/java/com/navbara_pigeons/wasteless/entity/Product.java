@@ -65,7 +65,7 @@ public class Product {
   private NutriScore nutriScore;
 
   @Column(name = "NOVA_SCORE")
-  private Integer novaScore;
+  private Integer novaGroup;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "FAT")
@@ -145,7 +145,7 @@ public class Product {
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
     this.nutriScore = product.getNutriScore();
-    this.novaScore = product.getNovaScore();
+    this.novaGroup = product.getNovaGroup();
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
     this.sugar = product.getSugar();

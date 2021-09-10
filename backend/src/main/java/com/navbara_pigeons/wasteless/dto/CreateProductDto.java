@@ -36,7 +36,7 @@ public class CreateProductDto {
 
   @Min(1)
   @Max(4)
-  private Integer novaScore;
+  private Integer novaGroup;
 
   private NutritionFactsLevel fat;
 
@@ -71,7 +71,7 @@ public class CreateProductDto {
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
     this.nutriScore = product.getNutriScore();
-    this.novaScore = product.getNovaScore();
+    this.novaGroup = product.getNovaGroup();
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
     this.sugar = product.getSugar();
