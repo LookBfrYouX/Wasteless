@@ -42,7 +42,7 @@ public class CreateProductDto {
 
   private NutritionFactsLevel saturatedFat;
 
-  private NutritionFactsLevel sugar;
+  private NutritionFactsLevel sugars;
 
   private NutritionFactsLevel salt;
 
@@ -74,7 +74,7 @@ public class CreateProductDto {
     this.novaGroup = product.getNovaGroup();
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
-    this.sugar = product.getSugar();
+    this.sugars = product.getSugars();
     this.salt = product.getSalt();
     this.isGlutenFree = product.getIsGlutenFree();
     this.isDairyFree = product.getIsDairyFree();

@@ -76,8 +76,8 @@ public class Product {
   private NutritionFactsLevel saturatedFat;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "SUGAR")
-  private NutritionFactsLevel sugar;
+  @Column(name = "SUGARS")
+  private NutritionFactsLevel sugars;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "SALT")
@@ -148,7 +148,7 @@ public class Product {
     this.novaGroup = product.getNovaGroup();
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
-    this.sugar = product.getSugar();
+    this.sugars = product.getSugars();
     this.salt = product.getSalt();
     this.isGlutenFree = product.getIsGlutenFree();
     this.isDairyFree = product.getIsDairyFree();

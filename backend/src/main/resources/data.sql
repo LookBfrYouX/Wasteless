@@ -81,7 +81,7 @@ CREATE TABLE product
     PRIMARY_IMAGE_ID BIGINT,
     FAT              ENUM('LOW', 'MODERATE','HIGH'),
     SATURATED_FAT    ENUM('LOW', 'MODERATE','HIGH'),
-    SUGAR            ENUM('LOW', 'MODERATE','HIGH'),
+    SUGARS           ENUM('LOW', 'MODERATE','HIGH'),
     SALT             ENUM('LOW', 'MODERATE','HIGH'),
     NUTRI_SCORE      ENUM('A','B','C','D','E'),
     NOVA_GROUP       INT CHECK (NOVA_GROUP <= 4 AND NOVA_GROUP >= 1),

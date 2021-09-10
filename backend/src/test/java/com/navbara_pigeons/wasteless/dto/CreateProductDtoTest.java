@@ -77,14 +77,14 @@ class CreateProductDtoTest extends MainTestProvider {
   }
 
   @Test
-  void createProductDto_withSugar_expectOk() {
+  void createProductDto_withSugars_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product654"));
-    dto.setSugar(NutritionFactsLevel.HIGH);
-    Assertions.assertEquals("HIGH", dto.getSugar().name());
+    dto.setSugars(NutritionFactsLevel.HIGH);
+    Assertions.assertEquals("HIGH", dto.getSugars().name());
   }
 
   @Test
-  void createProductDto_withsalt_expectOk() {
+  void createProductDto_withSalt_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product654"));
     dto.setSalt(NutritionFactsLevel.LOW);
     Assertions.assertEquals("LOW", dto.getSalt().name());
