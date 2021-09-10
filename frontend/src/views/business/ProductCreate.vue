@@ -105,12 +105,15 @@
 
           <div class="row">
             <div class="col">
-              <input
-                  class="btn btn-block btn-primary"
-                  type="submit"
-                  value="Add Product"
-                  @click="createProduct"
-              />
+              <v-btn
+                @click="createProduct"
+                color="rgb(30, 201, 150)"
+                class="white--text bootstrapish-button"
+                :loading="apiCallInProgress"
+                width="100%"
+              >
+                Add Product
+              </v-btn>
             </div>
           </div>
 
@@ -161,6 +164,7 @@ export default {
     return {
       apiErrorMessage: null, // if admin and getting currency info fails
       errorMessage: null,
+      apiCallInProgress: false,
 
       currency: null,
       queryParams: {
@@ -226,7 +230,7 @@ export default {
     },
 
     /**
-     * Wrapper which simply calls the sign up method of the api
+     * Wrapper which simply calls the create product method of the api
      */
     callApi: function (data) {
       if (this.businessId == null) {
@@ -278,6 +282,7 @@ export default {
       } else if (this.queryParams.name === null || this.queryParams.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
       } else {
+        this.apiCallInProgress = true;
         try {
           await this.callApi(this.queryParams);
         } catch (err) {
@@ -286,7 +291,10 @@ export default {
           }
           this.errorMessage = err.userFacingErrorMessage;
           return;
+        } finally {
+          this.apiCallInProgress = false;
         }
+
         await this.$router.push({
           name: "BusinessProducts",
           params: {
@@ -308,5 +316,12 @@ export default {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.bootstrapish-button.v-btn {
+  font-size: 1em;
+  letter-spacing: initial;
+  text-transform: initial;
+  text-indent: initial;
 }
 </style>
