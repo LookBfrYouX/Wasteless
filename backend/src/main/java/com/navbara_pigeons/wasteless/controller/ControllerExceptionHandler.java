@@ -140,7 +140,6 @@ public class ControllerExceptionHandler {
   public ResponseEntity<String> handleProductRegistrationException(
       ProductRegistrationException exc) {
     log.error("PRODUCT REGISTRATION ERROR: 400 - " + exc.getMessage());
-    exc.printStackTrace();
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
@@ -293,7 +292,6 @@ public class ControllerExceptionHandler {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<String> handleGeneralException(Exception exc) {
     log.error("CRITICAL ERROR: 500 - " + exc.getMessage());
-    exc.printStackTrace();
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
