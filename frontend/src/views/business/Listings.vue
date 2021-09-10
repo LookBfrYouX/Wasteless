@@ -155,8 +155,16 @@ export default {
 
     getListingsPipeline: async function () {
       try {
+
         const response = (await Api.getListings(this.searchParams)).data;
         this.listings = response.results;
+        this.listings.forEach(listing => {
+          listing.inventoryItem.product.isDairyFree = true;
+          listing.inventoryItem.product.isGlutenFree = true;
+          listing.inventoryItem.product.isPalmOilFree = true;
+          listing.inventoryItem.product.isVegan = true;
+          listing.inventoryItem.product.isVegetarian = true;
+        });
         this.totalResults = response.totalCount;
         this.titleString = `Results ${this.searchParams.searchString ? "for: "
             + this.searchParams.searchString : ""}`;

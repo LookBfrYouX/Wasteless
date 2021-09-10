@@ -14,7 +14,6 @@
           top
           v-for="{ key, shortText, longText, chipClass, backgroundColor, foregroundColor }
                  in allergyChipConfig.filter(({ key }) => item.inventoryItem.product[key])"
-          v-on="on"
           :key="key"
         >
           <template v-slot:activator="{ on, attrs }">
@@ -188,19 +187,19 @@ export default {
 
 .palm-oil-free-chip span {
   position: relative;
-  line-height: 1;
+  line-height: 1.1;
 }
 
 .palm-oil-free-chip span::after {
   // https://stackoverflow.com/a/28974253/5204356
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M0 100 L100 0 L100 10 L10 100' fill='black' /></svg>");
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='100' x2='100' y2='15' style='stroke: black;stroke-width: 5; stroke-linecap: round'/></svg>");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 100% 100%, auto;
   position: absolute;
-  left: 0;
+  left: -0.1em;
   bottom: 0;
-  right: 0;
+  right: -0.1em;
   top: 0;
   content: "";
 }
