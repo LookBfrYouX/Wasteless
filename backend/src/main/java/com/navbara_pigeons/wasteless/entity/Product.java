@@ -61,10 +61,10 @@ public class Product {
   private ZonedDateTime created;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "NUTRITION_SCORE")
+  @Column(name = "NUTRI_SCORE")
   private NutriScore nutriScore;
 
-  @Column(name = "NOVA_SCORE")
+  @Column(name = "NOVA_GROUP")
   private Integer novaGroup;
 
   @Enumerated(EnumType.STRING)
