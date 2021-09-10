@@ -9,18 +9,18 @@
         v-if="item.inventoryItem.product"
       >
         <v-tooltip top
-          v-for="{key, shortText, longText, cls} in [ 
-            { key: 'isDairyFree', shortText: 'DF', longText: 'Dairy Free', cls: null },
-            { key: 'isGlutenFree', shortText: 'GF', longText: 'Gluten Free', cls: null },
-            { key: 'isVegetarian', shortText: 'V', longText: 'Vegetarian', cls: null },
-            { key: 'isVegan', shortText: 'VE', longText: 'Vegan', cls: null },
-            { key: 'isPalmOilFree', shortText: 'PO', longText: 'Palm Oil Free', cls: 'palm-oil-free-chip' }
+          v-for="{key, shortText, longText, cls, bg, fg} in [ 
+            { key: 'isDairyFree', shortText: 'DF', longText: 'Dairy Free', cls: null, bg: '#ffdd50', fg: 'black' },
+            { key: 'isGlutenFree', shortText: 'GF', longText: 'Gluten Free', cls: null, bg: '#93641c', fg: 'white' },
+            { key: 'isVegetarian', shortText: 'V', longText: 'Vegetarian', cls: null, bg: '#40826d', fg: 'white' },
+            { key: 'isVegan', shortText: 'VE', longText: 'Vegan', cls: null, bg: '#74B74E', fg: 'white' },
+            { key: 'isPalmOilFree', shortText: 'PO', longText: 'Palm Oil Free', cls: 'palm-oil-free-chip', bg: '#ffc5c5', fg: 'black' }
           ].filter(({key}) => item.inventoryItem.product[key])"
           v-on="on"
           :key="key"
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-chip small v-on="on" v-bind="attrs" :class="cls">
+            <v-chip small v-on="on" v-bind="attrs" class="mr-2" :class="cls" :color="bg" :text-color="fg">
               <span>
                 {{ shortText }}
               </span>
@@ -128,12 +128,9 @@ export default {
   position: absolute;
 }
 
-.allergy-info-container .v-chip {
-  margin-left: 0.3rem;
-}
 .palm-oil-free-chip span {
   position: relative;
-  line-height: 0.7;
+  line-height: 1;
 }
 
 .palm-oil-free-chip span::after {
