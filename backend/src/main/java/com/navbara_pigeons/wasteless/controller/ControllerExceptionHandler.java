@@ -140,6 +140,7 @@ public class ControllerExceptionHandler {
   public ResponseEntity<String> handleProductRegistrationException(
       ProductRegistrationException exc) {
     log.error("PRODUCT REGISTRATION ERROR: 400 - " + exc.getMessage());
+    exc.printStackTrace();
     return new ResponseEntity<>(exc.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
