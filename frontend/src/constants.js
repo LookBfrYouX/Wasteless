@@ -125,5 +125,8 @@ export const constants = {
         SUBSTITUTE_COST: 50,
       },
     }
-  }
+  },
+
+  OPEN_FOOD_FACTS_URL: "https://world.openfoodfacts.org/api/v0/product/"
+
 };
