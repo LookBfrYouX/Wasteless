@@ -9,32 +9,30 @@
     class="text-decoration-none text-reset"
   >
     <v-card class="w-100 hover-scale-effect p-relative">
-      <div class="allergy-info-container p-2" v-if="item.inventoryItem.product">
-        <v-tooltip
-          top
-          v-for="{ key, shortText, longText, chipClass, backgroundColor, foregroundColor }
-                 in allergyChipConfig.filter(({ key }) => item.inventoryItem.product[key])"
+      <div
+        v-if="item.inventoryItem.product"
+        class="allergy-info-container d-flex flex-wrap justify-content-between p-2"
+      >
+      <!-- using justify-content: space between as the least important 
+           information is probably around the edges -->
+        <!-- Can't use v-for and v-if together so filtering out false elements
+             from the array instead -->
+        <v-chip
+          small
+          v-for="{ key, longText, backgroundColor, foregroundColor }
+                in $constants.PRODUCT.ALLERGY_CHIP_CONFIG
+                  .filter(({ key }) => item.inventoryItem.product[key])"
           :key="key"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-chip
-              small
-              v-on="on"
-              v-bind="attrs"
-              class="mr-2"
-              :class="chipClass"
-              :color="backgroundColor"
-              :text-color="foregroundColor"
-            >
-              <span>
-                {{ shortText }}
-              </span>
-            </v-chip>
-          </template>
-          {{ longText }}
-        </v-tooltip>
-      </div>
 
+          class="mr-1 mb-1"
+          :color="backgroundColor"
+          :text-color="foregroundColor"
+        >
+          <span>
+            {{ longText }}
+          </span>
+        </v-chip>
+      </div>
       <img
           v-if="item.inventoryItem.product.images.length"
           :src="item.inventoryItem.product.images[0].thumbnailFilename"
@@ -111,55 +109,6 @@ export default {
       );
     },
   },
-
-  computed: {
-    /**
-     * Information for chip color, text, classes etc.
-     */
-    allergyChipConfig() {
-      return [
-        {
-          key: "isDairyFree",
-          shortText: "DF",
-          longText: "Dairy Free",
-          chipClass: null,
-          backgroundColor: "#ffdd50",
-          foregroundColor: "black",
-        }, {
-          key: "isGlutenFree",
-          shortText: "GF",
-          longText: "Gluten Free",
-          chipClass: null,
-          backgroundColor: "#93641c",
-          foregroundColor: "white",
-        }, {
-          key: "isVegetarian",
-          shortText: "V",
-          longText: "Vegetarian",
-          chipClass: null,
-          backgroundColor: "#40826d",
-          foregroundColor: "white",
-        }, {
-          key: "isVegan",
-          shortText: "VE",
-          longText: "Vegan",
-          chipClass: null,
-          backgroundColor: "#74B74E",
-          foregroundColor: "white",
-        }, {
-          key: "isPalmOilFree",
-          shortText: "PO",
-          longText: "Palm Oil Free",
-          // custom CSS for palm oil free chip
-          // if foreground color not black, should be changed in the CSS
-          // as well for the inline SVG
-          chipClass: "palm-oil-free-chip",
-          backgroundColor: "#ffc5c5",
-          foregroundColor: "black",
-        }
-      ];
-    },
-  },
 };
 </script>
 
@@ -183,24 +132,5 @@ export default {
 
 .allergy-info-container {
   position: absolute;
-}
-
-.palm-oil-free-chip span {
-  position: relative;
-  line-height: 1.1;
-}
-
-.palm-oil-free-chip span::after {
-  // https://stackoverflow.com/a/28974253/5204356
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='100' x2='100' y2='15' style='stroke: black;stroke-width: 5; stroke-linecap: round'/></svg>");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 100% 100%, auto;
-  position: absolute;
-  left: -0.1em;
-  bottom: 0;
-  right: -0.1em;
-  top: 0;
-  content: "";
 }
 </style>

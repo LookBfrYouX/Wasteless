@@ -83,6 +83,42 @@ export const constants = {
     }
   },
 
+  PRODUCT: {
+    ALLERGY_CHIP_CONFIG: [
+      {
+        key: "isDairyFree",
+        shortText: "DF",
+        longText: "Dairy Free",
+        backgroundColor: "#ffdd50",
+        foregroundColor: "black",
+      }, {
+        key: "isGlutenFree",
+        shortText: "GF",
+        longText: "Gluten Free",
+        backgroundColor: "#93641c",
+        foregroundColor: "white",
+      }, {
+        key: "isVegetarian",
+        shortText: "V",
+        longText: "Vegetarian",
+        backgroundColor: "#40826d",
+        foregroundColor: "white",
+      }, {
+        key: "isVegan",
+        shortText: "VE",
+        longText: "Vegan",
+        backgroundColor: "#74B74E",
+        foregroundColor: "white",
+      }, {
+        key: "isPalmOilFree",
+        shortText: "POF",
+        longText: "Palm Oil Free",
+        backgroundColor: "#ffc5c5",
+        foregroundColor: "black",
+      }
+    ]
+  },
+
   API: {
     TIMEOUT_SHORT: 2500,
     TIMEOUT_LONG: 10000
