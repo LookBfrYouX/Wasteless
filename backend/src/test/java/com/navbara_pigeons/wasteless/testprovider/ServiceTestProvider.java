@@ -338,7 +338,7 @@ public class ServiceTestProvider extends MainTestProvider {
   }
 
   public List<Listing> getMockBusinessListings(Business mockBusiness) {
-    List<Listing> mockBusinessListings = new ArrayList<Listing>();
+    List<Listing> mockBusinessListings = new ArrayList<>();
     for (InventoryItem inventoryItem : mockBusiness.getInventory()) {
       mockBusinessListings.addAll(inventoryItem.getListings());
     }
