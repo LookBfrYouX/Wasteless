@@ -174,7 +174,7 @@ class CreateProductDtoTest extends MainTestProvider {
   @Test
   void mapProductToDto_withValidNovascore_expectOk() {
     Product tempProduct = makeProduct("Test Product 03");
-    tempProduct.setNovaScore(4);
+    tempProduct.setNovaGroup(4);
     BasicProductDto productDto = new BasicProductDto(tempProduct, null);
     Assertions.assertEquals(4, productDto.getNovaScore());
   }
@@ -182,7 +182,7 @@ class CreateProductDtoTest extends MainTestProvider {
   @Test
   void mapProductToDto_withNullNovascore_expectOk() {
     Product tempProduct = makeProduct("Test Product 04");
-    tempProduct.setNovaScore(null);
+    tempProduct.setNovaGroup(null);
     Assertions.assertDoesNotThrow(() -> { BasicProductDto productDto = new BasicProductDto(tempProduct, null); });
   }
 

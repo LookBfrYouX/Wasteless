@@ -35,7 +35,7 @@ public class EU2ViewNutritionStepDefs extends CucumberTestProvider {
     Product product = makeProduct(productName);
     CreateProductDto productDto = new CreateProductDto(product);
     productDto.setFat(NutritionFactsLevel.valueOf(fatLevel));
-    productDto.setSugar(NutritionFactsLevel.valueOf(sugarLevel));
+    productDto.setSugars(NutritionFactsLevel.valueOf(sugarLevel));
     this.response = mockMvc.perform(post("/businesses/1001/products")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(productDto))).andReturn();

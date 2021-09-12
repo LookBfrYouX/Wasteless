@@ -53,11 +53,11 @@ public class BasicProductDto {
           product.getImages()); // First image is primary image
     }
     this.nutriScore = product.getNutriScore();
-    this.novaScore = product.getNovaScore();
+    this.novaScore = product.getNovaGroup();
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
-    this.sugar = product.getSugar();
-    this.sodium = product.getSodium();
+    this.sugar = product.getSugars();
+    this.sodium = product.getSalt();
     this.isGlutenFree = product.getIsGlutenFree();
     this.isDairyFree = product.getIsDairyFree();
     this.isVegetarian = product.getIsVegetarian();
