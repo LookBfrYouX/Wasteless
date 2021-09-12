@@ -85,7 +85,11 @@ public class ListingController {
           @Parameter(description = "Minimum Price of Listing") @RequestParam(required = false) Double minPrice,
           @Parameter(description = "Maximum Price of Listing") @RequestParam(required = false) Double maxPrice,
           @Parameter(description = "Dates to Filter Listings By") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<ZonedDateTime> filterDates,
-          @Parameter(description = "Types of Businesses to Filter Listings By") @RequestParam(required = false)  List<BusinessType> businessTypes
+          @Parameter(description = "Types of Businesses to Filter Listings By") @RequestParam(required = false)  List<BusinessType> businessTypes,
+          @Parameter(description="Amount of fat in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> fat,
+          @Parameter(description="Amount of saturated fat in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> saturatedFat,
+          @Parameter(description="Amount of sugar in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> sugars,
+          @Parameter(description="Amount of salt in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> salt
           ) {
     log.info("GETTING LISTINGS FOR: SEARCH KEYS " + searchKeys + " - SEARCHPARAM " + searchParam + " - PAG START:END " + pagStartIndex + ":" + pagEndIndex + " - BUSINESSTYPES " + businessTypes + " - DATERANGE " + filterDates);
     ListingsSearchParams params = new ListingsSearchParams();
@@ -99,6 +103,10 @@ public class ListingController {
     params.setMaxPrice(maxPrice);
     params.setFilterDates(filterDates);
     params.setBusinessTypes(businessTypes);
+    params.setFat(fat);
+    params.setSaturatedFat(saturatedFat);
+    params.setSugars(sugars);
+    params.setSalt(salt);
     return new ResponseEntity<>(listingService.searchListings(params), HttpStatus.OK);
   }
 
