@@ -61,11 +61,11 @@ public class Product {
   private ZonedDateTime created;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "NUTRITION_SCORE")
+  @Column(name = "NUTRI_SCORE")
   private NutriScore nutriScore;
 
-  @Column(name = "NOVA_SCORE")
-  private Integer novaScore;
+  @Column(name = "NOVA_GROUP")
+  private Integer novaGroup;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "FAT")
@@ -76,12 +76,12 @@ public class Product {
   private NutritionFactsLevel saturatedFat;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "SUGAR")
-  private NutritionFactsLevel sugar;
+  @Column(name = "SUGARS")
+  private NutritionFactsLevel sugars;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "SODIUM")
-  private NutritionFactsLevel sodium;
+  @Column(name = "SALT")
+  private NutritionFactsLevel salt;
 
   @Column(name = "IS_GLUTEN_FREE")
   private Boolean isGlutenFree;
@@ -145,11 +145,11 @@ public class Product {
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
     this.nutriScore = product.getNutriScore();
-    this.novaScore = product.getNovaScore();
+    this.novaGroup = product.getNovaGroup();
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
-    this.sugar = product.getSugar();
-    this.sodium = product.getSodium();
+    this.sugars = product.getSugars();
+    this.salt = product.getSalt();
     this.isGlutenFree = product.getIsGlutenFree();
     this.isDairyFree = product.getIsDairyFree();
     this.isVegetarian = product.getIsVegetarian();

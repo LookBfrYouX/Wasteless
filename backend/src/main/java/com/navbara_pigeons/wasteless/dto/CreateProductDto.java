@@ -36,15 +36,15 @@ public class CreateProductDto {
 
   @Min(1)
   @Max(4)
-  private Integer novaScore;
+  private Integer novaGroup;
 
   private NutritionFactsLevel fat;
 
   private NutritionFactsLevel saturatedFat;
 
-  private NutritionFactsLevel sugar;
+  private NutritionFactsLevel sugars;
 
-  private NutritionFactsLevel sodium;
+  private NutritionFactsLevel salt;
 
   @Nullable
   private Boolean isGlutenFree;
@@ -71,11 +71,11 @@ public class CreateProductDto {
     this.manufacturer = product.getManufacturer();
     this.recommendedRetailPrice = product.getRecommendedRetailPrice();
     this.nutriScore = product.getNutriScore();
-    this.novaScore = product.getNovaScore();
+    this.novaGroup = product.getNovaGroup();
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
-    this.sugar = product.getSugar();
-    this.sodium = product.getSodium();
+    this.sugars = product.getSugars();
+    this.salt = product.getSalt();
     this.isGlutenFree = product.getIsGlutenFree();
     this.isDairyFree = product.getIsDairyFree();
     this.isVegetarian = product.getIsVegetarian();

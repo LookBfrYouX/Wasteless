@@ -3,90 +3,117 @@
     <div
         class="w-100 d-flex justify-content-center product-page-container gradient-background my-3"
     >
-      <div class="container">
+      <v-container>
         <form
             class="slightly-transparent-inputs"
-            method="POST"
-            @submit.prevent="createProduct"
+            v-on:keydown.enter.prevent
         >
+          <v-row>
+            <v-col><h1>Add product to Catalogue</h1></v-col>
+          </v-row>
+
+          <v-card
+              class="card"
+          >
+            <h4>
+              Auto-fill fields via Barcode
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                      v-on="on"
+                      color="blue"
+                  >
+                    information
+                  </v-icon>
+                </template>
+                <span>Auto-fill product title and nutritional information by entering the products EAN-13 barcode.</span>
+              </v-tooltip>
+            </h4>
+            <barcode-input
+              @info="autofill"
+            />
+          </v-card>
+
+          <v-card
+              class="card"
+          >
+            <h4>Product Information</h4>
+            <v-text-field
+                v-model="queryParams.name"
+                :rules="[() => !!queryParams.name && queryParams.name.trim().length > 0 || 'This field is required']"
+                class="form-group required"
+                dense
+                label="Name"
+                maxlength="100"
+                outlined
+                required
+                type="text"
+            />
+
+            <v-text-field
+                v-model="queryParams.recommendedRetailPrice"
+                :prefix="currencyText"
+                :rules="[() => !!queryParams.recommendedRetailPrice || 'This field is required']"
+                class="form-group required"
+                dense
+                label="Recommended Retail Price"
+                max="10000000"
+                min="0.01"
+                outlined
+                required
+                step="0.01"
+                type="number"
+            />
+
+            <v-text-field
+                v-model="queryParams.manufacturer"
+                dense
+                label="Manufacturer"
+                maxlength="100"
+                outlined
+                type="text"
+            />
+
+            <v-textarea
+                v-model="queryParams.description"
+                label="Description"
+                maxlength="500"
+                counter="500"
+                type="text"
+                solo
+            />
+          </v-card>
+
+          <v-card class="card">
+            <h4>Nutritional Information</h4>
+            <v-row>
+              <v-col cols="12">
+                <dietary-certifications-input v-model="queryParams"/>
+              </v-col>
+            </v-row>
+            <nutrient-levels-edit v-model="queryParams"/>
+            <v-row>
+              <v-col cols="12" md="6">
+                <nova-group-input v-model="queryParams.novaGroup"/>
+              </v-col>
+              <v-col cols="12" md="6">
+                <nutri-score-input v-model="queryParams.nutriScore"/>
+              </v-col>
+            </v-row>
+          </v-card>
+
+
           <div class="row">
             <div class="col">
-              <h1>Add product to Catalogue</h1>
-            </div>
-          </div>
-
-          <barcode-input />
-          <div class="row">
-            <div class="form-group required col px-3">
-              <label>Name</label>
-              <v-text-field
-                  v-model="name"
-                  maxlength="100"
-                  label="Product Name"
-                  placeholder="Name"
-                  required
-                  type="text"
-                  solo
-                  dense
-              />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="form-group required col px-3">
-              <label>Price {{ currencyText }}</label>
-              <input
-                  v-model="price"
-                  :placeholder="currencyText"
-                  class="form-control"
-                  max="10000000"
-                  min="0.01"
-                  name="price"
-                  required
-                  step="0.01"
-                  type="number"
-              />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="form-group col px-3">
-              <label>Manufacturer</label>
-              <input
-                  v-model="manufacturer"
-                  class="form-control"
-                  maxlength="100"
-                  name="manufacturer"
-                  placeholder="Manufacturer"
-                  type="text"
-              />
-            </div>
-          </div>
-
-          <div class="row>">
-            <div class="form-group col px-0">
-              <label>Description</label>
-              <textarea
-                  v-model="description"
-                  class="form-control"
-                  maxlength="500"
-                  name="description"
-                  placeholder="Description"
-                  rows="5"
-                  type="text"
-              />
-            </div>
-          </div>
-          <nutrient-levels-edit
-            v-model="nutrientLevels"
-          />
-          <div class="row">
-            <div class="col">
-              <input
-                  class="btn btn-block btn-primary"
-                  type="submit"
-                  value="Add Product"
-              />
+              <v-btn
+                @click="createProduct"
+                color="rgb(30, 201, 150)"
+                class="white--text bootstrapish-button"
+                :loading="apiCallInProgress"
+                width="100%"
+              >
+                Add Product
+              </v-btn>
             </div>
           </div>
 
@@ -96,7 +123,7 @@
             </div>
           </div>
         </form>
-      </div>
+      </v-container>
     </div>
     <error-modal
         :goBack="false"
@@ -119,36 +146,48 @@ import ErrorModal from "@/components/ErrorModal";
 import {Api} from "@/Api";
 import BarcodeInput from "@/components/BarcodeInput";
 import NutrientLevelsEdit from "@/components/NutrientLevelsEdit"
+import DietaryCertificationsInput from "@/components/DietaryCertificationsInput";
+import NovaGroupInput from "@/components/NovaGroupInput";
+import NutriScoreInput from "@/components/NutriScoreInput";
 
 export default {
   components: {
     BarcodeInput,
-    ErrorModal,
-    NutrientLevelsEdit
+    NutrientLevelsEdit,
+    DietaryCertificationsInput,
+    NovaGroupInput,
+    NutriScoreInput,
+    ErrorModal
   },
 
   data() {
     return {
-      apiErrorMessage: null, // if admin and getting currency nifo fails
+      apiErrorMessage: null, // if admin and getting currency info fails
       errorMessage: null,
+      apiCallInProgress: false,
 
-      name: "",
-      description: "",
-      manufacturer: "",
-      price: "",
       currency: null,
+      queryParams: {
+        name: "",
+        description: "",
+        manufacturer: "",
+        recommendedRetailPrice: "",
 
-      typeRequired: false, // If phone entered but not country code
+        // dietary certifications
+        isGlutenFree: false,
+        isDairyFree: false,
+        isVegetarian: false,
+        isVegan: false,
+        isPalmOilFree: false,
 
-      /**
-       * Nutrient levels (fat, sugar etc.) wrapped in an object for use in the
-       * NutrientLevelsEdit component
-       */
-      nutrientLevels: {
+        // nutrient levels
         fat: null,
         saturatedFat: null,
         sugars: null,
-        sodium: null 
+        salt: null,
+
+        nutriScore: null,
+        novaGroup: null
       }
     };
   },
@@ -170,7 +209,7 @@ export default {
         return "(Unknown currency)";
       }
       return `${this.currency.symbol} (${this.currency.code})`;
-    },
+    }
   },
 
   methods: {
@@ -179,9 +218,8 @@ export default {
      */
     currencyPipeline: async function () {
       try {
-        const currency = await this.$helper.getCurrencyForBusiness(this.businessId,
+        this.currency = await this.$helper.getCurrencyForBusiness(this.businessId,
             this.$stateStore);
-        this.currency = currency;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -192,7 +230,7 @@ export default {
     },
 
     /**
-     * Wrapper which simply calls the sign up method of the api
+     * Wrapper which simply calls the create product method of the api
      */
     callApi: function (data) {
       if (this.businessId == null) {
@@ -203,12 +241,36 @@ export default {
     },
 
     /**
+     * Method that is run when barcode component emits event with nutrition info,
+     * autofilling values that are 'untouched' or in their default position
+     */  
+    autofill: function(info) {
+      Object.keys(info).forEach(prop => {
+        // name, manufacturer, salt/fat etc. levels
+        if (typeof this.queryParams[prop] == "string") {
+          if (this.queryParams[prop].trim().length == 0) {
+            this.queryParams[prop] = info[prop];
+          }
+        }
+        // certifications (e.g. gluten free)
+        else if (typeof info[prop] == "boolean" && this.queryParams[prop] === false) {
+          this.queryParams[prop] = info[prop];
+        }
+
+        // nova group
+        else if (this.queryParams[prop] == null) {
+          this.queryParams[prop] = info[prop];
+        }
+      });
+    },
+
+    /**
      * Creates a new product Object with attributes
      * `name`, `id`, `recommendedRetailPrice`, `description`
      * @returns {Promise<void>} a promise
      */
     createProduct: async function () {
-      let price = parseFloat(this.price);
+      let price = parseFloat(this.queryParams.recommendedRetailPrice);
 
       if (isNaN(price)) {
         this.errorMessage = "Please enter a valid price";
@@ -217,23 +279,22 @@ export default {
 
       if (price <= 0) {
         this.errorMessage = "Please enter a valid price greater than 0";
-      } else if (this.name.trim().length === 0) {
+      } else if (this.queryParams.name === null || this.queryParams.name.trim().length === 0) {
         this.errorMessage = "Please enter a name for your product";
       } else {
+        this.apiCallInProgress = true;
         try {
-          await this.callApi({
-            name: this.name,
-            recommendedRetailPrice: this.price,
-            manufacturer: this.manufacturer,
-            description: this.description,
-          });
+          await this.callApi(this.queryParams);
         } catch (err) {
           if (await Api.handle401.call(this, err)) {
             return;
           }
           this.errorMessage = err.userFacingErrorMessage;
           return;
+        } finally {
+          this.apiCallInProgress = false;
         }
+
         await this.$router.push({
           name: "BusinessProducts",
           params: {
@@ -249,5 +310,18 @@ export default {
 <style scoped>
 .product-page-container > div {
   max-width: 50em;
+}
+
+.card {
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.bootstrapish-button.v-btn {
+  font-size: 1em;
+  letter-spacing: initial;
+  text-transform: initial;
+  text-indent: initial;
 }
 </style>

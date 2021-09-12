@@ -1,9 +1,25 @@
 <template>
 <v-form>
-  <label>Barcode</label>
   <div class="d-flex">
-    <v-text-field class="mr-2" label="Barcode No." placeholder="EAN-13 Barcode" maxLength="13" v-model="barcode" solo dense />
-    <v-btn v-on:click="setProductInformation" :disabled="barcode.length!=13" :loading="apiIsLoading">Find</v-btn>
+    <v-text-field
+        v-model="barcode"
+        :rules="[() => barcode.length <= 13 || 'Barcode must be 13 numbers']"
+        class="mr-2"
+        counter="13"
+        dense
+        label="Barcode Number"
+        outlined
+        prefix="EAN-13"
+        type="number"
+        v-on:keydown.enter="() => barcode.length == 13 && !apiIsLoading && setProductInformation()"
+    />
+    <v-btn
+      v-on:click="setProductInformation"
+     :disabled="barcode.length != 13"
+     :loading="apiIsLoading"
+    >
+      Fill
+    </v-btn>
   </div>
   <div v-if="errorMessage != null" class="row mt-2">
     <div class="col">
@@ -16,26 +32,32 @@
 <script>
 import {Api} from "@/Api";
 
+/**
+ * No props. When autofill is triggered, the parsed information is sent through
+ * an `info` event. The barcode itself is not part of this
+ */
 export default {
   name: "BarcodeInput",
   data() {
     return {
       barcode: "",
-      name: "",
-      manufacturer: "",
-      fat: "",
-      saturatedFat: "",
-      sugars: "",
-      salt: "",
-      novaGroup: "",
-      nutriScore: "",
-      isPalmOilFree: false,
-      isVegan: false,
-      isVegetarian: false,
-      isGlutenFree: false,
-      isDairyFree: false,
       errorMessage: null,
-      apiIsLoading:false
+      apiIsLoading: false,
+      info: {
+        name: "",
+        manufacturer: "",
+        fat: "",
+        saturatedFat: "",
+        sugars: "",
+        salt: "",
+        novaGroup: "",
+        nutriScore: "",
+        isPalmOilFree: false,
+        isVegan: false,
+        isVegetarian: false,
+        isGlutenFree: false,
+        isDairyFree: false,
+      }
     }
   },
   methods: {
@@ -60,17 +82,15 @@ export default {
      */
     setProductInformation: async function() {
       const data = await this.getNutritionalInformationWithBarcode(this.barcode);
-      if (data == null) {
-        return this.errorMessage = "Product Not Found: Please enter details manually";
-      }
+      
       if (data == null || data.status == 0) {
         this.errorMessage = "Product Not Found: Please enter details manually";
       } else {
         this.errorMessage = null;
-        this.name = data.product.product_name;
-        this.manufacturer = data.product.brands;
-        this.nutriScore = data.product.nutriscore_grade.toUpperCase();
-        this.novaGroup = data.product.nova_group;
+        this.info.name = data.product.product_name;
+        this.info.manufacturer = data.product.brands;
+        this.info.nutriScore = data.product.nutriscore_grade.toUpperCase();
+        this.info.novaGroup = data.product.nova_group;
         if (data.product.nutrient_levels) {
           const nutrient_levels = data.product.nutrient_levels;
           this.setNutritionalLevelInformation(nutrient_levels);
@@ -79,6 +99,8 @@ export default {
           const ingredients_analysis_tags = data.product.ingredients_analysis_tags;
           this.setIngredientAnalysisInformation(ingredients_analysis_tags);
         }
+
+        this.$emit("info", this.info);
       }
     },
 
@@ -86,10 +108,10 @@ export default {
      * Parses and sets nutritional level tags in required format
      */
     setNutritionalLevelInformation: function(nutrient_levels) {
-      this.fat = nutrient_levels.fat.toUpperCase();
-      this.saturatedFat = nutrient_levels["saturated-fat"].toUpperCase();
-      this.sugars = nutrient_levels.sugars.toUpperCase();
-      this.salt = nutrient_levels.salt.toUpperCase();
+      this.info.fat = nutrient_levels.fat.toUpperCase();
+      this.info.saturatedFat = nutrient_levels["saturated-fat"].toUpperCase();
+      this.info.sugars = nutrient_levels.sugars.toUpperCase();
+      this.info.salt = nutrient_levels.salt.toUpperCase();
     },
 
     /**
@@ -99,23 +121,23 @@ export default {
       for (const tag of ingredients_analysis_tags) {
         switch (tag) {
           case 'en:palm-oil-free':
-            this.isPalmOilFree = true;
+            this.info.isPalmOilFree = true;
             break;
 
           case 'en:vegan':
-            this.isVegan = true;
+            this.info.isVegan = true;
             break;
 
           case 'en:vegetarian':
-            this.isVegetarian = true;
+            this.info.isVegetarian = true;
             break;
 
           case 'en:gluten-free':
-            this.isGlutenFree = true;
+            this.info.isGlutenFree = true;
             break;
 
           case 'en:dairy-free':
-            this.isDairyFree = true;
+            this.info.isDairyFree = true;
             break;
         }
       }
@@ -123,7 +145,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

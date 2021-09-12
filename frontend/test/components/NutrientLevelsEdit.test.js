@@ -9,7 +9,7 @@ const defaultProps = () => {
     fat: null,
     saturatedFat: "LOW",
     sugars: "MODERATE",
-    sodium: "HIGH"
+    salt: "HIGH"
   }
 }
 
@@ -47,14 +47,13 @@ describe("Slider input causes event to be emitted", () => {
         shiftRight: true,
         expectedValue: "HIGH"
       }, {
-        key: "sodium",
+        key: "salt",
         shiftRight: false,
         expectedValue: "MODERATE"
       }
     ]
 
     for(let i = 0; i < 4; i++) {
-      // sodium is high (right most value) so shift that one left
       const {key, shiftRight, expectedValue} = nutrients[i];
       const slider = await containers.at(i).find('.v-slider__thumb-container');
       const keyEvent = shiftRight? "keydown.right": "keydown.left";

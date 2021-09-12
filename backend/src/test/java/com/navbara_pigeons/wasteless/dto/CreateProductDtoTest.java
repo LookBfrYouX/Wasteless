@@ -57,10 +57,10 @@ class CreateProductDtoTest extends MainTestProvider {
   }
 
   @Test
-  void createProductDto_withNovaScore_expectOk() {
+  void createProductDto_withNovaGroup_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("test789"));
-    dto.setNovaScore(1);
-    Assertions.assertEquals(1, dto.getNovaScore());
+    dto.setNovaGroup(1);
+    Assertions.assertEquals(1, dto.getNovaGroup());
   }
 
   @Test
@@ -78,17 +78,17 @@ class CreateProductDtoTest extends MainTestProvider {
   }
 
   @Test
-  void createProductDto_withSugar_expectOk() {
+  void createProductDto_withSugars_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product654"));
-    dto.setSugar(NutritionFactsLevel.HIGH);
-    Assertions.assertEquals("HIGH", dto.getSugar().name());
+    dto.setSugars(NutritionFactsLevel.HIGH);
+    Assertions.assertEquals("HIGH", dto.getSugars().name());
   }
 
   @Test
-  void createProductDto_withSodium_expectOk() {
+  void createProductDto_withSalt_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("product654"));
-    dto.setSodium(NutritionFactsLevel.LOW);
-    Assertions.assertEquals("LOW", dto.getSodium().name());
+    dto.setSalt(NutritionFactsLevel.LOW);
+    Assertions.assertEquals("LOW", dto.getSalt().name());
   }
 
   @Test
