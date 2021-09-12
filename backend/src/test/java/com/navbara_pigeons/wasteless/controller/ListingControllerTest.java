@@ -51,6 +51,47 @@ class ListingControllerTest extends ControllerTestProvider {
                     .param("searchKeys", "ADDRESS")
                     .param("isAscending", "true")
                     .param("searchParam", "New Zealand")
+                    .param("fat", "HIGH")
+                    .param("saturatedFat","HIGH")
+                    .param("saturatedFat", "MODERATE")
+                    .param("sugars", "LOW")
+                    .param("salt", "LOW")
+    ).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidFatValue_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("fat", "BOOGALOO")
+    ).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidSaturatedFatValue_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("saturatedFat", "BOOGALOO")
+    ).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidSugarsValue_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("sugars", "BOOGALOO")
+    ).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidSaltValue_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("salt", "BOOGALOO")
     ).andExpect(status().isOk());
   }
 
