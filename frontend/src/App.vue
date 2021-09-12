@@ -10,9 +10,6 @@
             @initial-search-value="updateInput"
         ></router-view>
       </div>
-      <footer class="info">
-
-      </footer>
     </v-app>
   </div>
 </template>
