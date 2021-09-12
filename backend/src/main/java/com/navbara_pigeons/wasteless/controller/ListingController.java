@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -85,7 +86,7 @@ public class ListingController {
           @Parameter(description = "Maximum Price of Listing") @RequestParam(required = false) Double maxPrice,
           @Parameter(description = "Dates to Filter Listings By") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<ZonedDateTime> filterDates,
           @Parameter(description = "Types of Businesses to Filter Listings By") @RequestParam(required = false)  List<BusinessType> businessTypes
-  ) {
+          ) {
     log.info("GETTING LISTINGS FOR: SEARCH KEYS " + searchKeys + " - SEARCHPARAM " + searchParam + " - PAG START:END " + pagStartIndex + ":" + pagEndIndex + " - BUSINESSTYPES " + businessTypes + " - DATERANGE " + filterDates);
     ListingsSearchParams params = new ListingsSearchParams();
     params.setPagStartIndex(pagStartIndex);
