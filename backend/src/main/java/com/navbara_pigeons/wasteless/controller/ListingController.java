@@ -102,10 +102,10 @@ public class ListingController {
     params.setMaxPrice(maxPrice);
     params.setFilterDates(filterDates);
     params.setBusinessTypes(businessTypes);
-    params.setIsVegan(isVegan);
-    params.setIsVegetarian(isVegetarian);
-    params.setIsGlutenFree(isGlutenFree);
-    params.setIsPalmOilFree(isPalmOilFree);
+//    params.setIsVegan(isVegan);
+//    params.setIsVegetarian(isVegetarian);
+//    params.setIsGlutenFree(isGlutenFree);
+//    params.setIsPalmOilFree(isPalmOilFree);
     return new ResponseEntity<>(listingService.searchListings(params), HttpStatus.OK);
   }
 
