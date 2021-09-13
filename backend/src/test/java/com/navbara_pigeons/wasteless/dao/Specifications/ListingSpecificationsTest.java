@@ -7,6 +7,7 @@ import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.specifications.ListingSpecifications;
 import com.navbara_pigeons.wasteless.entity.*;
 import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
@@ -42,7 +43,6 @@ public class ListingSpecificationsTest extends MainTestProvider {
     @Autowired
     InventoryService inventoryService;
 
-    @Test
     void resultsMeetSearchCriteriaTestPartialMatchingProductName() throws ListingValidationException {
         List<ListingSearchKeys> searchKeys = new ArrayList<>();
         searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
@@ -86,6 +86,16 @@ public class ListingSpecificationsTest extends MainTestProvider {
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
         assertEquals(5002, results.get(0).getId());
+    }
+
+    @Test
+    void resultsMeetSearchCriteriaTestFilteredByFat() throws ListingValidationException {
+        listingsSearchParams.setFat(List.of(NutritionFactsLevel.MODERATE, NutritionFactsLevel.HIGH));
+        Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
+        List<Listing> results = listingDao.findAll(specification);
+        assertEquals(2, results.size());
+        assertEquals(5004, results.get(0).getId());
+        assertEquals(5006, results.get(0).getId());
     }
 
 }
