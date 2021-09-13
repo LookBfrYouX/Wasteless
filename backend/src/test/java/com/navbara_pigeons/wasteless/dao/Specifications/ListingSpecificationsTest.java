@@ -22,85 +22,89 @@ import org.springframework.data.jpa.domain.Specification;
 @SpringBootTest
 class ListingSpecificationsTest extends MainTestProvider {
 
-    ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
-    @Autowired
-    ListingDao listingDao;
-    @Autowired
-    InventoryDao inventoryDao;
-    @Autowired
-    BusinessDao businessDao;
-    @Autowired
-    ProductDao productDao;
+  ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
+  @Autowired
+  ListingDao listingDao;
+  @Autowired
+  InventoryDao inventoryDao;
+  @Autowired
+  BusinessDao businessDao;
+  @Autowired
+  ProductDao productDao;
 
-    @Autowired
-    InventoryService inventoryService;
+  @Autowired
+  InventoryService inventoryService;
 
-    @Test
-    void resultsMeetSearchCriteriaTestPartialMatchingProductName() {
-        List<ListingSearchKeys> searchKeys = new ArrayList<>();
-        searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
-        listingsSearchParams.setSearchKeys(searchKeys);
-        listingsSearchParams.setSearchParam("Sanitarium");
-        Specification<Listing> specification = ListingSpecifications
-            .meetsSearchCriteria(listingsSearchParams);
-        List<Listing> results = listingDao.findAll(specification);
-        Assertions.assertEquals(5003, results.get(0).getId());
-    }
+  @Test
+  void resultsMeetSearchCriteriaTestPartialMatchingProductName() {
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("Sanitarium");
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+    Assertions.assertEquals(5003, results.get(0).getId());
+  }
 
-    @Test
-    void resultsMeetSearchCriteriaTestFullMatchingProductName() {
-        List<ListingSearchKeys> searchKeys = new ArrayList<>();
-        searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
-        listingsSearchParams.setSearchKeys(searchKeys);
-        listingsSearchParams.setSearchParam("\"Sanitarium So Good Oat Milk No Added Sugar\"");
-        Specification<Listing> specification = ListingSpecifications
-            .meetsSearchCriteria(listingsSearchParams);
-        List<Listing> results = listingDao.findAll(specification);
-        Assertions.assertEquals(5004, results.get(0).getId());
-    }
+  @Test
+  void resultsMeetSearchCriteriaTestFullMatchingProductName() {
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("\"Sanitarium So Good Oat Milk No Added Sugar\"");
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+    Assertions.assertEquals(5004, results.get(0).getId());
+  }
 
-    @Test
-    void resultsMeetSearchCriteriaTestFullMatchingAddress() {
-        List<ListingSearchKeys> searchKeys = new ArrayList<>();
-        searchKeys.add(ListingSearchKeys.ADDRESS);
-        listingsSearchParams.setSearchKeys(searchKeys);
-        listingsSearchParams.setSearchParam("\"Christchurch\"");
-        Specification<Listing> specification = ListingSpecifications
-            .meetsSearchCriteria(listingsSearchParams);
-        List<Listing> results = listingDao.findAll(specification);
-        Assertions.assertEquals(5001, results.get(0).getId());
-    }
+  @Test
+  void resultsMeetSearchCriteriaTestFullMatchingAddress() {
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.ADDRESS);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("\"Christchurch\"");
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+    Assertions.assertEquals(5001, results.get(0).getId());
+  }
 
-    @Test
-    void resultsMeetSearchCriteriaTestFilteredByPrice() {
-        List<ListingSearchKeys> searchKeys = new ArrayList<>();
-        searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
-        listingsSearchParams.setSearchKeys(searchKeys);
-        listingsSearchParams.setSearchParam("");
-        listingsSearchParams.setMinPrice(12.0);
-        listingsSearchParams.setMaxPrice(12.0);
-        Specification<Listing> specification = ListingSpecifications
-            .meetsSearchCriteria(listingsSearchParams);
-        List<Listing> results = listingDao.findAll(specification);
-        Assertions.assertEquals(5002, results.get(0).getId());
-    }
+  @Test
+  void resultsMeetSearchCriteriaTestFilteredByPrice() {
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("");
+    listingsSearchParams.setMinPrice(12.0);
+    listingsSearchParams.setMaxPrice(12.0);
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+    Assertions.assertEquals(5002, results.get(0).getId());
+  }
 
-    @Test
-    void resultsMeetSearchCriteriaTestFilteredByNutriScore() throws Exception {
-        List<ListingSearchKeys> searchKeys = new ArrayList<>();
-        searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
-        listingsSearchParams.setSearchKeys(searchKeys);
-        listingsSearchParams.setSearchParam("");
-        listingsSearchParams.setMaxNutriScore(NutriScore.A);
-        listingsSearchParams.setMinNutriScore(NutriScore.B);
-        Specification<Listing> specification = ListingSpecifications
-            .meetsSearchCriteria(listingsSearchParams);
-        List<Listing> results = listingDao.findAll(specification);
+  @Test
+  void resultsMeetSearchCriteriaTestFilteredByNutriScore() throws Exception {
+    // Arrange
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("");
+    listingsSearchParams.setMinNutriScore(NutriScore.A);
+    listingsSearchParams.setMaxNutriScore(NutriScore.B);
 
-        Listing aRatedListing = listingDao.getListing(5001); //This should be in the results
-        Listing eRatedListing = listingDao.getListing(5002); //This should NOT be in the results
+    // Act
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
 
-        Assertions.assertTrue(results.contains(aRatedListing));
-        Assertions.assertFalse(results.contains(eRatedListing));
-    }
+    Listing aRatedListing = listingDao.getListing(5001);  // This should be in the results
+    Listing eRatedListing = listingDao.getListing(5003);  // This should NOT be in the results
+
+    // Assert
+    Assertions.assertTrue(results.contains(aRatedListing));
+    Assertions.assertFalse(results.contains(eRatedListing));
+  }
 }
