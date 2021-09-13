@@ -84,7 +84,11 @@ public class ListingController {
           @Parameter(description = "Minimum Price of Listing") @RequestParam(required = false) Double minPrice,
           @Parameter(description = "Maximum Price of Listing") @RequestParam(required = false) Double maxPrice,
           @Parameter(description = "Dates to Filter Listings By") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<ZonedDateTime> filterDates,
-          @Parameter(description = "Types of Businesses to Filter Listings By") @RequestParam(required = false)  List<BusinessType> businessTypes
+          @Parameter(description = "Types of Businesses to Filter Listings By") @RequestParam(required = false)  List<BusinessType> businessTypes,
+          @Parameter(description = "Is the product vegan") @RequestParam(required = false) Boolean isVegan,
+          @Parameter(description = "Is the product vegetarian") @RequestParam(required = false) Boolean isVegetarian,
+          @Parameter(description = "Is the product gluten free") @RequestParam(required = false) Boolean isGlutenFree,
+          @Parameter(description = "Is the product palm oil free") @RequestParam(required = false) Boolean isPalmOilFree
   ) {
     log.info("GETTING LISTINGS FOR: SEARCH KEYS " + searchKeys + " - SEARCHPARAM " + searchParam + " - PAG START:END " + pagStartIndex + ":" + pagEndIndex + " - BUSINESSTYPES " + businessTypes + " - DATERANGE " + filterDates);
     ListingsSearchParams params = new ListingsSearchParams();
@@ -98,6 +102,10 @@ public class ListingController {
     params.setMaxPrice(maxPrice);
     params.setFilterDates(filterDates);
     params.setBusinessTypes(businessTypes);
+    params.setIsVegan(isVegan);
+    params.setIsVegetarian(isVegetarian);
+    params.setIsGlutenFree(isGlutenFree);
+    params.setIsPalmOilFree(isPalmOilFree);
     return new ResponseEntity<>(listingService.searchListings(params), HttpStatus.OK);
   }
 
