@@ -5,45 +5,52 @@ import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 
+import com.navbara_pigeons.wasteless.enums.NutriScore;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.naming.directory.InvalidAttributeValueException;
-
 /**
- * This model class maps to the request parameters sent to the /listings/search endpoint.
- * It is necessary as SonarLint does not allow more than seven parameters per method.
+ * This model class maps to the request parameters sent to the /listings/search endpoint. It is
+ * necessary as SonarLint does not allow more than seven parameters per method.
  */
 
 @Data
 @Slf4j
 public class ListingsSearchParams {
 
+  // Searching, Pagination & Sorting Params
   private Integer pagStartIndex;
   private Integer pagEndIndex;
+  // returns all listings by default
+  private int defaultPageEndIndex = 1000000000;
   private ListingSortByOption sortBy;
   private boolean isAscending;
   private List<ListingSearchKeys> searchKeys;
   private String searchParam;
+
+  // Product Detail Params
   private Double minPrice;
   private Double maxPrice;
   private List<ZonedDateTime> filterDates;
   private List<BusinessType> businessTypes;
 
+  private int DEFAULT_PAGE_END_INDEX = 1000000000;
+  
+  // Nutrition Filtering Params
   private List<NutritionFactsLevel> fat;
   private List<NutritionFactsLevel> saturatedFat;
   private List<NutritionFactsLevel> sugars;
   private List<NutritionFactsLevel> salt;
 
-  private int DEFAULT_PAGE_END_INDEX = 1000000000;
+  private NutriScore nutriScore;
 
   /**
-  * setting default value for search string so returns all values if user searches for nothing, acts as a setter otherwise
+   * setting default value for search string so returns all values if user searches for nothing,
+   * acts as a setter otherwise
+   *
    * @param searchParam
    */
   public void setSearchParam(String searchParam) {
@@ -53,8 +60,10 @@ public class ListingsSearchParams {
       this.searchParam = searchParam;
     }
   }
+
   /**
    * setting default value for page start index if given null, acts as a setter otherwise
+   *
    * @param pagStartIndex
    */
   public void setPagStartIndex(Integer pagStartIndex) {
@@ -67,11 +76,12 @@ public class ListingsSearchParams {
 
   /**
    * setting default value for page start index if given null, acts as a setter otherwise
+   *
    * @param pagEndIndex
    */
   public void setPagEndIndex(Integer pagEndIndex) {
     if (pagEndIndex == null) {
-      this.pagEndIndex = DEFAULT_PAGE_END_INDEX;
+      this.pagEndIndex = defaultPageEndIndex;
     } else {
       this.pagEndIndex = pagEndIndex;
     }
@@ -79,6 +89,7 @@ public class ListingsSearchParams {
 
   /**
    * setting default value for isAscending property if given null, acts as a setter otherwise
+   *
    * @param ascending
    */
   public void setAscending(Boolean ascending) {
@@ -98,8 +109,10 @@ public class ListingsSearchParams {
     }
 
   }
+
   /**
    * setting default values for filtering dates if given null acts as a setter otherwise
+   *
    * @param filterDates
    */
   public void setFilterDates(List<ZonedDateTime> filterDates) {
@@ -115,6 +128,7 @@ public class ListingsSearchParams {
 
   /**
    * setter for business types property
+   *
    * @param businessTypes
    */
   public void setBusinessTypes(List<BusinessType> businessTypes) {
@@ -123,6 +137,7 @@ public class ListingsSearchParams {
 
   /**
    * Sets default value for sortBy to created if given null, acts as setter otherwise
+   *
    * @param sortBy
    */
   public void setSortBy(ListingSortByOption sortBy) {

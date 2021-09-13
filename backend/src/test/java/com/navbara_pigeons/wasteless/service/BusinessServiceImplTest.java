@@ -24,8 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-public class BusinessServiceImplTest extends ServiceTestProvider {
+class BusinessServiceImplTest extends ServiceTestProvider {
 
   protected long USERID_1 = 100;
   protected long USERID_2 = 101;
@@ -93,7 +92,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     Business business = makeBusiness(user1);
     business.setId(BUSINESSID_1);
 
-    businessService.saveBusiness(business);
+    Assertions.assertDoesNotThrow(() -> { businessService.saveBusiness(business); });
   }
 
   /**
@@ -108,7 +107,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
       throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
     Business business = makeBusiness("businessName");
 
-    businessService.saveBusiness(business);
+    Assertions.assertDoesNotThrow(() -> { businessService.saveBusiness(business); });
   }
 
   /**
@@ -140,7 +139,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     business.setId(BUSINESSID_1);
 
     when(userService.isAdmin()).thenReturn(true);
-    businessService.saveBusiness(business);
+    Assertions.assertDoesNotThrow(() -> { businessService.saveBusiness(business); });
   }
 
   /**
