@@ -5,29 +5,22 @@ import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.specifications.ListingSpecifications;
-import com.navbara_pigeons.wasteless.entity.*;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
-import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
-import com.navbara_pigeons.wasteless.exception.ListingValidationException;
+import com.navbara_pigeons.wasteless.enums.NutriScore;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.service.InventoryService;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
-import lombok.SneakyThrows;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-
-
 @SpringBootTest
-public class ListingSpecificationsTest extends MainTestProvider {
-
+class ListingSpecificationsTest extends MainTestProvider {
 
     ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
     @Autowired
@@ -43,49 +36,71 @@ public class ListingSpecificationsTest extends MainTestProvider {
     InventoryService inventoryService;
 
     @Test
-    void resultsMeetSearchCriteriaTestPartialMatchingProductName() throws ListingValidationException {
+    void resultsMeetSearchCriteriaTestPartialMatchingProductName() {
         List<ListingSearchKeys> searchKeys = new ArrayList<>();
         searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
         listingsSearchParams.setSearchKeys(searchKeys);
         listingsSearchParams.setSearchParam("Sanitarium");
-        Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
+        Specification<Listing> specification = ListingSpecifications
+            .meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
-        assertEquals(5003, results.get(0).getId());
+        Assertions.assertEquals(5003, results.get(0).getId());
     }
 
     @Test
-    void resultsMeetSearchCriteriaTestFullMatchingProductName() throws ListingValidationException {
+    void resultsMeetSearchCriteriaTestFullMatchingProductName() {
         List<ListingSearchKeys> searchKeys = new ArrayList<>();
         searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
         listingsSearchParams.setSearchKeys(searchKeys);
         listingsSearchParams.setSearchParam("\"Sanitarium So Good Oat Milk No Added Sugar\"");
-        Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
+        Specification<Listing> specification = ListingSpecifications
+            .meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
-        assertEquals(5004, results.get(0).getId());
+        Assertions.assertEquals(5004, results.get(0).getId());
     }
 
     @Test
-    void resultsMeetSearchCriteriaTestFullMatchingAddress() throws ListingValidationException {
+    void resultsMeetSearchCriteriaTestFullMatchingAddress() {
         List<ListingSearchKeys> searchKeys = new ArrayList<>();
         searchKeys.add(ListingSearchKeys.ADDRESS);
         listingsSearchParams.setSearchKeys(searchKeys);
         listingsSearchParams.setSearchParam("\"Christchurch\"");
-        Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
+        Specification<Listing> specification = ListingSpecifications
+            .meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
-        assertEquals(5001, results.get(0).getId());
+        Assertions.assertEquals(5001, results.get(0).getId());
     }
 
     @Test
-    void resultsMeetSearchCriteriaTestFilteredByPrice() throws ListingValidationException {
+    void resultsMeetSearchCriteriaTestFilteredByPrice() {
         List<ListingSearchKeys> searchKeys = new ArrayList<>();
         searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
         listingsSearchParams.setSearchKeys(searchKeys);
         listingsSearchParams.setSearchParam("");
         listingsSearchParams.setMinPrice(12.0);
         listingsSearchParams.setMaxPrice(12.0);
-        Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
+        Specification<Listing> specification = ListingSpecifications
+            .meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
-        assertEquals(5002, results.get(0).getId());
+        Assertions.assertEquals(5002, results.get(0).getId());
     }
 
+    @Test
+    void resultsMeetSearchCriteriaTestFilteredByNutriScore() throws Exception {
+        List<ListingSearchKeys> searchKeys = new ArrayList<>();
+        searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+        listingsSearchParams.setSearchKeys(searchKeys);
+        listingsSearchParams.setSearchParam("");
+        listingsSearchParams.setMaxNutriScore(NutriScore.A);
+        listingsSearchParams.setMinNutriScore(NutriScore.B);
+        Specification<Listing> specification = ListingSpecifications
+            .meetsSearchCriteria(listingsSearchParams);
+        List<Listing> results = listingDao.findAll(specification);
+
+        Listing aRatedListing = listingDao.getListing(5001); //This should be in the results
+        Listing eRatedListing = listingDao.getListing(5002); //This should NOT be in the results
+
+        Assertions.assertTrue(results.contains(aRatedListing));
+        Assertions.assertFalse(results.contains(eRatedListing));
+    }
 }

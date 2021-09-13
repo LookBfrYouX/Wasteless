@@ -36,7 +36,8 @@ public class ListingsSearchParams {
   private List<BusinessType> businessTypes;
 
   // Nutrition Filtering Params
-  private NutriScore nutriScore;
+  private NutriScore minNutriScore;
+  private NutriScore maxNutriScore;
 
   /**
    * setting default value for search string so returns all values if user searches for nothing,
