@@ -6,6 +6,7 @@ import com.navbara_pigeons.wasteless.dto.TransactionDto;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
+import com.navbara_pigeons.wasteless.enums.NutriScore;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -84,7 +85,9 @@ public class ListingController {
           @Parameter(description = "Minimum Price of Listing") @RequestParam(required = false) Double minPrice,
           @Parameter(description = "Maximum Price of Listing") @RequestParam(required = false) Double maxPrice,
           @Parameter(description = "Dates to Filter Listings By") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) List<ZonedDateTime> filterDates,
-          @Parameter(description = "Types of Businesses to Filter Listings By") @RequestParam(required = false)  List<BusinessType> businessTypes
+          @Parameter(description = "Types of Businesses to Filter Listings By") @RequestParam(required = false)  List<BusinessType> businessTypes,
+          @Parameter(description = "The minimum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer minNovaScore,
+          @Parameter(description = "The maximum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer maxNovaScore
   ) {
     log.info("GETTING LISTINGS FOR: SEARCH KEYS " + searchKeys + " - SEARCHPARAM " + searchParam + " - PAG START:END " + pagStartIndex + ":" + pagEndIndex + " - BUSINESSTYPES " + businessTypes + " - DATERANGE " + filterDates);
     ListingsSearchParams params = new ListingsSearchParams();
@@ -98,6 +101,8 @@ public class ListingController {
     params.setMaxPrice(maxPrice);
     params.setFilterDates(filterDates);
     params.setBusinessTypes(businessTypes);
+    params.setMinNovaScore(minNovaScore);
+    params.setMaxNovaScore(maxNovaScore);
     return new ResponseEntity<>(listingService.searchListings(params), HttpStatus.OK);
   }
 
