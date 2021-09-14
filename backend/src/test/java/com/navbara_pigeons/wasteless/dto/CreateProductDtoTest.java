@@ -1,5 +1,6 @@
 package com.navbara_pigeons.wasteless.dto;
 
+import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.enums.NutriScore;
 import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
@@ -154,4 +155,35 @@ class CreateProductDtoTest extends MainTestProvider {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
     Assertions.assertEquals(null, dto.getIsPalmOilFree());
   }
+
+  @Test
+  void mapProductToDto_withValidNutriscore_expectOk() {
+    Product tempProduct = makeProduct("Test Product 01");
+    tempProduct.setNutriScore(NutriScore.B);
+    BasicProductDto productDto = new BasicProductDto(tempProduct, null);
+    Assertions.assertEquals("B", productDto.getNutriScore().name());
+  }
+
+  @Test
+  void mapProductToDto_withNullNutriscore_expectOk() {
+    Product tempProduct = makeProduct("Test Product 02");
+    tempProduct.setNutriScore(null);
+    Assertions.assertDoesNotThrow(() -> { BasicProductDto productDto = new BasicProductDto(tempProduct, null); });
+  }
+
+  @Test
+  void mapProductToDto_withValidNovascore_expectOk() {
+    Product tempProduct = makeProduct("Test Product 03");
+    tempProduct.setNovaGroup(4);
+    BasicProductDto productDto = new BasicProductDto(tempProduct, null);
+    Assertions.assertEquals(4, productDto.getNovaScore());
+  }
+
+  @Test
+  void mapProductToDto_withNullNovascore_expectOk() {
+    Product tempProduct = makeProduct("Test Product 04");
+    tempProduct.setNovaGroup(null);
+    Assertions.assertDoesNotThrow(() -> { BasicProductDto productDto = new BasicProductDto(tempProduct, null); });
+  }
+
 }
