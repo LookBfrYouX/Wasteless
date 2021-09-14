@@ -39,9 +39,9 @@ public class ListingsSearchParams {
   // Nutrition Filtering Params
   private NutriScore nutriScore;
   @Range(min=1, max=4)
-  private Integer minNovaScore;
+  private Integer minNovaGroup;
   @Range(min=1, max=4)
-  private Integer maxNovaScore;
+  private Integer maxNovaGroup;
 
 
   /**
