@@ -189,8 +189,8 @@ public class ListingSpecifications {
    * @param productInventoryItemJoin join of product with inventory item table
    * @param criteriaBuilder criteria builder
    * @param predicates list of predicates that this method will append a predicate to
-   * @param levels list of allowable nutrition levels
-   * @param fieldName name of the field this applies to
+   * @param levels list of allowable nutrition levels. May be null, but values of the array should not be null
+   * @param fieldName name of the field the filtering should be applied to
    */
   protected static void addNutritionLevelPredicate(Join<Product, InventoryItem> productInventoryItemJoin, CriteriaBuilder criteriaBuilder, ArrayList<Predicate> predicates, List<NutritionFactsLevel> levels, String fieldName) {
     if (levels == null) {
@@ -200,7 +200,7 @@ public class ListingSpecifications {
     ArrayList<Predicate> nutritionLevelPredicates = new ArrayList<>();
     for (NutritionFactsLevel level: levels) {
       log.info("WITH NUTRITION LEVEL FOR " + fieldName.toUpperCase() + ": " + level);
-      nutritionLevelPredicates.add(criteriaBuilder.equal(productInventoryItemJoin.get(fieldName), levels));
+      nutritionLevelPredicates.add(criteriaBuilder.equal(productInventoryItemJoin.get(fieldName), level));
     }
     predicates.add(criteriaBuilder.or(nutritionLevelPredicates.toArray(new Predicate[nutritionLevelPredicates.size()])));
   }
