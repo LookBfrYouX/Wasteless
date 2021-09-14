@@ -13,12 +13,12 @@
               <v-img
                   contain
                   max-width="20%"
-                  :src="novaGroupImgSrc">
+                  :src="loadNovaGroupImg()">
               </v-img>
               <v-img
                   contain
                   max-width="60%"
-                  :src="nutriScoreImgSrc">
+                  :src="loadNutriScoreImg()">
               </v-img>
             </div>
             <div>
@@ -40,7 +40,8 @@
                 <v-list-item-group>
                   <v-list-item class="pl-0">
                     <v-list-item-icon>
-                      <span class="material-icons red--text">
+                      <span class="material-icons"
+                            :class="[`${color}--text`]">
                         circle
                       </span>
                     </v-list-item-icon>
@@ -90,15 +91,70 @@
 
 <script>
 import novaGroup1Image from "@/../assets/images/nova-group-1.svg";
+import novaGroup2Image from "@/../assets/images/nova-group-2.svg";
+import novaGroup3Image from "@/../assets/images/nova-group-3.svg";
+import novaGroup4Image from "@/../assets/images/nova-group-4.svg";
+import novaGroupNullImage from "@/../assets/images/nova-group-null.svg";
 import nutriScoreAImage from "@/../assets/images/nutriscore_A.png";
+import nutriScoreBImage from "../../assets/images/nutriscore_B.png";
+import nutriScoreCImage from "../../assets/images/nutriscore_C.png";
+import nutriScoreDImage from "../../assets/images/nutriscore_D.png";
+import nutriScoreEImage from "../../assets/images/nutriscore_E.png";
+import nutriScoreNoneImage from "../../assets/images/nutriscore_none.png";
 
 export default {
   name: "NutritionFacts",
 
   data() {
     return {
-      novaGroupImgSrc: novaGroup1Image,
-      nutriScoreImgSrc: nutriScoreAImage
+      color: "yellow",
+    }
+  },
+
+  props: {
+    nutritionFacts: {
+      default: function() {
+        return {
+          product: {
+            nutriScore: "B",
+            novaGroup: 4,
+            fat: "HIGH",
+            saturatedFat: "MODERATE",
+            sugars: "LOW",
+            salt: "HIGH",
+            isGlutenFree: true,
+            isDairyFree: true,
+            isVegetarian: false,
+            isVegan: false,
+            isPalmOilFree: true,
+          }
+        }
+      }
+    }
+  },
+
+  methods: {
+    loadNovaGroupImg() {
+      const imgSrcDict = {
+        1: novaGroup1Image,
+        2: novaGroup2Image,
+        3: novaGroup3Image,
+        4: novaGroup4Image,
+        null: novaGroupNullImage
+      };
+      return imgSrcDict[this.nutritionFacts.product.novaGroup];
+    },
+
+    loadNutriScoreImg() {
+      const imgSrcDict = {
+        'A': nutriScoreAImage,
+        'B': nutriScoreBImage,
+        'C': nutriScoreCImage,
+        'D': nutriScoreDImage,
+        'E': nutriScoreEImage,
+        null: nutriScoreNoneImage
+      };
+      return imgSrcDict[this.nutritionFacts.product.nutriScore];
     }
   }
 }
