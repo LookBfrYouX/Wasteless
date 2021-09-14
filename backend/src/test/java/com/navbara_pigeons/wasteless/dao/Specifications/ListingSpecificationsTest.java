@@ -89,13 +89,13 @@ public class ListingSpecificationsTest extends MainTestProvider {
     }
 
     @Test
-    void resultsMeetSearchCriteriaTestFilteredByFat() throws ListingValidationException {
+    void resultsMeetSearchCriteriaTestFilteredByFat() {
         listingsSearchParams.setFat(List.of(NutritionFactsLevel.MODERATE, NutritionFactsLevel.HIGH));
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
         assertEquals(2, results.size());
-        assertEquals(5004, results.get(0).getId());
-        assertEquals(5006, results.get(0).getId());
-    }
 
+        assertEquals(5005, results.get(0).getId());
+        assertEquals(5007, results.get(0).getId());
+    }
 }
