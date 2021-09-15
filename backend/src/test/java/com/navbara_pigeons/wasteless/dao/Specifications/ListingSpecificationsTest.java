@@ -7,12 +7,14 @@ import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.specifications.ListingSpecifications;
 import com.navbara_pigeons.wasteless.entity.*;
 import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.exception.InventoryItemNotFoundException;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.service.InventoryService;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,9 +22,9 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 
 
 @SpringBootTest
@@ -50,7 +52,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
         listingsSearchParams.setSearchParam("Sanitarium");
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
-        assertEquals(5003, results.get(0).getId());
+        assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5003l));
     }
 
     @Test
@@ -88,4 +90,54 @@ public class ListingSpecificationsTest extends MainTestProvider {
         assertEquals(5002, results.get(0).getId());
     }
 
+    /**
+     * Test that the addNutritionLevelPredicate works. Can't figure out to check if the Predicate objects it creates are the right one
+     * and still need to test it being integrated with the filtering method, so this tests both at the same time. Couldn't figure out
+     * how to test the meetsSearchCriteria method without calling the database unfortunately
+     *
+     * Recommend using the below query to figure out what the correct response should be:
+     * SELECT listing.ID, product.ID AS PRODUCT_ID,
+     *   product.FAT,
+     *   product.SATURATED_FAT,
+     *   product.SUGARS,
+     *   product.SALT
+     *  FROM listing
+     *   JOIN inventory_item ON
+     *      listing.INVENTORY_ITEM_ID = inventory_item.ID
+     *    JOIN product ON
+     *    	inventory_item.PRODUCT_ID = product.ID
+     *
+     *    ORDER BY listing.ID
+     *
+     *
+     */
+    @Test
+    void resultsMeetSearchCriteriaTestFilteredByFatMultipleLevels() {
+        listingsSearchParams.setFat(List.of(NutritionFactsLevel.MODERATE, NutritionFactsLevel.HIGH));
+        Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
+        List<Listing> results = listingDao.findAll(specification);
+        assertEquals(2, results.size());
+        assertEquals(List.of(5006, 5007).toString(), results.stream().map(el -> el.getId()).sorted().collect(Collectors.toList()).toString());
+    }
+
+
+    @Test
+    void resultsMeetSearchCriteriaTestFilteredBySaturatedFatOneLevel() {
+        listingsSearchParams.setSaturatedFat(List.of(NutritionFactsLevel.LOW));
+        Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
+        List<Listing> results = listingDao.findAll(specification);
+        assertEquals(2, results.size());
+        assertEquals(List.of(5003, 5005).toString(), results.stream().map(el -> el.getId()).sorted().collect(Collectors.toList()).toString());
+    }
+
+
+    @Test
+    void resultsMeetSearchCriteriaTestFilteredByMultipleNutritionFieldsSugarsAndSalt() {
+        listingsSearchParams.setSalt(List.of(NutritionFactsLevel.LOW));
+        listingsSearchParams.setSugars(List.of(NutritionFactsLevel.MODERATE));
+        Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
+        List<Listing> results = listingDao.findAll(specification);
+        assertEquals(1, results.size());
+        assertEquals(5005, results.get(0).getId());
+    }
 }

@@ -1,10 +1,12 @@
 package com.navbara_pigeons.wasteless.dao.specifications;
 
 import com.navbara_pigeons.wasteless.entity.*;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.IntFunction;
 import javax.management.InvalidAttributeValueException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -67,7 +69,7 @@ public class ListingSpecifications {
           log.error("Malformed Search Query");
         }
       }
-      predicates.add(getListingFilterMatch(params, root, businessInventoryItemJoin, criteriaBuilder));
+      predicates.add(getListingFilterMatch(params, root, businessInventoryItemJoin, productInventoryItemJoin, criteriaBuilder));
       return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
     };
   }
@@ -134,10 +136,11 @@ public class ListingSpecifications {
    * Method to create filters for the listings
    * @param params search query and other request parameters
    * @param root the root table
-   * @param businessInventoryItemJoin join inventoryitem table with business table
+   * @param businessInventoryItemJoin join of inventory item table with business table
+   * @param productInventoryItemJoin join of product table with inventory item table
    * @param criteriaBuilder to build the predicates
    */
-  private static Predicate getListingFilterMatch(ListingsSearchParams params, Root<Listing> root, Join<Business, InventoryItem> businessInventoryItemJoin, CriteriaBuilder criteriaBuilder) {
+  private static Predicate getListingFilterMatch(ListingsSearchParams params, Root<Listing> root, Join<Business, InventoryItem> businessInventoryItemJoin, Join<Product, InventoryItem> productInventoryItemJoin, CriteriaBuilder criteriaBuilder) {
     ArrayList<Predicate> predicates = new ArrayList<>();
     // if min price included by the user
     if( params.getMinPrice() != null ) {
@@ -173,20 +176,33 @@ public class ListingSpecifications {
       predicates.add(criteriaBuilder.or(businessTypePredicates.toArray(new Predicate[businessTypePredicates.size()])));
     }
 
-    if (params.getFat() != null) {
-      predicates.add(criteriaBuilder.or(params.getFat().toArray(new Predicate[params.getFat().size()])));
-    }
-    if (params.getSaturatedFat() != null) {
-      predicates.add(criteriaBuilder.or(params.getSaturatedFat().toArray(new Predicate[params.getSaturatedFat().size()])));
-    }
-    if (params.getSugars() != null) {
-      predicates.add(criteriaBuilder.or(params.getSugars().toArray(new Predicate[params.getSugars().size()])));
-    }
-    if (params.getSalt() != null) {
-      predicates.add(criteriaBuilder.or(params.getSalt().toArray(new Predicate[params.getSalt().size()])));
-    }
+    addNutritionLevelPredicate(productInventoryItemJoin, criteriaBuilder, predicates, params.getFat(), "fat");
+    addNutritionLevelPredicate(productInventoryItemJoin, criteriaBuilder, predicates, params.getSaturatedFat(), "saturatedFat");
+    addNutritionLevelPredicate(productInventoryItemJoin, criteriaBuilder, predicates, params.getSugars(), "sugars");
+    addNutritionLevelPredicate(productInventoryItemJoin, criteriaBuilder, predicates, params.getSalt(), "salt");
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+  }
+
+  /**
+   * Adds a predicate, matching rows where the `fieldName` property is one of the elements in the array `levels`
+   * @param productInventoryItemJoin join of product with inventory item table
+   * @param criteriaBuilder criteria builder
+   * @param predicates list of predicates that this method will append a predicate to
+   * @param levels list of allowable nutrition levels. May be null, but values of the array should not be null
+   * @param fieldName name of the field the filtering should be applied to
+   */
+  private static void addNutritionLevelPredicate(Join<Product, InventoryItem> productInventoryItemJoin, CriteriaBuilder criteriaBuilder, ArrayList<Predicate> predicates, List<NutritionFactsLevel> levels, String fieldName) {
+    if (levels == null) {
+      return;
+    }
+
+    ArrayList<Predicate> nutritionLevelPredicates = new ArrayList<>();
+    for (NutritionFactsLevel level: levels) {
+      log.info("WITH NUTRITION LEVEL FOR " + fieldName.toUpperCase() + ": " + level);
+      nutritionLevelPredicates.add(criteriaBuilder.equal(productInventoryItemJoin.get(fieldName), level));
+    }
+    predicates.add(criteriaBuilder.or(nutritionLevelPredicates.toArray(new Predicate[nutritionLevelPredicates.size()])));
   }
 
 }

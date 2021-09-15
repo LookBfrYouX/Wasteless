@@ -24,11 +24,11 @@
             To view the marketplace and search all listings, switch to
             <!-- Bootstrap rule that disables link styling if there are no classes on the <a> element -->
             <a
-            class="the-presence-of-any-class"
-            @click="() => $stateStore.actions.setActingAs(null)"
+              class="the-presence-of-any-class"
+              @click="() => $stateStore.actions.setActingAs(null)"
             > acting as your self
-          </a>
-        </div>
+            </a>
+          </div>
         </div>
       </div>
       <div class="col-md-8 card m-1">
