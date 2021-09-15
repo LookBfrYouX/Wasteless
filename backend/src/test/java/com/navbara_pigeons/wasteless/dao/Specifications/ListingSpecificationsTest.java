@@ -112,7 +112,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
      *
      */
     @Test
-    void resultsMeetSearchCriteriaTestFilteredByFatMultipleLevels() {
+    void resultsMeetSearchCriteria_filterByNutrientLevelsFatMultipleLevels_expectFiltered() {
         listingsSearchParams.setFat(List.of(NutritionFactsLevel.MODERATE, NutritionFactsLevel.HIGH));
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
@@ -122,7 +122,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
 
 
     @Test
-    void resultsMeetSearchCriteriaTestFilteredBySaturatedFatOneLevel() {
+    void resultsMeetSearchCriteria_filterByNutrientLevelsSaturatedFatOneLevel_expectFiltered() {
         listingsSearchParams.setSaturatedFat(List.of(NutritionFactsLevel.LOW));
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
@@ -132,7 +132,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
 
 
     @Test
-    void resultsMeetSearchCriteriaTestFilteredByMultipleNutritionFieldsSugarsAndSalt() {
+    void resultsMeetSearchCriteria_filterByMultipleNutrientFieldsSaltAndSugars_expectFiltered() {
         listingsSearchParams.setSalt(List.of(NutritionFactsLevel.LOW));
         listingsSearchParams.setSugars(List.of(NutritionFactsLevel.MODERATE));
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
