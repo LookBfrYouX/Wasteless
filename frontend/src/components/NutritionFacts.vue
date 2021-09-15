@@ -10,18 +10,14 @@
         <v-row>
           <v-col cols="12" md="6">
             <div class="d-flex justify-space-around mb-4">
-              <v-img
-                  contain
-                  max-width="20%"
-                  :src="loadNovaGroupImg()">
-              </v-img>
-              <v-img
-                  contain
-                  max-width="60%"
-                  :src="loadNutriScoreImg()">
-              </v-img>
+              <img :src="loadNovaGroupImg"
+                   class="nova"
+                   :alt="`Nova Group is ${product.novaGroup}`"/>
+              <img :src="loadNutriScoreImg"
+                   class="nutri"
+                   :alt="`Nutri-Score is ${product.nutriScore}`"/>
             </div>
-            <div>
+            <div class="mb-2">
               Dietary Requirements
             </div>
             <allergy-chips :product="product"/>
@@ -97,7 +93,7 @@ export default {
     }
   },
 
-  methods: {
+  computed: {
     loadNovaGroupImg() {
       const imgSrcDict = {
         1: novaGroup1Image,
@@ -125,5 +121,16 @@ export default {
 
 </script>
 <style scoped>
-
+img.nova {
+  max-height: 5em;
+  max-width: 100%;
+  min-width: 0;
+  object-fit: contain;
+}
+img.nutri {
+  padding-left: 0.5em;
+  max-width: min(100%, 10em);
+  min-width: 0;
+  object-fit: contain;
+}
 </style>
