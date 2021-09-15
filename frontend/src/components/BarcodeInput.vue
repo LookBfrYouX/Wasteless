@@ -89,7 +89,9 @@ export default {
         this.errorMessage = null;
         this.info.name = data.product.product_name;
         this.info.manufacturer = data.product.brands;
-        this.info.nutriScore = data.product.nutriscore_grade.toUpperCase();
+        if (data.product.nutriscore_grade != null) {
+          this.info.nutriScore = data.product.nutriscore_grade.toUpperCase();
+        }
         this.info.novaGroup = data.product.nova_group;
         if (data.product.nutrient_levels) {
           const nutrient_levels = data.product.nutrient_levels;
@@ -108,10 +110,17 @@ export default {
      * Parses and sets nutritional level tags in required format
      */
     setNutritionalLevelInformation: function(nutrient_levels) {
-      this.info.fat = nutrient_levels.fat.toUpperCase();
-      this.info.saturatedFat = nutrient_levels["saturated-fat"].toUpperCase();
-      this.info.sugars = nutrient_levels.sugars.toUpperCase();
-      this.info.salt = nutrient_levels.salt.toUpperCase();
+      const dataMapper = {
+        fat: 'fat',
+        saturatedFat: 'saturated-fat',
+        sugars: 'sugars',
+        salt: 'salt'
+      };
+      Object.entries(dataMapper).forEach(([key, value]) => {
+        if (typeof nutrient_levels[value] == "string") {
+          this.info[key] = nutrient_levels[value].toUpperCase();
+        }
+      });
     },
 
     /**
