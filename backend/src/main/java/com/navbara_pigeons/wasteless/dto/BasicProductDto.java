@@ -24,11 +24,11 @@ public class BasicProductDto {
   private ZonedDateTime created;
   private List<BasicImageDto> images;
   private NutriScore nutriScore;
-  private Integer novaScore;
+  private Integer novaGroup;
   private NutritionFactsLevel fat;
   private NutritionFactsLevel saturatedFat;
-  private NutritionFactsLevel sugar;
-  private NutritionFactsLevel sodium;
+  private NutritionFactsLevel sugars;
+  private NutritionFactsLevel salt;
   private Boolean isGlutenFree;
   private Boolean isDairyFree;
   private Boolean isVegetarian;
@@ -53,11 +53,11 @@ public class BasicProductDto {
           product.getImages()); // First image is primary image
     }
     this.nutriScore = product.getNutriScore();
-    this.novaScore = product.getNovaGroup();
+    this.novaGroup = product.getNovaGroup();
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
-    this.sugar = product.getSugars();
-    this.sodium = product.getSalt();
+    this.sugars = product.getSugars();
+    this.salt = product.getSalt();
     this.isGlutenFree = product.getIsGlutenFree();
     this.isDairyFree = product.getIsDairyFree();
     this.isVegetarian = product.getIsVegetarian();

@@ -66,9 +66,9 @@ export default {
   data() {
     return {
       product: {
-        nutriScore: "B",
-        novaGroup: 4,
-        fat: "HIGH",
+        nutriScore: null,
+        novaGroup: null,
+        fat: null,
         saturatedFat: "MODERATE",
         sugars: "LOW",
         salt: "HIGH",

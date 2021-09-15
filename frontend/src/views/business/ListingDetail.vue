@@ -61,6 +61,7 @@
           </div>
           <div class="mt-2">Quantity: {{ quantity }}</div>
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
+          <nutrition-facts class="my-2" :product="product" />
           <div v-if="moreInfo" class="mt-2 mb-5">More Information: {{ moreInfo }}</div>
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated, true) }}</div>
@@ -138,16 +139,31 @@ import ErrorModal from "@/components/ErrorModal.vue";
 import {ApiRequestError} from "@/ApiRequestError";
 import {Api} from "@/Api";
 import ImageCarousel from '../../components/ImageCarousel.vue';
+import NutritionFacts from "@/components/NutritionFacts";
 
 export default {
   name: "ListingDetail",
   components: {
+    NutritionFacts,
     ImageCarousel,
     ErrorModal,
   },
 
   data() {
     return {
+      product: {
+        nutriScore: "B",
+        novaGroup: 4,
+        fat: "HIGH",
+        saturatedFat: "MODERATE",
+        sugars: "LOW",
+        salt: "HIGH",
+        isGlutenFree: true,
+        isDairyFree: true,
+        isVegetarian: false,
+        isVegan: false,
+        isPalmOilFree: true,
+      },
       name: "",
       description: "",
       business: null,
@@ -272,6 +288,7 @@ export default {
       this.bestBefore = listing.inventoryItem.bestBefore;
       this.expires = listing.inventoryItem.expires;
       this.recommendedRetailPrice = listing.inventoryItem.product.recommendedRetailPrice;
+      this.product = listing.inventoryItem.product;
     },
 
     /**
