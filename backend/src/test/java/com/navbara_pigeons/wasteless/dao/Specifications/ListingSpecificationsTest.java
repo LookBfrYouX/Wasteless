@@ -63,7 +63,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
         listingsSearchParams.setSearchParam("\"Sanitarium So Good Oat Milk No Added Sugar\"");
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
-        assertEquals(5004, results.get(0).getId());
+        assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5004l));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
         listingsSearchParams.setSearchParam("\"Christchurch\"");
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
-        assertEquals(5001, results.get(0).getId());
+        assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5001l));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
         listingsSearchParams.setMaxPrice(12.0);
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
-        assertEquals(5002, results.get(0).getId());
+        assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5002l));
     }
 
     /**
