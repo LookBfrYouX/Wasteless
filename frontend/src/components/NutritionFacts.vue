@@ -61,7 +61,6 @@ import novaGroup1Image from "@/../assets/images/nova-group-1.svg";
 import novaGroup2Image from "@/../assets/images/nova-group-2.svg";
 import novaGroup3Image from "@/../assets/images/nova-group-3.svg";
 import novaGroup4Image from "@/../assets/images/nova-group-4.svg";
-import novaGroupNullImage from "@/../assets/images/nova-group-null.svg";
 import nutriScoreAImage from "@/../assets/images/nutriscore_A.png";
 import nutriScoreBImage from "../../assets/images/nutriscore_B.png";
 import nutriScoreCImage from "../../assets/images/nutriscore_C.png";
@@ -103,17 +102,24 @@ export default {
   },
 
   computed: {
+    /**
+     * Load Nova Group image. Called only when novaScore is not null.
+     * @returns {*}
+     */
     loadNovaGroupImg() {
       const imgSrcDict = {
         1: novaGroup1Image,
         2: novaGroup2Image,
         3: novaGroup3Image,
         4: novaGroup4Image,
-        null: novaGroupNullImage
       };
       return imgSrcDict[this.product.novaGroup];
     },
 
+    /**
+     * Load Nutri-Score image. Called only when nutriScore is not null.
+     * @returns {*}
+     */
     loadNutriScoreImg() {
       const imgSrcDict = {
         'A': nutriScoreAImage,
