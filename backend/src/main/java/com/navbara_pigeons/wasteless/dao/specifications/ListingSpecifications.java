@@ -172,6 +172,20 @@ public class ListingSpecifications {
       }
       predicates.add(criteriaBuilder.or(businessTypePredicates.toArray(new Predicate[businessTypePredicates.size()])));
     }
+
+    if (params.getFat() != null) {
+      predicates.add(criteriaBuilder.or(params.getFat().toArray(new Predicate[params.getFat().size()])));
+    }
+    if (params.getSaturatedFat() != null) {
+      predicates.add(criteriaBuilder.or(params.getSaturatedFat().toArray(new Predicate[params.getSaturatedFat().size()])));
+    }
+    if (params.getSugars() != null) {
+      predicates.add(criteriaBuilder.or(params.getSugars().toArray(new Predicate[params.getSugars().size()])));
+    }
+    if (params.getSalt() != null) {
+      predicates.add(criteriaBuilder.or(params.getSalt().toArray(new Predicate[params.getSalt().size()])));
+    }
+
     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
   }
 
