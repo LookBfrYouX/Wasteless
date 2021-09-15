@@ -37,7 +37,7 @@ export default {
      * @returns {{color: string, name: string, icon: string, value: null} | {color: string, name: string, icon: string, value: string} | {color: string, name: string, icon: string, value: string} | {color: string, name: string, icon: string, value: string}}
      */
     config() {
-      return this.$constants.PRODUCT.NUTRIENT_LEVELS_MAP.find(el => el.value == this.level);
+      return constants.PRODUCT.NUTRIENT_LEVELS_MAP.find(el => el.value == this.level);
     }
   }
 }
