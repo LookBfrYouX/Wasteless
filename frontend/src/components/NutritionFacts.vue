@@ -83,21 +83,7 @@ export default {
 
   props: {
     product: {
-      default: function() {
-        return {
-          nutriScore: null,
-          novaGroup: null,
-          fat: null,
-          saturatedFat: "MODERATE",
-          sugars: "LOW",
-          salt: "HIGH",
-          isGlutenFree: true,
-          isDairyFree: true,
-          isVegetarian: false,
-          isVegan: false,
-          isPalmOilFree: true,
-        }
-      }
+      required: true
     }
   },
 
