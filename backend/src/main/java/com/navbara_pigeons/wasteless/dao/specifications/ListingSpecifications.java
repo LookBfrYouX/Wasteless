@@ -192,7 +192,7 @@ public class ListingSpecifications {
    * @param levels list of allowable nutrition levels. May be null, but values of the array should not be null
    * @param fieldName name of the field the filtering should be applied to
    */
-  protected static void addNutritionLevelPredicate(Join<Product, InventoryItem> productInventoryItemJoin, CriteriaBuilder criteriaBuilder, ArrayList<Predicate> predicates, List<NutritionFactsLevel> levels, String fieldName) {
+  private static void addNutritionLevelPredicate(Join<Product, InventoryItem> productInventoryItemJoin, CriteriaBuilder criteriaBuilder, ArrayList<Predicate> predicates, List<NutritionFactsLevel> levels, String fieldName) {
     if (levels == null) {
       return;
     }

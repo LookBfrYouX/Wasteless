@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 
 
 @SpringBootTest
@@ -45,6 +44,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
     @Autowired
     InventoryService inventoryService;
 
+    @Test
     void resultsMeetSearchCriteriaTestPartialMatchingProductName() throws ListingValidationException {
         List<ListingSearchKeys> searchKeys = new ArrayList<>();
         searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
@@ -52,7 +52,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
         listingsSearchParams.setSearchParam("Sanitarium");
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
-        assertEquals(5003, results.get(0).getId());
+        assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5003l));
     }
 
     @Test
@@ -126,7 +126,6 @@ public class ListingSpecificationsTest extends MainTestProvider {
         listingsSearchParams.setSaturatedFat(List.of(NutritionFactsLevel.LOW));
         Specification<Listing> specification = ListingSpecifications.meetsSearchCriteria(listingsSearchParams);
         List<Listing> results = listingDao.findAll(specification);
-        System.out.println(results.stream().map(el -> el.getId()).sorted().collect(Collectors.toList()).toString());
         assertEquals(2, results.size());
         assertEquals(List.of(5003, 5005).toString(), results.stream().map(el -> el.getId()).sorted().collect(Collectors.toList()).toString());
     }
