@@ -25,7 +25,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 
 @SpringBootTest
-public class ListingSpecificationsTest extends MainTestProvider {
+class ListingSpecificationsTest extends MainTestProvider {
 
 
   ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
@@ -194,5 +194,25 @@ public class ListingSpecificationsTest extends MainTestProvider {
     // Assert
     Assertions.assertTrue(results.contains(aRatedListing));
     Assertions.assertFalse(results.contains(eRatedListing));
+  }
+
+  @Test
+  @Transactional
+  void resultsMeetSearchCriteriaTestFilteredByIsGlutenFree() {
+    // Arrange & Act
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("");
+    listingsSearchParams.setIsGlutenFree(true);
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+
+    // Assert
+    for (Listing listing : results) {
+      Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsGlutenFree());
+    }
+    Assertions.assertEquals(3, results.size());
   }
 }
