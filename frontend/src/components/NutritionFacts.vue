@@ -10,12 +10,22 @@
         <v-row>
           <v-col cols="12" md="6">
             <div class="d-flex justify-space-around mb-4">
-              <img :src="loadNovaGroupImg"
-                   class="nova"
-                   :alt="`Nova Group is ${product.novaGroup}`"/>
-              <img :src="loadNutriScoreImg"
-                   class="nutri"
-                   :alt="`Nutri-Score is ${product.nutriScore}`"/>
+              <div v-if="product.novaGroup">
+                <img :src="loadNovaGroupImg"
+                     class="nova"
+                     :alt="`Nova Group is ${product.novaGroup}`"/>
+              </div>
+              <div v-else>
+                Nova Group unknown
+              </div>
+              <div v-if="product.nutriScore">
+                <img :src="loadNutriScoreImg"
+                     class="nutri"
+                     :alt="`Nutri-Score is ${product.nutriScore}`"/>
+              </div>
+              <div v-else>
+                Nutri-Score unknown
+              </div>
             </div>
             <div class="mb-2">
               Dietary Requirements
@@ -57,7 +67,6 @@ import nutriScoreBImage from "../../assets/images/nutriscore_B.png";
 import nutriScoreCImage from "../../assets/images/nutriscore_C.png";
 import nutriScoreDImage from "../../assets/images/nutriscore_D.png";
 import nutriScoreEImage from "../../assets/images/nutriscore_E.png";
-import nutriScoreNoneImage from "../../assets/images/nutriscore_none.png";
 
 export default {
   name: "NutritionFacts",
@@ -77,8 +86,8 @@ export default {
     product: {
       default: function() {
         return {
-          nutriScore: "B",
-          novaGroup: 4,
+          nutriScore: null,
+          novaGroup: null,
           fat: null,
           saturatedFat: "MODERATE",
           sugars: "LOW",
@@ -112,7 +121,6 @@ export default {
         'C': nutriScoreCImage,
         'D': nutriScoreDImage,
         'E': nutriScoreEImage,
-        null: nutriScoreNoneImage
       };
       return imgSrcDict[this.product.nutriScore];
     },
