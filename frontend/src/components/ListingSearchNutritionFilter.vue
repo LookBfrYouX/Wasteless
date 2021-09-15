@@ -6,12 +6,13 @@
         <v-col cols="12" lg="6">
           <v-subheader>Diets</v-subheader>
           <v-select
-              v-model="selected"
-              :items=diets
+              v-model="diets"
+              :items=dietOptions
               label="Select"
               multiple
               solo
               dense
+              clearable
               item-text="short"
               item-value="long"
           >
@@ -23,49 +24,52 @@
                   v-if="index === shownChips"
                   class="grey--text text-caption"
               >
-              (+{{ selectedDiets.length - shownChips }} others)
+              (+{{ diets.length - shownChips }} others)
             </span>
             </template>
           </v-select>
         </v-col>
 
-        <v-col cols="6" lg="3" class="my-0 py-0">
-          <v-subheader>Min NovaGroup</v-subheader>
+        <v-col cols="12" lg="3" class="my-0 py-0">
+          <v-subheader>Min nova group</v-subheader>
           <v-select
-              :items=novaGroups
+              v-model="minNovaGroup"
+              :items=minNovaGroups
               label="Select"
-              multiple
               solo
               dense
+              clearable
               item-text="short"
               item-value="long"
           >
           </v-select>
         </v-col>
 
-        <v-col cols="6" lg="3" class="my-0 py-0">
-          <v-subheader>Max NovaGroup</v-subheader>
+        <v-col cols="12" lg="3" class="my-0 py-0">
+          <v-subheader>Max nova group</v-subheader>
           <v-select
-              :items=novaGroups
+              v-model="maxNovaGroup"
+              :items=maxNovaGroups
               label="Select"
-              multiple
               solo
               dense
+              clearable
               item-text="short"
               item-value="long"
           >
           </v-select>
         </v-col>
 
-        <v-col cols="6" lg="3" class="my-0 py-0">
-          <v-subheader>Fat</v-subheader>
+        <v-col cols="12" lg="3" class="my-0 py-0">
+          <v-subheader>Fat levels</v-subheader>
           <v-select
-              v-model="selectedFats"
+              v-model="fats"
               :items=nutritionOptions
               label="Select"
               multiple
               solo
               dense
+              clearable
               item-text="short"
               item-value="long"
           >
@@ -77,21 +81,22 @@
                   v-if="index === shownChips"
                   class="grey--text text-caption"
               >
-              (+{{ selectedFats.length - shownChips }} others)
+              (+{{ fats.length - shownChips }} others)
             </span>
             </template>
           </v-select>
         </v-col>
 
-        <v-col cols="6" lg="3" class="my-0 py-0">
-          <v-subheader>Saturated fat</v-subheader>
+        <v-col cols="12" lg="3" class="my-0 py-0">
+          <v-subheader>Saturated fat levels</v-subheader>
           <v-select
-              v-model="selectedSaturatedFats"
+              v-model="saturatedFats"
               :items=nutritionOptions
               label="Select"
               multiple
               solo
               dense
+              clearable
               item-text="short"
               item-value="long"
           >
@@ -103,49 +108,52 @@
                   v-if="index === shownChips"
                   class="grey--text text-caption"
               >
-              (+{{ selectedSaturatedFats.length - shownChips }} others)
+              (+{{ saturatedFats.length - shownChips }} others)
             </span>
             </template>
           </v-select>
         </v-col>
 
-        <v-col cols="6" lg="3" class="my-0 py-0">
-          <v-subheader>Min NutriScore</v-subheader>
+        <v-col cols="12" lg="3" class="my-0 py-0">
+          <v-subheader>Min nutriscore</v-subheader>
           <v-select
-              :items=nutriScoreOptions
+              v-model="minNutriScore"
+              :items=minNutriScores
               label="Select"
-              multiple
               solo
               dense
+              clearable
               item-text="short"
               item-value="long"
           >
           </v-select>
         </v-col>
 
-        <v-col cols="6" lg="3" class="my-0 py-0">
-          <v-subheader>Max NutriScore</v-subheader>
+        <v-col cols="12" lg="3" class="my-0 py-0">
+          <v-subheader>Max nutriscore</v-subheader>
           <v-select
-              :items=nutriScoreOptions
+              v-model="maxNutriScore"
+              :items=maxNutriScores
               label="Select"
-              multiple
               solo
               dense
+              clearable
               item-text="short"
               item-value="long"
           >
           </v-select>
         </v-col>
 
-        <v-col cols="6" lg="3" class="my-0 py-0">
-          <v-subheader>Sugars</v-subheader>
+        <v-col cols="12" lg="3" class="my-0 py-0">
+          <v-subheader>Sugar levels</v-subheader>
           <v-select
-              v-model="selectedSugars"
+              v-model="sugars"
               :items=nutritionOptions
               label="Select"
               multiple
               solo
               dense
+              clearable
               item-text="short"
               item-value="long"
           >
@@ -157,21 +165,22 @@
                   v-if="index === shownChips"
                   class="grey--text text-caption"
               >
-              (+{{ selectedSugars.length - shownChips }} others)
+              (+{{ sugars.length - shownChips }} others)
             </span>
             </template>
           </v-select>
         </v-col>
 
-        <v-col cols="6" lg="3" class="my-0 py-0">
-          <v-subheader>Salt</v-subheader>
+        <v-col cols="12" lg="3" class="my-0 py-0">
+          <v-subheader>Salt levels</v-subheader>
           <v-select
-              v-model="selectedSalt"
+              v-model="salts"
               :items=nutritionOptions
               label="Select"
               multiple
               solo
               dense
+              clearable
               item-text="short"
               item-value="long"
           >
@@ -183,7 +192,7 @@
                   v-if="index === shownChips"
                   class="grey--text text-caption"
               >
-              (+{{ selectedSalt.length - shownChips }} others)
+              (+{{ salts.length - shownChips }} others)
             </span>
             </template>
           </v-select>
@@ -198,21 +207,87 @@ export default {
   name: "ListingSearchNutritionFilter",
   data() {
     return {
-      selectedDiets: [],
-      selectedFats: [],
-      selectedSaturatedFats: [],
-      selectedSugars: [],
-      selectedSalt: [],
-      selectedMinNovaGroup: null,
-      selectedMaxNovaGroup: null,
-      selectedMinNutriScore: null,
-      selectedMaxNutriScore: null,
       shownChips: 1,
       novaGroups: [1, 2, 3, 4],
       nutriScoreOptions: ['A', 'B', 'C', 'D', 'E'],
       nutritionOptions: ['Unknown', 'Low', 'Moderate', 'High'],
-      diets: ['Gluten Free', 'Dairy Free', 'Vegetarian', 'Vegan', 'Palm Oil Free'],
+      dietOptions: ['Gluten Free', 'Dairy Free', 'Vegetarian', 'Vegan', 'Palm Oil Free'],
+
+      //Selected elements
+      minNovaGroup: null,
+      maxNovaGroup: null,
+      minNutriScore: null,
+      maxNutriScore: null,
+      diets: [],
+      fats: [],
+      saturatedFats: [],
+      sugars: [],
+      salts: [],
     }
   },
+
+  /**
+   * Emitting events to be caught in parent component
+   */
+  watch: {
+    minNovaGroup() {
+      this.$emit('newMinNovaGroup', this.minNovaGroup);
+    },
+    maxNovaGroup() {
+      this.$emit('newMaxNovaGroup', this.maxNovaGroup);
+    },
+    minNutriScore() {
+      this.$emit('newMinNutriScore', this.minNutriScore);
+    },
+    maxNutriScore() {
+      this.$emit('newMaxNutriScore', this.maxNutriScore);
+    },
+    diets() {
+      this.$emit('newDiets', this.diets);
+    },
+    fats() {
+      this.$emit('newFats', this.fats);
+    },
+    saturatedFats() {
+      this.$emit('newSaturatedFats', this.saturatedFats);
+    },
+    sugars() {
+      this.$emit('newSugars', this.sugars);
+    },
+    salts() {
+      this.$emit('newSalts', this.salts);
+    },
+  },
+
+  computed: {
+    /**
+     * Restricts input for minNovaGroup
+     */
+    minNovaGroups: function () {
+      return this.maxNovaGroup === null ? this.novaGroups : this.novaGroups.slice(0,
+          this.maxNovaGroup);
+    },
+    /**
+     * Restricts input for maxNovaGroup
+     */
+    maxNovaGroups: function () {
+      return this.minNovaGroup === null ? this.novaGroups : this.novaGroups.slice(
+          this.minNovaGroup - 1);
+    },
+    /**
+     * Restricts input for minNutriScore
+     */
+    minNutriScores: function () {
+      return this.maxNutriScore === null ? this.nutriScoreOptions : this.nutriScoreOptions.slice(0,
+          this.nutriScoreOptions.indexOf(this.maxNutriScore) + 1);
+    },
+    /**
+     * Restricts input for maxNutriScore
+     */
+    maxNutriScores: function () {
+      return this.minNutriScore === null ? this.nutriScoreOptions : this.nutriScoreOptions.slice(
+          this.nutriScoreOptions.indexOf(this.minNutriScore));
+    }
+  }
 }
 </script>

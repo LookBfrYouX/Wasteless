@@ -7,7 +7,7 @@
 
       <v-row md="6">
         <v-col>
-          <v-expansion-panels class="px-4">
+          <v-expansion-panels class="px-4" multiple>
             <v-expansion-panel>
               <v-expansion-panel-header>Product filtering</v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -30,7 +30,16 @@
                 </v-row>
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <listing-search-nutrition-filter/>
+            <listing-search-nutrition-filter
+                @newMinNovaGroup="event => this.searchParams.minNovaGroup = event"
+                @newMaxNovaGroup="event => this.searchParams.maxNovaGroup = event"
+                @newMinNutriScore="event => this.searchParams.minNutriScore = event"
+                @newMaxNutriScore="event => this.searchParams.maxNutriScore = event"
+                @newDiets="event => this.searchParams.diets = event"
+                @newFats="event => this.searchParams.fats = event"
+                @newSaturatedFats="event => this.searchParams.saturatedFats = event"
+                @newSugars="event => this.searchParams.sugars = event"
+                @newSalts="event => this.searchParams.salts = event"/>
           </v-expansion-panels>
         </v-col>
       </v-row>
@@ -128,6 +137,17 @@ export default {
         maxPrice: null,
         filterDates: [],
         businessTypes: [],
+
+        // Nutrition filters
+        minNovaGroup: null,
+        maxNovaGroup: null,
+        minNutriScore: null,
+        maxNutriScore: null,
+        diets: [],
+        fats: [],
+        saturatedFats: [],
+        sugars: [],
+        salts: [],
       }
     };
   },
