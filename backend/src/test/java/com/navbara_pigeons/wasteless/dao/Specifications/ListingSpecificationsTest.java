@@ -10,6 +10,7 @@ import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.service.InventoryService;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
+import javax.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,7 @@ class ListingSpecificationsTest extends MainTestProvider {
   }
 
   @Test
+  @Transactional
   void resultsMeetSearchCriteriaTestFullMatchingAddress() throws Exception {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.ADDRESS);
@@ -88,7 +90,8 @@ class ListingSpecificationsTest extends MainTestProvider {
   }
 
   @Test
-  void novaGroup_filter_min() throws Exception {
+  @Transactional
+  void novaGroupFilter_withValidMinNovaGroup_expectFiltered() throws Exception {
     // Arrange
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
@@ -112,7 +115,8 @@ class ListingSpecificationsTest extends MainTestProvider {
   }
 
   @Test
-  void novaGroup_filter_max() throws Exception {
+  @Transactional
+  void novaGroupFilter_withValidMaxNovaGroup_expectFiltered() throws Exception {
     // Arrange
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
@@ -136,7 +140,8 @@ class ListingSpecificationsTest extends MainTestProvider {
   }
 
   @Test
-  void novaGroup_filter_range() throws Exception {
+  @Transactional
+  void novaGroupFilter_withValidRangeNovaGroup_expectFiltered() throws Exception {
     // Arrange
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
