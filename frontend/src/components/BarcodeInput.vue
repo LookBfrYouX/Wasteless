@@ -118,7 +118,7 @@ export default {
       };
       Object.entries(dataMapper).forEach(([key, value]) => {
         if (typeof nutrient_levels[value] == "string") {
-          this.info[key] = nutrient_levels[value];
+          this.info[key] = nutrient_levels[value].toUpperCase();
         }
       });
     },
