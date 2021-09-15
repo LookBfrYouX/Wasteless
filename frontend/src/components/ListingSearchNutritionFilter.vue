@@ -23,7 +23,7 @@
                   v-if="index === shownChips"
                   class="grey--text text-caption"
               >
-              (+{{ selected.length - shownChips }} others)
+              (+{{ selectedDiets.length - shownChips }} others)
             </span>
             </template>
           </v-select>
@@ -60,6 +60,7 @@
         <v-col cols="6" lg="3" class="my-0 py-0">
           <v-subheader>Fat</v-subheader>
           <v-select
+              v-model="selectedFats"
               :items=nutritionOptions
               label="Select"
               multiple
@@ -68,12 +69,24 @@
               item-text="short"
               item-value="long"
           >
+            <template v-slot:selection="{ item, index }">
+              <v-chip v-if="index < shownChips" small>
+                <span>{{ item }}</span>
+              </v-chip>
+              <span
+                  v-if="index === shownChips"
+                  class="grey--text text-caption"
+              >
+              (+{{ selectedFats.length - shownChips }} others)
+            </span>
+            </template>
           </v-select>
         </v-col>
 
         <v-col cols="6" lg="3" class="my-0 py-0">
           <v-subheader>Saturated fat</v-subheader>
           <v-select
+              v-model="selectedSaturatedFats"
               :items=nutritionOptions
               label="Select"
               multiple
@@ -82,6 +95,17 @@
               item-text="short"
               item-value="long"
           >
+            <template v-slot:selection="{ item, index }">
+              <v-chip v-if="index < shownChips" small>
+                <span>{{ item }}</span>
+              </v-chip>
+              <span
+                  v-if="index === shownChips"
+                  class="grey--text text-caption"
+              >
+              (+{{ selectedSaturatedFats.length - shownChips }} others)
+            </span>
+            </template>
           </v-select>
         </v-col>
 
@@ -116,6 +140,7 @@
         <v-col cols="6" lg="3" class="my-0 py-0">
           <v-subheader>Sugars</v-subheader>
           <v-select
+              v-model="selectedSugars"
               :items=nutritionOptions
               label="Select"
               multiple
@@ -124,12 +149,24 @@
               item-text="short"
               item-value="long"
           >
+            <template v-slot:selection="{ item, index }">
+              <v-chip v-if="index < shownChips" small>
+                <span>{{ item }}</span>
+              </v-chip>
+              <span
+                  v-if="index === shownChips"
+                  class="grey--text text-caption"
+              >
+              (+{{ selectedSugars.length - shownChips }} others)
+            </span>
+            </template>
           </v-select>
         </v-col>
 
         <v-col cols="6" lg="3" class="my-0 py-0">
           <v-subheader>Salt</v-subheader>
           <v-select
+              v-model="selectedSalt"
               :items=nutritionOptions
               label="Select"
               multiple
@@ -138,6 +175,17 @@
               item-text="short"
               item-value="long"
           >
+            <template v-slot:selection="{ item, index }">
+              <v-chip v-if="index < shownChips" small>
+                <span>{{ item }}</span>
+              </v-chip>
+              <span
+                  v-if="index === shownChips"
+                  class="grey--text text-caption"
+              >
+              (+{{ selectedSalt.length - shownChips }} others)
+            </span>
+            </template>
           </v-select>
         </v-col>
       </v-row>
@@ -145,18 +193,20 @@
   </v-expansion-panel>
 </template>
 
-<style scoped>
-.v-expansion-panel-content__wrap {
-  padding: 0 !important;
-}
-</style>
-
 <script>
 export default {
   name: "ListingSearchNutritionFilter",
   data() {
     return {
-      selected: [],
+      selectedDiets: [],
+      selectedFats: [],
+      selectedSaturatedFats: [],
+      selectedSugars: [],
+      selectedSalt: [],
+      selectedMinNovaGroup: null,
+      selectedMaxNovaGroup: null,
+      selectedMinNutriScore: null,
+      selectedMaxNutriScore: null,
       shownChips: 1,
       novaGroups: [1, 2, 3, 4],
       nutriScoreOptions: ['A', 'B', 'C', 'D', 'E'],
