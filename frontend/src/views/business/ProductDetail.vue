@@ -23,6 +23,7 @@
           </div>
         </div>
       </div>
+      <nutrition-facts class="my-2" :product="product" />
       <div class="d-flex justify-content-end">
         <router-link :to="{ name: 'BusinessProductImagesEdit', params: {
               businessId: this.businessId,
@@ -52,16 +53,31 @@ import ErrorModal from "@/components/ErrorModal.vue";
 import {ApiRequestError} from "@/ApiRequestError";
 import {Api} from "@/Api";
 import ImageCarousel from '../../components/ImageCarousel.vue';
+import NutritionFacts from "@/components/NutritionFacts";
 
 export default {
   name: "productDetail",
   components: {
+    NutritionFacts,
     ErrorModal,
     ImageCarousel,
   },
 
   data() {
     return {
+      product: {
+        nutriScore: "B",
+        novaGroup: 4,
+        fat: "HIGH",
+        saturatedFat: "MODERATE",
+        sugars: "LOW",
+        salt: "HIGH",
+        isGlutenFree: true,
+        isDairyFree: true,
+        isVegetarian: false,
+        isVegan: false,
+        isPalmOilFree: true,
+      },
       name: "",
       description: "",
       recommendedRetailPrice: null,
@@ -142,7 +158,7 @@ export default {
       if (this.businessId === null) {
         throw new ApiRequestError("You must be acting as a business to view the product.")
       }
-      return await Api.getProducts(this.businessId);
+      return Api.getProducts(this.businessId);
     },
 
     /**
@@ -155,6 +171,7 @@ export default {
         throw new ApiRequestError(
             `Couldn't find product with the ID ${this.productId}. Check if you are signed into the correct business`);
       }
+      this.product = product;
       this.name = product.name;
       this.description = product.description;
       this.recommendedRetailPrice = product.recommendedRetailPrice;
