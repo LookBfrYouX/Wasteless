@@ -2,7 +2,6 @@ package com.navbara_pigeons.wasteless.entity;
 
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -67,22 +66,5 @@ public class Listing {
 
   public Listing() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Listing)) {
-      return false;
-    }
-    Listing listing = (Listing) o;
-    return Objects.equals(getId(), listing.getId());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(getId());
   }
 }

@@ -13,6 +13,7 @@ import com.navbara_pigeons.wasteless.service.InventoryService;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ class ListingSpecificationsTest extends MainTestProvider {
   InventoryService inventoryService;
 
   @Test
+  @Transactional
   void resultsMeetSearchCriteriaTestPartialMatchingProductName() {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
@@ -48,6 +50,7 @@ class ListingSpecificationsTest extends MainTestProvider {
   }
 
   @Test
+  @Transactional
   void resultsMeetSearchCriteriaTestFullMatchingProductName() {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
@@ -60,6 +63,7 @@ class ListingSpecificationsTest extends MainTestProvider {
   }
 
   @Test
+  @Transactional
   void resultsMeetSearchCriteriaTestFullMatchingAddress() {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.ADDRESS);
@@ -72,6 +76,7 @@ class ListingSpecificationsTest extends MainTestProvider {
   }
 
   @Test
+  @Transactional
   void resultsMeetSearchCriteriaTestFilteredByPrice() {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
@@ -86,6 +91,7 @@ class ListingSpecificationsTest extends MainTestProvider {
   }
 
   @Test
+  @Transactional
   void resultsMeetSearchCriteriaTestFilteredByNutriScore() throws Exception {
     // Arrange
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
