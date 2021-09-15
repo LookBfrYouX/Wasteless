@@ -24,11 +24,8 @@
             <div>
               Dietary Requirements
             </div>
-            <div>
-              <v-chip>
-                Gluten Free
-              </v-chip>
-            </div>
+            <allergy-chips :product="product" large/>
+
 
           </v-col>
           <v-col cols="12" md="6">
@@ -90,6 +87,7 @@
 </template>
 
 <script>
+import AllergyChips from "@/components/AllergyChips";
 import novaGroup1Image from "@/../assets/images/nova-group-1.svg";
 import novaGroup2Image from "@/../assets/images/nova-group-2.svg";
 import novaGroup3Image from "@/../assets/images/nova-group-3.svg";
@@ -105,29 +103,31 @@ import nutriScoreNoneImage from "../../assets/images/nutriscore_none.png";
 export default {
   name: "NutritionFacts",
 
+  components: {
+    AllergyChips
+  },
+
   data() {
     return {
-      color: "yellow",
+      nutrientsLevels: null,
     }
   },
 
   props: {
-    nutritionFacts: {
+    product: {
       default: function() {
         return {
-          product: {
-            nutriScore: "B",
-            novaGroup: 4,
-            fat: "HIGH",
-            saturatedFat: "MODERATE",
-            sugars: "LOW",
-            salt: "HIGH",
-            isGlutenFree: true,
-            isDairyFree: true,
-            isVegetarian: false,
-            isVegan: false,
-            isPalmOilFree: true,
-          }
+          nutriScore: "B",
+          novaGroup: 4,
+          fat: "HIGH",
+          saturatedFat: "MODERATE",
+          sugars: "LOW",
+          salt: "HIGH",
+          isGlutenFree: true,
+          isDairyFree: true,
+          isVegetarian: false,
+          isVegan: false,
+          isPalmOilFree: true,
         }
       }
     }
@@ -142,7 +142,7 @@ export default {
         4: novaGroup4Image,
         null: novaGroupNullImage
       };
-      return imgSrcDict[this.nutritionFacts.product.novaGroup];
+      return imgSrcDict[this.product.novaGroup];
     },
 
     loadNutriScoreImg() {
@@ -154,8 +154,8 @@ export default {
         'E': nutriScoreEImage,
         null: nutriScoreNoneImage
       };
-      return imgSrcDict[this.nutritionFacts.product.nutriScore];
-    }
+      return imgSrcDict[this.product.nutriScore];
+    },
   }
 }
 

@@ -15,23 +15,7 @@
       >
       <!-- using justify-content: space between as the least important 
            information is probably around the edges -->
-        <!-- Can't use v-for and v-if together so filtering out false elements
-             from the array instead -->
-        <v-chip
-          small
-          v-for="{ key, longText, backgroundColor, foregroundColor }
-                in $constants.PRODUCT.ALLERGY_CHIP_CONFIG
-                  .filter(({ key }) => item.inventoryItem.product[key])"
-          :key="key"
-
-          class="mr-1 mb-1"
-          :color="backgroundColor"
-          :text-color="foregroundColor"
-        >
-          <span>
-            {{ longText }}
-          </span>
-        </v-chip>
+        <allergy-chips :product="item.inventoryItem.product" small/>
       </div>
       <img
           v-if="item.inventoryItem.product.images.length"
