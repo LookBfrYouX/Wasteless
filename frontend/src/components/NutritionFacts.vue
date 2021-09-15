@@ -24,8 +24,7 @@
             <div>
               Dietary Requirements
             </div>
-            <allergy-chips :product="product" large/>
-
+            <allergy-chips :product="product"/>
 
           </v-col>
           <v-col cols="12" md="6">
@@ -35,47 +34,10 @@
             <div>
               <v-list>
                 <v-list-item-group>
-                  <v-list-item class="pl-0">
-                    <v-list-item-icon>
-                      <span class="material-icons"
-                            :class="[`${color}--text`]">
-                        circle
-                      </span>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title>Fat</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-list-item class="pl-0">
-                    <v-list-item-icon>
-                      <span class="material-icons yellow--text">
-                        circle
-                      </span>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title>Saturated Fat</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-list-item class="pl-0">
-                    <v-list-item-icon>
-                      <span class="material-icons green--text">
-                        circle
-                      </span>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title>Sugars</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-list-item class="pl-0">
-                    <v-list-item-icon>
-                      <span class="material-icons yellow--text">
-                        circle
-                      </span>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title>Salt</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
+                  <nutrient-level-list-item name="Fat" :level="product.fat"/>
+                  <nutrient-level-list-item name="Saturated Fat" :level="product.saturatedFat"/>
+                  <nutrient-level-list-item name="Sugars" :level="product.sugars"/>
+                  <nutrient-level-list-item name="Salt" :level="product.salt"/>
                 </v-list-item-group>
               </v-list>
             </div>
@@ -88,6 +50,7 @@
 
 <script>
 import AllergyChips from "@/components/AllergyChips";
+import NutrientLevelListItem from "@/components/NutrientLevelListItem";
 import novaGroup1Image from "@/../assets/images/nova-group-1.svg";
 import novaGroup2Image from "@/../assets/images/nova-group-2.svg";
 import novaGroup3Image from "@/../assets/images/nova-group-3.svg";
@@ -104,7 +67,8 @@ export default {
   name: "NutritionFacts",
 
   components: {
-    AllergyChips
+    AllergyChips,
+    NutrientLevelListItem
   },
 
   data() {
@@ -119,7 +83,7 @@ export default {
         return {
           nutriScore: "B",
           novaGroup: 4,
-          fat: "HIGH",
+          fat: null,
           saturatedFat: "MODERATE",
           sugars: "LOW",
           salt: "HIGH",
@@ -160,8 +124,6 @@ export default {
 }
 
 </script>
-<style>
-div.v-list-item {
-  pointer-events: none;
-}
+<style scoped>
+
 </style>

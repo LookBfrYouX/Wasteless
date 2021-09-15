@@ -117,19 +117,28 @@ export const constants = {
         foregroundColor: "black",
       }
     ],
+
     NUTRIENT_LEVELS_MAP: [
       {
         value: null,
         name: "Unknown",
+        color: "grey--text",
+        icon: "help"
       }, {
         value: "LOW",
-        name: "Low"
+        name: "Low",
+        color: "green--text",
+        icon: "circle"
       }, {
         value: "MODERATE",
-        name: "Moderate"
+        name: "Moderate",
+        color: "amber--text",
+        icon: "circle"
       }, {
         value: "HIGH",
-        name: "High"
+        name: "High",
+        color: "red--text text--darken-3",
+        icon: "circle"
       }
     ]
   },
