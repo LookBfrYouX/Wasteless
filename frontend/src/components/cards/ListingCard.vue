@@ -67,8 +67,12 @@
 </template>
 
 <script>
+import AllergyChips from "@/components/AllergyChips";
 export default {
   name: "ListingItemCard",
+  components: {
+    AllergyChips
+  },
   data() {
     return {
       currency: null
