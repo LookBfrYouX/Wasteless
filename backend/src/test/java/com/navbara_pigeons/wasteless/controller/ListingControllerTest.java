@@ -65,7 +65,7 @@ class ListingControllerTest extends ControllerTestProvider {
     mockMvc.perform(
             get("/listings/search")
                     .param("fat", "BOOGALOO")
-    ).andExpect(status().isOk());
+    ).andExpect(status().isBadRequest());
   }
 
   @Test
@@ -74,7 +74,7 @@ class ListingControllerTest extends ControllerTestProvider {
     mockMvc.perform(
             get("/listings/search")
                     .param("saturatedFat", "BOOGALOO")
-    ).andExpect(status().isOk());
+    ).andExpect(status().isBadRequest());
   }
 
   @Test
@@ -83,7 +83,7 @@ class ListingControllerTest extends ControllerTestProvider {
     mockMvc.perform(
             get("/listings/search")
                     .param("sugars", "BOOGALOO")
-    ).andExpect(status().isOk());
+    ).andExpect(status().isBadRequest());
   }
 
   @Test
@@ -92,7 +92,7 @@ class ListingControllerTest extends ControllerTestProvider {
     mockMvc.perform(
             get("/listings/search")
                     .param("salt", "BOOGALOO")
-    ).andExpect(status().isOk());
+    ).andExpect(status().isBadRequest());
   }
 
   @Test
@@ -138,7 +138,7 @@ class ListingControllerTest extends ControllerTestProvider {
   // Return 201 on successful request to controller
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  public void return201OnAddListing() throws Exception {
+  void return201OnAddListing() throws Exception {
     CreateListingDto listing = new CreateListingDto();
     listing.setInventoryItemId(5001);
     listing.setQuantity(1L);
@@ -154,7 +154,7 @@ class ListingControllerTest extends ControllerTestProvider {
   // Throw 400 on bad request to controller (quantity is required)
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  public void throw400OnBadListing() throws Exception {
+  void throw400OnBadListing() throws Exception {
     CreateListingDto listing = new CreateListingDto();
     listing.setInventoryItemId(5001);
     listing.setPrice(17.99);
@@ -168,7 +168,7 @@ class ListingControllerTest extends ControllerTestProvider {
   // Throw 400 on bad request to controller (price must be above 0 and below 10000000)
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  public void throw400OnBadListingPrice() throws Exception {
+  void throw400OnBadListingPrice() throws Exception {
     CreateListingDto listing = new CreateListingDto();
     listing.setInventoryItemId(5001);
     listing.setQuantity(1);
@@ -190,7 +190,7 @@ class ListingControllerTest extends ControllerTestProvider {
   // Throw 401 when unauthorized
   @Test
   @WithAnonymousUser
-  public void throw401OnAddListingTest() throws Exception {
+  void throw401OnAddListingTest() throws Exception {
     Listing mockListing = new Listing();
     mockListing.setQuantity(1L);
     mockListing.setPrice(17.99);
@@ -204,7 +204,7 @@ class ListingControllerTest extends ControllerTestProvider {
   // Throw 403 when not business admin or admin
   @Test
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
-  public void throw403OnAddListingTest() throws Exception {
+  void throw403OnAddListingTest() throws Exception {
     Listing mockListing = new Listing();
     mockListing.setQuantity(1L);
     mockListing.setPrice(17.99);
