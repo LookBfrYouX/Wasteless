@@ -117,19 +117,47 @@ export const constants = {
         foregroundColor: "black",
       }
     ],
+
     NUTRIENT_LEVELS_MAP: [
       {
         value: null,
         name: "Unknown",
+        color: "grey--text",
+        icon: "help"
       }, {
         value: "LOW",
-        name: "Low"
+        name: "Low",
+        color: "green--text",
+        icon: "circle"
       }, {
         value: "MODERATE",
-        name: "Moderate"
+        name: "Moderate",
+        color: "amber--text",
+        icon: "circle"
       }, {
         value: "HIGH",
-        name: "High"
+        name: "High",
+        color: "red--text text--darken-3",
+        icon: "circle"
+      }
+    ],
+
+    NOVA_GROUP: [
+      {
+        value: 1,
+        description: "Group 1 - Unprocessed or minimally processed foods"
+      },
+      {
+        value: 2,
+        description: "Group 2 - Processed culinary ingredients"
+      },
+      {
+        value: 3,
+        description: "Group 3 - Processed foods"
+      },
+      {
+        value: 4,
+        description: "Group 4 - Ultra-processed food and drink products"
       }
     ]
   },
