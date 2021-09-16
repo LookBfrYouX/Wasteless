@@ -179,19 +179,6 @@ export default {
       this.productImages = product.images;
     },
 
-    /**
-     * Go to product image editing page.
-     * @param productId is an id of product currently viewing
-     */
-    editProductImages(productId) {
-      this.$router.push({
-        name: "BusinessProductImagesEdit",
-        params: {
-          businessId: this.businessId,
-          productId
-        }
-      });
-    }
   }
 }
 </script>

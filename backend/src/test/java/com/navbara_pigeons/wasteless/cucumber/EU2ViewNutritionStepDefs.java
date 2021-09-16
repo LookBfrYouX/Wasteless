@@ -63,6 +63,6 @@ public class EU2ViewNutritionStepDefs extends CucumberTestProvider {
   public void iCanSeeThatTheLevelOfFatIsAndTheLevelOfSugarIs(String fatLevel, String sugarLevel)
       throws UnsupportedEncodingException, JsonProcessingException {
     Assertions.assertEquals(this.testProduct.get("fat").asText(), fatLevel);
-    Assertions.assertEquals(this.testProduct.get("sugar").asText(), sugarLevel);
+    Assertions.assertEquals(this.testProduct.get("sugars").asText(), sugarLevel);
   }
 }

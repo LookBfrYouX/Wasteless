@@ -176,7 +176,7 @@ class CreateProductDtoTest extends MainTestProvider {
     Product tempProduct = makeProduct("Test Product 03");
     tempProduct.setNovaGroup(4);
     BasicProductDto productDto = new BasicProductDto(tempProduct, null);
-    Assertions.assertEquals(4, productDto.getNovaScore());
+    Assertions.assertEquals(4, productDto.getNovaGroup());
   }
 
   @Test
