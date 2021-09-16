@@ -99,7 +99,8 @@ public class ListingController {
       @Parameter(description = "Is the product vegan") @RequestParam(required = false) Boolean isVegan,
       @Parameter(description = "Is the product vegetarian") @RequestParam(required = false) Boolean isVegetarian,
       @Parameter(description = "Is the product gluten free") @RequestParam(required = false) Boolean isGlutenFree,
-      @Parameter(description = "Is the product palm oil free") @RequestParam(required = false) Boolean isPalmOilFree
+      @Parameter(description = "Is the product palm oil free") @RequestParam(required = false) Boolean isPalmOilFree,
+      @Parameter(description = "Is the dairy free") @RequestParam(required = false) Boolean isDairyFree
   ) {
     log.info("GETTING LISTINGS FOR: SEARCH KEYS " + searchKeys + " - SEARCHPARAM " + searchParam
         + " - PAG START:END " + pagStartIndex + ":" + pagEndIndex + " - BUSINESSTYPES "
@@ -119,6 +120,7 @@ public class ListingController {
     params.setIsVegetarian(isVegetarian);
     params.setIsGlutenFree(isGlutenFree);
     params.setIsPalmOilFree(isPalmOilFree);
+    params.setIsDairyFree(isDairyFree);
     params.setMinNutriScore(minNutriScore);
     params.setMaxNutriScore(maxNutriScore);
     params.setMinNovaGroup(minNovaGroup);

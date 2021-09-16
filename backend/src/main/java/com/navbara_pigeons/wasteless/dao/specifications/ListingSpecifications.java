@@ -223,6 +223,30 @@ public class ListingSpecifications {
           productInventoryItemJoin.get("isGlutenFree"), params.getIsGlutenFree()
       ));
     }
+    if (params.getIsVegan() != null) {
+      log.info("IS" + (params.getIsVegan() ? " " : " NOT ") + "VEGAN");
+      predicates.add(criteriaBuilder.equal(
+          productInventoryItemJoin.get("isVegan"), params.getIsVegan()
+      ));
+    }
+    if (params.getIsVegetarian() != null) {
+      log.info("IS" + (params.getIsVegetarian() ? " " : " NOT ") + "VEGETARIAN");
+      predicates.add(criteriaBuilder.equal(
+          productInventoryItemJoin.get("isVegetarian"), params.getIsVegetarian()
+      ));
+    }
+    if (params.getIsPalmOilFree() != null) {
+      log.info("IS" + (params.getIsPalmOilFree() ? " " : " NOT ") + "PALM OIL FREE");
+      predicates.add(criteriaBuilder.equal(
+          productInventoryItemJoin.get("isPalmOilFree"), params.getIsPalmOilFree()
+      ));
+    }
+    if (params.getIsDairyFree() != null) {
+      log.info("IS" + (params.getIsDairyFree() ? " " : " NOT ") + "DAIRY FREE");
+      predicates.add(criteriaBuilder.equal(
+          productInventoryItemJoin.get("isDairyFree"), params.getIsDairyFree()
+      ));
+    }
 
     if (params.getMinNutriScore() != null) {
       log.info("WITH MIN NUTRISCORE: " + params.getMinNutriScore());
