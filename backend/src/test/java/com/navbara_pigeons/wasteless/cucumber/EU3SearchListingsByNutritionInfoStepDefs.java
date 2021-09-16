@@ -25,8 +25,6 @@ public class EU3SearchListingsByNutritionInfoStepDefs extends CucumberTestProvid
     void i_send_a_valid_request_to_with_fat_set_to(String endPointUrl, String fatValue) throws Exception {
         this.response = mockMvc.perform(
                 get(endPointUrl)
-                        .param("pagStartIndex", "0")
-                        .param("pagEndIndex", "3")
                         .param("fat", fatValue)
         ).andReturn();
         Assertions.assertNotNull(this.response);

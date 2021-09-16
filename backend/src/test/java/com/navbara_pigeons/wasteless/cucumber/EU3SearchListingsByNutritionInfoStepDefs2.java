@@ -2,19 +2,27 @@ package com.navbara_pigeons.wasteless.cucumber;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.navbara_pigeons.wasteless.dto.CreateProductDto;
+import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class EU3SearchListingsByNutritionInfoStepDefs2 extends CucumberTestProvider{
     private MvcResult response;
+
 
     @BeforeEach
     void setup() {
@@ -25,8 +33,6 @@ public class EU3SearchListingsByNutritionInfoStepDefs2 extends CucumberTestProvi
     public void iSendAValidRequestToWithFatSetTo(String endpointUrl, String fatValue) throws Exception {
         this.response = mockMvc.perform(
                 get(endpointUrl)
-                        .param("pagStartIndex", "0")
-                        .param("pagEndIndex", "3")
                         .param("fat", fatValue)
         ).andReturn();
         Assertions.assertNotNull(this.response);
@@ -37,7 +43,7 @@ public class EU3SearchListingsByNutritionInfoStepDefs2 extends CucumberTestProvi
         JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
         Iterator<JsonNode> results = jsonResponse.get("results").elements();
         while (results.hasNext()) {
-            Assertions.assertTrue(results.next().get("fat").asText().equalsIgnoreCase(fatValue));
+            Assertions.assertTrue(results.next().get("inventoryItem").get("product").get("fat").asText().equalsIgnoreCase(fatValue));
         }
     }
 
@@ -58,7 +64,7 @@ public class EU3SearchListingsByNutritionInfoStepDefs2 extends CucumberTestProvi
         JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
         Iterator<JsonNode> results = jsonResponse.get("results").elements();
         while (results.hasNext()) {
-            Assertions.assertTrue(results.next().get("saturatedFat").asText().equalsIgnoreCase(saturatedFatValue1) || results.next().get("saturatedFat").asText().equalsIgnoreCase(saturatedFatValue2));
+            Assertions.assertTrue(results.next().get("inventoryItem").get("product").get("saturatedFat").asText().equalsIgnoreCase(saturatedFatValue1) || results.next().get("inventoryItem").get("product").get("saturatedFat").asText().equalsIgnoreCase(saturatedFatValue2));
         }
     }
 
@@ -78,9 +84,10 @@ public class EU3SearchListingsByNutritionInfoStepDefs2 extends CucumberTestProvi
         JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
         Iterator<JsonNode> results = jsonResponse.get("results").elements();
         while (results.hasNext()) {
-            Assertions.assertTrue(results.next().get("salt").asText().equalsIgnoreCase(saltValue));
+            Assertions.assertTrue(results.next().get("inventoryItem").get("product").get("salt").asText().equalsIgnoreCase(saltValue));
         }
     }
+
 
     @When("I send a valid request to {string} with  sugars set to {string}")
     public void iSendAValidRequestToWithSugarsSetTo(String endpointUrl, String sugarsValue) throws Exception {
@@ -98,7 +105,7 @@ public class EU3SearchListingsByNutritionInfoStepDefs2 extends CucumberTestProvi
         JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
         Iterator<JsonNode> results = jsonResponse.get("results").elements();
         while (results.hasNext()) {
-            Assertions.assertTrue(results.next().get("sugars").asText().equalsIgnoreCase(sugarsValue));
+            Assertions.assertTrue(results.next().get("inventoryItem").get("product").get("sugars").asText().equalsIgnoreCase(sugarsValue));
         }
     }
 }
