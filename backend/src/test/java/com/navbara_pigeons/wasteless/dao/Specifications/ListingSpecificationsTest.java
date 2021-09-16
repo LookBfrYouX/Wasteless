@@ -189,7 +189,7 @@ public class ListingSpecificationsTest extends MainTestProvider {
     List<Listing> results = listingDao.findAll(specification);
 
     Listing aRatedListing = listingDao.getListing(5001);  // This should be in the results
-    Listing eRatedListing = listingDao.getListing(5003);  // This should NOT be in the results
+    Listing eRatedListing = listingDao.getListing(5006);  // This should NOT be in the results
 
     // Assert
     Assertions.assertTrue(results.contains(aRatedListing));
