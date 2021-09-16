@@ -9,8 +9,9 @@
       <v-expansion-panel-content>
         <v-row>
           <v-col cols="12" md="6">
-            <div class="d-flex justify-space-around mb-4">
-              <div v-if="product.novaGroup">
+            <div class="d-flex justify-space-around align-items-center mb-4">
+              <div v-if="product.novaGroup"
+                   class="novaWrapper">
                 <img :src="loadNovaGroupImg"
                      class="nova"
                      :alt="`Nova Group is ${product.novaGroup}`"/>
@@ -18,7 +19,8 @@
               <div v-else>
                 Nova Group unknown
               </div>
-              <div v-if="product.nutriScore">
+              <div v-if="product.nutriScore"
+                   class="nutriWrapper">
                 <img :src="loadNutriScoreImg"
                      class="nutri"
                      :alt="`Nutri-Score is ${product.nutriScore}`"/>
@@ -121,6 +123,12 @@ export default {
 
 </script>
 <style scoped>
+div.novaWrapper {
+  max-width: 40%;
+}
+div.nutriWrapper {
+  max-width: 40%;
+}
 img.nova {
   max-height: 5em;
   max-width: 100%;
