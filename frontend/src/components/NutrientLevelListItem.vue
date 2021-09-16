@@ -1,6 +1,6 @@
 <template>
   <v-list-item>
-    <v-tooltip bottom>
+    <v-tooltip top>
       <template v-slot:activator="{ on }">
         <v-list-item-icon>
           <span v-on="on"
