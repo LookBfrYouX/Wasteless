@@ -64,7 +64,8 @@ public class EU3SearchListingsByNutritionInfoStepDefs extends CucumberTestProvid
         JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
         Iterator<JsonNode> results = jsonResponse.get("results").elements();
         while (results.hasNext()) {
-            Assertions.assertTrue(results.next().get("inventoryItem").get("product").get("saturatedFat").asText().equalsIgnoreCase(saturatedFatValue1) || results.next().get("inventoryItem").get("product").get("saturatedFat").asText().equalsIgnoreCase(saturatedFatValue2));
+            String text = results.next().get("inventoryItem").get("product").get("saturatedFat").asText();
+            Assertions.assertTrue(text.equalsIgnoreCase(saturatedFatValue1) || text.equalsIgnoreCase(saturatedFatValue2));
         }
     }
 
