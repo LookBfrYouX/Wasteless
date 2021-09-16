@@ -24,7 +24,7 @@ public class BasicProductDto {
   private ZonedDateTime created;
   private List<BasicImageDto> images;
   private NutriScore nutriScore;
-  private Integer novaScore;
+  private Integer novaGroup;
   private NutritionFactsLevel fat;
   private NutritionFactsLevel saturatedFat;
   private NutritionFactsLevel sugar;
@@ -53,7 +53,7 @@ public class BasicProductDto {
           product.getImages()); // First image is primary image
     }
     this.nutriScore = product.getNutriScore();
-    this.novaScore = product.getNovaGroup();
+    this.novaGroup = product.getNovaGroup();
     this.fat = product.getFat();
     this.saturatedFat = product.getSaturatedFat();
     this.sugar = product.getSugars();

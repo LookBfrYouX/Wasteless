@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Range;
 
 /**
  * This model class maps to the request parameters sent to the /listings/search endpoint. It is
@@ -38,12 +39,18 @@ public class ListingsSearchParams {
   // Nutrition Filtering Params
   private NutriScore minNutriScore;
   private NutriScore maxNutriScore;
+  private NutriScore nutriScore;
+  @Range(min=1, max=4)
+  private Integer minNovaGroup;
+  @Range(min=1, max=4)
+  private Integer maxNovaGroup;
+
 
   /**
    * setting default value for search string so returns all values if user searches for nothing,
    * acts as a setter otherwise
    *
-   * @param searchParam
+   * @param searchParam String value to set search param
    */
   public void setSearchParam(String searchParam) {
     if (searchParam == null) {
@@ -56,7 +63,7 @@ public class ListingsSearchParams {
   /**
    * setting default value for page start index if given null, acts as a setter otherwise
    *
-   * @param pagStartIndex
+   * @param pagStartIndex Integer value to set pagStartIndex
    */
   public void setPagStartIndex(Integer pagStartIndex) {
     if (pagStartIndex == null) {
@@ -69,7 +76,7 @@ public class ListingsSearchParams {
   /**
    * setting default value for page start index if given null, acts as a setter otherwise
    *
-   * @param pagEndIndex
+   * @param pagEndIndex Integer value to set pagEndIndex
    */
   public void setPagEndIndex(Integer pagEndIndex) {
     if (pagEndIndex == null) {
@@ -82,7 +89,7 @@ public class ListingsSearchParams {
   /**
    * setting default value for isAscending property if given null, acts as a setter otherwise
    *
-   * @param ascending
+   * @param ascending Boolean value to set ascending
    */
   public void setAscending(Boolean ascending) {
     if (ascending == null) {
@@ -105,7 +112,7 @@ public class ListingsSearchParams {
   /**
    * setting default values for filtering dates if given null acts as a setter otherwise
    *
-   * @param filterDates
+   * @param filterDates List<ZonedDateTime> value to set filterDates
    */
   public void setFilterDates(List<ZonedDateTime> filterDates) {
     this.filterDates = new ArrayList<>();
@@ -121,7 +128,7 @@ public class ListingsSearchParams {
   /**
    * setter for business types property
    *
-   * @param businessTypes
+   * @param businessTypes List<ZonedDateTime> value to set businessTypes
    */
   public void setBusinessTypes(List<BusinessType> businessTypes) {
     this.businessTypes = businessTypes;
@@ -130,7 +137,7 @@ public class ListingsSearchParams {
   /**
    * Sets default value for sortBy to created if given null, acts as setter otherwise
    *
-   * @param sortBy
+   * @param sortBy ListingSortByOption value to set sortBy
    */
   public void setSortBy(ListingSortByOption sortBy) {
     if (sortBy == null) {

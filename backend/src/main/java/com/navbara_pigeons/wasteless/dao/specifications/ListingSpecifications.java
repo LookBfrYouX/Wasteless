@@ -20,6 +20,7 @@ import javax.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 
+
 @Slf4j
 public class ListingSpecifications {
 
@@ -171,6 +172,9 @@ public class ListingSpecifications {
    * @param root                      the root table
    * @param businessInventoryItemJoin join inventoryitem table with business table
    * @param criteriaBuilder           to build the predicates
+   * @param params                    search query and other request parameters
+   * @param root                      the root table
+   * @param criteriaBuilder           to build the predicates
    */
   private static Predicate getListingFilterMatch(ListingsSearchParams params, Root<Listing> root,
       Join<Business, InventoryItem> businessInventoryItemJoin,
@@ -232,7 +236,19 @@ public class ListingSpecifications {
       );
     }
 
+    if (params.getMinNovaGroup() != null) {
+      log.info("WITH MIN NOVAGROUP: " + params.getMinNovaGroup());
+      predicates.add(criteriaBuilder.greaterThanOrEqualTo(
+          productInventoryItemJoin.get("novaGroup"), params.getMinNovaGroup())
+      );
+    }
+    if (params.getMaxNovaGroup() != null) {
+      log.info("WITH MAX NOVAGROUP: " + params.getMaxNovaGroup());
+      predicates.add(criteriaBuilder.lessThanOrEqualTo(
+          productInventoryItemJoin.get("novaGroup"), params.getMaxNovaGroup())
+      );
+    }
+
     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
   }
-
 }

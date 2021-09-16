@@ -17,8 +17,7 @@ class CreateProductDtoTest extends MainTestProvider {
   private Set<ConstraintViolation<CreateProductDto>> validate(CreateProductDto dto) {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
-    Set<ConstraintViolation<CreateProductDto>> violations = validator.validate(dto);
-    return violations;
+    return validator.validate(dto);
   }
 
   @Test
@@ -101,7 +100,7 @@ class CreateProductDtoTest extends MainTestProvider {
   @Test
   void createProductDto_withNullIsGlutenFree_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    Assertions.assertEquals(null, dto.getIsGlutenFree());
+    Assertions.assertNull(dto.getIsGlutenFree());
   }
 
   @Test
@@ -114,7 +113,7 @@ class CreateProductDtoTest extends MainTestProvider {
   @Test
   void createProductDto_withNullIsDairyFree_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    Assertions.assertEquals(null, dto.getIsDairyFree());
+    Assertions.assertNull(dto.getIsDairyFree());
   }
 
   @Test
@@ -127,7 +126,7 @@ class CreateProductDtoTest extends MainTestProvider {
   @Test
   void createProductDto_withNullIsVegetarian_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    Assertions.assertEquals(null, dto.getIsVegetarian());
+    Assertions.assertNull(dto.getIsVegetarian());
   }
 
   @Test
@@ -140,7 +139,7 @@ class CreateProductDtoTest extends MainTestProvider {
   @Test
   void createProductDto_withNullIsVegan_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    Assertions.assertEquals(null, dto.getIsVegan());
+    Assertions.assertNull(dto.getIsVegan());
   }
 
   @Test
@@ -153,7 +152,7 @@ class CreateProductDtoTest extends MainTestProvider {
   @Test
   void createProductDto_withNullIsPalmOilFree_expectOk() {
     CreateProductDto dto = new CreateProductDto(makeProduct("example789"));
-    Assertions.assertEquals(null, dto.getIsPalmOilFree());
+    Assertions.assertNull(dto.getIsPalmOilFree());
   }
 
   @Test
@@ -172,15 +171,15 @@ class CreateProductDtoTest extends MainTestProvider {
   }
 
   @Test
-  void mapProductToDto_withValidNovascore_expectOk() {
+  void mapProductToDto_withValidNovagroup_expectOk() {
     Product tempProduct = makeProduct("Test Product 03");
     tempProduct.setNovaGroup(4);
     BasicProductDto productDto = new BasicProductDto(tempProduct, null);
-    Assertions.assertEquals(4, productDto.getNovaScore());
+    Assertions.assertEquals(4, productDto.getNovaGroup());
   }
 
   @Test
-  void mapProductToDto_withNullNovascore_expectOk() {
+  void mapProductToDto_withNullNovagroup_expectOk() {
     Product tempProduct = makeProduct("Test Product 04");
     tempProduct.setNovaGroup(null);
     Assertions.assertDoesNotThrow(() -> { BasicProductDto productDto = new BasicProductDto(tempProduct, null); });
