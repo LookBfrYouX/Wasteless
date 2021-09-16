@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.Range;
 
 /**
  * This model class maps to the request parameters sent to the /listings/search endpoint. It is
@@ -39,12 +40,14 @@ public class ListingsSearchParams {
   // Nutrition Filtering Params
   private NutriScore minNutriScore;
   private NutriScore maxNutriScore;
-  private NutriScore nutriScore;
   @Range(min=1, max=4)
   private Integer minNovaGroup;
   @Range(min=1, max=4)
   private Integer maxNovaGroup;
-
+  private Boolean isVegan;
+  private Boolean isVegetarian;
+  private Boolean isGlutenFree;
+  private Boolean isPalmOilFree;
 
   /**
    * setting default value for search string so returns all values if user searches for nothing,
