@@ -37,6 +37,8 @@ public class ListingsSearchParams {
   private List<BusinessType> businessTypes;
 
   // Nutrition Filtering Params
+  private NutriScore minNutriScore;
+  private NutriScore maxNutriScore;
   private NutriScore nutriScore;
   @Range(min=1, max=4)
   private Integer minNovaGroup;

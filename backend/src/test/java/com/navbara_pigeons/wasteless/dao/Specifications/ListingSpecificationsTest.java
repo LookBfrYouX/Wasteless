@@ -1,26 +1,31 @@
 package com.navbara_pigeons.wasteless.dao.Specifications;
 
+import static org.junit.Assert.assertEquals;
+
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
 import com.navbara_pigeons.wasteless.dao.specifications.ListingSpecifications;
-import com.navbara_pigeons.wasteless.entity.*;
+import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
+import com.navbara_pigeons.wasteless.enums.NutriScore;
+import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.service.InventoryService;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
+import java.util.ArrayList;
+import java.util.List;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @SpringBootTest
-class ListingSpecificationsTest extends MainTestProvider {
+public class ListingSpecificationsTest extends MainTestProvider {
 
 
   ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
@@ -37,7 +42,7 @@ class ListingSpecificationsTest extends MainTestProvider {
   InventoryService inventoryService;
 
   @Test
-  void resultsMeetSearchCriteriaTestPartialMatchingProductName() {
+  void resultsMeetSearchCriteriaTestPartialMatchingProductName() throws ListingValidationException {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
     listingsSearchParams.setSearchKeys(searchKeys);
@@ -45,11 +50,11 @@ class ListingSpecificationsTest extends MainTestProvider {
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    Assertions.assertEquals(5003, results.get(0).getId());
+    assertEquals(5003, results.get(0).getId());
   }
 
   @Test
-  void resultsMeetSearchCriteriaTestFullMatchingProductName() {
+  void resultsMeetSearchCriteriaTestFullMatchingProductName() throws ListingValidationException {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
     listingsSearchParams.setSearchKeys(searchKeys);
@@ -57,7 +62,7 @@ class ListingSpecificationsTest extends MainTestProvider {
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    Assertions.assertEquals(5004, results.get(0).getId());
+    assertEquals(5004, results.get(0).getId());
   }
 
   @Test
@@ -165,5 +170,29 @@ class ListingSpecificationsTest extends MainTestProvider {
     Assertions.assertTrue(results.contains(rated3Listing));
     Assertions.assertTrue(results.contains(rated2Listing));
     Assertions.assertFalse(results.contains(rated1Listing));
+  }
+
+  @Test
+  @Transactional
+  void resultsMeetSearchCriteriaTestFilteredByNutriScore() throws Exception {
+    // Arrange
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("");
+    listingsSearchParams.setMinNutriScore(NutriScore.A);
+    listingsSearchParams.setMaxNutriScore(NutriScore.B);
+
+    // Act
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+
+    Listing aRatedListing = listingDao.getListing(5001);  // This should be in the results
+    Listing eRatedListing = listingDao.getListing(5006);  // This should NOT be in the results
+
+    // Assert
+    Assertions.assertTrue(results.contains(aRatedListing));
+    Assertions.assertFalse(results.contains(eRatedListing));
   }
 }

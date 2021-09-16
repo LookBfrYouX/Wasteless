@@ -1,6 +1,15 @@
 package com.navbara_pigeons.wasteless.dao.specifications;
 
-import com.navbara_pigeons.wasteless.entity.*;
+import static com.navbara_pigeons.wasteless.enums.ListingSearchKeys.ADDRESS;
+import static com.navbara_pigeons.wasteless.enums.ListingSearchKeys.BUSINESS_NAME;
+import static com.navbara_pigeons.wasteless.enums.ListingSearchKeys.PRODUCT_NAME;
+
+import com.navbara_pigeons.wasteless.entity.Address;
+import com.navbara_pigeons.wasteless.entity.Business;
+import com.navbara_pigeons.wasteless.entity.BusinessType;
+import com.navbara_pigeons.wasteless.entity.InventoryItem;
+import com.navbara_pigeons.wasteless.entity.Listing;
+import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -8,11 +17,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 
-import static com.navbara_pigeons.wasteless.enums.ListingSearchKeys.*;
 
 @Slf4j
 public class ListingSpecifications {
@@ -34,6 +41,7 @@ public class ListingSpecifications {
       Join<Product, InventoryItem> productInventoryItemJoin = inventoryItemJoin.join("product");
       Join<Business, InventoryItem> businessInventoryItemJoin = inventoryItemJoin.join("business");
       Join<Address, Business> addressBusinessJoin = businessInventoryItemJoin.join("address");
+
       ArrayList<Predicate> predicates = new ArrayList<>();
       Iterator<String> tokenIterator = SpecificationHelper.tokenize(params.getSearchParam())
           .iterator();
@@ -50,7 +58,7 @@ public class ListingSpecifications {
                 businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
           }
           // Check if OR Operator
-        } else if (currentToken.toUpperCase().matches("OR") && predicates.isEmpty()
+        } else if (currentToken.toUpperCase().matches("OR") && predicates.size() > 0
             && tokenIterator.hasNext()) {
           String nextToken = tokenIterator.next();
           Predicate lastPredicate = predicates.remove(predicates.size() - 1);
@@ -64,7 +72,7 @@ public class ListingSpecifications {
                     businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder)));
           }
           // Check if AND Operator
-        } else if (currentToken.toUpperCase().matches("AND") && predicates.isEmpty()
+        } else if (currentToken.toUpperCase().matches("AND") && predicates.size() > 0
             && tokenIterator.hasNext()) {
           String nextToken = tokenIterator.next();
           if (SpecificationHelper.isFullMatching(nextToken)) {
@@ -164,6 +172,9 @@ public class ListingSpecifications {
    * @param root                      the root table
    * @param businessInventoryItemJoin join inventoryitem table with business table
    * @param criteriaBuilder           to build the predicates
+   * @param params                    search query and other request parameters
+   * @param root                      the root table
+   * @param criteriaBuilder           to build the predicates
    */
   private static Predicate getListingFilterMatch(ListingsSearchParams params, Root<Listing> root,
       Join<Business, InventoryItem> businessInventoryItemJoin,
@@ -211,7 +222,20 @@ public class ListingSpecifications {
           .or(businessTypePredicates.toArray(new Predicate[businessTypePredicates.size()])));
     }
 
-    // Filter Nova Information
+    // Filter Nutritional Information
+    if (params.getMinNutriScore() != null) {
+      log.info("WITH MIN NUTRISCORE: " + params.getMinNutriScore());
+      predicates.add(criteriaBuilder.greaterThanOrEqualTo(
+          productInventoryItemJoin.get("nutriScore"), params.getMinNutriScore())
+      );
+    }
+    if (params.getMaxNutriScore() != null) {
+      log.info("WITH MAX NUTRISCORE: " + params.getMaxNutriScore());
+      predicates.add(criteriaBuilder.lessThanOrEqualTo(
+          productInventoryItemJoin.get("nutriScore"), params.getMaxNutriScore())
+      );
+    }
+
     if (params.getMinNovaGroup() != null) {
       log.info("WITH MIN NOVAGROUP: " + params.getMinNovaGroup());
       predicates.add(criteriaBuilder.greaterThanOrEqualTo(
