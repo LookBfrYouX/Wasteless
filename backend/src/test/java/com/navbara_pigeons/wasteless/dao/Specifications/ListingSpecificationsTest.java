@@ -213,6 +213,6 @@ class ListingSpecificationsTest extends MainTestProvider {
     for (Listing listing : results) {
       Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsGlutenFree());
     }
-    Assertions.assertEquals(3, results.size());
+    Assertions.assertEquals(1, results.size());
   }
 }
