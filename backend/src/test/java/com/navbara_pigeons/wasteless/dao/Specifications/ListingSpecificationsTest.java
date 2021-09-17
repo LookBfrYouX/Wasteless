@@ -228,7 +228,6 @@ class ListingSpecificationsTest extends MainTestProvider {
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    System.out.println(results);
     // Assert
     for (Listing listing : results) {
       Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsPalmOilFree());
