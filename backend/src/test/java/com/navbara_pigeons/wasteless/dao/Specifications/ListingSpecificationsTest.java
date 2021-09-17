@@ -25,7 +25,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 
 @SpringBootTest
-public class ListingSpecificationsTest extends MainTestProvider {
+class ListingSpecificationsTest extends MainTestProvider {
 
 
   ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
@@ -194,5 +194,105 @@ public class ListingSpecificationsTest extends MainTestProvider {
     // Assert
     Assertions.assertTrue(results.contains(aRatedListing));
     Assertions.assertFalse(results.contains(eRatedListing));
+  }
+
+  @Test
+  @Transactional
+  void resultsMeetSearchCriteriaTestFilteredByIsGlutenFree() {
+    // Arrange & Act
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("");
+    listingsSearchParams.setIsGlutenFree(true);
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+
+    // Assert
+    for (Listing listing : results) {
+      Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsGlutenFree());
+    }
+    Assertions.assertEquals(1, results.size());
+  }
+
+  @Test
+  @Transactional
+  void resultsMeetSearchCriteriaTestFilteredByIsPalmOilFree() {
+    // Arrange & Act
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("");
+    listingsSearchParams.setIsPalmOilFree(true);
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+
+    // Assert
+    for (Listing listing : results) {
+      Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsPalmOilFree());
+    }
+    Assertions.assertEquals(4, results.size());
+  }
+
+  @Test
+  @Transactional
+  void resultsMeetSearchCriteriaTestFilteredByIsDairyFree() {
+    // Arrange & Act
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("");
+    listingsSearchParams.setIsDairyFree(true);
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+
+    // Assert
+    for (Listing listing : results) {
+      Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsDairyFree());
+    }
+    Assertions.assertEquals(1, results.size());
+  }
+
+  @Test
+  @Transactional
+  void resultsMeetSearchCriteriaTestFilteredByIsVegan() {
+    // Arrange & Act
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("");
+    listingsSearchParams.setIsVegan(true);
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+
+    // Assert
+    for (Listing listing : results) {
+      Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsVegan());
+    }
+    Assertions.assertEquals(1, results.size());
+  }
+
+  @Test
+  @Transactional
+  void resultsMeetSearchCriteriaTestFilteredByIsVegetarian() {
+    // Arrange & Act
+    List<ListingSearchKeys> searchKeys = new ArrayList<>();
+    searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
+    listingsSearchParams.setSearchKeys(searchKeys);
+    listingsSearchParams.setSearchParam("");
+    listingsSearchParams.setIsVegetarian(true);
+    Specification<Listing> specification = ListingSpecifications
+        .meetsSearchCriteria(listingsSearchParams);
+    List<Listing> results = listingDao.findAll(specification);
+
+    // Assert
+    for (Listing listing : results) {
+      Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsVegetarian());
+    }
+    Assertions.assertEquals(1, results.size());
   }
 }

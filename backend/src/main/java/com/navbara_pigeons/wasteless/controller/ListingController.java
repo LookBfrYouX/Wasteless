@@ -95,7 +95,12 @@ public class ListingController {
       @Parameter(description = "The minimum (inclusive) Nutrition Score of the Listings") @RequestParam(required = false) NutriScore minNutriScore,
       @Parameter(description = "The maximum (inclusive) Nutrition Score of the Listings") @RequestParam(required = false) NutriScore maxNutriScore,
       @Parameter(description = "The minimum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer minNovaGroup,
-      @Parameter(description = "The maximum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer maxNovaGroup
+      @Parameter(description = "The maximum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer maxNovaGroup,
+      @Parameter(description = "Is the product vegan") @RequestParam(required = false) Boolean isVegan,
+      @Parameter(description = "Is the product vegetarian") @RequestParam(required = false) Boolean isVegetarian,
+      @Parameter(description = "Is the product gluten free") @RequestParam(required = false) Boolean isGlutenFree,
+      @Parameter(description = "Is the product palm oil free") @RequestParam(required = false) Boolean isPalmOilFree,
+      @Parameter(description = "Is the dairy free") @RequestParam(required = false) Boolean isDairyFree
   ) {
     log.info("GETTING LISTINGS FOR: SEARCH KEYS " + searchKeys + " - SEARCHPARAM " + searchParam
         + " - PAG START:END " + pagStartIndex + ":" + pagEndIndex + " - BUSINESSTYPES "
@@ -111,6 +116,11 @@ public class ListingController {
     params.setMaxPrice(maxPrice);
     params.setFilterDates(filterDates);
     params.setBusinessTypes(businessTypes);
+    params.setIsVegan(isVegan);
+    params.setIsVegetarian(isVegetarian);
+    params.setIsGlutenFree(isGlutenFree);
+    params.setIsPalmOilFree(isPalmOilFree);
+    params.setIsDairyFree(isDairyFree);
     params.setMinNutriScore(minNutriScore);
     params.setMaxNutriScore(maxNutriScore);
     params.setMinNovaGroup(minNovaGroup);
