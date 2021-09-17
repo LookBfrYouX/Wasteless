@@ -21,7 +21,7 @@ public class AddressServiceImpl implements AddressService {
   }
 
   /**
-   * Saves an address TODO add tests
+   * Saves an address
    *
    * @param address address to save
    * @throws AddressValidationException if required fields are missing or empty, or that the country
