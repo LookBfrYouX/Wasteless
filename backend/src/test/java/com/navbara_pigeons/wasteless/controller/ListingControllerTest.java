@@ -84,7 +84,7 @@ class ListingControllerTest extends ControllerTestProvider {
                     .param("isAscending", "true")
                     .param("searchParam", "New Zealand")
                     .param("isVegan", "Blah")
-    ).andExpect(status().isOk());
+    ).andExpect(status().isBadRequest());
   }
 
   @Test
