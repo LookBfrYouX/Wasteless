@@ -92,18 +92,8 @@ describe("API Pipeline", () => {
 
   test("callApi fails on null product id", async () => {
     try {
-      wrapper = mount(ProductDetail, {
-        vuetify,
-        propsData: {
-          businessId: null,
-          productId: 1
-        },
-        stubs: ["error-modal", "router-link"],
-        mocks: {
-          ...globalStateMocks()
-        },
-      });
-      await wrapper.vm.callApi();
+      wrapper = { destroy: () => {}}; // This just defines a function with a destroy method that does nothing.
+      await ProductDetail.methods.callApi.call({ businessId: null });
     } catch (err) {
       expect(err).toBeDefined();
       expect(err.message).toEqual("API Request Error  - You must be acting as a business to view the product.")
