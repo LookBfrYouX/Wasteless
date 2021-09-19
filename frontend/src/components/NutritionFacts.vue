@@ -9,23 +9,61 @@
       <v-expansion-panel-content>
         <v-row>
           <v-col cols="12" md="6">
-            <div class="d-flex justify-space-around mb-4">
-              <div v-if="product.novaGroup">
-                <img :src="loadNovaGroupImg"
-                     class="nova"
-                     :alt="`Nova Group is ${product.novaGroup}`"/>
+            <div class="d-flex justify-space-around mb-2">
+              <div class="novaWrapper">
+                <div class="text-no-wrap overflow-hidden">
+                  Nova Group
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-icon
+                          v-on="on"
+                          color="blue"
+                      >
+                        information
+                      </v-icon>
+                    </template>
+                    <span>The NOVA classification assigns a group to food products based on how much processing they have been through.</span>
+                  </v-tooltip>
+                </div>
+                <div v-if="product.novaGroup">
+                  <img :src="loadNovaGroupImg"
+                       class="nova"
+                       :alt="`Nova Group is ${product.novaGroup}`"/>
+                  <div class="text-caption font-weight-light mb-3">
+                    {{ getNovaGroupDescription }}
+                  </div>
+                </div>
+                <div v-else
+                     class="mt-2">
+                  Unknown
+                </div>
               </div>
-              <div v-else>
-                Nova Group unknown
+
+              <div class="nutriWrapper">
+                <div class="text-no-wrap mb-1">
+                  Nutri-Score
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-icon
+                          v-on="on"
+                          color="blue"
+                      >
+                        information
+                      </v-icon>
+                    </template>
+                    <span>The Nutri-Score is a logo that shows the nutritional quality of food products with A to E grades.</span>
+                  </v-tooltip>
+                </div>
+                <div v-if="product.nutriScore">
+                  <img :src="loadNutriScoreImg"
+                       class="nutri"
+                       :alt="`Nutri-Score is ${product.nutriScore}`"/>
+                </div>
+                <div v-else>
+                  Unknown
+                </div>
               </div>
-              <div v-if="product.nutriScore">
-                <img :src="loadNutriScoreImg"
-                     class="nutri"
-                     :alt="`Nutri-Score is ${product.nutriScore}`"/>
-              </div>
-              <div v-else>
-                Nutri-Score unknown
-              </div>
+
             </div>
             <div class="mb-2">
               Dietary Requirements
@@ -57,6 +95,7 @@
 <script>
 import AllergyChips from "@/components/AllergyChips";
 import NutrientLevelListItem from "@/components/NutrientLevelListItem";
+import {constants} from "@/constants";
 import novaGroup1Image from "@/../assets/images/nova-group-1.svg";
 import novaGroup2Image from "@/../assets/images/nova-group-2.svg";
 import novaGroup3Image from "@/../assets/images/nova-group-3.svg";
@@ -83,21 +122,7 @@ export default {
 
   props: {
     product: {
-      default: function() {
-        return {
-          nutriScore: null,
-          novaGroup: null,
-          fat: null,
-          saturatedFat: "MODERATE",
-          sugars: "LOW",
-          salt: "HIGH",
-          isGlutenFree: true,
-          isDairyFree: true,
-          isVegetarian: false,
-          isVegan: false,
-          isPalmOilFree: true,
-        }
-      }
+      required: true
     }
   },
 
@@ -130,11 +155,22 @@ export default {
       };
       return imgSrcDict[this.product.nutriScore];
     },
+
+    getNovaGroupDescription() {
+      const novaGroupItem = constants.PRODUCT.NOVA_GROUP.filter(el => el.value === this.product.novaGroup);
+      return novaGroupItem[0].description
+    },
   }
 }
 
 </script>
 <style scoped>
+div.novaWrapper {
+  max-width: 40%;
+}
+div.nutriWrapper {
+  max-width: 40%;
+}
 img.nova {
   max-height: 5em;
   max-width: 100%;
@@ -142,7 +178,6 @@ img.nova {
   object-fit: contain;
 }
 img.nutri {
-  padding-left: 0.5em;
   max-width: min(100%, 10em);
   min-width: 0;
   object-fit: contain;

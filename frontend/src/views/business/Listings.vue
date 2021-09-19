@@ -5,24 +5,46 @@
         <h2>{{ titleString }}</h2>
       </v-flex>
 
-      <v-row no-gutters>
-        <v-col cols="12" md="6">
-          <multi-search-bar :sort-items="items"
-                            @multi-search-bar-update="event => Object.assign(this.searchParams, event)"/>
-        </v-col>
+      <v-row md="6">
+        <v-col>
+          <v-expansion-panels class="px-4" multiple>
+            <v-expansion-panel>
+              <v-expansion-panel-header>Product filtering</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-row no-gutters>
 
-        <v-col cols="12" md="6">
-          <ListingSearchFilter v-bind:maxPrice="searchParams.maxPrice"
-                               v-bind:minPrice="searchParams.minPrice"
-                               @newTypes="event => this.searchParams.businessTypes = event"
-                               @newMin="event => this.searchParams.minPrice = event ? parseFloat(event) : null"
-                               @newMax="event => this.searchParams.maxPrice = event ? parseFloat(event) : null"
-                               @newDates="event => this.searchParams.filterDates = event"
-          ></ListingSearchFilter>
+                  <v-col cols="12" md="6">
+                    <multi-search-bar :sort-items="items"
+                                      @multi-search-bar-update="event => Object.assign(this.searchParams, event)"/>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <ListingSearchFilter v-bind:maxPrice="searchParams.maxPrice"
+                                         v-bind:minPrice="searchParams.minPrice"
+                                         @newTypes="event => this.searchParams.businessTypes = event"
+                                         @newMin="event => this.searchParams.minPrice = event ? parseFloat(event) : null"
+                                         @newMax="event => this.searchParams.maxPrice = event ? parseFloat(event) : null"
+                                         @newDates="event => this.searchParams.filterDates = event"
+                    ></ListingSearchFilter>
+                  </v-col>
+                </v-row>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <listing-search-nutrition-filter
+                @newMinNovaGroup="event => this.searchParams.minNovaGroup = event"
+                @newMaxNovaGroup="event => this.searchParams.maxNovaGroup = event"
+                @newMinNutriScore="event => this.searchParams.minNutriScore = event"
+                @newMaxNutriScore="event => this.searchParams.maxNutriScore = event"
+                @newDiets="event => this.searchParams.diets = event"
+                @newFats="event => this.searchParams.fats = event"
+                @newSaturatedFats="event => this.searchParams.saturatedFats = event"
+                @newSugars="event => this.searchParams.sugars = event"
+                @newSalts="event => this.searchParams.salts = event"/>
+          </v-expansion-panels>
         </v-col>
       </v-row>
 
-      <v-row no-gutters>
+      <v-row>
         <div class="btn btn-primary ml-4" @click="getListingsPipeline()">
           Search
         </div>
@@ -72,9 +94,11 @@ import {Api} from "@/Api";
 import ListingItemCard from "@/components/cards/ListingCard";
 import ListingSearchFilter from "@/components/ListingSearchFilter";
 import MultiSearchBar from "@/components/MultiSearchBar";
+import ListingSearchNutritionFilter from "@/components/ListingSearchNutritionFilter";
 
 export default {
   components: {
+    ListingSearchNutritionFilter,
     MultiSearchBar,
     ListingItemCard,
     ErrorModal,
@@ -113,6 +137,17 @@ export default {
         maxPrice: null,
         filterDates: [],
         businessTypes: [],
+
+        // Nutrition filters
+        minNovaGroup: null,
+        maxNovaGroup: null,
+        minNutriScore: null,
+        maxNutriScore: null,
+        diets: [],
+        fats: [],
+        saturatedFats: [],
+        sugars: [],
+        salts: [],
       }
     };
   },
