@@ -3,6 +3,7 @@ package com.navbara_pigeons.wasteless.cucumber;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.enums.NutriScore;
 import io.cucumber.java.en.Given;
@@ -11,9 +12,45 @@ import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.UnsupportedEncodingException;
+
 public class EU3SearchListingsByNutritionInfoStepDefs extends CucumberTestProvider {
 
   private MvcResult mvcResult;
+
+  @When("I send a valid request to {string} with vegan set to {string}")
+  public void iSendAValidRequestToWithVeganSetTo(String endpoint, String veganValue) throws Exception {
+    this.mvcResult = mockMvc.perform(get(endpoint)
+                    .queryParam("isVegan", "true"))
+            .andExpect(status().is(200))
+            .andReturn();
+  }
+
+  @Then("only the products that are vegan are shown")
+  public void onlyTheProductsThatAreVeganAreShown() throws UnsupportedEncodingException, JsonProcessingException {
+    for (JsonNode result : objectMapper.readTree(this.mvcResult.getResponse().getContentAsString())
+            .get("results")) {
+      Assertions.assertTrue(Boolean.parseBoolean(result.get("inventoryItem").get("product").get("isVegan").asText()));
+    }
+  }
+
+  @When("I send a valid request to {string} with vegan set to {string} and gluten free set to {string}")
+  public void iSendAValidRequestToWithVeganSetToAndGlutenFreeSetTo(String endpoint, String veganValue, String glutenFreeValue) throws Exception {
+    this.mvcResult = mockMvc.perform(get(endpoint)
+                    .queryParam("isVegan", "true")
+                    .queryParam("isGlutenFree", "true"))
+            .andExpect(status().is(200))
+            .andReturn();
+  }
+
+  @Then("only the products that are vegan and gluten free are shown")
+  public void onlyTheProductsThatAreVeganAndGlutenFreeAreShown() throws UnsupportedEncodingException, JsonProcessingException {
+    for (JsonNode result : objectMapper.readTree(this.mvcResult.getResponse().getContentAsString())
+            .get("results")) {
+      Assertions.assertTrue(Boolean.parseBoolean(result.get("inventoryItem").get("product").get("isVegan").asText()));
+      Assertions.assertTrue(Boolean.parseBoolean(result.get("inventoryItem").get("product").get("isGlutenFree").asText()));
+    }
+  }
 
   @Given("a user is logged in")
   public void aUserIsLoggedIn() throws Exception {
