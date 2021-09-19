@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +23,27 @@ public class TransactionDaoHibernateImpl implements TransactionDaoHibernate {
    * @param startSaleDate Earliest date to query by
    * @param endSaleDate   Latest date to query by
    * @param granularity   Granularity to group by
+   * @return a result list of transaction data
    */
   @Override
-  public void getTransactionData(int businessId, ZonedDateTime startSaleDate,
+  public List getTransactionData(Long businessId, ZonedDateTime startSaleDate,
       ZonedDateTime endSaleDate, String granularity) {
 
+    // This looks hacky but there is no other way to go about it (I even asked Max!)
+    String grouping = "t.saleDate";
+    if (granularity.equals("MONTH")) {
+      grouping = "YEAR(t.saleDate), MONTH(t.saleDate)";
+    } else if (granularity.equals("YEAR")) {
+      grouping = "YEAR(t.saleDate)";
+    }
+
     Query query = entityManager.createQuery(
-        "SELECT sum(t.amount) from Transaction t WHERE t.saleDate between :startDate and :endDate GROUP BY DAY(t.saleDate)")
+            "SELECT t.saleDate, count(t) from Transaction t WHERE t.businessId = :businessId and t.saleDate between :startDate and :endDate  GROUP BY "
+                + grouping)
         .setParameter("startDate", startSaleDate)
-        .setParameter("endDate", endSaleDate);
+        .setParameter("endDate", endSaleDate)
+        .setParameter("businessId", businessId);
 
-    System.out.println(query.getResultList());
-
-    // SELECT count(*) AS sales, sale_date AS date FROM 'transaction' WHERE 'sale_date' BETWEEN ${startSaleDate} AND ${endSaleDate} GROUP BY ${granularity}('sale_date');
+    return query.getResultList();
   }
 }
