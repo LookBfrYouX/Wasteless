@@ -527,7 +527,7 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any>>} The object containing the
    * nutritional information of the product
    */
-  getOpenFoodFacts: (ean13) => {
+   getOpenFoodFacts: (ean13) => {
     return openFoodFactsInstance.get(ean13.toString()).catch(err => {
       const serverDownMessage = 'The Open Food Facts API is currently unavailable. Please try again later.'
       // Possible error codes listed at https://world.openfoodfacts.org/files/api-documentation.html
@@ -538,6 +538,24 @@ export const Api = {
         301: "You were redirected to another product."
       });
     });
-  }
+  },
+
+  /**
+   * Gets transactions for a business
+   * @param params an object with minDate, maxDate and granularity
+   * @return {Promise<AxiosResponse<any>>} The object containing the
+   * list of transactions between the set time period and in the unit supplied
+   */
+   getTransactions: (businessId, params) => {
+     return instance.get(`/buinesses/${businessId}/report`, {params: params})
+     .catch(err => {
+       throw ApiRequestError.createFromMessageMap(err, {
+         400: err => `The report could not be viewed: ${err.response.data}`,
+         403: "You don't have permission to view the report",
+         404: "The business does not exist"
+       });
+     });
+   }
+
 
 }
