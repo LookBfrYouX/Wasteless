@@ -9,13 +9,26 @@ export default {
       minDate:"",
       maxDate:"",
       granularity:"",
+      totalValue:0,
+      numberOfTransactions:0,
       transactionData:{}
     }
   },
-  methods: {
-    
-  }
 
+  computed: {
+    calculateTotalValue: function () {
+      for (transaction in transactionData) {
+        totalValue += transaction.amount;
+      }
+    },
+    calculateNumberOfTransactions: function () {
+      numberOfTransactions = transactionData.length;
+    }
+  },
+
+  methods: {
+
+  }
 }
 </script>
 
