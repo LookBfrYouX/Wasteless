@@ -26,59 +26,36 @@ public class TransactionDataDtoTest extends MainTestProvider {
     return violations;
   }
 
-  @Test
-  public void transactionDataDto_expectOk() {
-    LocalDate localDate = LocalDate.now();
-    Integer mockCount = 4;
-    Double mockAmount = 44D;
-    TransactionReportModel transactionReport = makeTransactionReport(localDate, mockCount, mockAmount);
+  private void transactionDataDtoTest(LocalDate date, Integer count, Double amount, Integer numViolations) {
+    TransactionReportModel transactionReport = makeTransactionReport(date, count, amount);
     List<TransactionReportModel> transactionReportList = new ArrayList<>();
     transactionReportList.add(transactionReport);
-    Assertions.assertEquals(0, validate(new TransactionDataDto(transactionReportList, mockCount, mockAmount)).size());
+    Assertions.assertEquals(numViolations, validate(new TransactionDataDto(transactionReportList, count, amount)).size());
+  }
+
+  @Test
+  public void transactionDataDto_expectOk() {
+    transactionDataDtoTest(LocalDate.now(), 4, 44D, 0);
   }
 
   @Test
   public void transactionDateDto_withNegativeTotalCount_expectError() {
-    LocalDate localDate = LocalDate.now();
-    Integer mockCount = -4;
-    Double mockAmount = 44D;
-    TransactionReportModel transactionReport = makeTransactionReport(localDate, mockCount, mockAmount);
-    List<TransactionReportModel> transactionReportList = new ArrayList<>();
-    transactionReportList.add(transactionReport);
-    Assertions.assertEquals(1, validate(new TransactionDataDto(transactionReportList, mockCount, mockAmount)).size());
+    transactionDataDtoTest(LocalDate.now(), -4, 44D, 1);
   }
 
   @Test
   public void transactionDateDto_withZeroCount_expectOk() {
-    LocalDate localDate = LocalDate.now();
-    Integer mockCount = 0;
-    Double mockAmount = 44D;
-    TransactionReportModel transactionReport = makeTransactionReport(localDate, mockCount, mockAmount);
-    List<TransactionReportModel> transactionReportList = new ArrayList<>();
-    transactionReportList.add(transactionReport);
-    Assertions.assertEquals(0, validate(new TransactionDataDto(transactionReportList, mockCount, mockAmount)).size());
+    transactionDataDtoTest(LocalDate.now(), 0, 44D, 0);
   }
 
   @Test
   public void transactionDateDto_withNegativeTotalAmount_expectError() {
-    LocalDate localDate = LocalDate.now();
-    Integer mockCount = 4;
-    Double mockAmount = -44D;
-    TransactionReportModel transactionReport = makeTransactionReport(localDate, mockCount, mockAmount);
-    List<TransactionReportModel> transactionReportList = new ArrayList<>();
-    transactionReportList.add(transactionReport);
-    Assertions.assertEquals(1, validate(new TransactionDataDto(transactionReportList, mockCount, mockAmount)).size());
+    transactionDataDtoTest(LocalDate.now(), 4, -44D, 1);
   }
 
   @Test
   public void transactionDateDto_withZeroTotalAmount_expectOk() {
-    LocalDate localDate = LocalDate.now();
-    Integer mockCount = 4;
-    Double mockAmount = 0D;
-    TransactionReportModel transactionReport = makeTransactionReport(localDate, mockCount, mockAmount);
-    List<TransactionReportModel> transactionReportList = new ArrayList<>();
-    transactionReportList.add(transactionReport);
-    Assertions.assertEquals(0, validate(new TransactionDataDto(transactionReportList, mockCount, mockAmount)).size());
+    transactionDataDtoTest(LocalDate.now(), 4, 0D, 0);
   }
 
 }
