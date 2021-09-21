@@ -1,6 +1,7 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import com.navbara_pigeons.wasteless.dto.TransactionDataDto;
+import com.navbara_pigeons.wasteless.enums.TransactionGranularity;
 import com.navbara_pigeons.wasteless.model.TransactionReportModel;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -30,12 +31,12 @@ public class TransactionDaoHibernateImpl implements TransactionDaoHibernate {
    */
   @Override
   public TransactionDataDto getTransactionData(Long businessId, ZonedDateTime startSaleDate,
-      ZonedDateTime endSaleDate, String granularity) {
+      ZonedDateTime endSaleDate, TransactionGranularity granularity) {
 
     String grouping = "t.saleDate";
-    if (granularity.equals("MONTH")) {
+    if (granularity == TransactionGranularity.MONTH) {
       grouping = "YEAR(t.saleDate), MONTH(t.saleDate)";
-    } else if (granularity.equals("YEAR")) {
+    } else if (granularity == TransactionGranularity.YEAR) {
       grouping = "YEAR(t.saleDate)";
     }
 
