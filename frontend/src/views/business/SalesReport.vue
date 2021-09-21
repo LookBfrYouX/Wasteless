@@ -1,4 +1,10 @@
 <template>
+  <div>
+    <div>
+      <v-button>Select Date Range</v-button>
+      <v-button/>
+    </div>
+  </div>
 
 </template>
 
@@ -14,18 +20,6 @@ export default {
       transactionData:{}
     }
   },
-
-  computed: {
-    calculateTotalValue: function () {
-      for (transaction in transactionData) {
-        totalValue += transaction.amount;
-      }
-    },
-    calculateNumberOfTransactions: function () {
-      numberOfTransactions = transactionData.length;
-    }
-  },
-
   methods: {
 
   }
