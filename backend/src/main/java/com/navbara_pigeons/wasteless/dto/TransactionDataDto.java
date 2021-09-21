@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.dto;
 import com.navbara_pigeons.wasteless.model.TransactionReportModel;
 import java.util.List;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
 import lombok.Data;
 
 /**

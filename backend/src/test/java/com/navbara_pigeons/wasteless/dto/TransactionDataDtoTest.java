@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class TransactionDataDtoTest extends MainTestProvider {
+class TransactionDataDtoTest extends MainTestProvider {
 
   private Set<ConstraintViolation<TransactionDataDto>> validate(TransactionDataDto dto) {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -34,27 +34,27 @@ public class TransactionDataDtoTest extends MainTestProvider {
   }
 
   @Test
-  public void transactionDataDto_expectOk() {
+  void transactionDataDto_expectOk() {
     transactionDataDtoTest(LocalDate.now(), 4, 44D, 0);
   }
 
   @Test
-  public void transactionDateDto_withNegativeTotalCount_expectError() {
+  void transactionDateDto_withNegativeTotalCount_expectError() {
     transactionDataDtoTest(LocalDate.now(), -4, 44D, 1);
   }
 
   @Test
-  public void transactionDateDto_withZeroCount_expectOk() {
+  void transactionDateDto_withZeroCount_expectOk() {
     transactionDataDtoTest(LocalDate.now(), 0, 44D, 0);
   }
 
   @Test
-  public void transactionDateDto_withNegativeTotalAmount_expectError() {
+  void transactionDateDto_withNegativeTotalAmount_expectError() {
     transactionDataDtoTest(LocalDate.now(), 4, -44D, 1);
   }
 
   @Test
-  public void transactionDateDto_withZeroTotalAmount_expectOk() {
+  void transactionDateDto_withZeroTotalAmount_expectOk() {
     transactionDataDtoTest(LocalDate.now(), 4, 0D, 0);
   }
 
