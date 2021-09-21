@@ -20,4 +20,7 @@ public class TransactionDataDto {
     this.totalAmount = totalAmount;
     this.totalTransactionCount = totalTransactionCount;
   }
+
+  public TransactionDataDto() {
+  }
 }
