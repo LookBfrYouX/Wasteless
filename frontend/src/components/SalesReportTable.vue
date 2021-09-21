@@ -7,7 +7,7 @@
         :items-per-page="5">
       </v-data-table>
     </div>
-    <div>
+    <div v-else>
       No Transactions for this business
     </div>
   </div>
@@ -24,15 +24,15 @@ export default {
       headers: [
       {
         text: granularity,
-        value: "date"
+        value: "Date"
       },
       {
         text: "Transactions",
-        value: "numOfTransactions"
+        value: "transactionCount"
       },
       {
         text: "Sales",
-        value: "transactionValue"
+        value: "transactionAmount"
       }]
     }
   }
