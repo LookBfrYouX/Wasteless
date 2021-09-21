@@ -1,6 +1,9 @@
 package com.navbara_pigeons.wasteless.dao;
 
+import com.navbara_pigeons.wasteless.dto.TransactionDataDto;
+import com.navbara_pigeons.wasteless.model.TransactionReportModel;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -26,10 +29,9 @@ public class TransactionDaoHibernateImpl implements TransactionDaoHibernate {
    * @return a result list of transaction data
    */
   @Override
-  public List getTransactionData(Long businessId, ZonedDateTime startSaleDate,
+  public TransactionDataDto getTransactionData(Long businessId, ZonedDateTime startSaleDate,
       ZonedDateTime endSaleDate, String granularity) {
 
-    // This looks hacky but there is no other way to go about it (I even asked Max!)
     String grouping = "t.saleDate";
     if (granularity.equals("MONTH")) {
       grouping = "YEAR(t.saleDate), MONTH(t.saleDate)";
@@ -37,13 +39,37 @@ public class TransactionDaoHibernateImpl implements TransactionDaoHibernate {
       grouping = "YEAR(t.saleDate)";
     }
 
-    Query query = entityManager.createQuery(
-            "SELECT t.saleDate, count(t) from Transaction t WHERE t.businessId = :businessId and t.saleDate between :startDate and :endDate  GROUP BY "
+    Query transactionQueries = entityManager.createQuery(
+            "SELECT t.saleDate, count(t), sum(t.amount) from Transaction t WHERE t.businessId = :businessId and t.saleDate between :startDate and :endDate GROUP BY "
                 + grouping)
         .setParameter("startDate", startSaleDate)
         .setParameter("endDate", endSaleDate)
         .setParameter("businessId", businessId);
 
-    return query.getResultList();
+    Query totalsQuery = entityManager.createQuery(
+            "SELECT count(t), sum(t.amount) from Transaction t WHERE t.businessId = :businessId and t.saleDate between :startDate and :endDate")
+        .setParameter("startDate", startSaleDate)
+        .setParameter("endDate", endSaleDate)
+        .setParameter("businessId", businessId);
+
+    // Elements 0, 1, 2 and 3 have date, transactionCount and amount in them respectively
+    List<Object[]> results = transactionQueries.getResultList();
+    // Elements 0 and 1 have totalTransactionCount and amount in them respectively
+    List<Object[]> totals = totalsQuery.getResultList();
+
+    List<TransactionReportModel> transactionReportModels = new ArrayList<>();
+    for (Object[] result : results) {
+      ZonedDateTime date = ZonedDateTime.parse(result[0].toString());
+      Integer transactionCount = Integer.parseInt(result[1].toString());
+      Double amount = Double.valueOf(result[2].toString());
+
+      TransactionReportModel transactionReportModel = new TransactionReportModel(date,
+          transactionCount, amount);
+      transactionReportModels.add(transactionReportModel);
+    }
+    Integer totalTransactionCount = Integer.parseInt(totals.get(0)[0].toString());
+    Double totalAmount = Double.valueOf(totals.get(0)[1].toString());
+
+    return new TransactionDataDto(transactionReportModels, totalTransactionCount, totalAmount);
   }
 }
