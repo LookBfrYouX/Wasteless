@@ -12,14 +12,6 @@ export default {
       required: true,
       type: Number
     },
-  },
-  computed: {
-    /**
-     * Computes the total number of pages for the pagination component.
-     */
-    totalPages: function () {
-      return Math.floor((this.totalResults - 1) / this.itemsPerPage) + 1;
-    }
-  },
+  }
 };
 </script>
