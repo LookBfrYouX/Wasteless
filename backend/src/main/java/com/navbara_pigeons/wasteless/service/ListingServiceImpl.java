@@ -204,7 +204,7 @@ public class ListingServiceImpl implements ListingService {
 
     // Create and save a transaction
     Transaction transaction = new Transaction(ZonedDateTime.now(), listing.getCreated(),
-        listing.getInventoryItem().getProduct(), listing.getPrice());
+        listing.getInventoryItem().getProduct(), businessId, listing.getPrice());
     transactionService.saveTransaction(transaction);
 
     // Update inventory item quantity, delete listing & delete inventory Item when quantity reaches zero
