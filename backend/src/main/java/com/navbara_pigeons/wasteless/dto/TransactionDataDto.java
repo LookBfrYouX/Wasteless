@@ -14,13 +14,13 @@ public class TransactionDataDto {
   private List<TransactionReportModel> transactions;
 
   @DecimalMin(message = "Total sales cannot be less than 0", value = "0")
-  private Integer totalAmount;
+  private Double totalAmount;
 
   @DecimalMin(message = "Total number of orders cannot be less than 0", value = "0")
-  private Double totalTransactionCount;
+  private Integer totalTransactionCount;
 
-  public TransactionDataDto(List<TransactionReportModel> transactions, Integer totalAmount,
-      Double totalTransactionCount) {
+  public TransactionDataDto(List<TransactionReportModel> transactions, Double totalAmount,
+      Integer totalTransactionCount) {
     this.transactions = transactions;
     this.totalAmount = totalAmount;
     this.totalTransactionCount = totalTransactionCount;

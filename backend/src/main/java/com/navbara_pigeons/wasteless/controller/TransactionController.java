@@ -79,13 +79,17 @@ public class TransactionController {
                   "End date for transaction history. Time set to end of day in the UTC timezone")
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           @RequestParam(required = false)
-          LocalDate endDate)
+          LocalDate endDate,
+      @Parameter(
+              description =
+                  "Granularity to show the sales report")
+          @RequestParam(required = false, defaultValue = "DAY") TransactionGranularity transactionGranularity)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
     Pair<ZonedDateTime, ZonedDateTime> dateRange = transformDateRange(startDate, endDate);
     log.info("TRANSACTION HISTORY FOR BUSINESS " + id + " IN DATE RANGE " + startDate + " TO " + endDate);
     return new ResponseEntity<>(
         transactionService.getTransactionData(
-            id, dateRange.getLeft(), dateRange.getRight(), TransactionGranularity.DAY),
+            id, dateRange.getLeft(), dateRange.getRight(), transactionGranularity),
         HttpStatus.OK);
   }
 }

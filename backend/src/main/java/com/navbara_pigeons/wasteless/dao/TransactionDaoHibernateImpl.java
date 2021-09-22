@@ -62,7 +62,7 @@ public class TransactionDaoHibernateImpl implements TransactionDaoHibernate {
 
     // If no transactions were found, return empty TransactionDataDto
     if (results.isEmpty() || totals.isEmpty()) {
-      return new TransactionDataDto(new ArrayList<>(), 0, 0.00);
+      return new TransactionDataDto(new ArrayList<>(), 0.00, 0);
     }
     List<TransactionReportModel> transactionReportModels = new ArrayList<>();
     for (Object[] result : results) {
@@ -77,6 +77,6 @@ public class TransactionDaoHibernateImpl implements TransactionDaoHibernate {
     Integer totalTransactionCount = Integer.parseInt(totals.get(0)[0].toString());
     Double totalAmount = Double.valueOf(totals.get(0)[1].toString());
 
-    return new TransactionDataDto(transactionReportModels, totalTransactionCount, totalAmount);
+    return new TransactionDataDto(transactionReportModels, totalAmount, totalTransactionCount);
   }
 }
