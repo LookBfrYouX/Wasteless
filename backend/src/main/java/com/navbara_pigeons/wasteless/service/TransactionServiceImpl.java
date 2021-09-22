@@ -4,6 +4,7 @@ import com.navbara_pigeons.wasteless.dao.TransactionDao;
 import com.navbara_pigeons.wasteless.dao.TransactionDaoHibernate;
 import com.navbara_pigeons.wasteless.dto.TransactionDataDto;
 import com.navbara_pigeons.wasteless.entity.Transaction;
+import com.navbara_pigeons.wasteless.enums.TransactionGranularity;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
@@ -63,7 +64,7 @@ public class TransactionServiceImpl implements TransactionService {
    */
   @Override
   public TransactionDataDto getTransactionData(Long businessId, ZonedDateTime startSaleDate,
-      ZonedDateTime endSaleDate, String granularity)
+      ZonedDateTime endSaleDate, TransactionGranularity granularity)
       throws UserNotFoundException, BusinessNotFoundException, InsufficientPrivilegesException {
     if (!businessService.isBusinessAdmin(businessId) && !userService.isAdmin()) {
       throw new InsufficientPrivilegesException(
