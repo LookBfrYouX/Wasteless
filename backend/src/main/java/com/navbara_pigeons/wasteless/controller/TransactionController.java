@@ -82,6 +82,7 @@ public class TransactionController {
           LocalDate endDate)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
     Pair<ZonedDateTime, ZonedDateTime> dateRange = transformDateRange(startDate, endDate);
+    log.info("TRANSACTION HISTORY FOR BUSINESS " + id + " IN DATE RANGE " + startDate + " TO " + endDate);
     return new ResponseEntity<>(
         transactionService.getTransactionData(
             id, dateRange.getLeft(), dateRange.getRight(), TransactionGranularity.DAY),
