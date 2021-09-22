@@ -7,7 +7,7 @@
       </v-col>
       <v-col align="center" class="d-flex align-center justify-center">
         <v-subheader>Granularity</v-subheader>
-        <v-select class="granularitySelect" v-model="granularity" dense="true" :items="items" label="Group By" solo/>
+        <v-select class="granularitySelect" v-model="granularity" dense=true :items="items" label="Group By" solo/>
       </v-col>
       <v-col align="center" class="d-flex align-center justify-center">
         <v-btn v-on:click="setResultsWithMocks">Go</v-btn>
@@ -25,10 +25,11 @@
       </v-col>
       <v-col>
         <h4>Period</h4>
-        {{minDate}} To {{maxDate}}
+        {{this.$helper.isoToDateString(minDate)}} To {{this.$helper.isoToDateString(maxDate)}}
       </v-col>
       <v-col>
         <h4>Business</h4>
+        {{this.$stateStore.getters.getActingAs().name}}
       </v-col>
     </v-row>
   </v-container>
@@ -39,8 +40,8 @@ import {Api} from "@/Api"
 export default {
   data() {
     return {
-      minDate:"",
-      maxDate:"",
+      minDate:"2020-01-02 15:34:20",
+      maxDate:"2021-01-22 15:34:20",
       businessName:"",
       granularity:"",
       totalValue:0,
@@ -65,12 +66,13 @@ export default {
     /**
      * Sends API request and sets totalvalue, numberOfTransactions and transactionData variables
      */
-    query: async function () {
+    getTransactions: async function () {
       /* makes a query to the api to retrieve the transactions with the props*/
       try {
-        const response = (await Api.getTransactions(this.$stateStore.getters.getBusinessId,{granularity:this.granularity,
-                                                                                            minDate:this.minDate,
-                                                                                            maxDate:this.maxDate})).data;
+        const response = (await Api.getTransactions(this.$stateStore.getters.getBusinessId,
+                          {granularity:this.granularity,
+                           minDate:this.minDate,
+                           maxDate:this.maxDate})).data;
         this.totalValue = response.totalAmount;
         this.numberOfTransactions = response.totalTransactionCount;
         this.transactionData = response.transactions;
