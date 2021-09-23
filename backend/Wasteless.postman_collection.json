@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "ecd111a2-3e40-4a96-a972-089d1538c9f0",
+    "_postman_id": "7c280b1a-3b34-40ff-ab46-52751cc04949",
     "name": "Wasteless",
     "description": "API specification for Team 300's SENG302 2021 project\n\nContact Support:\n Email: seng302@canterbury.ac.nz",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -4171,6 +4171,119 @@
           ]
         },
         {
+          "name": "transactions",
+          "item": [
+            {
+              "name": "GET Transactions Test - OK",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "utils.autoLogin(pm);\r",
+                      "pm.variables.set(\"businessId\", 1001);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Expect 200 response', function () {\r",
+                      "    pm.expect(pm.response.code, \"Successful response\").to.equal(200);\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "const schema = {\"$schema\":\"http://json-schema.org/draft-06/schema#\",\"$ref\":\"#/definitions/Welcome\",\"definitions\":{\"Welcome\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"transactions\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Transaction\"}},\"totalAmount\":{\"type\":\"number\"},\"totalTransactionCount\":{\"type\":\"integer\"}},\"required\":[\"totalAmount\",\"totalTransactionCount\",\"transactions\"],\"title\":\"Welcome\"},\"Transaction\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"date\":{\"type\":\"string\",\"format\":\"date-time\"},\"transactionCount\":{\"type\":\"integer\"},\"amount\":{\"type\":\"number\"}},\"required\":[\"amount\",\"date\",\"transactionCount\"],\"title\":\"Transaction\"}}};\r",
+                      "\r",
+                      "\r",
+                      "pm.test('Response body is in expected schema', function () {\r",
+                      "    pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/businesses/{{businessId}}/transactions?startDate=2020-01-24&endDate=2021-03-10&transactionGranularity=WEEK",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "businesses",
+                    "{{businessId}}",
+                    "transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2020-01-24"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2021-03-10"
+                    },
+                    {
+                      "key": "transactionGranularity",
+                      "value": "WEEK"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GET Transaction",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/businesses/1001/transactions?startDate=2020-01-01&endDate=2021-04-06&transactionGranularity=MONTH",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "businesses",
+                    "1001",
+                    "transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2020-01-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2021-04-06"
+                    },
+                    {
+                      "key": "transactionGranularity",
+                      "value": "MONTH"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
           "name": "Create a new business entity",
           "event": [
             {
@@ -6955,7 +7068,7 @@
                   "// Test the response schema is correct",
                   "// Made using https://app.quicktype.io/#l=schema",
                   "// Validate with https://www.jsonschemavalidator.net/",
-                  "const schema={$ref:\"#/definitions/Welcome\",definitions:{Welcome:{type:\"object\",additionalProperties:!1,properties:{results:{type:\"array\",items:{$ref:\"#/definitions/Result\"}},totalCount:{type:\"integer\"}},required:[\"results\",\"totalCount\"],title:\"Welcome\"},Result:{type:\"object\",additionalProperties:!1,properties:{id:{type:\"integer\"},inventoryItem:{$ref:\"#/definitions/InventoryItem\"},quantity:{type:\"integer\"},price:{type:\"number\"},moreInfo:{anyOf:[{type:\"null\"},{type:\"string\"}]},created:{type:\"string\",format:\"date-time\"},closes:{type:\"string\",format:\"date-time\"}},required:[\"closes\",\"created\",\"id\",\"inventoryItem\",\"moreInfo\",\"price\",\"quantity\"],title:\"Result\"},InventoryItem:{type:\"object\",additionalProperties:!1,properties:{id:{type:\"integer\"},product:{$ref:\"#/definitions/Product\"},quantity:{type:\"integer\"},pricePerItem:{type:\"number\"},totalPrice:{type:\"number\"},expires:{type:\"string\",format:\"date\"},manufactured:{anyOf:[{type:\"string\",format:\"date\"},{type:\"null\"}]},sellBy:{anyOf:[{type:\"string\",format:\"date\"},{type:\"null\"}]},bestBefore:{anyOf:[{type:\"string\",format:\"date\"},{type:\"null\"}]},business:{$ref:\"#/definitions/Business\"}},required:[\"bestBefore\",\"business\",\"expires\",\"id\",\"manufactured\",\"pricePerItem\",\"product\",\"quantity\",\"sellBy\",\"totalPrice\"],title:\"InventoryItem\"},Business:{type:\"object\",additionalProperties:!1,properties:{id:{type:\"integer\"},primaryAdministratorId:{type:\"integer\"},name:{type:\"string\"},description:{anyOf:[{type:\"null\"},{type:\"string\"}]},address:{$ref:\"#/definitions/Address\"},businessType:{$ref:\"#/definitions/BusinessType\"},created:{type:\"string\",format:\"date-time\"}},required:[\"address\",\"businessType\",\"created\",\"description\",\"id\",\"name\",\"primaryAdministratorId\"],title:\"Business\"},Address:{type:\"object\",additionalProperties:!1,properties:{streetNumber:{type:\"string\"},streetName:{$ref:\"#/definitions/StreetName\"},suburb:{$ref:\"#/definitions/Suburb\"},postcode:{type:\"string\",format:\"integer\"},city:{$ref:\"#/definitions/City\"},region:{$ref:\"#/definitions/Region\"},country:{$ref:\"#/definitions/Country\"}},required:[\"city\",\"country\",\"postcode\",\"region\",\"streetName\",\"streetNumber\",\"suburb\"],title:\"Address\"},Product:{type:\"object\",additionalProperties:!1,properties:{id:{type:\"integer\"},name:{type:\"string\"},description:{anyOf:[{type:\"null\"},{type:\"string\"}]},manufacturer:{type:\"string\"},recommendedRetailPrice:{type:\"number\"},created:{type:\"string\",format:\"date-time\"},images:{type:\"array\",items:{}},nutriScore:{anyOf:[{type:\"null\"},{type:\"string\"}]},novaScore:{anyOf:[{type:\"integer\"},{type:\"null\"}]},fat:{anyOf:[{type:\"null\"},{type:\"string\"}]},saturatedFat:{anyOf:[{type:\"null\"},{type:\"string\"}]},sugars:{anyOf:[{type:\"null\"},{type:\"string\"}]},salt:{anyOf:[{type:\"null\"},{type:\"string\"}]},isGlutenFree:{anyOf:[{type:\"boolean\"},{type:\"null\"}]},isDairyFree:{anyOf:[{type:\"boolean\"},{type:\"null\"}]},isVegetarian:{anyOf:[{type:\"boolean\"},{type:\"null\"}]},isVegan:{anyOf:[{type:\"boolean\"},{type:\"null\"}]},isPalmOilFree:{anyOf:[{type:\"boolean\"},{type:\"null\"}]}},required:[\"created\",\"description\",\"fat\",\"id\",\"images\",\"isDairyFree\",\"isGlutenFree\",\"isPalmOilFree\",\"isVegan\",\"isVegetarian\",\"manufacturer\",\"name\",\"novaScore\",\"nutriScore\",\"recommendedRetailPrice\",\"saturatedFat\",\"salt\",\"sugars\"],title:\"Product\"},City:{type:\"string\",enum:[\"Christchurch\"],title:\"City\"},Country:{type:\"string\",enum:[\"New Zealand\"],title:\"Country\"},Region:{type:\"string\",enum:[\"Canterbury\"],title:\"Region\"},StreetName:{type:\"string\",enum:[\"Place Road\",\"Ilam Road\"],title:\"StreetName\"},Suburb:{type:\"string\",enum:[\"Ilam\"],title:\"Suburb\"},BusinessType:{type:\"string\",enum:[\"Retail Trade\"],title:\"BusinessType\"}}};",
+                  "const schema = {\"$ref\":\"#/definitions/Root\",\"definitions\":{\"Root\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"results\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Listing\"}},\"totalCount\":{\"type\":\"integer\",\"minimum\":0}},\"required\":[\"results\",\"totalCount\"],\"title\":\"Root\"},\"Listing\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":0},\"inventoryItem\":{\"$ref\":\"#/definitions/InventoryItem\"},\"quantity\":{\"type\":\"integer\",\"minimum\":0},\"price\":{\"type\":\"number\",\"minimum\":0},\"moreInfo\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"created\":{\"type\":\"string\",\"format\":\"date-time\"},\"closes\":{\"type\":\"string\",\"format\":\"date-time\"}},\"required\":[\"closes\",\"created\",\"id\",\"inventoryItem\",\"moreInfo\",\"price\",\"quantity\"],\"title\":\"Listing\"},\"InventoryItem\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":0},\"product\":{\"$ref\":\"#/definitions/Product\"},\"quantity\":{\"type\":\"integer\",\"minimum\":0},\"pricePerItem\":{\"type\":\"number\",\"minimum\":0},\"totalPrice\":{\"type\":\"number\",\"minimum\":0},\"expires\":{\"type\":\"string\",\"format\":\"date\"},\"manufactured\":{\"type\":\"string\",\"format\":\"date\"},\"sellBy\":{\"type\":\"string\",\"format\":\"date\"},\"bestBefore\":{\"type\":\"string\",\"format\":\"date\"},\"business\":{\"$ref\":\"#/definitions/Business\"}},\"required\":[\"bestBefore\",\"business\",\"expires\",\"id\",\"manufactured\",\"pricePerItem\",\"product\",\"quantity\",\"sellBy\",\"totalPrice\"],\"title\":\"InventoryItem\"},\"Product\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":0},\"name\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"},\"manufacturer\":{\"type\":\"string\"},\"recommendedRetailPrice\":{\"type\":\"number\",\"minimum\":0},\"created\":{\"type\":\"string\",\"format\":\"date-time\"},\"images\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/ProductImage\"}},\"nutriScore\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"novaGroup\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]},\"fat\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"saturatedFat\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"sugars\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"salt\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"isGlutenFree\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]},\"isDairyFree\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]},\"isVegetarian\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]},\"isVegan\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]},\"isPalmOilFree\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]}},\"required\":[\"created\",\"description\",\"fat\",\"id\",\"images\",\"manufacturer\",\"isDairyFree\",\"isGlutenFree\",\"isPalmOilFree\",\"isVegan\",\"isVegetarian\",\"name\",\"novaGroup\",\"nutriScore\",\"recommendedRetailPrice\",\"saturatedFat\",\"salt\",\"sugars\"],\"title\":\"Product\"},\"ProductImage\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":0},\"filename\":{\"type\":\"string\"},\"thumbnailFilename\":{\"type\":\"string\"}},\"required\":[\"id\",\"filename\",\"thumbnailFilename\"],\"title\":\"ProductImage\"},\"Business\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":0},\"primaryAdministratorId\":{\"type\":\"integer\",\"minimum\":0},\"name\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"},\"address\":{\"$ref\":\"#/definitions/Address\"},\"businessType\":{\"type\":\"string\"},\"created\":{\"type\":\"string\",\"format\":\"date-time\"}},\"required\":[\"address\",\"businessType\",\"created\",\"description\",\"id\",\"name\",\"primaryAdministratorId\"],\"title\":\"Business\"},\"Address\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"streetNumber\":{\"type\":[\"string\",\"null\"]},\"streetName\":{\"type\":[\"string\",\"null\"]},\"suburb\":{\"type\":[\"string\",\"null\"]},\"postcode\":{\"type\":[\"string\",\"null\"]},\"city\":{\"type\":[\"string\",\"null\"]},\"region\":{\"type\":[\"string\",\"null\"]},\"country\":{\"type\":[\"string\",\"null\"]}},\"required\":[\"country\"],\"title\":\"Address\"}}};",
                   "",
                   "pm.test('Response body is in expected schema', function () {",
                   "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
@@ -7144,7 +7257,7 @@
                   "// Test the response schema is correct\r",
                   "// Made using https://app.quicktype.io/#l=schema\r",
                   "// Validate with https://www.jsonschemavalidator.net/\r",
-                  "const schema={$ref:\"#/definitions/Welcome\",definitions:{Welcome:{type:\"object\",additionalProperties:!1,properties:{results:{type:\"array\",items:{$ref:\"#/definitions/Result\"}},totalCount:{type:\"integer\"}},required:[\"results\",\"totalCount\"],title:\"Welcome\"},Result:{type:\"object\",additionalProperties:!1,properties:{id:{type:\"integer\"},inventoryItem:{$ref:\"#/definitions/InventoryItem\"},quantity:{type:\"integer\"},price:{type:\"number\"},moreInfo:{anyOf:[{type:\"null\"},{type:\"string\"}]},created:{type:\"string\",format:\"date-time\"},closes:{type:\"string\",format:\"date-time\"}},required:[\"closes\",\"created\",\"id\",\"inventoryItem\",\"moreInfo\",\"price\",\"quantity\"],title:\"Result\"},InventoryItem:{type:\"object\",additionalProperties:!1,properties:{id:{type:\"integer\"},product:{$ref:\"#/definitions/Product\"},quantity:{type:\"integer\"},pricePerItem:{type:\"number\"},totalPrice:{type:\"number\"},expires:{type:\"string\",format:\"date\"},manufactured:{anyOf:[{type:\"string\",format:\"date\"},{type:\"null\"}]},sellBy:{anyOf:[{type:\"string\",format:\"date\"},{type:\"null\"}]},bestBefore:{anyOf:[{type:\"string\",format:\"date\"},{type:\"null\"}]},business:{$ref:\"#/definitions/Business\"}},required:[\"bestBefore\",\"business\",\"expires\",\"id\",\"manufactured\",\"pricePerItem\",\"product\",\"quantity\",\"sellBy\",\"totalPrice\"],title:\"InventoryItem\"},Business:{type:\"object\",additionalProperties:!1,properties:{id:{type:\"integer\"},primaryAdministratorId:{type:\"integer\"},name:{type:\"string\"},description:{anyOf:[{type:\"null\"},{type:\"string\"}]},address:{$ref:\"#/definitions/Address\"},businessType:{$ref:\"#/definitions/BusinessType\"},created:{type:\"string\",format:\"date-time\"}},required:[\"address\",\"businessType\",\"created\",\"description\",\"id\",\"name\",\"primaryAdministratorId\"],title:\"Business\"},Address:{type:\"object\",additionalProperties:!1,properties:{streetNumber:{type:\"string\"},streetName:{$ref:\"#/definitions/StreetName\"},suburb:{$ref:\"#/definitions/Suburb\"},postcode:{type:\"string\",format:\"integer\"},city:{$ref:\"#/definitions/City\"},region:{$ref:\"#/definitions/Region\"},country:{$ref:\"#/definitions/Country\"}},required:[\"city\",\"country\",\"postcode\",\"region\",\"streetName\",\"streetNumber\",\"suburb\"],title:\"Address\"},Product:{type:\"object\",additionalProperties:!1,properties:{id:{type:\"integer\"},name:{type:\"string\"},description:{anyOf:[{type:\"null\"},{type:\"string\"}]},manufacturer:{type:\"string\"},recommendedRetailPrice:{type:\"number\"},created:{type:\"string\",format:\"date-time\"},images:{type:\"array\",items:{}},nutriScore:{anyOf:[{type:\"null\"},{type:\"string\"}]},novaScore:{anyOf:[{type:\"integer\"},{type:\"null\"}]},fat:{anyOf:[{type:\"null\"},{type:\"string\"}]},saturatedFat:{anyOf:[{type:\"null\"},{type:\"string\"}]},sugars:{anyOf:[{type:\"null\"},{type:\"string\"}]},salt:{anyOf:[{type:\"null\"},{type:\"string\"}]},isGlutenFree:{anyOf:[{type:\"boolean\"},{type:\"null\"}]},isDairyFree:{anyOf:[{type:\"boolean\"},{type:\"null\"}]},isVegetarian:{anyOf:[{type:\"boolean\"},{type:\"null\"}]},isVegan:{anyOf:[{type:\"boolean\"},{type:\"null\"}]},isPalmOilFree:{anyOf:[{type:\"boolean\"},{type:\"null\"}]}},required:[\"created\",\"description\",\"fat\",\"id\",\"images\",\"isDairyFree\",\"isGlutenFree\",\"isPalmOilFree\",\"isVegan\",\"isVegetarian\",\"manufacturer\",\"name\",\"novaScore\",\"nutriScore\",\"recommendedRetailPrice\",\"saturatedFat\",\"salt\",\"sugars\"],title:\"Product\"},City:{type:\"string\",enum:[\"Christchurch\"],title:\"City\"},Country:{type:\"string\",enum:[\"New Zealand\"],title:\"Country\"},Region:{type:\"string\",enum:[\"Canterbury\"],title:\"Region\"},StreetName:{type:\"string\",enum:[\"Place Road\",\"Ilam Road\"],title:\"StreetName\"},Suburb:{type:\"string\",enum:[\"Ilam\"],title:\"Suburb\"},BusinessType:{type:\"string\",enum:[\"Retail Trade\"],title:\"BusinessType\"}}};\r",
+                  "const schema = {\"$ref\":\"#/definitions/Root\",\"definitions\":{\"Root\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"results\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Listing\"}},\"totalCount\":{\"type\":\"integer\",\"minimum\":0}},\"required\":[\"results\",\"totalCount\"],\"title\":\"Root\"},\"Listing\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":0},\"inventoryItem\":{\"$ref\":\"#/definitions/InventoryItem\"},\"quantity\":{\"type\":\"integer\",\"minimum\":0},\"price\":{\"type\":\"number\",\"minimum\":0},\"moreInfo\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"created\":{\"type\":\"string\",\"format\":\"date-time\"},\"closes\":{\"type\":\"string\",\"format\":\"date-time\"}},\"required\":[\"closes\",\"created\",\"id\",\"inventoryItem\",\"moreInfo\",\"price\",\"quantity\"],\"title\":\"Listing\"},\"InventoryItem\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":0},\"product\":{\"$ref\":\"#/definitions/Product\"},\"quantity\":{\"type\":\"integer\",\"minimum\":0},\"pricePerItem\":{\"type\":\"number\",\"minimum\":0},\"totalPrice\":{\"type\":\"number\",\"minimum\":0},\"expires\":{\"type\":\"string\",\"format\":\"date\"},\"manufactured\":{\"type\":\"string\",\"format\":\"date\"},\"sellBy\":{\"type\":\"string\",\"format\":\"date\"},\"bestBefore\":{\"type\":\"string\",\"format\":\"date\"},\"business\":{\"$ref\":\"#/definitions/Business\"}},\"required\":[\"bestBefore\",\"business\",\"expires\",\"id\",\"manufactured\",\"pricePerItem\",\"product\",\"quantity\",\"sellBy\",\"totalPrice\"],\"title\":\"InventoryItem\"},\"Product\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":0},\"name\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"},\"manufacturer\":{\"type\":\"string\"},\"recommendedRetailPrice\":{\"type\":\"number\",\"minimum\":0},\"created\":{\"type\":\"string\",\"format\":\"date-time\"},\"images\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/ProductImage\"}},\"nutriScore\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"novaGroup\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]},\"fat\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"saturatedFat\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"sugars\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"salt\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"}]},\"isGlutenFree\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]},\"isDairyFree\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]},\"isVegetarian\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]},\"isVegan\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]},\"isPalmOilFree\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]}},\"required\":[\"created\",\"description\",\"fat\",\"id\",\"images\",\"manufacturer\",\"isDairyFree\",\"isGlutenFree\",\"isPalmOilFree\",\"isVegan\",\"isVegetarian\",\"name\",\"novaGroup\",\"nutriScore\",\"recommendedRetailPrice\",\"saturatedFat\",\"salt\",\"sugars\"],\"title\":\"Product\"},\"ProductImage\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":0},\"filename\":{\"type\":\"string\"},\"thumbnailFilename\":{\"type\":\"string\"}},\"required\":[\"id\",\"filename\",\"thumbnailFilename\"],\"title\":\"ProductImage\"},\"Business\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":0},\"primaryAdministratorId\":{\"type\":\"integer\",\"minimum\":0},\"name\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"},\"address\":{\"$ref\":\"#/definitions/Address\"},\"businessType\":{\"type\":\"string\"},\"created\":{\"type\":\"string\",\"format\":\"date-time\"}},\"required\":[\"address\",\"businessType\",\"created\",\"description\",\"id\",\"name\",\"primaryAdministratorId\"],\"title\":\"Business\"},\"Address\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"streetNumber\":{\"type\":[\"string\",\"null\"]},\"streetName\":{\"type\":[\"string\",\"null\"]},\"suburb\":{\"type\":[\"string\",\"null\"]},\"postcode\":{\"type\":[\"string\",\"null\"]},\"city\":{\"type\":[\"string\",\"null\"]},\"region\":{\"type\":[\"string\",\"null\"]},\"country\":{\"type\":[\"string\",\"null\"]}},\"required\":[\"country\"],\"title\":\"Address\"}}};\r",
                   "\r",
                   "pm.test('Response body is in expected schema', function () {\r",
                   "    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
@@ -7248,7 +7361,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/listings/search?isGlutenFree=1",
+              "raw": "{{baseUrl}}/listings/search",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -7329,7 +7442,8 @@
                 },
                 {
                   "key": "isGlutenFree",
-                  "value": "1"
+                  "value": "1",
+                  "disabled": true
                 }
               ]
             }
