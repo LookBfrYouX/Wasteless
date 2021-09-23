@@ -163,4 +163,64 @@ public class TransactionControllerTest extends ControllerTestProvider {
     JsonNode transactions = response.get("transactions");
     Assertions.assertEquals(2, transactions.size());
   }
+
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void getTransactionHistory_weekGranularity_expectOk() throws Exception {
+    LocalDate startDate = LocalDate.parse("2021-02-21");
+    LocalDate   endDate = LocalDate.parse("2021-02-27");
+    TransactionGranularity transactionGranularity = TransactionGranularity.WEEK;
+    String stringResponse = mockMvc.perform(
+        get("/businesses/" + BUSINESS_ID + "/transactions")
+            .param("startDate", startDate.toString())
+            .param("endDate", endDate.toString())
+            .param("transactionGranularity", transactionGranularity.toString())
+    )
+        .andExpect(status().isOk())
+        .andReturn().getResponse().getContentAsString();
+
+    JsonNode response = objectMapper.readTree(stringResponse);
+    JsonNode transactions = response.get("transactions");
+    Assertions.assertEquals(1, transactions.size());
+  }
+
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void getTransactionHistory_monthGranularity_expectOk() throws Exception {
+    LocalDate startDate = LocalDate.parse("2021-02-21");
+    LocalDate   endDate = LocalDate.parse("2021-04-21");
+    TransactionGranularity transactionGranularity = TransactionGranularity.MONTH;
+    String stringResponse = mockMvc.perform(
+        get("/businesses/" + BUSINESS_ID + "/transactions")
+            .param("startDate", startDate.toString())
+            .param("endDate", endDate.toString())
+            .param("transactionGranularity", transactionGranularity.toString())
+    )
+        .andExpect(status().isOk())
+        .andReturn().getResponse().getContentAsString();
+
+    JsonNode response = objectMapper.readTree(stringResponse);
+    JsonNode transactions = response.get("transactions");
+    Assertions.assertEquals(2, transactions.size());
+  }
+
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void getTransactionHistory_yearGranularity_expectOk() throws Exception {
+    LocalDate startDate = LocalDate.parse("2019-02-21");
+    LocalDate   endDate = LocalDate.parse("2021-02-21");
+    TransactionGranularity transactionGranularity = TransactionGranularity.YEAR;
+    String stringResponse = mockMvc.perform(
+        get("/businesses/" + BUSINESS_ID + "/transactions")
+            .param("startDate", startDate.toString())
+            .param("endDate", endDate.toString())
+            .param("transactionGranularity", transactionGranularity.toString())
+    )
+        .andExpect(status().isOk())
+        .andReturn().getResponse().getContentAsString();
+
+    JsonNode response = objectMapper.readTree(stringResponse);
+    JsonNode transactions = response.get("transactions");
+    Assertions.assertEquals(2, transactions.size());
+  }
 }
