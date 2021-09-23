@@ -50,7 +50,7 @@ export default {
       totalValue:0,
       numberOfTransactions:0,
       transactionData:{},
-      items: ["Day", "Month","Year"],
+      items: ["Day","Week", "Month","Year"],
       mockTransactionResponse:{
         totalAmount: 400,
         totalTransactionCount: 10,
@@ -101,7 +101,7 @@ export default {
     parseTransactionDates: function () {
       for (transaction in transactionData) {
         if (granularity == "day") {
-          
+
         } else if (granularity == "month") {
 
         } else if (granularity == "year") {
