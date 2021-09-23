@@ -32,18 +32,21 @@
         {{this.$stateStore.getters.getActingAs().name}}
       </v-col>
     </v-row>
+    <SalesReportTable v-bind:granularity="granularity" v-bind:transactionInformation="transactionData"/>
   </v-container>
 </template>
 
 <script>
 import {Api} from "@/Api"
+import SalesReportTable from "@/components/SalesReportTable.vue";
 export default {
+  components:{SalesReportTable},
   data() {
     return {
       minDate:"2020-01-02 15:34:20",
       maxDate:"2021-01-22 15:34:20",
       businessName:"",
-      granularity:"",
+      granularity:"Day",
       totalValue:0,
       numberOfTransactions:0,
       transactionData:{},

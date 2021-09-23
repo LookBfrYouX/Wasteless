@@ -8,7 +8,7 @@
       </v-data-table>
     </div>
     <div v-else>
-      No Transactions for this business
+      No Transactions for this time period
     </div>
   </div>
 </template>
@@ -16,24 +16,27 @@
 <script>
 export default {
   props: {
-  granularity: "",
-  transactionInformation: {}
+    granularity: {
+      default: "",
+      type: String
+    },
+    transactionInformation: {}
   },
-  data() {
-    return {
-      headers: [
-      {
-        text: granularity,
-        value: "Date"
-      },
-      {
-        text: "Transactions",
-        value: "transactionCount"
-      },
-      {
-        text: "Sales",
-        value: "transactionAmount"
-      }]
+  computed: {
+    headers() {
+      return [
+        {
+          text: this.granularity,
+          value: "date"
+        },
+        {
+          text: "Transactions",
+          value: "transactionCount"
+        },
+        {
+          text: "Sales",
+          value: "amount"
+        }]
     }
   }
 }
