@@ -4191,7 +4191,7 @@
                   "script": {
                     "exec": [
                       "pm.test('Expect 200 response', function () {\r",
-                      "    pm.expect(pm.response.code, \"Successful response\").to.equal(200);\r",
+                      "    pm.expect(pm.response.code).to.equal(200);\r",
                       "});\r",
                       "\r",
                       "\r",
@@ -4201,6 +4201,120 @@
                       "pm.test('Response body is in expected schema', function () {\r",
                       "    pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
                       "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/businesses/{{businessId}}/transactions?startDate=2020-01-24&endDate=2021-03-10&transactionGranularity=WEEK",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "businesses",
+                    "{{businessId}}",
+                    "transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2020-01-24"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2021-03-10"
+                    },
+                    {
+                      "key": "transactionGranularity",
+                      "value": "WEEK"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GET Transactions Test - Unauthorized",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "utils.autoLogin(pm, \"fdi19@uclive.ac.nz\");\r",
+                      "pm.variables.set(\"businessId\", 1001);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Expect 403 response', function () {\r",
+                      "    pm.expect(pm.response.code).to.equal(403);\r",
+                      "});\r",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/businesses/{{businessId}}/transactions?startDate=2020-01-24&endDate=2021-03-10&transactionGranularity=WEEK",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "businesses",
+                    "{{businessId}}",
+                    "transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2020-01-24"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2021-03-10"
+                    },
+                    {
+                      "key": "transactionGranularity",
+                      "value": "WEEK"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GET Transactions Test - Not Found",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "utils.autoLogin(pm, \"fdi19@uclive.ac.nz\");\r",
+                      "pm.variables.set(\"businessId\", 5000);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Expect 404 response', function () {\r",
+                      "    pm.expect(pm.response.code).to.equal(404);\r",
+                      "});\r",
+                      ""
                     ],
                     "type": "text/javascript"
                   }
@@ -7495,7 +7609,7 @@
           "    store.set(TEST_INDEX, getTestIndex(store) + i);",
           "}",
           "",
-          "const autoLogin = (pm) => {",
+          "const autoLogin = (pm, email = \"dnb36@uclive.ac.nz\", password = \"fun123\") => {",
           "    // pm needs to be sent for some reason",
           "    pm.sendRequest({",
           "        url: `${pm.collectionVariables.get(\"baseUrl\")}/login`,",
@@ -7506,8 +7620,8 @@
           "        body: {",
           "            mode: \"raw\",",
           "            raw: JSON.stringify({ ",
-          "                \"email\": \"dnb36@uclive.ac.nz\",",
-          "                \"password\": \"fun123\"",
+          "                email,",
+          "                password",
           "            })",
           "        }",
           "    }, (...response) => {",
