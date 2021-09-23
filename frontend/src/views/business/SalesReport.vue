@@ -87,15 +87,30 @@ export default {
       }
     },
     /**
-     * Sends API request and sets totalvalue, numberOfTransactions and transactionData variables
+     * sets some mock data for testing sets totalvalue, numberOfTransactions and transactionData variables
      */
     setResultsWithMocks: function () {
       /* makes a query to the api to retrieve the transactions with the props*/
       this.totalValue = this.mockTransactionResponse.totalAmount;
       this.numberOfTransactions = this.mockTransactionResponse.totalTransactionCount;
       this.transactionData = this.mockTransactionResponse.transactions;
+    },
+    /**
+     * Parses the date depending on granularity
+     */
+    parseTransactionDates: function () {
+      for (transaction in transactionData) {
+        if (granularity == "day") {
+          
+        } else if (granularity == "month") {
+
+        } else if (granularity == "year") {
+
+        }
+      }
     }
   },
+
 }
 </script>
 
