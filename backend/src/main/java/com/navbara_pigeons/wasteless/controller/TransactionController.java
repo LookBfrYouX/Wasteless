@@ -86,7 +86,7 @@ public class TransactionController {
           @RequestParam(required = false, defaultValue = "DAY") TransactionGranularity transactionGranularity)
       throws UserNotFoundException, InsufficientPrivilegesException, BusinessNotFoundException {
     Pair<ZonedDateTime, ZonedDateTime> dateRange = transformDateRange(startDate, endDate);
-    log.info("TRANSACTION HISTORY FOR BUSINESS " + id + " IN DATE RANGE " + startDate + " TO " + endDate);
+    log.info("TRANSACTION HISTORY FOR BUSINESS " + id + " IN DATE RANGE " + startDate + " TO " + endDate + " WITH GRANULARITY " + transactionGranularity);
     return new ResponseEntity<>(
         transactionService.getTransactionData(
             id, dateRange.getLeft(), dateRange.getRight(), transactionGranularity),
