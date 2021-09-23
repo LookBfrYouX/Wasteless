@@ -29,12 +29,17 @@ public class TransactionControllerTest extends ControllerTestProvider {
   long BUSINESS_ID = 1001;
 
   @Test
-  @WithUserDetails(value = "hic21@uclive.ac.nz")
+  @WithUserDetails(value = "fdi19@uclive.ac.nz")
   void getTransactionHistory_notBusinessAdmin_expectUnauthorized() throws Exception {
+    mockMvc.perform(get("/businesses/" + BUSINESS_ID + "/transactions"))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  void getTransactionHistory_notLoggedIn_expectUnauthorized() throws Exception {
     mockMvc.perform(get("/businesses/" + BUSINESS_ID + "/transactions"))
         .andExpect(status().isUnauthorized());
   }
-
 
   @Test
   @WithUserDetails(value = "mbi47@uclive.ac.nz")
