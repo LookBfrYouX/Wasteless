@@ -223,4 +223,24 @@ public class TransactionControllerTest extends ControllerTestProvider {
     JsonNode transactions = response.get("transactions");
     Assertions.assertEquals(2, transactions.size());
   }
+
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void getTransactionHistory_nullGranularity_expectDayGranularity() throws Exception {
+    LocalDate startDate = LocalDate.parse("2021-02-21");
+    LocalDate   endDate = LocalDate.parse("2021-02-22");
+    String stringResponse = mockMvc.perform(
+        get("/businesses/" + BUSINESS_ID + "/transactions")
+            .param("startDate", startDate.toString())
+            .param("endDate", endDate.toString())
+            .param("transactionGranularity", "")
+    )
+        .andExpect(status().isOk())
+        .andReturn().getResponse().getContentAsString();
+
+    JsonNode response = objectMapper.readTree(stringResponse);
+    JsonNode transactions = response.get("transactions");
+    System.out.println(transactions);
+    Assertions.assertEquals(2, transactions.size());
+  }
 }
