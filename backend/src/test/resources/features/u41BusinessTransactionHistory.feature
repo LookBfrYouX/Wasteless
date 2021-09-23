@@ -21,6 +21,6 @@ Feature: U41 Business Transaction History
     Then There is only one entry per year
 
   Scenario: AC3 and AC4 - Setting Custom Period, Granularity to MONTH, Dates Not Out of Bounds
-    When I send a request to the transaction endpoint with a start date of "2020-01-24", end date of "2021-03-10" and granularity of "MONTH"
+    When I send a request to the transaction endpoint with a start date of "2021-01-24", end date of "2021-03-10" and granularity of "MONTH"
     Then The returned dates are between "2021-02-01" and "2021-02-28" inclusive
 

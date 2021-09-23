@@ -65,7 +65,6 @@ public class U41BusinessTransactionHistory extends CucumberTestProvider {
     for (JsonNode transaction: response.get("transactions")) {
       ZonedDateTime dateTime = ZonedDateTime.parse(transaction.get("date").asText());
       // Converting to date then to and then string to get every date in the UTC timezone
-      System.out.println(startDateStr + ", " + dateTime + ", " + endDateStr);
       LocalDate date = dateTime.toLocalDate();
       Assertions.assertFalse(date.isBefore(startDate)); // doing not is before as the two dates can equal each other
       Assertions.assertFalse(date.isAfter(endDate));
