@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.UserIdDto;
+import com.navbara_pigeons.wasteless.enums.TransactionGranularity;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
 import lombok.With;
 import org.apache.commons.lang3.tuple.Pair;
@@ -141,5 +142,25 @@ public class TransactionControllerTest extends ControllerTestProvider {
       Assertions.assertFalse(date.isBefore(startDate)); // doing not is before as the two dates can equal each other
       Assertions.assertFalse(date.isAfter(endDate));
     }
+  }
+
+  @Test
+  @WithUserDetails(value = "dnb36@uclive.ac.nz")
+  void getTransactionHistory_dayGranularity_expectOk() throws Exception {
+    LocalDate startDate = LocalDate.parse("2021-02-21");
+    LocalDate   endDate = LocalDate.parse("2021-02-22");
+    TransactionGranularity transactionGranularity = TransactionGranularity.DAY;
+    String stringResponse = mockMvc.perform(
+        get("/businesses/" + BUSINESS_ID + "/transactions")
+            .param("startDate", startDate.toString())
+            .param("endDate", endDate.toString())
+            .param("transactionGranularity", transactionGranularity.toString())
+    )
+        .andExpect(status().isOk())
+        .andReturn().getResponse().getContentAsString();
+
+    JsonNode response = objectMapper.readTree(stringResponse);
+    JsonNode transactions = response.get("transactions");
+    Assertions.assertEquals(2, transactions.size());
   }
 }
