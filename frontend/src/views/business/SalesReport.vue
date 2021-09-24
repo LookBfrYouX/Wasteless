@@ -42,9 +42,19 @@ import SalesReportTable from "@/components/SalesReportTable.vue";
 export default {
   components:{SalesReportTable},
   data() {
+    // minDate inclusive
+    const minDate = new Date();
+    minDate.setUTCHours(0);
+    minDate.setUTCMinutes(0);
+    minDate.setUTCSeconds(0);
+    minDate.setUTCMilliseconds(0);
+    minDate.setUTCDate(minDate.getUTCDate() - minDate.getUTCDay());
+    // maxDate exclusive
+    const maxDate = new Date(minDate.getTime());
+    maxDate.setUTCDate(maxDate.getUTCDate() + 7);
     return {
-      minDate:"2020-01-02 15:34:20",
-      maxDate:"2021-01-22 15:34:20",
+      minDate,
+      maxDate,
       businessName:"",
       granularity:"Day",
       totalValue:0,
@@ -52,18 +62,35 @@ export default {
       transactionData:{},
       items: ["Day","Week", "Month","Year"],
       mockTransactionResponse:{
-        totalAmount: 400,
-        totalTransactionCount: 10,
-        transactions: [
-          {"date":"2020-01-02 15:34:20",
-           "transactionCount": 5,
-           "amount": 200},
-          {"date":"2021-01-22 15:34:20",
-           "transactionCount": 5,
-           "amount": 200},
-        ]
+      "transactions": [
+          {
+              "date": "2020-01-02T15:34:20+13:00",
+              "transactionCount": 1,
+              "amount": 5.25
+          },
+          {
+              "date": "2021-01-22T15:34:20+13:00",
+              "transactionCount": 1,
+              "amount": 6.6
+          },
+          {
+              "date": "2021-02-21T15:34:20+13:00",
+              "transactionCount": 5,
+              "amount": 63.5
+          },
+          {
+              "date": "2021-03-20T15:34:20+13:00",
+              "transactionCount": 3,
+              "amount": 26.25
+          }
+      ],
+      "totalAmount": 101.6,
+      "totalTransactionCount": 10
       }
     }
+  },
+  mounted() {
+    this.transformersRobotsInDisguise()
   },
   methods: {
     /**
@@ -98,19 +125,60 @@ export default {
     /**
      * Parses the date depending on granularity
      */
-    parseTransactionDates: function () {
-      for (transaction in transactionData) {
-        if (granularity == "day") {
+    // parseTransactionDates: function () {
+    //   for (let transaction in this.transactionData) {
+    //     if (this.granularity == "Day") {
+    //       transaction.date=transaction.date// don't need to change the Date
+    //       // have 7 entries per page?
+    //     } else if (this.granularity == "Week") {
+    //       // have date ranges in the date field?
+    //       // have 4 entries per page?
+    //     } else if (this.granularity == "Month") {
+    //     //have 12 entries per page
+    //     // get rid of days in date field
+    //     } else if (this.granularity == "Year") {
+    //     // get rid of days and months in field
+    //     // have default number of entries per page
+    //     }
+    //   }
+    // }
+    transformersRobotsInDisguise: function () {
+      let i = 0;
+      let date = new Date(this.minDate.getTime());
+      while(date.getTime() <= this.maxDate.getTime()) {
+        console.log(date.toUTCString())
+        console.log(this.maxDate)
+        switch(this.granularity) {
+          case "Day":
+            date.setUTCDate(date.getUTCDate() + 1);
+            break;
 
-        } else if (granularity == "month") {
+          case "Week":
+            date.setUTCDate(date.getUTCDate() + 7);
+            break;
 
-        } else if (granularity == "year") {
+          case "Month":
+            date.setUTCMonth(date.getUTCMonth() + 1)
+            break;
 
+          case "Year":
+            date.setUTCFullYear(date.getUTCFullYear() + 1)
+            break;
+        }
+        if (i < this.mockTransactionResponse.transactions.length - 1) {
+          let transaction = this.mockTransactionResponse.transactions[i];
+          transaction.date = new Date(transaction.date);
+          if (transaction.date.getTime() < date.getTime()) {
+            console.log(transaction.date.toUTCString(), `${date.getUTCFullYear()}-${date.getUTCMonth()}`);
+            i++;
+          continue
+        }
+      } else {
+        console.log("empty")
         }
       }
     }
-  },
-
+  }
 }
 </script>
 
