@@ -26,8 +26,8 @@ export default {
     headers() {
       return [
         {
-          text: this.granularity,
-          value: "date"
+          text: this.granularity == "Week"? "Week (starting Sunday)": this.granularity,
+          value: "dateRangeText"
         },
         {
           text: "Transactions",
@@ -35,7 +35,7 @@ export default {
         },
         {
           text: "Sales",
-          value: "amount"
+          value: "amountText"
         }]
     }
   }
