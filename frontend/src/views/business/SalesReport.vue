@@ -60,17 +60,16 @@ export default {
 
   data() {
     // minDate inclusive
-    const minDate = new Date(2020, 0, 1);
+    const minDate = new Date(2020, 10, 1);
     this.normalizeDateToStartOfWeek(minDate);
     // maxDate exclusive
-    const maxDate = new Date(2022, 0, 1)
+    const maxDate = new Date(2021, 6, 1)
     this.normalizeDateToStartOfWeek(maxDate);
 
     return {
       minDate,
       maxDate,
-      businessName: "",
-      granularity: "Week",
+      granularity: "Month",
       totalValue: 0,
       numberOfTransactions: 0,
       transactionData: {},
@@ -163,20 +162,26 @@ export default {
     },
 
     /**
-     * Parses the date depending on granularity
+     * Converts the date to a user-friendly string, dependent on the granularity
      */
     generateUserFacingDateText(date) {
       const weekText = date => `${date.getUTCDate().toString().padStart(2, "0")}-${(date.getUTCMonth() + 1).toString().padStart(2, "0")}-${date.getUTCFullYear().toString()}`;
-      // can't define variables inside switch variables
 
+      // can't define variables inside switch variables
       if (this.granularity == "Day") {
         return date.toDateString();
       }
       if (this.granularity == "Week") {
-        const startDate = new Date(date.getTime());
+        let startDate = new Date(date.getTime());
         this.normalizeDateToStartOfWeek(startDate);
-        const endDate = new Date(startDate.getTime());
+        if (startDate.getTime() < this.startDate.getTime()) {
+          startDate = this.startDate;
+        }
+        let endDate = new Date(startDate.getTime());
         endDate.setUTCDate(endDate.getUTCDate() + 6);
+        if (this.endDate.getTime() < endDate.getTime()) {
+          endDate = this.endDate;
+        }
         return `${weekText(startDate)} to ${weekText(endDate)}`;
       }
       if (this.granularity == "Month") {
@@ -217,8 +222,8 @@ export default {
       let i = 0;
       let dataArray = [];
       let date = new Date(this.minDate.getTime()); // date is the start of the next period
+      
       while (date.getTime() <= this.maxDate.getTime()) {
-        // console.log(date.toUTCString(), this.maxDate.toUTCString());
         const startOfPeriod = new Date(date.getTime());
         switch (this.granularity) {
           case "Day":
@@ -237,38 +242,33 @@ export default {
             date.setUTCFullYear(date.getUTCFullYear() + 1);
             break;
         }
-        if (i < this.transactionData.length - 1) {
-          let transaction = this.transactionData[i];
-          transaction.date = new Date(transaction.date);
+        
+        if (i < this.transactionData.length) {
+          // There may periods after the last transaction, meaning i == transactions.length. In ths
+          // case the remaining periods must be empty
+          const transaction = this.transactionData[i];
+          const transactionDate = new date(transaction.date);
 
-          if (transaction.date.getTime() < date.getTime()) {
-            console.log(
-              transaction.date.toUTCString(),
-              startOfPeriod.toUTCString()
-            );
+          if (transactionDate.getTime() < date.getTime()) {
+            i++;
             dataArray.push({
               ...transaction,
+              date: transactionDate,
               dateRangeText: this.generateUserFacingDateText(transaction.date),
               amountText: this.$helper.makeCurrencyString(transaction.amount, this.currency),
-
             });
-            i++;
             continue;
           }
-        } else {
-          // console.log(
-          //   "empty", startOfPeriod.toUTCString()
-          // );
-          dataArray.push({
-            date: startOfPeriod,
-            dateRangeText: this.generateUserFacingDateText(startOfPeriod),
-            amountText: this.$helper.makeCurrencyString(0, this.currency),
-            amount: 0,
-            transactionCount: 0
-          });
-        }
-      }
+        } 
 
+        dataArray.push({
+          date: startOfPeriod,
+          amount: 0,
+          transactionCount: 0,
+          dateRangeText: this.generateUserFacingDateText(startOfPeriod),
+          amountText: this.$helper.makeCurrencyString(0, this.currency)
+        });
+      }
       return dataArray;
     },
   },
