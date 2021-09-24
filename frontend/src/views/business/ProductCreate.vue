@@ -30,8 +30,15 @@
               </v-tooltip>
             </h4>
             <barcode-input
-              @info="autofill"
+                @info="autofill"
             />
+          </v-card>
+
+          <v-card class="pa-5">
+            <StreamBarcodeReader
+                @decode="onDecode"
+                @loaded="onLoaded"
+            ></StreamBarcodeReader>
           </v-card>
 
           <v-card
@@ -76,11 +83,11 @@
 
             <v-textarea
                 v-model="queryParams.description"
+                counter="500"
                 label="Description"
                 maxlength="500"
-                counter="500"
-                type="text"
                 solo
+                type="text"
             />
           </v-card>
 
@@ -106,11 +113,11 @@
           <div class="row">
             <div class="col">
               <v-btn
-                @click="createProduct"
-                color="rgb(30, 201, 150)"
-                class="white--text bootstrapish-button"
-                :loading="apiCallInProgress"
-                width="100%"
+                  :loading="apiCallInProgress"
+                  class="white--text bootstrapish-button"
+                  color="rgb(30, 201, 150)"
+                  width="100%"
+                  @click="createProduct"
               >
                 Add Product
               </v-btn>
@@ -149,6 +156,7 @@ import NutrientLevelsEdit from "@/components/NutrientLevelsEdit"
 import DietaryCertificationsInput from "@/components/DietaryCertificationsInput";
 import NovaGroupInput from "@/components/NovaGroupInput";
 import NutriScoreInput from "@/components/NutriScoreInput";
+import {StreamBarcodeReader} from "vue-barcode-reader";
 
 export default {
   components: {
@@ -157,7 +165,8 @@ export default {
     DietaryCertificationsInput,
     NovaGroupInput,
     NutriScoreInput,
-    ErrorModal
+    ErrorModal,
+    StreamBarcodeReader
   },
 
   data() {
@@ -165,6 +174,7 @@ export default {
       apiErrorMessage: null, // if admin and getting currency info fails
       errorMessage: null,
       apiCallInProgress: false,
+      barcodeCounts: new Map(),
 
       currency: null,
       queryParams: {
@@ -243,8 +253,8 @@ export default {
     /**
      * Method that is run when barcode component emits event with nutrition info,
      * autofilling values that are 'untouched' or in their default position
-     */  
-    autofill: function(info) {
+     */
+    autofill: function (info) {
       Object.keys(info).forEach(prop => {
         // name, manufacturer, salt/fat etc. levels
         if (typeof this.queryParams[prop] == "string") {
@@ -303,6 +313,22 @@ export default {
         });
       }
     },
+    onDecode(barcode) {
+      console.log("Barcode: " + barcode);
+      if (this.barcodeCounts.has(barcode)) {
+        const currentCount = this.barcodeCounts.get(barcode);
+        this.barcodeCounts.set(barcode, currentCount + 1);
+      } else {
+        this.barcodeCounts.set(barcode, 0);
+      }
+
+      if (this.barcodeCounts.get(barcode) >= 5) {
+        console.log('Done!');
+      }
+    },
+    onLoaded() {
+      console.log("Barcode Scanner Loaded!");
+    }
   },
 };
 </script>
