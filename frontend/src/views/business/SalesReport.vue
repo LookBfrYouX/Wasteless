@@ -1,13 +1,13 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12" lg="8" class="date-range my-0 py-0">
-        <v-subheader>Closing date range</v-subheader>
+    <v-row align="center">
+      <v-col cols="12" lg="8" class="my-0 py-0 align-center">
+        <v-subheader>Date range</v-subheader>
         <v-dialog
             ref="menu"
             v-model="menu"
             :return-value.sync="filterDates"
-            width="290px"
+            max-width="700px"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
@@ -20,29 +20,87 @@
                 clearable
                 solo
                 dense
-            ></v-text-field>
+            />
           </template>
-          <v-date-picker
-              v-model="filterDates"
-              range
-              @change="$refs.menu.save(filterDates)"
-              :title-date-format="getDateText"
-          >
-            <v-btn
-                text
-                color="primary"
-                @click="menu = false"
-            >
-              Cancel
-            </v-btn>
-            <v-btn
-                text
-                color="primary"
-                @click="$refs.menu.save(filterDates)"
-            >
-              OK
-            </v-btn>
-          </v-date-picker>
+          <v-card>
+            <v-card-text class="px-0 py-0">
+              <v-container fluid>
+                <v-row>
+                  <v-col>
+                    <v-subheader>Date range</v-subheader>
+                    <v-select
+                        :items=dateOptions
+                        label="Select"
+                        solo
+                        dense
+                        clearable
+                        item-text="short"
+                        item-value="long"
+                        @change="dateRangeSelected"
+                    />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" class="col-md-6" align="center">
+                    <v-subheader>Custom date range</v-subheader>
+                    <v-date-picker
+                        v-model="filterDates"
+                        range
+                        :title-date-format="getDateText"
+                    />
+                  </v-col>
+                  <v-col cols="12" class="col-md-6" align="center">
+                    <v-row>
+                      <v-col>
+                        <v-subheader>Starting</v-subheader>
+                        <v-text-field
+                            readonly
+                            :value="filterDates[0]"
+                        />
+                        <v-subheader>Ending</v-subheader>
+                        <v-text-field
+                            readonly
+                            :value="filterDates[1]"
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+                <v-row align="center">
+                  <v-col>
+                    <v-btn
+                        text
+                        color="primary"
+                        @click="menu = false"
+                        outlined
+                    >
+                      CANCEL
+                    </v-btn>
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.menu.save(filterDates)"
+                        outlined
+                    >
+                      APPLY
+                    </v-btn>
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.menu.save([])"
+                        outlined
+                    >
+                      CLEAR
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+          </v-card>
         </v-dialog>
       </v-col>
     </v-row>
@@ -55,11 +113,13 @@ export default {
     return {
       menu: false,
       filterDates: [],
+      dateOptions: ["Today", "Last week", "Last month", "Last year"]
     }
   },
   watch: {
     filterDates() {
       this.$emit('newDates', this.filterDates);
+      console.log(this.filterDates);
     }
   },
   methods: {
@@ -68,6 +128,25 @@ export default {
      */
     getDateText() {
       return this.dateText;
+    },
+    dateRangeSelected(event) {
+      console.log(event)
+
+      let today = new Date();
+      let todayFormatted = today.toISOString().split('T')[0];
+
+      switch (event) {
+        case null:
+          this.$refs.menu.save([]);
+          break;
+        case "Today":
+          this.filterDates = [todayFormatted, todayFormatted];
+          break;
+        case "Last week":
+          this.filterDates = [todayFormatted, todayFormatted];
+          break;
+      }
+      console.log(this.filterDates)
     }
   },
   computed: {
@@ -87,9 +166,7 @@ export default {
           options.year = 'numeric';
         }
 
-        if (this.filterDates.length === 1) {
-          return "Before: " + new Date(this.filterDates[0]).toLocaleDateString('en-NZ', options);
-        } else if (this.filterDates.length === 2) {
+        if (this.filterDates.length === 2) {
           return new Date(this.filterDates[0]).toLocaleDateString('en-NZ', options) + " to " +
               new Date(this.filterDates[1]).toLocaleDateString('en-NZ', options);
         }
