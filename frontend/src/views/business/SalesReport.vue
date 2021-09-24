@@ -240,15 +240,25 @@ export default {
      * minDate   min+1 period       max-1 period  maxDate
      *       |-------|---*----|---....----|--*----|
      *               @   ^ 1st entry from the backend
-     *               ^ initial location for date
+     *               ^ initial location for pointer
      * Algorithm begins with i = 0 and pointer at the end of the first period (i.e. start of second period)
      * It checks if the ith entry is before the pointer; in this case it is not, so it knows there are no
      * transactions in the 1st period, and adds an entry into an array with zero transactions and revenue.
+     
+     *                  i=0
+     *       |-------|---*----|---....----|--*----|
+                              @
+                       * < @ so element found. i++ 
      * 
      * It then increments the pointer by one period, moving it to the end of the second period. This time,
      * the ith entry (first entry) is before the pointer, so it knows there is at least one transaction in
      * the second time period, and adds an entry into an array. This time, it increments i.
      * 
+     *                            i=1
+     *       |-------|---*----|---....----|--*----|
+                              @
+     * This continues until the pointer gets to the last period
+     *
      * @return [{
      *   date, Date: date in the time period
      *   dateRangeText, String: text to show to the user indicating the time period
