@@ -32,7 +32,7 @@
       </v-col>
       <v-col>
         <h4>Period</h4>
-        {{ this.$helper.isoToDateString(minDate) }} To
+        {{ this.$helper.isoToDateString(minDate) }} to
         {{ this.$helper.isoToDateString(maxDate) }}
       </v-col>
       <v-col>
