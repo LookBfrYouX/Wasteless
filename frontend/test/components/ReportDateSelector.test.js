@@ -55,3 +55,35 @@ describe("dateRangeSelected", () => {
     expect(wrapper.vm.filterDates[0]).toEqual(expected);
   });
 });
+
+describe("dateSorted", () => {
+  test("correctOrder", async () => {
+    // Arrange
+    const firstDate = new Date(
+        new Date().setDate(new Date().getDate() - 7)).toISOString().split(
+        'T')[0];
+    const secondDate = new Date().toISOString().split('T')[0];
+
+    // Act
+    await wrapper.setData({filterDates: [firstDate, secondDate]});
+
+    // Assert
+    expect(wrapper.vm.filterDates[0]).toEqual(firstDate);
+    expect(wrapper.vm.filterDates[1]).toEqual(secondDate);
+  });
+
+  test("wrongOrder", async () => {
+    // Arrange
+    const firstDate = new Date(
+        new Date().setDate(new Date().getDate() - 7)).toISOString().split(
+        'T')[0];
+    const secondDate = new Date().toISOString().split('T')[0];
+
+    // Act
+    await wrapper.setData({filterDates: [secondDate, firstDate]});
+
+    // Assert
+    expect(wrapper.vm.filterDates[0]).toEqual(firstDate);
+    expect(wrapper.vm.filterDates[1]).toEqual(secondDate);
+  });
+});
