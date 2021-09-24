@@ -119,6 +119,8 @@ export default {
       this.$emit('newDates', this.filterDates);
       if (this.filterDates.length === 0) {
         this.selectedDropdown = null;
+      } else if (this.filterDates.length === 2 && this.filterDates[0] > this.filterDates[1]) {
+        this.filterDates = this.filterDates.sort()
       }
     }
   },
