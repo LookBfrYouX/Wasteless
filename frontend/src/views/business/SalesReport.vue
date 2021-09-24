@@ -194,23 +194,39 @@ export default {
       throw new Error("Yo what you doing here");
     },
 
+    /**
+     * Normalizes a date to the start of the day, UTC time
+     * @param{Date} date to modify
+     */
     normalizeDateToStartOfDay(date) {
       date.setUTCHours(0);
       date.setUTCMinutes(0);
       date.setUTCSeconds(0);
       date.setUTCMilliseconds(0);
     },
-
+    
+    /**
+     * Normalizes a date to the start of the week (Sunday) and start of the day, UTC time
+     * @param{Date} date to modify
+     */
     normalizeDateToStartOfWeek(date) {
       date.setUTCDate(date.getUTCDate() - date.getUTCDay());
       this.normalizeDateToStartOfDay(date);
     },
-
+    
+    /**
+     * Normalizes a date to the start of the month and start of the day, UTC time
+     * @param{Date} date to modify
+     */
     normalizeDateToStartOfMonth(date) {
       date.setUTCDate(1);
       this.normalizeDateToStartOfDay(date);
     },
 
+    /**
+     * Normalizes a date to the start of the year and start of the day, UTC time
+     * @param{Date} date to modify
+     */
     normalizeDateToStartOfYear(date) {
       date.setUTCMonth(0);
       this.normalizeDateToStartOfMonth(date);
@@ -218,6 +234,29 @@ export default {
   },
 
   computed: {
+    /**
+     * Backend returns only periods where there is at least one transaction, with
+     * the date being the date of the first transaction in the period
+     * minDate   min+1 period       max-1 period  maxDate
+     *       |-------|---*----|---....----|--*----|
+     *               @   ^ 1st entry from the backend
+     *               ^ initial location for date
+     * Algorithm begins with i = 0 and pointer at the end of the first period (i.e. start of second period)
+     * It checks if the ith entry is before the pointer; in this case it is not, so it knows there are no
+     * transactions in the 1st period, and adds an entry into an array with zero transactions and revenue.
+     * 
+     * It then increments the pointer by one period, moving it to the end of the second period. This time,
+     * the ith entry (first entry) is before the pointer, so it knows there is at least one transaction in
+     * the second time period, and adds an entry into an array. This time, it increments i.
+     * 
+     * @return [{
+     *   date, Date: date in the time period
+     *   dateRangeText, String: text to show to the user indicating the time period
+     *   amount, Number: total revenue in that period
+     *   transactionCount, Integer: number of transactions in that period
+     *   amountText, String: amount, but as a string with currency information
+     * }]
+     */
     transformedTransactionData() {
       let i = 0;
       let dataArray = [];
@@ -274,6 +313,9 @@ export default {
   },
 
   watch: {
+    /**
+     * Updates the page title to include the business name
+     */
     business() {
       if (this.business.name) {
         document.title = `${this.business.name} | Business Sales Report | Wasteless`;
