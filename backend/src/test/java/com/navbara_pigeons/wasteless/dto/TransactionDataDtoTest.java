@@ -30,7 +30,7 @@ class TransactionDataDtoTest extends MainTestProvider {
     TransactionReportModel transactionReport = makeTransactionReport(date, count, amount);
     List<TransactionReportModel> transactionReportList = new ArrayList<>();
     transactionReportList.add(transactionReport);
-    Assertions.assertEquals(numViolations, validate(new TransactionDataDto(transactionReportList, count, amount)).size());
+    Assertions.assertEquals(numViolations, validate(new TransactionDataDto(transactionReportList, amount, count)).size());
   }
 
   @Test
