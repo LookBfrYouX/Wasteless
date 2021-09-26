@@ -51,8 +51,8 @@ describe("getTransactions", () => {
   test("API call args", async () => {
     await mountSalesReport();
     wrapper.setData({
-      minDate: new Date("2020-01-01T23:59:00.000Z"),
-      maxDate: new Date("2025-08-01T23:59:00.000Z"),
+      startDate: new Date("2020-01-01T23:59:00.000Z"),
+      endDate: new Date("2025-08-01T23:59:00.000Z"),
       granularity: "Year"
     });
 
@@ -163,12 +163,12 @@ describe("normalizeDateToStartOfDay", () => {
     expect(normalizeDateToStartOfDay(new Date("2020-01-01T12:00:00.000Z")).toISOString())
     .toEqual("2020-01-01T00:00:00.000Z")
   });
-  
+
   test("Midnight UTC", () => {
     expect(normalizeDateToStartOfDay(new Date("2020-01-01T00:00:00.000Z")).toISOString())
     .toEqual("2020-01-01T00:00:00.000Z")
   });
-  
+
   test("7AM +5", () => {
     expect(normalizeDateToStartOfDay(new Date("2020-01-01T07:00:00.000+05:00")).toISOString())
     .toEqual("2020-01-01T00:00:00.000Z")
@@ -199,16 +199,16 @@ describe("normalizeDateToStartOfYear", () => {
 describe("transformedTransactionData", () => {
   /**
    *
-   * @param {*} thisData object with minDate, maxDate, granularity
-   * @param {*} transactionDataWithZeroes transactionData with entries for periods
+   * @param {*} thisData object with startDate, endDate, granularity
+   * @param {*} transactionsWithZeroes transactions with entries for periods
    *            with zero transactions. These are removed before being passed to
    *            the method but not when used to compare the method's output
    */
-  const runMethodAndCompare = (thisData, transactionDataWithZeroes) => {
+  const runMethodAndCompare = (thisData, transactionsWithZeroes) => {
     const result = SalesReport.computed.transformedTransactionData.call({
       ...thisData,
       ...SalesReport.methods,
-      transactionData: transactionDataWithZeroes.filter(el => el.transactionCount > 0),
+      transactions: transactionsWithZeroes.filter(el => el.transactionCount > 0),
       generateUserFacingDateText: () => "MOCKED",
       $helper: {
         makeCurrencyString: () => "MOCKED"
@@ -220,10 +220,10 @@ describe("transformedTransactionData", () => {
       date: el.date.toISOString(),
       amount: el.amount,
       transactionCount: el.transactionCount
-    }))).toEqual(transactionDataWithZeroes);
+    }))).toEqual(transactionsWithZeroes);
   }
   test("day granularity, gap in middle", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
         transactionCount: 1,
@@ -243,14 +243,14 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
-      maxDate: new Date("2020-01-04T00:00:00.000Z"),
+      startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
+      endDate: new Date("2020-01-04T00:00:00.000Z"),
       granularity: "Day"
-    }, transactionData);
+    }, transactions);
   });
 
   test("day granularity, no data at start", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-01T00:00:00.000Z",
         transactionCount: 0,
@@ -270,15 +270,15 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: new Date(transactionData[0].date),
-      maxDate: new Date("2020-01-04T07:00:00.000Z"),
+      startDate: new Date(transactions[0].date),
+      endDate: new Date("2020-01-04T07:00:00.000Z"),
       granularity: "Day"
-    }, transactionData);
+    }, transactions);
   });
 
 
   test("day granularity, no data at end", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
         transactionCount: 1,
@@ -298,14 +298,14 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
-      maxDate: new Date("2020-01-04T07:00:00.000Z"),
+      startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
+      endDate: new Date("2020-01-04T07:00:00.000Z"),
       granularity: "Day"
-    }, transactionData);
+    }, transactions);
   });
 
   test("week granularity, gap in middle", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
         transactionCount: 1,
@@ -325,14 +325,14 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
-      maxDate: new Date("2020-01-19T00:00:00.000Z"),
+      startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
+      endDate: new Date("2020-01-19T00:00:00.000Z"),
       granularity: "Week"
-    }, transactionData);
+    }, transactions);
   });
 
   test("Month granularity, gap in middle", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-07T11:30:20.000Z",
         transactionCount: 1,
@@ -352,14 +352,14 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
-      maxDate: new Date("2020-04-01T00:00:00.000Z"),
+      startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
+      endDate: new Date("2020-04-01T00:00:00.000Z"),
       granularity: "Month"
-    }, transactionData);
+    }, transactions);
   });
 
   test("Year granularity, gap in middle", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
         transactionCount: 1,
@@ -379,10 +379,61 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
-      maxDate: new Date("2023-06-01T00:00:00.000Z"),
+      startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
+      endDate: new Date("2023-06-01T00:00:00.000Z"),
       granularity: "Year"
-    }, transactionData);
+    }, transactions);
+  });
+
+});
+
+describe("generateUserFacingDateText", () => {
+  test("Day granularity", async () => {
+    await mountSalesReport();
+    const date = new Date("2020-01-01T11:30:20.000Z")
+    wrapper.setData({granularity:"Day"})
+    expect(wrapper.vm.generateUserFacingDateText(date))
+    .toEqual("Thu Jan 02 2020")
+  });
+
+  test("Week granularity with end of granularity less than time period", async () => {
+    await mountSalesReport();
+    const date = new Date("2020-01-07T11:30:20.000Z")
+    wrapper.setData({
+      granularity:"Week",
+      startDate: new Date("2020-01-05T11:30:20.000Z"),
+      endDate: new Date("2020-01-011T11:30:20.000Z")})
+      console.log(wrapper.vm.generateUserFacingDateText(date))
+    expect(wrapper.vm.generateUserFacingDateText(date))
+    .toEqual("05-01-2020 to 11-01-2020")
+  });
+
+  test("Week granularity with end of granularity more than time period", async () => {
+    await mountSalesReport();
+    const date = new Date("2020-01-07T11:30:20.000Z")
+    wrapper.setData({
+      granularity:"Week",
+      startDate: new Date("2020-01-05T11:30:20.000Z"),
+      endDate: new Date("2020-01-10T11:30:20.000Z")})
+      console.log(wrapper.vm.generateUserFacingDateText(date))
+    expect(wrapper.vm.generateUserFacingDateText(date))
+    .toEqual("05-01-2020 to 10-01-2020")
+  });
+
+  test("Month granularity", async () => {
+    await mountSalesReport();
+    const date = new Date("2020-01-01T11:30:20.000Z")
+    wrapper.setData({granularity:"Month"})
+    expect(wrapper.vm.generateUserFacingDateText(date))
+        .toEqual("January 2020")
+  });
+
+  test("Year granularity", async () => {
+    await mountSalesReport();
+    const date = new Date("2020-01-01T11:30:20.000Z")
+    wrapper.setData({granularity:"Year"})
+    expect(wrapper.vm.generateUserFacingDateText(date))
+        .toEqual("2020")
   });
 
 });

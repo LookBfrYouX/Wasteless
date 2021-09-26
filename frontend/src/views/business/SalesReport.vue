@@ -32,8 +32,8 @@
       </v-col>
       <v-col>
         <h4>Period</h4>
-        {{ this.$helper.isoToDateString(minDate) }} to
-        {{ this.$helper.isoToDateString(maxDate) }}
+        {{ this.$helper.isoToDateString(startDate) }} to
+        {{ this.$helper.isoToDateString(endDate) }}
       </v-col>
       <v-col>
         <h4>Business</h4>
@@ -62,48 +62,22 @@ export default {
   },
 
   data() {
-    const minDate = new Date(2020, 10, 1);
-    this.normalizeDateToStartOfWeek(minDate);
-    
-    const maxDate = new Date(2021, 6, 1)
-    this.normalizeDateToStartOfWeek(maxDate);
+    const startDate = new Date();
+    startDate.setUTCDate(startDate.getUTCDate() - 6);
+    // initially show a week of data;
+
+    const endDate = new Date();
 
     return {
-      minDate, // inclusive (00:00) of the day
-      maxDate, // inclusive (23:59) of the day
-      granularity: "Month",
+      startDate, // inclusive (00:00) of the day
+      endDate, // inclusive (23:59) of the day
+      granularity: "Day",
       totalAmount: 0,
       totalTransactionCount: 0,
       transactions: null,
       items: ["Day", "Week", "Month", "Year"],
       business: {},
       currency: null
-      // mockTransactionResponse:{
-      // "transactions": [
-      //     {
-      //         "date": "2020-01-02T15:34:20+13:00",
-      //         "transactionCount": 1,
-      //         "amount": 5.25
-      //     },
-      //     {
-      //         "date": "2021-01-22T15:34:20+13:00",
-      //         "transactionCount": 1,
-      //         "amount": 6.6
-      //     },
-      //     {
-      //         "date": "2021-02-21T15:34:20+13:00",
-      //         "transactionCount": 5,
-      //         "amount": 63.5
-      //     },
-      //     {
-      //         "date": "2021-03-20T15:34:20+13:00",
-      //         "transactionCount": 3,
-      //         "amount": 26.25
-      //     }
-      // ],
-      // "totalAmount": 101.6,
-      // "totalTransactionCount": 10
-      // }
     };
   },
   
@@ -146,8 +120,8 @@ export default {
         const response = (
           await Api.getTransactions(this.businessId, {
             transactionGranularity: this.granularity.toUpperCase(),
-            startDate: this.minDate.toISOString().slice(0, 10),
-            endDate: this.maxDate.toISOString().slice(0, 10),
+            startDate: this.startDate.toISOString().slice(0, 10),
+            endDate: this.endDate.toISOString().slice(0, 10),
           })
         ).data;
         this.totalAmount = response.totalAmount;
@@ -161,22 +135,15 @@ export default {
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
     },
-    /**
-     * sets some mock data for testing sets totalvalue, totalTransactionCount and transactionData variables
-     */
-    setResultsWithMocks: function () {
-      /* makes a query to the api to retrieve the transactions with the props*/
-      this.totalAmount = this.mockTransactionResponse.totalAmount;
-      this.totalTransactionCount =
-        this.mockTransactionResponse.totalTransactionCount;
-      this.transactionData = this.mockTransactionResponse.transactions;
-    },
 
     /**
      * Converts the date to a user-friendly string, dependent on the granularity
      */
     generateUserFacingDateText(date) {
-      const weekText = date => `${date.getUTCDate().toString().padStart(2, "0")}-${(date.getUTCMonth() + 1).toString().padStart(2, "0")}-${date.getUTCFullYear().toString()}`;
+      const weekText = date => `${
+        date.getUTCDate().toString().padStart(2, "0")}-${
+       (date.getUTCMonth() + 1).toString().padStart(2, "0")}-${
+        date.getUTCFullYear().toString()}`;
 
       // can't define variables inside switch variables
       if (this.granularity == "Day") {
@@ -185,9 +152,6 @@ export default {
       if (this.granularity == "Week") {
         let startDate = new Date(date.getTime());
         this.normalizeDateToStartOfWeek(startDate);
-        if (startDate.getTime() < this.startDate.getTime()) {
-          startDate = this.startDate;
-        }
         let endDate = new Date(startDate.getTime());
         endDate.setUTCDate(endDate.getUTCDate() + 6);
         if (this.endDate.getTime() < endDate.getTime()) {
@@ -217,7 +181,7 @@ export default {
       date.setUTCMilliseconds(0);
       return date;
     },
-    
+
     /**
      * Normalizes a date to the start of the week (Sunday) and start of the day, UTC time
      * @param{Date} date to modify
@@ -228,7 +192,7 @@ export default {
       this.normalizeDateToStartOfDay(date);
       return date;
     },
-    
+
     /**
      * Normalizes a date to the start of the month and start of the day, UTC time
      * @param{Date} date to modify
@@ -256,23 +220,23 @@ export default {
     /**
      * Backend returns only periods where there is at least one transaction, with
      * the date being the date of the first transaction in the period
-     * minDate   min+1 period       max-1 period  maxDate
+     * startDate   min+1 period       max-1 period  endDate
      *       |-------|---*----|---....----|--*----|
      *               @   ^ 1st entry from the backend
      *               ^ initial location for pointer
      * Algorithm begins with i = 0 and pointer at the end of the first period (i.e. start of second period)
      * It checks if the ith entry is before the pointer; in this case it is not, so it knows there are no
      * transactions in the 1st period, and adds an entry into an array with zero transactions and revenue.
-     
+
      *                  i=0
      *       |-------|---*----|---....----|--*----|
                               @
-                       * < @ so element found. i++ 
-     * 
+                       * < @ so element found. i++
+     *
      * It then increments the pointer by one period, moving it to the end of the second period. This time,
      * the ith entry (first entry) is before the pointer, so it knows there is at least one transaction in
      * the second time period, and adds an entry into an array. This time, it increments i.
-     * 
+     *
      *                            i=1
      *       |-------|---*----|---....----|--*----|
                               @
@@ -292,9 +256,9 @@ export default {
 
       let i = 0;
       let dataArray = [];
-      let date = new Date(this.minDate.getTime()); // date is the start of the next period
-      
-      while (date.getTime() <= this.maxDate.getTime()) {
+      let date = new Date(this.startDate.getTime()); // date is the start of the next period
+
+      while (date.getTime() <= this.endDate.getTime()) {
         const startOfPeriod = new Date(date.getTime());
         switch (this.granularity) {
           case "Day":
@@ -334,7 +298,7 @@ export default {
             });
             continue;
           }
-        } 
+        }
 
         dataArray.push({
           date: startOfPeriod,
