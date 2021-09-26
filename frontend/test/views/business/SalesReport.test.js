@@ -2,7 +2,6 @@ import {shallowMount} from "@vue/test-utils";
 import {globalStateMocks} from "#/testHelper";
 import SalesReport from "@/views/business/SalesReport";
 import Vuetify from 'vuetify';
-import {ApiRequestError} from "@/ApiRequestError";
 
 const vuetify = new Vuetify();
 
@@ -32,6 +31,127 @@ afterEach = () => {
   }
 }
 
+
+describe("getTransactions", () => {
+  const generateResponse = () => {
+    return {
+      data: {
+        totalAmount: 3141.59,
+        totalTransactionCount: 13,
+        transactions: [
+          {
+            date: "2020-05-03T09:32:13.324+13:00",
+            amount: 27.18,
+            transactionCount: 2
+          }
+        ]
+      }
+    }
+  }
+  test("API call args", async () => {
+    await mountSalesReport();
+    wrapper.setData({
+      startDate: new Date("2020-01-01T23:59:00.000Z"),
+      endDate: new Date("2025-08-01T23:59:00.000Z"),
+      granularity: "Year"
+    });
+
+    Api.getTransactions = jest.fn(() => Promise.resolve(generateResponse()));
+    // called automatically on mount before we can set data to a testable value,
+    // so need to call getTransaction manually
+
+    await wrapper.vm.getTransactions();
+    expect(Api.getTransactions.mock.calls[0]).toEqual([
+      1, // business ID
+      {
+        startDate: "2020-01-01",
+        endDate: "2025-08-01",
+        transactionGranularity: "YEAR"
+      }
+    ]);
+  });
+
+  test("API props set", async () => {
+    Api.getTransactions = jest.fn(() => Promise.resolve(generateResponse()));
+    await mountSalesReport();
+
+    await wrapper.vm.getTransactions();
+
+    expect(wrapper.vm.totalAmount).toEqual(generateResponse().data.totalAmount);
+    expect(wrapper.vm.totalTransactionCount).toEqual(generateResponse().data.totalTransactionCount);
+    expect(wrapper.vm.transactions).toEqual(generateResponse().data.transactions);
+  });
+
+  test("Handles error", async () => {
+    Api.getTransactions = jest.fn(() => Promise.reject({
+      userFacingErrorMessage: "MSG"
+    }));
+
+    await mountSalesReport();
+
+    await wrapper.vm.getTransactions();
+    expect(wrapper.vm.apiErrorMessage).toBe("MSG");
+  });
+});
+
+describe("getBusinessInformation", () => {
+  test("successful API response", async () => {
+    const business = {
+      name: "BUS NAME",
+      address: {
+        country: "Fake Zealand"
+      }
+    };
+
+    Api.businessProfile = jest.fn(() => Promise.resolve({
+      data: business
+    }));
+
+    mountSalesReport(); // can't await lifecycle so need to call businessInformation again
+    
+    await wrapper.vm.getBusinessInformation();
+    expect(wrapper.vm.business).toEqual(business);
+  });
+
+  
+  test("successful API response", async () => {
+    const business = {
+      name: "BUS NAME",
+      address: {
+        country: "Fake Zealand"
+      }
+    };
+
+    const currency = {
+      code: "FNZ",
+      name: "Fake Dollar",
+      symbol: "¯\\_(ツ)_/¯"
+    };
+
+    Api.businessProfile = jest.fn(() => Promise.resolve({
+      data: business
+    }));
+
+    mountSalesReport(); // can't await lifecycle so need to call businessInformation again
+    wrapper.vm.$helper.getCurrencyForBusinessByCountry = jest.fn(() => currency);
+    
+    await wrapper.vm.getBusinessInformation();
+    expect(wrapper.vm.currency).toEqual(currency);
+    expect(wrapper.vm.$helper.getCurrencyForBusinessByCountry.mock.calls[0][0]).toEqual("Fake Zealand");
+  });
+
+  test("failed API response", async () => {
+    Api.businessProfile = jest.fn(() => Promise.reject({
+      userFacingErrorMessage: "Bla"
+    }));
+
+    mountSalesReport();
+    await wrapper.vm.getBusinessInformation();
+    expect(await wrapper.vm.getBusinessInformation()).toBe(false);
+  });
+
+
+});
 
 const normalizeDateToStartOfDay = SalesReport.methods.normalizeDateToStartOfDay;
 const normalizeDateToStartOfWeek = SalesReport.methods.normalizeDateToStartOfWeek.bind(SalesReport.methods);
@@ -80,15 +200,15 @@ describe("transformedTransactionData", () => {
   /**
    *
    * @param {*} thisData object with startDate, endDate, granularity
-   * @param {*} transactionDataWithZeroes transactionData with entries for periods
+   * @param {*} transactionsWithZeroes transactions with entries for periods
    *            with zero transactions. These are removed before being passed to
    *            the method but not when used to compare the method's output
    */
-  const runMethodAndCompare = (thisData, transactionDataWithZeroes) => {
+  const runMethodAndCompare = (thisData, transactionsWithZeroes) => {
     const result = SalesReport.computed.transformedTransactionData.call({
       ...thisData,
       ...SalesReport.methods,
-      transactionData: transactionDataWithZeroes.filter(el => el.transactionCount > 0),
+      transactions: transactionsWithZeroes.filter(el => el.transactionCount > 0),
       generateUserFacingDateText: () => "MOCKED",
       $helper: {
         makeCurrencyString: () => "MOCKED"
@@ -100,10 +220,10 @@ describe("transformedTransactionData", () => {
       date: el.date.toISOString(),
       amount: el.amount,
       transactionCount: el.transactionCount
-    }))).toEqual(transactionDataWithZeroes);
+    }))).toEqual(transactionsWithZeroes);
   }
   test("day granularity, gap in middle", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
         transactionCount: 1,
@@ -123,14 +243,14 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      startDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
       endDate: new Date("2020-01-04T00:00:00.000Z"),
       granularity: "Day"
-    }, transactionData);
+    }, transactions);
   });
 
   test("day granularity, no data at start", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-01T00:00:00.000Z",
         transactionCount: 0,
@@ -150,15 +270,15 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      startDate: new Date(transactionData[0].date),
+      startDate: new Date(transactions[0].date),
       endDate: new Date("2020-01-04T07:00:00.000Z"),
       granularity: "Day"
-    }, transactionData);
+    }, transactions);
   });
 
 
   test("day granularity, no data at end", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
         transactionCount: 1,
@@ -178,14 +298,14 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      startDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
       endDate: new Date("2020-01-04T07:00:00.000Z"),
       granularity: "Day"
-    }, transactionData);
+    }, transactions);
   });
 
   test("week granularity, gap in middle", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
         transactionCount: 1,
@@ -205,14 +325,14 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      startDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
       endDate: new Date("2020-01-19T00:00:00.000Z"),
       granularity: "Week"
-    }, transactionData);
+    }, transactions);
   });
 
   test("Month granularity, gap in middle", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-07T11:30:20.000Z",
         transactionCount: 1,
@@ -232,14 +352,14 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      startDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
       endDate: new Date("2020-04-01T00:00:00.000Z"),
       granularity: "Month"
-    }, transactionData);
+    }, transactions);
   });
 
   test("Year granularity, gap in middle", () => {
-    const transactionData = [
+    const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
         transactionCount: 1,
@@ -259,10 +379,10 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      startDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
       endDate: new Date("2023-06-01T00:00:00.000Z"),
       granularity: "Year"
-    }, transactionData);
+    }, transactions);
   });
 
 });

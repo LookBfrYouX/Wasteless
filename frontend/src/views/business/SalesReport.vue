@@ -24,11 +24,11 @@
     <v-row class="mb-2">
       <v-col>
         <h4>Total Transactions</h4>
-        {{ numberOfTransactions }}
+        {{ totalTransactionCount }}
       </v-col>
       <v-col>
         <h4>Total Sales</h4>
-        {{ $helper.makeCurrencyString(totalValue, currency) }}
+        {{ $helper.makeCurrencyString(totalAmount, currency) }}
       </v-col>
       <v-col>
         <h4>Period</h4>
@@ -40,7 +40,10 @@
         <span v-if="business.name">{{business.name}}</span>
       </v-col>
     </v-row>
-    <SalesReportTable v-bind:granularity="granularity" v-bind:transactionInformation="transformedTransactionData"/>
+    <SalesReportTable
+      :granularity="granularity"
+      :transactionInformation="transformedTransactionData"
+    />
 
   </v-container>
 </template>
@@ -59,54 +62,36 @@ export default {
   },
 
   data() {
-    const startDate = new Date(2020, 10, 1);
-    this.normalizeDateToStartOfWeek(startDate);
+    const startDate = new Date();
+    startDate.setUTCDate(startDate.getUTCDate() - 6);
+    // initially show a week of data;
 
-    const endDate = new Date(2021, 6, 1)
-    this.normalizeDateToStartOfWeek(endDate);
+    const endDate = new Date();
 
     return {
       startDate, // inclusive (00:00) of the day
       endDate, // inclusive (23:59) of the day
-      granularity: "Month",
-      totalValue: 0,
-      numberOfTransactions: 0,
-      transactionData: {},
+      granularity: "Day",
+      totalAmount: 0,
+      totalTransactionCount: 0,
+      transactions: null,
       items: ["Day", "Week", "Month", "Year"],
       business: {},
       currency: null
-      // mockTransactionResponse:{
-      // "transactions": [
-      //     {
-      //         "date": "2020-01-02T15:34:20+13:00",
-      //         "transactionCount": 1,
-      //         "amount": 5.25
-      //     },
-      //     {
-      //         "date": "2021-01-22T15:34:20+13:00",
-      //         "transactionCount": 1,
-      //         "amount": 6.6
-      //     },
-      //     {
-      //         "date": "2021-02-21T15:34:20+13:00",
-      //         "transactionCount": 5,
-      //         "amount": 63.5
-      //     },
-      //     {
-      //         "date": "2021-03-20T15:34:20+13:00",
-      //         "transactionCount": 3,
-      //         "amount": 26.25
-      //     }
-      // ],
-      // "totalAmount": 101.6,
-      // "totalTransactionCount": 10
-      // }
     };
   },
-  mounted() {
-    this.getTransactions();
-    this.getBusinessInformation();
+  
+ 
+  /**
+   * Loads transaction information and business information (name, currency)
+   */
+  async mounted() {
+    return Promise.allSettled([
+      this.getTransactions(),
+      this.getBusinessInformation()
+    ]);
   },
+
   methods: {
     /**
      * Gets information for the business (currency, name etc.)
@@ -115,7 +100,7 @@ export default {
     async getBusinessInformation() {
       try {
         this.business = (await Api.businessProfile(this.businessId)).data;
-        this.currency = await this.$helper.getCurrencyForBusinessByCountry(this.business.address.country);
+        this.currency = this.$helper.getCurrencyForBusinessByCountry(this.business.address.country);
         return true;
       } catch (err) {
         // If can't get currency not that big of a deal
@@ -127,7 +112,7 @@ export default {
     },
 
     /**
-     * Sends API request and sets totalvalue, numberOfTransactions and transactionData variables
+     * Sends API request and sets totalAmount, totalTransactionCount and transactions variables
      */
     getTransactions: async function () {
       /* makes a query to the api to retrieve the transactions with the props*/
@@ -139,25 +124,16 @@ export default {
             endDate: this.endDate.toISOString().slice(0, 10),
           })
         ).data;
-        this.totalValue = response.totalAmount;
-        this.numberOfTransactions = response.totalTransactionCount;
-        this.transactionData = response.transactions;
+        this.totalAmount = response.totalAmount;
+        this.totalTransactionCount = response.totalTransactionCount;
+        this.transactions = response.transactions;
+        this.apiErrorMessage = null;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
         }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
-    },
-    /**
-     * sets some mock data for testing sets totalvalue, numberOfTransactions and transactionData variables
-     */
-    setResultsWithMocks: function () {
-      /* makes a query to the api to retrieve the transactions with the props*/
-      this.totalValue = this.mockTransactionResponse.totalAmount;
-      this.numberOfTransactions =
-        this.mockTransactionResponse.totalTransactionCount;
-      this.transactionData = this.mockTransactionResponse.transactions;
     },
 
     /**
@@ -273,9 +249,11 @@ export default {
      *   amount, Number: total revenue in that period
      *   transactionCount, Integer: number of transactions in that period
      *   amountText, String: amount, but as a string with currency information
-     * }]
+     * }] or null if transactionData is null
      */
     transformedTransactionData() {
+      if (this.transactions == null) return null;
+
       let i = 0;
       let dataArray = [];
       let date = new Date(this.startDate.getTime()); // date is the start of the next period
@@ -303,11 +281,11 @@ export default {
             this.normalizeDateToStartOfYear(date);
             break;
         }
-
-        if (i < this.transactionData.length) {
+        
+        if (i < this.transactions.length) {
           // There may periods after the last transaction, meaning i == transactions.length. In ths
           // case the remaining periods must be empty
-          const transaction = this.transactionData[i];
+          const transaction = this.transactions[i];
           const transactionDate = new Date(transaction.date);
 
           if (transactionDate.getTime() < date.getTime()) {
@@ -315,7 +293,7 @@ export default {
             dataArray.push({
               ...transaction,
               date: transactionDate,
-              dateRangeText: this.generateUserFacingDateText(transaction.date),
+              dateRangeText: this.generateUserFacingDateText(transactionDate),
               amountText: this.$helper.makeCurrencyString(transaction.amount, this.currency),
             });
             continue;

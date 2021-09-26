@@ -1,15 +1,11 @@
 <template>
   <div>
-    <div v-if="transactionInformation.length != 0">
-      <v-data-table
-        :headers="headers"
-        :items="transactionInformation"
-        :items-per-page="5">
-      </v-data-table>
-    </div>
-    <div v-else>
-      No Transactions for this time period
-    </div>
+    <v-data-table
+      :headers="headers"
+      :items="transactionInformation == null? []: transactionInformation"
+      :loading="transactionInformation == null"
+      :items-per-page="7">
+    </v-data-table>
   </div>
 </template>
 
