@@ -12,6 +12,44 @@ const normalizeDateToStartOfWeek = SalesReport.methods.normalizeDateToStartOfWee
 const normalizeDateToStartOfMonth = SalesReport.methods.normalizeDateToStartOfMonth.bind(SalesReport.methods);
 const normalizeDateToStartOfYear = SalesReport.methods.normalizeDateToStartOfYear.bind(SalesReport.methods);
 
+describe("normalizeDateToStartOfDay", () => {
+  test("12PM UTC", () => {
+    expect(normalizeDateToStartOfDay(new Date("2020-01-01T12:00:00.000Z")).toISOString())
+    .toEqual("2020-01-01T00:00:00.000Z")
+  });
+  
+  test("Midnight UTC", () => {
+    expect(normalizeDateToStartOfDay(new Date("2020-01-01T00:00:00.000Z")).toISOString())
+    .toEqual("2020-01-01T00:00:00.000Z")
+  });
+  
+  test("7AM +5", () => {
+    expect(normalizeDateToStartOfDay(new Date("2020-01-01T07:00:00.000+05:00")).toISOString())
+    .toEqual("2020-01-01T00:00:00.000Z")
+  });
+});
+
+describe("normalizeDateToStartOfWeek", () => {
+  test("Wednesday 12PM UTC", () => {
+    expect(normalizeDateToStartOfWeek(new Date("2020-01-01T12:00:00.000Z")).toISOString())
+    .toEqual("2019-12-29T00:00:00.000Z")
+  });
+});
+
+describe("normalizeDateToStartOfMonth", () => {
+  test("February 29th 12PM UTC", () => {
+    expect(normalizeDateToStartOfMonth(new Date("2020-02-29T12:00:00.000Z")).toISOString())
+    .toEqual("2020-02-01T00:00:00.000Z")
+  });
+});
+
+describe("normalizeDateToStartOfYear", () => {
+  test("February 29th 12PM UTC", () => {
+    expect(normalizeDateToStartOfYear(new Date("2020-02-29T12:00:00.000Z")).toISOString())
+    .toEqual("2020-01-01T00:00:00.000Z")
+  });
+});
+
 describe("transformedTransactionData", () => {
   /**
    *
