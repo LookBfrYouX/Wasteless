@@ -2,7 +2,6 @@
   <v-container>
     <v-row align="center">
       <v-col cols="12" lg="8" class="my-0 py-0 align-center">
-        <v-subheader>Date range</v-subheader>
         <v-dialog
             ref="menu"
             v-model="menu"
@@ -11,15 +10,7 @@
             persistent
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-                :label="selectedDropdown ? selectedDropdown : filterDates.length === 0 ? 'Select' : 'Custom'"
-                prepend-inner-icon="date_range"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-                solo
-                dense
-            />
+            <v-btn v-on="on" v-bind="attrs" >{{ getLabel }}</v-btn>
           </template>
           <v-card>
             <v-card-text class="px-0 py-0">
@@ -121,6 +112,17 @@ export default {
         this.selectedDropdown = null;
       } else if (this.filterDates.length === 2 && this.filterDates[0] > this.filterDates[1]) {
         this.filterDates = this.filterDates.sort()
+      }
+    }
+  },
+  computed: {
+    getLabel() {
+      if (this.filterDates.length > 0 && this.selectedDropdown != null) {
+        return `${this.selectedDropdown}`
+      } else if (this.filterDates.length > 0) {
+        return "Custom"
+      } else {
+        return "select";
       }
     }
   },

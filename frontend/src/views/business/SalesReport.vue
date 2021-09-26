@@ -3,7 +3,7 @@
     <v-row>
       <v-col class="d-flex align-center justify-center">
         <v-subheader>Date Range</v-subheader>
-        <v-btn label="Date Range">Select Date Range</v-btn>
+        <report-date-selector  @newDates="(event) => this.filterDates = event"/>
       </v-col>
       <v-col align="center" class="d-flex align-center justify-center">
         <v-subheader>Granularity</v-subheader>
@@ -17,7 +17,7 @@
         />
       </v-col>
       <v-col align="center" class="d-flex align-center justify-center">
-        <v-btn v-on:click="setResultsWithMocks">Go</v-btn>
+        <v-btn v-on:click="setFilters">Go</v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
@@ -51,8 +51,12 @@
 <script>
 import { Api } from "@/Api";
 import SalesReportTable from "@/components/SalesReportTable.vue";
+import ReportDateSelector from "@/components/ReportDateSelector";
 export default {
-  components:{SalesReportTable},
+  components:{
+    SalesReportTable,
+    ReportDateSelector
+  },
 
   props: {
     businessId: {
@@ -71,6 +75,7 @@ export default {
     return {
       startDate, // inclusive (00:00) of the day
       endDate, // inclusive (23:59) of the day
+      filterDates: [],
       granularity: "Day",
       totalAmount: 0,
       totalTransactionCount: 0,
@@ -140,12 +145,11 @@ export default {
      * Converts the date to a user-friendly string, dependent on the granularity
      */
     generateUserFacingDateText(date) {
-      const weekText = date => `${
+      const weekText = `${
         date.getUTCDate().toString().padStart(2, "0")}-${
        (date.getUTCMonth() + 1).toString().padStart(2, "0")}-${
         date.getUTCFullYear().toString()}`;
 
-      // can't define variables inside switch variables
       if (this.granularity == "Day") {
         return date.toDateString();
       }
@@ -167,6 +171,15 @@ export default {
       }
 
       throw new Error("Yo what you doing here");
+    },
+
+    setFilters() {
+      console.log("SETTING REPORT FILTERS");
+      console.log(this.filterDates);
+      this.startDate = this.filterDates[0];
+      this.endDate = this.filterDates[1];
+      console.log("GETTING TRANSACTIONS");
+      this.getTransactions();
     },
 
     /**
