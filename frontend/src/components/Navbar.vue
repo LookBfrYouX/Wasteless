@@ -2,7 +2,22 @@
   <div id="navbar">
     <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
       <!-- Title -->
-      <a class="navbar-brand" href="javascript:" @click="homeButtonClicked()">Navbara Pigeon</a>
+      <router-link
+        class="navbar-brand"
+        :to="{name: $stateStore.getters.isSignedIn()? 'Home': 'Landing'}"
+      >
+        <!-- Home and landing pages don't have any interactive elements
+        so it not reloading when already on home/landing page won't make a difference
+         -->
+        <img
+          :src="require('@/../assets/images/svg_pigeon.svg')"
+          class="navbar-pigeon"
+          alt="logo"
+        />
+        <span>
+          Navbara Pigeon
+        </span>
+      </router-link>
       <!-- Hamburger button -->
       <button
           id="hamburger-button"
@@ -323,18 +338,7 @@ export default {
       // Must set business after redirecting as some pages do not like it if a 
       // user accesses a business page they are not an admin of
     },
-
-    /**
-     * Redirects to 'home' if signed in, '/' otherwise
-     */
-    homeButtonClicked() {
-      if (this.$stateStore.getters.isSignedIn()) {
-        this.pushOrGo('Home');
-      } else {
-        this.pushOrGo('Landing');
-      }
-    },
-
+    
     /**
      * Go (refresh page) if already on the same page, or pushes if it is a different page. Does not support params
      */
@@ -495,5 +499,9 @@ nav .active {
 .nav-link-list {
   overflow-y: auto;
   max-height: 25vh;
+}
+
+.navbar-pigeon {
+  height: 1.7em;
 }
 </style>
