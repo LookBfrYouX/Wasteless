@@ -14,7 +14,7 @@ const normalizeDateToStartOfYear = SalesReport.methods.normalizeDateToStartOfYea
 
 describe("transformedTransactionData", () => {
   /**
-   * 
+   *
    * @param {*} thisData object with minDate, maxDate, granularity
    * @param {*} transactionDataWithZeroes transactionData with entries for periods
    *            with zero transactions. These are removed before being passed to
@@ -23,6 +23,7 @@ describe("transformedTransactionData", () => {
   const runMethodAndCompare = (thisData, transactionDataWithZeroes) => {
     const result = SalesReport.computed.transformedTransactionData.call({
       ...thisData,
+      ...SalesReport.methods,
       transactionData: transactionDataWithZeroes.filter(el => el.transactionCount > 0),
       generateUserFacingDateText: () => "MOCKED",
       $helper: {
@@ -51,6 +52,10 @@ describe("transformedTransactionData", () => {
         date: "2020-01-03T11:30:20.000Z",
         transactionCount: 3,
         amount: 2.71
+      }, {
+        date: "2020-01-04T00:00:00.000Z",
+        transactionCount: 0,
+        amount: 0
       }
     ];
     runMethodAndCompare({
@@ -59,7 +64,7 @@ describe("transformedTransactionData", () => {
       granularity: "Day"
     }, transactionData);
   });
-  
+
   test("day granularity, no data at start", () => {
     const transactionData = [
       {
@@ -86,8 +91,8 @@ describe("transformedTransactionData", () => {
       granularity: "Day"
     }, transactionData);
   });
-  
-  
+
+
   test("day granularity, no data at end", () => {
     const transactionData = [
       {
@@ -106,12 +111,93 @@ describe("transformedTransactionData", () => {
         date: "2020-01-04T00:00:00.000Z",
         transactionCount: 0,
         amount: 0
-      } 
+      }
     ];
     runMethodAndCompare({
       minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
       maxDate: new Date("2020-01-04T07:00:00.000Z"),
       granularity: "Day"
+    }, transactionData);
+  });
+
+  test("week granularity, gap in middle", () => {
+    const transactionData = [
+      {
+        date: "2020-01-01T11:30:20.000Z",
+        transactionCount: 1,
+        amount: 3.14
+      }, {
+        date: "2020-01-05T00:00:00.000Z",
+        transactionCount: 0,
+        amount: 0
+      }, {
+        date: "2020-01-13T11:30:20.000Z",
+        transactionCount: 3,
+        amount: 2.71
+      }, {
+        date: "2020-01-19T00:00:00.000Z",
+        transactionCount: 0,
+        amount: 0
+      }
+    ];
+    runMethodAndCompare({
+      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      maxDate: new Date("2020-01-19T00:00:00.000Z"),
+      granularity: "Week"
+    }, transactionData);
+  });
+
+  test("Month granularity, gap in middle", () => {
+    const transactionData = [
+      {
+        date: "2020-01-07T11:30:20.000Z",
+        transactionCount: 1,
+        amount: 3.14
+      }, {
+        date: "2020-02-01T00:00:00.000Z",
+        transactionCount: 0,
+        amount: 0
+      }, {
+        date: "2020-03-06T11:30:20.000Z",
+        transactionCount: 3,
+        amount: 2.71
+      }, {
+        date: "2020-04-01T00:00:00.000Z",
+        transactionCount: 0,
+        amount: 0
+      }
+    ];
+    runMethodAndCompare({
+      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      maxDate: new Date("2020-04-01T00:00:00.000Z"),
+      granularity: "Month"
+    }, transactionData);
+  });
+
+  test("Year granularity, gap in middle", () => {
+    const transactionData = [
+      {
+        date: "2020-01-01T11:30:20.000Z",
+        transactionCount: 1,
+        amount: 3.14
+      }, {
+        date: "2021-01-01T00:00:00.000Z",
+        transactionCount: 0,
+        amount: 0
+      }, {
+        date: "2022-03-06T11:30:20.000Z",
+        transactionCount: 3,
+        amount: 2.71
+      }, {
+        date: "2023-01-01T00:00:00.000Z",
+        transactionCount: 0,
+        amount: 0
+      }
+    ];
+    runMethodAndCompare({
+      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      maxDate: new Date("2023-06-01T00:00:00.000Z"),
+      granularity: "Year"
     }, transactionData);
   });
 

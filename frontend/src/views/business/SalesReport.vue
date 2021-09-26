@@ -285,18 +285,22 @@ export default {
         switch (this.granularity) {
           case "Day":
             date.setUTCDate(date.getUTCDate() + 1);
+            this.normalizeDateToStartOfDay(date);
             break;
 
           case "Week":
             date.setUTCDate(date.getUTCDate() + 7);
+            this.normalizeDateToStartOfWeek(date);
             break;
 
           case "Month":
             date.setUTCMonth(date.getUTCMonth() + 1);
+            this.normalizeDateToStartOfMonth(date);
             break;
 
           case "Year":
             date.setUTCFullYear(date.getUTCFullYear() + 1);
+            this.normalizeDateToStartOfYear(date);
             break;
         }
         
