@@ -45,8 +45,8 @@ public class ProductControllerTest extends ControllerTestProvider {
   @Test
   @WithMockUser
   void getProductsFromOneBusinessTestInvalidId() throws Exception {
-    String enpointUrl = "/businesses/-1/products";
-    mockMvc.perform(get(enpointUrl)).andExpect(status().isNotFound());
+    String endpointUrl = "/businesses/-1/products";
+    mockMvc.perform(get(endpointUrl)).andExpect(status().isNotFound());
   }
 
   // Return 201 on successful request to controller
