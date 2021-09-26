@@ -22,21 +22,41 @@
     </v-btn>
   </div>
   <v-container class="pa-0">
-    <v-btn
-        block
-        v-on:click="showBarcodeScanner"
+    <v-dialog
+        v-model="dialog"
+        overlay-opacity="0.7"
+        width="500"
     >
-      <v-icon left>
-        photo_camera
-      </v-icon>
-      Scan barcode using Camera
-    </v-btn>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+            v-bind="attrs"
+            v-on="on"
+            block
+        >
+          <v-icon left>
+            photo_camera
+          </v-icon>
+          Scan barcode
+        </v-btn>
+      </template>
+      <v-card>
+        <v-skeleton-loader
+            v-if="!scannerLoaded"
+            height="400px"
+            min-height="400px"
+            type="image"
+        ></v-skeleton-loader>
+        <StreamBarcodeReader
+            @decode="onDecode"
+            @loaded="onLoaded"
+        />
+        <v-card-actions class="justify-center">
+          <v-btn @click="dialog = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-container>
-  <StreamBarcodeReader
-      v-if="showScanner"
-      @decode="onDecode"
-      @loaded="onLoaded"
-  ></StreamBarcodeReader>
   <div v-if="errorMessage != null" class="row mt-2">
     <div class="col">
       <p class="alert alert-warning">{{ errorMessage }}</p>
@@ -63,7 +83,9 @@ export default {
       barcode: "",
       errorMessage: null,
       apiIsLoading: false,
-      showScanner: false,
+      dialog: false,
+      scannerLoaded: false,
+      barcodeScanCounts: new Map(),
       info: {
         name: "",
         manufacturer: "",
@@ -82,10 +104,6 @@ export default {
     }
   },
   methods: {
-    showBarcodeScanner: function () {
-      this.showScanner = true;
-    },
-
     /**
      * Calls Open Food Facts API with User Barcode
      */
@@ -176,6 +194,34 @@ export default {
         }
       }
     },
+    onDecode(barcode) {
+      console.log("Barcode: " + barcode);
+      if (this.barcodeScanCounts.has(barcode)) {
+        const currentCount = this.barcodeScanCounts.get(barcode);
+        this.barcodeScanCounts.set(barcode, currentCount + 1);
+      } else {
+        this.barcodeScanCounts.set(barcode, 0);
+      }
+
+      if (this.barcodeScanCounts.get(barcode) >= 5) {
+        console.log('Done!');
+        this.barcode = barcode;
+        this.setProductInformation();
+        this.dialog = false;
+      }
+    },
+    onLoaded() {
+      console.log("Barcode Scanner Loaded!");
+      this.scannerLoaded = true;
+    }
   }
 }
 </script>
+<style lang="scss" scoped>
+// Existing bug with skeleton height, see https://github.com/vuetifyjs/vuetify/issues/11771
+::v-deep .v-skeleton-loader.v-skeleton-loader--is-loading {
+  .v-skeleton-loader__image {
+    height: 100%;
+  }
+}
+</style>

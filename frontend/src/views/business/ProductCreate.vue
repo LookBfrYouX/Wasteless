@@ -172,7 +172,6 @@ export default {
       apiErrorMessage: null, // if admin and getting currency info fails
       errorMessage: null,
       apiCallInProgress: false,
-      barcodeCounts: new Map(),
 
       currency: null,
       queryParams: {
@@ -310,22 +309,6 @@ export default {
           }
         });
       }
-    },
-    onDecode(barcode) {
-      console.log("Barcode: " + barcode);
-      if (this.barcodeCounts.has(barcode)) {
-        const currentCount = this.barcodeCounts.get(barcode);
-        this.barcodeCounts.set(barcode, currentCount + 1);
-      } else {
-        this.barcodeCounts.set(barcode, 0);
-      }
-
-      if (this.barcodeCounts.get(barcode) >= 5) {
-        console.log('Done!');
-      }
-    },
-    onLoaded() {
-      console.log("Barcode Scanner Loaded!");
     }
   },
 };
