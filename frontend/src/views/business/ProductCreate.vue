@@ -32,20 +32,14 @@
             <barcode-input
                 @info="autofill"
             />
-            <v-btn>
-              <v-icon left>
-                photo_camera
-              </v-icon>
-              Scan barcode using Camera
-            </v-btn>
           </v-card>
 
-          <v-card class="pa-5">
-            <StreamBarcodeReader
-                @decode="onDecode"
-                @loaded="onLoaded"
-            ></StreamBarcodeReader>
-          </v-card>
+          <!--          <v-card class="pa-5">-->
+          <!--            <StreamBarcodeReader-->
+          <!--                @decode="onDecode"-->
+          <!--                @loaded="onLoaded"-->
+          <!--            ></StreamBarcodeReader>-->
+          <!--          </v-card>-->
 
           <v-card
               class="card"
@@ -162,7 +156,6 @@ import NutrientLevelsEdit from "@/components/NutrientLevelsEdit"
 import DietaryCertificationsInput from "@/components/DietaryCertificationsInput";
 import NovaGroupInput from "@/components/NovaGroupInput";
 import NutriScoreInput from "@/components/NutriScoreInput";
-import {StreamBarcodeReader} from "vue-barcode-reader";
 
 export default {
   components: {
@@ -171,8 +164,7 @@ export default {
     DietaryCertificationsInput,
     NovaGroupInput,
     NutriScoreInput,
-    ErrorModal,
-    StreamBarcodeReader
+    ErrorModal
   },
 
   data() {

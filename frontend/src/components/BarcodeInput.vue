@@ -14,13 +14,29 @@
         v-on:keydown.enter="() => barcode.length == 13 && !apiIsLoading && setProductInformation()"
     />
     <v-btn
-      v-on:click="setProductInformation"
-     :disabled="barcode.length != 13"
-     :loading="apiIsLoading"
+        v-on:click="setProductInformation"
+        :disabled="barcode.length != 13"
+        :loading="apiIsLoading"
     >
       Fill
     </v-btn>
   </div>
+  <v-container class="pa-0">
+    <v-btn
+        block
+        v-on:click="showBarcodeScanner"
+    >
+      <v-icon left>
+        photo_camera
+      </v-icon>
+      Scan barcode using Camera
+    </v-btn>
+  </v-container>
+  <StreamBarcodeReader
+      v-if="showScanner"
+      @decode="onDecode"
+      @loaded="onLoaded"
+  ></StreamBarcodeReader>
   <div v-if="errorMessage != null" class="row mt-2">
     <div class="col">
       <p class="alert alert-warning">{{ errorMessage }}</p>
@@ -31,6 +47,7 @@
 
 <script>
 import {Api} from "@/Api";
+import {StreamBarcodeReader} from "vue-barcode-reader";
 
 /**
  * No props. When autofill is triggered, the parsed information is sent through
@@ -38,11 +55,15 @@ import {Api} from "@/Api";
  */
 export default {
   name: "BarcodeInput",
+  components: {
+    StreamBarcodeReader
+  },
   data() {
     return {
       barcode: "",
       errorMessage: null,
       apiIsLoading: false,
+      showScanner: false,
       info: {
         name: "",
         manufacturer: "",
@@ -61,6 +82,10 @@ export default {
     }
   },
   methods: {
+    showBarcodeScanner: function () {
+      this.showScanner = true;
+    },
+
     /**
      * Calls Open Food Facts API with User Barcode
      */
