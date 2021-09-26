@@ -159,6 +159,7 @@ export default [{
     }
   },
   {
+
     name: "BusinessSalesReport",
     path: "/business/:businessId(\\d+)/report",
     component: () => import("@/views/business/SalesReport.vue"),
@@ -169,5 +170,16 @@ export default [{
       title: "Business Sales Report | Wasteless",
       requiresBusinessAdmin: true
     }
-  }
+  },
+
+  {
+    name: "BusinessTransactions",
+    path: "/business/:businessId(\\d+)/transactions",
+    component: () => import("@/views/business/Transactions.vue"),
+    props: route => ({businessId: parseInt(route.params.businessId, 10)}),
+    meta: {
+      title: "Transactions | Wasteless",
+      requiresBusinessAdmin: true
+    }
+  },
 ];
