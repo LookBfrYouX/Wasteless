@@ -527,7 +527,7 @@ export const Api = {
    * @returns {Promise<AxiosResponse<any>>} The object containing the
    * nutritional information of the product
    */
-   getOpenFoodFacts: (ean13) => {
+  getOpenFoodFacts: (ean13) => {
     return openFoodFactsInstance.get(ean13.toString()).catch(err => {
       const serverDownMessage = 'The Open Food Facts API is currently unavailable. Please try again later.'
       // Possible error codes listed at https://world.openfoodfacts.org/files/api-documentation.html
