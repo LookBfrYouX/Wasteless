@@ -24,11 +24,11 @@
     <v-row class="mb-2">
       <v-col>
         <h4>Total Transactions</h4>
-        {{ numberOfTransactions }}
+        {{ totalTransactionCount }}
       </v-col>
       <v-col>
         <h4>Total Sales</h4>
-        {{ $helper.makeCurrencyString(totalValue, currency) }}
+        {{ $helper.makeCurrencyString(totalAmount, currency) }}
       </v-col>
       <v-col>
         <h4>Period</h4>
@@ -40,7 +40,10 @@
         <span v-if="business.name">{{business.name}}</span>
       </v-col>
     </v-row>
-    <SalesReportTable v-bind:granularity="granularity" v-bind:transactionInformation="transformedTransactionData"/>
+    <SalesReportTable
+      :granularity="granularity"
+      :transactionInformation="transformedTransactionData"
+    />
 
   </v-container>
 </template>
@@ -69,9 +72,9 @@ export default {
       minDate, // inclusive (00:00) of the day
       maxDate, // inclusive (23:59) of the day
       granularity: "Month",
-      totalValue: 0,
-      numberOfTransactions: 0,
-      transactionData: {},
+      totalAmount: 0,
+      totalTransactionCount: 0,
+      transactions: null,
       items: ["Day", "Week", "Month", "Year"],
       business: {},
       currency: null
@@ -103,10 +106,18 @@ export default {
       // }
     };
   },
-  mounted() {
-    this.getTransactions();
-    this.getBusinessInformation();
+  
+ 
+  /**
+   * Loads transaction information and business information (name, currency)
+   */
+  async mounted() {
+    return Promise.allSettled([
+      this.getTransactions(),
+      this.getBusinessInformation()
+    ]);
   },
+
   methods: {
     /**
      * Gets information for the business (currency, name etc.)
@@ -115,7 +126,7 @@ export default {
     async getBusinessInformation() {
       try {
         this.business = (await Api.businessProfile(this.businessId)).data;
-        this.currency = await this.$helper.getCurrencyForBusinessByCountry(this.business.address.country);
+        this.currency = this.$helper.getCurrencyForBusinessByCountry(this.business.address.country);
         return true;
       } catch (err) {
         // If can't get currency not that big of a deal
@@ -127,7 +138,7 @@ export default {
     },
 
     /**
-     * Sends API request and sets totalvalue, numberOfTransactions and transactionData variables
+     * Sends API request and sets totalAmount, totalTransactionCount and transactions variables
      */
     getTransactions: async function () {
       /* makes a query to the api to retrieve the transactions with the props*/
@@ -139,9 +150,10 @@ export default {
             endDate: this.maxDate.toISOString().slice(0, 10),
           })
         ).data;
-        this.totalValue = response.totalAmount;
-        this.numberOfTransactions = response.totalTransactionCount;
-        this.transactionData = response.transactions;
+        this.totalAmount = response.totalAmount;
+        this.totalTransactionCount = response.totalTransactionCount;
+        this.transactions = response.transactions;
+        this.apiErrorMessage = null;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return;
@@ -150,12 +162,12 @@ export default {
       }
     },
     /**
-     * sets some mock data for testing sets totalvalue, numberOfTransactions and transactionData variables
+     * sets some mock data for testing sets totalvalue, totalTransactionCount and transactionData variables
      */
     setResultsWithMocks: function () {
       /* makes a query to the api to retrieve the transactions with the props*/
-      this.totalValue = this.mockTransactionResponse.totalAmount;
-      this.numberOfTransactions =
+      this.totalAmount = this.mockTransactionResponse.totalAmount;
+      this.totalTransactionCount =
         this.mockTransactionResponse.totalTransactionCount;
       this.transactionData = this.mockTransactionResponse.transactions;
     },
@@ -273,9 +285,11 @@ export default {
      *   amount, Number: total revenue in that period
      *   transactionCount, Integer: number of transactions in that period
      *   amountText, String: amount, but as a string with currency information
-     * }]
+     * }] or null if transactionData is null
      */
     transformedTransactionData() {
+      if (this.transactions == null) return null;
+
       let i = 0;
       let dataArray = [];
       let date = new Date(this.minDate.getTime()); // date is the start of the next period
@@ -304,10 +318,10 @@ export default {
             break;
         }
         
-        if (i < this.transactionData.length) {
+        if (i < this.transactions.length) {
           // There may periods after the last transaction, meaning i == transactions.length. In ths
           // case the remaining periods must be empty
-          const transaction = this.transactionData[i];
+          const transaction = this.transactions[i];
           const transactionDate = new Date(transaction.date);
 
           if (transactionDate.getTime() < date.getTime()) {
@@ -315,7 +329,7 @@ export default {
             dataArray.push({
               ...transaction,
               date: transactionDate,
-              dateRangeText: this.generateUserFacingDateText(transaction.date),
+              dateRangeText: this.generateUserFacingDateText(transactionDate),
               amountText: this.$helper.makeCurrencyString(transaction.amount, this.currency),
             });
             continue;
