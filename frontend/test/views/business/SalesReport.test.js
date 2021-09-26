@@ -1,11 +1,67 @@
 import {shallowMount} from "@vue/test-utils";
 import {globalStateMocks} from "#/testHelper";
 import SalesReport from "@/views/business/SalesReport";
+import Vuetify from 'vuetify';
+import {ApiRequestError} from "@/ApiRequestError";
+
+const vuetify = new Vuetify();
 
 jest.mock("@/Api");
 const {Api} = require("@/Api.js");
 
-let wrapper;
+let wrapper = null;
+
+let mountSalesReport = () => {
+  wrapper = shallowMount(wrapper, {
+    vuetify,
+    propsData: {
+      businessId: 1
+    },
+    stubs: ["error-modal"],
+    mocks: {
+      ...globalStateMocks()
+    },
+  });
+  return wrapper;
+}
+
+afterEach = () => {
+  if (wrapper != null) {
+    wrapper.destroy();
+    wrapper = null;
+  }
+}
+
+
+describe("getTransactions", () => {
+  const generateResponse = () => {
+    return {
+      data: {
+        totalValue: 3141.59,
+        numberOfTransactions: 13,
+        transactions: [
+          {
+            date: "2020-05-03T09:32:13.324+13:00",
+            amount: 27.18,
+            transactionCount
+          }
+        ]
+      }
+    }
+  }
+  test("API call args", async () => {
+    await mountSalesReport();
+    wrapper.setData({
+      minDate: new Date("2020-01-01T23:59:00.000Z"),
+      maxDate: new Date("2025-08-01T23:59:00.000Z"),
+      granularity: "YEAR"
+    });
+    Api.getTransactions = jest.fn(() => Promise.resolve()); // called automatically on mount before we
+    // can set data to a testable value, so need to call getTransaction manually
+
+    await wrapper.vm.getTransactions();
+  })
+});
 
 const normalizeDateToStartOfDay = SalesReport.methods.normalizeDateToStartOfDay;
 const normalizeDateToStartOfWeek = SalesReport.methods.normalizeDateToStartOfWeek.bind(SalesReport.methods);
