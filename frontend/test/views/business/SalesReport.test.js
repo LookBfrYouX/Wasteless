@@ -12,7 +12,7 @@ const {Api} = require("@/Api.js");
 let wrapper = null;
 
 let mountSalesReport = () => {
-  wrapper = shallowMount(wrapper, {
+  wrapper = shallowMount(SalesReport, {
     vuetify,
     propsData: {
       businessId: 1
@@ -32,36 +32,6 @@ afterEach = () => {
   }
 }
 
-
-describe("getTransactions", () => {
-  const generateResponse = () => {
-    return {
-      data: {
-        totalValue: 3141.59,
-        numberOfTransactions: 13,
-        transactions: [
-          {
-            date: "2020-05-03T09:32:13.324+13:00",
-            amount: 27.18,
-            transactionCount
-          }
-        ]
-      }
-    }
-  }
-  test("API call args", async () => {
-    await mountSalesReport();
-    wrapper.setData({
-      minDate: new Date("2020-01-01T23:59:00.000Z"),
-      maxDate: new Date("2025-08-01T23:59:00.000Z"),
-      granularity: "YEAR"
-    });
-    Api.getTransactions = jest.fn(() => Promise.resolve()); // called automatically on mount before we
-    // can set data to a testable value, so need to call getTransaction manually
-
-    await wrapper.vm.getTransactions();
-  })
-});
 
 const normalizeDateToStartOfDay = SalesReport.methods.normalizeDateToStartOfDay;
 const normalizeDateToStartOfWeek = SalesReport.methods.normalizeDateToStartOfWeek.bind(SalesReport.methods);
@@ -293,6 +263,57 @@ describe("transformedTransactionData", () => {
       endDate: new Date("2023-06-01T00:00:00.000Z"),
       granularity: "Year"
     }, transactionData);
+  });
+
+});
+
+describe("generateUserFacingDateText", () => {
+  test("Day granularity", async () => {
+    await mountSalesReport();
+    const date = new Date("2020-01-01T11:30:20.000Z")
+    wrapper.setData({granularity:"Day"})
+    expect(wrapper.vm.generateUserFacingDateText(date))
+    .toEqual("Thu Jan 02 2020")
+  });
+
+  test("Week granularity with end of granularity less than time period", async () => {
+    await mountSalesReport();
+    const date = new Date("2020-01-07T11:30:20.000Z")
+    wrapper.setData({
+      granularity:"Week",
+      startDate: new Date("2020-01-05T11:30:20.000Z"),
+      endDate: new Date("2020-01-011T11:30:20.000Z")})
+      console.log(wrapper.vm.generateUserFacingDateText(date))
+    expect(wrapper.vm.generateUserFacingDateText(date))
+    .toEqual("05-01-2020 to 11-01-2020")
+  });
+
+  test("Week granularity with end of granularity more than time period", async () => {
+    await mountSalesReport();
+    const date = new Date("2020-01-07T11:30:20.000Z")
+    wrapper.setData({
+      granularity:"Week",
+      startDate: new Date("2020-01-05T11:30:20.000Z"),
+      endDate: new Date("2020-01-10T11:30:20.000Z")})
+      console.log(wrapper.vm.generateUserFacingDateText(date))
+    expect(wrapper.vm.generateUserFacingDateText(date))
+    .toEqual("05-01-2020 to 10-01-2020")
+  });
+
+  test("Month granularity", async () => {
+    await mountSalesReport();
+    const date = new Date("2020-01-01T11:30:20.000Z")
+    wrapper.setData({granularity:"Month"})
+    expect(wrapper.vm.generateUserFacingDateText(date))
+        .toEqual("January 2020")
+  });
+
+  test("Year granularity", async () => {
+    await mountSalesReport();
+    const date = new Date("2020-01-01T11:30:20.000Z")
+    wrapper.setData({granularity:"Year"})
+    expect(wrapper.vm.generateUserFacingDateText(date))
+        .toEqual("2020")
   });
 
 });
