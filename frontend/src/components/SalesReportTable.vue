@@ -4,7 +4,7 @@
       :headers="headers"
       :items="transactionInformation == null? []: transactionInformation"
       :loading="transactionInformation == null"
-      :items-per-page="5">
+      :items-per-page="7">
     </v-data-table>
   </div>
 </template>
