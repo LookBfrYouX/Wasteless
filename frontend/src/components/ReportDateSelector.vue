@@ -107,7 +107,11 @@ export default {
      * Emits the changed date range for a parent component to catch
      */
     filterDates() {
-      this.$emit('newDates', this.filterDates);
+      const dates = {
+        startDate: new Date(this.filterDates[0]),
+        endDate: new Date(this.filterDates[1]),
+      };
+      this.$emit('newDates', dates);
       if (this.filterDates.length === 0) {
         this.selectedDropdown = null;
       } else if (this.filterDates.length === 2 && this.filterDates[0] > this.filterDates[1]) {
@@ -149,7 +153,7 @@ export default {
      */
     dateRangeSelected(event) {
       let today = new Date();
-      let weekAgo = new Date(new Date().setDate(new Date().getDate() - 7));
+      let weekAgo = new Date(new Date().setDate(new Date().getDate() - 6));
       let monthAgo = new Date(new Date().setMonth(new Date().getMonth() - 1));
       let yearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 

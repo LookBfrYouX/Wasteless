@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <div>
-      <h1>Transactions mofo</h1>
+      <h2 class="col-lg-8 pl-0">Transaction Report</h2>
     </div>
     <div class="pt-5">
       <sales-report :business-id="businessId" />

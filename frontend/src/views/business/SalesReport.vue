@@ -3,7 +3,10 @@
     <v-row>
       <v-col class="d-flex align-center justify-center">
         <v-subheader>Date Range</v-subheader>
-        <report-date-selector  @newDates="(event) => this.filterDates = event"/>
+        <report-date-selector  @newDates="(event) => {
+          this.startDate = event.startDate;
+          this.endDate = event.endDate
+        }"/>
       </v-col>
       <v-col align="center" class="d-flex align-center justify-center">
         <v-subheader>Granularity</v-subheader>
@@ -75,7 +78,6 @@ export default {
     return {
       startDate, // inclusive (00:00) of the day
       endDate, // inclusive (23:59) of the day
-      filterDates: [],
       granularity: "Day",
       totalAmount: 0,
       totalTransactionCount: 0,
@@ -179,9 +181,6 @@ export default {
 
     setFilters() {
       console.log("SETTING REPORT FILTERS");
-      console.log(this.filterDates);
-      this.startDate = this.filterDates[0];
-      this.endDate = this.filterDates[1];
       console.log("GETTING TRANSACTIONS");
       this.getTransactions();
     },
