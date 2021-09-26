@@ -197,39 +197,47 @@ export default {
     /**
      * Normalizes a date to the start of the day, UTC time
      * @param{Date} date to modify
+     * @return{Date} same date object
      */
     normalizeDateToStartOfDay(date) {
       date.setUTCHours(0);
       date.setUTCMinutes(0);
       date.setUTCSeconds(0);
       date.setUTCMilliseconds(0);
+      return date;
     },
     
     /**
      * Normalizes a date to the start of the week (Sunday) and start of the day, UTC time
      * @param{Date} date to modify
+     * @return{Date} same date object
      */
     normalizeDateToStartOfWeek(date) {
       date.setUTCDate(date.getUTCDate() - date.getUTCDay());
       this.normalizeDateToStartOfDay(date);
+      return date;
     },
     
     /**
      * Normalizes a date to the start of the month and start of the day, UTC time
      * @param{Date} date to modify
+     * @return{Date} same date object
      */
     normalizeDateToStartOfMonth(date) {
       date.setUTCDate(1);
       this.normalizeDateToStartOfDay(date);
+      return date;
     },
 
     /**
      * Normalizes a date to the start of the year and start of the day, UTC time
      * @param{Date} date to modify
+     * @return{Date} same date object
      */
     normalizeDateToStartOfYear(date) {
       date.setUTCMonth(0);
       this.normalizeDateToStartOfMonth(date);
+      return date;
     },
   },
 
@@ -296,7 +304,7 @@ export default {
           // There may periods after the last transaction, meaning i == transactions.length. In ths
           // case the remaining periods must be empty
           const transaction = this.transactionData[i];
-          const transactionDate = new date(transaction.date);
+          const transactionDate = new Date(transaction.date);
 
           if (transactionDate.getTime() < date.getTime()) {
             i++;
