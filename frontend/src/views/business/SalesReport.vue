@@ -59,16 +59,15 @@ export default {
   },
 
   data() {
-    // minDate inclusive
     const minDate = new Date(2020, 10, 1);
     this.normalizeDateToStartOfWeek(minDate);
-    // maxDate exclusive
+    
     const maxDate = new Date(2021, 6, 1)
     this.normalizeDateToStartOfWeek(maxDate);
 
     return {
-      minDate,
-      maxDate,
+      minDate, // inclusive (00:00) of the day
+      maxDate, // inclusive (23:59) of the day
       granularity: "Month",
       totalValue: 0,
       numberOfTransactions: 0,
@@ -266,6 +265,7 @@ export default {
      *       |-------|---*----|---....----|--*----|
                               @
      * This continues until the pointer gets to the last period
+     * The last period is inclusive of the last day as the backend sets the end date to 11:59pm
      *
      * @return [{
      *   date, Date: date in the time period
