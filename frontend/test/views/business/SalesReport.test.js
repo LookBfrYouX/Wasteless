@@ -17,12 +17,12 @@ describe("normalizeDateToStartOfDay", () => {
     expect(normalizeDateToStartOfDay(new Date("2020-01-01T12:00:00.000Z")).toISOString())
     .toEqual("2020-01-01T00:00:00.000Z")
   });
-  
+
   test("Midnight UTC", () => {
     expect(normalizeDateToStartOfDay(new Date("2020-01-01T00:00:00.000Z")).toISOString())
     .toEqual("2020-01-01T00:00:00.000Z")
   });
-  
+
   test("7AM +5", () => {
     expect(normalizeDateToStartOfDay(new Date("2020-01-01T07:00:00.000+05:00")).toISOString())
     .toEqual("2020-01-01T00:00:00.000Z")
@@ -53,7 +53,7 @@ describe("normalizeDateToStartOfYear", () => {
 describe("transformedTransactionData", () => {
   /**
    *
-   * @param {*} thisData object with minDate, maxDate, granularity
+   * @param {*} thisData object with startDate, endDate, granularity
    * @param {*} transactionDataWithZeroes transactionData with entries for periods
    *            with zero transactions. These are removed before being passed to
    *            the method but not when used to compare the method's output
@@ -97,8 +97,8 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
-      maxDate: new Date("2020-01-04T00:00:00.000Z"),
+      startDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      endDate: new Date("2020-01-04T00:00:00.000Z"),
       granularity: "Day"
     }, transactionData);
   });
@@ -124,8 +124,8 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: new Date(transactionData[0].date),
-      maxDate: new Date("2020-01-04T07:00:00.000Z"),
+      startDate: new Date(transactionData[0].date),
+      endDate: new Date("2020-01-04T07:00:00.000Z"),
       granularity: "Day"
     }, transactionData);
   });
@@ -152,8 +152,8 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
-      maxDate: new Date("2020-01-04T07:00:00.000Z"),
+      startDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      endDate: new Date("2020-01-04T07:00:00.000Z"),
       granularity: "Day"
     }, transactionData);
   });
@@ -179,8 +179,8 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
-      maxDate: new Date("2020-01-19T00:00:00.000Z"),
+      startDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      endDate: new Date("2020-01-19T00:00:00.000Z"),
       granularity: "Week"
     }, transactionData);
   });
@@ -206,8 +206,8 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
-      maxDate: new Date("2020-04-01T00:00:00.000Z"),
+      startDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      endDate: new Date("2020-04-01T00:00:00.000Z"),
       granularity: "Month"
     }, transactionData);
   });
@@ -233,8 +233,8 @@ describe("transformedTransactionData", () => {
       }
     ];
     runMethodAndCompare({
-      minDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
-      maxDate: new Date("2023-06-01T00:00:00.000Z"),
+      startDate: normalizeDateToStartOfDay(new Date(transactionData[0].date)),
+      endDate: new Date("2023-06-01T00:00:00.000Z"),
       granularity: "Year"
     }, transactionData);
   });
