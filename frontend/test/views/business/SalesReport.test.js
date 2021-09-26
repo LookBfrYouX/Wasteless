@@ -2,7 +2,6 @@ import {shallowMount} from "@vue/test-utils";
 import {globalStateMocks} from "#/testHelper";
 import SalesReport from "@/views/business/SalesReport";
 import Vuetify from 'vuetify';
-import {ApiRequestError} from "@/ApiRequestError";
 
 const vuetify = new Vuetify();
 
@@ -12,7 +11,7 @@ const {Api} = require("@/Api.js");
 let wrapper = null;
 
 let mountSalesReport = () => {
-  wrapper = shallowMount(wrapper, {
+  wrapper = shallowMount(SalesReport, {
     vuetify,
     propsData: {
       businessId: 1
@@ -37,13 +36,13 @@ describe("getTransactions", () => {
   const generateResponse = () => {
     return {
       data: {
-        totalValue: 3141.59,
-        numberOfTransactions: 13,
+        totalAmount: 3141.59,
+        totalTransactionCount: 13,
         transactions: [
           {
             date: "2020-05-03T09:32:13.324+13:00",
             amount: 27.18,
-            transactionCount
+            transactionCount: 2
           }
         ]
       }
@@ -54,13 +53,104 @@ describe("getTransactions", () => {
     wrapper.setData({
       minDate: new Date("2020-01-01T23:59:00.000Z"),
       maxDate: new Date("2025-08-01T23:59:00.000Z"),
-      granularity: "YEAR"
+      granularity: "Year"
     });
-    Api.getTransactions = jest.fn(() => Promise.resolve()); // called automatically on mount before we
-    // can set data to a testable value, so need to call getTransaction manually
+
+    Api.getTransactions = jest.fn(() => Promise.resolve(generateResponse()));
+    // called automatically on mount before we can set data to a testable value,
+    // so need to call getTransaction manually
 
     await wrapper.vm.getTransactions();
-  })
+    expect(Api.getTransactions.mock.calls[0]).toEqual([
+      1, // business ID
+      {
+        startDate: "2020-01-01",
+        endDate: "2025-08-01",
+        transactionGranularity: "YEAR"
+      }
+    ]);
+  });
+
+  test("API props set", async () => {
+    Api.getTransactions = jest.fn(() => Promise.resolve(generateResponse()));
+    await mountSalesReport();
+
+    await wrapper.vm.getTransactions();
+
+    expect(wrapper.vm.totalAmount).toEqual(generateResponse().data.totalAmount);
+    expect(wrapper.vm.totalTransactionCount).toEqual(generateResponse().data.totalTransactionCount);
+    expect(wrapper.vm.transactions).toEqual(generateResponse().data.transactions);
+  });
+
+  test("Handles error", async () => {
+    Api.getTransactions = jest.fn(() => Promise.reject({
+      userFacingErrorMessage: "MSG"
+    }));
+
+    await mountSalesReport();
+
+    await wrapper.vm.getTransactions();
+    expect(wrapper.vm.apiErrorMessage).toBe("MSG");
+  });
+});
+
+describe("getBusinessInformation", () => {
+  test("successful API response", async () => {
+    const business = {
+      name: "BUS NAME",
+      address: {
+        country: "Fake Zealand"
+      }
+    };
+
+    Api.businessProfile = jest.fn(() => Promise.resolve({
+      data: business
+    }));
+
+    mountSalesReport(); // can't await lifecycle so need to call businessInformation again
+    
+    await wrapper.vm.getBusinessInformation();
+    expect(wrapper.vm.business).toEqual(business);
+  });
+
+  
+  test("successful API response", async () => {
+    const business = {
+      name: "BUS NAME",
+      address: {
+        country: "Fake Zealand"
+      }
+    };
+
+    const currency = {
+      code: "FNZ",
+      name: "Fake Dollar",
+      symbol: "¯\\_(ツ)_/¯"
+    };
+
+    Api.businessProfile = jest.fn(() => Promise.resolve({
+      data: business
+    }));
+
+    mountSalesReport(); // can't await lifecycle so need to call businessInformation again
+    wrapper.vm.$helper.getCurrencyForBusinessByCountry = jest.fn(() => currency);
+    
+    await wrapper.vm.getBusinessInformation();
+    expect(wrapper.vm.currency).toEqual(currency);
+    expect(wrapper.vm.$helper.getCurrencyForBusinessByCountry.mock.calls[0][0]).toEqual("Fake Zealand");
+  });
+
+  test("failed API response", async () => {
+    Api.businessProfile = jest.fn(() => Promise.reject({
+      userFacingErrorMessage: "Bla"
+    }));
+
+    mountSalesReport();
+    await wrapper.vm.getBusinessInformation();
+    expect(await wrapper.vm.getBusinessInformation()).toBe(false);
+  });
+
+
 });
 
 const normalizeDateToStartOfDay = SalesReport.methods.normalizeDateToStartOfDay;
