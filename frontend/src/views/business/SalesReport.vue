@@ -145,11 +145,6 @@ export default {
      * Converts the date to a user-friendly string, dependent on the granularity
      */
     generateUserFacingDateText(date) {
-      const weekText = `${
-        date.getUTCDate().toString().padStart(2, "0")}-${
-       (date.getUTCMonth() + 1).toString().padStart(2, "0")}-${
-        date.getUTCFullYear().toString()}`;
-
       if (this.granularity == "Day") {
         return date.toDateString();
       }
@@ -161,7 +156,7 @@ export default {
         if (this.endDate.getTime() < endDate.getTime()) {
           endDate = this.endDate;
         }
-        return `${weekText(startDate)} to ${weekText(endDate)}`;
+        return `${this.formatWeekText(startDate)} to ${this.formatWeekText(endDate)}`;
       }
       if (this.granularity == "Month") {
         return `${this.$constants.MONTH_NAMES[date.getUTCMonth()]} ${date.getUTCFullYear()}`
@@ -171,6 +166,15 @@ export default {
       }
 
       throw new Error("Yo what you doing here");
+    },
+    /**
+     * A helper function for formatting the week granularity date in human readable form.
+     */
+    formatWeekText(date) {
+      return `${
+        date.getUTCDate().toString().padStart(2, "0")}-${
+        (date.getUTCMonth() + 1).toString().padStart(2, "0")}-${
+        date.getUTCFullYear().toString()}`;
     },
 
     setFilters() {
