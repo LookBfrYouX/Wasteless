@@ -32,6 +32,12 @@
             <barcode-input
                 @info="autofill"
             />
+            <v-btn>
+              <v-icon left>
+                photo_camera
+              </v-icon>
+              Scan barcode using Camera
+            </v-btn>
           </v-card>
 
           <v-card class="pa-5">
