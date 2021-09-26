@@ -68,7 +68,7 @@ export default {
     return {
       searchParams: {
         searchParam: "",
-        searchKeys: [],
+        searchKeys: ["PRODUCT_NAME"],
         sortBy: "",
         isAscending: true,
       },
@@ -94,6 +94,7 @@ export default {
      * All data is stored in searchParams.
      */
     doUpdate: function () {
+      console.log(this.searchParams.searchKeys);
       this.$emit('multi-search-bar-update', this.searchParams);
     }
   },
