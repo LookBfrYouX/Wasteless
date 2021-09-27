@@ -691,7 +691,7 @@ VALUES (2501, 5001, 'ForSale', '2021-10-13 15:34:20', '2021-11-13 15:34:20', 'Sh
         'Looking for a small Bonsai under $60.'),
        (2515, 5006, 'ForSale', '2021-10-05 15:34:20', '2021-11-05 15:34:20', 'Red Bull energy drink 250ml x 3',
         'Brand new.'),
-       (2516, 5006, 'Exchange', '2021-10-05 15:34:20', '2021-11-05 15:34:20', 'Bataleon “push up” 143cm snowboard',
+       (2516, 5006, 'Exchange', '2021-10-05 15:34:20', '2021-11-05 15:34:20', 'Bataleon "push" up 143cm snowboard',
         'Bataleon “push up” 143cm snowboard women’s in good condition used for less than 1 season. Accepting swaps for a surfboard'),
 
        (2517, 5007, 'Wanted', '2021-09-25 15:34:20', '2021-10-25 15:34:20', 'Sunglasses',
@@ -723,8 +723,37 @@ VALUES (2501, 5001, 'ForSale', '2021-10-13 15:34:20', '2021-11-13 15:34:20', 'Sh
         'Accepting swaps for my fake rolex. Will consider fake Gucci/Louis Vuitton jacket.');
 
 
-INSERT INTO keyword (NAME, CREATED)
-VALUES ('Tea', '2021-04-23 15:34:20'),
-       ('Electronic', '2021-04-23 15:34:20'),
-       ('Supplement', '2021-04-23 15:34:20'),
-       ('Dairy', '2021-04-23 15:34:20');
+INSERT INTO keyword (ID, NAME, CREATED)
+VALUES (1, 'Cheap', '2021-04-23 15:34:20'),
+       (2, 'Electronic', '2021-04-23 15:34:20'),
+       (3, 'Supplement', '2021-04-23 15:34:20'),
+       (4, 'Food', '2021-04-23 15:34:20'),
+       (5, 'Flatmate', '2021-04-23 15:34:20'),
+       (6, 'Surf', '2021-04-23 15:34:20'),
+       (7, 'Clothing', '2021-04-23 15:34:20'),
+       (8, 'Free', '2021-04-23 15:34:20'),
+       (9, 'Furniture', '2021-04-23 15:34:20');
+
+INSERT INTO marketlisting_keyword (MARKETLISTING_ID, KEYWORD_ID)
+VALUES (2501, 1),
+       (2505, 1),
+       (2510, 1),
+       (2518, 1),
+       (2529, 1),
+       (2505, 2),
+       (2519, 2),
+       (2515, 3),
+       (2515, 4),
+       (2526, 5),
+       (2523, 5),
+       (2503, 6),
+       (2508, 7),
+       (2509, 7),
+       (2517, 7),
+       (2520, 7),
+       (2528, 7),
+       (2522, 8),
+       (2530, 8),
+       (2502, 9),
+       (2506, 9),
+       (2525, 9);
