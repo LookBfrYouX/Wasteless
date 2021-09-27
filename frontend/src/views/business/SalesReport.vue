@@ -1,22 +1,24 @@
 <template>
   <v-container class="w-100">
     <v-row>
-      <v-col class="d-flex align-center justify-center">
-        <v-subheader>Date Range</v-subheader>
-        <v-btn label="Date Range">Select Date Range</v-btn>
-      </v-col>
-      <v-col align="center" class="d-flex align-center justify-center">
-        <v-subheader>Granularity</v-subheader>
-        <v-select
-          class="granularitySelect"
-          v-model="pendingGranularity"
-          dense
-          :items="items"
-          label="Group By"
-          solo
-        />
-      </v-col>
-      <v-col align="center" class="d-flex align-center justify-center">
+      <v-col cols="12" md="9" class="d-flex justify-space-between">
+        <div class="d-flex align-center flex-wrap">
+          <v-subheader>Date Range</v-subheader>
+          <v-btn label="Date Range">Select Date Range</v-btn>
+        </div>
+        <div class="d-flex align-center flex-wrap">
+          <v-subheader>Granularity</v-subheader>
+          <v-select
+            class="granularitySelect"
+            v-model="pendingGranularity"
+            dense
+            :items="items"
+            label="Group By"
+            solo
+          />
+        </div>
+      </v-col >
+      <v-col cols="12" md="3">
         <v-btn v-on:click="getTransactions()">Go</v-btn>
       </v-col>
     </v-row>
@@ -344,5 +346,8 @@ export default {
 }
 .granularitySelect {
   max-width: 204.467px;
+}
+.v-input__slot {
+  padding-bottom:0;
 }
 </style>
