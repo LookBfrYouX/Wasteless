@@ -56,7 +56,7 @@
                 id="description"
                 v-model="description"
                 class="form-control"
-                maxlength="250"
+                maxlength="450"
                 name="description"
                 placeholder="Description"
                 rows="5"
