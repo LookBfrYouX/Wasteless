@@ -31,7 +31,8 @@ export default {
         },
         {
           text: "Sales",
-          value: "amountText"
+          value: "amountText",
+          sort: (a,b) => a.amount - b.amount
         }]
     }
   }

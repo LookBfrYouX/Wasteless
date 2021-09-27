@@ -17,7 +17,7 @@
         />
       </v-col>
       <v-col align="center" class="d-flex align-center justify-center">
-        <v-btn v-on:click="setResultsWithMocks">Go</v-btn>
+        <v-btn v-on:click="getTransactions">Go</v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
