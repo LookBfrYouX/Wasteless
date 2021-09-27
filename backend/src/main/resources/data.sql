@@ -50,7 +50,7 @@ CREATE TABLE business
 (
     ID                       BIGINT AUTO_INCREMENT PRIMARY KEY,
     NAME                     VARCHAR(50) NOT NULL,
-    DESCRIPTION              VARCHAR(250),
+    DESCRIPTION              VARCHAR(450),
     BUSINESS_TYPE            ENUM (
         'ACCOMMODATION_AND_FOOD',
         'RETAIL',
@@ -256,6 +256,30 @@ VALUES (6001,
         '8041',
         'Christchurch',
         'Canterbury',
+        'New Zealand'),
+       (6006,
+        '160',
+        'Blenheim Road',
+        'Riccarton',
+        '8041',
+        'Christchurch',
+        'Canterbury',
+        'New Zealand'),
+       (6007,
+        '57-59',
+        'Lincoln Road',
+        'Hillmorton',
+        '8024',
+        'Christchurch',
+        'Canterbury',
+        'New Zealand'),
+       (6008,
+        '52',
+        'Riccarton Road',
+        'Riccarton',
+        '8011',
+        'Christchurch',
+        'Canterbury',
         'New Zealand');
 
 -- Inserting user data
@@ -368,7 +392,28 @@ VALUES (1001,
         'Pies for all',
         6001,
         'RETAIL',
-        '2020-07-14T14:32:00.000000');
+        '2020-07-14T14:32:00.000000'),
+       (1004,
+        'Divine Cakes',
+        5002,
+        'Your local baker is Canterbury owned and operated and has been producing divine cakes & desserts for over 15 years. Our philosophy at the beginning was to use REAL eggs, REAL butter, FRESH cream, that is something that will never change.',
+        6006,
+        'RETAIL',
+        '2020-04-14T14:32:00.000000'),
+       (1005,
+        'Bin Inn - Lincoln Road Branch',
+        5002,
+        'We have a wide range of wholefood and specialty groceries, with a special focus being on healthy eating and healthy inspirations.',
+        6007,
+        'RETAIL',
+        '2020-05-22T14:32:00.000000'),
+       (1006,
+        'Wholefoods - Market & Health Store',
+        5002,
+        'We have a large range of fresh, seasonal organic produce, frozen products, dry ingredients and organically farmed meat and chicken. Take away barista made coffee, made from organic and fair trade coffee beans and using organic whole milk from a local dairy farmer.',
+        6008,
+        'RETAIL',
+        '2017-08-01T14:32:00.000000');
 
 -- Inserting user-business data
 
@@ -376,7 +421,10 @@ INSERT INTO user_business(USER_ID,
                           BUSINESS_ID)
 VALUES (5004, 1001),
        (5004, 1002),
-       (5002, 1003);
+       (5002, 1003),
+       (5002, 1004),
+       (5002, 1005),
+       (5002, 1006);
 
 -- Inserting product data
 
