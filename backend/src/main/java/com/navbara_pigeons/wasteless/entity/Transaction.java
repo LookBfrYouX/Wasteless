@@ -35,16 +35,20 @@ public class Transaction {
   @JoinColumn(name = "PRODUCT_ID")
   private Product product;
 
+  @JoinColumn(name = "BUSINESS_ID")
+  private Long businessId;
+
   @DecimalMin(message = "price must be above 0.01", value = "0.01")
   @DecimalMax(message = "price must be below 10,000,000", value = "10000000.00")
   @Column(name = "AMOUNT")
   private Double amount;
 
   public Transaction(ZonedDateTime saleDate, ZonedDateTime listingDate, Product product,
-      Double amount) {
+      Long businessId, Double amount) {
     this.saleDate = saleDate;
     this.listingDate = listingDate;
     this.product = product;
+    this.businessId = businessId;
     this.amount = amount;
   }
 
