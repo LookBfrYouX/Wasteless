@@ -59,7 +59,9 @@ describe("BarcodeInput test", () => {
   });
 
   test("Test analysis tags have been set correctly", () => {
-    wrapper.vm.setIngredientAnalysisInformation(['en:palm-oil-free', 'en:vegan', 'en:vegetarian', 'en:gluten-free', 'en:dairy-free']);
+    wrapper.vm.setIngredientAnalysisInformation(
+        ['en:palm-oil-free', 'en:vegan', 'en:vegetarian', 'en:gluten-free',
+          'en:dairy-free']);
     expect(wrapper.vm.$data.info.isPalmOilFree).toBeTruthy();
     expect(wrapper.vm.$data.info.isVegan).toBeTruthy();
     expect(wrapper.vm.$data.info.isVegetarian).toBeTruthy();
@@ -67,4 +69,26 @@ describe("BarcodeInput test", () => {
     expect(wrapper.vm.$data.info.isDairyFree).toBeTruthy();
   });
 
+});
+
+describe('Barcode Scan Functionality Tests', () => {
+  test('Skeleton component shows before scanner is loaded', async () => {
+    // Arrange
+    wrapper.vm.$data.scannerLoaded = false;
+    wrapper.vm.$data.dialog = true;
+    await wrapper.vm.$nextTick();
+
+    // Act & Assert
+    expect(wrapper.find('.skeleton').exists()).toBeTruthy();
+  });
+
+  test('Skeleton component does not show if scanner is loaded', async () => {
+    // Arrange
+    wrapper.vm.$data.scannerLoaded = true;
+    // wrapper.vm.$data.dialog = true;
+    await wrapper.vm.$nextTick();
+
+    // Act & Assert
+    expect(wrapper.find('.skeleton').exists()).toBeFalsy();
+  });
 });

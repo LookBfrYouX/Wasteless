@@ -27,6 +27,7 @@
           overlay-opacity="0.7"
           width="500"
       >
+
         <template v-slot:activator="{ on, attrs }">
           <v-btn
               v-bind="attrs"
@@ -41,14 +42,15 @@
         </template>
         <v-card>
           <v-skeleton-loader
+              class="skeleton"
               v-if="!scannerLoaded"
               height="400px"
               min-height="400px"
               type="image"
           ></v-skeleton-loader>
           <StreamBarcodeReader
-              @decode="onDecode"
-              @loaded="onLoaded"
+              @decode="decodeScannerResult"
+              @loaded="onScannerLoad"
           />
           <v-card-actions class="justify-center">
             <v-btn @click="dialog = false">Close</v-btn>
@@ -195,9 +197,17 @@ export default {
         }
       }
     },
-    onDecode(barcode) {
+
+    /**
+     * Called by the barcode scanner component when a EAN-13 number is read. Passes the Barcode value
+     * as a string.
+     * The method keeps track of the passed in Barcode numbers until a number has been read more times
+     * than the threshold. This is to protect from false readings.
+     */
+    decodeScannerResult(barcode) {
+      // For some reason the `decode` event keeps being triggered from the scanner component even
+      // after it is closed. This stops processing barcode reads once the dialog is closed.
       if (this.dialog) {
-        console.log("Barcode: " + barcode);
         if (this.barcodeScanCounts.has(barcode)) {
           const currentCount = this.barcodeScanCounts.get(barcode);
           this.barcodeScanCounts.set(barcode, currentCount + 1);
@@ -205,8 +215,8 @@ export default {
           this.barcodeScanCounts.set(barcode, 0);
         }
 
+        // When the count surpasses the threshold we are confident in the reading.
         if (this.barcodeScanCounts.get(barcode) >= this.threshold) {
-          console.log('Done!');
           this.barcode = barcode;
           this.setProductInformation();
           this.dialog = false;
@@ -214,8 +224,11 @@ export default {
         }
       }
     },
-    onLoaded() {
-      console.log("Barcode Scanner Loaded!");
+
+    /**
+     * Called when the barcode scanner component is initially mounted.
+     */
+    onScannerLoad() {
       this.scannerLoaded = true;
     }
   }
