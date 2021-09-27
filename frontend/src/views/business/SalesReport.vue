@@ -9,7 +9,7 @@
         <v-subheader>Granularity</v-subheader>
         <v-select
           class="granularitySelect"
-          v-model="granularity"
+          v-model="pendingGranularity"
           dense
           :items="items"
           label="Group By"
@@ -40,10 +40,19 @@
         <span v-if="business.name">{{business.name}}</span>
       </v-col>
     </v-row>
-    <SalesReportTable
-      :granularity="granularity"
-      :transactionInformation="transformedTransactionData"
-    />
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-header>
+          Show Table
+        </v-expansion-panel-header>
+        <v-expansion-panel-content :eager=true >
+          <SalesReportTable
+            :granularity="granularity"
+            :transactionInformation="transformedTransactionData"
+          />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
   </v-container>
 </template>
@@ -63,7 +72,7 @@ export default {
 
   data() {
     const startDate = new Date();
-    startDate.setUTCDate(startDate.getUTCDate() - 6);
+    startDate.setUTCDate(startDate.getUTCDate() - 600);
     // initially show a week of data;
 
     const endDate = new Date();
@@ -72,6 +81,7 @@ export default {
       startDate, // inclusive (00:00) of the day
       endDate, // inclusive (23:59) of the day
       granularity: "Day",
+      pendingGranularity: "Day",
       totalAmount: 0,
       totalTransactionCount: 0,
       transactions: null,
@@ -80,8 +90,8 @@ export default {
       currency: null
     };
   },
-  
- 
+
+
   /**
    * Loads transaction information and business information (name, currency)
    */
@@ -119,13 +129,16 @@ export default {
       try {
         const response = (
           await Api.getTransactions(this.businessId, {
-            transactionGranularity: this.granularity.toUpperCase(),
+            transactionGranularity: this.pendingGranularity.toUpperCase(),
             startDate: this.startDate.toISOString().slice(0, 10),
             endDate: this.endDate.toISOString().slice(0, 10),
           })
         ).data;
         this.totalAmount = response.totalAmount;
         this.totalTransactionCount = response.totalTransactionCount;
+        this.granularity = this.pendingGranularity;
+        // Need this or transformedTranactionData will update as soon as
+        // granularity is changed even if the data is still for the old granularity
         this.transactions = response.transactions;
         this.apiErrorMessage = null;
       } catch (err) {
@@ -281,7 +294,7 @@ export default {
             this.normalizeDateToStartOfYear(date);
             break;
         }
-        
+
         if (i < this.transactions.length) {
           // There may periods after the last transaction, meaning i == transactions.length. In ths
           // case the remaining periods must be empty
