@@ -1,12 +1,12 @@
 <template>
   <v-container class="w-100">
     <v-row>
-      <v-col cols="12" md="9" class="d-flex justify-space-between">
+      <v-col cols="12" md="9" class="d-flex align-end justify-space-between">
         <div class="d-flex align-center flex-wrap">
           <v-subheader>Date Range</v-subheader>
-          <v-btn label="Date Range">Select Date Range</v-btn>
+          <v-btn label="Date Range">Select</v-btn>
         </div>
-        <div class="d-flex align-center flex-wrap">
+        <div class="granularity-picker d-flex align-center flex-wrap">
           <v-subheader>Granularity</v-subheader>
           <v-select
             class="granularitySelect"
@@ -18,28 +18,32 @@
           />
         </div>
       </v-col >
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="3" class="d-flex align-end justify-start justify-md-end">
         <v-btn v-on:click="getTransactions()">Go</v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
     <v-row class="mb-2">
-      <v-col>
-        <h4>Total Transactions</h4>
-        {{ totalTransactionCount }}
+      <v-col cols="12" md="6" class="d-flex flex-nowrap justify-space-between">
+        <div>
+          <h4>Total Transactions</h4>
+          {{ totalTransactionCount }}
+        </div>
+        <div>
+          <h4>Total Sales</h4>
+          {{ $helper.makeCurrencyString(totalAmount, currency) }}
+        </div>
       </v-col>
-      <v-col>
-        <h4>Total Sales</h4>
-        {{ $helper.makeCurrencyString(totalAmount, currency) }}
-      </v-col>
-      <v-col>
-        <h4>Period</h4>
-        {{ this.$helper.isoToDateString(startDate) }} to
-        {{ this.$helper.isoToDateString(endDate) }}
-      </v-col>
-      <v-col>
-        <h4>Business</h4>
-        <span v-if="business.name">{{business.name}}</span>
+      <v-col cols="12" md="6" class="d-flex flex-nowrap justify-space-between">
+        <div>
+          <h4>Period</h4>
+          {{ this.$helper.isoToDateString(startDate) }} to
+          {{ this.$helper.isoToDateString(endDate) }}
+        </div>
+        <div>
+          <h4>Business</h4>
+          <span v-if="business.name">{{business.name}}</span>
+        </div>
       </v-col>
     </v-row>
     <v-expansion-panels>
@@ -345,9 +349,9 @@ export default {
   display: none;
 }
 .granularitySelect {
-  max-width: 204.467px;
+  max-width: 130px;
 }
-.v-input__slot {
-  padding-bottom:0;
+.granularity-picker div.v-input--dense>.v-input__control>.v-input__slot {
+  margin-bottom:0;
 }
 </style>
