@@ -9,6 +9,7 @@ import lombok.Data;
 public class TransactionDto {
 
   private Long transactionId;
+  private Long businessId;
   private Product product;
   private Double amount;
   private ZonedDateTime listingDate;
@@ -23,6 +24,7 @@ public class TransactionDto {
     this.transactionId = transaction.getId();
     this.saleDate = transaction.getSaleDate();
     this.listingDate = transaction.getListingDate();
+    this.businessId = transaction.getBusinessId();
     this.product = transaction.getProduct();
     this.amount = transaction.getAmount();
   }

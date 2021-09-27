@@ -2,11 +2,15 @@ package com.navbara_pigeons.wasteless.testprovider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.navbara_pigeons.wasteless.entity.*;
+import com.navbara_pigeons.wasteless.model.TransactionReportModel;
 import com.navbara_pigeons.wasteless.service.BusinessService;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,6 +45,12 @@ public class MainTestProvider {
   @Autowired
   protected WebApplicationContext webApplicationContext;
 
+  protected TransactionReportModel makeTransactionReport(LocalDate date, Integer count, Double amount) {
+    ZoneId zoneId = ZoneId.of("GMT+12:00");
+    LocalTime time = LocalTime.now();
+    ZonedDateTime timeStamp = ZonedDateTime.of(date, time, zoneId);
+    return new TransactionReportModel(timeStamp, count, amount);
+  }
   /**
    * This test helper method creates and returns listings given an inventory item.
    * @param inventoryItem
@@ -58,7 +68,6 @@ public class MainTestProvider {
         .setPrice(12.0);
     return listing;
   }
-
 
   protected InventoryItem makeInventoryItem(Product product, Business business) {
     InventoryItem inventoryItem = new InventoryItem();
