@@ -4,7 +4,7 @@
       :headers="headers"
       :items="transactionInformation == null? []: transactionInformation"
       :loading="transactionInformation == null"
-      :items-per-page="7">
+      :items-per-page="5">
     </v-data-table>
   </div>
 </template>
@@ -14,16 +14,18 @@ export default {
   props: {
     granularity: {
       default: "",
-      type: String
+      type: String,
     },
     transactionInformation: {}
   },
+
   computed: {
     headers() {
       return [
         {
           text: this.granularity == "Week"? "Week (starting Sunday)": this.granularity,
-          value: "dateRangeText"
+          value: "dateRangeText",
+          sort: (a, b) => this.dateMap[a] - this.dateMap[b]
         },
         {
           text: "Transactions",
@@ -32,8 +34,24 @@ export default {
         {
           text: "Sales",
           value: "amountText",
-          sort: (a,b) => a.amount - b.amount
+          sort: (a, b) => this.amountMap[a] - this.amountMap[b]
         }]
+    },
+
+    dateMap() {
+      const dateMap = {};
+      this.transactionInformation.forEach(el => {
+        dateMap[el.dateRangeText] = el.date;
+      });
+      return dateMap;
+    },
+
+    amountMap() {
+      const amountMap = {};
+      this.transactionInformation.forEach(el => {
+        amountMap[el.amountText] = el.amount;
+      });
+      return amountMap;
     }
   }
 }
