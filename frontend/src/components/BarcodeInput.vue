@@ -212,7 +212,7 @@ export default {
           const currentCount = this.barcodeScanCounts.get(barcode);
           this.barcodeScanCounts.set(barcode, currentCount + 1);
         } else {
-          this.barcodeScanCounts.set(barcode, 0);
+          this.barcodeScanCounts.set(barcode, 1);
         }
 
         // When the count surpasses the threshold we are confident in the reading.

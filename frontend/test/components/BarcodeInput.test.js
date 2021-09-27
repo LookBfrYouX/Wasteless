@@ -7,28 +7,55 @@ let vuetify = new Vuetify();
 
 let wrapper;
 
-const info = { data: {
-              product: {
-                product_name: "Vegemite",
-                brands:"Asus",
-                nutriscore_grade:"f",
-                nova_group:"4",
-                nutrient_levels: { fat: "low", salt: "moderate", "saturated-fat": "low", sugars: "high" },
-                ingredients_analysis_tags: ['en:palm-oil-free', 'en:vegan', 'en:vegetarian', 'en:gluten-free', 'en:dairy-free']
-              },
-              status:1,
-              status_verbose:"product found"
-            }}
+const info = {
+  data: {
+    product: {
+      product_name: "Vegemite",
+      brands: "Asus",
+      nutriscore_grade: "f",
+      nova_group: "4",
+      nutrient_levels: {
+        fat: "low",
+        salt: "moderate",
+        "saturated-fat": "low",
+        sugars: "high"
+      },
+      ingredients_analysis_tags: ['en:palm-oil-free', 'en:vegan',
+        'en:vegetarian', 'en:gluten-free', 'en:dairy-free']
+    },
+    status: 1,
+    status_verbose: "product found"
+  }
+}
 
 jest.mock('@/Api')
 
 const {Api} = require('@/Api')
 
+/**
+ * Adds a wrapping `div data-app="true"` to the body so that we don't
+ * get Vuetify complaining about missing data-app attribute for some components.
+ *
+ * @return undefined
+ */
+function addElemWithDataAppToBody() {
+  const app = document.createElement('div');
+  app.setAttribute('data-app', true);
+  document.body.append(app);
+}
+
+addElemWithDataAppToBody();
+
 beforeEach(() => {
   wrapper = mount(BarcodeInput, {
-      vuetify,
-    });
-
+    vuetify,
+    stubs: {
+      StreamBarcodeReader: true
+    }
+  });
+  const app = document.createElement("div");
+  app.setAttribute("data-app", true);
+  document.body.append(app);
 });
 
 afterEach(() => wrapper.destroy());
@@ -50,7 +77,8 @@ describe("BarcodeInput test", () => {
   });
 
   test("Test nutritional levels have been set correctly", () => {
-    wrapper.vm.setNutritionalLevelInformation({ fat: "low", salt: "moderate", "saturated-fat": "low", sugars: "high" });
+    wrapper.vm.setNutritionalLevelInformation(
+        {fat: "low", salt: "moderate", "saturated-fat": "low", sugars: "high"});
     expect(wrapper.vm.$data.info.fat).toEqual("LOW");
     expect(wrapper.vm.$data.info.saturatedFat).toEqual("LOW")
     expect(wrapper.vm.$data.info.salt).toEqual("MODERATE")
@@ -72,23 +100,31 @@ describe("BarcodeInput test", () => {
 });
 
 describe('Barcode Scan Functionality Tests', () => {
-  test('Skeleton component shows before scanner is loaded', async () => {
-    // Arrange
-    wrapper.vm.$data.scannerLoaded = false;
-    wrapper.vm.$data.dialog = true;
-    await wrapper.vm.$nextTick();
-
-    // Act & Assert
-    expect(wrapper.find('.skeleton').exists()).toBeTruthy();
-  });
-
-  test('Skeleton component does not show if scanner is loaded', async () => {
+  test('Skeleton component does not show if scanner is loaded', () => {
     // Arrange
     wrapper.vm.$data.scannerLoaded = true;
-    // wrapper.vm.$data.dialog = true;
-    await wrapper.vm.$nextTick();
 
     // Act & Assert
     expect(wrapper.find('.skeleton').exists()).toBeFalsy();
+  });
+
+  test('barcodeScanCounts records correct barcode counts', () => {
+    // Arrange
+    wrapper.vm.$data.dialog = true;
+    const barcode1 = '1234567890123';
+    const barcode2 = '0987654321098';
+    const barcodes = [
+      barcode1, barcode1, barcode1,
+      barcode2, barcode2
+    ];
+
+    // Act
+    barcodes.forEach(wrapper.vm.decodeScannerResult);
+
+    // Assert
+    expect(wrapper.vm.$data.barcodeScanCounts.get(barcode1)).toBe(
+        barcodes.filter(x => x === barcode1).length);
+    expect(wrapper.vm.$data.barcodeScanCounts.get(barcode2)).toBe(
+        barcodes.filter(x => x === barcode2).length);
   });
 });
