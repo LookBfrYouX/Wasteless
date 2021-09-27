@@ -38,13 +38,7 @@ const {Api} = require('@/Api')
  *
  * @return undefined
  */
-function addElemWithDataAppToBody() {
-  const app = document.createElement('div');
-  app.setAttribute('data-app', true);
-  document.body.append(app);
-}
 
-addElemWithDataAppToBody();
 
 beforeEach(() => {
   wrapper = mount(BarcodeInput, {
@@ -56,6 +50,8 @@ beforeEach(() => {
   const app = document.createElement("div");
   app.setAttribute("data-app", true);
   document.body.append(app);
+
+  wrapper.vm.$data.dialog = true;
 });
 
 afterEach(() => wrapper.destroy());
@@ -100,17 +96,15 @@ describe("BarcodeInput test", () => {
 });
 
 describe('Barcode Scan Functionality Tests', () => {
-  test('Skeleton component does not show if scanner is loaded', () => {
+  test('Skeleton component shows before scanner is loaded', () => {
     // Arrange
-    wrapper.vm.$data.scannerLoaded = true;
-
+    wrapper.setData({scannerLoaded: false});
     // Act & Assert
-    expect(wrapper.find('.skeleton').exists()).toBeFalsy();
+    expect(wrapper.find('.skeleton').exists()).toBeTruthy();
   });
 
   test('barcodeScanCounts records correct barcode counts', () => {
     // Arrange
-    wrapper.vm.$data.dialog = true;
     const barcode1 = '1234567890123';
     const barcode2 = '0987654321098';
     const barcodes = [
@@ -126,5 +120,44 @@ describe('Barcode Scan Functionality Tests', () => {
         barcodes.filter(x => x === barcode1).length);
     expect(wrapper.vm.$data.barcodeScanCounts.get(barcode2)).toBe(
         barcodes.filter(x => x === barcode2).length);
+  });
+
+  test('When barcode reads are short of threshold, doesnt set barcode', () => {
+    // Arrange
+    const threshold = wrapper.vm.$data.threshold;
+    const barcode = '1234567890123';
+    const barcodes = new Array(threshold - 1).fill(barcode);
+
+    // Act
+    barcodes.forEach(wrapper.vm.decodeScannerResult);
+
+    // Assert
+    expect(wrapper.vm.$data.barcode).not.toEqual(barcode);
+  });
+
+  test('When barcode reads equal threshold, barcode is set', () => {
+    // Arrange
+    const threshold = wrapper.vm.$data.threshold;
+    const barcode = '1234567890123';
+    const barcodes = new Array(threshold).fill(barcode);
+
+    // Act
+    barcodes.forEach(wrapper.vm.decodeScannerResult);
+
+    // Assert
+    expect(wrapper.vm.$data.barcode).toEqual(barcode);
+  });
+
+  test('When barcode reads exceed threshold, barcode is set', () => {
+    // Arrange
+    const threshold = wrapper.vm.$data.threshold;
+    const barcode = '1234567890123';
+    const barcodes = new Array(threshold + 1).fill(barcode);
+
+    // Act
+    barcodes.forEach(wrapper.vm.decodeScannerResult);
+
+    // Assert
+    expect(wrapper.vm.$data.barcode).toEqual(barcode);
   });
 });
