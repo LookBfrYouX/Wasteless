@@ -34,13 +34,6 @@
             />
           </v-card>
 
-          <!--          <v-card class="pa-5">-->
-          <!--            <StreamBarcodeReader-->
-          <!--                @decode="onDecode"-->
-          <!--                @loaded="onLoaded"-->
-          <!--            ></StreamBarcodeReader>-->
-          <!--          </v-card>-->
-
           <v-card
               class="card"
           >
@@ -114,7 +107,7 @@
             <div class="col">
               <v-btn
                   :loading="apiCallInProgress"
-                  class="white--text bootstrapish-button"
+                  class="white--text"
                   color="rgb(30, 201, 150)"
                   width="100%"
                   @click="createProduct"
@@ -255,7 +248,7 @@ export default {
       Object.keys(info).forEach(prop => {
         // name, manufacturer, salt/fat etc. levels
         if (typeof this.queryParams[prop] == "string") {
-          if (this.queryParams[prop].trim().length == 0) {
+          if (this.queryParams[prop].trim().length === 0) {
             this.queryParams[prop] = info[prop];
           }
         }
@@ -323,12 +316,5 @@ export default {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
-}
-
-.bootstrapish-button.v-btn {
-  font-size: 1em;
-  letter-spacing: initial;
-  text-transform: initial;
-  text-indent: initial;
 }
 </style>
