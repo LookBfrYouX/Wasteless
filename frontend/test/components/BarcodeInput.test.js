@@ -160,4 +160,15 @@ describe('Barcode Scan Functionality Tests', () => {
     // Assert
     expect(wrapper.vm.$data.barcode).toEqual(barcode);
   });
+
+  test('scannerLoaded is set to True on scanner load', () => {
+    // Arrange
+    wrapper.setData({scannerLoaded: false});
+
+    // Act
+    wrapper.vm.onScannerLoad();
+
+    // Assert
+    expect(wrapper.vm.$data.scannerLoaded).toEqual(true);
+  });
 });
