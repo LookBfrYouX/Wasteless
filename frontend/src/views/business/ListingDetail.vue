@@ -81,7 +81,8 @@
         <v-card-title class="text-h5">Buy this listing?
         </v-card-title>
         <v-card-text>
-          Buy <strong>{{ quantity }} </strong><strong>'{{ name }}'</strong> from <strong>'{{ business.name }}'</strong> for
+          Buy <strong>{{ quantity }} </strong><strong>'{{ name }}'</strong> from
+          <strong>'{{ business.name }}'</strong> for
           <strong>{{ $helper.makeCurrencyString(price, currency) }}?</strong>
         </v-card-text>
         <v-spacer></v-spacer>
@@ -163,7 +164,16 @@ export default {
       },
       name: "",
       description: "",
-      business: null,
+      business: {
+        address: {
+          city: null,
+          country: null,
+          postcode: null,
+          region: null,
+          streetName: null,
+          streetNumber: null
+        },
+      },
       productImages: [],
       quantity: null,
       price: null,
