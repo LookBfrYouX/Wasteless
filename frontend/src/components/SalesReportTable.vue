@@ -1,10 +1,15 @@
 <template>
   <div>
+    <v-switch
+      v-model="hideZeroes"
+      label="Hide periods with no transactions"
+    />
     <v-data-table
         :headers="headers"
-        :items="transactionInformation == null? []: transactionInformation"
+        :items="tableData"
         :loading="transactionInformation == null"
-        :items-per-page="5">
+        :items-per-page="5"
+    >
     </v-data-table>
   </div>
 </template>
@@ -16,10 +21,22 @@ export default {
       default: "",
       type: String,
     },
-    transactionInformation: {}
+    transactionInformation: null
+  },
+
+  data() {
+    return {
+      hideZeroes: false
+    };
   },
 
   computed: {
+    tableData() {
+      if (this.transactionInformation == null) return [];
+      if (!this.hideZeroes) return this.transactionInformation;
+      return this.transactionInformation.filter(el => el.transactionCount > 0);
+    },
+
     headers() {
       return [
         {

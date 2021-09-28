@@ -3,8 +3,8 @@
     <v-row>
       <v-col cols="12" md="9" class="d-flex align-end justify-space-between">
         <div class="d-flex align-center flex-wrap">
-          <v-subheader>Date Range</v-subheader>
-          <report-date-selector  @newDates="(event) => {
+          <v-subheader class="mb-1">Date Range</v-subheader>
+          <report-date-selector class="pl-0" @newDates="(event) => {
           this.startDate = event.startDate;
           this.endDate = event.endDate
         }"/>
@@ -52,7 +52,9 @@
     <v-expansion-panels>
       <v-expansion-panel>
         <v-expansion-panel-header>
-          Show Table
+          <template v-slot:default="{ open }">
+            {{open? "Hide Table": "Show Table"}}
+          </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content :eager=true >
           <SalesReportTable
@@ -262,8 +264,7 @@ export default {
 
      *                  i=0
      *       |-------|---*----|---....----|--*----|
-     @
-     * < @ so element found. i++
+     *                        @      * < @ so element found. i++
      *
      * It then increments the pointer by one period, moving it to the end of the second period. This time,
      * the ith entry (first entry) is before the pointer, so it knows there is at least one transaction in
@@ -271,7 +272,7 @@ export default {
      *
      *                            i=1
      *       |-------|---*----|---....----|--*----|
-     @
+     *                                    @
      * This continues until the pointer gets to the last period
      * The last period is inclusive of the last day as the backend sets the end date to 11:59pm
      *
