@@ -53,7 +53,7 @@ describe("getTransactions", () => {
     wrapper.setData({
       startDate: new Date("2020-01-01T23:59:00.000Z"),
       endDate: new Date("2025-08-01T23:59:00.000Z"),
-      granularity: "Year"
+      pendingGranularity: "Year"
     });
 
     Api.getTransactions = jest.fn(() => Promise.resolve(generateResponse()));
@@ -108,12 +108,12 @@ describe("getBusinessInformation", () => {
     }));
 
     mountSalesReport(); // can't await lifecycle so need to call businessInformation again
-    
+
     await wrapper.vm.getBusinessInformation();
     expect(wrapper.vm.business).toEqual(business);
   });
 
-  
+
   test("successful API response", async () => {
     const business = {
       name: "BUS NAME",
@@ -134,7 +134,7 @@ describe("getBusinessInformation", () => {
 
     mountSalesReport(); // can't await lifecycle so need to call businessInformation again
     wrapper.vm.$helper.getCurrencyForBusinessByCountry = jest.fn(() => currency);
-    
+
     await wrapper.vm.getBusinessInformation();
     expect(wrapper.vm.currency).toEqual(currency);
     expect(wrapper.vm.$helper.getCurrencyForBusinessByCountry.mock.calls[0][0]).toEqual("Fake Zealand");
@@ -161,38 +161,38 @@ const normalizeDateToStartOfYear = SalesReport.methods.normalizeDateToStartOfYea
 describe("normalizeDateToStartOfDay", () => {
   test("12PM UTC", () => {
     expect(normalizeDateToStartOfDay(new Date("2020-01-01T12:00:00.000Z")).toISOString())
-    .toEqual("2020-01-01T00:00:00.000Z")
+        .toEqual("2020-01-01T00:00:00.000Z")
   });
 
   test("Midnight UTC", () => {
     expect(normalizeDateToStartOfDay(new Date("2020-01-01T00:00:00.000Z")).toISOString())
-    .toEqual("2020-01-01T00:00:00.000Z")
+        .toEqual("2020-01-01T00:00:00.000Z")
   });
 
   test("7AM +5", () => {
     expect(normalizeDateToStartOfDay(new Date("2020-01-01T07:00:00.000+05:00")).toISOString())
-    .toEqual("2020-01-01T00:00:00.000Z")
+        .toEqual("2020-01-01T00:00:00.000Z")
   });
 });
 
 describe("normalizeDateToStartOfWeek", () => {
   test("Wednesday 12PM UTC", () => {
     expect(normalizeDateToStartOfWeek(new Date("2020-01-01T12:00:00.000Z")).toISOString())
-    .toEqual("2019-12-29T00:00:00.000Z")
+        .toEqual("2019-12-29T00:00:00.000Z")
   });
 });
 
 describe("normalizeDateToStartOfMonth", () => {
   test("February 29th 12PM UTC", () => {
     expect(normalizeDateToStartOfMonth(new Date("2020-02-29T12:00:00.000Z")).toISOString())
-    .toEqual("2020-02-01T00:00:00.000Z")
+        .toEqual("2020-02-01T00:00:00.000Z")
   });
 });
 
 describe("normalizeDateToStartOfYear", () => {
   test("February 29th 12PM UTC", () => {
     expect(normalizeDateToStartOfYear(new Date("2020-02-29T12:00:00.000Z")).toISOString())
-    .toEqual("2020-01-01T00:00:00.000Z")
+        .toEqual("2020-01-01T00:00:00.000Z")
   });
 });
 
@@ -393,7 +393,7 @@ describe("generateUserFacingDateText", () => {
     const date = new Date("2020-01-01T11:30:20.000Z")
     wrapper.setData({granularity:"Day"})
     expect(wrapper.vm.generateUserFacingDateText(date))
-    .toEqual("Thu Jan 02 2020")
+        .toEqual("Thu Jan 02 2020")
   });
 
   test("Week granularity with end of granularity less than time period", async () => {
@@ -403,9 +403,8 @@ describe("generateUserFacingDateText", () => {
       granularity:"Week",
       startDate: new Date("2020-01-05T11:30:20.000Z"),
       endDate: new Date("2020-01-011T11:30:20.000Z")})
-      console.log(wrapper.vm.generateUserFacingDateText(date))
     expect(wrapper.vm.generateUserFacingDateText(date))
-    .toEqual("05-01-2020 to 11-01-2020")
+        .toEqual("05-01-2020 to 11-01-2020")
   });
 
   test("Week granularity with end of granularity more than time period", async () => {
@@ -415,9 +414,8 @@ describe("generateUserFacingDateText", () => {
       granularity:"Week",
       startDate: new Date("2020-01-05T11:30:20.000Z"),
       endDate: new Date("2020-01-10T11:30:20.000Z")})
-      console.log(wrapper.vm.generateUserFacingDateText(date))
     expect(wrapper.vm.generateUserFacingDateText(date))
-    .toEqual("05-01-2020 to 10-01-2020")
+        .toEqual("05-01-2020 to 10-01-2020")
   });
 
   test("Month granularity", async () => {
