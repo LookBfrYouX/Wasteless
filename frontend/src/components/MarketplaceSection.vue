@@ -20,7 +20,7 @@
         <li v-for="card in cards" :key="card.id">
           <marketplace-card
               :card="card"
-              class="hover-white-bg hover-scale-effect slightly-transparent-white-background my-4 rounded"
+              class="slightly-transparent-white-background my-4 rounded"
           />
         </li>
       </ul>
