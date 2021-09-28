@@ -2,7 +2,6 @@
   <v-container>
     <v-row align="center">
       <v-col cols="12" lg="8" class="my-0 py-0 align-center">
-        <v-subheader>Date range</v-subheader>
         <v-dialog
             ref="menu"
             v-model="menu"
@@ -11,15 +10,7 @@
             persistent
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-                :label="selectedDropdown ? selectedDropdown : filterDates.length === 0 ? 'Select' : 'Custom'"
-                prepend-inner-icon="date_range"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-                solo
-                dense
-            />
+            <v-btn v-on="on" v-bind="attrs" >{{ getLabel }}</v-btn>
           </template>
           <v-card>
             <v-card-text class="px-0 py-0">
@@ -116,11 +107,26 @@ export default {
      * Emits the changed date range for a parent component to catch
      */
     filterDates() {
-      this.$emit('newDates', this.filterDates);
+      const dates = {
+        startDate: new Date(this.filterDates[0]),
+        endDate: new Date(this.filterDates[1]),
+      };
+      this.$emit('newDates', dates);
       if (this.filterDates.length === 0) {
         this.selectedDropdown = null;
       } else if (this.filterDates.length === 2 && this.filterDates[0] > this.filterDates[1]) {
         this.filterDates = this.filterDates.sort()
+      }
+    }
+  },
+  computed: {
+    getLabel() {
+      if (this.filterDates.length > 0 && this.selectedDropdown != null) {
+        return `${this.selectedDropdown}`
+      } else if (this.filterDates.length > 0) {
+        return "Custom"
+      } else {
+        return "select";
       }
     }
   },
@@ -147,7 +153,7 @@ export default {
      */
     dateRangeSelected(event) {
       let today = new Date();
-      let weekAgo = new Date(new Date().setDate(new Date().getDate() - 7));
+      let weekAgo = new Date(new Date().setDate(new Date().getDate() - 6));
       let monthAgo = new Date(new Date().setMonth(new Date().getMonth() - 1));
       let yearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 

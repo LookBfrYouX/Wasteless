@@ -1,16 +1,20 @@
 <template>
-  <div>
-    Hey! You're on the new Transactions Page 🧾
-    <report-date-selector  @newDates="event => this.filterDates = event"/>
-  </div>
+  <v-container>
+    <div>
+      <h2 class="col-lg-8 pl-0">Transaction Report</h2>
+    </div>
+    <div class="pt-5">
+      <sales-report :business-id="businessId" />
+    </div>
+  </v-container>
 </template>
 <script>
-import ReportDateSelector from "@/components/ReportDateSelector";
+import SalesReport from "@/views/business/SalesReport";
 
 export default {
   name: "Transactions",
   components: {
-    ReportDateSelector
+    SalesReport,
   },
   props: {
     businessId: {
