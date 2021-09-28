@@ -86,6 +86,8 @@ export default {
       barcode: "",
       errorMessage: null,
       apiIsLoading: false,
+      apiRetryLimit: 3,
+      apiRetryCount: 0,
       dialog: false,
       scannerLoaded: false,
       threshold: 5,
@@ -116,9 +118,16 @@ export default {
       this.apiIsLoading = true;
       try {
         const response = await Api.getOpenFoodFacts(barcode);
+        if (response.data.status === 0) {
+          throw new Error();
+        }
         return response.data;
       } catch (err) {
-        this.errorMessage = err.userFacingErrorMessage;
+        if (++this.apiRetryCount >= this.apiRetryLimit) {
+          this.errorMessage = err.userFacingErrorMessage;
+        } else {
+          await this.getNutritionalInformationWithBarcode(barcode);
+        }
       } finally {
         this.apiIsLoading = false;
       }
@@ -226,6 +235,7 @@ export default {
           this.dialog = false;
           this.barcodeScanCounts = new Map();
           this.currentMax = 0;
+          this.apiRetryCount = 0;
         }
       }
     },
