@@ -66,13 +66,13 @@ public class ListingQueryBuilder {
     // Sorting query
     Path<Object> path;
     switch ((ListingSortByOption) pagBuilder.getSortField()) {
-      case quantity:
-      case price:
-      case created:
-      case closes:
+      case QUANTITY:
+      case PRICE:
+      case CREATED:
+      case CLOSES:
         path = listing.get(pagBuilder.getSortField().toString());
         break;
-      case name:
+      case NAME:
         path = product.get(pagBuilder.getSortField().toString());
         break;
       default:

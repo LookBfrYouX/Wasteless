@@ -113,16 +113,16 @@ export default {
       listings: [],
       apiErrorMessage: null,
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
-        {key: "Closing Soon", value: "closes", isAscending: true},
-        {key: "Closing Latest", value: "closes", isAscending: false},
-        {key: "Name A-Z", value: "name", isAscending: true},
-        {key: "Name Z-A", value: "name", isAscending: false},
-        {key: "Lowest Price", value: "price", isAscending: true},
-        {key: "Highest Price", value: "price", isAscending: false},
-        {key: "Lowest Quantity", value: "quantity", isAscending: true},
-        {key: "Highest Quantity", value: "quantity", isAscending: false},
-        {key: "City A-Z", value: "city", isAscending: true},
-        {key: "City Z-A", value: "city", isAscending: false}
+        {key: "Closing Soon"    , value: "CLOSES"  , isAscending: true },
+        {key: "Closing Latest"  , value: "CLOSES"  , isAscending: false},
+        {key: "Name A-Z"        , value: "NAME"    , isAscending: true },
+        {key: "Name Z-A"        , value: "NAME"    , isAscending: false},
+        {key: "Lowest Price"    , value: "PRICE"   , isAscending: true },
+        {key: "Highest Price"   , value: "PRICE"   , isAscending: false},
+        {key: "Lowest Quantity" , value: "QUANTITY", isAscending: true },
+        {key: "Highest Quantity", value: "QUANTITY", isAscending: false},
+        {key: "City A-Z"        , value: "CITY"    , isAscending: true },
+        {key: "City Z-A"        , value: "CITY"    , isAscending: false}
       ],
 
       titleString: "Results",
@@ -130,7 +130,7 @@ export default {
         searchParam: "",
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
-        sortBy: "closes",
+        sortBy: "CLOSES",
         isAscending: true,
         searchKeys: [],
         minPrice: null,
@@ -190,23 +190,24 @@ export default {
 
     getListingsPipeline: async function () {
       try {
-
         const response = (await Api.getListings(this.searchParams)).data;
         this.listings = response.results;
         this.totalResults = response.totalCount;
-        this.titleString = `Results ${this.searchParams.searchString ? "for: "
-            + this.searchParams.searchString : ""}`;
+        this.page = 1;
+        if (this.searchParams.searchString && this.searchParams.searchString.trim()) {
+          this.titleString = `Listings matching ${this.searchParams.searchString}`;
+        } else {
+          this.titleString = `Listings`;
+        }
+        this.apiErrorMessage = null;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return false;
         }
         this.apiErrorMessage = err.userFacingErrorMessage;
-        this.titleString = "Results";
+        this.titleString = "Listings";
       }
     },
   },
 }
 </script>
-<style scoped>
-
-</style>

@@ -3,12 +3,12 @@ package com.navbara_pigeons.wasteless.enums;
 import com.navbara_pigeons.wasteless.entity.Listing;
 
 public enum ListingSortByOption implements SortByOption {
-  quantity("quantity"),
-  price("price"),
-  created("created"),
-  closes("closes"),
-  city("inventoryItem.business.address.city"),
-  name("inventoryItem.product.name"); // From Product entity
+  QUANTITY("quantity"),
+  PRICE("price"),
+  CREATED("created"),
+  CLOSES("closes"),
+  CITY("inventoryItem.business.address.city"),
+  NAME("inventoryItem.product.name"); // From Product entity
 
   @Override
   public Class<?> getEntity() {
