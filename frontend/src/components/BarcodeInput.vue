@@ -30,6 +30,8 @@
 
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+              v-if="barcodeScanShown"
+              v-on:click="clickedScanButton()"
               v-bind="attrs"
               v-on="on"
               block
@@ -93,6 +95,7 @@ export default {
       threshold: 5,
       currentMax: 0,
       barcodeScanCounts: new Map(),
+      barcodeScanShown: true,
       info: {
         name: "",
         manufacturer: "",
@@ -245,6 +248,22 @@ export default {
      */
     onScannerLoad() {
       this.scannerLoaded = true;
+    },
+    /**
+     * Checks if the device has a camera by asking permission. If they do not have a camera (or do
+     * not allow access, the dialog closes and the button disappears.
+     */
+    clickedScanButton() {
+      navigator.mediaDevices.getUserMedia({video: true, audio: false})
+      .catch(() => {
+        this.barcodeScanShown = false;
+        this.dialog = false;
+      })
+    }
+  },
+  computed: {
+    hasCamera: function () {
+      return document.querySelector('video').srcObject.getTracks().length > 0;
     }
   }
 }
