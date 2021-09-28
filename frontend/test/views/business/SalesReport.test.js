@@ -403,7 +403,6 @@ describe("generateUserFacingDateText", () => {
       granularity:"Week",
       startDate: new Date("2020-01-05T11:30:20.000Z"),
       endDate: new Date("2020-01-011T11:30:20.000Z")})
-    console.log(wrapper.vm.generateUserFacingDateText(date))
     expect(wrapper.vm.generateUserFacingDateText(date))
         .toEqual("05-01-2020 to 11-01-2020")
   });
@@ -415,7 +414,6 @@ describe("generateUserFacingDateText", () => {
       granularity:"Week",
       startDate: new Date("2020-01-05T11:30:20.000Z"),
       endDate: new Date("2020-01-10T11:30:20.000Z")})
-    console.log(wrapper.vm.generateUserFacingDateText(date))
     expect(wrapper.vm.generateUserFacingDateText(date))
         .toEqual("05-01-2020 to 10-01-2020")
   });
