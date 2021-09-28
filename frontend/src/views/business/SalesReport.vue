@@ -1,13 +1,18 @@
 <template>
   <v-container class="w-100">
+    <v-row class="py-5">
+      <h2>Sales Report</h2>
+    </v-row>
     <v-row>
       <v-col cols="12" md="9" class="d-flex align-end justify-space-between">
         <div class="d-flex align-center flex-wrap">
-          <v-subheader class="mb-1">Date Range</v-subheader>
-          <report-date-selector class="pl-0" @newDates="(event) => {
-          this.startDate = event.startDate;
-          this.endDate = event.endDate
-        }"/>
+            <v-subheader>Date Range</v-subheader>
+            <div>
+              <report-date-selector @newDates="(event) => {
+              this.selectedStartDate = event.startDate;
+              this.selectedEndDate = event.endDate
+              }"/>
+            </div>
         </div>
         <div class="granularity-picker d-flex align-center flex-wrap">
           <v-subheader>Granularity</v-subheader>
@@ -22,7 +27,7 @@
         </div>
       </v-col >
       <v-col cols="12" md="3" class="d-flex align-end justify-start justify-md-end">
-        <v-btn v-on:click="getTransactions">Go</v-btn>
+        <v-btn v-on:click="setFilters">Go</v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
@@ -102,7 +107,9 @@ export default {
       transactions: null,
       items: ["Day", "Week", "Month", "Year"],
       business: {},
-      currency: null
+      currency: null,
+      selectedStartDate: null,
+      selectedEndDate: null,
     };
   },
 
@@ -201,6 +208,12 @@ export default {
           date.getUTCDate().toString().padStart(2, "0")}-${
           (date.getUTCMonth() + 1).toString().padStart(2, "0")}-${
           date.getUTCFullYear().toString()}`;
+    },
+
+    setFilters() {
+      this.startDate = this.selectedStartDate;
+      this.endDate = this.selectedEndDate;
+      this.getTransactions();
     },
 
     /**

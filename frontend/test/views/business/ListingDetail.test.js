@@ -70,6 +70,11 @@ beforeEach(() => {
       businessId: 1,
       listingId: listingId
     },
+    data() {
+      return {
+        business: {address: "21 Kirkwood Avenue"}
+      }
+    },
     stubs: ['router-link'],
     mocks: {
       ...globalStateMocks()
