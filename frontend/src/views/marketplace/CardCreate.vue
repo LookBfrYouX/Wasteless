@@ -82,7 +82,7 @@
               id="description"
               v-model="description"
               class="form-control"
-              maxlength="250"
+              maxlength="1000"
               name="description"
               placeholder="Description"
               rows="5"

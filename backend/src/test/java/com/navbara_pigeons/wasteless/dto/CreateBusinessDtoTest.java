@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class CreateBusinessDtoTest extends MainTestProvider {
+class CreateBusinessDtoTest extends MainTestProvider {
 
   private Set<ConstraintViolation<CreateBusinessDto>> validate(CreateBusinessDto dto) {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -21,15 +21,15 @@ public class CreateBusinessDtoTest extends MainTestProvider {
   }
 
   @Test
-  public void validBusinessType() {
+  void validBusinessType() {
     Assertions.assertEquals(0, validate(new CreateBusinessDto(makeBusiness())).size());
   }
 
   @Test
-  public void invalidCreateBusinessDtoWithLargeLengths() {
+  void invalidCreateBusinessDtoWithLargeLengths() {
     CreateBusinessDto dto = new CreateBusinessDto(makeBusiness());
     String string = "1";
-    String badDescription = string.repeat(251);
+    String badDescription = string.repeat(451);
     String badName = string.repeat(51);
     dto.setDescription(badDescription);
     dto.setName(badName);
@@ -38,7 +38,7 @@ public class CreateBusinessDtoTest extends MainTestProvider {
   }
 
   @Test
-  public void invalidCreateBusinessDtoWithNullFields() {
+  void invalidCreateBusinessDtoWithNullFields() {
     CreateBusinessDto dto = new CreateBusinessDto(makeBusiness());
     dto.setName(null);
     dto.setBusinessType(null);

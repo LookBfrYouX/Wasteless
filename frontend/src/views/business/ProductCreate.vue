@@ -30,7 +30,7 @@
               </v-tooltip>
             </h4>
             <barcode-input
-              @info="autofill"
+                @info="autofill"
             />
           </v-card>
 
@@ -76,11 +76,11 @@
 
             <v-textarea
                 v-model="queryParams.description"
+                counter="500"
                 label="Description"
                 maxlength="500"
-                counter="500"
-                type="text"
                 solo
+                type="text"
             />
           </v-card>
 
@@ -106,11 +106,11 @@
           <div class="row">
             <div class="col">
               <v-btn
-                @click="createProduct"
-                color="rgb(30, 201, 150)"
-                class="white--text bootstrapish-button"
-                :loading="apiCallInProgress"
-                width="100%"
+                  :loading="apiCallInProgress"
+                  class="white--text"
+                  color="rgb(30, 201, 150)"
+                  width="100%"
+                  @click="createProduct"
               >
                 Add Product
               </v-btn>
@@ -243,12 +243,12 @@ export default {
     /**
      * Method that is run when barcode component emits event with nutrition info,
      * autofilling values that are 'untouched' or in their default position
-     */  
-    autofill: function(info) {
+     */
+    autofill: function (info) {
       Object.keys(info).forEach(prop => {
         // name, manufacturer, salt/fat etc. levels
         if (typeof this.queryParams[prop] == "string") {
-          if (this.queryParams[prop].trim().length == 0) {
+          if (this.queryParams[prop].trim().length === 0) {
             this.queryParams[prop] = info[prop];
           }
         }
@@ -302,7 +302,7 @@ export default {
           }
         });
       }
-    },
+    }
   },
 };
 </script>
@@ -316,12 +316,5 @@ export default {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
-}
-
-.bootstrapish-button.v-btn {
-  font-size: 1em;
-  letter-spacing: initial;
-  text-transform: initial;
-  text-indent: initial;
 }
 </style>
