@@ -45,9 +45,17 @@
       </v-row>
 
       <v-row>
-        <div class="btn btn-primary ml-4" @click="getListingsPipeline()">
-          Search
-        </div>
+        <v-tooltip top :disabled="searchParams.searchKeys.length > 0">
+          <template v-slot:activator="{ on }">
+            <div v-on="on">
+              <v-btn color="rgb(30, 201, 150)" class="white--text ml-4"
+                     @click="getListingsPipeline()" :disabled="searchParams.searchKeys.length === 0">
+                Search
+              </v-btn>
+            </div>
+          </template>
+          <span>Please select a search by parameter in product filtering</span>
+        </v-tooltip>
       </v-row>
 
       <v-layout v-if="listings.length" row>
@@ -132,7 +140,7 @@ export default {
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
         sortBy: "closes",
         isAscending: true,
-        searchKeys: [],
+        searchKeys: ["PRODUCT_NAME"],
         minPrice: null,
         maxPrice: null,
         filterDates: [],
