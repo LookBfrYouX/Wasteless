@@ -6,11 +6,13 @@
     <v-row>
       <v-col cols="12" md="9" class="d-flex align-end justify-space-between">
         <div class="d-flex align-center flex-wrap">
-          <v-subheader>Date Range</v-subheader>
-          <report-date-selector  @newDates="(event) => {
-          this.selectedStartDate = event.startDate;
-          this.selectedEndDate = event.endDate
-        }"/>
+            <v-subheader>Date Range</v-subheader>
+            <div>
+              <report-date-selector @newDates="(event) => {
+              this.selectedStartDate = event.startDate;
+              this.selectedEndDate = event.endDate
+              }"/>
+            </div>
         </div>
         <div class="granularity-picker d-flex align-center flex-wrap">
           <v-subheader>Granularity</v-subheader>
