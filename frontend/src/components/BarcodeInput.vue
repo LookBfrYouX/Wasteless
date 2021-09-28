@@ -258,12 +258,8 @@ export default {
       .catch(() => {
         this.barcodeScanShown = false;
         this.dialog = false;
+        this.errorMessage = "Unable to access camera"
       })
-    }
-  },
-  computed: {
-    hasCamera: function () {
-      return document.querySelector('video').srcObject.getTracks().length > 0;
     }
   }
 }
