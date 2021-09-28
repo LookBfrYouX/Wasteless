@@ -1,36 +1,75 @@
 <template>
-<v-form>
-  <div class="d-flex">
-    <v-text-field
-        v-model="barcode"
-        :rules="[() => barcode.length <= 13 || 'Barcode must be 13 numbers']"
-        class="mr-2"
-        counter="13"
-        dense
-        label="Barcode Number"
-        outlined
-        prefix="EAN-13"
-        type="number"
-        v-on:keydown.enter="() => barcode.length == 13 && !apiIsLoading && setProductInformation()"
-    />
-    <v-btn
-      v-on:click="setProductInformation"
-     :disabled="barcode.length != 13"
-     :loading="apiIsLoading"
-    >
-      Fill
-    </v-btn>
-  </div>
-  <div v-if="errorMessage != null" class="row mt-2">
-    <div class="col">
-      <p class="alert alert-warning">{{ errorMessage }}</p>
+  <v-form>
+    <div class="d-flex">
+      <v-text-field
+          v-model="barcode"
+          :rules="[() => barcode.length <= 13 || 'Barcode must be 13 numbers']"
+          class="mr-2"
+          counter="13"
+          dense
+          label="Barcode Number"
+          outlined
+          prefix="EAN-13"
+          type="number"
+          v-on:keydown.enter="() => barcode.length == 13 && !apiIsLoading && setProductInformation()"
+      />
+      <v-btn
+          :disabled="barcode.length != 13"
+          :loading="apiIsLoading"
+          v-on:click="setProductInformation"
+      >
+        Fill
+      </v-btn>
     </div>
-  </div>
-</v-form>
+    <v-container class="pa-0">
+      <v-dialog
+          v-model="dialog"
+          overlay-opacity="0.7"
+          width="500"
+      >
+
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+              v-bind="attrs"
+              v-on="on"
+              block
+          >
+            <v-icon left>
+              photo_camera
+            </v-icon>
+            Scan barcode
+          </v-btn>
+        </template>
+        <v-card>
+          <v-skeleton-loader
+              class="skeleton"
+              v-if="!scannerLoaded"
+              height="400px"
+              min-height="400px"
+              type="image"
+          ></v-skeleton-loader>
+          <StreamBarcodeReader
+              @decode="decodeScannerResult"
+              @loaded="onScannerLoad"
+          />
+          <v-card-actions class="justify-center">
+            <v-btn @click="dialog = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+    </v-container>
+    <div v-if="errorMessage != null" class="row mt-2">
+      <div class="col">
+        <p class="alert alert-warning">{{ errorMessage }}</p>
+      </div>
+    </div>
+  </v-form>
 </template>
 
 <script>
 import {Api} from "@/Api";
+import StreamBarcodeReader from "vue-barcode-reader/src/components/StreamBarcodeReader";
 
 /**
  * No props. When autofill is triggered, the parsed information is sent through
@@ -38,11 +77,18 @@ import {Api} from "@/Api";
  */
 export default {
   name: "BarcodeInput",
+  components: {
+    StreamBarcodeReader
+  },
   data() {
     return {
       barcode: "",
       errorMessage: null,
       apiIsLoading: false,
+      dialog: false,
+      scannerLoaded: false,
+      threshold: 5,
+      barcodeScanCounts: new Map(),
       info: {
         name: "",
         manufacturer: "",
@@ -80,9 +126,9 @@ export default {
     /**
      * Sets data variable with Data from open food facts API, Includes calling methods that parse information into required format
      */
-    setProductInformation: async function() {
+    setProductInformation: async function () {
       const data = await this.getNutritionalInformationWithBarcode(this.barcode);
-      
+
       if (data == null || data.status == 0) {
         this.errorMessage = "Product Not Found: Please enter details manually";
       } else {
@@ -109,7 +155,7 @@ export default {
     /**
      * Parses and sets nutritional level tags in required format
      */
-    setNutritionalLevelInformation: function(nutrient_levels) {
+    setNutritionalLevelInformation: function (nutrient_levels) {
       const dataMapper = {
         fat: 'fat',
         saturatedFat: 'saturated-fat',
@@ -126,7 +172,7 @@ export default {
     /**
      * Parses and sets Analysis level tags (e.g. gluten free, dairy free etc) in required format
      */
-    setIngredientAnalysisInformation: function(ingredients_analysis_tags) {
+    setIngredientAnalysisInformation: function (ingredients_analysis_tags) {
       for (const tag of ingredients_analysis_tags) {
         switch (tag) {
           case 'en:palm-oil-free':
@@ -151,6 +197,48 @@ export default {
         }
       }
     },
+
+    /**
+     * Called by the barcode scanner component when a EAN-13 number is read. Passes the Barcode value
+     * as a string.
+     * The method keeps track of the passed in Barcode numbers until a number has been read more times
+     * than the threshold. This is to protect from false readings.
+     */
+    decodeScannerResult(barcode) {
+      // For some reason the `decode` event keeps being triggered from the scanner component even
+      // after it is closed. This stops processing barcode reads once the dialog is closed.
+      if (this.dialog) {
+        if (this.barcodeScanCounts.has(barcode)) {
+          const currentCount = this.barcodeScanCounts.get(barcode);
+          this.barcodeScanCounts.set(barcode, currentCount + 1);
+        } else {
+          this.barcodeScanCounts.set(barcode, 1);
+        }
+
+        // When the count surpasses the threshold we are confident in the reading.
+        if (this.barcodeScanCounts.get(barcode) >= this.threshold) {
+          this.barcode = barcode;
+          this.setProductInformation();
+          this.dialog = false;
+          this.barcodeScanCounts = new Map();
+        }
+      }
+    },
+
+    /**
+     * Called when the barcode scanner component is initially mounted.
+     */
+    onScannerLoad() {
+      this.scannerLoaded = true;
+    }
   }
 }
 </script>
+<style lang="scss" scoped>
+// Existing bug with skeleton height, see https://github.com/vuetifyjs/vuetify/issues/11771
+::v-deep .v-skeleton-loader.v-skeleton-loader--is-loading {
+  .v-skeleton-loader__image {
+    height: 100%;
+  }
+}
+</style>
