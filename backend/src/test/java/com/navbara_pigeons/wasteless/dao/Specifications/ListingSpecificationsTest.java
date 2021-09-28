@@ -1,7 +1,5 @@
 package com.navbara_pigeons.wasteless.dao.Specifications;
 
-import static org.junit.Assert.assertEquals;
-
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ListingDao;
@@ -23,10 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
 
-
 @SpringBootTest
-public class ListingSpecificationsTest extends MainTestProvider {
-
+class ListingSpecificationsTest extends MainTestProvider {
 
   ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
   @Autowired
@@ -42,27 +38,27 @@ public class ListingSpecificationsTest extends MainTestProvider {
   InventoryService inventoryService;
 
   @Test
-  void resultsMeetSearchCriteriaTestPartialMatchingProductName() throws ListingValidationException {
+  void resultsMeetSearchCriteriaTestPartialMatchingProductName() {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
     listingsSearchParams.setSearchKeys(searchKeys);
-    listingsSearchParams.setSearchParam("Sanitarium");
+    listingsSearchParams.setSearchParam("Sinker Milk");
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    assertEquals(5003, results.get(0).getId());
+    Assertions.assertEquals(5001, results.get(0).getId());
   }
 
   @Test
-  void resultsMeetSearchCriteriaTestFullMatchingProductName() throws ListingValidationException {
+  void resultsMeetSearchCriteriaTestFullMatchingProductName() {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
     listingsSearchParams.setSearchKeys(searchKeys);
-    listingsSearchParams.setSearchParam("\"Sanitarium So Good Oat Milk No Added Sugar\"");
+    listingsSearchParams.setSearchParam("\"Sinker Milk Standard Blue Top\"");
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    assertEquals(5004, results.get(0).getId());
+    Assertions.assertEquals(5001, results.get(0).getId());
   }
 
   @Test
