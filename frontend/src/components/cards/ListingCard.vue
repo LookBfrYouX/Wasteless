@@ -38,7 +38,7 @@
             <template v-slot:activator="{ on }">
               <div class="col-6">
                 <div v-on="on" class="text-end text-truncate">
-                  {{ item.inventoryItem.business.address.city }}
+                  <strong class="blue--text">{{ item.inventoryItem.business.address.city }}</strong>
                 </div>
               </div>
             </template>

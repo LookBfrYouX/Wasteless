@@ -19,7 +19,7 @@ public class CreateMarketListingDto {
   @Length(max = 50, message = "Title has to be less than or equal to 50 Characters")
   private String title;
 
-  @Length(max = 250, message = "Description has to be less than or equal to 250 Characters")
+  @Length(max = 1000, message = "Description has to be less than or equal to 1000 Characters")
   private String description;
   private List<Long> keywordIds;
 }
