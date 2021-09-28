@@ -329,7 +329,6 @@ export const helper = {
       return null;
     }
   },
-
   /**
    * Formats object with name components, removing null or empty strings
    * @param {{firstName: String, middleName: String, lastName: String, nickname: String}} object with name components
@@ -345,5 +344,5 @@ export const helper = {
       name += ` (${user.nickname})`
     }
     return name;
-  },
+  }
 }
