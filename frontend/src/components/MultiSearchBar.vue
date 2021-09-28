@@ -68,7 +68,7 @@ export default {
     return {
       searchParams: {
         searchParam: "",
-        searchKeys: [],
+        searchKeys: ["PRODUCT_NAME"],
         sortBy: "",
         isAscending: true,
       },

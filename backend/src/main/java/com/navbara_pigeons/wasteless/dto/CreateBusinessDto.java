@@ -22,7 +22,7 @@ public class CreateBusinessDto {
   @Length(max = 50, message = "Name has to be less than or equal to 50 Characters")
   private String name;
 
-  @Length(max = 250, message = "Description has to be less than or equal to 250 Characters")
+  @Length(max = 450, message = "Description has to be less than or equal to 450 Characters")
   private String description;
 
   @Valid
