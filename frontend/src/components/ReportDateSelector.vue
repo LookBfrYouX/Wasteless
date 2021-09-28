@@ -100,7 +100,10 @@ export default {
       selectedDropdown: null,
       dateDropdownText: "Select",
       dateOptions: ["Today", "Last week", "Last month", "Last year"],
-      dates: {},
+      dates: {
+        startDate: null,
+        endDate: null
+      },
     }
   },
   watch: {
@@ -108,12 +111,21 @@ export default {
      * Emits the changed date range for a parent component to catch
      */
     filterDates() {
-      this.dates.startDate = new Date(this.filterDates[0]);
-      if (this.filterDates[1]) {
-        this.dates.endDate = new Date(this.filterDates[1]);
+      if (this.filterDates.length > 0) {
+        this.dates.startDate = new Date(this.filterDates[0]);
+        if (this.filterDates[1]) {
+          this.dates.endDate = new Date(this.filterDates[1]);
+        } else {
+          this.dates.endDate = new Date(this.filterDates[0]);
+        }
       } else {
-        this.dates.endDate = new Date(this.filterDates[0]);
+        this.dates.startDate = new Date();
+        this.dates.startDate.setUTCDate(this.dates.startDate.getUTCDate() - 6);
+        // initially show a week of data;
+
+        this.dates.endDate = new Date();
       }
+      console.log(this.dates);
       this.$emit('newDates', this.dates);
       if (this.filterDates.length === 0) {
         this.selectedDropdown = null;
