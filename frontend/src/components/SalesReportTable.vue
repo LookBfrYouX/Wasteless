@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-data-table
-      :headers="headers"
-      :items="transactionInformation == null? []: transactionInformation"
-      :loading="transactionInformation == null"
-      :items-per-page="5">
+        :headers="headers"
+        :items="transactionInformation == null? []: transactionInformation"
+        :loading="transactionInformation == null"
+        :items-per-page="5">
     </v-data-table>
   </div>
 </template>

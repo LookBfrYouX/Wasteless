@@ -1,52 +1,64 @@
 <template>
   <v-container class="w-100">
     <v-row>
-      <v-col class="d-flex align-center justify-center">
-        <v-subheader>Date Range</v-subheader>
-        <report-date-selector  @newDates="(event) => {
-          this.startDate = event.startDate;
-          this.endDate = event.endDate
-        }"/>
-      </v-col>
-      <v-col align="center" class="d-flex align-center justify-center">
-        <v-subheader>Granularity</v-subheader>
-        <v-select
-          class="granularitySelect"
-          v-model="granularity"
-          dense
-          :items="items"
-          label="Group By"
-          solo
-        />
-      </v-col>
-      <v-col align="center" class="d-flex align-center justify-center">
-        <v-btn v-on:click="setFilters">Go</v-btn>
+      <v-col cols="12" md="9" class="d-flex align-end justify-space-between">
+        <div class="d-flex align-center flex-wrap">
+          <v-subheader>Date Range</v-subheader>
+          <v-btn label="Date Range">Select</v-btn>
+        </div>
+        <div class="granularity-picker d-flex align-center flex-wrap">
+          <v-subheader>Granularity</v-subheader>
+          <v-select
+              class="granularitySelect"
+              v-model="pendingGranularity"
+              dense
+              :items="items"
+              label="Group By"
+              solo
+          />
+        </div>
+      </v-col >
+      <v-col cols="12" md="3" class="d-flex align-end justify-start justify-md-end">
+        <v-btn v-on:click="getTransactions()">Go</v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
     <v-row class="mb-2">
-      <v-col>
-        <h4>Total Transactions</h4>
-        {{ totalTransactionCount }}
+      <v-col cols="12" md="6" class="d-flex flex-nowrap justify-space-between">
+        <div>
+          <h4>Total Transactions</h4>
+          {{ totalTransactionCount }}
+        </div>
+        <div>
+          <h4>Total Sales</h4>
+          {{ $helper.makeCurrencyString(totalAmount, currency) }}
+        </div>
       </v-col>
-      <v-col>
-        <h4>Total Sales</h4>
-        {{ $helper.makeCurrencyString(totalAmount, currency) }}
-      </v-col>
-      <v-col>
-        <h4>Period</h4>
-        {{ this.$helper.isoToDateString(startDate) }} to
-        {{ this.$helper.isoToDateString(endDate) }}
-      </v-col>
-      <v-col>
-        <h4>Business</h4>
-        <span v-if="business.name">{{business.name}}</span>
+      <v-col cols="12" md="6" class="d-flex flex-nowrap justify-space-between">
+        <div>
+          <h4>Period</h4>
+          {{ this.$helper.isoToDateString(startDate) }} to
+          {{ this.$helper.isoToDateString(endDate) }}
+        </div>
+        <div>
+          <h4>Business</h4>
+          <span v-if="business.name">{{business.name}}</span>
+        </div>
       </v-col>
     </v-row>
-    <SalesReportTable
-      :granularity="granularity"
-      :transactionInformation="transformedTransactionData"
-    />
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-header>
+          Show Table
+        </v-expansion-panel-header>
+        <v-expansion-panel-content :eager=true >
+          <SalesReportTable
+              :granularity="granularity"
+              :transactionInformation="transformedTransactionData"
+          />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
   </v-container>
 </template>
@@ -54,12 +66,8 @@
 <script>
 import { Api } from "@/Api";
 import SalesReportTable from "@/components/SalesReportTable.vue";
-import ReportDateSelector from "@/components/ReportDateSelector";
 export default {
-  components:{
-    SalesReportTable,
-    ReportDateSelector
-  },
+  components:{SalesReportTable},
 
   props: {
     businessId: {
@@ -79,6 +87,7 @@ export default {
       startDate, // inclusive (00:00) of the day
       endDate, // inclusive (23:59) of the day
       granularity: "Day",
+      pendingGranularity: "Day",
       totalAmount: 0,
       totalTransactionCount: 0,
       transactions: null,
@@ -87,8 +96,8 @@ export default {
       currency: null
     };
   },
-  
- 
+
+
   /**
    * Loads transaction information and business information (name, currency)
    */
@@ -125,14 +134,17 @@ export default {
       /* makes a query to the api to retrieve the transactions with the props*/
       try {
         const response = (
-          await Api.getTransactions(this.businessId, {
-            transactionGranularity: this.granularity.toUpperCase(),
-            startDate: this.startDate.toISOString().slice(0, 10),
-            endDate: this.endDate.toISOString().slice(0, 10),
-          })
+            await Api.getTransactions(this.businessId, {
+              transactionGranularity: this.pendingGranularity.toUpperCase(),
+              startDate: this.startDate.toISOString().slice(0, 10),
+              endDate: this.endDate.toISOString().slice(0, 10),
+            })
         ).data;
         this.totalAmount = response.totalAmount;
         this.totalTransactionCount = response.totalTransactionCount;
+        this.granularity = this.pendingGranularity;
+        // Need this or transformedTranactionData will update as soon as
+        // granularity is changed even if the data is still for the old granularity
         this.transactions = response.transactions;
         this.apiErrorMessage = null;
       } catch (err) {
@@ -147,6 +159,12 @@ export default {
      * Converts the date to a user-friendly string, dependent on the granularity
      */
     generateUserFacingDateText(date) {
+      const weekText = date => `${
+          date.getUTCDate().toString().padStart(2, "0")}-${
+          (date.getUTCMonth() + 1).toString().padStart(2, "0")}-${
+          date.getUTCFullYear().toString()}`;
+
+      // can't define variables inside switch variables
       if (this.granularity == "Day") {
         return date.toDateString();
       }
@@ -158,7 +176,7 @@ export default {
         if (this.endDate.getTime() < endDate.getTime()) {
           endDate = this.endDate;
         }
-        return `${this.formatWeekText(startDate)} to ${this.formatWeekText(endDate)}`;
+        return `${weekText(startDate)} to ${weekText(endDate)}`;
       }
       if (this.granularity == "Month") {
         return `${this.$constants.MONTH_NAMES[date.getUTCMonth()]} ${date.getUTCFullYear()}`
@@ -168,21 +186,6 @@ export default {
       }
 
       throw new Error("Yo what you doing here");
-    },
-    /**
-     * A helper function for formatting the week granularity date in human readable form.
-     */
-    formatWeekText(date) {
-      return `${
-        date.getUTCDate().toString().padStart(2, "0")}-${
-        (date.getUTCMonth() + 1).toString().padStart(2, "0")}-${
-        date.getUTCFullYear().toString()}`;
-    },
-
-    setFilters() {
-      console.log("SETTING REPORT FILTERS");
-      console.log("GETTING TRANSACTIONS");
-      this.getTransactions();
     },
 
     /**
@@ -246,8 +249,8 @@ export default {
 
      *                  i=0
      *       |-------|---*----|---....----|--*----|
-                              @
-                       * < @ so element found. i++
+     @
+     * < @ so element found. i++
      *
      * It then increments the pointer by one period, moving it to the end of the second period. This time,
      * the ith entry (first entry) is before the pointer, so it knows there is at least one transaction in
@@ -255,7 +258,7 @@ export default {
      *
      *                            i=1
      *       |-------|---*----|---....----|--*----|
-                              @
+     @
      * This continues until the pointer gets to the last period
      * The last period is inclusive of the last day as the backend sets the end date to 11:59pm
      *
@@ -297,7 +300,7 @@ export default {
             this.normalizeDateToStartOfYear(date);
             break;
         }
-        
+
         if (i < this.transactions.length) {
           // There may periods after the last transaction, meaning i == transactions.length. In ths
           // case the remaining periods must be empty
@@ -346,6 +349,9 @@ export default {
   display: none;
 }
 .granularitySelect {
-  max-width: 204.467px;
+  max-width: 130px;
+}
+.granularity-picker div.v-input--dense>.v-input__control>.v-input__slot {
+  margin-bottom:0;
 }
 </style>
