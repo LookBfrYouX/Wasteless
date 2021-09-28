@@ -4,7 +4,10 @@
       <v-col cols="12" md="9" class="d-flex align-end justify-space-between">
         <div class="d-flex align-center flex-wrap">
           <v-subheader>Date Range</v-subheader>
-          <v-btn label="Date Range">Select</v-btn>
+          <report-date-selector  @newDates="(event) => {
+          this.startDate = event.startDate;
+          this.endDate = event.endDate
+        }"/>
         </div>
         <div class="granularity-picker d-flex align-center flex-wrap">
           <v-subheader>Granularity</v-subheader>
@@ -19,7 +22,7 @@
         </div>
       </v-col >
       <v-col cols="12" md="3" class="d-flex align-end justify-start justify-md-end">
-        <v-btn v-on:click="getTransactions()">Go</v-btn>
+        <v-btn v-on:click="getTransactions">Go</v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
@@ -66,8 +69,12 @@
 <script>
 import { Api } from "@/Api";
 import SalesReportTable from "@/components/SalesReportTable.vue";
+import ReportDateSelector from "@/components/ReportDateSelector";
 export default {
-  components:{SalesReportTable},
+  components:{
+    SalesReportTable,
+    ReportDateSelector
+  },
 
   props: {
     businessId: {
@@ -159,10 +166,6 @@ export default {
      * Converts the date to a user-friendly string, dependent on the granularity
      */
     generateUserFacingDateText(date) {
-      const weekText = date => `${
-          date.getUTCDate().toString().padStart(2, "0")}-${
-          (date.getUTCMonth() + 1).toString().padStart(2, "0")}-${
-          date.getUTCFullYear().toString()}`;
 
       // can't define variables inside switch variables
       if (this.granularity == "Day") {
@@ -176,7 +179,7 @@ export default {
         if (this.endDate.getTime() < endDate.getTime()) {
           endDate = this.endDate;
         }
-        return `${weekText(startDate)} to ${weekText(endDate)}`;
+        return `${this.formatWeekText(startDate)} to ${this.formatWeekText(endDate)}`;
       }
       if (this.granularity == "Month") {
         return `${this.$constants.MONTH_NAMES[date.getUTCMonth()]} ${date.getUTCFullYear()}`
@@ -186,6 +189,16 @@ export default {
       }
 
       throw new Error("Yo what you doing here");
+    },
+
+    /**
+     * A helper function for formatting the week granularity date in human readable form.
+     */
+    formatWeekText(date) {
+      return `${
+          date.getUTCDate().toString().padStart(2, "0")}-${
+          (date.getUTCMonth() + 1).toString().padStart(2, "0")}-${
+          date.getUTCFullYear().toString()}`;
     },
 
     /**
