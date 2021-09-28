@@ -99,7 +99,8 @@ export default {
       filterDates: [],
       selectedDropdown: null,
       dateDropdownText: "Select",
-      dateOptions: ["Today", "Last week", "Last month", "Last year"]
+      dateOptions: ["Today", "Last week", "Last month", "Last year"],
+      dates: {},
     }
   },
   watch: {
@@ -107,11 +108,13 @@ export default {
      * Emits the changed date range for a parent component to catch
      */
     filterDates() {
-      const dates = {
-        startDate: new Date(this.filterDates[0]),
-        endDate: new Date(this.filterDates[1]),
-      };
-      this.$emit('newDates', dates);
+      this.dates.startDate = new Date(this.filterDates[0]);
+      if (this.filterDates[1]) {
+        this.dates.endDate = new Date(this.filterDates[1]);
+      } else {
+        this.dates.endDate = new Date(this.filterDates[0]);
+      }
+      this.$emit('newDates', this.dates);
       if (this.filterDates.length === 0) {
         this.selectedDropdown = null;
       } else if (this.filterDates.length === 2 && this.filterDates[0] > this.filterDates[1]) {

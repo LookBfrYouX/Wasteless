@@ -1,11 +1,14 @@
 <template>
   <v-container class="w-100">
+    <v-row class="py-5">
+      <h2>Sales Report</h2>
+    </v-row>
     <v-row>
       <v-col class="d-flex align-center justify-center">
         <v-subheader>Date Range</v-subheader>
         <report-date-selector  @newDates="(event) => {
-          this.startDate = event.startDate;
-          this.endDate = event.endDate
+          this.selectedStartDate = event.startDate;
+          this.selectedEndDate = event.endDate
         }"/>
       </v-col>
       <v-col align="center" class="d-flex align-center justify-center">
@@ -84,7 +87,9 @@ export default {
       transactions: null,
       items: ["Day", "Week", "Month", "Year"],
       business: {},
-      currency: null
+      currency: null,
+      selectedStartDate: null,
+      selectedEndDate: null,
     };
   },
   
@@ -180,8 +185,8 @@ export default {
     },
 
     setFilters() {
-      console.log("SETTING REPORT FILTERS");
-      console.log("GETTING TRANSACTIONS");
+      this.startDate = this.selectedStartDate;
+      this.endDate = this.selectedEndDate;
       this.getTransactions();
     },
 
