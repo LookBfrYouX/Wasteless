@@ -27,7 +27,7 @@
         </div>
       </v-col >
       <v-col cols="12" md="3" class="d-flex align-end justify-start justify-md-end">
-        <v-btn v-on:click="getTransactions">Go</v-btn>
+        <v-btn v-on:click="setFilters">Go</v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
