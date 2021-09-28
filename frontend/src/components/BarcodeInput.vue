@@ -11,10 +11,10 @@
           outlined
           prefix="EAN-13"
           type="number"
-          v-on:keydown.enter="() => barcode.length == 13 && !apiIsLoading && setProductInformation()"
+          v-on:keydown.enter="() => barcode.length === 13 && !apiIsLoading && setProductInformation()"
       />
       <v-btn
-          :disabled="barcode.length != 13"
+          :disabled="barcode.length !== 13"
           :loading="apiIsLoading"
           v-on:click="setProductInformation"
       >
@@ -42,8 +42,8 @@
         </template>
         <v-card>
           <v-skeleton-loader
-              class="skeleton"
               v-if="!scannerLoaded"
+              class="skeleton"
               height="400px"
               min-height="400px"
               type="image"
@@ -52,6 +52,7 @@
               @decode="decodeScannerResult"
               @loaded="onScannerLoad"
           />
+          <v-progress-linear :value="currentMax / threshold * 100"/>
           <v-card-actions class="justify-center">
             <v-btn @click="dialog = false">Close</v-btn>
           </v-card-actions>
@@ -88,6 +89,7 @@ export default {
       dialog: false,
       scannerLoaded: false,
       threshold: 5,
+      currentMax: 0,
       barcodeScanCounts: new Map(),
       info: {
         name: "",
@@ -129,7 +131,7 @@ export default {
     setProductInformation: async function () {
       const data = await this.getNutritionalInformationWithBarcode(this.barcode);
 
-      if (data == null || data.status == 0) {
+      if (data == null || data.status === 0) {
         this.errorMessage = "Product Not Found: Please enter details manually";
       } else {
         this.errorMessage = null;
@@ -215,12 +217,15 @@ export default {
           this.barcodeScanCounts.set(barcode, 1);
         }
 
+        this.currentMax = Math.max(...this.barcodeScanCounts.values());
+
         // When the count surpasses the threshold we are confident in the reading.
         if (this.barcodeScanCounts.get(barcode) >= this.threshold) {
           this.barcode = barcode;
           this.setProductInformation();
           this.dialog = false;
           this.barcodeScanCounts = new Map();
+          this.currentMax = 0;
         }
       }
     },
