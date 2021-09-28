@@ -96,6 +96,7 @@ export default {
       currentMax: 0,
       barcodeScanCounts: new Map(),
       barcodeScanShown: true,
+      stream: null,
       info: {
         name: "",
         manufacturer: "",
@@ -239,6 +240,14 @@ export default {
           this.barcodeScanCounts = new Map();
           this.currentMax = 0;
           this.apiRetryCount = 0;
+
+          this.barcodeScanShown = false
+          document.querySelector('video').srcObject.getTracks().forEach(
+              track => track.enabled = false);
+          document.querySelector('video').srcObject.getTracks().forEach(track => track.stop());
+          this.stream.getTracks().forEach(track => track.enabled = false);
+          this.stream.getTracks().forEach(track => track.stop());
+
         }
       }
     },
@@ -255,6 +264,9 @@ export default {
      */
     clickedScanButton() {
       navigator.mediaDevices.getUserMedia({video: true, audio: false})
+      .then(stream => {
+        this.stream = stream
+      })
       .catch(() => {
         this.barcodeScanShown = false;
         this.dialog = false;
