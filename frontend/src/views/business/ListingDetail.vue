@@ -16,15 +16,11 @@
               <span class="material-icons mr-1">arrow_back</span>
               Back
             </button>
-            <button class="btn btn-white-bg-primary d-flex align-items-end" type="button">
+            <router-link class="btn btn-white-bg-primary d-flex align-items-end" type="button"
+                         :to="{ name: 'BusinessDetail', params: { businessId, showBackButton: true}}">
               <span class="material-icons mr-1">business</span>
-              <router-link
-                  :to="{ name: 'BusinessDetail', params: { businessId, showBackButton: true}}"
-                  class="text-reset text-decoration-none"
-              >
-                View Business
-              </router-link>
-            </button>
+              View Business
+            </router-link>
           </div>
 
           <image-carousel :images="productImages"/>
@@ -61,7 +57,7 @@
           </div>
           <div class="mt-2">Quantity: {{ quantity }}</div>
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
-          <nutrition-facts class="my-2" :product="product" />
+          <nutrition-facts class="my-2" :product="product"/>
           <div v-if="moreInfo" class="mt-2 mb-5">More Information: {{ moreInfo }}</div>
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated, true) }}</div>
@@ -84,7 +80,8 @@
         <v-card-title class="text-h5">Buy this listing?
         </v-card-title>
         <v-card-text>
-          Buy <strong>{{ quantity }} </strong><strong>'{{ name }}'</strong> from <strong>'{{ business.name }}'</strong> for
+          Buy <strong>{{ quantity }} </strong><strong>'{{ name }}'</strong> from
+          <strong>'{{ business.name }}'</strong> for
           <strong>{{ $helper.makeCurrencyString(price, currency) }}?</strong>
         </v-card-text>
         <v-spacer></v-spacer>
