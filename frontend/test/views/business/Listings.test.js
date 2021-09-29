@@ -61,7 +61,7 @@ describe("API Handling", () => {
     Api.getListings.mockImplementation(
         () => Promise.reject(new ApiRequestError(message)));
     await wrapper.vm.getListingsPipeline();
-    expect(wrapper.vm.apiErrorMessage).toEqual(message);
+    expect(wrapper.vm.$data.apiErrorMessage).toEqual(message);
   });
 });
 
@@ -71,7 +71,7 @@ describe("Pagination methods correctly set values", () => {
     expect(wrapper.vm.$data.page).toEqual(1);
     expect(wrapper.vm.$data.totalResults).toEqual(listings.totalCount);
     expect(wrapper.vm.$data.searchParams).toBeDefined();
-    expect(wrapper.vm.$data.searchParams.sortBy).toEqual("closes");
+    expect(wrapper.vm.$data.searchParams.sortBy).toEqual("CLOSES");
   });
 
   test("Calling sortUpdate changes sort", async () => {

@@ -271,7 +271,7 @@ class ListingServiceImplTest extends ServiceTestProvider {
     ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
     listingsSearchParams.setPagStartIndex(0);
     listingsSearchParams.setPagEndIndex(1);
-    listingsSearchParams.setSortBy(ListingSortByOption.name);
+    listingsSearchParams.setSortBy(ListingSortByOption.NAME);
 
     when(listingDao
         .findAll(any(Specification.class), any(Pageable.class)))
