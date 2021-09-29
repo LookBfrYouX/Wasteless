@@ -7,6 +7,7 @@ import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.enums.NutriScore;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -95,7 +96,11 @@ public class ListingController {
       @Parameter(description = "The minimum (inclusive) Nutrition Score of the Listings") @RequestParam(required = false) NutriScore minNutriScore,
       @Parameter(description = "The maximum (inclusive) Nutrition Score of the Listings") @RequestParam(required = false) NutriScore maxNutriScore,
       @Parameter(description = "The minimum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer minNovaGroup,
-      @Parameter(description = "The maximum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer maxNovaGroup
+      @Parameter(description = "The maximum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer maxNovaGroup,
+      @Parameter(description = "Amount of fat in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> fat,
+      @Parameter(description = "Amount of saturated fat in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> saturatedFat,
+      @Parameter(description = "Amount of sugar in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> sugars,
+      @Parameter(description = "Amount of salt in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> salt
   ) {
     ListingsSearchParams params = new ListingsSearchParams();
     params.setPagStartIndex(pagStartIndex);
@@ -112,6 +117,10 @@ public class ListingController {
     params.setMaxNutriScore(maxNutriScore);
     params.setMinNovaGroup(minNovaGroup);
     params.setMaxNovaGroup(maxNovaGroup);
+    params.setFat(fat);
+    params.setSaturatedFat(saturatedFat);
+    params.setSugars(sugars);
+    params.setSalt(salt);
     log.info("GETTING LISTINGS " + params.toString());
     return new ResponseEntity<>(listingService.searchListings(params), HttpStatus.OK);
   }

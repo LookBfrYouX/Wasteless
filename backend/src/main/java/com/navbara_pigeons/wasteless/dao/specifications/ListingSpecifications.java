@@ -10,16 +10,17 @@ import com.navbara_pigeons.wasteless.entity.BusinessType;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
 import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
-
 
 @Slf4j
 public class ListingSpecifications {
@@ -172,9 +173,6 @@ public class ListingSpecifications {
    * @param root                      the root table
    * @param businessInventoryItemJoin join inventoryitem table with business table
    * @param criteriaBuilder           to build the predicates
-   * @param params                    search query and other request parameters
-   * @param root                      the root table
-   * @param criteriaBuilder           to build the predicates
    */
   private static Predicate getListingFilterMatch(ListingsSearchParams params, Root<Listing> root,
       Join<Business, InventoryItem> businessInventoryItemJoin,
@@ -222,6 +220,15 @@ public class ListingSpecifications {
           .or(businessTypePredicates.toArray(new Predicate[businessTypePredicates.size()])));
     }
 
+    addNutritionLevelPredicate(productInventoryItemJoin, criteriaBuilder, predicates,
+        params.getFat(), "fat");
+    addNutritionLevelPredicate(productInventoryItemJoin, criteriaBuilder, predicates,
+        params.getSaturatedFat(), "saturatedFat");
+    addNutritionLevelPredicate(productInventoryItemJoin, criteriaBuilder, predicates,
+        params.getSugars(), "sugars");
+    addNutritionLevelPredicate(productInventoryItemJoin, criteriaBuilder, predicates,
+        params.getSalt(), "salt");
+
     // Filter Nutritional Information
     if (params.getMinNutriScore() != null) {
       log.info("WITH MIN NUTRISCORE: " + params.getMinNutriScore());
@@ -251,4 +258,33 @@ public class ListingSpecifications {
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
   }
+
+  /**
+   * Adds a predicate, matching rows where the `fieldName` property is one of the elements in the
+   * array `levels`
+   *
+   * @param productInventoryItemJoin join of product with inventory item table
+   * @param criteriaBuilder          criteria builder
+   * @param predicates               list of predicates that this method will append a predicate to
+   * @param levels                   list of allowable nutrition levels. May be null, but values of
+   *                                 the array should not be null
+   * @param fieldName                name of the field the filtering should be applied to
+   */
+  private static void addNutritionLevelPredicate(
+      Join<Product, InventoryItem> productInventoryItemJoin, CriteriaBuilder criteriaBuilder,
+      ArrayList<Predicate> predicates, List<NutritionFactsLevel> levels, String fieldName) {
+    if (levels == null) {
+      return;
+    }
+
+    ArrayList<Predicate> nutritionLevelPredicates = new ArrayList<>();
+    for (NutritionFactsLevel level : levels) {
+      log.info("WITH NUTRITION LEVEL FOR " + fieldName.toUpperCase() + ": " + level);
+      nutritionLevelPredicates
+          .add(criteriaBuilder.equal(productInventoryItemJoin.get(fieldName), level));
+    }
+    predicates.add(criteriaBuilder
+        .or(nutritionLevelPredicates.toArray(new Predicate[nutritionLevelPredicates.size()])));
+  }
+
 }
