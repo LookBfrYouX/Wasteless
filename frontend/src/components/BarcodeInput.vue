@@ -117,7 +117,7 @@ export default {
   watch: {
     /**
      * Stop the camera one the dialog has been closed.
-     **/
+     */
     dialog: function (newValue) {
       if (!newValue && this.stream) {
         this.stream.getTracks().forEach(track => track.stop());
