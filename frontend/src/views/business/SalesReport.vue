@@ -8,26 +8,29 @@
         <div class="d-flex align-center flex-wrap">
             <v-subheader>Date Range</v-subheader>
             <div>
-              <report-date-selector @newDates="(event) => {
-              this.selectedStartDate = event.startDate;
-              this.selectedEndDate = event.endDate
-              }"/>
+              <report-date-selector
+                :startDate="startDate"
+                :endDate="endDate"
+                :defaultDates="defaultDates"
+                @newDates="(event) => {
+                  this.startDate = event.startDate;
+                  this.endDate   = event.endDate;
+                }"
+                class="pl-0"
+              />
             </div>
         </div>
         <div class="granularity-picker d-flex align-center flex-wrap">
           <v-subheader>Granularity</v-subheader>
           <v-select
               class="granularitySelect"
-              v-model="pendingGranularity"
+              v-model="granularity"
               dense
-              :items="items"
+              :items="granularityOptions"
               label="Group By"
               solo
           />
         </div>
-      </v-col >
-      <v-col cols="12" md="3" class="d-flex align-end justify-start justify-md-end">
-        <v-btn v-on:click="getTransactions">Go</v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
@@ -57,7 +60,9 @@
     <v-expansion-panels>
       <v-expansion-panel>
         <v-expansion-panel-header>
-          Show Table
+          <template v-slot:default="{ open }">
+            {{open? "Hide Table": "Show Table"}}
+          </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content :eager=true >
           <SalesReportTable
@@ -67,6 +72,16 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
+    <error-modal
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="true"
+        :retry="getTransactions"
+        :show="apiErrorMessage !== null"
+        title="Error fetching Transaction information"
+    >
+      <p>{{ apiErrorMessage }}</p>
+    </error-modal>
 
   </v-container>
 </template>
@@ -75,10 +90,29 @@
 import { Api } from "@/Api";
 import SalesReportTable from "@/components/SalesReportTable.vue";
 import ReportDateSelector from "@/components/ReportDateSelector";
+import ErrorModal from "@/components/ErrorModal";
+
+
+/**
+ * Default dates. referenced in both data in other methods, can't use
+ * `this` in data() so needs to be in an external function
+ */
+const defaultDates = () => {
+  const startDate = new Date(new Date().toISOString().replace(/T.+/, "T00:00:00.000Z"));
+  const endDate = new Date(startDate.getTime());
+  startDate.setUTCDate(startDate.getUTCDate() - 6);
+  // initially show a week of data;
+  return {
+    startDate,
+    endDate
+  };
+};
+
 export default {
   components:{
     SalesReportTable,
-    ReportDateSelector
+    ReportDateSelector,
+    ErrorModal
   },
 
   props: {
@@ -89,25 +123,19 @@ export default {
   },
 
   data() {
-    const startDate = new Date();
-    startDate.setUTCDate(startDate.getUTCDate() - 6);
-    // initially show a week of data;
-
-    const endDate = new Date();
+    const { startDate, endDate } = defaultDates();
 
     return {
       startDate, // inclusive (00:00) of the day
       endDate, // inclusive (23:59) of the day
       granularity: "Day",
-      pendingGranularity: "Day",
       totalAmount: 0,
       totalTransactionCount: 0,
       transactions: null,
-      items: ["Day", "Week", "Month", "Year"],
+      granularityOptions: ["Day", "Week", "Month", "Year"],
       business: {},
       currency: null,
-      selectedStartDate: null,
-      selectedEndDate: null,
+      apiErrorMessage:null
     };
   },
 
@@ -147,19 +175,18 @@ export default {
     getTransactions: async function () {
       /* makes a query to the api to retrieve the transactions with the props*/
       try {
+        this.transactions = null;
         const response = (
             await Api.getTransactions(this.businessId, {
-              transactionGranularity: this.pendingGranularity.toUpperCase(),
+              transactionGranularity: this.granularity.toUpperCase(),
               startDate: this.startDate.toISOString().slice(0, 10),
               endDate: this.endDate.toISOString().slice(0, 10),
             })
         ).data;
         this.totalAmount = response.totalAmount;
         this.totalTransactionCount = response.totalTransactionCount;
-        this.granularity = this.pendingGranularity;
-        // Need this or transformedTranactionData will update as soon as
-        // granularity is changed even if the data is still for the old granularity
         this.transactions = response.transactions;
+
         this.apiErrorMessage = null;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
@@ -206,12 +233,6 @@ export default {
           date.getUTCDate().toString().padStart(2, "0")}-${
           (date.getUTCMonth() + 1).toString().padStart(2, "0")}-${
           date.getUTCFullYear().toString()}`;
-    },
-
-    setFilters() {
-      this.startDate = this.selectedStartDate;
-      this.endDate = this.selectedEndDate;
-      this.getTransactions();
     },
 
     /**
@@ -262,6 +283,10 @@ export default {
   },
 
   computed: {
+    defaultDates() {
+      return defaultDates();
+    },
+
     /**
      * Backend returns only periods where there is at least one transaction, with
      * the date being the date of the first transaction in the period
@@ -275,8 +300,7 @@ export default {
 
      *                  i=0
      *       |-------|---*----|---....----|--*----|
-     @
-     * < @ so element found. i++
+     *                        @      * < @ so element found. i++
      *
      * It then increments the pointer by one period, moving it to the end of the second period. This time,
      * the ith entry (first entry) is before the pointer, so it knows there is at least one transaction in
@@ -284,7 +308,7 @@ export default {
      *
      *                            i=1
      *       |-------|---*----|---....----|--*----|
-     @
+     *                                    @
      * This continues until the pointer gets to the last period
      * The last period is inclusive of the last day as the backend sets the end date to 11:59pm
      *
@@ -365,7 +389,21 @@ export default {
       if (this.business.name) {
         document.title = `${this.business.name} | Business Sales Report | Wasteless`;
       }
+    },
+
+    granularity() {
+      this.getTransactions();
+    },
+
+    startDate() {
+      this.getTransactions();
+    },
+
+    endDate() {
+      this.getTransactions();
     }
+
+
   }
 };
 </script>

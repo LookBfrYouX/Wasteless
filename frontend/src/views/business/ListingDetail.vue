@@ -60,7 +60,6 @@
           <div class="mt-2">Manufacturer: {{ product.manufacturer }}</div>
           <div class="mt-2">Business address: {{ $helper.addressToString(business.address) }}</div>
           <nutrition-facts class="my-2" :product="product"/>
->>>>>>> frontend/src/views/business/ListingDetail.vue
           <div v-if="moreInfo" class="mt-2 mb-5">More Information: {{ moreInfo }}</div>
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated, true) }}</div>

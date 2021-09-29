@@ -5,7 +5,6 @@
         <v-dialog
             ref="menu"
             v-model="menu"
-            :return-value.sync="filterDates"
             max-width="700px"
             persistent
         >
@@ -32,21 +31,21 @@
                 <v-row>
                   <v-col cols="12" class="col-md-6" align="center">
                     <v-date-picker
-                        v-model="filterDates"
-                        range
-                        @input="setDropdownText('Custom')"
+                      :value="filterDates"
+                      @input="datePickerChange"
+                      range
                     />
                   </v-col>
                   <v-col cols="12" class="col-md-6 px-8" align="center">
                     <v-subheader>Starting</v-subheader>
                     <v-text-field
                         readonly
-                        :value="filterDates[0]"
+                        :value="filterDatesStartDateString"
                     />
                     <v-subheader>Ending</v-subheader>
                     <v-text-field
                         readonly
-                        :value="filterDates[1]"
+                        :value="filterDatesEndDateString"
                     />
                   </v-col>
                 </v-row>
@@ -55,30 +54,30 @@
                     <v-btn
                         text
                         color="success"
-                        @click="$refs.menu.save(filterDates)"
+                        @click="applyClicked"
                         outlined
                     >
-                      APPLY
+                      Apply 
                     </v-btn>
                   </v-col>
                   <v-col align="center">
                     <v-btn
                         text
                         color="primary"
-                        @click="filterDates=[]"
+                        @click="resetClicked"
                         outlined
                     >
-                      CLEAR
+                      Reset 
                     </v-btn>
                   </v-col>
                   <v-col align="center">
                     <v-btn
                         text
                         color="error"
-                        @click="menu=false"
+                        @click="cancelClicked"
                         outlined
                     >
-                      CANCEL
+                      Cancel
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -100,40 +99,121 @@ export default {
       selectedDropdown: null,
       dateDropdownText: "Select",
       dateOptions: ["Today", "Last week", "Last month", "Last year"],
-      dates: {},
     }
   },
+
+  props: {
+    startDate: {
+      required: true
+    },
+    endDate: {
+      required: true
+    },
+    defaultDates: {
+      required: true
+    }
+  },
+
   watch: {
-    /**
-     * Emits the changed date range for a parent component to catch
-     */
-    filterDates() {
-      this.dates.startDate = new Date(this.filterDates[0]);
-      if (this.filterDates[1]) {
-        this.dates.endDate = new Date(this.filterDates[1]);
-      } else {
-        this.dates.endDate = new Date(this.filterDates[0]);
-      }
-      this.$emit('newDates', this.dates);
-      if (this.filterDates.length === 0) {
-        this.selectedDropdown = null;
-      } else if (this.filterDates.length === 2 && this.filterDates[0] > this.filterDates[1]) {
-        this.filterDates = this.filterDates.sort()
-      }
-    }
+    startDate() {
+      this.updateFilterDatesWithProps();
+    },
+    endDate() {
+      this.updateFilterDatesWithProps();
+    },
   },
+
   computed: {
+    filterDatesStartDateString() {
+      if (this.filterDates.length == 0) return null;
+      else return this.dateStringToDate(this.filterDates[0]).toDateString();
+    },
+
+    filterDatesEndDateString() {
+      if (this.filterDates.length < 2) {
+        return this.filterDatesStartDateString;
+      }
+      
+      return this.dateStringToDate(this.filterDates[1]).toDateString();
+    },
+
     getLabel() {
       if (this.filterDates.length > 0 && this.selectedDropdown != null) {
         return `${this.selectedDropdown}`
       } else if (this.filterDates.length > 0) {
         return "Custom"
       } else {
-        return "select";
+        return "Select";
       }
-    }
+    },
   },
+
+  beforeMount() {
+    this.updateFilterDatesWithProps();
+  },
+
   methods: {
+    /**
+     * Replaces filterDates value with that derived from props
+     */
+    updateFilterDatesWithProps() {
+      this.filterDates = [
+        this.dateToISODateString(this.startDate),
+        this.dateToISODateString(this.endDate),
+      ]
+    },
+
+    resetClicked() {
+      this.filterDates = [
+        this.dateToISODateString(this.defaultDates.startDate),
+        this.dateToISODateString(this.defaultDates.endDate)
+      ];
+    },
+
+    /**
+     * Handler when apply button clicked - emits events with filterDates values
+     */
+    applyClicked() {
+      this.menu = false;
+      const dates = this.defaultDates;
+      
+      if (this.filterDates.length > 0) {
+        dates.startDate = this.dateStringToDate(this.filterDates[0]);
+        dates.endDate = this.dateStringToDate(this.filterDates[0]);
+      }
+      if (this.filterDates.length > 1) {
+        dates.endDate = this.dateStringToDate(this.filterDates[1]);
+      }
+
+      this.$emit("newDates", dates);
+    },
+
+    /**
+     * When cancel clicked, reset filterDates value for the next time it is opened
+     */
+    cancelClicked() {
+      this.updateFilterDatesWithProps();
+      this.menu = false;
+    },
+
+    /**
+     * Converts date string to date
+     */
+    dateStringToDate(dateStr) {
+      return new Date(dateStr + "T00:00:00.000Z");
+    },
+
+    /**
+     * Handler on date picker change. Sorts the dates before setting 
+     * it to the value of filter dates
+     * 
+     */
+    datePickerChange(dates) {
+      dates.sort();
+      this.filterDates = dates;
+      this.setDropdownText("Custom");
+    },
+
     /**
      * Sets the date dropdown text
      * @param text text to set the dropdown to
@@ -142,12 +222,13 @@ export default {
       this.selectedDropdown = null;
       this.dateDropdownText = text;
     },
+
     /**
      * Formats a date to follow v-date-pickers dates
      * @param date a date to format
      * @returns {string} formatted date
      */
-    formatDate(date) {
+    dateToISODateString(date) {
       return date.toISOString().split('T')[0];
     },
     /**
@@ -156,25 +237,25 @@ export default {
      */
     dateRangeSelected(event) {
       let today = new Date();
-      let weekAgo = new Date(new Date().setDate(new Date().getDate() - 6));
-      let monthAgo = new Date(new Date().setMonth(new Date().getMonth() - 1));
-      let yearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+      let weekAgo = new Date(new Date().setUTCDate(new Date().getDate() - 6));
+      let monthAgo = new Date(new Date().setUTCMonth(new Date().getMonth() - 1));
+      let yearAgo = new Date(new Date().setUTCFullYear(new Date().getFullYear() - 1));
 
       switch (event) {
         case null:
           this.filterDates = [];
           break;
         case "Today":
-          this.filterDates = [this.formatDate(today), this.formatDate(today)];
+          this.filterDates = [this.dateToISODateString(today), this.dateToISODateString(today)];
           break;
         case "Last week":
-          this.filterDates = [this.formatDate(weekAgo), this.formatDate(today)];
+          this.filterDates = [this.dateToISODateString(weekAgo), this.dateToISODateString(today)];
           break;
         case "Last month":
-          this.filterDates = [this.formatDate(monthAgo), this.formatDate(today)];
+          this.filterDates = [this.dateToISODateString(monthAgo), this.dateToISODateString(today)];
           break;
         case "Last year":
-          this.filterDates = [this.formatDate(yearAgo), this.formatDate(today)];
+          this.filterDates = [this.dateToISODateString(yearAgo), this.dateToISODateString(today)];
           break;
       }
     }

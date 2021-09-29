@@ -5,7 +5,16 @@ let wrapper;
 jest.useFakeTimers();
 
 beforeEach(() => {
-  wrapper = shallowMount(ReportDateSelector);
+  wrapper = shallowMount(ReportDateSelector, {
+    propsData: {
+      startDate: new Date("2020-05-02"),
+      endDate: new Date("2020-05-02"),
+      defaultDates: {
+        startDate: new Date("2020-05-02"),
+        endDate: new Date("2020-05-02"),
+      }
+    }
+  });
 });
 afterEach(() => wrapper.destroy());
 
@@ -65,7 +74,8 @@ describe("dateSorted", () => {
     const secondDate = new Date().toISOString().split('T')[0];
 
     // Act
-    await wrapper.setData({filterDates: [firstDate, secondDate]});
+    wrapper.vm.datePickerChange([secondDate, firstDate]);
+    await wrapper.vm.$nextTick();
 
     // Assert
     expect(wrapper.vm.filterDates[0]).toEqual(firstDate);
@@ -80,8 +90,8 @@ describe("dateSorted", () => {
     const secondDate = new Date().toISOString().split('T')[0];
 
     // Act
-    await wrapper.setData({filterDates: [secondDate, firstDate]});
-
+    wrapper.vm.datePickerChange([secondDate, firstDate]);
+    await wrapper.vm.$nextTick();
     // Assert
     expect(wrapper.vm.filterDates[0]).toEqual(firstDate);
     expect(wrapper.vm.filterDates[1]).toEqual(secondDate);
