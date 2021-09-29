@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -277,9 +279,15 @@ class ListingSpecificationsTest extends MainTestProvider {
     List<Listing> results = listingDao.findAll(specification);
     // Assert
     for (Listing listing : results) {
+      System.out.println(listing);
       Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsPalmOilFree());
     }
-    Assertions.assertEquals(4, results.size());
+
+    Assertions.assertTrue(
+        results.stream().map(el -> el.getId()).collect(Collectors.toSet()).containsAll(
+                List.of(5001l, 5002l, 5003l, 5004l)
+        )
+    );
   }
 
   @Test
