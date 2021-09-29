@@ -7,18 +7,19 @@
           <v-subheader>Diets</v-subheader>
           <v-select
               v-model="diets"
-              :items=dietOptions
+              :items="dietOptions"
+              :return-object="true"
+              item-text="text"
+              item-value="key"
               label="Select"
               multiple
               solo
               dense
               clearable
-              item-text="short"
-              item-value="long"
           >
             <template v-slot:selection="{ item, index }">
               <v-chip v-if="index < shownChips" small>
-                <span>{{ item }}</span>
+                <span>{{ item.text }}</span>
               </v-chip>
               <span
                   v-if="index === shownChips"
@@ -63,7 +64,7 @@
         <v-col cols="12" lg="3" class="my-0 py-0">
           <v-subheader>Fat levels</v-subheader>
           <v-select
-              v-model="fats"
+              v-model="fat"
               :items=nutritionOptions
               label="Select"
               multiple
@@ -81,7 +82,7 @@
                   v-if="index === shownChips"
                   class="grey--text text-caption"
               >
-              (+{{ fats.length - shownChips }} others)
+              (+{{ fat.length - shownChips }} others)
             </span>
             </template>
           </v-select>
@@ -90,7 +91,7 @@
         <v-col cols="12" lg="3" class="my-0 py-0">
           <v-subheader>Saturated fat levels</v-subheader>
           <v-select
-              v-model="saturatedFats"
+              v-model="saturatedFat"
               :items=nutritionOptions
               label="Select"
               multiple
@@ -108,14 +109,14 @@
                   v-if="index === shownChips"
                   class="grey--text text-caption"
               >
-              (+{{ saturatedFats.length - shownChips }} others)
+              (+{{ saturatedFat.length - shownChips }} others)
             </span>
             </template>
           </v-select>
         </v-col>
 
         <v-col cols="12" lg="3" class="my-0 py-0">
-          <v-subheader>Min NutriScore</v-subheader>
+          <v-subheader>Min Nutri-Score</v-subheader>
           <v-select
               v-model="minNutriScore"
               :items=minNutriScores
@@ -130,7 +131,7 @@
         </v-col>
 
         <v-col cols="12" lg="3" class="my-0 py-0">
-          <v-subheader>Max NutriScore</v-subheader>
+          <v-subheader>Max Nutri-Score</v-subheader>
           <v-select
               v-model="maxNutriScore"
               :items=maxNutriScores
@@ -211,7 +212,28 @@ export default {
       novaGroups: [1, 2, 3, 4],
       nutriScoreOptions: ['A', 'B', 'C', 'D', 'E'],
       nutritionOptions: ['Unknown', 'Low', 'Moderate', 'High'],
-      dietOptions: ['Gluten Free', 'Dairy Free', 'Vegetarian', 'Vegan', 'Palm Oil Free'],
+      dietOptions: [
+        {
+          key: "isGlutenFree",
+          text: "Gluten Free"
+        },
+        {
+          key: "isDairyFree",
+          text: "Dairy Free"
+        },
+        {
+          key: "isVegetarian",
+          text: "Vegetarian"
+        },
+        {
+          key: "isVegan",
+          text: "Vegan"
+        },
+        {
+          key: "isPalmOilFree",
+          text: "Palm Oil Free"
+        }
+      ],
 
       //Selected elements
       minNovaGroup: null,
@@ -219,8 +241,8 @@ export default {
       minNutriScore: null,
       maxNutriScore: null,
       diets: [],
-      fats: [],
-      saturatedFats: [],
+      fat: [],
+      saturatedFat: [],
       sugars: [],
       salts: [],
     }
@@ -243,13 +265,26 @@ export default {
       this.$emit('newMaxNutriScore', this.maxNutriScore);
     },
     diets() {
-      this.$emit('newDiets', this.diets);
+      const returnObj = {};
+      this.dietOptions.forEach(({ key }) => {
+        // Initialize all diet options to null
+        returnObj[key] = null;
+      });
+
+      this.diets.forEach(({ key }) => {
+        returnObj[key] = true;
+      });
+
+      // Sending false means must not include diet. Null means don't care about 
+      // the value. Hoping that sending a value of null and not sending the param
+      // at all the same
+      this.$emit('newDiets', returnObj);
     },
-    fats() {
-      this.$emit('newFats', this.fats);
+    fat() {
+      this.$emit('newFat', this.fat);
     },
-    saturatedFats() {
-      this.$emit('newSaturatedFats', this.saturatedFats);
+    saturatedFat() {
+      this.$emit('newSaturatedFat', this.saturatedFat);
     },
     sugars() {
       this.$emit('newSugars', this.sugars);

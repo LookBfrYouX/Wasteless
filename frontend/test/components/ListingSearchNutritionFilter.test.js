@@ -48,18 +48,18 @@ describe("NutriScore input restriction", () => {
 
 describe("Data changed, events emitted", () => {
   test("Diets changed", async () => {
-    await wrapper.setData({diets: "Gluten Free"})
+    await wrapper.setData({diets: [{ name: "Gluten Free", key: "isGlutenFree" }]});
     expect(wrapper.emitted().newDiets).toBeTruthy()
   });
 
   test("Fats changed", async () => {
-    await wrapper.setData({fats: "Unknown"})
-    expect(wrapper.emitted().newFats).toBeTruthy()
+    await wrapper.setData({fat: "Unknown"})
+    expect(wrapper.emitted().newFat).toBeTruthy()
   });
 
   test("Saturated fats changed", async () => {
-    await wrapper.setData({saturatedFats: "Unknown"})
-    expect(wrapper.emitted().newSaturatedFats).toBeTruthy()
+    await wrapper.setData({saturatedFat: "Unknown"})
+    expect(wrapper.emitted().newSaturatedFat).toBeTruthy()
   });
 
   test("Sugars changed", async () => {

@@ -37,7 +37,7 @@ describe("dateRangeSelected", () => {
 
   test("weekAgo", async () => {
     const expected = new Date(
-        new Date().setDate(new Date().getDate() - 6)).toISOString().split(
+        new Date().setUTCDate(new Date().getUTCDate() - 6)).toISOString().split(
         'T')[0];
 
     await wrapper.vm.dateRangeSelected("Last week");
