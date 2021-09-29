@@ -18,6 +18,7 @@ describe("State of acting as entity", () => {
     mocks.$stateStore.getters.getActingAs = jest.fn(() => null);
     wrapper = shallowMount(Navbar, {
       mocks,
+      stubs: ["router-link"] 
     });
     expect(wrapper.vm.printCurrentActingAs).toEqual("firstName lastName");
   });
@@ -29,6 +30,7 @@ describe("State of acting as entity", () => {
     mocks.$stateStore.actions.setActingAs();
     wrapper = shallowMount(Navbar, {
       mocks,
+      stubs: ["router-link"] 
     });
 
     expect(wrapper.vm.printCurrentActingAs).toEqual(business.name);
@@ -48,7 +50,8 @@ describe("State of acting as entity", () => {
 describe("sign out", () => {
   test("logout called", async () => {
     wrapper = shallowMount(Navbar, {
-      mocks: globalStateMocks()
+      mocks: globalStateMocks(),
+      stubs: ["router-link"] 
     });
     const logOut = jest.fn(() => Promise.resolve());
     Api.logOut.mockImplementation(logOut);
@@ -58,7 +61,8 @@ describe("sign out", () => {
 
   test("logout called", async () => {
     wrapper = shallowMount(Navbar, {
-      mocks: globalStateMocks()
+      mocks: globalStateMocks(),
+      stubs: ["router-link"]
     });
     const logOut = jest.fn(() => Promise.reject(new ApiRequestError("MSG")));
     Api.logOut.mockImplementation(logOut);
@@ -76,7 +80,8 @@ describe("Search functionality", () => {
       mocks: globalStateMocks(),
       propsData: {
         query: query,
-      }
+      },
+      stubs: ["router-link"]
     });
 
     wrapper.vm.$route.name = searchName;
@@ -96,7 +101,8 @@ describe("Search functionality", () => {
       mocks: globalStateMocks(),
       propsData: {
         query: query1,
-      }
+      },
+      stubs: ["router-link"]
     });
 
     wrapper.vm.$route.name = searchName;
@@ -112,7 +118,8 @@ describe("pushOrGoToBusinessPage functionality", () => {
   test("Acting as business, user already on same page", async () => {
     const routeName = "CurrentPage";
     wrapper = shallowMount(Navbar, {
-      mocks: globalStateMocks()
+      mocks: globalStateMocks(),
+      stubs: ["router-link"]
     });
 
     wrapper.vm.$route.name = routeName;
@@ -126,7 +133,8 @@ describe("pushOrGoToBusinessPage functionality", () => {
   test("Acting as business, user already on same page", async () => {
     const routeName = "CurrentPage";
     wrapper = shallowMount(Navbar, {
-      mocks: globalStateMocks()
+      mocks: globalStateMocks(),
+      stubs: ["router-link"]
     });
     wrapper.vm.$router.go.mock.calls.length = 0;
     wrapper.vm.$router.push.mock.calls.length = 0;
@@ -140,7 +148,8 @@ describe("pushOrGoToBusinessPage functionality", () => {
 
   test("Not acting as business", async () => {
     wrapper = shallowMount(Navbar, {
-      mocks: globalStateMocks()
+      mocks: globalStateMocks(),
+      stubs: ["router-link"]
     });
     wrapper.vm.$stateStore.getters.getActingAs = () => null;
 
