@@ -277,7 +277,7 @@ export default {
 
       // Sending false means must not include diet. Null means don't care about 
       // the value. Hoping that sending a value of null and not sending the param
-      // at all the same
+      // at all are the same
       this.$emit('newDiets', returnObj);
     },
     fat() {
