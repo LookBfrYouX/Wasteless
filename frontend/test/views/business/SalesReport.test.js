@@ -53,7 +53,7 @@ describe("getTransactions", () => {
     wrapper.setData({
       startDate: new Date("2020-01-01T23:59:00.000Z"),
       endDate: new Date("2025-08-01T23:59:00.000Z"),
-      granularity: "Year"
+      pendingGranularity: "Year"
     });
 
     Api.getTransactions = jest.fn(() => Promise.resolve(generateResponse()));
