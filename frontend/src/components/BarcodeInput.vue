@@ -101,12 +101,12 @@ export default {
       info: {
         name: "",
         manufacturer: "",
-        fat: "",
-        saturatedFat: "",
-        sugars: "",
-        salt: "",
-        novaGroup: "",
-        nutriScore: "",
+        fat: null, 
+        saturatedFat: null,
+        sugars: null,
+        salt: null,
+        novaGroup: null,
+        nutriScore: null,
         isPalmOilFree: false,
         isVegan: false,
         isVegetarian: false,
@@ -117,7 +117,7 @@ export default {
   },
   watch: {
     dialog: function (newValue) {
-      if (!newValue) {
+      if (!newValue && this.stream) {
         this.stream.getTracks().forEach(track => track.stop());
       }
     }
@@ -158,8 +158,11 @@ export default {
         this.errorMessage = null;
         this.info.name = data.product.product_name;
         this.info.manufacturer = data.product.brands;
-        if (data.product.nutriscore_grade != null) {
+        const nutriScore = data.product.nutriscore_grade;
+        if (typeof nutriScore == "string" && nutriScore.trim().length) {
           this.info.nutriScore = data.product.nutriscore_grade.toUpperCase();
+        } else {
+          this.info.nutriScore = null;
         }
         this.info.novaGroup = data.product.nova_group;
         if (data.product.nutrient_levels) {
@@ -186,8 +189,10 @@ export default {
         salt: 'salt'
       };
       Object.entries(dataMapper).forEach(([key, value]) => {
-        if (typeof nutrient_levels[value] == "string") {
+        if (typeof nutrient_levels[value] == "string" && nutrient_levels[value].trim().length) {
           this.info[key] = nutrient_levels[value].toUpperCase();
+        } else {
+          this.info[key] = null;
         }
       });
     },
