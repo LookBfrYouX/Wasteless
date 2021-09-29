@@ -156,7 +156,7 @@ export default {
       const data = await this.getNutritionalInformationWithBarcode(this.barcode);
 
       if (data == null || data.status === 0) {
-        this.errorMessage = "Product Not Found: Please enter details manually";
+        this.errorMessage = "Sorry! We don't know that product, please enter details manually.";
       } else {
         this.errorMessage = null;
         this.info.name = data.product.product_name;
