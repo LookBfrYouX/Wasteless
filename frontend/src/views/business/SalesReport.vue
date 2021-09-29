@@ -59,6 +59,9 @@
     </v-row>
     <v-expansion-panels>
       <v-expansion-panel>
+        <bar-chart class="p-3" :chart-data="chartdata" :options="options" />
+      </v-expansion-panel>
+      <v-expansion-panel>
         <v-expansion-panel-header>
           <template v-slot:default="{ open }">
             {{open? "Hide Table": "Show Table"}}
@@ -91,6 +94,7 @@ import { Api } from "@/Api";
 import SalesReportTable from "@/components/SalesReportTable.vue";
 import ReportDateSelector from "@/components/ReportDateSelector";
 import ErrorModal from "@/components/ErrorModal";
+import BarChart from "@/components/charts/BarChart";
 
 
 /**
@@ -110,9 +114,10 @@ const defaultDates = () => {
 
 export default {
   components:{
+    BarChart,
     SalesReportTable,
     ReportDateSelector,
-    ErrorModal
+    ErrorModal,
   },
 
   props: {
@@ -135,7 +140,22 @@ export default {
       granularityOptions: ["Day", "Week", "Month", "Year"],
       business: {},
       currency: null,
-      apiErrorMessage:null
+      apiErrorMessage: null,
+      transformedTransactionData: null,
+      chartdata: {
+        labels: ['One', 'Two'],
+        datasets: [
+          {
+            label: 'Data One',
+            backgroundColor: '#f87979',
+            data: [1, 2],
+          },
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
     };
   },
 
@@ -144,10 +164,11 @@ export default {
    * Loads transaction information and business information (name, currency)
    */
   async mounted() {
-    return Promise.allSettled([
+    await Promise.allSettled([
       this.getTransactions(),
-      this.getBusinessInformation()
+      this.getBusinessInformation(),
     ]);
+    this.getTransformedTransactionData();
   },
 
   methods: {
@@ -194,6 +215,7 @@ export default {
         }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
+      this.getTransformedTransactionData();
     },
 
     /**
@@ -280,12 +302,6 @@ export default {
       this.normalizeDateToStartOfMonth(date);
       return date;
     },
-  },
-
-  computed: {
-    defaultDates() {
-      return defaultDates();
-    },
 
     /**
      * Backend returns only periods where there is at least one transaction, with
@@ -320,7 +336,7 @@ export default {
      *   amountText, String: amount, but as a string with currency information
      * }] or null if transactionData is null
      */
-    transformedTransactionData() {
+    getTransformedTransactionData() {
       if (this.transactions == null) return null;
 
       let i = 0;
@@ -377,7 +393,23 @@ export default {
           amountText: this.$helper.makeCurrencyString(0, this.currency)
         });
       }
-      return dataArray;
+      this.chartdata = {
+        labels: dataArray.map((element) => this.generateUserFacingDateText(element.date)),
+        datasets: [
+          {
+            label: 'Sales',
+            backgroundColor: '#f87979',
+            data: dataArray.map((element) => element.amount),
+          },
+        ]
+      }
+      this.transformedTransactionData = dataArray;
+    },
+  },
+
+  computed: {
+    defaultDates() {
+      return defaultDates();
     },
   },
 
