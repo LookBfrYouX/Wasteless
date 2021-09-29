@@ -89,7 +89,6 @@ export default {
       errorMessage: null,
       apiIsLoading: false,
       apiRetryLimit: 3,
-      apiRetryCount: 0,
       dialog: false,
       scannerLoaded: false,
       threshold: 5,
@@ -129,19 +128,17 @@ export default {
     /**
      * Calls Open Food Facts API with User Barcode
      */
-    getNutritionalInformationWithBarcode: async function (barcode) {
+    getNutritionalInformationWithBarcode: async function (barcode, retryCount = 1) {
       this.apiIsLoading = true;
       try {
         const response = await Api.getOpenFoodFacts(barcode);
-        if (response.data.status === 0) {
-          throw new Error();
-        }
         return response.data;
       } catch (err) {
-        if (++this.apiRetryCount >= this.apiRetryLimit) {
+        if (retryCount >= this.apiRetryLimit) {
           this.errorMessage = err.userFacingErrorMessage;
+          return null;
         } else {
-          await this.getNutritionalInformationWithBarcode(barcode);
+          return this.getNutritionalInformationWithBarcode(barcode, retryCount +  1);
         }
       } finally {
         this.apiIsLoading = false;
@@ -255,7 +252,6 @@ export default {
           this.dialog = false;
           this.barcodeScanCounts = new Map();
           this.currentMax = 0;
-          this.apiRetryCount = 0;
         }
       }
     },
