@@ -157,11 +157,11 @@ export default {
         sugars: [],
         salts: [],
 
-        isGlutenFree: false,
-        isDairyFree: false,
-        isVegetarian: false,
-        isVegan: false,
-        isPalmOilFree: false
+        isGlutenFree: null,
+        isDairyFree: null,
+        isVegetarian: null,
+        isVegan: null,
+        sPalmOilFree: null
       }
     };
   },

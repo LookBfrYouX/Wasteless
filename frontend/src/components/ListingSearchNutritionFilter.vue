@@ -65,18 +65,18 @@
           <v-subheader>Fat levels</v-subheader>
           <v-select
               v-model="fat"
-              :items=nutritionOptions
+              :items=nutrientLevelOptions
               label="Select"
               multiple
               solo
               dense
               clearable
-              item-text="short"
-              item-value="long"
+              item-text="text"
+              item-value="key"
           >
             <template v-slot:selection="{ item, index }">
               <v-chip v-if="index < shownChips" small>
-                <span>{{ item }}</span>
+                <span>{{ item.text }}</span>
               </v-chip>
               <span
                   v-if="index === shownChips"
@@ -92,18 +92,18 @@
           <v-subheader>Saturated fat levels</v-subheader>
           <v-select
               v-model="saturatedFat"
-              :items=nutritionOptions
+              :items=nutrientLevelOptions
               label="Select"
               multiple
               solo
               dense
               clearable
-              item-text="short"
-              item-value="long"
+              item-text="text"
+              item-value="key"
           >
             <template v-slot:selection="{ item, index }">
               <v-chip v-if="index < shownChips" small>
-                <span>{{ item }}</span>
+                <span>{{ item.text }}</span>
               </v-chip>
               <span
                   v-if="index === shownChips"
@@ -149,18 +149,18 @@
           <v-subheader>Sugar levels</v-subheader>
           <v-select
               v-model="sugars"
-              :items=nutritionOptions
+              :items=nutrientLevelOptions
               label="Select"
               multiple
               solo
               dense
               clearable
-              item-text="short"
-              item-value="long"
+              item-text="text"
+              item-value="key"
           >
             <template v-slot:selection="{ item, index }">
               <v-chip v-if="index < shownChips" small>
-                <span>{{ item }}</span>
+                <span>{{ item.text }}</span>
               </v-chip>
               <span
                   v-if="index === shownChips"
@@ -176,18 +176,18 @@
           <v-subheader>Salt levels</v-subheader>
           <v-select
               v-model="salts"
-              :items=nutritionOptions
+              :items=nutrientLevelOptions
               label="Select"
               multiple
               solo
               dense
               clearable
-              item-text="short"
-              item-value="long"
+              item-text="text"
+              item-value="key"
           >
             <template v-slot:selection="{ item, index }">
               <v-chip v-if="index < shownChips" small>
-                <span>{{ item }}</span>
+                <span>{{ item.text }}</span>
               </v-chip>
               <span
                   v-if="index === shownChips"
@@ -211,7 +211,18 @@ export default {
       shownChips: 1,
       novaGroups: [1, 2, 3, 4],
       nutriScoreOptions: ['A', 'B', 'C', 'D', 'E'],
-      nutritionOptions: ['Unknown', 'Low', 'Moderate', 'High'],
+      nutrientLevelOptions: [
+        {
+          key: "LOW",
+          text: "Low"
+        }, {
+        key: "MODERATE",
+          text: "Moderate"
+        }, {
+          key: "HIGH",
+          text: "High"
+        }
+      ],
       dietOptions: [
         {
           key: "isGlutenFree",
