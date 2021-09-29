@@ -117,7 +117,7 @@ export default {
   },
   watch: {
     dialog: function (newValue) {
-      if (!newValue) {
+      if (!newValue && this.stream) {
         this.stream.getTracks().forEach(track => track.stop());
       }
     }
