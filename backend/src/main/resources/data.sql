@@ -911,9 +911,9 @@ VALUES (5001, 5001, 15, 79.99, 'fletcher was here RAWR XD', '2021-05-16 21:16:17
        (5006, 5006, 22, 105.00, 'Pick up only, at business address', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (5007, 5007, 24, 100.00, 'Delivery available, price negotiable', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (5008, 5008, 4, 15.00, 'Accidentally added cocoa powder, still tastes good', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5009, 5009, 3, 13.00, 'Corn is so old the skin flakes, just add milk and tastes just the same', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5010, 5010, 25, 99.99, 'Vampires complained so batch on sale, pickup only at night', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5011, 5011, 20, 75.00, 'Mis-ordered batch wanted Pop salt but got rock salt instead', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5009, 5009, 3, 13.00, 'Pick up only, at business address', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5010, 5010, 25, 99.99, 'Vampires complained, so batch on sale', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5011, 5011, 20, 75.00, 'Mis-ordered batch wanted Pop salt, Pickup only', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (5012, 5012, 12, 24.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
 
 INSERT INTO marketlisting (ID, CREATOR_ID, SECTION, CREATED, DISPLAY_PERIOD_END, TITLE, DESCRIPTION)
