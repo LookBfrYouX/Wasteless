@@ -897,12 +897,12 @@ VALUES (5001, 5001, 1005, 20, 4.67, 90.00, '2021-08-16', '2021-08-06',
 -- Inserting listing data
 
 INSERT INTO listing (ID, INVENTORY_ITEM_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
-VALUES (5001, 5001, 15, 79.99,'Sinking Milk found after a diving expedition' , '2021-05-16 21:16:17',
+VALUES (5001, 5001, 15, 79.99, 'fletcher was here RAWR XD', '2021-05-16 21:16:17',
         '2021-06-16 21:16:26'),
-       (5002, 5002, 18, 89.99, 'fletcher was here RAWR XD', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5003, 5003, 5, 18.99, 'Almonds are secondhand but milk is still good', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5004, 5004, 10, 64.99, 'Because sweater milk is overrated', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5005, 5005, 11, 39.99, 'Just some milk', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5002, 5002, 18, 89.99, 'Sinking Milk found after a diving expedition', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5003, 5003, 5, 18.99, 'Just some milk', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5004, 5004, 10, 64.99, 'Almonds are secondhand but milk is still good', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5005, 5005, 11, 39.99, 'Because sweater milk is overrated', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (5006, 5006, 22, 105.00, 'Pick up only, at business address', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (5007, 5007, 24, 100.00, 'Delivery available, price negotiable', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
        (5008, 5008, 4, 15.00, 'Accidentally added cocoa powder, still tastes good', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
