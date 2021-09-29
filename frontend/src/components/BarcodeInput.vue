@@ -51,6 +51,7 @@
               type="image"
           ></v-skeleton-loader>
           <StreamBarcodeReader
+              v-if="dialog"
               @decode="decodeScannerResult"
               @loaded="onScannerLoad"
           />
@@ -111,6 +112,13 @@ export default {
         isVegetarian: false,
         isGlutenFree: false,
         isDairyFree: false,
+      }
+    }
+  },
+  watch: {
+    dialog: function (newValue) {
+      if (!newValue) {
+        this.stream.getTracks().forEach(track => track.stop());
       }
     }
   },
@@ -240,14 +248,6 @@ export default {
           this.barcodeScanCounts = new Map();
           this.currentMax = 0;
           this.apiRetryCount = 0;
-
-          this.barcodeScanShown = false
-          document.querySelector('video').srcObject.getTracks().forEach(
-              track => track.enabled = false);
-          document.querySelector('video').srcObject.getTracks().forEach(track => track.stop());
-          this.stream.getTracks().forEach(track => track.enabled = false);
-          this.stream.getTracks().forEach(track => track.stop());
-
         }
       }
     },
