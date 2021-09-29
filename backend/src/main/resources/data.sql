@@ -890,14 +890,19 @@ VALUES (5001, 5001, 1001, 20, 4.67, 20.00, '2021-08-16', '2021-08-13',
 -- Inserting listing data
 
 INSERT INTO listing (ID, INVENTORY_ITEM_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
-VALUES (5001, 5001, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17',
+VALUES (5001, 5001, 15, 79.99, 'fletcher was here RAWR XD', '2021-05-16 21:16:17',
         '2021-06-16 21:16:26'),
-       (5002, 5001, 3, 12.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5003, 5002, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5004, 5003, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5005, 5004, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5006, 5005, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5007, 5006, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
+       (5002, 5002, 18, 89.99, 'Sinking Milk found after a diving expedition', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5003, 5003, 5, 18.99, 'Just some milk', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5004, 5004, 10, 64.99, 'Almonds are secondhand but milk is still good', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5005, 5005, 11, 39.99, 'Because sweater milk is overrated', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5006, 5006, 22, 105.00, 'Pick up only, at business address', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5007, 5007, 24, 100.00, 'Delivery available, price negotiable', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5008, 5008, 4, 15.00, 'Accidentally added cocoa powder, still tastes good', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5009, 5009, 3, 13.00, 'Corn is so old the skin flakes, just add milk and tastes just the same', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5010, 5010, 25, 99.99, 'Vampires complained so batch on sale, pickup only at night', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5011, 5011, 20, 75.00, 'Mis-ordered batch wanted Pop salt but got rock salt instead', '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
+       (5012, 5012, 12, 24.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
 
 INSERT INTO marketlisting (ID, CREATOR_ID, SECTION, CREATED, DISPLAY_PERIOD_END, TITLE, DESCRIPTION)
 VALUES (2501, 5001, 'ForSale', '2021-10-13 15:34:20', '2021-11-13 15:34:20', 'Shoddy web app',
