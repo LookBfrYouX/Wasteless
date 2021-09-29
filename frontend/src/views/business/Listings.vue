@@ -212,6 +212,12 @@ export default {
         if (await Api.handle401.call(this, err)) {
           return false;
         }
+        // For some unknown reason the tests fail without this:
+        // apiErrorMessage is still null in the test because of 
+        // some sort of async bug
+        if (await Api.handle401.call(this, err)) {
+          return false;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
         this.titleString = "Listings";
       }

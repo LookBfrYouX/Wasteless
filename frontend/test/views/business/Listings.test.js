@@ -61,7 +61,7 @@ describe("API Handling", () => {
     Api.getListings.mockImplementation(
         () => Promise.reject(new ApiRequestError(message)));
     await wrapper.vm.getListingsPipeline();
-    expect(wrapper.vm.apiErrorMessage).toEqual(message);
+    expect(wrapper.vm.$data.apiErrorMessage).toEqual(message);
   });
 });
 
