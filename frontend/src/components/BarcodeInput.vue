@@ -27,14 +27,13 @@
           overlay-opacity="0.7"
           width="500"
       >
-
         <template v-slot:activator="{ on, attrs }">
           <v-btn
               v-if="barcodeScanShown"
-              v-on:click="clickedScanButton()"
               v-bind="attrs"
               v-on="on"
               block
+              v-on:click="clickedScanButton()"
           >
             <v-icon left>
               photo_camera
@@ -101,7 +100,7 @@ export default {
       info: {
         name: "",
         manufacturer: "",
-        fat: null, 
+        fat: null,
         saturatedFat: null,
         sugars: null,
         salt: null,
@@ -116,9 +115,13 @@ export default {
     }
   },
   watch: {
+    /**
+     * Stop the camera one the dialog has been closed.
+     **/
     dialog: function (newValue) {
       if (!newValue && this.stream) {
         this.stream.getTracks().forEach(track => track.stop());
+        this.scannerLoaded = false;
       }
     }
   },
@@ -263,6 +266,7 @@ export default {
     onScannerLoad() {
       this.scannerLoaded = true;
     },
+
     /**
      * Checks if the device has a camera by asking permission. If they do not have a camera (or do
      * not allow access, the dialog closes and the button disappears.
