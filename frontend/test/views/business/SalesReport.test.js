@@ -204,17 +204,13 @@ describe("transformedTransactionData", () => {
    *            with zero transactions. These are removed before being passed to
    *            the method but not when used to compare the method's output
    */
-  const runMethodAndCompare = (thisData, transactionsWithZeroes) => {
-    const result = SalesReport.computed.transformedTransactionData.call({
-      ...thisData,
-      ...SalesReport.methods,
-      transactions: transactionsWithZeroes.filter(el => el.transactionCount > 0),
-      generateUserFacingDateText: () => "MOCKED",
-      $helper: {
-        makeCurrencyString: () => "MOCKED"
-      },
-    });
-
+  const runMethodAndCompare = async function (thisData, transactionsWithZeroes) {
+    let wrapper = mountSalesReport();
+    wrapper.setData({...thisData});
+    wrapper.vm.getTransformedTransactionData();
+    await wrapper.vm.$nextTick();
+    const result = wrapper.vm.$data.transformedTransactionData;
+    console.log(result);
     expect(result.map(el => ({
       // remove dateRangeText and amountText since that is derived data
       date: el.date.toISOString(),
