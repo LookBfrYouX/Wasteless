@@ -2,7 +2,7 @@ Feature: U41 Business Transaction History
 
   Background:
     Given a user with username "dnb36@uclive.ac.nz" and password "fun123" is logged in
-    And Given they are managing a business called "TestName"
+    And Given they are managing a business called "Downcount Hornby"
 
   Scenario: AC3 - Setting Custom Period, Dates Not Out of Bounds
     When I send a request to the transaction endpoint with a start date of "2020-01-02", end date of "2021-03-01" and granularity of ""
