@@ -560,7 +560,7 @@ export const Api = {
    * @return {Promise<AxiosResponse<any>>} The object containing the
    * list of transactions between the set time period and in the unit supplied
    */
-   getTransactions: (businessId, params) => {
+  getTransactions: (businessId, params) => {
     return instance.get(`/businesses/${businessId}/transactions`, {params})
     .catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {

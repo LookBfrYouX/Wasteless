@@ -131,7 +131,7 @@ public class PaginationBuilder {
     } else if (MarketListing.class.equals(entity)) {
       defaultSortByOption = MarketListingSortByOption.created;
     } else if (Listing.class.equals(entity)) {
-      defaultSortByOption = ListingSortByOption.created;
+      defaultSortByOption = ListingSortByOption.CREATED;
     } else if (InventoryItem.class.equals(entity)) {
       defaultSortByOption = InventorySortByOption.quantity;
     } else {
