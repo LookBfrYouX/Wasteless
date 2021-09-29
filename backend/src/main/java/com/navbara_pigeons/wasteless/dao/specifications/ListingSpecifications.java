@@ -59,7 +59,7 @@ public class ListingSpecifications {
                 businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder));
           }
           // Check if OR Operator
-        } else if (currentToken.toUpperCase().matches("OR") && predicates.size() > 0
+        } else if (currentToken.toUpperCase().matches("OR")
             && tokenIterator.hasNext()) {
           String nextToken = tokenIterator.next();
           Predicate lastPredicate = predicates.remove(predicates.size() - 1);
@@ -73,8 +73,7 @@ public class ListingSpecifications {
                     businessInventoryItemJoin, addressBusinessJoin, criteriaBuilder)));
           }
           // Check if AND Operator
-        } else if (currentToken.toUpperCase().matches("AND") && predicates.size() > 0
-            && tokenIterator.hasNext()) {
+        } else if (currentToken.toUpperCase().matches("AND") && tokenIterator.hasNext()) {
           String nextToken = tokenIterator.next();
           if (SpecificationHelper.isFullMatching(nextToken)) {
             predicates.add(
@@ -88,9 +87,8 @@ public class ListingSpecifications {
           log.error("Malformed Search Query");
         }
       }
-      predicates
-          .add(getListingFilterMatch(params, root, businessInventoryItemJoin,
-              productInventoryItemJoin, criteriaBuilder));
+      predicates.add(getListingFilterMatch(params, root, businessInventoryItemJoin,
+          productInventoryItemJoin, criteriaBuilder));
       return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
     };
   }
@@ -230,6 +228,37 @@ public class ListingSpecifications {
         params.getSalt(), "salt");
 
     // Filter Nutritional Information
+    if (params.getIsGlutenFree() != null) {
+      log.info("IS" + (params.getIsGlutenFree() ? " " : " NOT ") + "GLUTEN FREE");
+      predicates.add(criteriaBuilder.equal(
+          productInventoryItemJoin.get("isGlutenFree"), params.getIsGlutenFree()
+      ));
+    }
+    if (params.getIsVegan() != null) {
+      log.info("IS" + (params.getIsVegan() ? " " : " NOT ") + "VEGAN");
+      predicates.add(criteriaBuilder.equal(
+          productInventoryItemJoin.get("isVegan"), params.getIsVegan()
+      ));
+    }
+    if (params.getIsVegetarian() != null) {
+      log.info("IS" + (params.getIsVegetarian() ? " " : " NOT ") + "VEGETARIAN");
+      predicates.add(criteriaBuilder.equal(
+          productInventoryItemJoin.get("isVegetarian"), params.getIsVegetarian()
+      ));
+    }
+    if (params.getIsPalmOilFree() != null) {
+      log.info("IS" + (params.getIsPalmOilFree() ? " " : " NOT ") + "PALM OIL FREE");
+      predicates.add(criteriaBuilder.equal(
+          productInventoryItemJoin.get("isPalmOilFree"), params.getIsPalmOilFree()
+      ));
+    }
+    if (params.getIsDairyFree() != null) {
+      log.info("IS" + (params.getIsDairyFree() ? " " : " NOT ") + "DAIRY FREE");
+      predicates.add(criteriaBuilder.equal(
+          productInventoryItemJoin.get("isDairyFree"), params.getIsDairyFree()
+      ));
+    }
+
     if (params.getMinNutriScore() != null) {
       log.info("WITH MIN NUTRISCORE: " + params.getMinNutriScore());
       predicates.add(criteriaBuilder.greaterThanOrEqualTo(

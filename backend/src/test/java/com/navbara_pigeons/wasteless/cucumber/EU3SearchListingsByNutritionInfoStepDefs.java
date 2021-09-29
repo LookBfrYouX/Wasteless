@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.UnsupportedEncodingException;
+
 public class EU3SearchListingsByNutritionInfoStepDefs extends CucumberTestProvider {
 
   private MvcResult mvcResult;
@@ -22,6 +24,40 @@ public class EU3SearchListingsByNutritionInfoStepDefs extends CucumberTestProvid
   @BeforeEach
   void setup() {
     this.mvcResult = null;
+  }
+
+  @When("I send a valid request to {string} with vegan set to {string}")
+  public void iSendAValidRequestToWithVeganSetTo(String endpoint, String veganValue) throws Exception {
+    this.mvcResult = mockMvc.perform(get(endpoint)
+                    .queryParam("isVegan", "true"))
+            .andExpect(status().is(200))
+            .andReturn();
+  }
+
+  @Then("only the products that are vegan are shown")
+  public void onlyTheProductsThatAreVeganAreShown() throws UnsupportedEncodingException, JsonProcessingException {
+    for (JsonNode result : objectMapper.readTree(this.mvcResult.getResponse().getContentAsString())
+            .get("results")) {
+      Assertions.assertTrue(Boolean.parseBoolean(result.get("inventoryItem").get("product").get("isVegan").asText()));
+    }
+  }
+
+  @When("I send a valid request to {string} with vegan set to {string} and gluten free set to {string}")
+  public void iSendAValidRequestToWithVeganSetToAndGlutenFreeSetTo(String endpoint, String veganValue, String glutenFreeValue) throws Exception {
+    this.mvcResult = mockMvc.perform(get(endpoint)
+                    .queryParam("isVegan", "true")
+                    .queryParam("isGlutenFree", "true"))
+            .andExpect(status().is(200))
+            .andReturn();
+  }
+
+  @Then("only the products that are vegan and gluten free are shown")
+  public void onlyTheProductsThatAreVeganAndGlutenFreeAreShown() throws UnsupportedEncodingException, JsonProcessingException {
+    for (JsonNode result : objectMapper.readTree(this.mvcResult.getResponse().getContentAsString())
+            .get("results")) {
+      Assertions.assertTrue(Boolean.parseBoolean(result.get("inventoryItem").get("product").get("isVegan").asText()));
+      Assertions.assertTrue(Boolean.parseBoolean(result.get("inventoryItem").get("product").get("isGlutenFree").asText()));
+    }
   }
 
   @Given("a user is logged in")

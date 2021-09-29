@@ -42,16 +42,20 @@ public class ListingsSearchParams {
   // Nutrition Filtering Params
   private NutriScore minNutriScore;
   private NutriScore maxNutriScore;
+
+  private Integer minNovaGroup;
+  private Integer maxNovaGroup;
+
   private List<NutritionFactsLevel> fat;
   private List<NutritionFactsLevel> saturatedFat;
   private List<NutritionFactsLevel> sugars;
   private List<NutritionFactsLevel> salt;
 
-  private NutriScore nutriScore;
-  @Range(min = 1, max = 4)
-  private Integer minNovaGroup;
-  @Range(min = 1, max = 4)
-  private Integer maxNovaGroup;
+  private Boolean isVegan;
+  private Boolean isVegetarian;
+  private Boolean isGlutenFree;
+  private Boolean isPalmOilFree;
+  private Boolean isDairyFree;
 
 
   /**

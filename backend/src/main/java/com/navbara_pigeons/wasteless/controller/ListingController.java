@@ -100,23 +100,45 @@ public class ListingController {
       @Parameter(description = "Amount of fat in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> fat,
       @Parameter(description = "Amount of saturated fat in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> saturatedFat,
       @Parameter(description = "Amount of sugar in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> sugars,
-      @Parameter(description = "Amount of salt in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> salt
+      @Parameter(description = "Amount of salt in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> salt,
+      @Parameter(description = "Is the product vegan") @RequestParam(required = false) Boolean isVegan,
+      @Parameter(description = "Is the product vegetarian") @RequestParam(required = false) Boolean isVegetarian,
+      @Parameter(description = "Is the product gluten free") @RequestParam(required = false) Boolean isGlutenFree,
+      @Parameter(description = "Is the product palm oil free") @RequestParam(required = false) Boolean isPalmOilFree,
+      @Parameter(description = "Is the dairy free") @RequestParam(required = false) Boolean isDairyFree
   ) {
+    log.info("GETTING LISTINGS FOR: SEARCH KEYS " + searchKeys + " - SEARCHPARAM " + searchParam
+        + " - PAG START:END " + pagStartIndex + ":" + pagEndIndex + " - BUSINESSTYPES "
+        + businessTypes + " - DATERANGE " + filterDates);
     ListingsSearchParams params = new ListingsSearchParams();
+
     params.setPagStartIndex(pagStartIndex);
     params.setPagEndIndex(pagEndIndex);
+
     params.setSortBy(sortBy);
     params.setAscending(isAscending);
+
     params.setSearchKeys(searchKeys);
     params.setSearchParam(searchParam);
+
     params.setMinPrice(minPrice);
     params.setMaxPrice(maxPrice);
+
     params.setFilterDates(filterDates);
+
     params.setBusinessTypes(businessTypes);
+
+    params.setIsVegan(isVegan);
+    params.setIsVegetarian(isVegetarian);
+    params.setIsGlutenFree(isGlutenFree);
+    params.setIsPalmOilFree(isPalmOilFree);
+    params.setIsDairyFree(isDairyFree);
+
     params.setMinNutriScore(minNutriScore);
     params.setMaxNutriScore(maxNutriScore);
     params.setMinNovaGroup(minNovaGroup);
     params.setMaxNovaGroup(maxNovaGroup);
+
     params.setFat(fat);
     params.setSaturatedFat(saturatedFat);
     params.setSugars(sugars);

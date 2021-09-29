@@ -97,6 +97,39 @@ class ListingControllerTest extends ControllerTestProvider {
 
   @Test
   @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withValidDietaryFilterParams_expectOk() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("pagStartIndex", "1")
+                    .param("pagEndIndex", "2")
+                    .param("sortBy", "quantity")
+                    .param("searchKeys", "ADDRESS")
+                    .param("isAscending", "true")
+                    .param("searchParam", "New Zealand")
+                    .param("isVegan", "true")
+                    .param("isVegetarian", "true")
+                    .param("isGlutenFree", "true")
+                    .param("isPalmOilFree", "true")
+    ).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withValidDietaryFilterParams_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("pagStartIndex", "1")
+                    .param("pagEndIndex", "2")
+                    .param("sortBy", "quantity")
+                    .param("searchKeys", "ADDRESS")
+                    .param("isAscending", "true")
+                    .param("searchParam", "New Zealand")
+                    .param("isVegan", "Blah")
+    ).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
   void searchListings_withInvalidSearchKeys_expectBadRequest() throws Exception {
     mockMvc.perform(
             get("/listings/search")
@@ -204,7 +237,7 @@ class ListingControllerTest extends ControllerTestProvider {
   // Throw 403 when not business admin or admin
   @Test
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
-  void throw403OnAddListingTest() throws Exception {
+  public void throw403OnAddListingTest() throws Exception {
     Listing mockListing = new Listing();
     mockListing.setQuantity(1L);
     mockListing.setPrice(17.99);
