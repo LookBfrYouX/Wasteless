@@ -130,9 +130,9 @@ class ListingSpecificationsTest extends MainTestProvider {
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
 
-    Listing rated4Listing = listingDao.getListing(5001);  // This should NOT be in the results
-    Listing rated3Listing = listingDao.getListing(5006);  // This should be in the results
-    Listing rated2Listing = listingDao.getListing(5003);  // This should be in the results
+    Listing rated4Listing = listingDao.getListing(5003);  // This should NOT be in the results
+    Listing rated3Listing = listingDao.getListing(5001);  // This should be in the results
+    Listing rated2Listing = listingDao.getListing(5006);  // This should be in the results
 
     // Assert
     Assertions.assertFalse(results.contains(rated4Listing));
@@ -156,10 +156,10 @@ class ListingSpecificationsTest extends MainTestProvider {
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
 
-    Listing rated4Listing = listingDao.getListing(5001);  // This should NOT be in the results
-    Listing rated3Listing = listingDao.getListing(5006);  // This should be in the results
-    Listing rated2Listing = listingDao.getListing(5003);  // This should be in the results
-    Listing rated1Listing = listingDao.getListing(5007);  // This should NOT be in the results
+    Listing rated4Listing = listingDao.getListing(5003);  // This should NOT be in the results
+    Listing rated3Listing = listingDao.getListing(5001);  // This should be in the results
+    Listing rated2Listing = listingDao.getListing(5006);  // This should be in the results
+    Listing rated1Listing = listingDao.getListing(5005);  // This should NOT be in the results
 
     // Assert
     Assertions.assertFalse(results.contains(rated4Listing));
@@ -184,8 +184,8 @@ class ListingSpecificationsTest extends MainTestProvider {
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
 
-    Listing aRatedListing = listingDao.getListing(5001);  // This should be in the results
-    Listing dRatedListing = listingDao.getListing(5007);  // This should NOT be in the results
+    Listing aRatedListing = listingDao.getListing(5004);  // This should be in the results
+    Listing eRatedListing = listingDao.getListing(5008);  // This should NOT be in the results
 
     // Assert
     Assertions.assertTrue(results.contains(aRatedListing));
