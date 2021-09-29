@@ -72,6 +72,16 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
+    <error-modal
+        :goBack="false"
+        :hideCallback="() => apiErrorMessage = null"
+        :refresh="true"
+        :retry="getTransactions"
+        :show="apiErrorMessage !== null"
+        title="Error fetching Transaction information"
+    >
+      <p>{{ apiErrorMessage }}</p>
+    </error-modal>
 
   </v-container>
 </template>
@@ -80,6 +90,7 @@
 import { Api } from "@/Api";
 import SalesReportTable from "@/components/SalesReportTable.vue";
 import ReportDateSelector from "@/components/ReportDateSelector";
+import ErrorModal from "@/components/ErrorModal";
 
 
 /**
@@ -100,7 +111,8 @@ const defaultDates = () => {
 export default {
   components:{
     SalesReportTable,
-    ReportDateSelector
+    ReportDateSelector,
+    ErrorModal
   },
 
   props: {
@@ -123,6 +135,7 @@ export default {
       granularityOptions: ["Day", "Week", "Month", "Year"],
       business: {},
       currency: null,
+      apiErrorMessage:null
     };
   },
 
@@ -173,7 +186,7 @@ export default {
         this.totalAmount = response.totalAmount;
         this.totalTransactionCount = response.totalTransactionCount;
         this.transactions = response.transactions;
-        
+
         this.apiErrorMessage = null;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
@@ -381,7 +394,7 @@ export default {
     granularity() {
       this.getTransactions();
     },
-    
+
     startDate() {
       this.getTransactions();
     },
