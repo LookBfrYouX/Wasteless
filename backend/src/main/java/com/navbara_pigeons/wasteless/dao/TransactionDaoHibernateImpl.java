@@ -34,7 +34,9 @@ public class TransactionDaoHibernateImpl implements TransactionDaoHibernate {
       ZonedDateTime endSaleDate, TransactionGranularity granularity) {
 
     String grouping = "t.saleDate";
-    if (granularity == TransactionGranularity.WEEK) {
+    if (granularity == TransactionGranularity.DAY) {
+      grouping = "YEAR(t.saleDate), MONTH(t.saleDate), WEEK(t.saleDate), DAY(t.saleDate)";
+    } else if (granularity == TransactionGranularity.WEEK) {
       grouping = "YEAR(t.saleDate), MONTH(t.saleDate), WEEK(t.saleDate)";
     } else if (granularity == TransactionGranularity.MONTH) {
       grouping = "YEAR(t.saleDate), MONTH(t.saleDate)";

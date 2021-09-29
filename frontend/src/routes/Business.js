@@ -158,10 +158,11 @@ export default [{
       title: "Business Listing | Wasteless"
     }
   },
+
   {
     name: "BusinessTransactions",
     path: "/business/:businessId(\\d+)/transactions",
-    component: () => import("@/views/business/Transactions.vue"),
+    component: () => import("@/views/business/SalesReport.vue"),
     props: route => ({businessId: parseInt(route.params.businessId, 10)}),
     meta: {
       title: "Transactions | Wasteless",
