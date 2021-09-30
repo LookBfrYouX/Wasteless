@@ -128,7 +128,7 @@ export default {
 
   computed: {
     /**
-     * Load Nova Group image. Called only when novaScore is not null.
+     * Load Nova Group image. Called only when novaGroup is not null.
      * @returns {*}
      */
     loadNovaGroupImg() {
@@ -142,7 +142,7 @@ export default {
     },
 
     /**
-     * Load Nutri-Score image. Called only when nutriScore is not null.
+     * Load NutriScore image. Called only when nutriScore is not null.
      * @returns {*}
      */
     loadNutriScoreImg() {

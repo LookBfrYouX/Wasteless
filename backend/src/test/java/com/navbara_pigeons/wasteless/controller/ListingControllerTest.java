@@ -34,7 +34,7 @@ class ListingControllerTest extends ControllerTestProvider {
     mockMvc.perform(get("/listings/search")
         .param("pagStartIndex", "1")
         .param("pagEndIndex", "2")
-        .param("sortBy", "quantity")
+        .param("sortBy", "QUANTITY")
         .param("isAscending", "true")
         .param("searchKeys", "PRODUCT_NAME")
     ).andExpect(status().isOk());
@@ -47,7 +47,7 @@ class ListingControllerTest extends ControllerTestProvider {
             get("/listings/search")
                     .param("pagStartIndex", "1")
                     .param("pagEndIndex", "2")
-                    .param("sortBy", "quantity")
+                    .param("sortBy", "QUANTITY")
                     .param("searchKeys", "ADDRESS")
                     .param("isAscending", "true")
                     .param("searchParam", "New Zealand")

@@ -31,7 +31,7 @@
         </v-col>
 
         <v-col cols="12" lg="3" class="my-0 py-0">
-          <v-subheader>Min nova group</v-subheader>
+          <v-subheader>Min NovaGroup</v-subheader>
           <v-select
               v-model="minNovaGroup"
               :items=minNovaGroups
@@ -46,7 +46,7 @@
         </v-col>
 
         <v-col cols="12" lg="3" class="my-0 py-0">
-          <v-subheader>Max nova group</v-subheader>
+          <v-subheader>Max NovaGroup</v-subheader>
           <v-select
               v-model="maxNovaGroup"
               :items=maxNovaGroups
@@ -115,7 +115,7 @@
         </v-col>
 
         <v-col cols="12" lg="3" class="my-0 py-0">
-          <v-subheader>Min nutriscore</v-subheader>
+          <v-subheader>Min NutriScore</v-subheader>
           <v-select
               v-model="minNutriScore"
               :items=minNutriScores
@@ -130,7 +130,7 @@
         </v-col>
 
         <v-col cols="12" lg="3" class="my-0 py-0">
-          <v-subheader>Max nutriscore</v-subheader>
+          <v-subheader>Max NutriScore</v-subheader>
           <v-select
               v-model="maxNutriScore"
               :items=maxNutriScores

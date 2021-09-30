@@ -57,7 +57,7 @@
           </div>
           <div class="mt-2">Quantity: {{ quantity }}</div>
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
-          <nutrition-facts class="my-2" :product="product"/>
+          <div class="mt-2">Manufacturer: {{ product.manufacturer }}</div>
           <div class="mt-2">Business address: {{ $helper.addressToString(business.address) }}</div>
           <nutrition-facts class="my-2" :product="product"/>
           <div v-if="moreInfo" class="mt-2 mb-5">More Information: {{ moreInfo }}</div>
@@ -162,6 +162,7 @@ export default {
         isVegetarian: false,
         isVegan: false,
         isPalmOilFree: false,
+        manufacturer: ""
       },
       name: "",
       description: "",

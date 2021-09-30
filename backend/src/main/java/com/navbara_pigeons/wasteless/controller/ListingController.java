@@ -97,9 +97,6 @@ public class ListingController {
       @Parameter(description = "The minimum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer minNovaGroup,
       @Parameter(description = "The maximum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer maxNovaGroup
   ) {
-    log.info("GETTING LISTINGS FOR: SEARCH KEYS " + searchKeys + " - SEARCHPARAM " + searchParam
-        + " - PAG START:END " + pagStartIndex + ":" + pagEndIndex + " - BUSINESSTYPES "
-        + businessTypes + " - DATERANGE " + filterDates);
     ListingsSearchParams params = new ListingsSearchParams();
     params.setPagStartIndex(pagStartIndex);
     params.setPagEndIndex(pagEndIndex);
@@ -115,6 +112,7 @@ public class ListingController {
     params.setMaxNutriScore(maxNutriScore);
     params.setMinNovaGroup(minNovaGroup);
     params.setMaxNovaGroup(maxNovaGroup);
+    log.info("GETTING LISTINGS " + params.toString());
     return new ResponseEntity<>(listingService.searchListings(params), HttpStatus.OK);
   }
 
