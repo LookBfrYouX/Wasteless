@@ -4,7 +4,6 @@ import BarChart from "@/components/charts/BarChart";
 let wrapper;
 
 beforeEach(() => {
-    HTMLCanvasElement.prototype.getContext = jest.fn(() => true);
     wrapper = shallowMount(BarChart, {
         propsData: {
             chartData: {
