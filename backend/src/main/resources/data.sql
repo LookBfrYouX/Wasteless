@@ -1046,10 +1046,13 @@ VALUES (5001, '2020-01-02 15:34:20', '2021-01-21 15:34:20', 5001, 1001, 5.25),
        (5009, '2021-03-21 15:34:20', '2021-03-20 15:34:20', 5005, 1001, 6.00),
        (5010, '2021-03-20 15:34:20', '2021-03-19 15:34:20', 5005, 1001, 7.00);
 
+#Sets closing of dummy data to some random time after 2022.
 UPDATE listing SET CLOSES = FROM_UNIXTIME(UNIX_TIMESTAMP('2022-10-17 00:00:00') + FLOOR(RAND() * 10000000)) WHERE ID < 5000;
 
+#Sets closing of realistic data to some random timeafter the showcase.
 UPDATE listing SET CLOSES = FROM_UNIXTIME(UNIX_TIMESTAMP('2021-10-17 00:00:00') + FLOOR(RAND() * 1000000)) WHERE ID > 5000 AND ID <= 5012;
 
+#Sets the inventory item expiry to be before listing.closes.
 UPDATE
   listing,
   inventory_item
@@ -1058,12 +1061,16 @@ SET
 WHERE
   listing.inventory_item_id = inventory_item.id AND listing.id > 5000 AND listing.id <= 5012;
 
+#Sets the inventory item sell by to be before expiry.
 UPDATE inventory_item SET SELL_BY = FROM_UNIXTIME(UNIX_TIMESTAMP(expires) - FLOOR(RAND() * 300000)) WHERE ID > 5000 AND ID <= 5012;
 
+#Sets the inventory item best before to be before sell by.
 UPDATE inventory_item SET BEST_BEFORE = FROM_UNIXTIME(UNIX_TIMESTAMP(sell_by) - FLOOR(RAND() * 300000)) WHERE ID > 5000 AND ID <= 5012;
 
+#Sets the inventory item manufactured to be before best before.
 UPDATE inventory_item SET MANUFACTURED = FROM_UNIXTIME(UNIX_TIMESTAMP(best_before) - FLOOR(RAND() * 1000000)) WHERE ID > 5000 AND ID <= 5012;
 
+#Sets listing created after inventory item manufactured and before listing closes
 UPDATE
   listing,
   inventory_item
@@ -1071,8 +1078,3 @@ SET
   listing.CREATED = FROM_UNIXTIME(UNIX_TIMESTAMP(inventory_item.manufactured) + FLOOR(RAND() * (UNIX_TIMESTAMP(listing.closes) - UNIX_TIMESTAMP(inventory_item.manufactured))))
 WHERE
   listing.inventory_item_id = inventory_item.id AND listing.id > 5000 AND listing.id <= 5012;
-
-
-
-
-
