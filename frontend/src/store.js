@@ -56,8 +56,7 @@ export const store = {
         return null;
       }
 
-      const business = state.authUser.businessesAdministered.find(
-          business => business.id == state.actingAsId);
+      const business = state.authUser.businessesAdministered.find(el => el.id == state.actingAsId);
       if (business != undefined) {
         return business;
       }

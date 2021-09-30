@@ -259,7 +259,7 @@ export const helper = {
    */
   tryGetCurrencyForBusiness: async function (businessId, stateStore) {
     try {
-      return this.getCurrencyForBusiness(businessId, stateStore);
+      return await this.getCurrencyForBusiness(businessId, stateStore);
     } catch (err) {
       return null;
     }
