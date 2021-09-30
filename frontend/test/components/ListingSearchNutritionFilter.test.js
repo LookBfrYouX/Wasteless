@@ -1,5 +1,6 @@
 import {shallowMount} from "@vue/test-utils";
-import ListingSearchNutritionFilterFilter from "@/components/ListingSearchNutritionFilter";
+import ListingSearchNutritionFilterFilter
+  from "@/components/ListingSearchNutritionFilter";
 
 let wrapper;
 jest.useFakeTimers();
@@ -67,8 +68,8 @@ describe("Data changed, events emitted", () => {
     expect(wrapper.emitted().newSugars).toBeTruthy()
   });
 
-  test("Salts changed", async () => {
-    await wrapper.setData({salts: "Unknown"})
-    expect(wrapper.emitted().newSalts).toBeTruthy()
+  test("Salt changed", async () => {
+    await wrapper.setData({salt: "Unknown"})
+    expect(wrapper.emitted().newSalt).toBeTruthy()
   });
 });
