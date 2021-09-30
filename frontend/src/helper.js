@@ -259,7 +259,7 @@ export const helper = {
    */
   tryGetCurrencyForBusiness: async function (businessId, stateStore) {
     try {
-      return await this.getCurrencyForBusiness(businessId, stateStore);
+      return this.getCurrencyForBusiness(businessId, stateStore);
     } catch (err) {
       return null;
     }
@@ -277,10 +277,15 @@ export const helper = {
       return;
     }
     price = price.toFixed(2);
+
+    // https://stackoverflow.com/a/2901298
+    price = price.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
     if (currency == null || currency == undefined) {
       return `${price} (unknown currency)`;
     }
     let str = `${currency.symbol}${price}`;
+
     if (currency.code != null && showCurrencyCode) {
       str += " " + currency.code;
     }
@@ -297,11 +302,11 @@ export const helper = {
      * @param {Object} obj object to extract property from
      * @param {Function|String} key Key is either a key to an object or a lambda which takes in an object and returns a key
      */
-    const getProp = (obj, key) => {
-      if (key instanceof Function) {
-        return key(obj);
+    const getProp = (obj, keyPath) => {
+      if (keyPath instanceof Function) {
+        return keyPath(obj);
       }
-      return obj[key];
+      return obj[keyPath];
     }
 
     return (a, b) => {

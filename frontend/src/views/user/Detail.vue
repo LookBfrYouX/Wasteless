@@ -123,23 +123,23 @@
       <div class="card user-details-container p-3 pb-0 overflow-auto">
         <div class="m-md-4 mb-md-0">
           <div class="overflow-auto w-100">
-            <table class="table table-hover mb-0">
+            <table class="table table-hover mb-0" role="presentation">
               <tbody>
               <tr>
                 <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
               </tr>
               <tr v-if="userInfo.nickname" scope="row">
-                <th class="pl-0 pl-md-2">Nickname:</th>
+                <th class="pl-0 pl-md-2" id="nickname">Nickname:</th>
                 <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.nickname }}</p></td>
               </tr>
               <tr scope="row">
-                <th class="pl-0 pl-md-2">Member since:</th>
+                <th class="pl-0 pl-md-2" id="memberSince">Member since:</th>
                 <td class="pr-0 pr-md-2 col-md value"><p>{{
                     this.$helper.memberSinceText(userInfo.created)
                   }}</p></td>
               </tr>
               <tr v-if="!isNaN(Date.parse(userInfo.dateOfBirth))" scope="row">
-                <th class="pl-0 pl-md-2">Date of Birth:</th>
+                <th class="pl-0 pl-md-2" id="dateofBirth">Date of Birth:</th>
                 <td class="pr-0 pr-md-2 col-md value"><p>{{ dateOfBirthText }}</p></td>
               </tr>
               <tr>
@@ -147,15 +147,15 @@
                 </td>
               </tr>
               <tr v-if="userInfo.email" scope="row">
-                <th class="pl-0 pl-md-2">Email Address:</th>
+                <th class="pl-0 pl-md-2" id="email">Email Address:</th>
                 <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.email }}</p></td>
               </tr>
               <tr v-if="userInfo.phoneNumber" scope="row">
-                <th class="pl-0 pl-md-2">Phone Number:</th>
+                <th class="pl-0 pl-md-2" id="phoneNumber">Phone Number:</th>
                 <td class="pr-0 pr-md-2 col-md value"><p>{{ userInfo.phoneNumber }}</p></td>
               </tr>
               <tr v-if="userInfo.homeAddress" scope="row">
-                <th class="pl-0 pl-md-2">Address:</th>
+                <th class="pl-0 pl-md-2" id="address">Address:</th>
                 <td class="pr-0 pr-md-2 col-md value">
                   <p>{{ $helper.addressToString(userInfo.homeAddress) }}</p>
                 </td>

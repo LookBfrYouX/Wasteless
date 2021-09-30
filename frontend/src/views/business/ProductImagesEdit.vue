@@ -161,7 +161,7 @@ export default {
       if (this.businessId === null) {
         throw new ApiRequestError("You must be acting as a business to edit the product.")
       }
-      return await Api.getProducts(this.businessId);
+      return Api.getProducts(this.businessId);
     },
 
     /**
