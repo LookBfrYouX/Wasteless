@@ -161,7 +161,7 @@ export default [{
 
   {
     name: "BusinessTransactions",
-    path: "/business/:businessId(\\d+)/transactions",
+    path: "/business/:businessId(\\d+)/report",
     component: () => import("@/views/business/SalesReport.vue"),
     props: route => ({businessId: parseInt(route.params.businessId, 10)}),
     meta: {
