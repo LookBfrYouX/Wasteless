@@ -3,7 +3,7 @@
     <v-expansion-panel-header>Nutrition filtering</v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-row align="center">
-        <v-col cols="12" lg="6">
+        <v-col cols="12" lg="6" class="diets">
           <v-subheader>Diets</v-subheader>
           <v-select
               v-model="diets"
@@ -31,7 +31,7 @@
           </v-select>
         </v-col>
 
-        <v-col cols="12" lg="3" class="my-0 py-0">
+        <v-col cols="12" lg="3" class="my-0 py-0 min-nova-group">
           <v-subheader>Min NovaGroup</v-subheader>
           <v-select
               v-model="minNovaGroup"
@@ -46,7 +46,7 @@
           </v-select>
         </v-col>
 
-        <v-col cols="12" lg="3" class="my-0 py-0">
+        <v-col cols="12" lg="3" class="my-0 py-0 max-nova-group">
           <v-subheader>Max NovaGroup</v-subheader>
           <v-select
               v-model="maxNovaGroup"
@@ -61,7 +61,37 @@
           </v-select>
         </v-col>
 
-        <v-col cols="12" lg="3" class="my-0 py-0">
+        <v-col cols="12" lg="3" class="my-0 py-0 min-nutri-score">
+          <v-subheader>Min Nutri-Score</v-subheader>
+          <v-select
+              v-model="minNutriScore"
+              :items=minNutriScores
+              label="Select"
+              solo
+              dense
+              clearable
+              item-text="short"
+              item-value="long"
+          >
+          </v-select>
+        </v-col>
+
+        <v-col cols="12" lg="3" class="my-0 py-0 max-nutri-score">
+          <v-subheader>Max Nutri-Score</v-subheader>
+          <v-select
+              v-model="maxNutriScore"
+              :items=maxNutriScores
+              label="Select"
+              solo
+              dense
+              clearable
+              item-text="short"
+              item-value="long"
+          >
+          </v-select>
+        </v-col>
+
+        <v-col cols="12" lg="3" class="my-0 py-0 fat-levels">
           <v-subheader>Fat levels</v-subheader>
           <v-select
               v-model="fat"
@@ -88,7 +118,7 @@
           </v-select>
         </v-col>
 
-        <v-col cols="12" lg="3" class="my-0 py-0">
+        <v-col cols="12" lg="3" class="my-0 py-0 saturated-fat-levels">
           <v-subheader>Saturated fat levels</v-subheader>
           <v-select
               v-model="saturatedFat"
@@ -115,37 +145,7 @@
           </v-select>
         </v-col>
 
-        <v-col cols="12" lg="3" class="my-0 py-0">
-          <v-subheader>Min Nutri-Score</v-subheader>
-          <v-select
-              v-model="minNutriScore"
-              :items=minNutriScores
-              label="Select"
-              solo
-              dense
-              clearable
-              item-text="short"
-              item-value="long"
-          >
-          </v-select>
-        </v-col>
-
-        <v-col cols="12" lg="3" class="my-0 py-0">
-          <v-subheader>Max Nutri-Score</v-subheader>
-          <v-select
-              v-model="maxNutriScore"
-              :items=maxNutriScores
-              label="Select"
-              solo
-              dense
-              clearable
-              item-text="short"
-              item-value="long"
-          >
-          </v-select>
-        </v-col>
-
-        <v-col cols="12" lg="3" class="my-0 py-0">
+        <v-col cols="12" lg="3" class="my-0 py-0 sugar-levels">
           <v-subheader>Sugar levels</v-subheader>
           <v-select
               v-model="sugars"
@@ -172,7 +172,7 @@
           </v-select>
         </v-col>
 
-        <v-col cols="12" lg="3" class="my-0 py-0">
+        <v-col cols="12" lg="3" class="my-0 py-0 salt-levels">
           <v-subheader>Salt levels</v-subheader>
           <v-select
               v-model="salts"
@@ -337,3 +337,38 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+@import "~/src/styles/grid-breakpoints.scss";
+
+// CSS using bootstrap breakpoints but using order-md-x vuetify properties
+// uses vuetify breakpoints
+@media (min-width: map-get($grid-breakpoints, "lg")) {
+  .diets {
+    order: 0;
+  }
+  .min-nova-group {
+    order: 1;
+  }
+  .max-nova-group {
+    order: 2;
+  }
+  .fat-levels {
+    order: 3;
+  }
+  .saturated-fat-levels {
+    order: 4;
+  }
+  .min-nutri-score {
+    order: 5;
+  }
+  .max-nutri-score {
+    order: 6;
+  }
+  .sugar-levels {
+    order: 7;
+  }
+  .salt-levels {
+    order: 8;
+  }
+}
+</style>
