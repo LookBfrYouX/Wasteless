@@ -204,17 +204,16 @@ describe("transformedTransactionData", () => {
    *            with zero transactions. These are removed before being passed to
    *            the method but not when used to compare the method's output
    */
-  const runMethodAndCompare = (thisData, transactionsWithZeroes) => {
-    const result = SalesReport.computed.transformedTransactionData.call({
-      ...thisData,
-      ...SalesReport.methods,
-      transactions: transactionsWithZeroes.filter(el => el.transactionCount > 0),
-      generateUserFacingDateText: () => "MOCKED",
-      $helper: {
-        makeCurrencyString: () => "MOCKED"
-      },
+  const runMethodAndCompare = async function (thisData, transactionsWithZeroes) {
+    Api.getTransactions = jest.fn().mockResolvedValue({
+      data: {
+        transactions: transactionsWithZeroes.filter(el => el.transactionCount)
+      }
     });
-
+    let wrapper = await mountSalesReport();
+    await wrapper.setData({...thisData, transactions: transactionsWithZeroes.filter(el => el.transactionCount) });
+    wrapper.vm.getTransformedTransactionData();
+    const result = wrapper.vm.$data.transformedTransactionData;
     expect(result.map(el => ({
       // remove dateRangeText and amountText since that is derived data
       date: el.date.toISOString(),
@@ -222,7 +221,7 @@ describe("transformedTransactionData", () => {
       transactionCount: el.transactionCount
     }))).toEqual(transactionsWithZeroes);
   }
-  test("day granularity, gap in middle", () => {
+  test("day granularity, gap in middle", async () => {
     const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
@@ -242,14 +241,14 @@ describe("transformedTransactionData", () => {
         amount: 0
       }
     ];
-    runMethodAndCompare({
+    await runMethodAndCompare({
       startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
       endDate: new Date("2020-01-04T00:00:00.000Z"),
       granularity: "Day"
     }, transactions);
   });
 
-  test("day granularity, no data at start", () => {
+  test("day granularity, no data at start", async () => {
     const transactions = [
       {
         date: "2020-01-01T00:00:00.000Z",
@@ -269,7 +268,7 @@ describe("transformedTransactionData", () => {
         amount: 2.71
       }
     ];
-    runMethodAndCompare({
+    await runMethodAndCompare({
       startDate: new Date(transactions[0].date),
       endDate: new Date("2020-01-04T07:00:00.000Z"),
       granularity: "Day"
@@ -277,7 +276,7 @@ describe("transformedTransactionData", () => {
   });
 
 
-  test("day granularity, no data at end", () => {
+  test("day granularity, no data at end", async () => {
     const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
@@ -297,14 +296,14 @@ describe("transformedTransactionData", () => {
         amount: 0
       }
     ];
-    runMethodAndCompare({
+    await runMethodAndCompare({
       startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
       endDate: new Date("2020-01-04T07:00:00.000Z"),
       granularity: "Day"
     }, transactions);
   });
 
-  test("week granularity, gap in middle", () => {
+  test("week granularity, gap in middle", async () => {
     const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
@@ -324,14 +323,14 @@ describe("transformedTransactionData", () => {
         amount: 0
       }
     ];
-    runMethodAndCompare({
+    await runMethodAndCompare({
       startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
       endDate: new Date("2020-01-19T00:00:00.000Z"),
       granularity: "Week"
     }, transactions);
   });
 
-  test("Month granularity, gap in middle", () => {
+  test("Month granularity, gap in middle", async () => {
     const transactions = [
       {
         date: "2020-01-07T11:30:20.000Z",
@@ -351,14 +350,14 @@ describe("transformedTransactionData", () => {
         amount: 0
       }
     ];
-    runMethodAndCompare({
+    await runMethodAndCompare({
       startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
       endDate: new Date("2020-04-01T00:00:00.000Z"),
       granularity: "Month"
     }, transactions);
   });
 
-  test("Year granularity, gap in middle", () => {
+  test("Year granularity, gap in middle", async () => {
     const transactions = [
       {
         date: "2020-01-01T11:30:20.000Z",
@@ -378,7 +377,7 @@ describe("transformedTransactionData", () => {
         amount: 0
       }
     ];
-    runMethodAndCompare({
+    await runMethodAndCompare({
       startDate: normalizeDateToStartOfDay(new Date(transactions[0].date)),
       endDate: new Date("2023-06-01T00:00:00.000Z"),
       granularity: "Year"
