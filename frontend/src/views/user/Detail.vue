@@ -2,7 +2,7 @@
   <div class="container my-4">
     <div class="w-100 grid-container">
       <div class="profile-image-container card">
-        <img alt="User's profile image" class="my-3 rounded-circle"
+        <img alt="User's profile image" class="rounded-circle"
              src="@/../assets/images/default-user-thumbnail.svg">
       </div>
       <div class="user-info-container card p-3">
@@ -29,10 +29,7 @@
           <p>{{ userInfo.bio }}</p>
 
           <br>
-          <div class="profile-buttons d-flex flex-wrap justify-content-center">
-            <button class="btn btn-white-bg-primary m-1 d-flex" disabled><span
-                class="material-icons mr-1">send</span>Send Message
-            </button>
+          <div class="profile-buttons d-flex flex-wrap">
             <button
                 v-if="isAdmin && userInfo.role != 'ROLE_ADMIN'"
                 id="makeAdmin"
@@ -115,14 +112,6 @@
         </div>
       </div>
       <div class="card user-details-container p-3 pb-0 overflow-auto">
-        <ul class="nav nav-tabs">
-          <li class="nav-item">
-            <a aria-current="page" class="nav-link active">Details</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled">Future Tab</a>
-          </li>
-        </ul>
         <div class="m-md-4 mb-md-0">
           <div class="overflow-auto w-100">
             <table class="table table-hover mb-0">
@@ -166,6 +155,7 @@
             </table>
           </div>
         </div>
+
       </div>
     </div>
     <error-modal
