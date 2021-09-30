@@ -175,7 +175,7 @@
         <v-col cols="12" lg="3" class="my-0 py-0 salt-levels">
           <v-subheader>Salt levels</v-subheader>
           <v-select
-              v-model="salts"
+              v-model="salt"
               :items=nutrientLevelOptions
               label="Select"
               multiple
@@ -193,7 +193,7 @@
                   v-if="index === shownChips"
                   class="grey--text text-caption"
               >
-              (+{{ salts.length - shownChips }} others)
+              (+{{ salt.length - shownChips }} others)
             </span>
             </template>
           </v-select>
@@ -255,7 +255,7 @@ export default {
       fat: [],
       saturatedFat: [],
       sugars: [],
-      salts: [],
+      salt: [],
     }
   },
 
@@ -300,8 +300,8 @@ export default {
     sugars() {
       this.$emit('newSugars', this.sugars);
     },
-    salts() {
-      this.$emit('newSalts', this.salts);
+    salt() {
+      this.$emit('newSalt', this.salt);
     },
   },
 

@@ -39,7 +39,7 @@
                 @newFat="event => this.searchParams.fat = event"
                 @newSaturatedFat="event => this.searchParams.saturatedFat = event"
                 @newSugars="event => this.searchParams.sugars = event"
-                @newSalts="event => this.searchParams.salts = event"/>
+                @newSalt="event => this.searchParams.salt = event"/>
           </v-expansion-panels>
         </v-col>
       </v-row>
@@ -155,7 +155,7 @@ export default {
         fat: [],
         saturatedFat: [],
         sugars: [],
-        salts: [],
+        salt: [],
 
         isGlutenFree: null,
         isDairyFree: null,
