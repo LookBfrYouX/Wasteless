@@ -35,11 +35,11 @@
                 @newMaxNovaGroup="event => this.searchParams.maxNovaGroup = event"
                 @newMinNutriScore="event => this.searchParams.minNutriScore = event"
                 @newMaxNutriScore="event => this.searchParams.maxNutriScore = event"
-                @newDiets="event => this.searchParams.diets = event"
-                @newFats="event => this.searchParams.fats = event"
-                @newSaturatedFats="event => this.searchParams.saturatedFats = event"
+                @newDiets="event => Object.assign(this.searchParams, event)"
+                @newFat="event => this.searchParams.fat = event"
+                @newSaturatedFat="event => this.searchParams.saturatedFat = event"
                 @newSugars="event => this.searchParams.sugars = event"
-                @newSalts="event => this.searchParams.salts = event"/>
+                @newSalt="event => this.searchParams.salt = event"/>
           </v-expansion-panels>
         </v-col>
       </v-row>
@@ -121,16 +121,16 @@ export default {
       listings: [],
       apiErrorMessage: null,
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
-        {key: "Closing Soon", value: "closes", isAscending: true},
-        {key: "Closing Latest", value: "closes", isAscending: false},
-        {key: "Name A-Z", value: "name", isAscending: true},
-        {key: "Name Z-A", value: "name", isAscending: false},
-        {key: "Lowest Price", value: "price", isAscending: true},
-        {key: "Highest Price", value: "price", isAscending: false},
-        {key: "Lowest Quantity", value: "quantity", isAscending: true},
-        {key: "Highest Quantity", value: "quantity", isAscending: false},
-        {key: "City A-Z", value: "city", isAscending: true},
-        {key: "City Z-A", value: "city", isAscending: false}
+        {key: "Closing Soon"    , value: "CLOSES"  , isAscending: true },
+        {key: "Closing Latest"  , value: "CLOSES"  , isAscending: false},
+        {key: "Name A-Z"        , value: "NAME"    , isAscending: true },
+        {key: "Name Z-A"        , value: "NAME"    , isAscending: false},
+        {key: "Lowest Price"    , value: "PRICE"   , isAscending: true },
+        {key: "Highest Price"   , value: "PRICE"   , isAscending: false},
+        {key: "Lowest Quantity" , value: "QUANTITY", isAscending: true },
+        {key: "Highest Quantity", value: "QUANTITY", isAscending: false},
+        {key: "City A-Z"        , value: "CITY"    , isAscending: true },
+        {key: "City Z-A"        , value: "CITY"    , isAscending: false}
       ],
 
       titleString: "Results",
@@ -138,7 +138,7 @@ export default {
         searchParam: "",
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
-        sortBy: "closes",
+        sortBy: "CLOSES",
         isAscending: true,
         searchKeys: ["PRODUCT_NAME"],
         minPrice: null,
@@ -151,11 +151,17 @@ export default {
         maxNovaGroup: null,
         minNutriScore: null,
         maxNutriScore: null,
-        diets: [],
-        fats: [],
-        saturatedFats: [],
+
+        fat: [],
+        saturatedFat: [],
         sugars: [],
-        salts: [],
+        salt: [],
+
+        isGlutenFree: null,
+        isDairyFree: null,
+        isVegetarian: null,
+        isVegan: null,
+        sPalmOilFree: null
       }
     };
   },
@@ -198,23 +204,30 @@ export default {
 
     getListingsPipeline: async function () {
       try {
-
         const response = (await Api.getListings(this.searchParams)).data;
         this.listings = response.results;
         this.totalResults = response.totalCount;
-        this.titleString = `Results ${this.searchParams.searchString ? "for: "
-            + this.searchParams.searchString : ""}`;
+        this.page = 1;
+        if (this.searchParams.searchString && this.searchParams.searchString.trim()) {
+          this.titleString = `Listings matching ${this.searchParams.searchString}`;
+        } else {
+          this.titleString = `Listings`;
+        }
+        this.apiErrorMessage = null;
       } catch (err) {
         if (await Api.handle401.call(this, err)) {
           return false;
         }
+        // For some unknown reason the tests fail without this:
+        // apiErrorMessage is still null in the test because of 
+        // some sort of async bug
+        if (await Api.handle401.call(this, err)) {
+          return false;
+        }
         this.apiErrorMessage = err.userFacingErrorMessage;
-        this.titleString = "Results";
+        this.titleString = "Listings";
       }
-    },
+    }
   },
 }
 </script>
-<style scoped>
-
-</style>

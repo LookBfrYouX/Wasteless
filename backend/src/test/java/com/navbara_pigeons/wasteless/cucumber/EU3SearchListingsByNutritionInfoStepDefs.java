@@ -3,17 +3,62 @@ package com.navbara_pigeons.wasteless.cucumber;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.enums.NutriScore;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.io.UnsupportedEncodingException;
 
 public class EU3SearchListingsByNutritionInfoStepDefs extends CucumberTestProvider {
 
   private MvcResult mvcResult;
+
+  @BeforeEach
+  void setup() {
+    this.mvcResult = null;
+  }
+
+  @When("I send a valid request to {string} with vegan set to {string}")
+  public void iSendAValidRequestToWithVeganSetTo(String endpoint, String veganValue) throws Exception {
+    this.mvcResult = mockMvc.perform(get(endpoint)
+                    .queryParam("isVegan", "true"))
+            .andExpect(status().is(200))
+            .andReturn();
+  }
+
+  @Then("only the products that are vegan are shown")
+  public void onlyTheProductsThatAreVeganAreShown() throws UnsupportedEncodingException, JsonProcessingException {
+    for (JsonNode result : objectMapper.readTree(this.mvcResult.getResponse().getContentAsString())
+            .get("results")) {
+      Assertions.assertTrue(Boolean.parseBoolean(result.get("inventoryItem").get("product").get("isVegan").asText()));
+    }
+  }
+
+  @When("I send a valid request to {string} with vegan set to {string} and gluten free set to {string}")
+  public void iSendAValidRequestToWithVeganSetToAndGlutenFreeSetTo(String endpoint, String veganValue, String glutenFreeValue) throws Exception {
+    this.mvcResult = mockMvc.perform(get(endpoint)
+                    .queryParam("isVegan", "true")
+                    .queryParam("isGlutenFree", "true"))
+            .andExpect(status().is(200))
+            .andReturn();
+  }
+
+  @Then("only the products that are vegan and gluten free are shown")
+  public void onlyTheProductsThatAreVeganAndGlutenFreeAreShown() throws UnsupportedEncodingException, JsonProcessingException {
+    for (JsonNode result : objectMapper.readTree(this.mvcResult.getResponse().getContentAsString())
+            .get("results")) {
+      Assertions.assertTrue(Boolean.parseBoolean(result.get("inventoryItem").get("product").get("isVegan").asText()));
+      Assertions.assertTrue(Boolean.parseBoolean(result.get("inventoryItem").get("product").get("isGlutenFree").asText()));
+    }
+  }
 
   @Given("a user is logged in")
   public void aUserIsLoggedIn() throws Exception {
@@ -119,6 +164,105 @@ public class EU3SearchListingsByNutritionInfoStepDefs extends CucumberTestProvid
       ) {
         Assertions.fail();
       }
+    }
+  }
+
+
+  @When("I send a valid request to {string} with fat set to {string}")
+  public void iSendAValidRequestToWithFatSetTo(String endpointUrl, String fatValue)
+      throws Exception {
+    this.mvcResult = mockMvc.perform(
+        get(endpointUrl)
+            .param("fat", fatValue)
+    ).andReturn();
+    Assertions.assertNotNull(this.mvcResult);
+  }
+
+  @Then("only the products with fat set to {string} are shown")
+  public void onlyTheProductsWithFatSetToAreShown(String fatValue)
+      throws UnsupportedEncodingException, JsonProcessingException {
+    JsonNode jsonResponse = objectMapper
+        .readTree(this.mvcResult.getResponse().getContentAsString());
+    Iterator<JsonNode> results = jsonResponse.get("results").elements();
+    while (results.hasNext()) {
+      Assertions.assertTrue(results.next().get("inventoryItem").get("product").get("fat").asText()
+          .equalsIgnoreCase(fatValue));
+    }
+  }
+
+  @When("I send a valid request to {string} with saturatedFat set to {string} and {string}")
+  public void iSendAValidRequestToWithSaturatedFatSetToAnd(String endpointUrl,
+      String saturatedFatValue1, String saturatedFatValue2) throws Exception {
+    this.mvcResult = mockMvc.perform(
+        get(endpointUrl)
+            .param("pagStartIndex", "0")
+            .param("pagEndIndex", "3")
+            .param("saturatedFat", saturatedFatValue1)
+            .param("saturatedFat", saturatedFatValue2)
+    ).andReturn();
+    Assertions.assertNotNull(this.mvcResult);
+  }
+
+  @Then("only the products with saturatedFat set to {string} and {string} are shown")
+  public void onlyTheProductsWithSaturatedFatSetToAndAreShown(String saturatedFatValue1,
+      String saturatedFatValue2) throws UnsupportedEncodingException, JsonProcessingException {
+    JsonNode jsonResponse = objectMapper
+        .readTree(this.mvcResult.getResponse().getContentAsString());
+    Iterator<JsonNode> results = jsonResponse.get("results").elements();
+    while (results.hasNext()) {
+      String text = results.next().get("inventoryItem").get("product").get("saturatedFat").asText();
+      Assertions.assertTrue(
+          text.equalsIgnoreCase(saturatedFatValue1) || text.equalsIgnoreCase(saturatedFatValue2));
+    }
+  }
+
+  @When("I send a valid request to {string} with salt set to {string}")
+  public void iSendAValidRequestToWithSaltSetTo(String endpointUrl, String saltValue)
+      throws Exception {
+    this.mvcResult = mockMvc.perform(
+        get(endpointUrl)
+            .param("pagStartIndex", "0")
+            .param("pagEndIndex", "3")
+            .param("salt", saltValue)
+    ).andReturn();
+    Assertions.assertNotNull(this.mvcResult);
+  }
+
+  @Then("only the products with salt set to {string} are shown")
+  public void onlyTheProductsWithSaltSetToAreShown(String saltValue)
+      throws UnsupportedEncodingException, JsonProcessingException {
+    JsonNode jsonResponse = objectMapper
+        .readTree(this.mvcResult.getResponse().getContentAsString());
+    Iterator<JsonNode> results = jsonResponse.get("results").elements();
+    while (results.hasNext()) {
+      Assertions.assertTrue(results.next().get("inventoryItem").get("product").get("salt").asText()
+          .equalsIgnoreCase(saltValue));
+    }
+  }
+
+
+  @When("I send a valid request to {string} with  sugars set to {string}")
+  public void iSendAValidRequestToWithSugarsSetTo(String endpointUrl, String sugarsValue)
+      throws Exception {
+    this.mvcResult = mockMvc.perform(
+        get(endpointUrl)
+            .param("pagStartIndex", "0")
+            .param("pagEndIndex", "3")
+            .param("sugars", sugarsValue)
+    ).andReturn();
+    Assertions.assertNotNull(this.mvcResult);
+  }
+
+  @Then("only the products with sugars set to {string} are shown")
+  public void onlyTheProductsWithSugarsSetToAreShown(String sugarsValue)
+      throws UnsupportedEncodingException, JsonProcessingException {
+    JsonNode jsonResponse = objectMapper
+        .readTree(this.mvcResult.getResponse().getContentAsString());
+    Iterator<JsonNode> results = jsonResponse.get("results").elements();
+    while (results.hasNext()) {
+      Assertions.assertTrue(
+          results.next().get("inventoryItem").get("product").get("sugars").asText()
+              .equalsIgnoreCase(sugarsValue));
     }
   }
 }

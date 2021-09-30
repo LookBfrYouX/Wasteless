@@ -57,7 +57,7 @@ public class U29BrowsSalesStepDefs extends CucumberTestProvider {
         get(endpointUrl)
             .param("pagStartIndex", "0")
             .param("pagEndIndex", "3")
-            .param("sortBy", "price")
+            .param("sortBy", "PRICE")
             .param("isAscending", "true")
     ).andReturn();
     Assertions.assertNotNull(this.response);

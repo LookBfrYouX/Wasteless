@@ -49,7 +49,7 @@ const instanceLongTimeouts = axios.create({
 
 const openFoodFactsInstance = axios.create({
   baseURL: constants.OPEN_FOOD_FACTS_URL,
-  timeout: constants.API.TIMEOUT_SHORT
+  timeout: constants.API.TIMEOUT_MEDIUM
 });
 
 
@@ -315,7 +315,7 @@ export const Api = {
     }
     if (err && err.status === 401) {
       await this.$stateStore.actions.deleteAuthUser();
-      await this.$router.push({name: "error401"});
+      await this.$router.push({name: "Error401"});
       return true;
     }
 
@@ -550,6 +550,23 @@ export const Api = {
         502: serverDownMessage,
         503: serverDownMessage,
         301: "You were redirected to another product."
+      });
+    });
+  },
+
+  /**
+   * Gets transactions for a business
+   * @param params an object with startDate, endDate and transactionGranularity
+   * @return {Promise<AxiosResponse<any>>} The object containing the
+   * list of transactions between the set time period and in the unit supplied
+   */
+  getTransactions: (businessId, params) => {
+    return instance.get(`/businesses/${businessId}/transactions`, {params})
+    .catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        400: err => `The report could not be viewed: ${err.response.data}`,
+        403: "You don't have permission to view the report",
+        404: "The business does not exist"
       });
     });
   }

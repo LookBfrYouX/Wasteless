@@ -39,7 +39,6 @@ const {Api} = require('@/Api')
  * @return undefined
  */
 
-
 beforeEach(() => {
   wrapper = mount(BarcodeInput, {
     vuetify,
@@ -52,6 +51,9 @@ beforeEach(() => {
   document.body.append(app);
 
   wrapper.vm.$data.dialog = true;
+  window.MediaStream = jest.fn().mockImplementation(() => ({
+    getTracks: jest.fn().mockReturnValue([])
+  }))
 });
 
 afterEach(() => wrapper.destroy());
@@ -170,5 +172,41 @@ describe('Barcode Scan Functionality Tests', () => {
 
     // Assert
     expect(wrapper.vm.$data.scannerLoaded).toEqual(true);
+  });
+
+  test('scannerLoaded is set to False on dialog close', async () => {
+    // Arrange
+    wrapper.setData({scannerLoaded: true, stream: new MediaStream()});
+
+    // Act (watcher method for dialog)
+    wrapper.setData({dialog: false});
+    await wrapper.vm.$nextTick();
+
+    // Assert
+    expect(wrapper.vm.$data.scannerLoaded).toEqual(false);
+  });
+
+  test('scannerLoaded doesnt change if dialog is opened', async () => {
+    // Arrange
+    wrapper.setData({scannerLoaded: false, stream: new MediaStream()});
+
+    // Act (watcher method for dialog)
+    wrapper.setData({dialog: true});
+    await wrapper.vm.$nextTick();
+
+    // Assert
+    expect(wrapper.vm.$data.scannerLoaded).toEqual(false);
+  });
+
+  test('scannerLoaded doesnt change without camera permision', async () => {
+    // Arrange
+    wrapper.setData({scannerLoaded: false, stream: null});
+
+    // Act (watcher method for dialog)
+    wrapper.setData({dialog: true});
+    await wrapper.vm.$nextTick();
+
+    // Assert
+    expect(wrapper.vm.$data.scannerLoaded).toEqual(false);
   });
 });
