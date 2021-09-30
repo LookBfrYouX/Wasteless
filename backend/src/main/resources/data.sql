@@ -865,10 +865,15 @@ INSERT INTO catalogue (PRODUCT_ID, BUSINESS_ID)
 VALUES (5001, 1001),
        (5002, 1002),
        (5003, 1001),
-       (5004, 1002),
+       (5004, 1003),
        (5005, 1001),
-       (5006, 1003),
-       (5008, 1003);
+       (5006, 1004),
+       (5007, 1005),
+       (5008, 1006),
+       (5009, 1007),
+       (5010, 1008),
+       (5011, 1009),
+       (5012, 1010);
 
 -- Inserting inventory_item data
 
@@ -1021,3 +1026,31 @@ VALUES (5001, '2020-01-02 15:34:20', '2021-01-21 15:34:20', 5001, 1001, 5.25),
        (5008, '2021-03-20 15:34:20', '2021-03-19 15:34:20', 5003, 1001, 13.25),
        (5009, '2021-03-21 15:34:20', '2021-03-20 15:34:20', 5005, 1001, 6.00),
        (5010, '2021-03-20 15:34:20', '2021-03-19 15:34:20', 5005, 1001, 7.00);
+
+INSERT INTO image (ID, FILENAME, THUMBNAIL_FILENAME)
+VALUES (5001, '/user-content/images/products/Ie68c80b6-1d0b-4b47-8a43-fbe12544d4db.png', '/user-content/images/products/Ie68c80b6-1d0b-4b47-8a43-fbe12544d4db_thumbnail.png'),
+       (5002, '/user-content/images/products/I9de9a40d-ee3b-43df-8827-270e3b0393eb.png', '/user-content/images/products/I9de9a40d-ee3b-43df-8827-270e3b0393eb_thumbnail.png'),
+       (5003, '/user-content/images/products/I34d8a6cf-dea2-48b9-8721-2720b0cde6b1.png', '/user-content/images/products/I34d8a6cf-dea2-48b9-8721-2720b0cde6b1_thumbnail.png'),
+       (5004, '/user-content/images/products/I6bd0f7b1-cdc8-4271-a7c9-18023f3203a5.png', '/user-content/images/products/I6bd0f7b1-cdc8-4271-a7c9-18023f3203a5_thumbnail.png'),
+       (5005, '/user-content/images/products/I57e83d7a-56d0-4b43-b1f4-8322edcb932d.png', '/user-content/images/products/I57e83d7a-56d0-4b43-b1f4-8322edcb932d_thumbnail.png'),
+       (5006, '/user-content/images/products/Iaf14fe3e-afd7-456b-85a6-c04d60fc729b.png', '/user-content/images/products/Iaf14fe3e-afd7-456b-85a6-c04d60fc729b_thumbnail.png'),
+       (5007, '/user-content/images/products/I426d2955-fd25-42d9-add2-a59311ae7dda.png', '/user-content/images/products/I426d2955-fd25-42d9-add2-a59311ae7dda_thumbnail.png'),
+       (5008, '/user-content/images/products/I6f7d40d1-bba9-4eb1-8216-3e54f3d18b66.jpg', '/user-content/images/products/I6f7d40d1-bba9-4eb1-8216-3e54f3d18b66_thumbnail.jpg'),
+       (5009, '/user-content/images/products/I8a99c416-41c7-4be1-be9d-55332a0c59e8.png', '/user-content/images/products/I8a99c416-41c7-4be1-be9d-55332a0c59e8_thumbnail.png'),
+       (5010, '/user-content/images/products/Ibf4b2af0-cc96-43df-a5d4-79b48644309a.jpg', '/user-content/images/products/Ibf4b2af0-cc96-43df-a5d4-79b48644309a_thumbnail.jpg'),
+       (5011, '/user-content/images/products/I88529d84-07e4-406a-9a40-2cddabb7e465.jpg', '/user-content/images/products/I88529d84-07e4-406a-9a40-2cddabb7e465_thumbnail.jpg'),
+       (5012, '/user-content/images/products/I6543f8e4-a9b9-4606-97c8-d5f47f65f51d.png', '/user-content/images/products/I6543f8e4-a9b9-4606-97c8-d5f47f65f51d_thumbnail.png');
+
+INSERT INTO product_image (PRODUCT_ID, IMAGE_ID)
+VALUES (5001, 5003),
+       (5002, 5004),
+       (5003, 5001),
+       (5004, 5007),
+       (5005, 5002),
+       (5006, 5008),
+       (5007, 5009),
+       (5008, 5010),
+       (5009, 5011),
+       (5010, 5012),
+       (5012, 5006),
+       (5011, 5005);
