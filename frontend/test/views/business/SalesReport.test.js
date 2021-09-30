@@ -208,7 +208,6 @@ describe("transformedTransactionData", () => {
     let wrapper = mountSalesReport();
     wrapper.setData({...thisData});
     wrapper.vm.getTransformedTransactionData();
-    await wrapper.vm.$nextTick();
     const result = wrapper.vm.$data.transformedTransactionData;
     console.log(result);
     expect(result.map(el => ({
