@@ -213,7 +213,6 @@ describe("transformedTransactionData", () => {
     let wrapper = await mountSalesReport();
     await wrapper.setData({...thisData, transactions: transactionsWithZeroes.filter(el => el.transactionCount) });
     wrapper.vm.getTransformedTransactionData();
-    for(let i = 0; i < 10; i++) { await wrapper.vm.$nextTick(); }
     const result = wrapper.vm.$data.transformedTransactionData;
     expect(result.map(el => ({
       // remove dateRangeText and amountText since that is derived data
