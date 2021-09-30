@@ -241,6 +241,7 @@ export default {
               endDate: this.endDate.toISOString().slice(0, 10),
             })
         ).data;
+        console.log(response);
         this.totalAmount = response.totalAmount;
         this.totalTransactionCount = response.totalTransactionCount;
         this.transactions = response.transactions;
@@ -374,8 +375,10 @@ export default {
      * }] or null if transactionData is null
      */
     getTransformedTransactionData() {
-      if (this.transactions == null) return null;
-
+      if (this.transactions == null) {
+        this.transformedTransactionData = null;
+        return
+      }
       let i = 0;
       let dataArray = [];
       let date = new Date(this.startDate.getTime()); // date is the start of the next period
