@@ -241,7 +241,6 @@ export default {
               endDate: this.endDate.toISOString().slice(0, 10),
             })
         ).data;
-        console.log(response);
         this.totalAmount = response.totalAmount;
         this.totalTransactionCount = response.totalTransactionCount;
         this.transactions = response.transactions;
