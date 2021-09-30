@@ -1,7 +1,6 @@
 package com.navbara_pigeons.wasteless.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
@@ -141,20 +140,20 @@ class UserDaoHibernateImplTest {
     Assertions.assertDoesNotThrow(() -> {
       List<User> results1 = null;
       results1 = userDao.searchUsers("Fred");
-      assertEquals(results1.size(), 2);
+      assertEquals(2, results1.size());
 
       List<User> results2 = userDao.searchUsers("smiths");
-      assertEquals(results2.size(), 1);
+      assertEquals(1, results2.size());
       assertEquals(results2.get(0).getId(), testUser2.getId());
       assertEquals(results2.get(0).getEmail(), testUser2.getEmail());
 
       List<User> results3 = userDao.searchUsers("UsEr");
-      assertEquals(results3.size(), 1);
+      assertEquals(1, results3.size());
       assertEquals(results3.get(0).getId(), testUser3.getId());
       assertEquals(results3.get(0).getEmail(), testUser3.getEmail());
 
       List<User> results4 = userDao.searchUsers("Frod");
-      assertEquals(results4.size(), 1);
+      assertEquals(1, results4.size());
       assertEquals(results4.get(0).getId(), testUser2.getId());
       assertEquals(results4.get(0).getEmail(), testUser2.getEmail());
     });

@@ -10,23 +10,22 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CreateUserDtoTest extends MainTestProvider {
+class CreateUserDtoTest extends MainTestProvider {
 
   private Set<ConstraintViolation<CreateUserDto>> validate(CreateUserDto dto) {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
-    Set<ConstraintViolation<CreateUserDto>> violations = validator.validate(dto);
-    return violations;
+    return validator.validate(dto);
   }
 
   @Test
-  public void validBusinessType() {
+  void validBusinessType() {
     Assertions.assertEquals(0,
         validate(new CreateUserDto(makeUser("email@email.co.nz", "password123", false))).size());
   }
 
   @Test
-  public void invalidCreateUserDtoWithLargeLengths() {
+  void invalidCreateUserDtoWithLargeLengths() {
     CreateUserDto dto = new CreateUserDto(makeUser("email@email.co.nz", "password123", false));
     String string = "1";
     String badField = string.repeat(51);
@@ -42,7 +41,7 @@ public class CreateUserDtoTest extends MainTestProvider {
   }
 
   @Test
-  public void invalidCreateUserDtoWithBlankFields() {
+  void invalidCreateUserDtoWithBlankFields() {
     CreateUserDto dto = new CreateUserDto(makeUser("email@email.co.nz", "password123", false));
     dto.setFirstName("");
     dto.setLastName("");
@@ -51,28 +50,28 @@ public class CreateUserDtoTest extends MainTestProvider {
   }
 
   @Test
-  public void invalidCreateUserDtoWithNullFields() {
+  void invalidCreateUserDtoWithNullFields() {
     CreateUserDto dto = new CreateUserDto(makeUser("email@email.co.nz", "password123", false));
     dto.setDateOfBirth(null);
     Assertions.assertEquals(1, validate(dto).size());
   }
 
   @Test
-  public void invalidCreateUserFutureDateOfBirth() {
+  void invalidCreateUserFutureDateOfBirth() {
     CreateUserDto dto = new CreateUserDto(makeUser("email@email.co.nz", "password123", false));
     dto.setDateOfBirth(LocalDate.now().plusYears(10));
     Assertions.assertEquals(1, validate(dto).size());
   }
 
   @Test
-  public void invalidCreateUserDateOfBirthTooOld() {
+  void invalidCreateUserDateOfBirthTooOld() {
     CreateUserDto dto = new CreateUserDto(makeUser("email@email.co.nz", "password123", false));
     dto.setDateOfBirth(LocalDate.now().minusYears(150));
     Assertions.assertEquals(1, validate(dto).size());
   }
 
   @Test
-  public void validCreateUserDateOfBirthMinimumAge() {
+  void validCreateUserDateOfBirthMinimumAge() {
     CreateUserDto dto = new CreateUserDto(makeUser("email@email.co.nz", "password123", false));
     dto.setDateOfBirth(LocalDate.now().minusYears(13));
     Assertions.assertEquals(0, validate(dto).size());

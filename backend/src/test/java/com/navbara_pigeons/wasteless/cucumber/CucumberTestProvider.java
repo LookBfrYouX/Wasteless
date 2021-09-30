@@ -4,7 +4,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.controller.BusinessController;
 import com.navbara_pigeons.wasteless.controller.ProductController;
@@ -84,11 +83,11 @@ public class CucumberTestProvider extends MainTestProvider {
    * Make post request to endpoint with JSON data, expecting some status code and expected some JSON
    * to get returned
    *
-   * @param endpoint
+   * @param endpoint endpoint to query
    * @param data     Java object
    * @param expect   e.g. status().getCreated(). can be null
-   * @return
-   * @throws Exception
+   * @return tree of response
+   * @throws Exception any exception (if exception is thrown, test should fail)
    */
   protected JsonNode makePostRequestGetJson(String endpoint, Object data, ResultMatcher expect)
       throws Exception {
@@ -110,10 +109,10 @@ public class CucumberTestProvider extends MainTestProvider {
    * Make get request to endpoint, expecting some status code and expected some JSON to get
    * returned
    *
-   * @param endpoint
+   * @param endpoint endpoint to query
    * @param expect   e.g. status.getCreated(). can be null
    * @return objectMapped response
-   * @throws Exception
+   * @throws Exception any exception (if exception is thrown, test should fail)
    */
   protected JsonNode makeGetRequestGetJson(String endpoint, ResultMatcher expect) throws Exception {
     ResultActions result = mockMvc.perform(
@@ -131,9 +130,9 @@ public class CucumberTestProvider extends MainTestProvider {
   /**
    * Registers and logs in as the given user
    *
-   * @param user
+   * @param user new user to create
    * @return user id
-   * @throws Exception
+   * @throws Exception any exception (if exception is thrown, test should fail)
    */
   protected long registerUser(CreateUserDto user) throws Exception {
     return makePostRequestGetJson(

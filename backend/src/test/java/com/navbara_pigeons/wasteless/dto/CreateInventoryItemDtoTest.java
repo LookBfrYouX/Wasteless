@@ -15,8 +15,7 @@ public class CreateInventoryItemDtoTest extends MainTestProvider {
   private Set<ConstraintViolation<CreateInventoryItemDto>> validate(CreateInventoryItemDto dto) {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
-    Set<ConstraintViolation<CreateInventoryItemDto>> violations = validator.validate(dto);
-    return violations;
+    return validator.validate(dto);
   }
 
   @Test

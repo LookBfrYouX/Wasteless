@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.navbara_pigeons.wasteless.dto.CreateInventoryItemDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
 import java.time.LocalDate;
@@ -12,7 +11,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
-public class InventoryControllerTest extends ControllerTestProvider {
+class InventoryControllerTest extends ControllerTestProvider {
 
   @Test
   @WithUserDetails(value = "mbi47@uclive.ac.nz")
