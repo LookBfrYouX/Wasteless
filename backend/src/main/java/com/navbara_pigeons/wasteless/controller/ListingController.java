@@ -7,6 +7,7 @@ import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 import com.navbara_pigeons.wasteless.enums.ListingSortByOption;
 import com.navbara_pigeons.wasteless.enums.NutriScore;
+import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import com.navbara_pigeons.wasteless.exception.BusinessAndListingMismatchException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
 import com.navbara_pigeons.wasteless.exception.InsufficientPrivilegesException;
@@ -95,23 +96,53 @@ public class ListingController {
       @Parameter(description = "The minimum (inclusive) Nutrition Score of the Listings") @RequestParam(required = false) NutriScore minNutriScore,
       @Parameter(description = "The maximum (inclusive) Nutrition Score of the Listings") @RequestParam(required = false) NutriScore maxNutriScore,
       @Parameter(description = "The minimum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer minNovaGroup,
-      @Parameter(description = "The maximum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer maxNovaGroup
+      @Parameter(description = "The maximum (inclusive) Nova Score of the Listings") @RequestParam(required = false) Integer maxNovaGroup,
+      @Parameter(description = "Amount of fat in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> fat,
+      @Parameter(description = "Amount of saturated fat in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> saturatedFat,
+      @Parameter(description = "Amount of sugar in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> sugars,
+      @Parameter(description = "Amount of salt in product to filter by") @RequestParam(required = false) List<NutritionFactsLevel> salt,
+      @Parameter(description = "Is the product vegan") @RequestParam(required = false) Boolean isVegan,
+      @Parameter(description = "Is the product vegetarian") @RequestParam(required = false) Boolean isVegetarian,
+      @Parameter(description = "Is the product gluten free") @RequestParam(required = false) Boolean isGlutenFree,
+      @Parameter(description = "Is the product palm oil free") @RequestParam(required = false) Boolean isPalmOilFree,
+      @Parameter(description = "Is the dairy free") @RequestParam(required = false) Boolean isDairyFree
   ) {
+    log.info("GETTING LISTINGS FOR: SEARCH KEYS " + searchKeys + " - SEARCHPARAM " + searchParam
+        + " - PAG START:END " + pagStartIndex + ":" + pagEndIndex + " - BUSINESSTYPES "
+        + businessTypes + " - DATERANGE " + filterDates);
     ListingsSearchParams params = new ListingsSearchParams();
+
     params.setPagStartIndex(pagStartIndex);
     params.setPagEndIndex(pagEndIndex);
+
     params.setSortBy(sortBy);
     params.setAscending(isAscending);
+
     params.setSearchKeys(searchKeys);
     params.setSearchParam(searchParam);
+
     params.setMinPrice(minPrice);
     params.setMaxPrice(maxPrice);
+
     params.setFilterDates(filterDates);
+
     params.setBusinessTypes(businessTypes);
+
+    params.setIsVegan(isVegan);
+    params.setIsVegetarian(isVegetarian);
+    params.setIsGlutenFree(isGlutenFree);
+    params.setIsPalmOilFree(isPalmOilFree);
+    params.setIsDairyFree(isDairyFree);
+
     params.setMinNutriScore(minNutriScore);
     params.setMaxNutriScore(maxNutriScore);
     params.setMinNovaGroup(minNovaGroup);
     params.setMaxNovaGroup(maxNovaGroup);
+
+    params.setFat(fat);
+    params.setSaturatedFat(saturatedFat);
+    params.setSugars(sugars);
+    params.setSalt(salt);
     log.info("GETTING LISTINGS " + params.toString());
     return new ResponseEntity<>(listingService.searchListings(params), HttpStatus.OK);
   }

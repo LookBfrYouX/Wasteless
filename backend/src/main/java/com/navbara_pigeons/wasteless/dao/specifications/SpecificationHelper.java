@@ -17,6 +17,10 @@ public class SpecificationHelper {
      */
     public static List<String> tokenize(String searchQuery) {
         List<String> tokens = new ArrayList<>();
+        if (searchQuery == null) {
+            return tokens;
+        }
+
         searchQuery = searchQuery.strip();
         // Matches words
         Matcher matcher = Pattern.compile("(\"[^\"]+\")|([^\"\\s]+)").matcher(searchQuery);

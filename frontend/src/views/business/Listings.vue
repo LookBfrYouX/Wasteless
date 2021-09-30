@@ -35,11 +35,11 @@
                 @newMaxNovaGroup="event => this.searchParams.maxNovaGroup = event"
                 @newMinNutriScore="event => this.searchParams.minNutriScore = event"
                 @newMaxNutriScore="event => this.searchParams.maxNutriScore = event"
-                @newDiets="event => this.searchParams.diets = event"
-                @newFats="event => this.searchParams.fats = event"
-                @newSaturatedFats="event => this.searchParams.saturatedFats = event"
+                @newDiets="event => Object.assign(this.searchParams, event)"
+                @newFat="event => this.searchParams.fat = event"
+                @newSaturatedFat="event => this.searchParams.saturatedFat = event"
                 @newSugars="event => this.searchParams.sugars = event"
-                @newSalts="event => this.searchParams.salts = event"/>
+                @newSalt="event => this.searchParams.salt = event"/>
           </v-expansion-panels>
         </v-col>
       </v-row>
@@ -73,6 +73,7 @@
         <v-pagination
             v-model="page"
             :length="totalPages"
+            :total-visible="7"
             class="w-100 py-4"
             @input="pageUpdate"
         />
@@ -151,11 +152,17 @@ export default {
         maxNovaGroup: null,
         minNutriScore: null,
         maxNutriScore: null,
-        diets: [],
-        fats: [],
-        saturatedFats: [],
+
+        fat: [],
+        saturatedFat: [],
         sugars: [],
-        salts: [],
+        salt: [],
+
+        isGlutenFree: null,
+        isDairyFree: null,
+        isVegetarian: null,
+        isVegan: null,
+        sPalmOilFree: null
       }
     };
   },
@@ -221,7 +228,7 @@ export default {
         this.apiErrorMessage = err.userFacingErrorMessage;
         this.titleString = "Listings";
       }
-    },
+    }
   },
 }
 </script>

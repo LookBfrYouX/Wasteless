@@ -1,5 +1,6 @@
 import {shallowMount} from "@vue/test-utils";
-import ListingSearchNutritionFilterFilter from "@/components/ListingSearchNutritionFilter";
+import ListingSearchNutritionFilterFilter
+  from "@/components/ListingSearchNutritionFilter";
 
 let wrapper;
 jest.useFakeTimers();
@@ -48,18 +49,18 @@ describe("NutriScore input restriction", () => {
 
 describe("Data changed, events emitted", () => {
   test("Diets changed", async () => {
-    await wrapper.setData({diets: "Gluten Free"})
+    await wrapper.setData({diets: [{ name: "Gluten Free", key: "isGlutenFree" }]});
     expect(wrapper.emitted().newDiets).toBeTruthy()
   });
 
   test("Fats changed", async () => {
-    await wrapper.setData({fats: "Unknown"})
-    expect(wrapper.emitted().newFats).toBeTruthy()
+    await wrapper.setData({fat: "Unknown"})
+    expect(wrapper.emitted().newFat).toBeTruthy()
   });
 
   test("Saturated fats changed", async () => {
-    await wrapper.setData({saturatedFats: "Unknown"})
-    expect(wrapper.emitted().newSaturatedFats).toBeTruthy()
+    await wrapper.setData({saturatedFat: "Unknown"})
+    expect(wrapper.emitted().newSaturatedFat).toBeTruthy()
   });
 
   test("Sugars changed", async () => {
@@ -67,8 +68,8 @@ describe("Data changed, events emitted", () => {
     expect(wrapper.emitted().newSugars).toBeTruthy()
   });
 
-  test("Salts changed", async () => {
-    await wrapper.setData({salts: "Unknown"})
-    expect(wrapper.emitted().newSalts).toBeTruthy()
+  test("Salt changed", async () => {
+    await wrapper.setData({salt: "Unknown"})
+    expect(wrapper.emitted().newSalt).toBeTruthy()
   });
 });

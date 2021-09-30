@@ -865,20 +865,14 @@ INSERT INTO catalogue (PRODUCT_ID, BUSINESS_ID)
 VALUES (5001, 1001),
        (5002, 1002),
        (5003, 1001),
-       (5004, 1002),
+       (5004, 1003),
        (5005, 1001),
-       (5006, 1003),
-       (5001, 1005),
-       (5002, 1009),
-       (5003, 1005),
-       (5004, 1007),
-       (5005, 1006),
-       (5006, 1002),
-       (5007, 1001),
-       (5008, 1001),
+       (5006, 1004),
+       (5007, 1005),
+       (5008, 1006),
        (5009, 1007),
-       (5010, 1002),
-       (5011, 1003),
+       (5010, 1008),
+       (5011, 1009),
        (5012, 1010);
 
 -- Inserting inventory_item data
@@ -946,8 +940,8 @@ VALUES (2501, 5001, 'ForSale', '2021-10-13 15:34:20', '2021-11-13 15:34:20', 'Sh
         'After a 2m+ cheap RCA cable.'),
        (2506, 5003, 'ForSale', '2021-10-12 15:34:20', '2021-11-12 15:34:20', 'Recliner gaming chair',
         'Good condition, right arm lose, just needs to be fixed with screws.'),
-       (2507, 5003, 'Exchange', '2021-10-12 15:34:20', '2021-11-12 15:34:20', 'Pokémon cards',
-        'I have the first 17 limited edition Pokémon cards and am getting sick of them. Looking to swap for a Yu Gi Oh set.'),
+       (2507, 5003, 'Exchange', '2021-10-12 15:34:20', '2021-11-12 15:34:20', 'Pokemon cards',
+        'I have the first 17 limited edition Pokemon cards and am getting sick of them. Looking to swap for a Yu Gi Oh set.'),
 
        (2508, 5004, 'Wanted', '2021-10-01 15:34:20', '2021-11-01 15:34:20', 'Pennywise - IT Movie Memorabilia',
         'After a Pennywise costume for an upcoming party.'),
@@ -980,7 +974,7 @@ VALUES (2501, 5001, 'ForSale', '2021-10-13 15:34:20', '2021-11-13 15:34:20', 'Sh
        (2520, 5008, 'Wanted', '2021-09-21 15:34:20', '2021-10-21 15:34:20', 'North face jacket',
         'Looking for a size M North face jacket or similar.'),
        (2521, 5008, 'ForSale', '2021-09-21 15:34:20', '2021-10-21 15:34:20', 'Beginners plant pack, fresh cuttings',
-        '7 different cuttings all decent size in a pack, perfect for beginners. $15 and happy to drop off locally for a fee 😊'),
+        '7 different cuttings all decent size in a pack, perfect for beginners. $15 and happy to drop off locally for a fee'),
        (2522, 5008, 'Exchange', '2021-09-21 15:34:20', '2021-10-21 15:34:20', 'Free bike',
         'I do not need anything in exchange but didn''t know where else to list this.'),
 
@@ -1000,39 +994,39 @@ VALUES (2501, 5001, 'ForSale', '2021-10-13 15:34:20', '2021-11-13 15:34:20', 'Sh
 
 
 INSERT INTO keyword (ID, NAME, CREATED)
-VALUES (1, 'Cheap', '2021-04-23 15:34:20'),
-       (2, 'Electronic', '2021-04-23 15:34:20'),
-       (3, 'Supplement', '2021-04-23 15:34:20'),
-       (4, 'Food', '2021-04-23 15:34:20'),
-       (5, 'Flatmate', '2021-04-23 15:34:20'),
-       (6, 'Surf', '2021-04-23 15:34:20'),
-       (7, 'Clothing', '2021-04-23 15:34:20'),
-       (8, 'Free', '2021-04-23 15:34:20'),
-       (9, 'Furniture', '2021-04-23 15:34:20');
+VALUES (101, 'Cheap', '2021-04-23 15:34:20'),
+       (102, 'Electronic', '2021-04-23 15:34:20'),
+       (103, 'Supplement', '2021-04-23 15:34:20'),
+       (104, 'Food', '2021-04-23 15:34:20'),
+       (105, 'Flatmate', '2021-04-23 15:34:20'),
+       (106, 'Surf', '2021-04-23 15:34:20'),
+       (107, 'Clothing', '2021-04-23 15:34:20'),
+       (108, 'Free', '2021-04-23 15:34:20'),
+       (109, 'Furniture', '2021-04-23 15:34:20');
 
 INSERT INTO marketlisting_keyword (MARKETLISTING_ID, KEYWORD_ID)
-VALUES (2501, 1),
-       (2505, 1),
-       (2510, 1),
-       (2518, 1),
-       (2529, 1),
-       (2505, 2),
-       (2519, 2),
-       (2515, 3),
-       (2515, 4),
-       (2526, 5),
-       (2523, 5),
-       (2503, 6),
-       (2508, 7),
-       (2509, 7),
-       (2517, 7),
-       (2520, 7),
-       (2528, 7),
-       (2522, 8),
-       (2530, 8),
-       (2502, 9),
-       (2506, 9),
-       (2525, 9);
+VALUES (2501, 101),
+       (2505, 101),
+       (2510, 101),
+       (2518, 101),
+       (2529, 101),
+       (2505, 102),
+       (2519, 102),
+       (2515, 103),
+       (2515, 104),
+       (2526, 105),
+       (2523, 105),
+       (2503, 106),
+       (2508, 107),
+       (2509, 107),
+       (2517, 107),
+       (2520, 107),
+       (2528, 107),
+       (2522, 108),
+       (2530, 108),
+       (2502, 109),
+       (2506, 109),
+       (2525, 109);
 
 INSERT INTO transaction (ID, SALE_DATE, LISTING_DATE, PRODUCT_ID, BUSINESS_ID, AMOUNT)
 VALUES (5001, '2020-01-02 15:34:20', '2021-01-21 15:34:20', 5001, 1001, 5.25),
@@ -1078,3 +1072,31 @@ SET
   listing.CREATED = FROM_UNIXTIME(UNIX_TIMESTAMP(inventory_item.manufactured) + FLOOR(RAND() * (UNIX_TIMESTAMP(listing.closes) - UNIX_TIMESTAMP(inventory_item.manufactured))))
 WHERE
   listing.inventory_item_id = inventory_item.id AND listing.id > 5000 AND listing.id <= 5012;
+INSERT INTO image (ID, FILENAME, THUMBNAIL_FILENAME)
+
+VALUES (5001, '/user-content/images/products/Ie68c80b6-1d0b-4b47-8a43-fbe12544d4db.png', '/user-content/images/products/Ie68c80b6-1d0b-4b47-8a43-fbe12544d4db_thumbnail.png'),
+       (5002, '/user-content/images/products/I9de9a40d-ee3b-43df-8827-270e3b0393eb.png', '/user-content/images/products/I9de9a40d-ee3b-43df-8827-270e3b0393eb_thumbnail.png'),
+       (5003, '/user-content/images/products/I34d8a6cf-dea2-48b9-8721-2720b0cde6b1.png', '/user-content/images/products/I34d8a6cf-dea2-48b9-8721-2720b0cde6b1_thumbnail.png'),
+       (5004, '/user-content/images/products/I6bd0f7b1-cdc8-4271-a7c9-18023f3203a5.png', '/user-content/images/products/I6bd0f7b1-cdc8-4271-a7c9-18023f3203a5_thumbnail.png'),
+       (5005, '/user-content/images/products/I57e83d7a-56d0-4b43-b1f4-8322edcb932d.png', '/user-content/images/products/I57e83d7a-56d0-4b43-b1f4-8322edcb932d_thumbnail.png'),
+       (5006, '/user-content/images/products/Iaf14fe3e-afd7-456b-85a6-c04d60fc729b.png', '/user-content/images/products/Iaf14fe3e-afd7-456b-85a6-c04d60fc729b_thumbnail.png'),
+       (5007, '/user-content/images/products/I426d2955-fd25-42d9-add2-a59311ae7dda.png', '/user-content/images/products/I426d2955-fd25-42d9-add2-a59311ae7dda_thumbnail.png'),
+       (5008, '/user-content/images/products/I6f7d40d1-bba9-4eb1-8216-3e54f3d18b66.jpg', '/user-content/images/products/I6f7d40d1-bba9-4eb1-8216-3e54f3d18b66_thumbnail.jpg'),
+       (5009, '/user-content/images/products/I8a99c416-41c7-4be1-be9d-55332a0c59e8.png', '/user-content/images/products/I8a99c416-41c7-4be1-be9d-55332a0c59e8_thumbnail.png'),
+       (5010, '/user-content/images/products/Ibf4b2af0-cc96-43df-a5d4-79b48644309a.jpg', '/user-content/images/products/Ibf4b2af0-cc96-43df-a5d4-79b48644309a_thumbnail.jpg'),
+       (5011, '/user-content/images/products/I88529d84-07e4-406a-9a40-2cddabb7e465.jpg', '/user-content/images/products/I88529d84-07e4-406a-9a40-2cddabb7e465_thumbnail.jpg'),
+       (5012, '/user-content/images/products/I6543f8e4-a9b9-4606-97c8-d5f47f65f51d.png', '/user-content/images/products/I6543f8e4-a9b9-4606-97c8-d5f47f65f51d_thumbnail.png');
+
+INSERT INTO product_image (PRODUCT_ID, IMAGE_ID)
+VALUES (5001, 5003),
+       (5002, 5004),
+       (5003, 5001),
+       (5004, 5007),
+       (5005, 5002),
+       (5006, 5008),
+       (5007, 5009),
+       (5008, 5010),
+       (5009, 5011),
+       (5010, 5012),
+       (5012, 5006),
+       (5011, 5005);

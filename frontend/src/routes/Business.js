@@ -4,7 +4,7 @@ export default [{
   name: "BusinessCreate",
   path: "/business/create",
   meta: {
-    title: "Create Business | Wasteless",
+    title: "Create Business | Nutrisave",
     requiresNotBusinessAdmin: true
   },
   component: () => import("@/views/business/Create.vue"),
@@ -19,7 +19,7 @@ export default [{
     // GAA can create card acting as any user
     path: "/business/admin/:userId(\\d+)/create",
     meta: {
-      title: "Create Card | Wasteless",
+      title: "Create Card | Nutrisave",
       /* Only accessible if GAA */
       adminOnly: true,
     },
@@ -30,7 +30,7 @@ export default [{
     name: "BusinessDetail",
     path: "/business/:businessId(\\d+)",
     meta: {
-      title: "Business Profile | Wasteless",
+      title: "Business Profile | Nutrisave",
     },
     component: () => import("@/views/business/Detail.vue"),
     props: route => {
@@ -46,7 +46,7 @@ export default [{
     component: () => import("@/views/business/AdminEdit.vue"),
     props: route => ({businessId: parseInt(route.params.businessId, 10)}),
     meta: {
-      title: "Edit Administrators | Wasteless",
+      title: "Edit Administrators | Nutrisave",
       requiresBusinessAdmin: true
     }
   },
@@ -56,7 +56,7 @@ export default [{
     component: () => import("@/views/business/ProductCreate.vue"),
     props: route => ({businessId: parseInt(route.params.businessId, 10)}),
     meta: {
-      title: "Create Product | Wasteless",
+      title: "Create Product | Nutrisave",
       requiresBusinessAdmin: true
     }
   },
@@ -66,7 +66,7 @@ export default [{
     component: () => import("@/views/business/Products.vue"),
     props: route => ({businessId: parseInt(route.params.businessId, 10)}),
     meta: {
-      title: "Product Catalogue | Wasteless",
+      title: "Product Catalogue | Nutrisave",
       requiresBusinessAdmin: true
     }
   },
@@ -79,7 +79,7 @@ export default [{
       businessId: parseInt(route.params.businessId, 10)
     }),
     meta: {
-      title: "Product Detail | Wasteless",
+      title: "Product Detail | Nutrisave",
       requiresBusinessAdmin: true
     }
   },
@@ -92,7 +92,7 @@ export default [{
       businessId: parseInt(route.params.businessId, 10)
     }),
     meta: {
-      title: "Edit Product Images | Wasteless",
+      title: "Edit Product Images | Nutrisave",
       requiresBusinessAdmin: true
     }
   },
@@ -101,7 +101,7 @@ export default [{
     name: "BusinessInventoryCreate",
     path: "/business/:businessId(\\d+)/inventory/create",
     meta: {
-      title: "Add to Inventory | Wasteless",
+      title: "Add to Inventory | Nutrisave",
       requiresBusinessAdmin: true
     },
     component: () => import("@/views/business/InventoryCreate.vue"),
@@ -111,7 +111,7 @@ export default [{
     name: "BusinessInventory",
     path: "/business/:businessId(\\d+)/inventory",
     meta: {
-      title: "Business Inventory | Wasteless",
+      title: "Business Inventory | Nutrisave",
       requiresBusinessAdmin: true
     },
     component: () => import("@/views/business/Inventory"),
@@ -122,7 +122,7 @@ export default [{
     name: "BusinessListingCreate",
     path: "/business/:businessId(\\d+)/listing/create",
     meta: {
-      title: "Create New Listing | Wasteless",
+      title: "Create New Listing | Nutrisave",
       requiresBusinessAdmin: true
     },
     component: () => import("@/views/business/ListingCreate"),
@@ -132,7 +132,7 @@ export default [{
     name: "BusinessListings",
     path: "/business/:businessId(\\d+)/listing",
     meta: {
-      title: "Business Listings | Wasteless",
+      title: "Business Listings | Nutrisave",
     },
     component: () => import("@/views/business/BusinessListings.vue"),
     props: route => ({businessId: parseInt(route.params.businessId, 10)})
@@ -141,7 +141,7 @@ export default [{
     name: "Listings",
     path: "/listings",
     meta: {
-      title: "Listings | Wasteless",
+      title: "Listings | Nutrisave",
       requiresNotBusinessAdmin: true,
     },
     component: () => import("@/views/business/Listings")
@@ -155,17 +155,17 @@ export default [{
       businessId: parseInt(route.params.businessId, 10)
     }),
     meta: {
-      title: "Business Listing | Wasteless"
+      title: "Business Listing | Nutrisave"
     }
   },
 
   {
     name: "BusinessTransactions",
-    path: "/business/:businessId(\\d+)/transactions",
+    path: "/business/:businessId(\\d+)/report",
     component: () => import("@/views/business/SalesReport.vue"),
     props: route => ({businessId: parseInt(route.params.businessId, 10)}),
     meta: {
-      title: "Transactions | Wasteless",
+      title: "Transactions | Nutrisave",
       requiresBusinessAdmin: true
     }
   },

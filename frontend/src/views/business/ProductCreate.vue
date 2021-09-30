@@ -29,9 +29,7 @@
                 <span>Auto-fill product title and nutritional information by entering the products EAN-13 barcode.</span>
               </v-tooltip>
             </h4>
-            <barcode-input
-                @info="autofill"
-            />
+            <barcode-input @info="info => Object.assign(this.queryParams, info)"/>
           </v-card>
 
           <v-card
@@ -238,30 +236,6 @@ export default {
             "Must be signed in as a business before making the request");
       }
       return Api.createProduct(this.businessId, data);
-    },
-
-    /**
-     * Method that is run when barcode component emits event with nutrition info,
-     * autofilling values that are 'untouched' or in their default position
-     */
-    autofill: function (info) {
-      Object.keys(info).forEach(prop => {
-        // name, manufacturer, salt/fat etc. levels
-        if (typeof this.queryParams[prop] == "string") {
-          if (this.queryParams[prop].trim().length === 0) {
-            this.queryParams[prop] = info[prop];
-          }
-        }
-        // certifications (e.g. gluten free)
-        else if (typeof info[prop] == "boolean" && this.queryParams[prop] === false) {
-          this.queryParams[prop] = info[prop];
-        }
-
-        // nova group
-        else if (this.queryParams[prop] == null) {
-          this.queryParams[prop] = info[prop];
-        }
-      });
     },
 
     /**
