@@ -36,6 +36,8 @@
         <p>
           Welcome to Nutrisave! From here you can explore existing listings or checkout the
           Marketplace.
+        </p>
+        <p>
           There's heaps to see so get looking!
         </p>
       </div>

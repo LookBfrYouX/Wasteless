@@ -19,11 +19,11 @@
           break the bank.
         </p>
         <p>
-          Nutrisave is a sales platform for near expiring goods with a focus on providing the user
-          with
-          health-related information on the products. Users can view the nutritional and processed
-          rating as well as the contents of Fats, Sugars, etc. Users also have the ability to search
-          products by their diet: No Gluten? No problem. Prefer veggies over meat? Easy!
+          Nutrisave is a sales platform for near-expiring goods with a focus on providing the user
+          with health-related information on the products. Users can view the nutritional and
+          processed rating as well as the fat, sugar, and salt content of the food they buy. Users
+          also have the ability to search products by their diet: No Gluten? No problem. Prefer
+          veggies over meat? Easy!
         </p>
         <p>
           Nutrisave also makes the tedious task of adding products into the app an ease. Business

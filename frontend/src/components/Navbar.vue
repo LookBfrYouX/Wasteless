@@ -3,7 +3,7 @@
     <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
       <!-- Title -->
       <router-link
-          class="navbar-brand mb-n3"
+          class="navbar-brand logo"
           :to="{name: $stateStore.getters.isSignedIn()? 'Home': 'Landing'}"
       >
         <!-- Home and landing pages don't have any interactive elements
@@ -504,4 +504,5 @@ nav .active {
 .navbar-pigeon {
   height: 2em;
 }
+
 </style>
