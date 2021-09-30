@@ -59,6 +59,10 @@
     </v-row>
     <v-expansion-panels>
       <v-expansion-panel>
+        <v-btn-toggle v-model="chartType" multiple mandatory>
+          <v-btn>Transactions</v-btn>
+          <v-btn>Sales</v-btn>
+        </v-btn-toggle>
         <bar-chart class="p-3" :chart-data="chartdata" :options="options" />
       </v-expansion-panel>
       <v-expansion-panel>
@@ -142,12 +146,13 @@ export default {
       currency: null,
       apiErrorMessage: null,
       transformedTransactionData: null,
+      chartType: [],
       chartdata: {
         labels: ['One', 'Two'],
         datasets: [
           {
             label: 'Data One',
-            backgroundColor: '#f87979',
+            backgroundColor: '#112798',
             data: [1, 2],
           },
         ]
@@ -400,16 +405,29 @@ export default {
           amountText: this.$helper.makeCurrencyString(0, this.currency)
         });
       }
-      this.chartdata = {
+      let tempChartdata = {
         labels: dataArray.map((element) => this.generateUserFacingDateText(element.date)),
-        datasets: [
-          {
-            label: 'Sales',
-            backgroundColor: '#f87979',
-            data: dataArray.map((element) => element.amount),
-          },
-        ]
+        datasets: []
       }
+      if (this.chartType.includes(1)) {
+        console.log("Sales chart pushed");
+        tempChartdata.datasets.push({
+          label: 'Sales',
+          backgroundColor: '#2b39a1',
+          data: dataArray.map((element) => element.amount),
+        });
+      }
+      if (this.chartType.includes(0)) {
+        console.log("Transaction chart pushed");
+        tempChartdata.datasets.push({
+          label: 'Transactions',
+          backgroundColor: '#009900',
+          data: dataArray.map((element) => element.transactionCount),
+        });
+      }
+      console.log(tempChartdata);
+      this.chartdata = tempChartdata;
+      console.log(this.chartdata);
       this.transformedTransactionData = dataArray;
     },
   },
@@ -440,6 +458,10 @@ export default {
 
     endDate() {
       this.getTransactions();
+    },
+
+    chartType() {
+      this.getTransformedTransactionData();
     }
 
 
