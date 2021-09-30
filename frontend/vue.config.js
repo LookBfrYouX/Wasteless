@@ -39,7 +39,7 @@ module.exports = {
   chainWebpack: config => {
     // https://stackoverflow.com/a/67846199/5204356
     config.plugin('html').tap(args => {
-      args[0].title = "Navbara Pigeon";
+      args[0].title = "Nutrisave";
       return args;
     });
   }

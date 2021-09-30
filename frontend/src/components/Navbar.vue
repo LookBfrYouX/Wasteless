@@ -3,19 +3,19 @@
     <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
       <!-- Title -->
       <router-link
-        class="navbar-brand"
-        :to="{name: $stateStore.getters.isSignedIn()? 'Home': 'Landing'}"
+          class="navbar-brand logo"
+          :to="{name: $stateStore.getters.isSignedIn()? 'Home': 'Landing'}"
       >
         <!-- Home and landing pages don't have any interactive elements
         so it not reloading when already on home/landing page won't make a difference
          -->
         <img
-          :src="require('@/../assets/images/svg_pigeon.svg')"
-          class="navbar-pigeon"
-          alt="logo"
+            :src="require('@/../assets/images/logo.png')"
+            class="navbar-pigeon mt-n2"
+            alt="logo"
         />
         <span>
-          Navbara Pigeon
+          Nutrisave
         </span>
       </router-link>
       <!-- Hamburger button -->
@@ -502,6 +502,7 @@ nav .active {
 }
 
 .navbar-pigeon {
-  height: 1.7em;
+  height: 2em;
 }
+
 </style>
