@@ -49,7 +49,7 @@ const instanceLongTimeouts = axios.create({
 
 const openFoodFactsInstance = axios.create({
   baseURL: constants.OPEN_FOOD_FACTS_URL,
-  timeout: constants.API.TIMEOUT_SHORT
+  timeout: constants.API.TIMEOUT_MEDIUM
 });
 
 
