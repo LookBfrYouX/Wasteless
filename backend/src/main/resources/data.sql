@@ -918,8 +918,8 @@ VALUES (2501, 5001, 'ForSale', '2021-10-13 15:34:20', '2021-11-13 15:34:20', 'Sh
         'After a 2m+ cheap RCA cable.'),
        (2506, 5003, 'ForSale', '2021-10-12 15:34:20', '2021-11-12 15:34:20', 'Recliner gaming chair',
         'Good condition, right arm lose, just needs to be fixed with screws.'),
-       (2507, 5003, 'Exchange', '2021-10-12 15:34:20', '2021-11-12 15:34:20', 'Pokémon cards',
-        'I have the first 17 limited edition Pokémon cards and am getting sick of them. Looking to swap for a Yu Gi Oh set.'),
+       (2507, 5003, 'Exchange', '2021-10-12 15:34:20', '2021-11-12 15:34:20', 'Pokemon cards',
+        'I have the first 17 limited edition Pokemon cards and am getting sick of them. Looking to swap for a Yu Gi Oh set.'),
 
        (2508, 5004, 'Wanted', '2021-10-01 15:34:20', '2021-11-01 15:34:20', 'Pennywise - IT Movie Memorabilia',
         'After a Pennywise costume for an upcoming party.'),
