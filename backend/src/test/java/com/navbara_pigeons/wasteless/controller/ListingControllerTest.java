@@ -51,7 +51,81 @@ class ListingControllerTest extends ControllerTestProvider {
                     .param("searchKeys", "ADDRESS")
                     .param("isAscending", "true")
                     .param("searchParam", "New Zealand")
+                    .param("fat", "HIGH")
+                    .param("saturatedFat","HIGH")
+                    .param("saturatedFat", "MODERATE")
+                    .param("sugars", "LOW")
+                    .param("salt", "LOW")
     ).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidFatValue_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("fat", "BOOGALOO")
+    ).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidSaturatedFatValue_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("saturatedFat", "BOOGALOO")
+    ).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidSugarsValue_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("sugars", "BOOGALOO")
+    ).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withInvalidSaltValue_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("salt", "BOOGALOO")
+    ).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withValidDietaryFilterParams_expectOk() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("pagStartIndex", "1")
+                    .param("pagEndIndex", "2")
+                    .param("sortBy", "QUANTITY")
+                    .param("searchKeys", "ADDRESS")
+                    .param("isAscending", "true")
+                    .param("searchParam", "New Zealand")
+                    .param("isVegan", "true")
+                    .param("isVegetarian", "true")
+                    .param("isGlutenFree", "true")
+                    .param("isPalmOilFree", "true")
+    ).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(value = "mbi47@uclive.ac.nz")
+  void searchListings_withValidDietaryFilterParams_expectBadRequest() throws Exception {
+    mockMvc.perform(
+            get("/listings/search")
+                    .param("pagStartIndex", "1")
+                    .param("pagEndIndex", "2")
+                    .param("sortBy", "QUANTITY")
+                    .param("searchKeys", "ADDRESS")
+                    .param("isAscending", "true")
+                    .param("searchParam", "New Zealand")
+                    .param("isVegan", "Blah")
+    ).andExpect(status().isBadRequest());
   }
 
   @Test
@@ -97,9 +171,9 @@ class ListingControllerTest extends ControllerTestProvider {
   // Return 201 on successful request to controller
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  public void return201OnAddListing() throws Exception {
+  void return201OnAddListing() throws Exception {
     CreateListingDto listing = new CreateListingDto();
-    listing.setInventoryItemId(5001);
+    listing.setInventoryItemId(5007);
     listing.setQuantity(1L);
     listing.setPrice(17.99);
 
@@ -113,7 +187,7 @@ class ListingControllerTest extends ControllerTestProvider {
   // Throw 400 on bad request to controller (quantity is required)
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  public void throw400OnBadListing() throws Exception {
+  void throw400OnBadListing() throws Exception {
     CreateListingDto listing = new CreateListingDto();
     listing.setInventoryItemId(5001);
     listing.setPrice(17.99);
@@ -127,7 +201,7 @@ class ListingControllerTest extends ControllerTestProvider {
   // Throw 400 on bad request to controller (price must be above 0 and below 10000000)
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  public void throw400OnBadListingPrice() throws Exception {
+  void throw400OnBadListingPrice() throws Exception {
     CreateListingDto listing = new CreateListingDto();
     listing.setInventoryItemId(5001);
     listing.setQuantity(1);
@@ -149,7 +223,7 @@ class ListingControllerTest extends ControllerTestProvider {
   // Throw 401 when unauthorized
   @Test
   @WithAnonymousUser
-  public void throw401OnAddListingTest() throws Exception {
+  void throw401OnAddListingTest() throws Exception {
     Listing mockListing = new Listing();
     mockListing.setQuantity(1L);
     mockListing.setPrice(17.99);

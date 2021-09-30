@@ -11,10 +11,10 @@
           outlined
           prefix="EAN-13"
           type="number"
-          v-on:keydown.enter="() => barcode.length == 13 && !apiIsLoading && setProductInformation()"
+          v-on:keydown.enter="() => barcode.length === 13 && !apiIsLoading && setProductInformation()"
       />
       <v-btn
-          :disabled="barcode.length != 13"
+          :disabled="barcode.length !== 13"
           :loading="apiIsLoading"
           v-on:click="setProductInformation"
       >
@@ -27,12 +27,13 @@
           overlay-opacity="0.7"
           width="500"
       >
-
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+              v-if="barcodeScanShown"
               v-bind="attrs"
               v-on="on"
               block
+              v-on:click="clickedScanButton()"
           >
             <v-icon left>
               photo_camera
@@ -42,16 +43,18 @@
         </template>
         <v-card>
           <v-skeleton-loader
-              class="skeleton"
               v-if="!scannerLoaded"
+              class="skeleton"
               height="400px"
               min-height="400px"
               type="image"
           ></v-skeleton-loader>
           <StreamBarcodeReader
+              v-if="dialog"
               @decode="decodeScannerResult"
               @loaded="onScannerLoad"
           />
+          <v-progress-linear :value="currentMax / threshold * 100"/>
           <v-card-actions class="justify-center">
             <v-btn @click="dialog = false">Close</v-btn>
           </v-card-actions>
@@ -85,19 +88,23 @@ export default {
       barcode: "",
       errorMessage: null,
       apiIsLoading: false,
+      apiRetryLimit: 3,
       dialog: false,
       scannerLoaded: false,
       threshold: 5,
+      currentMax: 0,
       barcodeScanCounts: new Map(),
+      barcodeScanShown: true,
+      stream: null,
       info: {
         name: "",
         manufacturer: "",
-        fat: "",
-        saturatedFat: "",
-        sugars: "",
-        salt: "",
-        novaGroup: "",
-        nutriScore: "",
+        fat: null,
+        saturatedFat: null,
+        sugars: null,
+        salt: null,
+        novaGroup: null,
+        nutriScore: null,
         isPalmOilFree: false,
         isVegan: false,
         isVegetarian: false,
@@ -106,17 +113,33 @@ export default {
       }
     }
   },
+  watch: {
+    /**
+     * Stop the camera one the dialog has been closed.
+     */
+    dialog: function (newValue) {
+      if (!newValue && this.stream) {
+        this.stream.getTracks().forEach(track => track.stop());
+        this.scannerLoaded = false;
+      }
+    }
+  },
   methods: {
     /**
      * Calls Open Food Facts API with User Barcode
      */
-    getNutritionalInformationWithBarcode: async function (barcode) {
+    getNutritionalInformationWithBarcode: async function (barcode, retryCount = 1) {
       this.apiIsLoading = true;
       try {
         const response = await Api.getOpenFoodFacts(barcode);
         return response.data;
       } catch (err) {
-        this.errorMessage = err.userFacingErrorMessage;
+        if (retryCount >= this.apiRetryLimit) {
+          this.errorMessage = err.userFacingErrorMessage;
+          return null;
+        } else {
+          return this.getNutritionalInformationWithBarcode(barcode, retryCount +  1);
+        }
       } finally {
         this.apiIsLoading = false;
       }
@@ -129,14 +152,17 @@ export default {
     setProductInformation: async function () {
       const data = await this.getNutritionalInformationWithBarcode(this.barcode);
 
-      if (data == null || data.status == 0) {
-        this.errorMessage = "Product Not Found: Please enter details manually";
+      if (data == null || data.status === 0) {
+        this.errorMessage = "Sorry! We don't know that product, please enter details manually.";
       } else {
         this.errorMessage = null;
         this.info.name = data.product.product_name;
         this.info.manufacturer = data.product.brands;
-        if (data.product.nutriscore_grade != null) {
+        const nutriScore = data.product.nutriscore_grade;
+        if (typeof nutriScore == "string" && nutriScore.trim().length) {
           this.info.nutriScore = data.product.nutriscore_grade.toUpperCase();
+        } else {
+          this.info.nutriScore = null;
         }
         this.info.novaGroup = data.product.nova_group;
         if (data.product.nutrient_levels) {
@@ -163,8 +189,10 @@ export default {
         salt: 'salt'
       };
       Object.entries(dataMapper).forEach(([key, value]) => {
-        if (typeof nutrient_levels[value] == "string") {
+        if (typeof nutrient_levels[value] == "string" && nutrient_levels[value].trim().length) {
           this.info[key] = nutrient_levels[value].toUpperCase();
+        } else {
+          this.info[key] = null;
         }
       });
     },
@@ -215,12 +243,15 @@ export default {
           this.barcodeScanCounts.set(barcode, 1);
         }
 
+        this.currentMax = Math.max(...this.barcodeScanCounts.values());
+
         // When the count surpasses the threshold we are confident in the reading.
         if (this.barcodeScanCounts.get(barcode) >= this.threshold) {
           this.barcode = barcode;
           this.setProductInformation();
           this.dialog = false;
           this.barcodeScanCounts = new Map();
+          this.currentMax = 0;
         }
       }
     },
@@ -230,6 +261,22 @@ export default {
      */
     onScannerLoad() {
       this.scannerLoaded = true;
+    },
+
+    /**
+     * Checks if the device has a camera by asking permission. If they do not have a camera (or do
+     * not allow access, the dialog closes and the button disappears.
+     */
+    clickedScanButton() {
+      navigator.mediaDevices.getUserMedia({video: true, audio: false})
+      .then(stream => {
+        this.stream = stream
+      })
+      .catch(() => {
+        this.barcodeScanShown = false;
+        this.dialog = false;
+        this.errorMessage = "Unable to access camera"
+      })
     }
   }
 }
