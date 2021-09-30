@@ -237,9 +237,9 @@ export default {
      */
     dateRangeSelected(event) {
       let today = new Date();
-      let weekAgo = new Date(new Date().setUTCDate(new Date().getDate() - 6));
-      let monthAgo = new Date(new Date().setUTCMonth(new Date().getMonth() - 1));
-      let yearAgo = new Date(new Date().setUTCFullYear(new Date().getFullYear() - 1));
+      let weekAgo = new Date(new Date().setUTCDate(new Date().getUTCDate() - 6));
+      let monthAgo = new Date(new Date().setUTCMonth(new Date().getUTCMonth() - 1));
+      let yearAgo = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear() - 1));
 
       switch (event) {
         case null:

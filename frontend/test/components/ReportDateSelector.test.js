@@ -37,7 +37,7 @@ describe("dateRangeSelected", () => {
 
   test("weekAgo", async () => {
     const expected = new Date(
-        new Date().setDate(new Date().getDate() - 6)).toISOString().split(
+        new Date().setUTCDate(new Date().getUTCDate() - 6)).toISOString().split(
         'T')[0];
 
     await wrapper.vm.dateRangeSelected("Last week");
@@ -47,7 +47,7 @@ describe("dateRangeSelected", () => {
 
   test("monthAgo", async () => {
     const expected = new Date(
-        new Date().setMonth(new Date().getMonth() - 1)).toISOString().split(
+        new Date().setUTCMonth(new Date().getUTCMonth() - 1)).toISOString().split(
         'T')[0];
 
     await wrapper.vm.dateRangeSelected("Last month");
@@ -56,8 +56,8 @@ describe("dateRangeSelected", () => {
   });
 
   test("yearAgo", async () => {
-    const expected = new Date(new Date().setFullYear(
-        new Date().getFullYear() - 1)).toISOString().split('T')[0];
+    const expected = new Date(new Date().setUTCFullYear(
+        new Date().getUTCFullYear() - 1)).toISOString().split('T')[0];
 
     await wrapper.vm.dateRangeSelected("Last year");
 
@@ -85,7 +85,7 @@ describe("dateSorted", () => {
   test("wrongOrder", async () => {
     // Arrange
     const firstDate = new Date(
-        new Date().setDate(new Date().getDate() - 7)).toISOString().split(
+        new Date().setUTCDate(new Date().getUTCDate() - 7)).toISOString().split(
         'T')[0];
     const secondDate = new Date().toISOString().split('T')[0];
 
