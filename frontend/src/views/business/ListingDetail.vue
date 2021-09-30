@@ -59,8 +59,8 @@
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
           <div class="mt-2">Manufacturer: {{ product.manufacturer }}</div>
           <div class="mt-2">Business address: {{ $helper.addressToString(business.address) }}</div>
-          <nutrition-facts class="my-2" :product="product"/>
           <div v-if="moreInfo" class="mt-2 mb-5">More Information: {{ moreInfo }}</div>
+          <nutrition-facts class="my-2" :product="product"/>
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated, true) }}</div>
             <div class="date mt-2">Closes: {{ $helper.isoToDateString(listingCloses, true) }}</div>
@@ -70,8 +70,8 @@
       <hr>
       <div class="d-flex flex-wrap justify-content-between mb-2">
         <div class="date mt-2">Manufactured: {{ $helper.isoToDateString(manufactured) }}</div>
-        <div class="date mt-2">Sell By: {{ $helper.isoToDateString(sellBy) }}</div>
         <div class="date mt-2">Best Before: {{ $helper.isoToDateString(bestBefore) }}</div>
+        <div class="date mt-2">Sell By: {{ $helper.isoToDateString(sellBy) }}</div>
         <div class="date mt-2">Expires: {{ $helper.isoToDateString(expires) }}</div>
       </div>
     </div>
