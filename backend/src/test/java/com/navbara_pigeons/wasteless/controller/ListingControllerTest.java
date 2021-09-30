@@ -99,7 +99,7 @@ class ListingControllerTest extends ControllerTestProvider {
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
   public void return201OnAddListing() throws Exception {
     CreateListingDto listing = new CreateListingDto();
-    listing.setInventoryItemId(5001);
+    listing.setInventoryItemId(5007);
     listing.setQuantity(1L);
     listing.setPrice(17.99);
 
