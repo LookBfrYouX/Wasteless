@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
-
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,7 +191,7 @@ class ListingSpecificationsTest extends MainTestProvider {
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
     assertEquals(2, results.size());
-    assertEquals(List.of(5006, 5007).toString(),
+    assertEquals(List.of(5005, 5007).toString(),
         results.stream().map(el -> el.getId()).sorted().collect(Collectors.toList()).toString());
   }
 
@@ -205,7 +203,7 @@ class ListingSpecificationsTest extends MainTestProvider {
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
     assertEquals(2, results.size());
-    assertEquals(List.of(5003, 5005).toString(),
+    assertEquals(List.of(5003, 5004).toString(),
         results.stream().map(el -> el.getId()).sorted().collect(Collectors.toList()).toString());
   }
 
@@ -218,7 +216,7 @@ class ListingSpecificationsTest extends MainTestProvider {
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
     assertEquals(1, results.size());
-    assertEquals(5005, results.get(0).getId());
+    assertEquals(5003, results.get(0).getId());
   }
 
   @Test
@@ -285,7 +283,7 @@ class ListingSpecificationsTest extends MainTestProvider {
 
     Assertions.assertTrue(
         results.stream().map(el -> el.getId()).collect(Collectors.toSet()).containsAll(
-                List.of(5001l, 5002l, 5003l, 5004l)
+            List.of(5001l, 5002l, 5004l, 5006l)
         )
     );
   }
