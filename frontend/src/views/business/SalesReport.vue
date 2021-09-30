@@ -60,8 +60,8 @@
     <v-expansion-panels>
       <v-expansion-panel>
         <v-btn-toggle v-model="chartType" multiple mandatory>
-          <v-btn>Transactions</v-btn>
           <v-btn>Sales</v-btn>
+          <v-btn>Transactions</v-btn>
         </v-btn-toggle>
         <bar-chart class="p-3" :chart-data="chartdata" :options="options" />
       </v-expansion-panel>
@@ -159,11 +159,36 @@ export default {
       },
       options: {
         scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-            }
-          }]
+          yAxes: [
+              {
+                id: 'Sales',
+                position: 'left',
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Sales',
+                },
+                gridLines: {
+                  display: false,
+                },
+                ticks: {
+                  beginAtZero: true,
+                  }
+              },
+            {
+              id: 'Transactions',
+              position: 'right',
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Transactions',
+              },
+              gridLines: {
+                display: false,
+              },
+              ticks: {
+                beginAtZero: true,
+              }
+            }]
         },
         responsive: true,
         maintainAspectRatio: false
@@ -405,31 +430,79 @@ export default {
           amountText: this.$helper.makeCurrencyString(0, this.currency)
         });
       }
+      this.updateChart(dataArray);
+      this.transformedTransactionData = dataArray;
+    },
+
+    /**
+     * This method updates the chart depending on which buttons are selected.
+     * It takes in the dataArray and updated the chartData and options.
+     * @param dataArray
+     */
+    updateChart(dataArray) {
       let tempChartdata = {
         labels: dataArray.map((element) => this.generateUserFacingDateText(element.date)),
         datasets: []
       }
-      if (this.chartType.includes(1)) {
+      if (this.chartType.includes(0)) {
         console.log("Sales chart pushed");
         tempChartdata.datasets.push({
           label: 'Sales',
           backgroundColor: '#2b39a1',
+          yAxisID: 'Sales',
           data: dataArray.map((element) => element.amount),
         });
       }
-      if (this.chartType.includes(0)) {
+      if (this.chartType.includes(1)) {
         console.log("Transaction chart pushed");
         tempChartdata.datasets.push({
           label: 'Transactions',
           backgroundColor: '#009900',
+          yAxisID: 'Transactions',
           data: dataArray.map((element) => element.transactionCount),
         });
       }
+      let tempOptions = {
+        scales: {
+          yAxes: [
+            {
+              id: 'Sales',
+              position: 'left',
+              display: this.chartType.includes(0),
+              scaleLabel: {
+                display: true,
+                labelString: 'Sales',
+              },
+              gridLines: {
+                display: false,
+              },
+              ticks: {
+                beginAtZero: true,
+              }
+            },
+            {
+              id: 'Transactions',
+              position: 'right',
+              display: this.chartType.includes(1),
+              scaleLabel: {
+                display: true,
+                labelString: 'Transactions',
+              },
+              gridLines: {
+                display: false,
+              },
+              ticks: {
+                beginAtZero: true,
+              }
+            }]
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
       console.log(tempChartdata);
       this.chartdata = tempChartdata;
-      console.log(this.chartdata);
-      this.transformedTransactionData = dataArray;
-    },
+      this.options = tempOptions;
+    }
   },
 
   computed: {
