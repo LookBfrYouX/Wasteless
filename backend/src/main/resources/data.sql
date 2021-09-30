@@ -904,23 +904,22 @@ VALUES (5001, 5001, 1005, 20, 4.67, 90.00, '2021-08-16', '2021-08-06',
        (5012, 5012, 1010, 13, 1.99, 25.00, '2021-10-05', '2021-09-08',
         '2021-10-04', '2021-10-02');
 
-
 -- Inserting listing data
 
 INSERT INTO listing (ID, INVENTORY_ITEM_ID, QUANTITY, PRICE, MORE_INFO, CREATED, CLOSES)
-VALUES (5001, 5001, 2, 9.00, 'fletcher was here RAWR XD', '2021-05-16 21:16:17',
-        '2021-06-16 21:16:26'),
-       (5002, 5002, 3, 12.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5003, 5003, 9, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5004, 5004, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5005, 5005, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5006, 5006, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5007, 5007, 15, 45.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5008, 5008, 1, 3.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5009, 5009, 1, 3.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5010, 5010, 1, 3.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5011, 5011, 1, 3.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26'),
-       (5012, 5012, 1, 3.00, null, '2021-05-16 21:16:17', '2021-06-16 21:16:26');
+VALUES (5001, 5001, 15, 79.99, 'Sinking Milk found after a diving expedition', '2021-05-16 21:16:17',
+        '2021-10-16 21:16:26'),
+       (5002, 5002, 18, 89.99, '100% antibiotic free, 50% worm-free', '2021-09-30 21:16:17', '2021-10-17 21:16:26'),
+       (5003, 5003, 5, 18.99, 'Just some milk', '2021-09-30 21:16:17', '2021-12-16 21:16:26'),
+       (5004, 5004, 10, 64.99, 'Because sweater milk is overrated', '2021-09-30 21:16:17', '2021-10-17 21:16:26'),
+       (5005, 5005, 11, 39.99, 'Almonds are secondhand but milk is still good', '2021-09-30 21:16:17', '2021-10-17 21:16:26'),
+       (5006, 5006, 22, 105.00, 'Pick up only, at business address', '2021-09-30 21:16:17', '2021-10-17 21:16:26'),
+       (5007, 5007, 24, 100.00, 'Delivery available, price negotiable', '2021-09-30 21:16:17', '2021-10-17 21:11:26'),
+       (5008, 5008, 4, 15.00, 'Accidentally added cocoa powder, still tastes good', '2021-09-30 21:16:17', '2021-10-17 21:16:26'),
+       (5009, 5009, 3, 13.00, 'Pick up only, at business address', '2021-09-30 21:16:17', '2021-10-17 21:16:26'),
+       (5010, 5010, 25, 99.99, 'Vampires complained, so batch on sale', '2021-09-30 21:16:17', '2021-10-17 21:16:26'),
+       (5011, 5011, 20, 75.00, 'Mis-ordered batch wanted Pop salt, Pickup only', '2021-09-30 21:16:17', '2021-10-16 21:16:26'),
+       (5012, 5012, 12, 24.00, null, '2021-09-30 21:16:17', '2021-12-16 21:16:26');
 
 INSERT INTO marketlisting (ID, CREATOR_ID, SECTION, CREATED, DISPLAY_PERIOD_END, TITLE, DESCRIPTION)
 VALUES (2501, 5001, 'ForSale', '2021-10-13 15:34:20', '2021-11-13 15:34:20', 'Shoddy web app',
@@ -1041,7 +1040,40 @@ VALUES (5001, '2020-01-02 15:34:20', '2021-01-21 15:34:20', 5001, 1001, 5.25),
        (5009, '2021-03-21 15:34:20', '2021-03-20 15:34:20', 5005, 1001, 6.00),
        (5010, '2021-03-20 15:34:20', '2021-03-19 15:34:20', 5005, 1001, 7.00);
 
+#Sets closing of dummy data to some random time after 2022.
+UPDATE listing SET CLOSES = FROM_UNIXTIME(UNIX_TIMESTAMP('2022-10-17 00:00:00') + FLOOR(RAND() * 10000000)) WHERE ID < 5000;
+
+#Sets closing of realistic data to some random timeafter the showcase.
+UPDATE listing SET CLOSES = FROM_UNIXTIME(UNIX_TIMESTAMP('2021-10-17 00:00:00') + FLOOR(RAND() * 1000000)) WHERE ID > 5000 AND ID <= 5012;
+
+#Sets the inventory item expiry to be before listing.closes.
+UPDATE
+  listing,
+  inventory_item
+SET
+  inventory_item.EXPIRES = FROM_UNIXTIME(UNIX_TIMESTAMP(listing.closes) - FLOOR(RAND() * 500000))
+WHERE
+  listing.inventory_item_id = inventory_item.id AND listing.id > 5000 AND listing.id <= 5012;
+
+#Sets the inventory item sell by to be before expiry.
+UPDATE inventory_item SET SELL_BY = FROM_UNIXTIME(UNIX_TIMESTAMP(expires) - FLOOR(RAND() * 300000)) WHERE ID > 5000 AND ID <= 5012;
+
+#Sets the inventory item best before to be before sell by.
+UPDATE inventory_item SET BEST_BEFORE = FROM_UNIXTIME(UNIX_TIMESTAMP(sell_by) - FLOOR(RAND() * 300000)) WHERE ID > 5000 AND ID <= 5012;
+
+#Sets the inventory item manufactured to be before best before.
+UPDATE inventory_item SET MANUFACTURED = FROM_UNIXTIME(UNIX_TIMESTAMP(best_before) - FLOOR(RAND() * 1000000)) WHERE ID > 5000 AND ID <= 5012;
+
+#Sets listing created after inventory item manufactured and before listing closes
+UPDATE
+  listing,
+  inventory_item
+SET
+  listing.CREATED = FROM_UNIXTIME(UNIX_TIMESTAMP(inventory_item.manufactured) + FLOOR(RAND() * (UNIX_TIMESTAMP(listing.closes) - UNIX_TIMESTAMP(inventory_item.manufactured))))
+WHERE
+  listing.inventory_item_id = inventory_item.id AND listing.id > 5000 AND listing.id <= 5012;
 INSERT INTO image (ID, FILENAME, THUMBNAIL_FILENAME)
+
 VALUES (5001, '/user-content/images/products/Ie68c80b6-1d0b-4b47-8a43-fbe12544d4db.png', '/user-content/images/products/Ie68c80b6-1d0b-4b47-8a43-fbe12544d4db_thumbnail.png'),
        (5002, '/user-content/images/products/I9de9a40d-ee3b-43df-8827-270e3b0393eb.png', '/user-content/images/products/I9de9a40d-ee3b-43df-8827-270e3b0393eb_thumbnail.png'),
        (5003, '/user-content/images/products/I34d8a6cf-dea2-48b9-8721-2720b0cde6b1.png', '/user-content/images/products/I34d8a6cf-dea2-48b9-8721-2720b0cde6b1_thumbnail.png'),
