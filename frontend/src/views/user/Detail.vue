@@ -123,7 +123,7 @@
       <div class="card user-details-container p-3 pb-0 overflow-auto">
         <div class="m-md-4 mb-md-0">
           <div class="overflow-auto w-100">
-            <table class="table table-hover mb-0" role="presentation">
+            <table class="table table-hover mb-0" aria-label="User details">
               <tbody>
               <tr>
                 <td class="pl-0 pl-md-2" colspan="2"><h5 class="text-muted">User Details</h5></td>
