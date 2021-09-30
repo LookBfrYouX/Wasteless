@@ -73,6 +73,7 @@
         <v-pagination
             v-model="page"
             :length="totalPages"
+            :total-visible="7"
             class="w-100 py-4"
             @input="pageUpdate"
         />

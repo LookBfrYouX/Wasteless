@@ -1,8 +1,5 @@
 package com.navbara_pigeons.wasteless.dao.Specifications;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ListingDao;
@@ -12,7 +9,6 @@ import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.enums.ListingSearchKeys;
 import com.navbara_pigeons.wasteless.enums.NutriScore;
 import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
-import com.navbara_pigeons.wasteless.exception.ListingValidationException;
 import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.service.InventoryService;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
@@ -26,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
 
-
 @SpringBootTest
 class ListingSpecificationsTest extends MainTestProvider {
 
@@ -39,7 +34,6 @@ class ListingSpecificationsTest extends MainTestProvider {
   BusinessDao businessDao;
   @Autowired
   ProductDao productDao;
-
   @Autowired
   InventoryService inventoryService;
 
@@ -52,7 +46,7 @@ class ListingSpecificationsTest extends MainTestProvider {
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5001l));
+    Assertions.assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5001L));
   }
 
   @Test
@@ -64,11 +58,11 @@ class ListingSpecificationsTest extends MainTestProvider {
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5001l));
+    Assertions.assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5001L));
   }
 
   @Test
-  void resultsMeetSearchCriteriaTestFullMatchingAddress() throws ListingValidationException {
+  void resultsMeetSearchCriteriaTestFullMatchingAddress() {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.ADDRESS);
     listingsSearchParams.setSearchKeys(searchKeys);
@@ -76,21 +70,21 @@ class ListingSpecificationsTest extends MainTestProvider {
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5001l));
+    Assertions.assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5001L));
   }
 
   @Test
-  void resultsMeetSearchCriteriaTestFilteredByPrice() throws ListingValidationException {
+  void resultsMeetSearchCriteriaTestFilteredByPrice() {
     List<ListingSearchKeys> searchKeys = new ArrayList<>();
     searchKeys.add(ListingSearchKeys.PRODUCT_NAME);
     listingsSearchParams.setSearchKeys(searchKeys);
     listingsSearchParams.setSearchParam("");
-    listingsSearchParams.setMinPrice(12.0);
-    listingsSearchParams.setMaxPrice(12.0);
+    listingsSearchParams.setMinPrice(89.99);
+    listingsSearchParams.setMaxPrice(89.99);
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5002l));
+    Assertions.assertTrue(results.stream().map(el -> el.getId()).collect(Collectors.toSet()).contains(5002L));
   }
 
   @Test
@@ -109,8 +103,8 @@ class ListingSpecificationsTest extends MainTestProvider {
     List<Listing> results = listingDao.findAll(specification);
 
     Listing rated4Listing = listingDao.getListing(5001);  // This should be in the results
-    Listing rated3Listing = listingDao.getListing(5004);  // This should be in the results
-    Listing rated2Listing = listingDao.getListing(5005);  // This should NOT be in the results
+    Listing rated3Listing = listingDao.getListing(5003);  // This should be in the results
+    Listing rated2Listing = listingDao.getListing(5002);  // This should NOT be in the results
 
     // Assert
     Assertions.assertTrue(results.contains(rated4Listing));
@@ -133,9 +127,9 @@ class ListingSpecificationsTest extends MainTestProvider {
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
 
-    Listing rated4Listing = listingDao.getListing(5001);  // This should NOT be in the results
-    Listing rated3Listing = listingDao.getListing(5006);  // This should be in the results
-    Listing rated2Listing = listingDao.getListing(5003);  // This should be in the results
+    Listing rated4Listing = listingDao.getListing(5003);  // This should NOT be in the results
+    Listing rated3Listing = listingDao.getListing(5001);  // This should be in the results
+    Listing rated2Listing = listingDao.getListing(5011);  // This should be in the results
 
     // Assert
     Assertions.assertFalse(results.contains(rated4Listing));
@@ -159,10 +153,10 @@ class ListingSpecificationsTest extends MainTestProvider {
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
 
-    Listing rated4Listing = listingDao.getListing(5001);  // This should NOT be in the results
-    Listing rated3Listing = listingDao.getListing(5006);  // This should be in the results
-    Listing rated2Listing = listingDao.getListing(5003);  // This should be in the results
-    Listing rated1Listing = listingDao.getListing(5007);  // This should NOT be in the results
+    Listing rated4Listing = listingDao.getListing(5002);  // This should NOT be in the results
+    Listing rated3Listing = listingDao.getListing(5001);  // This should be in the results
+    Listing rated2Listing = listingDao.getListing(5004);  // This should be in the results
+    Listing rated1Listing = listingDao.getListing(5003);  // This should NOT be in the results
 
     // Assert
     Assertions.assertFalse(results.contains(rated4Listing));
@@ -190,8 +184,8 @@ class ListingSpecificationsTest extends MainTestProvider {
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    assertEquals(2, results.size());
-    assertEquals(List.of(5005, 5007).toString(),
+    Assertions.assertEquals(6, results.size());
+    Assertions.assertEquals(List.of(5001, 5002, 5003, 5006, 5007, 5010).toString(),
         results.stream().map(el -> el.getId()).sorted().collect(Collectors.toList()).toString());
   }
 
@@ -202,8 +196,8 @@ class ListingSpecificationsTest extends MainTestProvider {
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    assertEquals(2, results.size());
-    assertEquals(List.of(5003, 5004).toString(),
+    Assertions.assertEquals(7, results.size());
+    Assertions.assertEquals(List.of(5003, 5005, 5008, 5009, 5010, 5011, 5012).toString(),
         results.stream().map(el -> el.getId()).sorted().collect(Collectors.toList()).toString());
   }
 
@@ -211,12 +205,13 @@ class ListingSpecificationsTest extends MainTestProvider {
   @Test
   void resultsMeetSearchCriteria_filterByMultipleNutrientFieldsSaltAndSugars_expectFiltered() {
     listingsSearchParams.setSalt(List.of(NutritionFactsLevel.LOW));
-    listingsSearchParams.setSugars(List.of(NutritionFactsLevel.MODERATE));
+    listingsSearchParams.setSugars(List.of(NutritionFactsLevel.HIGH));
     Specification<Listing> specification = ListingSpecifications
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
-    assertEquals(1, results.size());
-    assertEquals(5003, results.get(0).getId());
+    Assertions.assertEquals(3, results.size());
+    Assertions.assertEquals(List.of(5007, 5008, 5012).toString(),
+        results.stream().map(el -> el.getId()).sorted().collect(Collectors.toList()).toString());
   }
 
   @Test
@@ -235,8 +230,8 @@ class ListingSpecificationsTest extends MainTestProvider {
         .meetsSearchCriteria(listingsSearchParams);
     List<Listing> results = listingDao.findAll(specification);
 
-    Listing aRatedListing = listingDao.getListing(5001);  // This should be in the results
-    Listing dRatedListing = listingDao.getListing(5007);  // This should NOT be in the results
+    Listing aRatedListing = listingDao.getListing(5004);  // This should be in the results
+    Listing dRatedListing = listingDao.getListing(5008);  // This should NOT be in the results
 
     // Assert
     Assertions.assertTrue(results.contains(aRatedListing));
@@ -260,7 +255,7 @@ class ListingSpecificationsTest extends MainTestProvider {
     for (Listing listing : results) {
       Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsGlutenFree());
     }
-    Assertions.assertEquals(1, results.size());
+    Assertions.assertEquals(7, results.size());
   }
 
   @Test
@@ -277,13 +272,12 @@ class ListingSpecificationsTest extends MainTestProvider {
     List<Listing> results = listingDao.findAll(specification);
     // Assert
     for (Listing listing : results) {
-      System.out.println(listing);
       Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsPalmOilFree());
     }
 
     Assertions.assertTrue(
         results.stream().map(el -> el.getId()).collect(Collectors.toSet()).containsAll(
-            List.of(5001l, 5002l, 5004l, 5006l)
+            List.of(5008L, 5011L, 5012L)
         )
     );
   }
@@ -305,7 +299,7 @@ class ListingSpecificationsTest extends MainTestProvider {
     for (Listing listing : results) {
       Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsDairyFree());
     }
-    Assertions.assertEquals(1, results.size());
+    Assertions.assertEquals(4, results.size());
   }
 
   @Test
@@ -325,7 +319,7 @@ class ListingSpecificationsTest extends MainTestProvider {
     for (Listing listing : results) {
       Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsVegan());
     }
-    Assertions.assertEquals(1, results.size());
+    Assertions.assertEquals(5, results.size());
   }
 
   @Test
@@ -345,6 +339,6 @@ class ListingSpecificationsTest extends MainTestProvider {
     for (Listing listing : results) {
       Assertions.assertTrue(listing.getInventoryItem().getProduct().getIsVegetarian());
     }
-    Assertions.assertEquals(1, results.size());
+    Assertions.assertEquals(6, results.size());
   }
 }

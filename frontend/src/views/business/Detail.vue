@@ -94,7 +94,7 @@
             class="btn btn-white-bg-primary m-1 d-flex"
         >
           <span class="material-icons mr-1">receipt_long</span>
-          Transactions
+          Transactions Report
         </router-link>
       </div>
       <error-modal

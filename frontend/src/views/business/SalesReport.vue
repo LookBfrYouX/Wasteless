@@ -59,6 +59,13 @@
     </v-row>
     <v-expansion-panels>
       <v-expansion-panel>
+        <v-btn-toggle v-model="chartType" multiple mandatory>
+          <v-btn>Sales</v-btn>
+          <v-btn>Transactions</v-btn>
+        </v-btn-toggle>
+        <bar-chart class="p-3" :chart-data="chartdata" :options="options" />
+      </v-expansion-panel>
+      <v-expansion-panel>
         <v-expansion-panel-header>
           <template v-slot:default="{ open }">
             {{open? "Hide Table": "Show Table"}}
@@ -87,11 +94,11 @@
 </template>
 
 <script>
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 import SalesReportTable from "@/components/SalesReportTable.vue";
 import ReportDateSelector from "@/components/ReportDateSelector";
 import ErrorModal from "@/components/ErrorModal";
-
+import BarChart from "@/components/charts/BarChart";
 
 /**
  * Default dates. referenced in both data in other methods, can't use
@@ -110,9 +117,10 @@ const defaultDates = () => {
 
 export default {
   components:{
+    BarChart,
     SalesReportTable,
     ReportDateSelector,
-    ErrorModal
+    ErrorModal,
   },
 
   props: {
@@ -135,7 +143,55 @@ export default {
       granularityOptions: ["Day", "Week", "Month", "Year"],
       business: {},
       currency: null,
-      apiErrorMessage:null
+      apiErrorMessage: null,
+      transformedTransactionData: null,
+      chartType: [],
+      chartdata: {
+        labels: ['One', 'Two'],
+        datasets: [
+          {
+            label: 'Data One',
+            backgroundColor: '#112798',
+            data: [1, 2],
+          },
+        ]
+      },
+      options: {
+        scales: {
+          yAxes: [
+              {
+                id: 'Sales',
+                position: 'left',
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Sales',
+                },
+                gridLines: {
+                  display: false,
+                },
+                ticks: {
+                  beginAtZero: true,
+                  }
+              },
+            {
+              id: 'Transactions',
+              position: 'right',
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Transactions',
+              },
+              gridLines: {
+                display: false,
+              },
+              ticks: {
+                beginAtZero: true,
+              }
+            }]
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
     };
   },
 
@@ -144,10 +200,11 @@ export default {
    * Loads transaction information and business information (name, currency)
    */
   async mounted() {
-    return Promise.allSettled([
+    await Promise.allSettled([
       this.getTransactions(),
-      this.getBusinessInformation()
+      this.getBusinessInformation(),
     ]);
+    this.getTransformedTransactionData();
   },
 
   methods: {
@@ -194,6 +251,7 @@ export default {
         }
         this.apiErrorMessage = err.userFacingErrorMessage;
       }
+      this.getTransformedTransactionData();
     },
 
     /**
@@ -280,12 +338,6 @@ export default {
       this.normalizeDateToStartOfMonth(date);
       return date;
     },
-  },
-
-  computed: {
-    defaultDates() {
-      return defaultDates();
-    },
 
     /**
      * Backend returns only periods where there is at least one transaction, with
@@ -320,9 +372,11 @@ export default {
      *   amountText, String: amount, but as a string with currency information
      * }] or null if transactionData is null
      */
-    transformedTransactionData() {
-      if (this.transactions == null) return null;
-
+    getTransformedTransactionData() {
+      if (this.transactions == null) {
+        this.transformedTransactionData = null;
+        return
+      }
       let i = 0;
       let dataArray = [];
       let date = new Date(this.startDate.getTime()); // date is the start of the next period
@@ -377,7 +431,81 @@ export default {
           amountText: this.$helper.makeCurrencyString(0, this.currency)
         });
       }
-      return dataArray;
+      this.updateChart(dataArray);
+      this.transformedTransactionData = dataArray;
+    },
+
+    /**
+     * This method updates the chart depending on which buttons are selected.
+     * It takes in the dataArray and updated the chartData and options.
+     * @param dataArray
+     */
+    updateChart(dataArray) {
+      let tempChartdata = {
+        labels: dataArray.map((element) => this.generateUserFacingDateText(element.date)),
+        datasets: []
+      }
+      if (this.chartType.includes(0)) {
+        tempChartdata.datasets.push({
+          label: 'Sales',
+          backgroundColor: '#2b39a1',
+          yAxisID: 'Sales',
+          data: dataArray.map((element) => element.amount),
+        });
+      }
+      if (this.chartType.includes(1)) {
+        tempChartdata.datasets.push({
+          label: 'Transactions',
+          backgroundColor: '#009900',
+          yAxisID: 'Transactions',
+          data: dataArray.map((element) => element.transactionCount),
+        });
+      }
+      let tempOptions = {
+        scales: {
+          yAxes: [
+            {
+              id: 'Sales',
+              position: 'left',
+              display: this.chartType.includes(0),
+              scaleLabel: {
+                display: true,
+                labelString: 'Sales',
+              },
+              gridLines: {
+                display: false,
+              },
+              ticks: {
+                beginAtZero: true,
+              }
+            },
+            {
+              id: 'Transactions',
+              position: 'right',
+              display: this.chartType.includes(1),
+              scaleLabel: {
+                display: true,
+                labelString: 'Transactions',
+              },
+              gridLines: {
+                display: false,
+              },
+              ticks: {
+                beginAtZero: true,
+              }
+            }]
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+      this.chartdata = tempChartdata;
+      this.options = tempOptions;
+    }
+  },
+
+  computed: {
+    defaultDates() {
+      return defaultDates();
     },
   },
 
@@ -387,7 +515,7 @@ export default {
      */
     business() {
       if (this.business.name) {
-        document.title = `${this.business.name} | Business Sales Report | Wasteless`;
+        document.title = `${this.business.name} | Business Sales Report | Nutrisave`;
       }
     },
 
@@ -401,6 +529,10 @@ export default {
 
     endDate() {
       this.getTransactions();
+    },
+
+    chartType() {
+      this.getTransformedTransactionData();
     }
 
 
