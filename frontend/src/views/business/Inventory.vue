@@ -107,8 +107,8 @@ export default {
         {key: "Sell-By Date (Oldest First)", value: "sellBy", isAscending: true},
         {key: "Sell-By Date (Newest First)", value: "sellBy", isAscending: false},
 
-        {key: "Name (A-Z)", value: "quantity", isAscending: true},
-        {key: "Name (Z-A)", value: "quantity", isAscending: false},
+        {key: "Name (A-Z)", value: "name", isAscending: true},
+        {key: "Name (Z-A)", value: "name", isAscending: false},
       ],
     };
   },

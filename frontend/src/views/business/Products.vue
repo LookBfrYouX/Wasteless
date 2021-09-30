@@ -106,8 +106,8 @@ export default {
       apiErrorMessage: null,
       businessName: null,
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
-        {key: "Name A-Z", value: "name", isAscending: true},
-        {key: "Name Z-A", value: "name", isAscending: false},
+        {key: "Name (A-Z)", value: "name", isAscending: true},
+        {key: "Name (Z-A)", value: "name", isAscending: false},
 
         {key: "Manufacturer (A-Z)", value: "manufacturer", isAscending: true},
         {key: "Manufacturer (Z-A)", value: "manufacturer", isAscending: false},
