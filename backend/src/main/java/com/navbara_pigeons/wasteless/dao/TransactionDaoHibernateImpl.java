@@ -58,26 +58,29 @@ public class TransactionDaoHibernateImpl implements TransactionDaoHibernate {
         .setParameter("businessId", businessId);
 
     // Elements 0, 1, 2 and 3 have date, transactionCount and amount in them respectively
-    List<Object[]> results = transactionQueries.getResultList();
+    List results = transactionQueries.getResultList();
     // Elements 0 and 1 have totalTransactionCount and amount in them respectively
-    List<Object[]> totals = totalsQuery.getResultList();
+    List totals = totalsQuery.getResultList();
 
     // If no transactions were found, return empty TransactionDataDto
     if (results.isEmpty() || totals.isEmpty()) {
       return new TransactionDataDto(new ArrayList<>(), 0.00, 0);
     }
     List<TransactionReportModel> transactionReportModels = new ArrayList<>();
-    for (Object[] result : results) {
-      ZonedDateTime date = ZonedDateTime.parse(result[0].toString());
-      Integer transactionCount = Integer.parseInt(result[1].toString());
-      Double amount = Double.valueOf(result[2].toString());
+    for (Object result : results) {
+      Object[] row = (Object[]) result;
+      ZonedDateTime date = ZonedDateTime.parse(row[0].toString());
+      Integer transactionCount = Integer.parseInt(row[1].toString());
+      Double amount = Double.valueOf(row[2].toString());
 
       TransactionReportModel transactionReportModel = new TransactionReportModel(date,
           transactionCount, amount);
       transactionReportModels.add(transactionReportModel);
     }
-    Integer totalTransactionCount = Integer.parseInt(totals.get(0)[0].toString());
-    Double totalAmount = Double.valueOf(totals.get(0)[1].toString());
+
+    Object[] totalsRow = (Object[]) totals.get(0);
+    Integer totalTransactionCount = Integer.parseInt(totalsRow[0].toString());
+    Double totalAmount = Double.valueOf(totalsRow[1].toString());
 
     return new TransactionDataDto(transactionReportModels, totalAmount, totalTransactionCount);
   }
