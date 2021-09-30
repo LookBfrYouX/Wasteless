@@ -51,11 +51,20 @@
               Revoke Admin
             </button>
             <router-link
-                v-if="isAdmin"
+                v-if="isSignedIn && authUser.id === userInfo.id"
+                :to="{ name: 'MarketplaceCardCreate'}"
+                class="btn btn-white-bg-primary m-1 d-flex"
+            >
+              <span class="material-icons mr-1">view_agenda</span>
+              Create Marketplace Card
+            </router-link>
+            <router-link
+                v-else-if="isSignedIn && isAdmin"
                 :to="{ name: 'MarketplaceCardCreateAdmin', params: { userId: userInfo.id }}"
                 class="btn btn-white-bg-primary m-1 d-flex"
             >
-              Create Marketplace Card
+              <span class="material-icons mr-1">view_agenda</span>
+              Create Marketplace Card as {{ userInfo.firstName }}
             </router-link>
             <router-link
                 v-if="isSignedIn && authUser.id === userInfo.id"
