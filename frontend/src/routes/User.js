@@ -6,7 +6,7 @@ export default [
     path: "/signin",
     component: () => import("@/views/user/SignIn.vue"),
     meta: {
-      title: "Sign In | Wasteless",
+      title: "Sign In | Nutrisave",
       noAuthOnly: true
     }
   },
@@ -15,7 +15,7 @@ export default [
     path: "/signup",
     component: () => import("@/views/user/Create.vue"),
     meta: {
-      title: "Sign Up | Wasteless",
+      title: "Sign Up | Nutrisave",
       noAuthOnly: true
     }
   },
@@ -33,7 +33,7 @@ export default [
       return {userId};
     },
     meta: {
-      title: "Profile | Wasteless"
+      title: "Profile | Nutrisave"
     }
   },
   {

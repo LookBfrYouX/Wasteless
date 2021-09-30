@@ -94,12 +94,11 @@
 </template>
 
 <script>
-import { Api } from "@/Api";
+import {Api} from "@/Api";
 import SalesReportTable from "@/components/SalesReportTable.vue";
 import ReportDateSelector from "@/components/ReportDateSelector";
 import ErrorModal from "@/components/ErrorModal";
 import BarChart from "@/components/charts/BarChart";
-
 
 /**
  * Default dates. referenced in both data in other methods, can't use
@@ -516,7 +515,7 @@ export default {
      */
     business() {
       if (this.business.name) {
-        document.title = `${this.business.name} | Business Sales Report | Wasteless`;
+        document.title = `${this.business.name} | Business Sales Report | Nutrisave`;
       }
     },
 

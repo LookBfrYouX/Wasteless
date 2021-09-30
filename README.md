@@ -1,9 +1,26 @@
-# Navbar Pigeons
+# Nutrisave by the Navbar Pigeons
 
-WebApp for the Wasteless project using `gradle`, `npm`, `Spring Boot`, `Vue.js`, `Gitlab CI` and
-more!  
-Refer to our wiki for more
-information [HERE](https://eng-git.canterbury.ac.nz/seng302-2021/team-300/-/wikis/home)
+Web Application for the Nutrisave project by Navbara Pigeons using `gradle`, `npm`, `Spring Boot`
+, `Vue.js`, `Gitlab CI` and more!  
+Refer to
+our [wiki for more information](https://eng-git.canterbury.ac.nz/seng302-2021/team-300/-/wikis/home)
+.
+
+## Abstract
+
+The number of people on specific diets is on the rise and while they are good for your health,
+experience will show they can be harmful to your wallet. The Navbara Pigeons have spent this year
+developing the solution to cater to the growing needs for nutritious food that doesn’t break the
+bank.
+
+Nutrisave is a sales platform for near-expiring goods with a focus on providing the user with
+health-related information on the products. Users can view the nutritional and processed rating as
+well as the fat, sugar, and salt content of the food they buy. Users also have the ability to search
+products by their diet: No Gluten? No problem. Prefer veggies over meat? Easy!
+
+Nutrisave also makes the tedious task of adding products into the app an ease. Business owners can
+simply scan the barcode of the product or enter its number to autofill product and nutritional
+information.
 
 ## Project Structure
 

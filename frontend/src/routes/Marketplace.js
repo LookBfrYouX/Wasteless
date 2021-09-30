@@ -5,7 +5,7 @@ export default [
     name: "Marketplace",
     path: "/marketplace",
     meta: {
-      title: "Marketplace | Wasteless",
+      title: "Marketplace | Nutrisave",
       requiresNotBusinessAdmin: true,
     },
     component: () => import("@/views/marketplace/Marketplace")
@@ -14,7 +14,7 @@ export default [
     name: "MarketplaceCardCreate",
     path: "/marketplace/create",
     meta: {
-      title: "Create Card | Wasteless",
+      title: "Create Card | Nutrisave",
       requiresNotBusinessAdmin: true,
     },
     component: () => import("@/views/marketplace/CardCreate"),
@@ -29,7 +29,7 @@ export default [
     // GAA can create card acting as any user
     path: "/marketplace/admin/:userId(\\d+)/create",
     meta: {
-      title: "Create Card | Wasteless",
+      title: "Create Card | Nutrisave",
       /* Only accessible if GAA */
       adminOnly: true,
     },
