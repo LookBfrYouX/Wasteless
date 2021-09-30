@@ -2,7 +2,6 @@ package com.navbara_pigeons.wasteless.cucumber;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
 import io.cucumber.datatable.DataTable;
@@ -42,8 +41,7 @@ public class U19CreateInventoryStepDefs extends CucumberTestProvider {
 
   @Given("{string} administers a business {string} with an inventory item {string}")
   public void aUserWithNameHasABusinessWithAnInventoryItem(String email, String business,
-      String inventoryItem)
-      throws Exception {
+      String inventoryItem) {
     //cant get to work
   }
 

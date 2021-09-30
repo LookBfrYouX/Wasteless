@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.cucumber;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.navbara_pigeons.wasteless.dto.CreateMarketListingDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
 import com.navbara_pigeons.wasteless.entity.User;
@@ -20,8 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 public class UCM2CardCreationStepDefs extends CucumberTestProvider {
-
-  private MvcResult response; // So that error can be checked in another step
 
   @Given("There is a user")
   public void thereIsAUser(DataTable dataTable) {
@@ -46,15 +43,14 @@ public class UCM2CardCreationStepDefs extends CucumberTestProvider {
   @When("I create a card {string} for a section {string}")
   public void iCreateACardForASection(String cardTitle, String section) throws Exception {
     CreateMarketListingDto marketListing = new CreateMarketListingDto();
-    List<Long> keywordIds = new ArrayList<Long>(Arrays.asList(1L));
+    List<Long> keywordIds = new ArrayList<>(List.of(1L));
     marketListing.setCreatorId(loggedInUserId)
         .setSection(section)
         .setTitle(cardTitle)
         .setKeywordIds(keywordIds);
-    response = mockMvc.perform(post("/cards/")
+    mockMvc.perform(post("/cards/")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(marketListing)))
-        .andReturn();
+        .content(objectMapper.writeValueAsString(marketListing)));
   }
 
   @Then("The card {string} is created in {string} section and stored")

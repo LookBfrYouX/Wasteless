@@ -4,7 +4,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.UserIdDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
@@ -13,7 +12,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
-public class BusinessControllerTest extends ControllerTestProvider {
+class BusinessControllerTest extends ControllerTestProvider {
 
   long RANDOMUSERID = 5002;
 

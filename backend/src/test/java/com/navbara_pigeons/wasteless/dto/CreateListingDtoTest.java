@@ -16,8 +16,7 @@ public class CreateListingDtoTest extends MainTestProvider {
   private Set<ConstraintViolation<CreateListingDto>> validate(CreateListingDto dto) {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
-    Set<ConstraintViolation<CreateListingDto>> violations = validator.validate(dto);
-    return violations;
+    return validator.validate(dto);
   }
 
   private CreateListingDto makeCreateListingDto() {

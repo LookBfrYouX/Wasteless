@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,8 +52,8 @@ public class MainTestProvider {
   }
   /**
    * This test helper method creates and returns listings given an inventory item.
-   * @param inventoryItem
-   * @return
+   * @param inventoryItem inventory item passed in
+   * @return newly created listing
    */
   protected Listing makeListing(InventoryItem inventoryItem) {
     Listing listing = new Listing();
@@ -115,7 +114,7 @@ public class MainTestProvider {
    * @param businessName name of business
    * @param admin        primary administrator. Used to set primaryAdministratorId and is added to
    *                     administrators list
-   * @return
+   * @return newly created business
    */
   protected Business makeBusiness(String businessName, User admin) {
     Business business = makeBusiness(businessName);

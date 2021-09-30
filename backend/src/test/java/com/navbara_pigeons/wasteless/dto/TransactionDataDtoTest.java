@@ -1,10 +1,8 @@
 package com.navbara_pigeons.wasteless.dto;
 
-import static org.mockito.ArgumentMatchers.any;
 import com.navbara_pigeons.wasteless.model.TransactionReportModel;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -22,8 +20,7 @@ class TransactionDataDtoTest extends MainTestProvider {
   private Set<ConstraintViolation<TransactionDataDto>> validate(TransactionDataDto dto) {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
-    Set<ConstraintViolation<TransactionDataDto>> violations = validator.validate(dto);
-    return violations;
+    return validator.validate(dto);
   }
 
   private void transactionDataDtoTest(LocalDate date, Integer count, Double amount, Integer numViolations) {

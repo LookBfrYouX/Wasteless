@@ -9,10 +9,10 @@ import com.navbara_pigeons.wasteless.exception.InvalidPaginationInputException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class PaginationBuilderTest {
+class PaginationBuilderTest {
 
   @Test
-  public void constructorWithValidParams() {
+  void constructorWithValidParams() {
     // Arrange
     Class<User> entity = User.class;
     UserSortByOption defaultSortField = UserSortByOption.firstName;
@@ -28,19 +28,19 @@ public class PaginationBuilderTest {
   }
 
   @Test
-  public void constructorWithInvalidSortField() {
+  void constructorWithInvalidSortField() {
     // Arrange
     Class<User> entity = User.class;
     SortByOption defaultSortField = ProductSortByOption.name;
 
     // Act & Assert
-    Assertions.assertThrows(InvalidPaginationInputException.class, () -> {
-      new PaginationBuilder(entity, defaultSortField);
-    });
+    Assertions.assertThrows(InvalidPaginationInputException.class,
+        () -> new PaginationBuilder(entity, defaultSortField)
+    );
   }
 
   @Test
-  public void validPaginationAndValidSortingParameters() {
+  void validPaginationAndValidSortingParameters() {
     // Arrange
     Class<Product> entity = Product.class;
     ProductSortByOption defaultSortField = ProductSortByOption.manufacturer;
@@ -58,6 +58,7 @@ public class PaginationBuilderTest {
     }
 
     // Assert
+    assert paginationBuilder != null;
     Assertions.assertEquals(pagStartIndex, paginationBuilder.getPagStartIndex());
     Assertions.assertEquals(pagEndIndex, paginationBuilder.getPagEndIndex());
     Assertions.assertEquals(defaultSortField, paginationBuilder.getSortField());
@@ -65,7 +66,7 @@ public class PaginationBuilderTest {
   }
 
   @Test
-  public void testDefaultParameters() {
+  void testDefaultParameters() {
     // Arrange
     Class<Product> entity = Product.class;
     ProductSortByOption defaultSortField = ProductSortByOption.name;
@@ -82,17 +83,18 @@ public class PaginationBuilderTest {
     }
 
     // Assert
+    assert paginationBuilder != null;
     Assertions.assertEquals(defaultSortAscending, paginationBuilder.isSortAscending());
     Assertions.assertEquals(defaultPagStartIndex, paginationBuilder.getPagStartIndex());
     Assertions.assertEquals(defaultPagEndIndex, paginationBuilder.getPagEndIndex());
   }
 
   @Test
-  public void testInvalidPaginationIndexes() {
+  void testInvalidPaginationIndexes() {
     // Arrange
     Class<Product> entity = Product.class;
     ProductSortByOption defaultSortField = ProductSortByOption.name;
-    Integer pagStartIndex = 2;
+    int pagStartIndex = 2;
     Integer pagEndIndex = pagStartIndex - 1;
 
     // Act
@@ -106,13 +108,16 @@ public class PaginationBuilderTest {
 
     // Assert
     PaginationBuilder finalPaginationBuilder = paginationBuilder;
-    Assertions.assertThrows(InvalidPaginationInputException.class, () -> {
-      finalPaginationBuilder.withPagEndIndex(pagEndIndex);
-    });
+    Assertions.assertThrows(InvalidPaginationInputException.class, () ->
+        {
+          assert finalPaginationBuilder != null;
+          finalPaginationBuilder.withPagEndIndex(pagEndIndex);
+        }
+    );
   }
 
   @Test
-  public void changingToValidSortField() {
+  void changingToValidSortField() {
     // Arrange
     Class<User> entity = User.class;
     UserSortByOption defaultSortField = UserSortByOption.firstName;
@@ -125,6 +130,7 @@ public class PaginationBuilderTest {
     }
 
     // Act & Assert
+    assert paginationBuilder != null;
     Assertions.assertEquals(defaultSortField, paginationBuilder.getSortField());
     PaginationBuilder finalPaginationBuilder = paginationBuilder;
     Assertions.assertDoesNotThrow(() -> {
@@ -134,7 +140,7 @@ public class PaginationBuilderTest {
   }
 
   @Test
-  public void changingToInvalidSortField() {
+  void changingToInvalidSortField() {
     // Arrange
     Class<User> entity = User.class;
     UserSortByOption defaultSortField = UserSortByOption.firstName;
@@ -147,15 +153,16 @@ public class PaginationBuilderTest {
     }
 
     // Act & Assert
+    assert paginationBuilder != null;
     Assertions.assertEquals(defaultSortField, paginationBuilder.getSortField());
     PaginationBuilder finalPaginationBuilder = paginationBuilder;
-    Assertions.assertThrows(InvalidPaginationInputException.class, () -> {
-      finalPaginationBuilder.withSortBy(newInvalidSortField);
-    });
+    Assertions.assertThrows(InvalidPaginationInputException.class, () ->
+      finalPaginationBuilder.withSortBy(newInvalidSortField)
+    );
   }
 
   @Test
-  public void changingToValidSortAscending() {
+  void changingToValidSortAscending() {
     // Arrange
     Class<User> entity = User.class;
     UserSortByOption defaultSortField = UserSortByOption.firstName;
@@ -171,6 +178,7 @@ public class PaginationBuilderTest {
     }
 
     // Assert
+    assert paginationBuilder != null;
     Assertions.assertEquals(newValidSortAscending, paginationBuilder.isSortAscending());
   }
 }

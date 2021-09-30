@@ -9,22 +9,21 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class FullAddressDtoTest extends MainTestProvider {
+class FullAddressDtoTest extends MainTestProvider {
 
   private Set<ConstraintViolation<FullAddressDto>> validate(FullAddressDto dto) {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
-    Set<ConstraintViolation<FullAddressDto>> violations = validator.validate(dto);
-    return violations;
+    return validator.validate(dto);
   }
 
   @Test
-  public void validBusinessType() {
+  void validBusinessType() {
     Assertions.assertEquals(0, validate(new FullAddressDto(makeAddress())).size());
   }
 
   @Test
-  public void invalidFullAddressDtoWithLargeLengths() {
+  void invalidFullAddressDtoWithLargeLengths() {
     FullAddressDto dto = new FullAddressDto(makeAddress());
     String string = "1";
     String badField = string.repeat(201);
@@ -36,14 +35,14 @@ public class FullAddressDtoTest extends MainTestProvider {
   }
 
   @Test
-  public void invalidFullAddressDtoWithNullFields() {
+  void invalidFullAddressDtoWithNullFields() {
     FullAddressDto dto = new FullAddressDto(makeAddress());
     dto.setCountry(null);
     Assertions.assertEquals(1, validate(dto).size());
   }
 
   @Test
-  public void invalidFullAddressDtoWithBlankFields() {
+  void invalidFullAddressDtoWithBlankFields() {
     FullAddressDto dto = new FullAddressDto(makeAddress());
     dto.setCountry("");
     Assertions.assertEquals(1, validate(dto).size());

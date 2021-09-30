@@ -2,8 +2,7 @@ package com.navbara_pigeons.wasteless.security;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,7 +22,7 @@ class CORSConfigTest {
   @Autowired
   private WebApplicationContext wac;
 
-  @Before
+  @BeforeEach
   public void setup() {
     DefaultMockMvcBuilder builder = MockMvcBuilders
         .webAppContextSetup(this.wac)
@@ -34,7 +33,7 @@ class CORSConfigTest {
   }
 
   @Test
-  public void testCorsValidLocalhostOrigin() throws Exception {
+  void testCorsValidLocalhostOrigin() throws Exception {
     String validOrigin = "http://localhost:9500";
     this.mockMvc
         .perform(options("/login")
@@ -44,7 +43,7 @@ class CORSConfigTest {
   }
 
   @Test
-  public void testCorsValidCanterburyOrigin() throws Exception {
+  void testCorsValidCanterburyOrigin() throws Exception {
     String validOrigin = "https://csse-s302g3.canterbury.ac.nz";
     this.mockMvc
         .perform(options("/login")
@@ -54,7 +53,7 @@ class CORSConfigTest {
   }
 
   @Test
-  public void testCorsInvalidOrigin() throws Exception {
+  void testCorsInvalidOrigin() throws Exception {
     String invalidOrigin = "http://www.notavalidorigin.com";
     this.mockMvc
         .perform(options("/login")
