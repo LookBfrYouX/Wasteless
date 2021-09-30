@@ -445,7 +445,6 @@ export default {
         datasets: []
       }
       if (this.chartType.includes(0)) {
-        console.log("Sales chart pushed");
         tempChartdata.datasets.push({
           label: 'Sales',
           backgroundColor: '#2b39a1',
@@ -454,7 +453,6 @@ export default {
         });
       }
       if (this.chartType.includes(1)) {
-        console.log("Transaction chart pushed");
         tempChartdata.datasets.push({
           label: 'Transactions',
           backgroundColor: '#009900',
@@ -499,7 +497,6 @@ export default {
         responsive: true,
         maintainAspectRatio: false
       }
-      console.log(tempChartdata);
       this.chartdata = tempChartdata;
       this.options = tempOptions;
     }
