@@ -14,12 +14,14 @@ import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
 import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
+import javax.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 
+@Transactional
 class ListingControllerTest extends ControllerTestProvider {
 
   @Test
@@ -237,7 +239,7 @@ class ListingControllerTest extends ControllerTestProvider {
   // Throw 403 when not business admin or admin
   @Test
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
-  public void throw403OnAddListingTest() throws Exception {
+  void throw403OnAddListingTest() throws Exception {
     Listing mockListing = new Listing();
     mockListing.setQuantity(1L);
     mockListing.setPrice(17.99);
@@ -250,7 +252,7 @@ class ListingControllerTest extends ControllerTestProvider {
 
 
   private CreateListingDto makeListing()
-      throws UserNotFoundException, BusinessTypeException, AddressValidationException, BusinessRegistrationException {
+      throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
     Business business = makeBusiness();
     Product product = makeProduct("Stoopid");
     InventoryItem inventoryItem = makeInventoryItem(product, business);
