@@ -10,12 +10,12 @@
         so it not reloading when already on home/landing page won't make a difference
          -->
         <img
-          :src="require('@/../assets/images/svg_pigeon.svg')"
-          class="navbar-pigeon"
-          alt="logo"
+            :src="require('@/../assets/images/logo_no_bg.png')"
+            class="navbar-pigeon"
+            alt="logo"
         />
         <span>
-          Navbara Pigeon
+          Nutrisave
         </span>
       </router-link>
       <!-- Hamburger button -->
