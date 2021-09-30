@@ -108,8 +108,15 @@ export default {
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
         {key: "Name A-Z", value: "name", isAscending: true},
         {key: "Name Z-A", value: "name", isAscending: false},
+
+        {key: "Manufacturer (A-Z)", value: "manufacturer", isAscending: true},
+        {key: "Manufacturer (Z-A)", value: "manufacturer", isAscending: false},
+
         {key: "Lowest RRP", value: "recommendedRetailPrice", isAscending: true},
         {key: "Highest RRP", value: "recommendedRetailPrice", isAscending: false},
+
+        {key: "Date Created (Oldest First)", value: "created", isAscending: true},
+        {key: "Date Created (Newest First)", value: "created", isAscending: false},
       ],
     }
   },

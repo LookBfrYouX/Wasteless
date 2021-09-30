@@ -94,6 +94,21 @@ export default {
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
         {key: "Lowest Quantity", value: "quantity", isAscending: true},
         {key: "Highest Quantity", value: "quantity", isAscending: false},
+
+        {key: "Lowest Price Per Item", value: "pricePerItem", isAscending: true},
+        {key: "Highest Price Per Item", value: "pricePerItem", isAscending: false},
+
+        {key: "Lowest Total Price", value: "totalPrice", isAscending: true},
+        {key: "Highest Total Price", value: "totalPrice", isAscending: false},
+
+        {key: "Manufactured (Oldest First)", value: "manufactured", isAscending: true},
+        {key: "Manufactured (Newest First)", value: "manufactured", isAscending: false},
+
+        {key: "Sell-By Date (Oldest First)", value: "sellBy", isAscending: true},
+        {key: "Sell-By Date (Newest First)", value: "sellBy", isAscending: false},
+
+        {key: "Name (A-Z)", value: "quantity", isAscending: true},
+        {key: "Name (Z-A)", value: "quantity", isAscending: false},
       ],
     };
   },
