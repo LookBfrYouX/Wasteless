@@ -180,8 +180,6 @@
   </div>
 </template>
 
-<style>
-</style>
 <style lang="scss" scoped>
 @import "~/src/styles/grid-breakpoints.scss";
 
