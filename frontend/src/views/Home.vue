@@ -33,7 +33,11 @@
       </div>
       <div class="col-md-8 card m-1">
         <h5 class="text-muted mt-3">Home</h5>
-        <p>Beautiful, ain't it?</p>
+        <p>
+          Welcome to Nutrisave! From here you can explore existing listings or checkout the
+          Marketplace.
+          There's heaps to see so get looking!
+        </p>
       </div>
     </div>
   </div>

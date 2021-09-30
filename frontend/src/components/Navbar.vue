@@ -10,7 +10,7 @@
         so it not reloading when already on home/landing page won't make a difference
          -->
         <img
-            :src="require('@/../assets/images/logo_no_bg.png')"
+            :src="require('@/../assets/images/logo.png')"
             class="navbar-pigeon"
             alt="logo"
         />
