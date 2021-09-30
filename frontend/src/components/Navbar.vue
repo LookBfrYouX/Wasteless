@@ -3,15 +3,15 @@
     <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
       <!-- Title -->
       <router-link
-        class="navbar-brand"
-        :to="{name: $stateStore.getters.isSignedIn()? 'Home': 'Landing'}"
+          class="navbar-brand mb-n3"
+          :to="{name: $stateStore.getters.isSignedIn()? 'Home': 'Landing'}"
       >
         <!-- Home and landing pages don't have any interactive elements
         so it not reloading when already on home/landing page won't make a difference
          -->
         <img
             :src="require('@/../assets/images/logo.png')"
-            class="navbar-pigeon"
+            class="navbar-pigeon mt-n2"
             alt="logo"
         />
         <span>
@@ -502,6 +502,6 @@ nav .active {
 }
 
 .navbar-pigeon {
-  height: 1.7em;
+  height: 2em;
 }
 </style>
