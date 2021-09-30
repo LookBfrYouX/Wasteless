@@ -65,19 +65,20 @@ public class ListingQueryBuilder {
 
     // Sorting query
     Path<Object> path;
-    switch ((ListingSortByOption) pagBuilder.getSortField()) {
-      case quantity:
-      case price:
-      case created:
-      case closes:
-        path = listing.get(pagBuilder.getSortField().toString());
+    ListingSortByOption sortBy = (ListingSortByOption) pagBuilder.getSortField();
+    switch (sortBy) {
+      case QUANTITY:
+      case PRICE:
+      case CREATED:
+      case CLOSES:
+        path = listing.get(sortBy.getPropertyName());
         break;
-      case name:
-        path = product.get(pagBuilder.getSortField().toString());
+      case NAME:
+        path = product.get(sortBy.getPropertyName());
         break;
       default:
         throw new IllegalStateException(
-            "Unexpected value: " + pagBuilder.getSortField());
+            "Unexpected value: " + sortBy.getPropertyName());
     }
     Order order =
         pagBuilder.isSortAscending() ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);

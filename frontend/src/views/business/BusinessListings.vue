@@ -87,7 +87,7 @@ export default {
       searchParams: {
         pagStartIndex: 0, // The default start index. Overridden in beforeMount.
         pagEndIndex: 0, // The default end index. Overridden in beforeMount.
-        sortBy: "quantity",
+        sortBy: "QUANTITY",
         isAscending: false
       },
       listings: [],
@@ -95,8 +95,8 @@ export default {
       businessName: null,
       currency: null,
       items: [ // Sort options. Key is displayed and value is emitted when selection changes.
-        {key: "Lowest Quantity", value: "quantity", isAscending: true},
-        {key: "Highest Quantity", value: "quantity", isAscending: false},
+        {key: "Lowest Quantity", value: "QUANTITY", isAscending: true},
+        {key: "Highest Quantity", value: "QUANTITY", isAscending: false},
       ],
     };
   },

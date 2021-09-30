@@ -141,7 +141,7 @@ public class ListingsSearchParams {
    */
   public void setSortBy(ListingSortByOption sortBy) {
     if (sortBy == null) {
-      this.sortBy = ListingSortByOption.valueOf("created");
+      this.sortBy = ListingSortByOption.CREATED;
     } else {
       this.sortBy = sortBy;
     }
