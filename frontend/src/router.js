@@ -60,15 +60,6 @@ export const router = new VueRouter({
       component: () => import("@/views/error/Error.vue")
     },
     {
-      name: "Error401",
-      path: "/error401",
-      meta: {
-        title: "401 Not Authorized | Nutrisave",
-        anyone: true
-      },
-      component: () => import("@/views/error/Error401.vue")
-    },
-    {
       name: "Error403",
       path: "/error403",
       meta: {
@@ -131,7 +122,7 @@ router.beforeEach(async (to, from, next) => {
   const business = await store.getters.getActingAs();
   const businessId = parseInt(to.params.businessId, 10);
 
-  const to401 = () => next({name: "Error401"});
+  const to401 = () => next({name: "SignIn"});
   const to403 = () => next({name: "Error403"});
 
   if (to.meta.anyone) {
