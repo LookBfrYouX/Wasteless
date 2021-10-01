@@ -49,7 +49,7 @@
           <template v-slot:activator="{ on }">
             <div v-on="on">
               <v-btn color="rgb(30, 201, 150)" class="white--text ml-4"
-                     @click="getListingsPipeline()" :disabled="searchParams.searchKeys.length === 0">
+                     @click="searchUpdate" :disabled="searchParams.searchKeys.length === 0">
                 Search
               </v-btn>
             </div>
@@ -183,6 +183,11 @@ export default {
   },
 
   methods: {
+    searchUpdate: async function() {
+      this.page = 1;
+      await this.pageUpdate();
+    },
+
     /**
      * Updates the search query and retrieves the new data.
      */
@@ -208,7 +213,6 @@ export default {
         const response = (await Api.getListings(this.searchParams)).data;
         this.listings = response.results;
         this.totalResults = response.totalCount;
-        this.page = 1;
         if (this.searchParams.searchString && this.searchParams.searchString.trim()) {
           this.titleString = `Listings matching ${this.searchParams.searchString}`;
         } else {
