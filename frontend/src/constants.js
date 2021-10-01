@@ -163,7 +163,7 @@ export const constants = {
   },
 
   API: {
-    TIMEOUT_SHORT: 2500,
+    TIMEOUT_SHORT: 4000,
     TIMEOUT_MEDIUM: 5000,
     TIMEOUT_LONG: 10000
   },

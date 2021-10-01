@@ -84,10 +84,12 @@ export default {
     // Only dates that were supplied and not empty are displayed.
     metaValues() {
       let results = [];
-      [{key: 'Expires On', value: this.item.expires},
+      [
+        {key: 'Expires On', value: this.item.expires},
+        {key: 'Sell By', value: this.item.sellBy},
         {key: 'Best Before', value: this.item.bestBefore},
-        {key: 'Manufactured On', value: this.item.manufactured},
-        {key: 'Sell By', value: this.item.sellBy}].forEach((meta) => {
+        {key: 'Manufactured On', value: this.item.manufactured}
+      ].forEach((meta) => {
         if (meta.value !== null && meta.value !== undefined && meta.value !== "") {
           results.push(meta)
         }

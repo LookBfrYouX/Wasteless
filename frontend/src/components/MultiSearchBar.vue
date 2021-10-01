@@ -4,7 +4,7 @@
     <v-row>
       <!--  search 6col  -->
       <v-col class="my-0 py-0">
-        <v-subheader>Search businesses</v-subheader>
+        <v-subheader>Search</v-subheader>
         <v-text-field
             v-model="searchParams.searchParam"
             label="Search"
