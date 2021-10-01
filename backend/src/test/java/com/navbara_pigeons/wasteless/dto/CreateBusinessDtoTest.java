@@ -16,8 +16,7 @@ class CreateBusinessDtoTest extends MainTestProvider {
   private Set<ConstraintViolation<CreateBusinessDto>> validate(CreateBusinessDto dto) {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
-    Set<ConstraintViolation<CreateBusinessDto>> violations = validator.validate(dto);
-    return violations;
+    return validator.validate(dto);
   }
 
   @Test

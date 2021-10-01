@@ -25,7 +25,7 @@
 
           <image-carousel :images="productImages"/>
           <div class="mt-2 d-inline">{{ description }}</div>
-
+          <hr/>
           <v-tooltip bottom
                      :disabled="!$stateStore.getters.isActingAsBusiness() && !listingWasPurchased">
             <template v-slot:activator="{ on }">
@@ -58,7 +58,9 @@
           <div class="mt-2">Quantity: {{ quantity }}</div>
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
           <div class="mt-2">Manufacturer: {{ product.manufacturer }}</div>
-          <div class="mt-2">Business address: {{ $helper.addressToString(business.address) }}</div>
+          <hr/>
+          <div class="mt-2">Business Name: {{ business.name }}</div>
+          <div class="mt-2">Business Address: {{ $helper.addressToString(business.address) }}</div>
           <div v-if="moreInfo" class="mt-2 mb-5">More Information: {{ moreInfo }}</div>
           <nutrition-facts class="my-2" :product="product"/>
           <div class="d-flex flex-wrap justify-content-between mb-2">

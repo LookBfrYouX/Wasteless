@@ -1,31 +1,18 @@
 package com.navbara_pigeons.wasteless.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
-import com.navbara_pigeons.wasteless.dto.UserIdDto;
 import com.navbara_pigeons.wasteless.enums.TransactionGranularity;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
-import lombok.With;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
-
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class TransactionControllerTest extends ControllerTestProvider {
+class TransactionControllerTest extends ControllerTestProvider {
 
   long BUSINESS_ID = 1001;
 

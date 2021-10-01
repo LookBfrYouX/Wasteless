@@ -2,7 +2,6 @@ package com.navbara_pigeons.wasteless.cucumber;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.enums.NutriScore;
@@ -14,8 +13,6 @@ import java.util.Iterator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.web.servlet.MvcResult;
-
-import java.io.UnsupportedEncodingException;
 
 public class EU3SearchListingsByNutritionInfoStepDefs extends CucumberTestProvider {
 

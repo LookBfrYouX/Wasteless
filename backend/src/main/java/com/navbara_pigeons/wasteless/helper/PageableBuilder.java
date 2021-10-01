@@ -1,6 +1,5 @@
 package com.navbara_pigeons.wasteless.helper;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -25,8 +24,8 @@ public class PageableBuilder implements Pageable {
    * default constructor
    * @param pagStartIndex start of page is inclusive
    * @param pagEndIndex end of page is inclusive
-   * @param sortBy
-   * @param isAscending
+   * @param sortBy sort by option
+   * @param isAscending true if results will be in ascending order
    */
   public PageableBuilder(int pagStartIndex, int pagEndIndex, String sortBy, boolean isAscending) {
     this.pagStartIndex = pagStartIndex;
@@ -65,9 +64,9 @@ public class PageableBuilder implements Pageable {
   @Override
   public Sort getSort() {
     Sort sort = Sort.by(this.sortBy);
-    if (sortBy == "name") {
+    if (sortBy.equals("name")) {
        sort = Sort.by("inventoryItem.product.id");
-    } else if (sortBy == "city") {
+    } else if (sortBy.equals("city")) {
       sort = Sort.by("inventoryItem.business.address.city");
     }
 

@@ -394,7 +394,7 @@ export const Api = {
         `/businesses/${businessId}/inventory/`, item)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
-        400: error => `Could not create listing: ${error.response.data}`,
+        400: `Could not create listing: ${error.response.data}`,
         403: "Forbidden: Insufficient privileges"
       });
     });
@@ -481,7 +481,7 @@ export const Api = {
   createCard: props => {
     return instance.post("/cards", props).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
-        400: err => `Invalid information given; ${err.response.message}`,
+        400: `Invalid information given; ${err.response.message}`,
         403: "You tried to create a card as another user; only an admin is allowed to do this"
       });
     })
@@ -564,7 +564,7 @@ export const Api = {
     return instance.get(`/businesses/${businessId}/transactions`, {params})
     .catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
-        400: err => `The report could not be viewed: ${err.response.data}`,
+        400: `The report could not be viewed: ${err.response.data}`,
         403: "You don't have permission to view the report",
         404: "The business does not exist"
       });

@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.dao;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.testprovider.MainTestProvider;
 import javax.transaction.Transactional;
@@ -12,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class BusinessDaoTest extends MainTestProvider {
+class BusinessDaoTest extends MainTestProvider {
 
   @Autowired
   BusinessDao businessDao;
@@ -40,6 +39,7 @@ public class BusinessDaoTest extends MainTestProvider {
     } catch (Exception exc) {
       exc.printStackTrace();
     }
+    assert returnedBusiness != null;
     assertEquals(business.getId(), returnedBusiness.getId());
     assertEquals(business.getName(), returnedBusiness.getName());
     assertEquals(business.getBusinessType(), returnedBusiness.getBusinessType());

@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
 import com.navbara_pigeons.wasteless.dao.ImageDao;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.Image;
@@ -66,8 +65,7 @@ class ImageServiceImplTest extends ServiceTestProvider {
    */
   @BeforeEach
   public void initialise()
-      throws IOException, UserNotFoundException, AddressValidationException, BusinessTypeException,
-      BusinessRegistrationException, UserAuthenticationException, UserRegistrationException, UserAlreadyExistsException, BusinessNotFoundException, ProductNotFoundException {
+      throws IOException, UserNotFoundException, BusinessNotFoundException, ProductNotFoundException {
     // Get the test image
     FileInputStream fis = new FileInputStream("./src/test/resources/TestImage.jpeg");
     testImage = new MockMultipartFile("TestImage.jpeg", "TestImage.jpeg", "image/jpeg", fis);
@@ -86,24 +84,19 @@ class ImageServiceImplTest extends ServiceTestProvider {
 
     when(userService.isAdmin()).thenReturn(true);
 
-    when(businessService.isBusinessAdmin(any(Long.class))).thenAnswer(new Answer<Boolean>() {
-      @Override
-      public Boolean answer(InvocationOnMock invocation) throws BusinessNotFoundException {
-        if (BUSINESS_ID == (Long) invocation.getArgument(0)) {
-          return true;
-        }
-        throw new BusinessNotFoundException();
-      }
-    });
+    when(businessService.isBusinessAdmin(any(Long.class))).thenAnswer(
+        (Answer<Boolean>) invocation -> {
+          if (BUSINESS_ID == (Long) invocation.getArgument(0)) {
+            return true;
+          }
+          throw new BusinessNotFoundException();
+        });
 
-    when(productService.getProduct(any(Long.class))).thenAnswer(new Answer<Product>() {
-      @Override
-      public Product answer(InvocationOnMock invocation) throws Throwable {
-        if (PRODUCT_ID == (Long) invocation.getArgument(0)) {
-          return testProduct;
-        }
-        throw new ProductNotFoundException();
+    when(productService.getProduct(any(Long.class))).thenAnswer((Answer<Product>) invocation -> {
+      if (PRODUCT_ID == (Long) invocation.getArgument(0)) {
+        return testProduct;
       }
+      throw new ProductNotFoundException();
     });
 
     doNothing().when(imageDao).saveProductImageToDb(any(Image.class));
@@ -115,24 +108,24 @@ class ImageServiceImplTest extends ServiceTestProvider {
   @Test
   @WithUserDetails("mbi47@uclive.ac.nz")
   void uploadProductImage() {
-    assertDoesNotThrow(() -> {
-      imageService.uploadProductImage(BUSINESS_ID, PRODUCT_ID, testImage);
-    });
+    assertDoesNotThrow(() ->
+      imageService.uploadProductImage(BUSINESS_ID, PRODUCT_ID, testImage)
+    );
   }
 
   @Test
   @WithUserDetails("mbi47@uclive.ac.nz")
   void uploadProductImageWithNonExistingBusiness() {
-    assertThrows(BusinessNotFoundException.class, () -> {
-      imageService.uploadProductImage(0, PRODUCT_ID, testImage);
-    });
+    assertThrows(BusinessNotFoundException.class, () ->
+      imageService.uploadProductImage(0, PRODUCT_ID, testImage)
+    );
   }
 
   @Test
   @WithUserDetails("mbi47@uclive.ac.nz")
   void uploadProductImageWithNonExistingProduct() {
-    assertThrows(ProductNotFoundException.class, () -> {
-      imageService.uploadProductImage(BUSINESS_ID, 0, testImage);
-    });
+    assertThrows(ProductNotFoundException.class, () ->
+      imageService.uploadProductImage(BUSINESS_ID, 0, testImage)
+    );
   }
 }

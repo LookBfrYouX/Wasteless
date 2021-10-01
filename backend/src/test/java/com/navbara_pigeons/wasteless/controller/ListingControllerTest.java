@@ -3,7 +3,6 @@ package com.navbara_pigeons.wasteless.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.navbara_pigeons.wasteless.dto.CreateListingDto;
 import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.InventoryItem;
@@ -11,7 +10,6 @@ import com.navbara_pigeons.wasteless.entity.Listing;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessRegistrationException;
-import com.navbara_pigeons.wasteless.exception.BusinessTypeException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
 import javax.transaction.Transactional;
@@ -19,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.web.servlet.MvcResult;
 
 @Transactional
 class ListingControllerTest extends ControllerTestProvider {
@@ -183,7 +180,6 @@ class ListingControllerTest extends ControllerTestProvider {
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(listing)))
         .andExpect(status().isCreated());
-
   }
 
   // Throw 400 on bad request to controller (quantity is required)

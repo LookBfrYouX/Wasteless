@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" lg="8" class="filter-business my-0 py-0">
-        <v-subheader>Filter businesses</v-subheader>
+        <v-subheader>Filter by business type</v-subheader>
         <v-select
             v-model="businessTypes"
             :items="businesses"

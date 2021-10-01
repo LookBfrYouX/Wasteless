@@ -15,5 +15,5 @@ sonarqubeScanner(
         'sonar.javascript.lcov.reportPaths': 'coverage/lcov.info',
         'sonar.testExecutionReportPaths': 'coverage/test-reporter.xml'
       }
-    }, () => {
-    });
+    }
+);

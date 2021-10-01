@@ -50,5 +50,10 @@ UPDATE `address` SET COUNTRY = 'United States of America' WHERE COUNTRY = 'Unite
 UPDATE `address` SET COUNTRY = 'Virgin Islands (U.S.)' WHERE COUNTRY = 'United States Virgin Islands';
 UPDATE `address` SET COUNTRY = 'Venezuela (Bolivarian Republic of)' WHERE COUNTRY = 'Venezuela';
 UPDATE `address` SET COUNTRY = 'Viet Nam' WHERE COUNTRY = 'Vietnam';
-UPDATE `transaction` SET BUSINESS_ID = 1001;""")
+
+UPDATE `transaction` SET BUSINESS_ID = 1001;
+
+UPDATE listing SET CLOSES = FROM_UNIXTIME(UNIX_TIMESTAMP('2022-10-17 00:00:00') + FLOOR(RAND() * 10000000)) WHERE ID < 5001;
+""")
+
 file.close()

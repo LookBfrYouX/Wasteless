@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.InventoryDao;
 import com.navbara_pigeons.wasteless.dao.ProductDao;
@@ -234,9 +233,9 @@ class InventoryServiceImplTest extends ServiceTestProvider {
    */
   void updateInventoryTestWrapper(Long quantity, boolean shouldFail)
       throws BusinessNotFoundException {
-    Long mockBusinessId = 2L;
-    Long mockInventoryId = 2L;
-    Long mockInventoryQuantity = 5L;
+    long mockBusinessId = 2L;
+    long mockInventoryId = 2L;
+    long mockInventoryQuantity = 5L;
 
     Product mockProduct = makeProduct("Cheese");
     Business mockBusiness = makeBusiness("Tony's Cheese");

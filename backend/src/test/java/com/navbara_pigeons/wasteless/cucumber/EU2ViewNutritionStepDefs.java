@@ -4,10 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.navbara_pigeons.wasteless.cucumber.CucumberTestProvider;
-import com.navbara_pigeons.wasteless.dto.BasicProductDto;
 import com.navbara_pigeons.wasteless.dto.CreateProductDto;
-import com.navbara_pigeons.wasteless.dto.PaginationDto;
 import com.navbara_pigeons.wasteless.entity.Product;
 import com.navbara_pigeons.wasteless.enums.NutritionFactsLevel;
 import io.cucumber.java.en.Given;
@@ -15,10 +12,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
 public class EU2ViewNutritionStepDefs extends CucumberTestProvider {
@@ -60,8 +55,7 @@ public class EU2ViewNutritionStepDefs extends CucumberTestProvider {
   }
 
   @Then("I can see that the level of fat is {string} and the level of sugar is {string}")
-  public void iCanSeeThatTheLevelOfFatIsAndTheLevelOfSugarIs(String fatLevel, String sugarLevel)
-      throws UnsupportedEncodingException, JsonProcessingException {
+  public void iCanSeeThatTheLevelOfFatIsAndTheLevelOfSugarIs(String fatLevel, String sugarLevel) {
     Assertions.assertEquals(this.testProduct.get("fat").asText(), fatLevel);
     Assertions.assertEquals(this.testProduct.get("sugars").asText(), sugarLevel);
   }
