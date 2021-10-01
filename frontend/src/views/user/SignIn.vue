@@ -47,7 +47,6 @@
               <router-link
                   :to="{ name: 'UserCreate' }"
                   class="btn btn-white-bg-primary hover-cursor-pointer"
-                  type="button"
               >
                 Sign Up
               </router-link>

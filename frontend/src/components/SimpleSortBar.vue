@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mx-0">
     <v-select
         :items="items.map(a => a.key)"
         dense

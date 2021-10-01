@@ -315,7 +315,8 @@ export const Api = {
     }
     if (err && err.status === 401) {
       await this.$stateStore.actions.deleteAuthUser();
-      await this.$router.push({name: "Error401"});
+      // Redirect to Sign in page (U1 AC11)
+      await this.$router.push({name: "SignIn"});
       return true;
     }
 

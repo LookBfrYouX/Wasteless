@@ -11,12 +11,12 @@
           </div>
 
           <div class="btn-group" role="group" aria-label="Basic example" style="flex-wrap: wrap;">
-            <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
+            <button class="btn btn-white-bg-primary d-flex align-items-end"
                     @click="$router.go(-1)">
               <span class="material-icons mr-1">arrow_back</span>
               Back
             </button>
-            <router-link class="btn btn-white-bg-primary d-flex align-items-end" type="button"
+            <router-link class="btn btn-white-bg-primary d-flex align-items-end"
                          :to="{ name: 'BusinessDetail', params: { businessId, showBackButton: true}}">
               <span class="material-icons mr-1">business</span>
               View Business
