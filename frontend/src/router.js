@@ -38,7 +38,7 @@ export const router = new VueRouter({
       path: "/",
       component: Landing,
       meta: {
-        title: "Welcome to Wasteless",
+        title: "Welcome to Nutrisave",
         anyone: true
       }
     },
@@ -47,32 +47,23 @@ export const router = new VueRouter({
       path: "/home",
       component: Home,
       meta: {
-        title: "Home | Wasteless"
+        title: "Home | Nutrisave"
       }
     },
     {
       name: "Error",
       path: "/error",
       meta: {
-        title: "Error 😢 | Wasteless",
+        title: "Error 😢 | Nutrisave",
         anyone: true
       },
       component: () => import("@/views/error/Error.vue")
     },
     {
-      name: "Error401",
-      path: "/error401",
-      meta: {
-        title: "401 Not Authorized | Wasteless",
-        anyone: true
-      },
-      component: () => import("@/views/error/Error401.vue")
-    },
-    {
       name: "Error403",
       path: "/error403",
       meta: {
-        title: "403 Forbidden | Wasteless",
+        title: "403 Forbidden | Nutrisave",
         anyone: true
       },
       component: () => import("@/views/error/Error403.vue")
@@ -81,7 +72,7 @@ export const router = new VueRouter({
       name: "Error404",
       path: "/*",
       meta: {
-        title: "Not Found 😢 | Wasteless",
+        title: "Not Found 😢 | Nutrisave",
         anyone: true
       },
       component: () => import("@/views/error/Error404.vue"),
@@ -111,7 +102,7 @@ router.afterEach((to) => {
   }
 
   Vue.nextTick(() => {
-    let title = "Wasteless";
+    let title = "Nutrisave";
     if (typeof to.meta.title == "string") {
       title = to.meta.title;
     } else if (typeof to.meta.title == "function") {
@@ -131,7 +122,7 @@ router.beforeEach(async (to, from, next) => {
   const business = await store.getters.getActingAs();
   const businessId = parseInt(to.params.businessId, 10);
 
-  const to401 = () => next({name: "Error401"});
+  const to401 = () => next({name: "SignIn"});
   const to403 = () => next({name: "Error403"});
 
   if (to.meta.anyone) {

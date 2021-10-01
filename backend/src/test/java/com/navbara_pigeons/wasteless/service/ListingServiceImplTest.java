@@ -6,7 +6,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-
 import com.navbara_pigeons.wasteless.dao.ListingDao;
 import com.navbara_pigeons.wasteless.dto.FullListingDto;
 import com.navbara_pigeons.wasteless.dto.TransactionDto;
@@ -27,6 +26,7 @@ import com.navbara_pigeons.wasteless.model.ListingsSearchParams;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,14 +54,13 @@ class ListingServiceImplTest extends ServiceTestProvider {
   private TransactionService transactionService;
   @InjectMocks
   private ListingServiceImpl listingService;
-  private Long userId;
   private Long businessId;
 
   @BeforeEach
   void beforeEach() throws Exception {
     // Setting mocks before tests are run to ensure unit testing only
     User user = makeUser(email, password, false);
-    userId = user.getId();
+    Long userId = user.getId();
     Business business = makeBusiness();
     businessId = business.getId();
     business.setPrimaryAdministratorId(userId);
@@ -103,7 +102,7 @@ class ListingServiceImplTest extends ServiceTestProvider {
         .thenReturn(Pair.of(getMockBusinessListings(mockBusiness), 0L));
 
     Assertions.assertArrayEquals(
-        List.of(1, 2, 3, 4, 5, 6).stream().map(Long::valueOf).toArray(),
+        Stream.of(1, 2, 3, 4, 5, 6).map(Long::valueOf).toArray(),
         listingService.getListings(mockBusiness.getId(), null, null, null, true)
             .getResults()
             .stream().map(FullListingDto::getId)
@@ -128,9 +127,9 @@ class ListingServiceImplTest extends ServiceTestProvider {
     // Make listing sets inventory item quantity to 4
     listing.setQuantity(100);
 
-    Assertions.assertThrows(ListingValidationException.class, () -> {
-      listingService.addListing(businessId, listing.getInventoryItem().getId(), listing);
-    });
+    Assertions.assertThrows(ListingValidationException.class, () ->
+      listingService.addListing(businessId, listing.getInventoryItem().getId(), listing)
+    );
   }
 
   @Test
@@ -140,9 +139,9 @@ class ListingServiceImplTest extends ServiceTestProvider {
 
     when(businessService.isBusinessAdmin(businessId)).thenReturn(false);
 
-    Assertions.assertThrows(InsufficientPrivilegesException.class, () -> {
-      listingService.addListing(businessId, listing.getInventoryItem().getId(), listing);
-    });
+    Assertions.assertThrows(InsufficientPrivilegesException.class, () ->
+      listingService.addListing(businessId, listing.getInventoryItem().getId(), listing)
+    );
   }
 
   @Test
@@ -244,7 +243,7 @@ class ListingServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser(username = "ntony@tony.tony", password = "tonyTony1")
-  void getAllListings_isAuthenticated() throws Exception {
+  void getAllListings_isAuthenticated() {
 
     List<Listing> mockListings = new ArrayList<>();
 
@@ -253,7 +252,7 @@ class ListingServiceImplTest extends ServiceTestProvider {
     mockBusinessNames.add("Business B");
     mockBusinessNames.add("Business C");
 
-    List<String> mockProductNames = new ArrayList<String>();
+    List<String> mockProductNames = new ArrayList<>();
     mockProductNames.add("Product A");
     mockProductNames.add("Product B");
     mockProductNames.add("Product C");
@@ -271,11 +270,11 @@ class ListingServiceImplTest extends ServiceTestProvider {
     ListingsSearchParams listingsSearchParams = new ListingsSearchParams();
     listingsSearchParams.setPagStartIndex(0);
     listingsSearchParams.setPagEndIndex(1);
-    listingsSearchParams.setSortBy(ListingSortByOption.name);
+    listingsSearchParams.setSortBy(ListingSortByOption.NAME);
 
     when(listingDao
         .findAll(any(Specification.class), any(Pageable.class)))
-        .thenReturn(new PageImpl<Listing>(mockListings));
+        .thenReturn(new PageImpl<>(mockListings));
 
     Assertions.assertEquals(3, listingService.searchListings(listingsSearchParams).getTotalCount());
   }

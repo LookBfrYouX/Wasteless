@@ -252,7 +252,7 @@ export default {
         streetName = name;
       }
 
-      const components = {
+      return {
         streetNumber: housenumber,
         streetName: streetName,
         suburb: district,
@@ -261,8 +261,6 @@ export default {
         postcode: postcode,
         country: countryCanonical
       };
-
-      return components;
     },
 
     /**

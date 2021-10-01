@@ -35,7 +35,7 @@ export default {
       if (this.user.role && this.user.role == this.$constants.USER.ADMIN_ROLE) {
         return "Admin";
       }
-      return false;
+      return "";
     }
 
   }

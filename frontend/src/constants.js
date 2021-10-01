@@ -83,8 +83,88 @@ export const constants = {
     }
   },
 
+  PRODUCT: {
+    ALLERGY_CHIP_CONFIG: [
+      {
+        key: "isDairyFree",
+        shortText: "DF",
+        longText: "Dairy Free",
+        backgroundColor: "#ffdd50",
+        foregroundColor: "black",
+      }, {
+        key: "isGlutenFree",
+        shortText: "GF",
+        longText: "Gluten Free",
+        backgroundColor: "#93641c",
+        foregroundColor: "white",
+      }, {
+        key: "isVegetarian",
+        shortText: "V",
+        longText: "Vegetarian",
+        backgroundColor: "#40826d",
+        foregroundColor: "white",
+      }, {
+        key: "isVegan",
+        shortText: "VE",
+        longText: "Vegan",
+        backgroundColor: "#74B74E",
+        foregroundColor: "white",
+      }, {
+        key: "isPalmOilFree",
+        shortText: "POF",
+        longText: "Palm Oil Free",
+        backgroundColor: "#ffc5c5",
+        foregroundColor: "black",
+      }
+    ],
+
+    NUTRIENT_LEVELS_MAP: [
+      {
+        value: null,
+        name: "Unknown",
+        color: "grey--text",
+        icon: "help"
+      }, {
+        value: "LOW",
+        name: "Low",
+        color: "green--text",
+        icon: "circle"
+      }, {
+        value: "MODERATE",
+        name: "Moderate",
+        color: "amber--text",
+        icon: "circle"
+      }, {
+        value: "HIGH",
+        name: "High",
+        color: "red--text text--darken-3",
+        icon: "circle"
+      }
+    ],
+
+    NOVA_GROUP: [
+      {
+        value: 1,
+        description: "Group 1 - Unprocessed or minimally processed foods"
+      },
+      {
+        value: 2,
+        description: "Group 2 - Processed culinary ingredients"
+      },
+      {
+        value: 3,
+        description: "Group 3 - Processed foods"
+      },
+      {
+        value: 4,
+        description: "Group 4 - Ultra-processed food and drink products"
+      }
+    ]
+  },
+
   API: {
-    TIMEOUT_SHORT: 2500,
+    TIMEOUT_SHORT: 4000,
+    TIMEOUT_MEDIUM: 5000,
     TIMEOUT_LONG: 10000
   },
 

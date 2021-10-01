@@ -1,32 +1,33 @@
 package com.navbara_pigeons.wasteless.service;
 
 import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.navbara_pigeons.wasteless.dao.AddressDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-public class AddressServiceImplTest extends ServiceTestProvider {
+class AddressServiceImplTest extends ServiceTestProvider {
 
   @Mock
   CountryDataFetcherService countryDataFetcherService;
-
   @Mock
-  AddressDao mockAddressDao;
-
+  AddressDao addressDao;
   @InjectMocks
   AddressServiceImpl addressService;
 
   @Test
-  void saveAddress_normal() throws AddressValidationException {
+  void saveAddress_normal() {
     Address address = makeAddress();
     when(countryDataFetcherService.countryExists(address.getCountry())).thenReturn(true);
-    addressService.saveAddress(address);
+    doNothing().when(addressDao).saveAddress(address);
+    Assertions.assertDoesNotThrow(() -> addressService.saveAddress(address));
   }
 
   @Test

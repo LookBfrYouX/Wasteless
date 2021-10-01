@@ -49,8 +49,57 @@ const instanceLongTimeouts = axios.create({
 
 const openFoodFactsInstance = axios.create({
   baseURL: constants.OPEN_FOOD_FACTS_URL,
-  timeout: constants.API.TIMEOUT_SHORT
+  timeout: constants.API.TIMEOUT_MEDIUM
 });
+
+
+/**
+ * Serializes URL query parameters in the case that some params are arrays.
+ * Call using axios.get("/", {
+ *    params: { bla: [1, 2, 3] },
+ *    paramsSerializer: arraySerializer
+ * }
+ * Attribution: https://stackoverflow.com/a/66999242/5204356
+ * @param {*} params 
+ * @returns serialized string
+ */
+const arraySerializer = params => {
+  const parts = [];
+
+  const encode = val => {
+    return encodeURIComponent(val).replace(/%3A/gi, ':')
+    .replace(/%24/g, '$')
+    .replace(/%2C/gi, ',')
+    .replace(/%20/g, '+')
+    .replace(/%5B/gi, '[')
+    .replace(/%5D/gi, ']');
+  }
+
+  const convertPart = (key, val) => {
+    if (val instanceof Date) {
+      val = val.toISOString()
+    } else if (val instanceof Object) {
+      val = JSON.stringify(val)
+    }
+
+    parts.push(encode(key) + '=' + encode(val));
+  }
+
+  Object.entries(params).forEach(([key, val]) => {
+    if (val === null || typeof val === 'undefined') {
+      return
+    }
+
+    if (Array.isArray(val)) {
+      val.forEach((v) => convertPart(`${key}`, v))
+    } else {
+      convertPart(key, val)
+    }
+  })
+
+  return parts.join('&')
+};
+
 
 export const Api = {
   /**
@@ -266,7 +315,8 @@ export const Api = {
     }
     if (err && err.status === 401) {
       await this.$stateStore.actions.deleteAuthUser();
-      await this.$router.push({name: "error401"});
+      // Redirect to Sign in page (U1 AC11)
+      await this.$router.push({name: "SignIn"});
       return true;
     }
 
@@ -345,7 +395,7 @@ export const Api = {
         `/businesses/${businessId}/inventory/`, item)
     .catch(error => {
       throw ApiRequestError.createFromMessageMap(error, {
-        400: error => `Could not create listing: ${error.response.data}`,
+        400: `Could not create listing: ${error.response.data}`,
         403: "Forbidden: Insufficient privileges"
       });
     });
@@ -399,42 +449,7 @@ export const Api = {
     return instance.get('/listings/search',
         {
           params: parameters,
-          paramsSerializer: params => {
-            const parts = [];
-
-            const encode = val => {
-              return encodeURIComponent(val).replace(/%3A/gi, ':')
-              .replace(/%24/g, '$')
-              .replace(/%2C/gi, ',')
-              .replace(/%20/g, '+')
-              .replace(/%5B/gi, '[')
-              .replace(/%5D/gi, ']');
-            }
-
-            const convertPart = (key, val) => {
-              if (val instanceof Date) {
-                val = val.toISOString()
-              } else if (val instanceof Object) {
-                val = JSON.stringify(val)
-              }
-
-              parts.push(encode(key) + '=' + encode(val));
-            }
-
-            Object.entries(params).forEach(([key, val]) => {
-              if (val === null || typeof val === 'undefined') {
-                return
-              }
-
-              if (Array.isArray(val)) {
-                val.forEach((v) => convertPart(`${key}`, v))
-              } else {
-                convertPart(key, val)
-              }
-            })
-
-            return parts.join('&')
-          }
+          paramsSerializer: arraySerializer
         }).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
         400: 'Invalid pagination parameters sent',
@@ -467,7 +482,7 @@ export const Api = {
   createCard: props => {
     return instance.post("/cards", props).catch(err => {
       throw ApiRequestError.createFromMessageMap(err, {
-        400: err => `Invalid information given; ${err.response.message}`,
+        400: `Invalid information given; ${err.response.message}`,
         403: "You tried to create a card as another user; only an admin is allowed to do this"
       });
     })
@@ -536,6 +551,23 @@ export const Api = {
         502: serverDownMessage,
         503: serverDownMessage,
         301: "You were redirected to another product."
+      });
+    });
+  },
+
+  /**
+   * Gets transactions for a business
+   * @param params an object with startDate, endDate and transactionGranularity
+   * @return {Promise<AxiosResponse<any>>} The object containing the
+   * list of transactions between the set time period and in the unit supplied
+   */
+  getTransactions: (businessId, params) => {
+    return instance.get(`/businesses/${businessId}/transactions`, {params})
+    .catch(err => {
+      throw ApiRequestError.createFromMessageMap(err, {
+        400: `The report could not be viewed: ${err.response.data}`,
+        403: "You don't have permission to view the report",
+        404: "The business does not exist"
       });
     });
   }

@@ -1,8 +1,8 @@
 package com.navbara_pigeons.wasteless.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.dao.UserDao;
 import com.navbara_pigeons.wasteless.dto.BasicUserDto;
@@ -11,12 +11,10 @@ import com.navbara_pigeons.wasteless.entity.Business;
 import com.navbara_pigeons.wasteless.entity.User;
 import com.navbara_pigeons.wasteless.exception.AddressValidationException;
 import com.navbara_pigeons.wasteless.exception.BusinessNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserAlreadyExistsException;
-import com.navbara_pigeons.wasteless.exception.UserAuthenticationException;
 import com.navbara_pigeons.wasteless.exception.UserNotFoundException;
-import com.navbara_pigeons.wasteless.exception.UserRegistrationException;
 import com.navbara_pigeons.wasteless.testprovider.ServiceTestProvider;
 import java.util.Collection;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
@@ -30,41 +28,36 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 
-public class UserServiceImplTest extends ServiceTestProvider {
+class UserServiceImplTest extends ServiceTestProvider {
 
   @Mock
   UserDao userDaoMock;
-
   @Mock
   BusinessDao businessDaoMock;
-
   @Mock
   BCryptPasswordEncoder encoder;
-
-  @Mock
-  AddressService addressService;
-
   @Mock
   AuthenticationManagerBuilder authenticationManagerBuilder;
-
+  @Mock
+  AddressService addressService;
   @InjectMocks
   UserServiceImpl userService;
 
-
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  public void saveUser_normal()
-      throws UserNotFoundException, AddressValidationException, UserRegistrationException, UserAlreadyExistsException, UserAuthenticationException {
+  void saveUser_normal()
+      throws UserNotFoundException, AddressValidationException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
+    doNothing().when(addressService).saveAddress(user.getHomeAddress());
     loginAuthenticationMock();
     when(encoder.encode(ArgumentMatchers.anyString())).thenReturn("HASH");
     when(userDaoMock.getUserByEmail(EMAIL_1)).thenReturn(user);
-    userService.saveUser(user);
+    Assertions.assertDoesNotThrow(()-> userService.saveUser(user));
   }
 
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  public void getUserById_self() throws UserNotFoundException {
+  void getUserById_self() throws UserNotFoundException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
@@ -75,7 +68,7 @@ public class UserServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser()
-  public void getUserById_otherWhenNotAdmin() throws UserNotFoundException {
+  void getUserById_otherWhenNotAdmin() throws UserNotFoundException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
@@ -86,7 +79,7 @@ public class UserServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser(authorities = {"ADMIN"})
-  public void getUserById_otherWhenAdmin() throws UserNotFoundException {
+  void getUserById_otherWhenAdmin() throws UserNotFoundException {
     User user = makeUser(EMAIL_1, PASSWORD_1, false);
     user.setId(100);
     when(userDaoMock.getUserById(user.getId())).thenReturn(user);
@@ -97,14 +90,14 @@ public class UserServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser()
-  public void getUserById_notFound() throws UserNotFoundException {
+  void getUserById_notFound() throws UserNotFoundException {
     when(userDaoMock.getUserById(Mockito.anyLong())).thenThrow(UserNotFoundException.class);
     assertThrows(UserNotFoundException.class, () -> userService.getUserById(1000));
   }
 
   @Test
   @WithMockUser(username = EMAIL_1, password = PASSWORD_1)
-  public void getUserById_selfIsPrimaryBusinessAdmin()
+  void getUserById_selfIsPrimaryBusinessAdmin()
       throws UserNotFoundException, BusinessNotFoundException {
     User user1 = makeUser(EMAIL_1, PASSWORD_1, false);
     user1.setId(100);
@@ -123,7 +116,7 @@ public class UserServiceImplTest extends ServiceTestProvider {
 
   @Test
   @WithMockUser()
-  public void getUserById_otherIsBusinessAdmin()
+  void getUserById_otherIsBusinessAdmin()
       throws UserNotFoundException, BusinessNotFoundException {
     User user1 = makeUser(EMAIL_1, PASSWORD_1, false);
     user1.setId(100);
@@ -151,48 +144,41 @@ public class UserServiceImplTest extends ServiceTestProvider {
    * On successful signup login is called which requires this horrible thing
    */
   void loginAuthenticationMock() {
-    when(authenticationManagerBuilder.getOrBuild()).thenReturn(new AuthenticationManager() {
+    when(authenticationManagerBuilder.getOrBuild()).thenReturn(authentication -> new Authentication() {
       @Override
-      public Authentication authenticate(Authentication authentication)
-          throws AuthenticationException {
-        return new Authentication() {
-          @Override
-          public Collection<? extends GrantedAuthority> getAuthorities() {
-            return null;
-          }
+      public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+      }
 
-          @Override
-          public Object getCredentials() {
-            return null;
-          }
+      @Override
+      public Object getCredentials() {
+        return null;
+      }
 
-          @Override
-          public Object getDetails() {
-            return null;
-          }
+      @Override
+      public Object getDetails() {
+        return null;
+      }
 
-          @Override
-          public Object getPrincipal() {
-            return null;
-          }
+      @Override
+      public Object getPrincipal() {
+        return null;
+      }
 
-          @Override
-          public boolean isAuthenticated() {
-            return false;
-          }
+      @Override
+      public boolean isAuthenticated() {
+        return false;
+      }
 
-          @Override
-          public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+      @Override
+      public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
 
-          }
+      }
 
-          @Override
-          public String getName() {
-            return null;
-          }
-        };
+      @Override
+      public String getName() {
+        return null;
       }
     });
   }
-
 }

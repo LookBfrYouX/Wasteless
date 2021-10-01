@@ -4,7 +4,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.navbara_pigeons.wasteless.dto.CreateBusinessDto;
 import com.navbara_pigeons.wasteless.dto.CreateUserDto;
@@ -159,7 +158,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   public void iSetThisUserAsAnAdminOfMyNewlyCreatedBusiness() throws Exception {
     Long businessId = getBusinessIdFromJsonResponse();
 
-    UserIdDto userIdDto = new UserIdDto(Long.valueOf(differentUserId));
+    UserIdDto userIdDto = new UserIdDto(differentUserId);
 
     mockMvc.perform(
         put("/businesses/{id}/makeAdministrator", businessId)
@@ -195,7 +194,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @Then("I can remove him from the list of admins for my business")
   public void iCanRemoveHimFromTheListOfAdminsForMyBusiness() throws Exception {
     Long businessId = getBusinessIdFromJsonResponse();
-    UserIdDto userIdDto = new UserIdDto(Long.valueOf(differentUserId));
+    UserIdDto userIdDto = new UserIdDto(differentUserId);
 
     mockMvc.perform(
         put("/businesses/{id}/removeAdministrator", businessId)
@@ -224,7 +223,7 @@ public class U5CreatingBusinessAccountsStepDefs extends CucumberTestProvider {
   @Then("I cannot remove myself from this list of admins")
   public void iCannotRemoveMyselfFromThisListOfAdmins() throws Exception {
     Long businessId = getBusinessIdFromJsonResponse();
-    UserIdDto userIdDto = new UserIdDto(Long.valueOf(loggedInUserId));
+    UserIdDto userIdDto = new UserIdDto(loggedInUserId);
 
     mockMvc.perform(
         put("/businesses/{id}/removeAdministrator", businessId)

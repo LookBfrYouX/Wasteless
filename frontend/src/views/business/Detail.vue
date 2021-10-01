@@ -62,13 +62,23 @@
           <span class="material-icons mr-1">edit</span>
           Edit Administrators
         </router-link>
+      </div>
+      <h4 class="ml-2 mt-3">View</h4>
+      <div class="d-flex flex-wrap column justify-content-space">
+        <router-link
+            :to="{ name: 'BusinessListings', params: { businessId }}"
+            class="btn btn-white-bg-primary m-1 d-flex"
+        >
+          <span class="material-icons mr-1">storefront</span>
+          Listings
+        </router-link>
         <router-link
             v-if="canEditBusiness"
             :to="{ name: 'BusinessProducts', params: { businessId }}"
             class="btn btn-white-bg-primary m-1 d-flex"
         >
           <span class="material-icons mr-1">list</span>
-          View Catalogue
+          Catalogue
         </router-link>
         <router-link
             v-if="canEditBusiness"
@@ -76,16 +86,16 @@
             class="btn btn-white-bg-primary m-1 d-flex"
         >
           <span class="material-icons mr-1">inventory</span>
-          View Inventory
+          Inventory
         </router-link>
         <router-link
-            :to="{ name: 'BusinessListings', params: { businessId }}"
+            v-if="canEditBusiness"
+            :to="{ name: 'BusinessTransactions', params: { businessId }}"
             class="btn btn-white-bg-primary m-1 d-flex"
         >
-          <span class="material-icons mr-1">storefront</span>
-          View Listings
+          <span class="material-icons mr-1">receipt_long</span>
+          Transactions Report
         </router-link>
-
       </div>
       <error-modal
           :goBack="true"

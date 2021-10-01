@@ -1,20 +1,15 @@
 <template>
-  <div id="app">
-    <v-app>
-      <navbar
-          :query="query"
-          @input="event => this.query = event.target.value"
-      />
-      <div class="w-100 main-content d-flex justify-content-center gradient-background">
-        <router-view
-            @initial-search-value="updateInput"
-        ></router-view>
-      </div>
-      <footer class="info">
-
-      </footer>
-    </v-app>
-  </div>
+  <v-app>
+    <navbar
+        :query="query"
+        @input="event => this.query = event.target.value"
+    />
+    <div class="w-100 main-content d-flex justify-content-center gradient-background">
+      <router-view
+          @initial-search-value="updateInput"
+      ></router-view>
+    </div>
+  </v-app>
 </template>
 
 <script>

@@ -35,8 +35,7 @@ export class ApiRequestError extends Error {
         && typeof error.response.status == "number") {
       this.status = error.response.status;
     }
-    this.message = `API Request Error ${status ? `(${status})`
-        : ""} - ${this.userFacingErrorMessage}`;
+    this.message = `API Request Error ${status? ("(" + status + ")"): ""} - ${this.userFacingErrorMessage}`;
   }
 
   /**

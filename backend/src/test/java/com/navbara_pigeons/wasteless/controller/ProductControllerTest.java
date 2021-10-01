@@ -1,10 +1,8 @@
 package com.navbara_pigeons.wasteless.controller;
 
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.navbara_pigeons.wasteless.dto.CreateProductDto;
 import com.navbara_pigeons.wasteless.testprovider.ControllerTestProvider;
 import org.junit.jupiter.api.Test;
@@ -12,7 +10,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
-public class ProductControllerTest extends ControllerTestProvider {
+class ProductControllerTest extends ControllerTestProvider {
 
   @Test
   @WithUserDetails(value = "mbi47@uclive.ac.nz")
@@ -45,14 +43,14 @@ public class ProductControllerTest extends ControllerTestProvider {
   @Test
   @WithMockUser
   void getProductsFromOneBusinessTestInvalidId() throws Exception {
-    String enpointUrl = "/businesses/-1/products";
-    mockMvc.perform(get(enpointUrl)).andExpect(status().isNotFound());
+    String endpointUrl = "/businesses/-1/products";
+    mockMvc.perform(get(endpointUrl)).andExpect(status().isNotFound());
   }
 
   // Return 201 on successful request to controller
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  public void return201OnAddProductTest() throws Exception {
+  void return201OnAddProductTest() throws Exception {
     CreateProductDto mockProduct = new CreateProductDto();
     mockProduct.setName("Pizza");
     mockProduct.setManufacturer("Hut");
@@ -67,7 +65,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   // Throw 400 on bad request to controller (name is required)
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  public void throw400OnBadProductTest() throws Exception {
+  void throw400OnBadProductTest() throws Exception {
     CreateProductDto mockProduct = new CreateProductDto();
     mockProduct.setManufacturer(null);
     mockProduct.setRecommendedRetailPrice(100.0);
@@ -81,7 +79,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   // Throw 400 on bad request to controller (price must be above 0 and below 10000000)
   @Test
   @WithUserDetails(value = "dnb36@uclive.ac.nz")
-  public void throw400OnBadProductPriceTest() throws Exception {
+  void throw400OnBadProductPriceTest() throws Exception {
     CreateProductDto mockProduct = new CreateProductDto();
     mockProduct.setName("Pizza");
     mockProduct.setManufacturer(null);
@@ -103,7 +101,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   // Throw 401 when unauthorized
   @Test
   @WithAnonymousUser
-  public void throw401OnAddProductTest() throws Exception {
+  void throw401OnAddProductTest() throws Exception {
     CreateProductDto mockProduct = new CreateProductDto();
     mockProduct.setName("Pizza");
     mockProduct.setManufacturer("Hut");
@@ -118,7 +116,7 @@ public class ProductControllerTest extends ControllerTestProvider {
   // Throw 403 when not business admin or admin
   @Test
   @WithUserDetails(value = "fdi19@uclive.ac.nz")
-  public void throw403OnAddProductTest() throws Exception {
+  void throw403OnAddProductTest() throws Exception {
     CreateProductDto mockProduct = new CreateProductDto();
     mockProduct.setName("Pizza");
     mockProduct.setManufacturer("Hut");

@@ -57,7 +57,7 @@ public class U29BrowsSalesStepDefs extends CucumberTestProvider {
         get(endpointUrl)
             .param("pagStartIndex", "0")
             .param("pagEndIndex", "3")
-            .param("sortBy", "price")
+            .param("sortBy", "PRICE")
             .param("isAscending", "true")
     ).andReturn();
     Assertions.assertNotNull(this.response);
@@ -68,9 +68,9 @@ public class U29BrowsSalesStepDefs extends CucumberTestProvider {
       throws UnsupportedEncodingException, JsonProcessingException {
     JsonNode jsonResponse = objectMapper.readTree(this.response.getResponse().getContentAsString());
     Iterator<JsonNode> results = jsonResponse.get("results").elements();
-    Double minPrice = 0.0;
+    double minPrice = 0.0;
     while (results.hasNext()) {
-      Double listingPrice = results.next().get("price").asDouble();
+      double listingPrice = results.next().get("price").asDouble();
       Assertions.assertTrue(listingPrice >= minPrice);
       minPrice = listingPrice;
     }

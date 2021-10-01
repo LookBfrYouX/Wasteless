@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
 import com.navbara_pigeons.wasteless.dao.BusinessDao;
 import com.navbara_pigeons.wasteless.entity.Address;
 import com.navbara_pigeons.wasteless.entity.Business;
@@ -22,10 +21,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-public class BusinessServiceImplTest extends ServiceTestProvider {
+class BusinessServiceImplTest extends ServiceTestProvider {
 
   protected long USERID_1 = 100;
   protected long USERID_2 = 101;
@@ -43,9 +40,6 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
   /**
    * Create user1, set them as logged in user and make getUserById/Email return the user Make
    * saveAddress do nothing
-   *
-   * @throws UserNotFoundException
-   * @throws AddressValidationException
    */
   @BeforeEach
   void beforeAll() throws UserNotFoundException, AddressValidationException {
@@ -60,7 +54,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  void getBusinessById_admin_getFullDto() throws BusinessNotFoundException, UserNotFoundException {
+  void getBusinessById_admin_getFullDto() throws BusinessNotFoundException {
     // Checking that the FullBusinessDto is returned
     User user = makeUser(EMAIL_2, PASSWORD_1, false);
     Business business = makeBusiness(user);
@@ -88,27 +82,22 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
   }
 
   @Test
-  void createBusiness_notAdmin_noErrors()
-      throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
+  void createBusiness_notAdmin_noErrors() {
     Business business = makeBusiness(user1);
     business.setId(BUSINESSID_1);
 
-    businessService.saveBusiness(business);
+    Assertions.assertDoesNotThrow(() -> { businessService.saveBusiness(business); });
   }
 
   /**
    * Should not complain if primary administrator is not set
    *
-   * @throws UserNotFoundException
-   * @throws AddressValidationException
-   * @throws BusinessRegistrationException
    */
   @Test
-  void createBusiness_notAdmin_primaryAdministratorNotSet()
-      throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
+  void createBusiness_notAdmin_primaryAdministratorNotSet() {
     Business business = makeBusiness("businessName");
 
-    businessService.saveBusiness(business);
+    Assertions.assertDoesNotThrow(() -> { businessService.saveBusiness(business); });
   }
 
   /**
@@ -131,8 +120,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
    * is admin
    */
   @Test
-  void createBusiness_AdminOtherAsPrimary()
-      throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
+  void createBusiness_AdminOtherAsPrimary() {
     User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
     user2.setId(USERID_2);
 
@@ -140,7 +128,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
     business.setId(BUSINESSID_1);
 
     when(userService.isAdmin()).thenReturn(true);
-    businessService.saveBusiness(business);
+    Assertions.assertDoesNotThrow(() -> { businessService.saveBusiness(business); });
   }
 
   /**
@@ -178,7 +166,7 @@ public class BusinessServiceImplTest extends ServiceTestProvider {
    */
   @Test
   void createBusiness_tooYoung()
-      throws UserNotFoundException, AddressValidationException, BusinessRegistrationException {
+      throws UserNotFoundException {
     User user2 = makeUser(EMAIL_2, PASSWORD_1, false);
     user2.setDateOfBirth(LocalDate.now().minusYears(14)); // must be over 16
     user2.setId(USERID_2);

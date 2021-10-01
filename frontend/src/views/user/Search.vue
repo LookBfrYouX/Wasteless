@@ -37,6 +37,7 @@
       </ul>
       <!-- Pagination Bar   -->
       <v-pagination
+          :total-visible="7"
           v-model="page"
           :length="totalPages"
           class="w-100"
@@ -171,7 +172,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>

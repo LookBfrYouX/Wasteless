@@ -11,25 +11,21 @@
           </div>
 
           <div class="btn-group" role="group" aria-label="Basic example" style="flex-wrap: wrap;">
-            <button class="btn btn-white-bg-primary d-flex align-items-end" type="button"
+            <button class="btn btn-white-bg-primary d-flex align-items-end"
                     @click="$router.go(-1)">
               <span class="material-icons mr-1">arrow_back</span>
               Back
             </button>
-            <button class="btn btn-white-bg-primary d-flex align-items-end" type="button">
+            <router-link class="btn btn-white-bg-primary d-flex align-items-end"
+                         :to="{ name: 'BusinessDetail', params: { businessId, showBackButton: true}}">
               <span class="material-icons mr-1">business</span>
-              <router-link
-                  :to="{ name: 'BusinessDetail', params: { businessId, showBackButton: true}}"
-                  class="text-reset text-decoration-none"
-              >
-                View Business
-              </router-link>
-            </button>
+              View Business
+            </router-link>
           </div>
 
           <image-carousel :images="productImages"/>
           <div class="mt-2 d-inline">{{ description }}</div>
-
+          <hr/>
           <v-tooltip bottom
                      :disabled="!$stateStore.getters.isActingAsBusiness() && !listingWasPurchased">
             <template v-slot:activator="{ on }">
@@ -61,7 +57,12 @@
           </div>
           <div class="mt-2">Quantity: {{ quantity }}</div>
           <div class="mt-2">Price: {{ $helper.makeCurrencyString(price, currency) }}</div>
+          <div class="mt-2">Manufacturer: {{ product.manufacturer }}</div>
+          <hr/>
+          <div class="mt-2">Business Name: {{ business.name }}</div>
+          <div class="mt-2">Business Address: {{ $helper.addressToString(business.address) }}</div>
           <div v-if="moreInfo" class="mt-2 mb-5">More Information: {{ moreInfo }}</div>
+          <nutrition-facts class="my-2" :product="product"/>
           <div class="d-flex flex-wrap justify-content-between mb-2">
             <div class="date mt-2">Opened: {{ $helper.isoToDateString(listingCreated, true) }}</div>
             <div class="date mt-2">Closes: {{ $helper.isoToDateString(listingCloses, true) }}</div>
@@ -71,8 +72,8 @@
       <hr>
       <div class="d-flex flex-wrap justify-content-between mb-2">
         <div class="date mt-2">Manufactured: {{ $helper.isoToDateString(manufactured) }}</div>
-        <div class="date mt-2">Sell By: {{ $helper.isoToDateString(sellBy) }}</div>
         <div class="date mt-2">Best Before: {{ $helper.isoToDateString(bestBefore) }}</div>
+        <div class="date mt-2">Sell By: {{ $helper.isoToDateString(sellBy) }}</div>
         <div class="date mt-2">Expires: {{ $helper.isoToDateString(expires) }}</div>
       </div>
     </div>
@@ -83,7 +84,8 @@
         <v-card-title class="text-h5">Buy this listing?
         </v-card-title>
         <v-card-text>
-          Buy <strong>{{ quantity }} </strong><strong>'{{ name }}'</strong> from <strong>'{{ business.name }}'</strong> for
+          Buy <strong>{{ quantity }} </strong><strong>'{{ name }}'</strong> from
+          <strong>'{{ business.name }}'</strong> for
           <strong>{{ $helper.makeCurrencyString(price, currency) }}?</strong>
         </v-card-text>
         <v-spacer></v-spacer>
@@ -138,19 +140,44 @@ import ErrorModal from "@/components/ErrorModal.vue";
 import {ApiRequestError} from "@/ApiRequestError";
 import {Api} from "@/Api";
 import ImageCarousel from '../../components/ImageCarousel.vue';
+import NutritionFacts from "@/components/NutritionFacts";
 
 export default {
   name: "ListingDetail",
   components: {
+    NutritionFacts,
     ImageCarousel,
     ErrorModal,
   },
 
   data() {
     return {
+      product: {
+        nutriScore: null,
+        novaGroup: null,
+        fat: null,
+        saturatedFat: null,
+        sugars: null,
+        salt: null,
+        isGlutenFree: false,
+        isDairyFree: false,
+        isVegetarian: false,
+        isVegan: false,
+        isPalmOilFree: false,
+        manufacturer: ""
+      },
       name: "",
       description: "",
-      business: null,
+      business: {
+        address: {
+          city: null,
+          country: null,
+          postcode: null,
+          region: null,
+          streetName: null,
+          streetNumber: null
+        },
+      },
       productImages: [],
       quantity: null,
       price: null,
@@ -272,6 +299,7 @@ export default {
       this.bestBefore = listing.inventoryItem.bestBefore;
       this.expires = listing.inventoryItem.expires;
       this.recommendedRetailPrice = listing.inventoryItem.product.recommendedRetailPrice;
+      this.product = listing.inventoryItem.product;
     },
 
     /**

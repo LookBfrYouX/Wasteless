@@ -3,8 +3,9 @@ import codecs
 newFile = codecs.open("result.sql", "x", "utf-8")
 
 # This list needs to be in order
-itemsToAdd = ["address", "user", "business", "user_business", "product",
-              "catalogue", "inventory_item", "listing", "marketlisting", "transaction"]
+itemsToAdd = ["address", "user", "business", "user_business", "product", "catalogue",
+              "inventory_item", "listing", "marketlisting", "keyword", "marketlisting_keyword",
+              "transaction"]
 
 # Add items to new newFile
 for item in itemsToAdd:
@@ -48,5 +49,11 @@ UPDATE `address` SET COUNTRY = 'United Kingdom of Great Britain and Northern Ire
 UPDATE `address` SET COUNTRY = 'United States of America' WHERE COUNTRY = 'United States Minor Outlying Islands';
 UPDATE `address` SET COUNTRY = 'Virgin Islands (U.S.)' WHERE COUNTRY = 'United States Virgin Islands';
 UPDATE `address` SET COUNTRY = 'Venezuela (Bolivarian Republic of)' WHERE COUNTRY = 'Venezuela';
-UPDATE `address` SET COUNTRY = 'Viet Nam' WHERE COUNTRY = 'Vietnam';""")
+UPDATE `address` SET COUNTRY = 'Viet Nam' WHERE COUNTRY = 'Vietnam';
+
+UPDATE `transaction` SET BUSINESS_ID = 1001;
+
+UPDATE listing SET CLOSES = FROM_UNIXTIME(UNIX_TIMESTAMP('2022-10-17 00:00:00') + FLOOR(RAND() * 10000000)) WHERE ID < 5001;
+""")
+
 file.close()
